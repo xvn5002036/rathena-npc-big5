@@ -1,0 +1,202 @@
+//===== rAthena Script ======================================= 
+//= Renewal Thief Job Quest
+//===== By: ================================================== 
+//= Kisuka
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Job Change to Thief Class
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. [Kisuka]
+//= 1.1 Added support for Baby classes. [Euphy]
+//============================================================ 
+moc_prydb1,39,129,2	script	盜賊轉職人員#thief	69,{
+	if (Upper == 1) {
+		if (ADVJOB == Job_Assassin_Cross || ADVJOB == Job_Stalker) {
+			if (Class == Job_Novice_High) {
+				mes "[盜賊轉職人員]";
+				mes "嗯？我認識你嗎？你讓我覺得很面熟，這有點可怕。你該不會有個雙胞胎吧？";
+				next;
+				if (!callfunc("F_CanChangeJob")) {
+					mes "[盜賊轉職人員]";
+					mes "什麼，你想成為盜賊嗎？很抱歉，但你看起來還需要更多訓練。";
+					next;
+					mes "[盜賊轉職人員]";
+					mes "慢慢來，把基本技能都學好吧？那麼，回頭見?！";
+					close;
+				}
+				mes "[盜賊轉職人員]";
+				mes "嗯，我有種你經歷過一生戰鬥的感覺，所以我現在立刻讓你晉升為盜賊。我最好給你們這些硬漢想要的東西...";
+				next;
+				skill "NV_TRICKDEAD",0,SKILL_PERM;
+				jobchange Job_Thief_High;
+				skill "TF_SPRINKLESAND",1,SKILL_PERM;
+				skill "TF_BACKSLIDING",1,SKILL_PERM;
+				skill "TF_PICKSTONE",1,SKILL_PERM;
+				skill "TF_THROWSTONE",1,SKILL_PERM;
+				mes "[盜賊轉職人員]";
+				mes "既然你成為了盜賊，就以盜賊的身分活下去吧。現在，放手去做吧！下一位?";
+				close;
+			}else{
+				mes "[盜賊轉職人員]";
+				if (Sex == SEX_MALE)
+					mes "嘿，老兄。";
+				else
+					mes "嘿，寶貝?";
+				close;
+			}
+		}else{
+			mes "[盜賊轉職人員]";
+			if (Sex == SEX_MALE)
+				mes "嘿，老兄。";
+			else
+				mes "嘿，寶貝。";
+			mes "...嘿！你看起來太乖了，不適合當盜賊！！現在快滾，我很忙。下一位！";
+			close;
+		}
+	}
+	if(q_job_thief == 1) {
+		mes "[盜賊公會關係者]";
+		mes "嗯... 看起來像是富貴人家備受疼愛的"+(Sex == SEX_MALE?"兒子":"女兒")+"，但你怎麼會來到這個骯髒的地方？";
+		next;
+		mes "[盜賊公會關係者]";
+		mes "嗯，我並不負責讓你成為盜賊。我只負責受理申請，懂嗎？";
+		mes "如果你想成為盜賊，去問旁邊那個眼神銳利的傢伙吧。";
+		close;
+	}
+	mes "[盜賊公會關係者]";
+	if(BaseJob != Job_Novice) {
+		if(BaseJob == Job_Thief) {
+			mes "嘿?如果你遇到任何麻煩，隨時都可以來找我，知道嗎？";
+			close;
+		}else{
+			mes "搞什麼鬼...？";
+			if(Sex == SEX_MALE) {
+				mes "哼... 你是個"+jobname(Class)+"，笨蛋！";
+				next;
+				mes "[盜賊公會關係者]";
+				mes "嘿，兄弟。";
+			}else{
+				next;
+				mes "[盜賊公會關係者]";
+				mes "嘿，小姐。";
+			}
+			mes "你為什麼在這裡？回你該去的地方?回去??";
+			close;
+		}
+	}
+	mes "嗯... 看起來像是富貴人家備受疼愛的"+(Sex == SEX_MALE?"兒子":"女兒")+"，但你怎麼會來到這個骯髒的地方？";
+	next;
+	if(select("我想成為盜賊。:沒事。") == 2) {
+		mes "[盜賊公會關係者]";
+		mes "你知道沒有申請表是不能成為盜賊的...";
+		mes "你到底在想什麼...？";
+		close;
+	}
+	mes "[盜賊公會關係者]";
+	mes "嗯，你很引以為傲嗎？";
+	mes "你這麼自豪地告訴我你想成為盜賊！你怎麼不去每個村莊宣傳你要當盜賊呢？";
+	mes "『哈哈哈！去掛個布條上面寫著「我要成為一個以偷別人東西為榮的盜賊」。』";
+	next;
+	mes "[盜賊公會關係者]";
+	mes "你真的那麼想成為盜賊嗎？";
+	next;
+	switch(select("是的。:不。:那你呢？")) {
+	case 1:
+		mes "[盜賊公會關係者]";
+		mes "哦，是嗎...？哼.. 嗯... 活到老學到老，居然會看到像你這麼奇怪的人。";
+		next;
+		break;
+	case 2:
+		mes "[盜賊公會關係者]";
+		mes "那你為什麼來這裡？你以為你可以這麼輕易就成為盜賊嗎？";
+		next;
+		break;
+	case 3:
+		mes "[盜賊公會關係者]";
+		mes "嗯..？我？我？";
+		mes "嗯... 我只是在性格上... 很適合當盜賊... 我不介意這種無聊的事。";
+		next;
+		break;
+	}
+	mes "[盜賊公會關係者]";
+	mes "總之，在外面的世界，絕對不要說你想成為盜賊！！";
+	next;
+	mes "[盜賊公會關係者]";
+	mes "那麼，你想申請成為盜賊嗎？";
+	next;
+	if(select("是的，我想。:不。") == 2) {
+		mes "[盜賊公會關係者]";
+		mes "好吧... 隨你便?走你自己的路吧?";
+		close;
+	}
+	mes "[盜賊公會關係者]";
+	mes "好吧，告訴我你的名字。嗯？什麼？";
+	mes ""+strcharinfo(0)+"。所以是 "+strcharinfo(0)+"，對吧...？";
+	next;
+	if (!callfunc("F_CanChangeJob")) {
+		mes "[盜賊公會關係者]";
+		mes "我看得出你成為盜賊的強烈意志......";
+		mes "但是光憑意志，你是無法在真正的戰鬥中生存下來的，對吧？";
+		mes "所以去把基本技能等級練到至少 9 級吧。";
+		close;
+	}
+	mes "[盜賊公會關係者]";
+	mes "嗯.... 我在偵探社的資料裡發現了你有趣的犯罪紀錄。看來你具備了成為一名優秀盜賊的資質。";
+	mes ""+strcharinfo(0)+"。我現在宣布你通過了面試！";
+	next;
+	mes "[盜賊公會關係者]";
+	mes "嗯，我並不負責讓你成為盜賊。我只負責受理申請，懂嗎？";
+	mes "如果你想成為盜賊，去問我旁邊的傢伙。";
+	set q_job_thief,1;
+	close;
+}
+
+moc_prydb1,42,133,2	script	盜賊公會關係者#thief	118,{
+	if(q_job_thief == 1) {
+		mes "[盜賊公會關係者]";
+		mes "很好。你一定已經通過了面試，對吧？";
+		mes "很好。我會接受你。";
+		mes "讓我們開始公會的轉職儀式吧！";
+		next;
+		mes "[盜賊公會長]";
+		mes "『"+strcharinfo(0)+"。』";
+		mes "『對於那些準備好的人，月光將為他們開闢道路。現在你已經完全準備好了，我正式允許你成為盜賊公會的一員。』";
+		callfunc "Job_Change",Job_Thief;
+		set q_job_thief,0;
+		getitem 13041,1;	// N_Main_Gauche
+		next;
+		mes "[盜賊公會長]";
+		mes "『恭喜你成為盜賊。』";
+		mes "『從現在開始，遵守我們公會的規定，成為一名光榮的成員。』";
+		mes "『如果你因為違反規定而為我們帶來任何恥辱，你最好小心點。』";
+		mes "『總之，我期待你能成為一名偉大的盜賊。』";
+		next;
+		mes "[布拉德]";
+		mes "嘿?呀?！恭喜你！我的朋友。";
+		mes "我的名字是『布拉德』。我負責這裡的人事。";
+		mes "我現在還不確定，但你以後會有更多機會見到我的。";
+		next;
+		mes "[布拉德]";
+		mes "好了，我能為你做的事都做完了，去忙你的吧。我是個很忙的人。";
+		mes "後會有期。";
+		close;
+	}
+	if(BaseJob != Job_Novice) {
+		if(BaseJob == Job_Thief) {
+			mes "[布拉德]";
+			mes "我現在沒有任何特別的活動。所以去忙你的吧，晚點再來。";
+		}else{
+			mes "[盜賊公會關係者]";
+			mes "嘿?嘿?你既不是初心者也不是盜賊！";
+			mes "你來這裡做什麼？我們不歡迎你把這裡當成自己家?咻??快滾出這裡?";
+		}
+		close;
+	}
+	mes "[盜賊公會關係者]";
+	mes "喔？像你這樣的初心者怎麼會來這裡拜訪？";
+	mes "如果你是來成為盜賊的，去問我旁邊那位脾氣暴躁的小姐。";
+	close;
+}

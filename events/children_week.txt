@@ -1,0 +1,86 @@
+//===== rAthena Script =======================================
+//= Children Week Event
+//===== By: ==================================================
+//= Samuray22
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Indian Ro: Children Week Event
+//===== Additional Comments: =================================
+//= 1.1 First Beta. [Samuray22]
+//============================================================
+
+prontera,146,91,5	script	潘迪特叔叔#child07	61,{
+	if (BaseLevel > 50) {
+		mes "[潘迪特叔叔]";
+		mes "哈哈哈?";
+		mes "這是一個特別的日子，一年只有一次。";
+		mes "如果你看到身邊有小冒險家，請讓他們來找我?";
+		mes "我會給他們一份特別的禮物。";
+		close;
+	} else if (BaseLevel < 20) {
+		mes "[潘迪特叔叔]";
+		mes "哈哈哈?";
+		mes "你是個嬰兒冒險家，還不是小冒險家呢。";
+		mes "等你長大一點再來吧。哈哈哈。";
+		close;
+	} else if (oversea_event9 < 1) {
+		mes "[潘迪特叔叔]";
+		mes "哈哈哈?";
+		mes "歡迎，小冒險家們！";
+		mes "今天是個特別的日子，對吧?？";
+		mes "我想給小冒險家一份小禮物...";
+		mes "那你呢？你想收下嗎？";
+		next;
+		if(select("不了，我晚點再來拿。:當然，我想要。") == 1) {
+			mes "[潘迪特叔叔]";
+			mes "那真是太可惜了.... 嗯...";
+			mes "這可是我從遙遠世界收集材料做成的....";
+			mes "如果你想要的話，隨時可以回來找我...";
+			close;
+		}
+		set oversea_event9,1;
+		getitem 11705,10; //Special_White_Potion
+		mes "[潘迪特叔叔]";
+		mes "看。這是兒童藥水。";
+		mes "重量只有 1，但可以恢復大量 HP。";
+		mes "如果你還想要更多，請帶 1 個結婚花束和 1 朵不凋花來。";
+		close;
+	} else if (oversea_event9 == 1) {
+		if (countitem(745) > 0 && countitem(748) > 0) {
+			mes "[潘迪特叔叔]";
+			mes "啊哈！！";
+			mes "你還記得我美麗的配方。";
+			mes "你做得很好。";
+			mes "你能把 1 個結婚花束和 1 朵不凋花交給我嗎？";
+			next;
+			if(select("還沒準備好。:當然，收下吧。") == 1) {
+				mes "[潘迪特叔叔]";
+				mes "如果你還沒準備好，準備好的時候再來找我。";
+				close;
+			}
+			mes "[潘迪特叔叔]";
+			mes "哈哈哈?";
+			mes "喔?你帶來了。";
+			mes "來，我將為你兌換 50 瓶兒童藥水。";
+			mes "一旦你拿了這 50 瓶兒童藥水，我就不會再給了。";
+			close2;
+			delitem 745,1; //Wedding_Bouquet
+			delitem 748,1; //Witherless_Rose
+			set oversea_event9,2;
+			getitem 11705,50; //Special_White_Potion
+			end;
+		}
+		mes "[潘迪特叔叔]";
+		mes "小冒險家，你應該帶 1 個結婚花束和 1 朵不凋花來。";
+		mes "如果你帶來這些東西，我就會幫你兌換成兒童藥水。";
+		close;
+	}
+	mes "[潘迪特叔叔]";
+	mes "哈哈哈?";
+	mes "你喜歡兒童週嗎?？";
+	close;
+}

@@ -1,0 +1,1322 @@
+//===== rAthena Script =======================================
+//= Eden iRO NPCs
+//===== By: ==================================================
+//= -SkittleNugget-
+//===== Current Version: =====================================
+//= 1.4
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Eden scripts custom to iRO (disabled by default).
+//= You may need iRO's data.grf to view some of the items.
+//===== Additional Comments: =================================
+//= 1.0 First version.
+//= 1.1 Edited and added more NPCs, lots of placeholders. [Euphy]
+//= 1.2 Added VIP NPCs and features. [Euphy]
+//= 1.3 Added Mail Annex Station scripts, commented out. [Euphy]
+//= 1.4 Added Merry Badger. [Euphy/-SkittleNugget-]
+//============================================================
+
+// Acolyte Warper (part of other/acolyte_warp.txt)
+//============================================================
+moc_para01,14,32,5	script	阿帕契#acolytewarp	90,{
+	mes "[阿帕契]";
+	mes "你好，冒險家。";
+	mes "我一直在研究來自米德加爾特各地的魔法，以升級我認為服事職業所能使用的最棒的技能。";
+	next;
+
+	if (is_function("VIP_iRO_Acolyte"))
+		callfunc "VIP_iRO_Acolyte","[阿帕契]","Prontera";
+
+	mes "[阿帕契]";
+	mes "我是唯一一個將傳送點技能達到等級 10 的服事！";
+	emotion ET_THINK, playerattached();
+	next;
+	mes "[阿帕契]";
+	mes "沒錯！而且...";
+	mes "我保證我不會忘記已經記下來的地點。";
+	mes "總有一天我會提升我的技能，讓我想去哪裡就能去哪裡?";
+	next;
+	mes "[阿帕契]";
+	mes "只要收取少許費用，我就能透過傳送點將你送到我記下的許多地點。";
+	mes "你想使用這項服務嗎？";
+	next;
+	switch(select("是的:不用了")) {
+	case 1:
+		mes "[阿帕契]";
+		mes "你想去哪裡？";
+		mes "祝你旅途順利。";
+		next;
+		setarray .@towns$[0], "普隆德拉", "伊斯魯得島", "吉芬", "斐揚", "夢羅克", "艾爾貝塔", "艾爾帕蘭", "克魔島", "汶巴拉", "朱諾", "艾因布羅克", "里希塔樂鎮", "毀葛", "拉赫";
+		setarray .@cost[0],          600,      600,     1200,    1200,     1200,      1800,          2200,     2200,     2200,   1800,       2200,          2200,    2200,     2200;
+		set .@size, getarraysize(.@towns$);
+		for(set .@i,0; .@i<.@size; set .@i,.@i+1)
+			set .@menu$, .@menu$+.@towns$[.@i]+" -> "+.@cost[.@i]+"z:";
+		set .@i, select(.@menu$+"取消")-1;
+		if (.@i == .@size) {
+			mes "[阿帕契]";
+			mes "需要傳送點的時候再來找我。";
+			close;
+		}
+		if (Zeny < .@cost[.@i]) {
+			mes "[阿帕契]";
+			mes "很抱歉，但是你沒有";
+			mes "足夠的 Zeny 來支付傳送點";
+			mes "服務。傳送到";
+			mes ""+.@towns$[.@i]+" 的費用是 "+.@cost[.@i]+" Zeny。";
+			close;
+		}
+		specialeffect2 EF_READYPORTAL;
+		specialeffect2 EF_TELEPORTATION;
+		specialeffect2 EF_PORTAL;
+		next;
+		set Zeny, Zeny - .@cost[.@i];
+		switch(.@i) {
+			case 0: warp "prontera",116,72; break;
+			case 1: warp "izlude",128,98; break;
+			case 2: warp "geffen",120,39;
+			break;
+			case 3: warp "payon",161,58; break;
+			case 4: warp "morocc",156,46; break;
+			case 5: warp "alberta",117,56; break;
+			case 6: warp "aldebaran",168,112;
+			break;
+			case 7: warp "comodo",209,143; break;
+			case 8: warp "umbala",100,154; break;
+			case 9: warp "yuno",158,125; break;
+			case 10: warp "einbroch",67,195;
+			break;
+			case 11: warp "lighthalzen",159,90; break;
+			case 12: warp "hugel",98,150; break;
+			case 13: warp "rachel",119,135; break;
+		}
+		close;
+	case 2:
+		mes "[阿帕契]";
+		mes "需要傳送點的時候再來找我。";
+		close;
+	}
+}
+
+function	script	VIP_iRO_Acolyte	{
+	if (!vip_status(VIP_STATUS_ACTIVE)) {
+		mes getarg(0);
+		mes "不過，我全部的力量只對 VIP 開放。";
+		mes "但我還是可以提供傳送點將你送到"+getarg(1)+"。";
+		next;
+		switch(select(getarg(0)+" -> 1800z:取消")) {
+		case 1:
+			if (Zeny < 1800) {
+				mes getarg(0);
+				mes "很抱歉，但是你沒有";
+				mes "足夠的 Zeny 來支付傳送點";
+				mes "服務。傳送到";
+				mes ""+getarg(1)+" 的費用是 1,800 Zeny。";
+				close;
+			}
+			specialeffect2 EF_READYPORTAL;
+			specialeffect2 EF_TELEPORTATION;
+			specialeffect2 EF_PORTAL;
+			next;
+			set Zeny, Zeny - 1800;
+			if (getarg(1) == "Juno")
+				warp "yuno",158,125;
+			else
+				warp "prontera",116,72;
+			close;
+		case 2:
+			close;
+		}
+	}
+	return;
+}
+
+
+// Primo d'Buffer, VIP stat bonuses
+//============================================================
+moc_para01,26,15,3	script	普里莫 德·巴弗	790,{
+	mes "[普里莫 德·巴弗]";
+	mes "你好，冒險家，你看起來迫不及待地想出去拯救世界！";
+	if (!vip_status(VIP_STATUS_ACTIVE)) {
+		mes "我也能看出你尚未獲得 '^6666ffVIP 資格^000000' 的祝福。";
+		next;
+		mes "[普里莫 德·巴弗]";
+		mes "我的任務是為任何擁有 VIP 資格的冒險家提供特殊的增益狀態（Buff）！";
+		mes "目前如果你是 VIP，我會為你提供 ^ff000030分鐘內所有素質 +7^000000 的效果。";
+		next;
+		mes "[普里莫 德·巴弗]";
+		mes "如果你想成為 VIP，你可以使用 WarpPortal 來為你的遊戲帳號 ^FF8C42充值^000000 獲得 VIP 資格。當然，成為 VIP 還有許多其他好處，像是更高的經驗值與掉寶率、更大的倉庫，以及像我這樣特殊的增益狀態 NPC！";
+		mes "祝你旅途愉快！";
+		close;
+	}
+	mes "我也能看出你已經獲得了 '^007FFFVIP 資格^000000' 的祝福。";
+	next;
+	mes "[普里莫 德·巴弗]";
+	mes "太棒了！";
+	mes "這是在 30 分鐘內所有素質 +7 的效果，希望能幫助你的旅程。當你需要重新獲得素質提升時，隨時回來找我！";
+	close2;
+	sc_start SC_FOOD_STR_CASH,1200000,7;
+	sc_start SC_FOOD_AGI_CASH,1200000,7;
+	sc_start SC_FOOD_VIT_CASH,1200000,7;
+	sc_start SC_FOOD_DEX_CASH,1200000,7;
+	sc_start SC_FOOD_INT_CASH,1200000,7;
+	sc_start SC_FOOD_LUK_CASH,1200000,7;
+	end;
+}
+
+// Clearchus, VIP mercenary rentals
+//============================================================
+moc_para01,53,30,3	script	克里爾庫斯	470,{
+	if (checkquest(62238,PLAYTIME) > -1 && checkquest(62238,PLAYTIME) < 2) {
+		mes "你必須等待計時結束才能僱用新的傭兵。";
+		close;	
+	}
+	mes "[克里爾庫斯]";
+	mes "你好，年輕的冒險家！我代表米德加爾特傭兵團。";
+	next;
+	mes "[克里爾庫斯]";
+	mes "我們透過將有抱負的傭兵與像你這樣的冒險家搭配，來為他們提供訓練。";
+	next;
+	mes "[克里爾庫斯]";
+	mes "我們的組織擁有一萬名精銳！現在讓我看看你是否已經登記了這項服務。";
+	next;
+	if (!vip_status(VIP_STATUS_ACTIVE)) {
+		mes "[克里爾庫斯]";
+		mes "很遺憾，看來你不是 VIP，請獲取 VIP 資格以便使用此服務。你可以透過在伊甸園總部與爺爺交談來獲得臨時的 VIP 權限。";
+		next;
+		mes "[克里爾庫斯]";
+		mes "VIP 對冒險家來說是非常有用的工具，可以使用額外的卡普拉服務、打折的傳送點、獨家內容，以及使用普里莫 德·巴弗的服務。如果冒險家擁有完整的 VIP 資格，甚至能獲得經驗值、掉寶率和倉庫容量的提升！";
+		close;
+	}
+	mes "[克里爾庫斯]";
+	mes "你的名字在名單上。";
+	next;
+	mes "[克里爾庫斯]";
+	mes "你希望傭兵具備什麼樣的技能？";
+	next;
+
+	switch(select("劍士:弓箭手:槍騎士")) {
+	case 1:
+		set .@base_id,12163; //SwordMercenary_Scroll
+		break;
+	case 2:
+		set .@base_id,12153; //Bow_Mercenary_Scroll
+		break;
+	case 3:
+		set .@base_id,12173; //SpearMercenary_Scroll
+		break;
+	}
+	     if (BaseLevel < 11) set .@i,0;
+	else if (BaseLevel < 21) set .@i,1;
+	else if (BaseLevel < 31) set .@i,2;
+	else if (BaseLevel < 41) set .@i,3;
+	else if (BaseLevel < 51) set .@i,4;
+	else if (BaseLevel < 61) set .@i,5;
+	else if (BaseLevel < 71) set .@i,6;
+	else if (BaseLevel < 81) set .@i,7;
+	else if (BaseLevel < 91) set .@i,8;
+	else set .@i,9;
+
+	mes "[克里爾庫斯]";
+	mes "我心裡已經有合適的傭兵人選了！";
+	next;
+	mes "[克里爾庫斯]";
+	mes "玩得開心點，聽到了嗎？";
+	getitem .@base_id + .@i,1;
+	if (isbegin_quest(62238) > 0)
+		erasequest 62238;
+	setquest 62238;
+	close;
+}
+
+// Carrot & Red Potion Traders
+//============================================================
+moc_para01,166,51,3	script	菲利克斯#edco	85,{
+	mes "[菲利克斯]";
+	mes "喔... 從你的眼神看來，你是想讓我工作，然後給你肉和胡蘿蔔...";
+	mes "好吧，我的朋友以撒這裡有一些紅色藥水，但我只有一些胡蘿蔔。";
+	mes "所以我可以用 ^0000CC1 個胡蘿蔔和你換 3 個傑勒比結晶^000000。";
+	next;
+	mes "[菲利克斯]";
+	mes "如果你對我的提議有興趣，就去拿我說的傑勒比結晶來吧。";
+	next;
+	select("請給我胡蘿蔔。");
+	mes "[菲利克斯]";
+	mes "好吧，讓我看看你帶了什麼...";
+	next;
+	if (countitem(909) < 3) {
+		mes "[菲利克斯]";
+		mes "嗯，聽著老兄，我說過是 3 個傑勒比結晶換 1 個胡蘿蔔... 懂了嗎？";
+		close;
+	}
+	mes "[菲利克斯]";
+	mes "還不錯...";
+	mes "你想要多少個？";
+	next;
+	switch(select("請給我你能給的最大數量。:我想自己選擇。:算了，我喜歡我的傑勒比結晶。")) {
+	case 1:
+		set .@amount, countitem(909) / 3;
+		break;
+	case 2:
+		set .@available, countitem(909) / 3;
+		mes "[菲利克斯]";
+		mes "你想要多少個？";
+		mes "^ff0000你的數量最多可以換 " + .@available + " 個胡蘿蔔。^000000";
+		input .@input;
+		next;
+		if (.@input < 1 || .@input > 10000) {
+			mes "[菲利克斯]";
+			mes "不想交易了？那也無妨...";
+			close;
+		}
+		if (.@input > .@available) {
+			mes "[菲利克斯]";
+			mes "老兄，我說過每 3 個傑勒比結晶我才會給你 1 個胡蘿蔔。";
+			close;
+		}
+		set .@amount, .@input;
+		break;
+	case 3:
+		mes "[菲利克斯]";
+		mes "如果不想交易，就別來煩我。";
+		close;
+	}
+	if (checkweight(515,.@amount) == 0) {
+		mes "[菲利克斯]";
+		mes "你負重過高了。";
+		close;
+	}
+	mes "[菲利克斯]";
+	mes "給你?！正如我承諾的。";
+	mes "試著別把自己吃撐了。";
+	delitem 909,.@amount*3; //Jellopy
+	getitem 515,.@amount; //Carrot
+	end;
+}
+
+moc_para01,163,51,7	script	以撒#edco	86,{
+	mes "[以撒]";
+	mes "你好！";
+	mes "你有從魔物那裡收集到什麼奇怪的東西嗎？";
+	mes "我想要像是傑勒比結晶、柔毛、加勒結晶、鳥毛、樹根、昆蟲外殼和蛹之類的東西。";
+	mes "我需要這些東西來做點事。";
+	next;
+	mes "[以撒]";
+	mes "當然，我不會要求你免費把那些東西給我。如果你拿以下這些東西，我就用 ^CC00001 瓶紅色藥水^000000 和你交換：";
+	mes "^00CC005 個加勒結晶^000000";
+	mes "^0000CC10 個柔毛^000000";
+	mes "^00CC0010 個傑勒比結晶^000000";
+	mes "^0000CC6 個樹根^000000";
+	mes "^00CC001 個昆蟲外殼^000000";
+	mes "^0000CC7 個鳥毛^000000";
+	mes "^00CC006 個蛹^000000";
+	next;
+	switch(select("好啊！:我覺得這是在敲竹槓！:不用了，謝謝。")) {
+	case 1:
+		mes "[以撒]";
+		mes "那麼你想帶";
+		mes "哪些物品給我呢？";
+		next;
+		setarray .@items[0], 935, 914, 909, 902, 955, 916, 915;
+		setarray .@count[0],   5,  10,  10,   6,   1,   7,   6;
+		set .@size, getarraysize(.@items);
+		for(set .@i,0; .@i<.@size; set .@i,.@i+1)
+			set .@menu$, .@menu$+getitemname(.@items[.@i])+":";
+		set .@select, select(.@menu$+"取消")-1;
+		if (.@select == .@size) {
+			mes "[以撒]";
+			mes "沒問題?";
+			mes "不客氣。";
+			close;
+		}
+		set .@item, .@items[.@select];
+		set .@item$, getitemname(.@item);
+		set .@price, .@count[.@select];
+		if (countitem(.@item) < .@price) {
+			mes "[以撒]";
+			mes "嘿，你答應給我的";
+			mes ""+.@item$+" 都在";
+			mes "哪裡？";
+			mes "把 "+.@item$+" 給我！";
+			close;
+		}
+		mes "[以撒]";
+		mes "好的，讓我檢查一下";
+		mes "你身上帶了多少";
+		mes ""+.@item$+"。";
+		mes "嗯...";
+		next;
+		set .@amount, countitem(.@item) / .@price;
+		set .@trade_amount, .@amount * .@price;
+		mes "[以撒]";
+		mes "你總共";
+		mes "有 "+countitem(.@item)+" 個 "+.@item$+"...";
+		mes "用這些，我可以給你";
+		mes "總共 "+.@amount+" 瓶紅色藥水。";
+		next;
+		mes "[以撒]";
+		mes "你覺得如何？";
+		mes "成交嗎？";
+		next;
+		if(select("成交。:不成交。") == 2) {
+			mes "[以撒]";
+			mes "哈?";
+			mes "好吧。";
+			mes "不過";
+			mes ""+.@item$+" 對像你這樣的冒險家來說";
+			mes "真的比較有用嗎？";
+			close;
+		}
+		if (checkweight(501,.@amount) == 0) { //custom check
+			mes "[以撒]";
+			mes "你負重過高了。";
+			close;
+		}
+		delitem .@item,.@trade_amount;
+		getitem 501,.@amount; //Red_Potion
+		mes "[以撒]";
+		mes "給你！";
+		mes "檢查一下我退給你的 "+.@item$;
+		mes "數量，應該沒錯。";
+		mes "謝謝，這是一筆很棒的交易?";
+		close;
+	case 2:
+		mes "[以撒]";
+		mes "敲竹槓...？";
+		mes "如果你去查一下正在交易的物品";
+		mes "的市場價值，你就會發現其實";
+		mes "被敲竹槓的人是我。";
+		close;
+	case 3:
+		mes "[以撒]";
+		mes "好吧，沒問題。";
+		mes "但如果你改變主意，歡迎隨時回來找我。";
+		close;
+	}
+}
+
+// Safe to 7 Certificate Exchanger
+//============================================================
+moc_para01,50,39,4	script	伊芙 娜塔莉亞	882,{
+	mes "[伊芙 娜塔莉亞]";
+	mes "所以我在鎮上待一陣子，看看能不能和 MVP 獵人們做些生意！";
+	mes "我願意收取一些 MVP 裝備，並用我擁有的這些精煉能力提升券與你交換；";
+	mes "如果一切順利，我會開啟更多的商機！";
+	next;
+	mes "[伊芙 娜塔莉亞]";
+	mes "那麼，你是否有我在尋找的裝備，來換取一些隨機的 +7 防禦/武器精煉能力提升券呢？";
+	next;
+	switch(select("什麼裝備？:是的，我有！:算了。")) {
+	case 1:
+		mes "[伊芙 娜塔莉亞]";
+		mes "尼德霍格的影子外衣 可換 4 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "巴基力亞鋼盾 可換 4 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "巴基力亞鎧甲 可換 5 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "迪亞布羅斯長袍 可換 5 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "迪亞布羅斯鎧甲 可換 2 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "迪亞布羅斯戰靴 可換 2 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "迪亞布羅斯斗篷 可換 4 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "那哈特齊格的雙刃劍(藍) 可換 2 張隨機 +7 防禦/武器精煉能力提升券";
+		mes "那哈特齊格的雙刃劍(紅) 可換 2 張隨機 +7 防禦/武器精煉能力提升券";
+		close;
+	case 2:
+		mes "[伊芙 娜塔莉亞]";
+		mes "我將要問你想交易哪一件裝備，請確認你物品欄裡排在第 1 個的是你想要交出的裝備。";
+		mes "^CC0000所以如果它插了卡、精煉過、附魔過等等，在我們繼續之前你應該先把它存入倉庫。^000000";
+		next;
+		set .@i, select("等一下:尼德霍格的影子外衣 4:巴基力亞鋼盾 4:巴基力亞鎧甲 5:迪亞布羅斯長袍 5:迪亞布羅斯鎧甲 2:迪亞布羅斯戰靴 2:迪亞布羅斯斗篷 4:那哈特齊格的雙刃劍(藍) 2:那哈特齊格的雙刃劍(紅) 2")-2;
+		if (.@i == -1)
+			break;
+
+		setarray .@items[0],   2554, 2115, 2357, 2374, 2375, 2433, 2537, 13412, 13413;
+		setarray .@tickets[0],    4,    4,    5,    5,    2,    2,    4,     2,     2;
+		set .@item, .@items[.@i];
+		set .@amount, .@tickets[.@i];
+
+		mes "[伊芙 娜塔莉亞]";
+		mes "我看到你有 "+countitem(.@item)+" 個 "+getitemname(.@item)+"。";
+		mes "所以你想用你物品欄裡排在第 1 個的裝備交換 ^00CC00"+.@amount+" 張隨機的 +7 防禦/武器精煉能力提升券^000000嗎？";
+		mes "如果你確定請輸入 '1'，或者輸入 '0' 取消。";
+		next;
+		input .@input;
+		if (.@input < 0 || .@input > 1) {
+			mes "[伊芙 娜塔莉亞]";
+			mes "只能輸入 0 或 1，這應該沒那麼困難吧。";
+			close;
+		} else if (.@input == 0) {
+			mes "[伊芙 娜塔莉亞]";
+			mes "交易前最好確認清楚，祝你有美好的一天。";
+			close;
+		}
+		if (countitem(.@item) == 0) {
+			mes "[伊芙 娜塔莉亞]";
+			mes "你連 1 個都沒有... 別浪費我的時間。";
+			close;
+		}
+		mes "[伊芙 娜塔莉亞]";
+		mes "哦完美，你獲得了 ^CC0000" + .@amount + "^000000 張 +7 防禦/武器精煉能力提升券！";
+		delitem .@item,1;
+		for(set .@i,0; .@i<.@amount; set .@i,.@i+1) {
+			// Note: iRO lists item 6235 as "Safe to 7 Headgear Certificate", but it's Guarantee_Armor_6Up in our database.
+			if (rand(2))
+				getitem 6230,1; //Guarantee_Weapon_7Up
+			else
+				getitem 6234,1; //Guarantee_Armor_7Up
+		}
+		close;
+	case 3:
+		break;
+	}
+	mes "[伊芙 娜塔莉亞]";
+	mes "好吧，如果未來想找我做生意，別害羞！";
+	close;
+}
+
+// Bubble Gum & Battle Manual Exchanger
+//============================================================
+moc_para01,48,184,2	script	掉寶糖與教範兌換機	562,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+		mes "你現在攜帶了太多物品了。";
+		close;	
+	}
+	mes "[兌換機]";
+	mes "投入掉寶率倍增糖及/或戰鬥教範，來交換更高級的糖與教範。";
+	next;
+	mes "[兌換機]";
+	mes "兌換比例：";
+	mes "2 個掉寶率倍增糖 -> 1 個高級掉寶率倍增糖";
+	mes "2 本戰鬥教範 -> 1 本高級戰鬥教範";
+	mes "4 本高級戰鬥教範 -> 1 本戰鬥教範 X3";
+	mes "3 本厚重的戰鬥教範 -> 2 本戰鬥教範 X3";
+	mes "你想兌換什麼？";
+	next;
+	switch(select("高級掉寶率倍增糖:高級戰鬥教範:1 本戰鬥教範 X3:2 本戰鬥教範 X3:1 個服飾海盜船長帽:什麼都不要")) {
+	case 1:
+		callsub L_Exchange,12210,2,12412,1;
+		break;
+	case 2:
+		callsub L_Exchange,12208,2,12411,1;
+		break;
+	case 3:
+		callsub L_Exchange,12411,4,14545,1;
+		break;
+	case 4:
+		callsub L_Exchange,12312,3,14545,2;
+		break;
+	case 5:
+		mes "[兌換機]";
+		mes "我可以用 1 本戰鬥教範 X3 交換 1 個服飾海盜船長帽。";
+		next;
+		if (countitem(19619) == 0) {
+			mes "[兌換機]";
+			mes "你沒有服飾海盜船長帽來進行這項交易。";
+			close;
+		}
+		next;
+		if(select("是的，給我吧！:不，等等先不要。") == 2)
+			close;
+		// Unofficial dialogue.
+		mes "[兌換機]";
+		mes "你將所需的物品放入機器中...";
+		next;
+		mes "[兌換機]";
+		mes "機器退還了一個物品給你！";
+		delitem 19619,1; //C_Corsair
+		getitem 14545,1; //Battle_Manual_X3
+		close;
+	case 6:
+		close;
+}
+
+//callsub L_Exchange,<Insert Item>,<Amount>,<Return Item>,<Amount>
+L_Exchange:
+	mes "[兌換機]";
+	mes "你想要多少個 "+getitemname(getarg(2))+"？";
+	mes "我最多可以給你 60 個。";
+	mes "輸入 0 來取消。";
+	next;
+	input .@amount;
+	if (.@amount == 0) {
+		mes "[兌換機]";
+		mes "已取消。";
+		close;
+	} else if (.@amount < 0 || .@amount > 60) {
+		mes "[兌換機]";
+		mes "我說過最多只能 60 個。";
+		close;
+	}
+	mes "[兌換機]";
+	mes "總共是 "+.@amount+" 個 "+getitemname(getarg(2))+"。";
+	mes "這樣正確嗎？";
+	next;
+	if(select("是的，給我吧！:不，等等先不要。") == 2)
+		close;
+	set .@cost, getarg(1) * .@amount;
+	set .@total_amount, getarg(3) * .@amount;
+	if (countitem(getarg(0)) < .@cost) {
+		mes "[兌換機]";
+		mes "你沒有足夠的 "+getitemname(getarg(0))+" 來進行這項交易。";
+		close;
+	}
+	delitem getarg(0),.@cost;
+	getitem getarg(2),.@total_amount;
+	close;
+}
+
+// Merry Badger
+//============================================================
+moc_para01,13,22,4	script	梅莉 巴傑#xch	882,{
+	disable_items;
+	mes "[梅莉 巴傑]";
+	mes "你好！我是梅莉 巴傑，我受僱來兌換^00CC00伊甸園證明^000000！";
+	next;
+	mes "[梅莉 巴傑]";
+	mes "我可以用你的證明來換取一些有用的東西，或者用你的一些東西來換取伊甸園證明。";
+	mes "隨著我獲得更多的授權，我能提供更多東西來與你交易，所以當你拜訪伊甸園時，絕對要記住我。";
+	next;
+	// switch( select( "Redeem Badges", "Trade in FOR badges", "Exchange Rates", "15 Job Manuals - 1 JM Box", "Sky Fortress Tickets", "Weekly Special" ) ) {// Sky Fortress Tickets meaningless without the instance
+	switch( select( "兌換證明", "用物品換取證明", "兌換匯率", "15本職業經驗書 - 1個職業經驗書箱", "", "每週特選" ) ) {
+	case 1:
+		setarray .@menu_list$[0],
+			"4 個伊甸園證明 換 10 個 KVM 徽章",
+			"4 個伊甸園證明 換 10 個勇氣徽章",
+			"4 個伊甸園證明 換 10 個英勇徽章", 
+			"8 個伊甸園證明 換 1 個輪迴之石",
+			"5 個伊甸園證明 換 戰鬥教範Buff",
+			"5 個伊甸園證明 換 職業教範Buff",
+			"10 個伊甸園證明 換 高級戰鬥教範Buff",
+			"20 個伊甸園證明 換 3倍戰鬥\n教範Buff",
+			"5 個伊甸園證明 換 掉寶糖Buff", 
+			"10 個伊甸園證明 換 高級掉寶糖Buff",
+			"",	// "5 EMB for Miracle Buff" (item doesn't exist in db)
+			"1 個伊甸園證明 換 天地樹葉子",
+			"",	// "5 EMB for Rental Wing of Beelzebub" (item doesn't exist in db)
+			"5 個伊甸園證明 換 租賃韁繩",
+			"5 個伊甸園證明 換 20個藍色藥草",
+			"原地復活之證",
+			"現在不需要";
+		.@menu$ = implode( .@menu_list$, ":" );
+		while(1) {
+			mes "[梅莉 巴傑]";
+			mes "沒問題，我目前為你的證明提供了幾個選項！";
+			next;
+			switch( select(.@menu$) ) {
+			case 1:// "4 EMB for 10 KVM Badge"
+				callsub L_Exchange,4,6376,10;// KVM_Badge
+				break;
+			case 2:// "4 EMB for 10 Bravery Medals"
+				callsub L_Exchange,4,7828,10;// BF_Badge1
+				break;
+			case 3:// "4 EMB for 10 Valor Medals"
+				callsub L_Exchange,4,7829,10;// BF_Badge2
+				break;
+			case 4:// "8 EMB for 1 Reset Stone"
+				callsub L_Exchange,8,6320,1;// Premium_Reset_Stone
+				break;
+			case 5:// "5 EMB for Battle Manual Buff"
+				callsub L_Exchange,5,12208,1;// Battle_Manual
+				break;
+			case 6:// "5 EMB for Job Battle Manual Buff"
+				callsub L_Exchange,5,14592,1;// Job_Manual50
+				break;
+			case 7:// "10 EMB for HE Battle Manual Buff"
+				callsub L_Exchange,10,12411,1;// HE_Battle_Manual
+				break;
+			case 8:// "20 EMB for 3X Battle Manual Buff"
+				callsub L_Exchange,20,14545,1;// Battle_Manual_X3
+				break;
+			case 9:// "5 EMB for Bubblegum Buff"
+				callsub L_Exchange,5,12210,1;// Bubble_Gum
+				break;
+			case 10:// "10 EMB for HE Bubblegum Buff"
+				callsub L_Exchange,10,12412,1;// HE_Bubble_Gum
+				break;
+			case 11:// "5 EMB for Miracle Buff"
+				.@item_id = 22819;
+				if (countitem(6495) < 5) {
+					mes "[梅莉 巴傑]";
+					mes "你沒有足夠的 ^00CC00伊甸園證明^000000。我們重新開始吧！";
+					break;
+				}
+				mes "[梅莉 巴傑]";
+				mes "好的，我可以用 ^ff0000" + getitemname(.@item_id) + "^000000 來換你的 ^0066CC5 個伊甸園證明^000000。";
+				mes "你想要交易嗎？";
+				next;
+				if (select("是的", "不要") == 2) {
+					mes "[梅莉 巴傑]";
+					mes "我明白了，讓我們看看你是否想要別的東西！";
+					break;
+				}
+				mes "[梅莉 巴傑]";
+				mes "給你！你還想要什麼？";
+				delitem 6495, 5;// Para_Logro_Badge
+				consumeitem .@item_id;
+				break;
+			case 12:// "1 EMB for Yggdrasil Leaf"
+				callsub L_Exchange,1,610,1;// Leaf_Of_Yggdrasil
+				break;
+			case 13:// "5 EMB for Rental Wing of Beelzebub"
+				.@item_id = 14645;
+				if (countitem(6495) < 5) {
+					mes "[梅莉 巴傑]";
+					mes "你沒有足夠的 ^00CC00伊甸園證明^000000。我們重新開始吧！";
+					break;
+				}
+				mes "[梅莉 巴傑]";
+				mes "好的，我可以用 ^ff0000" + getitemname(.@item_id) + "^000000 來換你的 ^0066CC5 個伊甸園證明^000000。";
+				mes "你想要交易嗎？";
+				next;
+				if (select("是的", "不要") == 2) {
+					mes "[梅莉 巴傑]";
+					mes "我明白了，讓我們看看你是否想要別的東西！";
+					break;
+				}
+				mes "[梅莉 巴傑]";
+				mes "給你！你還想要什麼？";
+				delitem 6495, 5;// Para_Logro_Badge
+				rentitem .@item_id, 604800;	// 7 days
+				break;
+			case 14:// "5 EMB for Rental Halter Lead"
+				callsub L_Exchange,5,17162,1;// Boarding_Halter_Box7
+				break;
+			case 15:// "5 EMB for 20 Blue Herbs"
+				callsub L_Exchange,5,510,20;// Blue_Herb
+				break;
+			case 16:// Token of Siegfried
+				if (vip_status(VIP_STATUS_ACTIVE) == false) {
+					mes "[梅莉 巴傑]";
+					mes "VIP 服務會將這個提供給任何擁有 VIP 的使用者！！";
+					close;
+				}
+				// custom from here
+				.@date = gettime(DT_YYYYMMDD);
+				if (.@date <= eden_iro_token_date) {
+					mes "[梅莉 巴傑]";
+					mes "你今天已經拿過你的復活之證了！";
+					close;
+				}
+				mes "[梅莉 巴傑]";
+				mes "給你！你還想要什麼？";
+				eden_iro_token_date = .@date;
+				getitem 7621,10;// Token_Of_Siegfried
+				close;
+			case 17:// Nothing Now
+				mes "[梅莉 巴傑]";
+				mes "太棒了！";
+				mes "如果你想兌換伊甸園證明，我會在這裡！";
+				close;
+			}
+			next;
+		}
+	case 2:
+		mes "[梅莉 巴傑]";
+		mes "我目前的選擇有限，但以下是我可以讓你換取 1 個伊甸園證明的東西！";
+		next;
+		switch( select( "其他物品", "裝備", "取消" ) ) {
+		case 1:
+			while(1) {
+				if (select( "5x 老舊收集冊", "什麼都不要" ) == 2) {
+					mes "[梅莉 巴傑]";
+					mes "太棒了！";
+					mes "如果你想兌換伊甸園證明，我會在這裡！";
+					close;
+				}
+				while(1) {
+					if (countitem(617) < 5) {
+						mes "[梅莉 巴傑]";
+						mes "你沒有足夠的數量來換取 1 個伊甸園證明。我們重新開始吧！";
+						break;
+					}
+					mes "[梅莉 巴傑]";
+					mes "好的，我可以用 ^CC00001 個伊甸園證明^000000 來換你的 ^0000CC5 個老舊收集冊^000000。你想交易嗎？";
+					next;
+					if (select( "是的", "不要" ) == 2) {
+						mes "[梅莉 巴傑]";
+						mes "我明白了，讓我們看看你是否想要別的東西！";
+						break;
+					}
+					else {
+						mes "[梅莉 巴傑]";
+						mes "給你！你還想要什麼？";
+						delitem 617,5;// Old_Violet_Box
+						getitem 6495,1;// Para_Logro_Badge
+						next;
+					}
+				}
+				next;
+			}
+		case 2:
+			while(1) {
+				mes "[梅莉 巴傑]";
+				mes "我會拿走你物品欄最上方的那一項！請確保你沒有把不想交換的這些物品放在最上面。";
+				next;
+				switch( select( "巨石面蟲的蛇皮", "巨石面蟲的蛇皮 [1]", "什麼都不要" ) ) {
+				case 1:
+					.@item_req = 20717;// FaceWorm_Skin
+					.@item_name$ = "巨石面蟲的蛇皮";
+					.@amount_reward = 5;
+					break;
+				case 2:
+					.@item_req = 20718;// FaceWorm_Skin_
+					.@item_name$ = "巨石面蟲的蛇皮 [1]";
+					.@amount_reward = 7;
+					break;
+				case 3:
+					mes "[梅莉 巴傑]";
+					mes "太棒了！";
+					mes "如果你想兌換伊甸園證明，我會在這裡！";
+					next;
+					mes "[梅莉 巴傑]";
+					mes "好吧沒關係，如果你想看看我提供什麼，儘管開口！";
+					close;
+				}
+				while(1) {
+					if (countitem(.@item_req) < 1) {
+						mes "[梅莉 巴傑]";
+						mes "你沒有足夠的數量來換取 1 個伊甸園證明。我們重新開始吧！";
+						break;
+					}
+					mes "[梅莉 巴傑]";
+					mes "好的，我可以用 ^ff0000" + .@amount_reward + " 個伊甸園證明^000000 來換取 ^00ff00" + .@item_name$ + "^000000。你想交易嗎？";
+					next;
+					if (select( "是的", "不要" ) == 2) {
+						mes "[梅莉 巴傑]";
+						mes "我明白了，讓我們看看你是否想要別的東西！";
+						break;
+					}
+					delitem .@item_req, 1;
+					getitem 6495, .@amount_reward;// Para_Logro_Badge
+					mes "[梅莉 巴傑]";
+					mes "給你！你還想要什麼？";
+					next;
+				}
+				next;
+			}
+		case 3:
+			mes "[梅莉 巴傑]";
+			mes "好吧沒關係，如果你想看看我提供什麼，儘管開口！";
+			close;
+		}
+	case 3:
+		mes "[梅莉 巴傑]";
+		mes "這是我用來換取你的 ^00CC00伊甸園證明^000000 的東西！";
+		mes "好的，我有 3 個證明的特惠。這週我會給你 ^00CC0040 個光粒^000000、^00CC0040 個火藥粉^000000、^0000CC3 個伊茲多爾^000000、^00CC0010 個仙人掌果實^000000、^0000CC1 個曼陀羅魔花花盆^000000，以及 ^00CC003 個天地樹枝^000000。";
+		mes "^00CC002 個伊甸園證明^000000 = ^0000CC10x KVM 徽章^000000";
+		mes "^00CC002 個伊甸園證明^000000 = ^0000CC10x 勇氣徽章^000000";
+		mes "^00CC002 個伊甸園證明^000000 = ^0000CC10x 英勇徽章^000000";
+		mes "^00CC005 個伊甸園證明^000000 = ^0000CC5x 中型生命水^000000";
+		mes "^00CC005 個伊甸園證明^000000 = ^0000CC5x 人壽保險證書^000000";
+		mes "^00CC005 個伊甸園證明^000000 = ^0000CC5x 原地復活之證^000000";
+		mes "^00CC007 個伊甸園證明^000000 = ^0000CC1x 職業經驗值倍增書^000000";
+		mes "^00CC008 個伊甸園證明^000000 = ^0000CC1x 輪迴之石^000000";
+		next;
+		mes "[梅莉 巴傑]";
+		mes "這是你能給我以換取 ^00CC001 個伊甸園證明^000000 的東西！";
+		mes "^0000CC5x 老舊收集冊^000000";
+		close;
+	case 4:
+		mes "[梅莉 巴傑]";
+		mes "我是被逼著給出這個的，但你值得！";
+		mes "你想用 15 本職業教範來換 1 個可交易的 10 本職業教範箱子嗎？";
+		mes "我知道 15 不等於 10，但你要知道箱子可是很貴的。";
+		next;
+		if (countitem(14592) < 15) {
+			mes "[梅莉 巴傑]";
+			mes "你沒有 15 本或更多的職業教範來換取 1 個箱子！";
+			close;
+		}
+		// custom dialogue below
+		if (select("是的", "不要") == 2) {
+			mes "[梅莉 巴傑]";
+			mes "太棒了！";
+			mes "如果你想兌換伊甸園證明，我會在這裡！";
+			close;
+		}
+		mes "[梅莉 巴傑]";
+		mes "太好了，你還想要什麼？";
+		delitem 14592,15; //Job_Manual50
+		getitem 13990,1; //Job_Manual50_Box
+		close;
+	case 5:
+		mes "[梅莉 巴傑]";
+		mes "我不太明白為什麼，但我有這疊優惠券要賣。";
+		mes "你想用 25 個伊甸園證明換 1 張副本門票嗎？如果你是 VIP，你的門票能持續更久！";
+		next;
+		if (select( "是的", "不要" ) == 2) {
+			mes "[梅莉 巴傑]";
+			mes "我明白了，讓我們看看你是否想要別的東西！";
+			close;
+		}
+		if (countitem(6495) < 25) {
+			mes "[梅莉 巴傑]";
+			mes "你沒有足夠的證明！";
+			close;
+		}
+		delitem 6495,25;
+		if (vip_status(VIP_STATUS_ACTIVE))
+			getitem 17570,1;// Sky Fortress Ticket 3 Hour Box
+		else
+			getitem 17569,1;// Sky Fortress Ticket 1 Hour Box
+		mes "[梅莉 巴傑]";
+		mes "給你！你還想要什麼？";
+		close;
+	case 6:
+		while(1) {
+			mes "[梅莉 巴傑]";
+			mes "每週特選是 ....";
+			next;
+			mes "[梅莉 巴傑]";
+			mes "好的，我有一個用 3 個證明或 1,000,000 Zeny 的特惠。這週我會給你 ^00CC0040 個光粒^000000、40 個火藥粉^000000、^0000CC3 個伊茲多爾^000000";
+			mes "^00CC0010 個仙人掌果實^000000、^0000CC1 個曼陀羅魔花花盆^000000，以及 ^00CC003 個天地樹枝^000000。";
+			next;
+			switch( select( "證明", "Zeny", "不要" ) ) {
+			case 1:
+				if (countitem(6495) < 3) {
+					mes "[梅莉 巴傑]";
+					mes "你沒有足夠的 ^00CC00伊甸園證明^000000。我們重新開始吧！";
+					next;
+					continue;
+				}
+				delitem 6495,3; //Para_Logro_Badge
+				break;
+			case 2:
+				if (Zeny < 1000000) {
+					mes "[梅莉 巴傑]";
+					mes "你沒有足夠的 ^00CC00Zeny^000000。我們重新開始吧！";
+					next;
+					continue;
+				}
+				Zeny -= 1000000;
+				break;
+			case 3:
+				mes "[梅莉 巴傑]";
+				mes "我明白了，讓我們看看你是否想要別的東西！";
+				close;
+			}
+			getitem 7938,40;// Light_Granule
+			getitem 6244,40;// Gun_Power
+			getitem 709,3;	// Izidor
+			getitem 576,10;	// Prickly_Fruit
+			getitem 6217,1;	// Mandragora_Flowerpot
+			getitem 7939,3;	// Elder_Branch
+			mes "[梅莉 巴傑]";
+			mes "給你！你還想要什麼？";
+			next;
+		}
+	}
+	end;
+
+//callsub L_Exchange,<badge cost>,<item id>,<amount>;
+L_Exchange:
+	if (countitem(6495) < getarg(0)) {
+		mes "[梅莉 巴傑]";
+		mes "你沒有足夠的 ^00CC00伊甸園證明^000000。我們重新開始吧！";
+		return;
+	}
+	mes "[梅莉 巴傑]";
+	mes sprintf("好的，我可以用 ^ff0000%s^000000 來換你的 ^0066CC%d 個伊甸園證明^000000。",
+				callfunc("F_InsertPlural",getarg(2),getitemname(getarg(1))), getarg(0));
+	mes "你想要交易嗎？";
+	next;
+	if (select("是的", "不要") == 2) {
+		mes "[梅莉 巴傑]";
+		mes "我明白了，讓我們看看你是否想要別的東西！";
+		return;
+	}
+	mes "[梅莉 巴傑]";
+	mes "給你！你還想要什麼？";
+	delitem 6495, getarg(0); //Para_Logro_Badge
+	getitem getarg(1),getarg(2);
+	return;
+}
+
+// Kafra Stacker
+//============================================================
+moc_para01,41,169,2	script	卡普拉堆疊員#eden	749,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+		mes "- 等一下！ -";
+		mes "- 你現在攜帶了 -";
+		mes "- 太多重量的物品了。 -";
+		mes "- 請稍後 -";
+		mes "- 把一些東西放進卡普拉倉庫再來吧。 -";
+		close;
+	}
+	mes "[托瑪]";
+	mes "我可以收取你那些不可堆疊的卡普拉消耗品";
+	mes "並將它們整齊地堆疊起來！";
+	next;
+	mes "[托瑪]";
+	mes "請諒解，我一次";
+	mes "只能堆疊 10 組";
+	mes "所以請繼續跟我對話，直到";
+	mes "你每種都只剩下 1 組為止！";
+	next;
+	while(1) {
+		if(select("幫我疊吧！:算了。") == 2)
+			break;
+		// Something strange goes on here, haven't quite figured it out...
+		mes "[托瑪]";
+		mes "完成 10 組堆疊了！";
+		mes "要再堆疊一次嗎？";
+		next;
+	}
+	mes "[托瑪]";
+	mes "好吧，回頭見。";
+	close;
+}
+
+// Code Redeemer
+//============================================================
+moc_para01,38,162,2	script	序號兌換員#Give1	405,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+		mes "^0000ff給我停下來！";
+		mes "你攜帶了太多物品，沒有足夠的物品欄空間來領取任何獎勵。請清出更多物品欄空間後再來接受這項挑戰。^000000";
+		close;
+	}
+	mes "[序號兌換員]";
+	mes "歡迎，"+strcharinfo(0)+"！";
+	mes "我一直在等你。";
+	next;
+	mes "[序號兌換員]";
+	mes "我負責發送像你這樣的冒險家";
+	mes "在網站上購買的";
+	mes "或是";
+	mes "從促銷活動中獲得的物品。";
+	next;
+	mes "[序號兌換員]";
+	mes "^0000FF如果清單是空的，";
+	mes "那代表你";
+	mes "沒有購買，或者尚未在購買網站上";
+	mes "輸入你的序號。^000000";
+	next;
+	// If you have a code redemption system, write your SQL queries here.
+	select("");
+
+	close;
+}
+
+// Cash Shops
+//============================================================
+/* Due to the irregularity of iRO's databases, some of these sprites may not display properly.
+*/
+
+moc_para01,32,171,6	cashshop	卡普拉頭飾#eden1	115,14024:500,14098:150,17081:300,14097:500,14094:1000,14017:400,14099:300
+moc_para01,35,174,2	cashshop	卡普拉染色店#dyes2	114,6287:150
+moc_para01,37,170,2	cashshop	卡普拉消耗品#eden3	112,13810:5,14167:400,16556:100,14111:75,14075:25,16419:30,14107:70,14104:50,14112:25,14082:30,14091:60,14088:30,14085:60,14169:40,14170:40,14172:40,14173:40,14171:40,14174:40,14159:100,14160:100,14161:100,14162:100,14163:100:14164:100,16420:1500
+moc_para01,32,174,2	cashshop	卡普拉租賃物品#eden	721,16683:150,16682:50,14126:250,14125:250,16430:250,14137:250,14127:250,14118:250,14119:250,14132:250,16425:250,14124:250,14133:250,14130:250,16424:250,14136:250,14122:250,16426:250,14135:250,14134:250,14138:250,16428:250,16431:250,14139:250,14131:250,16429:250,16427:250
+moc_para01,37,172,2	cashshop	卡普拉服飾#eden5	860,16974:300,16972:600,16973:150,16975:150,16977:150,17014:150,17015:150
+moc_para01,35,168,1	cashshop	卡普拉實用店#eden	113,16677:25,13990:400,16396:100,16394:100,17106:500,6241:10,6240:10,6225:15,6226:15,14002:5,6294:500,7776:50,7619:30,7620:30,12208:40,14156:400,12210:40,14158:400,14042:50,14044:50,14046:50,14048:50,14114:50,14166:40,16418:500,16381:400,14165:100,14157:100,14178:100
+
+// Duplicate NPCs
+//============================================================
+/* Technically these NPC names are different, but it's not worth editing the original scripts.
+*/
+
+// Weapon/Armor Refiner "Normalson" (merchants/refine.txt)
+moc_para01,14,185,4	script	諾瑪森#ed	826,{
+	callfunc "refinemain","Normalson",0;
+	end;
+}
+
+// Advanced Refiner "Suhnmi" (merchants/advanced_refiner.txt)
+moc_para01,26,185,4	duplicate(順比#cash)	順比#eden	85
+
+// HD Refiner "Blacksmith Mighty Hammer" (re/merchants/hd_refiner.txt)
+// A combination of the +7~9 and +10 and up refiner, currently a placeholder.
+moc_para01,38,185,4	duplicate(MightyHammer)	萬能鐵鎚#ed	826
+
+// Refiner Effect
+-	script	#eden_refine_effect	-1,{
+OnInit:
+	initnpctimer;
+	end;
+OnTimer5000:
+	specialeffect EF_REFINEOK,AREA,"順比#eden";
+	specialeffect EF_REFINEOK,AREA,"萬能鐵鎚#ed";
+	initnpctimer;
+	end;
+}
+
+// Gym Pass Trainer "Ripped Cabus" (other/gympass)
+moc_para01,33,162,6	duplicate(肌肉男 卡布斯#GymPass)	肌肉男 卡布斯#ed	899
+
+// RWC 2012 Enchanter "Goldenthiefberg" (events/RWC_2012.txt)
+// A combination of the slotter and enchanter, currently a placeholder.
+moc_para01,27,179,4	script	RWC 附魔師#new10	87,{ end; }
+
+// Cash Headgear Dyer "Alora" (merchants/cashheadgear_dye.txt)
+// Also converts some +8 and up headgears into costumes, currently a placeholder.
+moc_para01,21,185,4	duplicate(阿蘿拉)	阿蘿拉#headgear_dye2	862
+
+// Stylist "Dinorah Lacostt" (?)
+// Dyes clothing for an Omni Clothing Dye, currently a placeholder.
+moc_para01,33,185,4	script	迪諾拉 拉科斯特#ed	862,{ end;
+}
+
+// Commonly Updated NPCs
+//============================================================
+/* These scripts change on a regular basis, so they're mostly just placeholders for now. */
+
+moc_para01,29,35,4	script	爺爺#huntquests	866,{
+	mes "[爺爺]";
+	mes "當你到了我這個";
+	mes "年紀，你就會變得?世嫉俗。";
+	mes "我已經太久沒有對這些在米德加爾特";
+	mes "四處遊蕩的魔物採取任何行動了。";
+	next;
+	mes "[爺爺]";
+	mes "這就是為什麼我要請你們這些小鬼頭來幫忙";
+	mes "我狩獵一些魔物。";
+	mes "你願意幫我嗎，年輕的冒險家？";
+	close;
+	//next;
+	//switch(select("Yes, I'll help.:Reward Me!:^ff0000I want to quit hunting^000000:^0000ffCan you warp me?^000000:Can you erase the timer?:What missions are you giving?:Give me Limited 3 day VIP:Tell me more about the VIP Access:No thanks, pops.")) {
+}
+
+moc_para01,174,33,3	script	巫婆#2012spirits	1102,{
+	mes "[巫婆]";
+	mes "咿嘻嘻嘻嘻！這週的焦點在古城（克雷斯特漢姆），所以我只收 1,000 Zeny 就載人過去！";
+	next;
+	mes "[巫婆]";
+	mes "怎麼樣？想不想搭乘美麗的巫婆掃帚兜兜風？";
+	next;
+	switch(select("準備起飛！:不用了謝謝。")) {
+	case 1:
+		if (Zeny < 1000) {
+			mes "[巫婆]";
+			mes "拜託親愛的...";
+			mes "你連 1,000 Zeny 都沒有？";
+			close;
+		}
+		mes "[巫婆]";
+		mes "好的，抓緊了！";
+		close2;
+		set Zeny, Zeny-1000;
+		warp "niflheim",194,185;
+		end;
+	case 2:
+		mes "["+strcharinfo(0)+"]";
+		mes "不用了，也許晚點吧。";
+		close;
+	}
+}
+
+moc_para01,26,174,4	script	波克斯特奶奶#boxx	840,{ end;
+}
+
+// Mail Annex Station
+//============================================================
+/* Map "auction_03" is a duplicate of "auction_02".
+
+moc_para01,30,187,4	script	郵件附屬站	888,{
+	mes "[郵件附屬站]";
+	mes "你想去卡普拉郵件附屬站嗎？";
+	next;
+	switch(select("是的，現在送我過去！:不用了謝謝。")) {
+	case 1:
+		mes "[郵件附屬站]";
+		mes "將你傳送到郵件附屬室。";
+		close2;
+		warp "auction_03",151,23;
+		end;
+	case 2:
+		mes "[郵件附屬站]";
+		mes "那好吧！";
+		close;
+	}
+}
+auction_03,152,16,0	warp	#mail_annex_warp	1,1,moc_para01,30,184
+
+auction_03,152,42,4	script	卡普拉服務人員#annex	117,{
+	mes "[卡普拉服務人員]";
+	mes "歡迎來到卡普拉的郵件附屬站。現在這是唯一可以寄送和收取郵件的地方。";
+	next;
+	mes "[卡普拉服務人員]";
+	mes "你想做什麼？";
+	next;
+	switch(select("開啟信箱:倉庫:取消")) {
+	case 1:
+		if (Zeny < 130) {
+			mes "[卡普拉服務人員]";
+			mes "很抱歉，你沒有足夠的錢。";
+			mes "要使用信箱服務，";
+			mes "你需要支付 130 Zeny。";
+			close;
+		}
+		mes "[卡普拉服務人員]";
+		mes "謝謝你使用卡普拉服務。";
+		set Zeny, Zeny - 130;
+		close2;
+		openmail;
+		end;
+	case 2:
+		callfunc "F_KafStor",0,1200,0;
+		end;
+	case 3:
+		mes "[卡普拉服務人員]";
+		mes "謝謝你使用卡普拉服務。";
+		close;
+	}
+}
+
+auction_03,145,47,2	shop	道具商人#annex	83,611:-1,501:-1,502:-1,503:-1,506:-1,504:-1,645:-1,656:-1,657:-1,601:-1,602:-1,1065:-1,911:-1,910:-1,717:-1,1092:-1,1093:-1,713:400
+
+*/
+
+// Fallen_Angel_Wing Enchant
+//============================================================
+moc_para01,179,27,3	script	黑暗 魯希爾#new10	4_F_VALKYRIE2,{
+	disable_items;
+	mes "[黑暗 魯希爾]";
+	mes "你好?我正在為擁有墮落天使之翼物品的人提供額外的素質。";
+	next;
+	if (getequipid(EQI_GARMENT) != 2589) {// Fallen_Angel_Wing
+		mes "[黑暗 魯希爾]";
+		mes "請^0000ff先裝備你的墮落天使之翼^000000，然後我會給你額外的素質。";
+		close;
+	}
+	switch( select( "取消", "附魔墮落天使之翼", "重置墮落天使之翼素質" ) ) {
+	case 1:
+		mes "[黑暗 魯希爾]";
+		mes "那晚點再說...";
+		close;
+	case 2:
+		.@refine = getequiprefinerycnt(EQI_GARMENT);
+		setarray .@card[0],
+			getequipcardid(EQI_GARMENT,0),
+			getequipcardid(EQI_GARMENT,1),
+			getequipcardid(EQI_GARMENT,2),
+			getequipcardid(EQI_GARMENT,3);
+		mes "[黑暗 魯希爾]";
+		mes "精煉值在 1~6 之間時，只有 1 個洞可以獲得額外素質。";
+		mes "如果精煉值是 7~8，則有 2 個洞可以獲得額外素質。";
+		mes "+9 可以讓 3 個洞都獲得素質。";
+		next;
+		mes "[黑暗 魯希爾]";
+		if (.@refine < 7)
+			mes "此物品的精煉值低於 7。只有 ^ff0000第 4 個洞^000000 可以獲得額外素質。";
+		else if (.@refine < 9)
+			mes "此物品的精煉值介於 7~8。^ff0000第 3 和第 4 個洞^000000 可以獲得額外素質。";
+		else
+			mes "此物品的精煉值大於 9。^ff0000第 2、3 和 4 個洞^000000 都可以獲得額外素質。";
+		mes "你想要什麼樣的額外素質？";
+		next;
+		switch( select( "讓我先把裝備穿上", "1.鬥志", "2.魔力", "3.名弓", "4.致命", "5.MaxHP", "6.MaxSP", "7.攻擊速度", "8.STR", "9.AGI", "10.VIT", "11.INT", "12.DEX", "13.LUK" ) ) {
+		case 1:
+			mes "[黑暗 魯希爾]";
+			mes "請裝備好物品後再來找我。";
+			close;
+		case 2:
+			setarray .@enchants[0],4809,4808,4820,4821;
+			// Fighting Spirit 3~5 / Fighting Spirit 6
+			.@string$ = "鬥志素質將隨機賦予 3~5 (ATK+HIT) 範圍。";
+			break;
+		case 3:
+			setarray .@enchants[0],4812,4826,4827,4828;		// Spell 4~6 / Spell 7
+			.@string$ = "魔力素質將隨機賦予 4~6 (MATK + 減少變動詠唱時間)。";
+			break;
+		case 4:
+			setarray .@enchants[0],4832,4833,4834,4835;		// Expert Archer 1~3 / Expert Archer 4
+			.@string$ = "名弓素質將隨機賦予 1~3 (遠距離攻擊傷害)。";
+			break;
+		case 5:
+			setarray .@enchants[0],4863,4864,4865,4866;		// Fatal 1~3 / Fatal 4
+			.@string$ = "致命素質將隨機賦予 1~4 (爆擊傷害 + CRI)。";
+			break;
+		case 6:
+			setarray .@enchants[0],4861,4862,4867,4868;		// MaxHP +1~3% / MaxHP +4%
+			.@string$ = "MHP 素質將隨機賦予 1~3 (增加 MHP %)。";
+			break;
+		case 7:
+			setarray .@enchants[0],4870,4800,4871,4801;		// +25,50 or 75 sp / +100 sp
+			.@string$ = "SP 素質將隨機賦予 25~75。";
+			break;
+		case 8:
+			setarray .@enchants[0],4869,4872,4873,4807;		// Delayafterattack 1~3 / +1 ASPD
+			.@string$ = "攻擊速度素質將隨機賦予 1~3 (減少攻擊延遲 %)。";
+			break;
+		case 9:
+			setarray .@enchants[0],4702,4703,4704,4853;		// Str +3~5 / Special Str
+			.@string$ = "STR 素質將隨機賦予 3~5。";
+			break;
+		case 10:
+			setarray .@enchants[0],4731,4732,4733,4854;		// Agi +2~4 / Special Agi
+			.@string$ = "AGI 素質將隨機賦予 2~4。";
+			break;
+		case 11:
+			setarray .@enchants[0],4742,4743,4744,4855;		// Vit +3~5 / Special Vit
+			.@string$ = "VIT 素質將隨機賦予 3~5。";
+			break;
+		case 12:
+			setarray .@enchants[0],4712,4713,4714,4856;		// Int +3~5 / Special Int
+			.@string$ = "INT 素質將隨機賦予 3~5。";
+			break;
+		case 13:
+			setarray .@enchants[0],4722,4723,4724,4857;		// Dex +3~5 / Special Dex
+			.@string$ = "DEX 素質將隨機賦予 3~5。";
+			break;
+		case 14:
+			setarray .@enchants[0],4752,4753,4754,4858;		// Luk +3~5 / Special Luk
+			.@string$ = "LUK 素質將隨機賦予 3~5。";
+			break;
+		}
+		mes "[黑暗 魯希爾]";
+		mes .@string$ + " ^ff0000賦予的素質無法還原。^000000 你想繼續嗎？";
+		next;
+		if (select( "1.退出", "2.是的，我想試試看。" ) == 1) {
+			mes "[黑暗 魯希爾]";
+			mes "那晚點再說...";
+			close;
+		}
+
+		// anti-hack
+		if (callfunc("F_IsEquipIDHack", EQI_GARMENT, 2589) || callfunc("F_IsEquipCardHack", EQI_GARMENT, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", EQI_GARMENT, .@refine))
+			close;
+		if (.@card[3] == 0) {
+			.@card[3] = .@enchants[ rand(3) ];
+			.@slot = 4;
+		}
+		else if (.@card[2] == 0 && .@refine >= 7) {
+			.@card[2] = .@enchants[ rand(3) ];
+			.@slot = 3;
+		}
+		else if (.@card[1] == 0 && .@refine >= 9) {
+			.@card[1] = .@enchants[ rand(4) ];
+			.@slot = 2;
+		}
+		else {
+			mes "[黑暗 魯希爾]";
+			mes "看來這個物品已經達到最大附魔次數了。請帶另一個來獲取額外素質。";
+			close;
+		}
+		specialeffect2 EF_REPAIRWEAPON;
+		mes "[黑暗 魯希爾]";
+		mes "賦予能力至物品的 ^990000第 " + .@slot + " 個洞^000000。";
+		delequip EQI_GARMENT;
+		getitem2 2589,1,1, .@refine,0, .@card[0], .@card[1], .@card[2], .@card[3];
+		close;
+	case 3:
+		mes "[黑暗 魯希爾]";
+		mes "墮落天使之翼的素質重置將花費你 1,000,000 Zeny？";
+		mes "你希望繼續嗎？";
+		next;
+		if (select( "是的", "不用了謝謝！" ) == 2)
+			close;
+		if (Zeny < 1000000) {
+			mes "[黑暗 魯希爾]";
+			mes "騙子，你沒有足夠的 Zeny！";
+			close;
+		}
+		if (getequipid(EQI_GARMENT) == 2589) {
+			.@refine = getequiprefinerycnt(EQI_GARMENT);
+			.@card[0] = getequipcardid(EQI_GARMENT,0);
+			mes "[黑暗 魯希爾]";
+			specialeffect2 EF_REPAIRWEAPON;
+			mes "正在重置物品素質。";
+			delequip EQI_GARMENT;
+			Zeny -= 1000000;
+			getitem2 2589,1,1, .@refine,0, .@card[0],0,0,0;// Fallen_Angel_Wing
+		}
+		close;
+	}
+}

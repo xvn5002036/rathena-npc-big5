@@ -1,0 +1,268 @@
+//===== rAthena Script ======================================= // [cite: 1]
+//= Custom Thanatos Tower Quest
+//= By: ==================================================
+//= Bibilol, Moryagorn
+//= Current Version: =====================================
+//= 1.1
+//= Compatible With: =====================================
+//= rAthena Project
+//= Description: =========================================
+//= Custom Thanatos Tower Quest
+//= Additional Comments: =================================
+//= 1.1 Fixed wrong NPC names in their dialogues, added
+//=     Justin84's gems check in Sox NPC [Lupus]
+//============================================================
+
+//Statue (NPC)(U: UP, D: DOWN, R: RIGHT, L: LEFT) :
+// Explain Npc
+tha_t08,69,106,4	script	雕像	111,{
+	mes "你可以在雕像的背面讀到：";
+	mes "'古老之靈，將門扉緊閉"; // [cite: 2]
+	mes "上層乃是異界之禁忌";
+	mes "遵循雕像的指引，你將找到出路"; // [cite: 3]
+	mes "或許有朝一日，這會將你帶到我的面前。"; // [cite: 4]
+	mes ".....達納托斯 '";
+	close;
+}
+
+//Tha_t09 :
+//(Thalos)(U,L)-->tha_t09,17,158,4
+//(Mediane)(D,R)-->tha_t09,84,99,4
+//Script:
+
+tha_t09,17,158,4	script	塔洛斯	111,{
+	if(TSQ_CHK == 1) goto done;
+	mes "[塔洛斯]"; // [cite: 5]
+	mes "你現在必須找到第二座雕像。";
+	set TSQ_CHK,1;
+	close;
+done:
+	mes "[塔洛斯]";
+	mes "去尋找第二座雕像吧！"; // [cite: 6]
+	close;
+	
+}
+
+tha_t09,84,99,4	script	梅蒂安	111,{
+	if(TSQ_CHK != 1) goto nook;
+	mes "[梅蒂安]";
+	mes "好的，我現在將你傳送到下一層。"; // [cite: 7]
+	next;
+	set TSQ_CHK,0;
+	warp "tha_t10",	165,	138; 
+	close;
+nook:
+	mes "[梅蒂安]";
+	mes "你必須先和第一座雕像的靈魂交談。"; // [cite: 8]
+	close;
+}
+
+//Tha_t10 :
+//(Melkor)(U)-->tha_t10,130,159,4
+//(Zebrus)(D,R)-->tha_t10,160,98,4
+//(Veriaelle)(D,L)-->tha_t10,99,97,4
+//Script:
+
+tha_t10,130,159,4	script	梅爾克	111,{
+	if(TSQ_CHK == 1) goto done;
+	mes "[梅爾克]";
+	mes "你現在必須尋找其他的靈魂。"; // [cite: 9]
+	mes "我們共有三個。";
+	set TSQ_CHK,1;
+	close;
+done:
+	mes "[梅爾克]";
+	mes "去尋找吧，他們都在這一層。"; // [cite: 10]
+	close;
+}
+
+tha_t10,160,98,4	script	澤布魯斯	111,{
+	if(TSQ_CHK != 1) goto nook;
+	mes "[澤布魯斯]";
+	mes "繼續沿著這條路走，還剩下一個靈魂。"; // [cite: 11]
+	set TSQ_CHK,2;
+	close;
+nook:
+	mes "[澤布魯斯]";
+	mes "你似乎迷路了，回去跟梅爾克談談吧。"; // [cite: 12]
+	next;
+	set TSQ_CHK,0;
+	close;
+} // [cite: 13]
+
+tha_t10,99,97,4	script	維莉亞爾	111,{
+	if(TSQ_CHK != 2) goto nook;
+	mes "[維莉亞爾]";
+	mes "好的，我將你傳送到下一層。";
+	next;
+	set TSQ_CHK,0;
+	warp "tha_t11",	86,	38; // [cite: 14]
+	close;
+nook:
+	mes "[維莉亞爾]";
+	mes "你似乎迷路了，回去跟梅爾克談談吧。";
+	next;
+	set TSQ_CHK,0;
+	close; // [cite: 15]
+}
+
+//Tha_t11 :
+//(Throtre)(U,L)-->tha_t11,16,85,4
+//(Klermaz)(D,R)-->tha_t11,85,16,4
+//(Mihane)(D,L)-->tha_t11,16,16,4
+//(Seranes)(U,R)-->tha_t11,85,85,4
+//Script:
+
+tha_t11,16,85,4	script	索洛特	111,{
+	if(TSQ_CHK == 1) goto done;
+	mes "[索洛特]";
+	mes "你獲得了前往下一層的許可。";
+	mes "然而，你必須向其他靈魂展現你的實力。"; // [cite: 16]
+	set TSQ_CHK,1;
+	close;
+done:
+	mes "[索洛特]";
+	mes "去尋找吧，他們無法離開這一層。"; // [cite: 17]
+	close;
+}
+
+tha_t11,85,16,4	script	克萊爾馬斯	111,{
+	if(TSQ_CHK != 1) goto nook;
+	mes "[克萊爾馬斯]";
+	mes "嗯，看來索洛特允許你通過了。"; // [cite: 18]
+	mes "那麼你獲得了我的祝福，還剩下兩個靈魂。";
+	set TSQ_CHK,2; // [cite: 19]
+	close;
+nook:
+	mes "[克萊爾馬斯]";
+	mes "你似乎迷路了，回去跟索洛特談談吧。";
+	next;
+	set TSQ_CHK,0;
+	close; // [cite: 20]
+}
+
+tha_t11,16,16,4	script	米哈妮	111,{
+	if(TSQ_CHK != 2) goto nook;
+	mes "[米哈妮]";
+	mes "繼續沿著這條路走，只剩下一個了。";
+	set TSQ_CHK,3;
+	close;
+nook: // [cite: 21]
+	mes "[米哈妮]";
+	mes "抱歉，你必須從頭開始。";
+	next;
+	set TSQ_CHK,0;
+	close;
+} // [cite: 22]
+
+tha_t11,85,85,4	script	塞拉妮絲	111,{
+	if(TSQ_CHK != 3 ) goto nook;
+	mes "[塞拉妮絲]";
+	mes "完美，看來其他靈魂都已經同意你通過了。";
+	mes "我將你傳送到下一層。"; // [cite: 23]
+	next;
+	set TSQ_CHK,0;
+	warp "tha_t12",	129,	58;
+	close;
+nook:
+	mes "[塞拉妮絲]";
+	mes "你沒有遵循正確的順序，請從頭開始。"; // [cite: 24]
+	next;
+	set TSQ_CHK,0;
+	close;
+} // [cite: 25]
+
+//Tha_t12 ( M: Middle):
+//(Nox)(D,L)-->tha_t12,103,18,4
+//(Vox)(R)-->tha_t12,162,58,4
+//(Hox)(L)-->tha_t12,96,57,4
+//(Dox)(D,R)-->tha_t12,153,17,4
+//(Sox)(U)-->tha_t12,128,88,4
+//Script:
+
+tha_t12,103,18,4	script	諾克斯	111,{
+	if(TSQ_CHK == 1 ) goto done;
+	mes "[諾克斯]";
+	mes "很好，還剩下四個靈魂。";
+	set TSQ_CHK,1;
+	close;
+done: // [cite: 26]
+	mes "[諾克斯]";
+	mes "去尋找吧，他們無法離開這一層。";
+	close;
+}
+
+tha_t12,162,58,4	script	沃克斯	111,{
+	if(TSQ_CHK != 1 ) goto nook;
+	mes "[沃克斯]";
+	mes "繼續沿著這條路走，還剩下三個靈魂！"; // [cite: 27]
+	set TSQ_CHK,2;
+	close;
+nook:
+	mes "[沃克斯]";
+	mes "抱歉，請回去跟諾克斯談談。"; // [cite: 28]
+	next;
+	set TSQ_CHK,0;
+	close;
+}
+
+tha_t12,96,57,4	script	霍克斯	111,{
+	if(TSQ_CHK != 2 ) goto nook;
+	mes "[霍克斯]";
+	mes "你走在正確的道路上，還剩下兩個靈魂！"; // [cite: 29]
+	set TSQ_CHK,3;
+	close;
+nook:
+	mes "[霍克斯]";
+	mes "抱歉，請回去跟沃克斯談談。"; // [cite: 30]
+	next;
+	set TSQ_CHK,0;
+	close;
+}
+
+tha_t12,153,17,4	script	多克斯	111,{
+	if(TSQ_CHK != 3 ) goto nook;
+	mes "[多克斯]";
+	mes "完美，還剩下一個靈魂。"; // [cite: 31]
+	set TSQ_CHK,4;
+	close;
+nook:
+	mes "[多克斯]";
+	mes "抱歉，請回去跟霍克斯談談。";
+	next;
+	set TSQ_CHK,0; // [cite: 32]
+	close;
+}
+
+tha_t12,128,88,4	script	索克斯	111,{
+	if(TSQ_CHK != 4 ) goto nook;
+	mes "[索克斯]";
+	mes "你剛剛成功通過了測試。";
+	next;
+	mes "[索克斯]"; // [cite: 33]
+	mes "你必須給我紅色魔力礦石、黃色魔力礦石、藍色魔力礦石和綠色魔力礦石。"; // [cite: 34]
+	next;
+	if(countitem(7426) < 1 || countitem(7427) < 1 || countitem(7428) < 1 || countitem(7429) < 1) goto nostone;
+	delitem 7426,1;
+	delitem 7427,1; // [cite: 35]
+	delitem 7428,1;
+	delitem 7429,1;
+	mes "[索克斯]";
+	mes "我現在將你傳送到命運的階梯。";
+	mes "再見。"; // [cite: 36]
+	next;
+	set TSQ_CHK,0;
+	warp "thana_step", 186, 223;
+	close;
+
+nostone:
+	mes "[索克斯]";
+	mes "哦，看來你沒有足夠的礦石。";
+	close;
+nook: // [cite: 37]
+	mes "[索克斯]";
+	mes "抱歉，請回去跟多克斯談談。";
+	next;
+	set TSQ_CHK,0;
+	close;
+}

@@ -1,0 +1,149 @@
+//===== rAthena Script ======================================= 
+//= Gym Pass Cash Item NPC
+//===== By: ================================================== 
+//= Kisuka
+//===== Current Version: ===================================== 
+//= 1.3
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Exchange Gym Passes to learn "Enlarge Weight Limit"
+//= iRO NPC situated in Payon beside Kafra Shop.
+//===== Additional Comments: ================================= 
+//= 1.0 First version [L0ne_W0lf]
+//= 1.1 Fixed the NPC saying you "00" [L0ne_W0lf]
+//= 1.2 Replaced effect numerics with constants. [Samuray22]
+//= 1.3 Updated script, and fixed potential errors. [L0ne_W0lf]
+//============================================================ 
+
+payon,173,141,4	script	肌肉男 卡布斯#GymPass	899,{
+	mes "[卡布斯]";
+	mes "嘿，你好。現在的人都不像";
+	mes "以前那樣熱衷於體能活動了。";
+	mes "即使你是靠戰鬥為生，";
+	mes "你的身體在某些部位可能";
+	mes "還是會顯得虛弱和鬆弛。";
+	mes "你懂我的意思嗎？";
+	next;
+	mes "[卡布斯]";
+	mes "嘿，跟著我一起鍛鍊，我可以";
+	mes "保證你將會能夠";
+	mes "舉起並攜帶更多的";
+	mes "物品。每次只要給我你的";
+	mes "^FF0000健身房會員券^000000，";
+	mes "我們就可以開始了。";
+	next;
+	mes "[卡布斯]";
+	mes "但別太興奮了：";
+	mes "不管我帶你做多少訓練，";
+	mes "你都有可能會過度訓練。";
+	mes "你有聽過有人";
+	mes "練得太壯的嗎？";
+	mes "那是因為他們都死了。懂嗎？";
+	next;
+	mes "[卡布斯]";
+	mes "我會說如果你認真跟著我";
+	mes "訓練，把你的負重量";
+	mes "增加 ^FF000010 次^000000，";
+	mes "這樣會比較安全。";
+	mes "那麼... 你準備好流汗了嗎？";
+	next;
+	switch(select("是的:先不要:嗯，我的鍛鍊效果消失了。")) {
+	case 1:
+		if (gympassmemory < 10) {
+			set .@add_carry,gympassmemory + 1;
+			set .@remain_carry,10 - .@add_carry;
+			if (countitem(7776) > 0) {
+				mes "[卡布斯]";
+				mes "喔，太棒了，我看到你";
+				mes "帶了你的健身房會員券。";
+				mes "好吧，照著我做的去做，";
+				mes "試著感受肌肉燃燒的感覺。";
+				mes "準備好了嗎？我們開始吧。";
+				next;
+				specialeffect2 EF_EARTHSPIKE;
+				next;
+				specialeffect2 EF_DEVIL;
+				next;
+				specialeffect2 EF_COIN;
+				next;
+				specialeffect2 EF_SIGHTRASHER;
+				next;
+				mes "[卡布斯]";
+				mes "好了，你現在應該能夠";
+				mes "攜帶更多的物品了。";
+				mes "讓我想想，我們還可以";
+				mes "增加你的負重能力";
+				mes "^FF00000" + .@remain_carry + "^000000 次，如果我們繼續";
+				mes "像這樣一起訓練的話。";
+				delitem 7776,1; //Max_Weight_Up_Scroll
+				set gympassmemory,.@add_carry;
+				skill "ALL_INCCARRY",.@add_carry,SKILL_PERM_GRANT;
+				close;
+			}
+			else {
+				mes "[卡布斯]";
+				mes "老兄，我剛是怎麼說的？";
+				mes "如果你想鍛鍊，並且建立你的";
+				mes "負重肌肉，你必須把你的";
+				mes "^FF0000健身房會員券^000000";
+				mes "交給我。";
+				close;
+			}
+		}
+		else {
+			mes "[卡布斯]";
+			mes "老兄，我不認為我們還能";
+			mes "繼續建立你的負重肌肉了。";
+			mes "如果我們硬要嘗試，";
+			mes "對你的身體來說太危險了！拜託，";
+			mes "我已經告訴過你極限在哪了。";
+			close;
+		}
+	case 2:
+		mes "[卡布斯]";
+		mes "噢，那真是太可惜了。";
+		mes "好吧，如果你改變心意，";
+		mes "隨時歡迎回來。告訴";
+		mes "你的朋友們關於我的事：";
+		mes "如果他們肌肉鬆弛，我會幫助";
+		mes "他們恢復好身材的。";
+		close;
+	case 3:
+		if (gympassmemory > 0) {
+			mes "[卡布斯]";
+			mes "發生什麼事了？";
+			mes "你讓你的負重肌肉";
+			mes "就這樣萎縮了？算你幸運，";
+			mes "有一種東西叫做";
+			mes "肌肉記憶。它不會花太久時間";
+			mes "就能讓它們重新建立起來...";
+			next;
+			specialeffect2 EF_EARTHSPIKE;
+			next;
+			specialeffect2 EF_DEVIL;
+			next;
+			specialeffect2 EF_COIN;
+			next;
+			specialeffect2 EF_SIGHTRASHER;
+			next;
+			mes "[卡布斯]";
+			mes "感覺怎麼樣？";
+			mes "你的負重肌肉";
+			mes "又長回來了，";
+			mes "就像那樣！試著不要";
+			mes "再退縮了，好嗎？";
+			skill "ALL_INCCARRY",gympassmemory,SKILL_PERM_GRANT;
+			close;
+		}
+		else {
+			mes "[卡布斯]";
+			mes "呃...";
+			mes "我們以前沒有";
+			mes "一起鍛鍊過。";
+			mes "我很確定。";
+			close;
+		}
+	}
+}

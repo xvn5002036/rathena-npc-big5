@@ -1,0 +1,120 @@
+//===== rAthena Script =======================================
+//= Bullet Dealers
+//===== Description: =========================================
+//= Bullet trader.
+//===== Changelogs: ==========================================
+//= 1.0 First version [Playtester]
+//= 1.1 Converted from Aegis [Paradox924X]
+//= 1.2 More optimized conversion [Legionaire]
+//= 1.2a Removed .GATs [Lupus]
+//= 1.3 Fixed [Playtester] Optimized. Got rid of @vars [Lupus]
+//= 1.4 Updated to match AEGIS script. [Kisuka]
+//= 1.5 Updated to match AEGIS script again. [Masao]
+//= 1.6 Moved Izlude duplicate to pre-re/re paths. [Euphy]
+//= 2.0 Clean-up. [Capuche]
+//= 2.1 Fixes Issue #1482, where Rebellion jobs cannot use this npc. [Limestone]
+//============================================================
+
+alberta,118,160,3	script	子彈商人 東尼#alb::bdt	4_M_04,{
+	mes "[東尼]";
+	if (BaseClass == Job_Gunslinger) {
+		mes "我是東尼，子彈商人。";
+		mes "當你彈藥不足時，";
+		mes "隨時可以來找我。只要帶著";
+		mes "材料來，我就會為你製作";
+		mes "你所需要的子彈。";
+		next;
+		switch(select("毒靈礦石:火靈礦石:風靈礦石:盲目礦石:冰靈礦石:取消")) {
+		case 1: callsub S_BulletTrade,937,10,13205;// <item required>, <amount req>, <bullet id>
+		case 2: callsub S_BulletTrade,7097,2,13203;
+		case 3: callsub S_BulletTrade,7053,3,13204;
+		case 4: callsub S_BulletTrade,1024,5,13206;
+		case 5: callsub S_BulletTrade,7054,2,13207;
+		case 6:
+			mes "[東尼]";
+			mes "改變主意了嗎？";
+			mes "好吧，如果你需要";
+			mes "任何子彈，我就在這裡。";
+			mes "神槍手，當你覺得";
+			mes "需要更多彈藥時，";
+			mes "隨時歡迎回來。";
+			close;
+		}
+	}
+	mes "嘿，我是東尼。我負責";
+	mes "分發並製作";
+	mes "神槍手所需的子彈。";
+	mes "這只是我們公會";
+	mes "一貫的";
+	mes "做事方式。";
+	next;
+	mes "[東尼]";
+	mes "如果你是來這裡";
+	mes "買子彈的，那很抱歉。";
+	mes "我只能和";
+	mes "合格的神槍手做生意。";
+	close;
+
+S_BulletTrade:
+	.@required_id = getarg(0);
+	.@required_amount = getarg(1);
+	.@bullet_id = getarg(2);
+
+	mes "[東尼]";
+	mes "每一組";
+	mes callfunc("F_InsertPlural",30,getitemname(.@bullet_id))+"，";
+	mes "你必須交給我";
+	mes "1個 強化武器金屬-級數二，";
+	mes "1個 強化武器金屬-級數一，以及";
+	mes callfunc("F_InsertPlural",.@required_amount,getitemname(.@required_id))+"。";
+	next;
+	mes "[東尼]";
+	mes "請記住，我一次";
+	mes "最多只能給你 500 組";
+	mes "（每組 30 發）子彈。請";
+	mes "輸入你想要的";
+	mes "子彈組數。如果你想";
+	mes "取消，只要輸入「0」即可。";
+	next;
+	input .@amount;
+	mes "[東尼]";
+	if (.@amount < 1 || .@amount > 500) {
+		mes "嘿，我沒辦法給你";
+		mes "那麼多子彈。別忘了";
+		mes "如果你想用物品";
+		mes "交換子彈，必須";
+		mes "輸入一個不高於";
+		mes "500 的數字。";
+	}
+	else if (countitem(1010) >= .@amount && countitem(1011) >= .@amount && countitem(.@required_id) >= (.@amount*.@required_amount)) {
+		if (checkweight(.@bullet_id,.@amount * 30) == 0) {
+			mes "咦？你的物品欄";
+			mes "沒有足夠的空間來裝";
+			mes "這麼多子彈。等你騰出";
+			mes "更多空間後";
+			mes "晚點再來吧。試著把一些";
+			mes "東西放進卡普拉倉庫裡。";
+		} else {
+			mes "太好了，一切看起來";
+			mes "都沒問題。讓我收下";
+			mes "這些材料，這是";
+			mes "你的子彈。很高興";
+			mes "能和你做生意?";
+			delitem 1010,.@amount; //Phracon
+			delitem 1011,.@amount; //Emveretarcon
+			delitem .@required_id,.@amount * .@required_amount;
+			getitem .@bullet_id,.@amount * 30;
+		}
+	} else {
+		mes "呃。看來你";
+		mes "沒有足夠的材料";
+		mes "來製作這麼多子彈。嗯，";
+		mes "沒關係。只要";
+		mes "收集好所有需要的東西";
+		mes "再回來找我就好，好嗎？";
+	}
+	close;
+}
+
+que_ng,187,156,3	duplicate(bdt)	子彈商人 東尼#ng	86
+izlude,171,133,3	duplicate(bdt)	子彈商人 東尼#iz	86

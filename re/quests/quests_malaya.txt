@@ -1,0 +1,9135 @@
+//===== rAthena Script =======================================
+//= Port Malaya Quest NPCs
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.3
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Quest NPCs related to Port Malaya:
+//== Cautious Village, Port Malaya Daily Quests,
+//== Secret in the Woods, Bakonawa Extermination
+//== Nurse in Port Malaya, Pintados Festival  Merchants:
+//== Traders, Upgrade Boss Equipment
+//===== Additional Comments: =================================
+//= 0.1 Traders only.  Adapted from Masao's conversion. [Euphy]
+//= 0.2 Added Tribe Blacksmith [DeadlySilence]
+//= 0.3 Added "Secret in the Woods" quest [DeadlySilence]
+//= 0.4 Added "Cautious Village" and subsequent quests [DeadlySilence]
+//= 0.5 Added "Bakonawa Extermination" quest.  [Euphy]
+//= 1.0 Added "Nurse in Port Malaya" and "Pintados Festival" quests. [Euphy]
+//= 1.1 Added GM management function and NPC.  [Euphy]
+//= 1.2 Added VIP features. [Euphy]
+//= 1.3 Fixed Pintados Festival never ends.  [Capuche]
+//============================================================
+
+// Cautious Village & Daily Quests :: hi_malaya
+//============================================================
+malaya,266,76,3	script	守衛 羅德爾#malaya	570,4,4,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi == 0) {
+		mes "[守衛 羅德爾]";
+		mes "在這種混亂的時期旅行？";
+		mes "最近村民們對惡靈感到越來越恐懼。";
+		mes "村民們都嚇得渾身發抖。";
+		next;
+		mes "[守衛 羅德爾]";
+		mes "所以... 雖然馬來港的居民對你沒有惡意，但他們會對你的到來感到不安。";
+		mes "旅館和休息站可能會對外地人關閉。";
+		next;
+		mes "[守衛 羅德爾]";
+		mes "這沒有什麼確切的解決方法，但你或許可以先去見見巫師 馮。";
+		mes "如果村長給予確認，其他人或許就不會那麼擔心了。";
+		next;
+		mes "[守衛 羅德爾]";
+		mes "我會在地圖上標記巫師 馮的位置。";
+		mes "雖然現在時期艱難，但我還是歡迎你的到來。";
+		viewpoint 1, 185, 358, 0, 0x0A82FF;
+		set malaya_hi, 1;
+		setquest 7350;
+		close;
+	} else if (malaya_hi == 1) {
+		mes "[守衛 羅德爾]";
+		mes "先去見見巫師 馮吧。";
+		mes "如果你被證明擁有純潔的靈魂，其他村民就不會避開你了。";
+		mes "如果你不確定位置，我會在地圖上幫你標記。";
+		viewpoint 1, 185, 358, 0, 0x0A82FF;
+		close;
+	} else if (malaya_hi >= 20) {
+		if (BaseLevel < 100) {
+			mes "[守衛 羅德爾]";
+			mes "這裡的生活怎麼樣？";
+			mes "人們其實並不壞，對吧？";
+			mes "如果你再熟練一點，這裡或許有份工作適合你。現在的話，你還有點未達標準。";
+			next;
+			mes "[守衛 羅德爾]";
+			mes "等你變得更強，";
+			mes "我本來想把城裡正在進行的消滅任務交給你的。真可惜。";
+			close;
+		}
+		.@playtime = checkquest(7405, PLAYTIME);
+		if (.@playtime == 0) {
+			mes "[守衛 羅德爾]";
+			mes "呼，多虧了你，我少了一件要擔心的事。";
+			mes "我的東西可以少丟一點了。";
+			mes "做得好。";
+			next;
+			mes "[守衛 羅德爾]";
+			mes "如果你願意，隨時可以再來。";
+			mes "你懂我的意思吧？";
+			close;
+		} else if (.@playtime == 2) {
+			erasequest 7405;
+			mes "[守衛 羅德爾]";
+			mes "噢，關於你之前消滅的傑傑林。";
+			mes "進出巴里優旅行的人們都為此感到高興。";
+			mes "如果不會太麻煩的話，我想再請你幫一次忙。";
+			next;
+			mes "[守衛 羅德爾]";
+			mes "你不用現在馬上做，只要在你方便的時候就行。";
+			mes "決定好就來找我。";
+			close;
+		} else {
+			.@hunting = checkquest(7404, HUNTING);
+			if (.@hunting == -1) {
+				mes "[守衛 羅德爾]";
+				switch(rand(1, 6)) {
+				case 1:
+					mes "最近，有幾個人因為他們的勇敢而在村民中獲得了認可。"
+					+ $malayaNames$[0] + ", " + $malayaNames$[3] + ", " + $malayaNames$[5] + "... 是不是很厲害？";
+					break;
+				case 2:
+					mes "昨天，我看到有人在公園的樓梯上滾下來，然後被送去了醫院。那個人叫 " + $malayaNames$[1] + "。不知道他現在還好嗎。";
+					break;
+				case 3:
+					mes "在傑傑林狩獵中貢獻最多的人是 " + $malayaNames$[1] + "。";
+					break;
+				case 4:
+					mes "如果你覺得無聊，要不要來替我站崗？這工作真要命。你必須像雕像一樣站著，直到太陽升到頭頂。";
+					break;
+				case 5:
+					mes "你試過在吉普尼裡面和一個女人單獨相處嗎？哇，那真尷尬... 這樣下去我永遠結不了婚了...";
+					break;
+				case 6:
+					mes "最近在遊客中，有一個人成了我的好朋友。你認識 " + $malayaNames$[1] + " 嗎？噢，當然你也是我的好朋友。";
+					break;
+				}
+				mes "對了，如果你不忙的話，這裡有份工作給你。你有興趣嗎？";
+				next;
+				mes "[守衛 羅德爾]";
+				mes "我們這次打算組織一次大規模的傑傑林狩獵。";
+				mes "進出巴里優的商販們總是抱怨傑傑林。";
+				next;
+				if (select("參加傑傑林狩獵。:拒絕。") == 2) {
+					mes "[守衛 羅德爾]";
+					mes "這樣啊？真遺憾。";
+					mes "如果我們身邊有像你這樣的人，事情就會簡單多了。";
+					close;
+				}
+				mes "[守衛 羅德爾]";
+				mes "你只需要狩獵 20 隻傑傑林。";
+				mes "這對你來說應該是很簡單的任務。";
+				setquest 7404;
+				close;
+			} else if (.@hunting == 0) {
+				mes "[守衛 羅德爾]";
+				mes "你必須消滅 20 隻傑傑林。";
+				mes "20 隻應該足夠讓那些傑傑林嚇破膽了。";
+				close;
+			} else if (.@hunting == 1) {
+				mes "[守衛 羅德爾]";
+				mes "噢，狩獵結束了，但你還沒有殺死所有的傑傑林。";
+				mes "如果你想再試一次，就再來找我吧。";
+				erasequest 7404;
+				close;
+			} else {
+				mes "[守衛 羅德爾]";
+				mes "噢，我已經確認你消滅了 20 隻傑傑林。";
+				mes "來，這是給參與傑傑林狩獵的人的獎勵。";
+				next;
+				mes "[守衛 羅德爾]";
+				mes "我想以後還會有更多傑傑林狩獵活動。下次請務必再來參加。";
+				if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+					getitem 6497, 2; // Lesser_Agimat
+				else
+					getitem 6497, 1; // Lesser_Agimat
+				getexp 200000,200000;
+				erasequest 7404;
+				setquest 7405;
+				if (rand(2))
+					$malayaNames$[1] = strcharinfo(0); //				SavePPL Jejellopy
+				close;
+			}
+		}
+	} else {
+		mes "[守衛 羅德爾]";
+		mes "請諒解人們即使對你保持警惕。";
+		mes "鬼魂一直困擾著這裡的人們。";
+		close;
+	}
+OnTouch:
+	emotion ET_SURPRISE;
+	end;
+
+OnInit:
+	// if there are no names set, set some default values
+	if (!getarraysize($malayaNames$)) {
+		$malayaNames$[0] = "unknown";
+		$malayaNames$[1] = "unknown";
+		$malayaNames$[2] = "unknown";
+		$malayaNames$[3] = "unknown";
+		$malayaNames$[4] = "unknown";
+		$malayaNames$[5] = "unknown";
+	}
+	end;
+}
+
+malaya,185,358,3	script	首領 巫師 馮	580,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi < 2) {
+		mes "[巫師 馮]";
+		mes "看來這個靈魂越過了汪洋大海。";
+		mes "年輕的朋友。";
+		mes "你來找我的原因... 是的... 我明白了。";
+		next;
+		mes "[巫師 馮]";
+		mes "你不需要用言語表達。";
+		mes "人們對你過度警惕了。";
+		mes "羅德爾可能對此感到擔憂，所以他派你來這裡。";
+		next;
+		if (malaya_hi == 0) {
+			mes "[巫師 馮]";
+			mes "不是嗎？";
+			mes "那麼，或許是我們之間有某種精神上的連結。";
+			next;
+		}
+		mes "[巫師 馮]";
+		mes "儘管如此，很高興見到你，年輕的朋友。";
+		mes "別太責怪村民們對你的態度。";
+		next;
+		mes "[巫師 馮]";
+		mes "我們總是被靈魂包圍。";
+		mes "我們與他們共存，祈求和平。";
+		mes "但最近，出現了一個問題。";
+		next;
+		mes "[巫師 馮]";
+		mes "出於某些未知的原因，";
+		mes "靈魂開始暴走，惡靈也開始困擾村民。";
+		next;
+		mes "[巫師 馮]";
+		mes "這是籠罩在這個美麗城鎮上的陰影。";
+		mes "他們之所以警惕，是因為他們不知道黑暗陰影何時會降臨在他們身上。";
+		mes "它們總是不期而至。";
+		next;
+		mes "^4d4dff巫師 馮轉過頭，出現了黑影。";
+		mes "人們陷入恐慌，每個人都在恐懼中發抖。^000000";
+		cutin "malaya_ghost01", 4;
+		next;
+		select("走向黑影。:拔出武器。");
+		mes "[巫師 馮]";
+		mes "他們跟隨了外地人的蹤跡。 ";
+		mes "不要靠他們太近。";
+		mes "你的靈魂會被吸走的。";
+		next;
+		mes "[巫師 馮]";
+		mes "嗯？他們有反應了。";
+		mes "我不明白？他們看起來很害怕，彷彿面對著一個強大的靈魂。";
+		mes "這種感覺... 不可能...";
+		cutin "malaya_ghost02", 4;
+		next;
+		mes "^4d4dff就像巫師 馮所說的，靈魂對某些事物產生了反應，正在猶豫不決。";
+		mes "觀察他們的反應後，你靠近了他們。靈魂顯得不知所措。^000000";
+		next;
+		cutin "", 255;
+		mes "[巫師 馮]";
+		mes "太神奇了。擁有如此強大純潔靈魂的人...！";
+		mes "黑暗靈魂因為你的存在而消失了。";
+		next;
+		mes "[巫師 馮]";
+		mes "我想其他村民現在會對你另眼相看了...";
+		mes "我們不都見證了這個奇蹟嗎？";
+		next;
+		mes "[巫師 馮]";
+		mes "年輕的朋友。無論在哪裡，你的存在都是受歡迎的。";
+		mes "你純潔靈魂的光芒將保護你免受黑暗侵襲。";
+		set malaya_hi, 10;
+		if (checkquest(7350) > -1)
+			erasequest 7350;
+		close;
+	} else if (malaya_hi == 10) {
+		mes "[巫師 馮]";
+		mes "村裡的每個人都見證了你的靈魂有多麼強大和純潔。";
+		mes "不要害怕黑暗。";
+		close;
+	} else if (malaya_hi == 11) {
+		mes "[巫師 馮]";
+		mes "有什麼不對勁嗎？";
+		mes "你看起來心神不寧。";
+		mes "你的衣服也弄亂了。發生了什麼麻煩嗎？";
+		next;
+		switch (select("說明發生的事情。:沒什麼好說的。")) {
+		case 1:
+			mes "[巫師 馮]";
+			mes "是這樣嗎？";
+			mes "哈哈... 那可是個大問題。 ";
+			mes "你一定很困擾。";
+			next;
+			mes "[巫師 馮]";
+			mes "你知道的，我們正在為那些害怕惡靈的村民";
+			mes "準備靈魂護身符...";
+			mes "但準備工作並不順利。";
+			next;
+			mes "[巫師 馮]";
+			mes "作為臨時解決方案，給他們想要的東西如何？";
+			mes "只要從你身上挑選一些不重要的小東西給他們就行了。";
+			next;
+			mes "[巫師 馮]";
+			mes "反正他們想要的只是內心的平靜。";
+			mes "他們賦予小事物意義，並從這些行為中找到平靜。";
+			next;
+			mes "[巫師 馮]";
+			mes "真正重要的是那種相信只要帶著這個物品就會安全的信念。";
+			mes "如果人們能夠藉由握著你的舊襯衫鈕扣而不再害怕，那麼那個鈕扣就是靈魂護身符。";
+			next;
+			mes "^4d4dff正如巫師所說，送出一些物品作為靈魂護身符是個好主意。";
+			mes "什麼東西適合當作靈魂護身符呢..^000000";
+			next;
+			switch (select("聖水！:神聖魔法物品藍色魔力礦石？！:書寫工具或學習用品")) {
+			case 1:
+				mes "[巫師 馮]";
+				mes "這個名字本身就帶有神聖的意味。";
+				mes "它受到了聖水的祝福，對嗎？";
+				mes "還不錯。";
+				mes "還有別的嗎？更有說服力的東西會更好。";
+				next;
+				select("談論藍色魔力礦石。");
+				mes "[巫師 馮]";
+				mes "啊哈... 一種在吸收詛咒或魔法效果後消失，代替持有者承受傷害的石頭。";
+				mes "用於神聖魔法？";
+				mes "聽起來不錯。";
+				next;
+				break;
+			case 2:
+				mes "[巫師 馮]";
+				mes "啊哈... 一種在吸收詛咒或魔法效果後消失，代替持有者承受傷害的石頭。";
+				mes "用於神聖魔法？";
+				mes "但它聽起來並沒有那麼神聖。";
+				next;
+				select("談論聖水。");
+				mes "[巫師 馮]";
+				mes "這個名字本身就帶有神聖的意味。";
+				mes "它受到了聖水的祝福，對嗎？";
+				mes "聽起來不錯。";
+				next;
+				break;
+			case 3:
+				mes "[巫師 馮]";
+				mes "嗯？如果你要一直帶在身上，這也不錯。";
+				mes "但我認為看起來更有說服力的東西會更好。";
+				next;
+				mes "[巫師 馮]";
+				mes "如果有一種神聖的感覺會更好...";
+				mes "你有什麼被你的神明祝福過的東西嗎？";
+				next;
+				select("聖水或藍色魔力礦石？");
+				mes "[巫師 馮]";
+				mes "這個名字本身就帶有神聖的意味。";
+				mes "它受到了聖水的祝福，對嗎？";
+				mes "保護持有者的石頭...";
+				mes "聽起來很完美。";
+				next;
+				break;
+			}
+			mes "[巫師 馮]";
+			mes "你能找到你說的聖水和藍色魔力礦石嗎？";
+			mes "當我製作靈魂護身符時，你可以去發送這些聖物。";
+			next;
+			mes "[巫師 馮]";
+			mes "如果你這樣做，人們對你的信任會變得更加強烈。";
+			mes "他們會信任並聽從你的話。";
+			mes "是的，因為你將成為他們心中的救星。";
+			next;
+			mes "^4d4dff聽了巫師 馮的話，你決定將聖水和藍色魔力礦石發給村民。";
+			set malaya_hi, 12;
+			erasequest 7358;
+			setquest 7351;
+			close;
+		case 2:
+			mes "[巫師 馮]";
+			mes "是這樣嗎？";
+			mes "如果發生什麼事，請告訴我。";
+			mes "對你，我很樂意伸出援手";
+			close;
+		}
+	} else if (malaya_hi == 12) {
+		mes "[巫師 馮]";
+		mes "你說的聖水和藍色魔力礦石會發揮很好的作用。 ";
+		mes "我希望他們能這樣放下恐懼和擔憂...";
+		close;
+	} else if (malaya_hi == 13) {
+		mes "[巫師 馮]";
+		mes "你把禮物分發給每個人了嗎？";
+		mes "透過這樣做，你和鎮上的每個人都成為了朋友。";
+		next;
+		mes "[巫師 馮]";
+		mes "我找到了製作靈魂護身符的方法。";
+		mes "我的孫女伊美達會來製作。";
+		mes "所以別擔心。你不需要再把你的東西分送出去了。";
+		erasequest 7365;
+		set malaya_hi, 20;
+		getexp 200000, 200000; //		SavePPL Soul_Protection
+		close;
+	} else {
+		mes "[巫師 馮]";
+		switch(rand(1, 6)) {
+		case 1:
+			mes "有一個和你一樣勇敢的旅行者。那個旅行者叫 " + $malayaNames$[0] + "。你認識那個人嗎？";
+			break;
+		case 2:
+			mes "最近有一個旅行者在村裡很受歡迎。那個旅行者的名字叫 " + $malayaNames$[0] + "。外地人似乎都很有活力。";
+			break;
+		case 3:
+			mes "作為一個巫師，我這輩子從未見過像 " + $malayaNames$[0] + " 這樣純潔而強大的靈魂。是的，甚至比你的還要強大、還要純潔。";
+			break;
+		case 4:
+			mes "我目睹了一個旅行者踩到果皮後向後翻了一圈。" + $malayaNames$[1] + "。他大喊『哎喲！誰來幫幫我~』。我們都笑了。";
+			break;
+		case 5:
+			mes "歡迎！歡迎！這裡隨時歡迎你。";
+			break;
+		case 6:
+			mes "我不知道你是否知道，但 " + $malayaNames$[0] + " 甚至幫助了巴里優。知道還有一個善良的靈魂在身邊，我感覺很好。";
+			break;
+		}
+		next;
+		switch (select("尋求建議。:祝福花朵...")) {
+		case 1:
+			if (malaya_diwata == 2) {
+				mes "[巫師 馮]";
+				mes "港口的渡輪？";
+				mes "原來發生了這種事...";
+				mes "最重要的是先找出那孩子為什麼那麼難過。";
+				next;
+				mes "[巫師 馮]";
+				mes "在這種情況下，賄賂會是個完美的方法。";
+				mes "花總是引誘女人的最佳選擇，對吧？";
+				next;
+				select("這不是感情諮詢。");
+				mes "[巫師 馮]";
+				mes "我只是說說而已。";
+				mes "無論生死，那個可憐的靈魂只是一個小女孩。";
+				next;
+				mes "[巫師 馮]";
+				mes "這個年紀的女孩即使看到落葉也會微笑。";
+				mes "用滿懷的花朵打開她的心房吧。 ";
+				next;
+				mes "[巫師 馮]";
+				mes "讓我看看...";
+				mes "^4d4dff3 朵神秘花、3 朵迷幻花、3 朵美麗花^000000 應該就足夠做成一個花束了。";
+				next;
+				mes "[巫師 馮]";
+				mes "收集這些花，我會把它們做成花束並給予祝福。";
+				mes "在村外可以找到這些花。";
+				set malaya_diwata, 3;
+				erasequest 7396;
+				setquest 7397;
+				close;
+			} else if (malaya_diwata == 3) {
+				if ((countitem(6509) < 3) || (countitem(6510) < 3) && (countitem(6511) < 3)) {
+					mes "[巫師 馮]";
+					mes "需要 ^4d4dff3 朵神秘花、3 朵迷幻花、3 朵美麗花^000000。";
+					mes "你明白嗎？";
+					close;
+				}
+				mes "[巫師 馮]";
+				mes "噢... 我從這裡就能聞到花香了。";
+				mes "我會把它們收集起來並給予祝福。";
+				next;
+				mes "-巫師 馮將花朵小心地紮成花束後，進行了祝福儀式。-";
+				mes "-僅僅是看著，神聖感就撲面而來。-";
+				next;
+				mes "[巫師 馮]";
+				mes "是不是很美？";
+				mes "對一個老頭子來說還不錯吧？";
+				mes "我過去做過太多獻花用的花束，現在閉著眼睛都能做出來。";
+				next;
+				mes "[巫師 馮]";
+				mes "現在，把這個交給那個孩子。";
+				mes "我希望她能藉此敞開心扉，願意和你說話。";
+				delitem 6509, 3; // Mysterious_Flower
+				delitem 6510, 3; // Elegant_Flower
+				delitem 6511, 3; // Beautiful_Flower
+				getitem 6506, 1; // Memorial_Bouquet
+				set malaya_diwata, 4;
+				erasequest 7397;
+				setquest 7398;
+				close;
+			} else if (malaya_diwata == 4) {
+				mes "[巫師 馮]";
+				mes "帶上這束花，去和棲息在船上的靈魂談談吧。";
+				close;
+			} else if (malaya_diwata > 5) {
+				mes "[巫師 馮]";
+				mes "看到不幸的靈魂真令人惋惜... 就像渡輪事件一樣。";
+				mes "如果你要為靈魂獻花，我隨時樂意幫忙。";
+				close;
+			} else {
+				mes "[巫師 馮]";
+				mes "這老頭子沒什麼好告訴你的。";
+				mes "沒有什麼比保持健康更重要的了，對吧？";
+				close;
+			}
+		case 2:
+			if (checkquest(7402) == -1) {
+				mes "[巫師 馮]";
+				mes "獻花是要給誰的？";
+				mes "別告訴我你因為懶惰而提前做一個？";
+				mes "貢品必須真誠。別忘了這一點。";
+				close;
+			}
+			if (countitem(6506) > 0) {
+				mes "[巫師 馮]";
+				mes "不是已經做好了嗎？";
+				mes "你手裡拿的是什麼？";
+				mes "你還站在這裡做什麼？快去把花送出去。";
+				close;
+			}
+			if ((countitem(6509) < 3) || (countitem(6510) < 3) || (countitem(6511) < 3)) {
+				mes "[巫師 馮]";
+				mes "要去迪瓦塔嗎？";
+				mes "你需要神秘花、迷幻花和美麗花，每種 3 朵，知道嗎？";
+				mes "等花準備好，我就會動手製作。";
+				close;
+			}
+			mes "[巫師 馮]";
+			mes "迪瓦塔是個女人。";
+			mes "而你每天都去找她，這可真不簡單。";
+			next;
+			mes "[巫師 馮]";
+			mes "嘿，這是花束。";
+			mes "用你的靈魂獻祭，並祈求充實的一天。";
+			delitem 6509, 3;
+			// Mysterious_Flower
+			delitem 6510, 3; // Elegant_Flower
+			delitem 6511, 3; // Beautiful_Flower
+			getitem 6506, 1; // Memorial_Bouquet
+			close;
+		}
+	}
+}
+
+malaya,169,350,5	script	伊美達#malaya	475,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi < 10) {
+		mes "[伊美達]";
+		mes ".... 嗯。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[伊美達]";
+		mes "..........";
+		mes "還不錯。";
+		mes "我盯上你了。讓我看看你在這個鎮上表現如何.. *輕笑*";
+		next;
+		mes "- 她是個相當煩人的小女孩。 -";
+		close;
+	} else if (malaya_hi == 20) {
+		mes "[伊美達]";
+		mes "你不就是最近用廉價外國聖物討好村民的英雄嗎？";
+		mes "怎麼了？";
+		next;
+		select ("你想製作傳統的靈魂護身符嗎？");
+		mes "[伊美達]";
+		mes "是的。我爺爺找到了方法。";
+		mes "我打算來製作。";
+		next;
+		mes "[伊美達]";
+		mes "這是我的工作，別人的事我不管。";
+		mes "保護傳統是我的責任。";
+		next;
+		switch (select("是這樣嗎？:祝你好運！")) {
+		case 1:
+			if (BaseLevel < 100) {
+				mes "[伊美達]";
+				mes "當然。";
+				mes "而且要像你這麼... 弱的人幫忙，可不是個好主意。";
+				next;
+				mes "[伊美達]";
+				mes "取得材料可沒有聽起來那麼容易。";
+				mes "或許等你變強了再說，但現在不行。絕對不行。";
+				close;
+			}
+			mes "[伊美達]";
+			mes "那你想怎樣？";
+			mes "你要去拿材料嗎？";
+			mes "好吧，我接受你的提議。";
+			next;
+			select ("....？！");
+			mes "[伊美達]";
+			mes "如果你這麼想幫我，為什麼一開始不說？";
+			mes "或是去問我爺爺？";
+			next;
+			mes "[伊美達]";
+			mes "如果你對製作靈魂護身符這麼有熱忱。";
+			mes "我不放棄也不行了吧？";
+			next;
+			mes "[伊美達]";
+			mes "現在，需要的材料是 ^4d4dff6 個尖銳的竹子、6 個鹽袋和 6 個銀十字架^000000。";
+			next;
+			mes "[伊美達]";
+			mes "你必須自己到西北邊的海灘製鹽。";
+			mes "你可以在那裡找到我挖的坑。";
+			next;
+			mes "[伊美達]";
+			mes "去武器店找潘多伊拿銀十字架。";
+			mes "他答應幫我做一些。";
+			next;
+			mes "[伊美達]";
+			mes "尖銳的竹子你可以在巴里優或附近的森林取得。";
+			mes "你都明白了嗎？";
+			next;
+			mes "[伊美達]";
+			mes "現在是證明你實力的時候了！";
+			set malaya_hi, 21;
+			setquest 7366;
+			close;
+		case 2:
+			mes "[伊美達]";
+			mes "的確。";
+			mes "我會保護這個村莊的！";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "現在我還沒看過用那些東西做成的靈魂護身符！";
+			mes "真有趣~";
+			mes "我相信妳會做得很好的~";
+			mes "哈哈哈哈~";
+			next;
+			mes "[伊美達]";
+			mes "別煩我了，快走開！";
+			close;
+		}
+	} else if (malaya_hi == 21) {
+		if ((countitem(6501) < 6) || (countitem(6500) < 6) || (countitem(6502) < 6)) {
+			mes "[伊美達]";
+			mes "如果你能把製作靈魂護身符的所有材料都帶來，我就承認你的實力！";
+			next;
+			mes "[伊美達]";
+			mes "在西北邊的海灘製鹽，竹子生長在巴里優 馬西瓦卡。";
+			mes "請潘多伊製作銀十字架。";
+			mes "別忘了每樣都要 6 個。";
+			close;
+		}
+		mes "[伊美達]";
+		mes "... 噢... 天啊，你真的拿到了？";
+		mes "你比我想像的還要好。";
+		mes "這可不是稱讚！";
+		next;
+		mes "[伊美達]";
+		mes "現在我要進行神聖的儀式，製作傳統的靈魂護身符。";
+		mes "把它們交給我！然後在過程中不要打擾我！";
+		set malaya_hi, 22;
+		delitem 6500, 6;
+		// Sharp_Bamboo
+		delitem 6501, 6; // Salt_Bag
+		delitem 6502, 6; // Silver_Cross
+		erasequest 7367;
+		setquest 7367;
+		close;
+	} else if (malaya_hi == 22) {
+		.@playtime = checkquest(7367, PLAYTIME);
+		if (.@playtime == 0 || .@playtime == 1) {
+			mes "伊美達正散發著虔誠的光環進行儀式，與她破口大罵時截然不同。";
+			mes "最好不要打擾她。";
+			close;
+		} else if (.@playtime == 2) {
+			mes "[伊美達]";
+			mes "還在嗎？";
+			mes "當然，你想看看我的靈魂護身符比那些廉價聖物好多少。";
+			next;
+			mes "[伊美達]";
+			mes "好吧。";
+			mes "現在去把這些靈魂護身符發給人們吧！";
+			mes "你完全有權力這麼做！";
+			mes "*咯咯笑*";
+			next;
+			mes "拿了靈魂護身符，儘管她的邏輯荒謬且充滿活力。";
+			mes "把它們發給村民吧。";
+			set malaya_hi, 23;
+			getitem 6503, 6; // Soul_Protection
+			erasequest 7367;
+			setquest 7368;
+			setquest 7369;
+			setquest 7370;
+			setquest 7371;
+			setquest 7372;
+			setquest 7373;
+			setquest 7374;
+			close;
+		} else {
+			mes "[伊美達]";
+			mes "不要打擾儀式，快走開。";
+			mes "在我製作靈魂護身符時請稍候。";
+			setquest 7367;
+			close;
+		}
+	} else if (malaya_hi == 23) {
+		mes "[伊美達]";
+		mes "獲得靈魂護身符的人都在名單上。";
+		mes "去把新的靈魂護身符交給他們。";
+		next;
+		mes "[伊美達]";
+		mes "像你這麼善良的人一定會去做的，對吧？ ";
+		mes "*假笑*";
+		close;
+	} else if (malaya_hi == 24) {
+		mes "[伊美達]";
+		mes "... 你真的照我的要求做了？";
+		mes "你知道嗎？我放棄了。";
+		mes "我還以為你在用甜言蜜語從這個鎮上得到什麼東西後就會離開...";
+		next;
+		mes "[伊美達]";
+		mes "我為我粗魯的行為道歉。";
+		mes "....這是連同道歉一起給你的。";
+		next;
+		mes "[伊美達]";
+		mes "如果你能幫助我，我會很高興的，因為每天都需要製作靈魂護身符。";
+		set malaya_hi, 25;
+		erasequest 7374;
+		erasequest 7379;
+		setquest 7375;
+		if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+			getitem 6497, 2; // Lesser_Agimat
+		else
+			getitem 6497, 1;
+		// Lesser_Agimat
+		getexp 200000,200000;
+		if (rand(2))
+			$malayaNames$[0] = strcharinfo(0);
+		close;
+	} else {
+		mes "[伊美達]";
+		mes "你好啊。";
+		mes "你喜歡馬來港的風景嗎？";
+		mes "在吉普尼上和朋友聊天是很不錯的。";
+		next;
+		switch (select("我來幫妳製作靈魂護身符。:愛與靈魂護身符獻給所有人。")) {
+		case 1:
+			if (checkquest(7380) > -1) {
+				if ((countitem(6501) < 6) || (countitem(6502) < 6) || (countitem(6500) < 6)) {
+					mes "[伊美達]";
+					mes "製作靈魂護身符的材料是";
+					mes "鹽袋、銀十字架和尖銳的竹子，每樣 6 個。";
+					next;
+					mes "[伊美達]";
+					mes "鹽來自西北邊的海灘，銀十字架找潘多伊，尖銳的竹子在巴里優附近。";
+					close;
+				}
+				mes "[伊美達]";
+				mes "是的，你把所有東西都準備得很齊全。";
+				mes "謝謝你的幫忙。";
+				next;
+				mes "[伊美達]";
+				mes "如果你明天能再來幫忙那就太好了。";
+				mes "這是給你的辛苦費。";
+				delitem 6500, 6; // Sharp_Bamboo
+				delitem 6501, 6; // Salt_Bag
+				delitem 6502, 6; // Silver_Cross
+				erasequest 7380;
+				setquest 7381;
+				if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+					getitem 6497, 2; // Lesser_Agimat
+				else
+					getitem 6497, 1; // Lesser_Agimat
+				getexp 200000,200000;
+				close;
+			} else {
+				.@playtime = checkquest(7381, PLAYTIME);
+				if ((.@playtime == 0) || (.@playtime == 1)) {
+					mes "[伊美達]";
+					mes "我很感激你的好意，但我們今天的量已經足夠了。";
+					mes "當我需要更多材料時會拜託你的。";
+					close;
+				} else if (.@playtime == 2) {
+					mes "[伊美達]";
+					mes "時間剛好。";
+					mes "我今天製作靈魂護身符的材料用完了。";
+					mes "你現在能去拿嗎？";
+					erasequest 7381;
+					next;
+					switch (select("沒問題。:我需要做些準備。")) {
+					case 1:
+						mes "[伊美達]";
+						mes "那就照舊吧。";
+						mes "麻煩準備 6 個鹽袋、銀十字架和尖銳的竹子。";
+						setquest 7380;
+						close;
+					case 2:
+						mes "[伊美達]";
+						mes ".......我知道了。";
+						mes "那我就等著了。";
+						close;
+					}
+				} else {
+					mes "[伊美達]";
+					mes "這真是個好消息。";
+					mes "你知道製作靈魂護身符需要什麼材料嗎？";
+					mes "當然，這不是你第一次做了...";
+					next;
+					mes "[伊美達]";
+					mes "那就交給你了。";
+					mes "麻煩準備 6 個鹽袋、銀十字架和尖銳的竹子。";
+					setquest 7380;
+					close;
+				}
+			}
+		case 2:
+			if (checkquest(7374) != -1) {
+				if (checkquest(7379) == -1) {
+					mes "[伊美達]";
+					mes "請將這些新的靈魂護身符交給村民。";
+					mes "你認識他們，對吧？";
+					close;
+				}
+				mes "[伊美達]";
+				mes "他們不能永遠依賴這些靈魂護身符...";
+				mes "如果能擁有像你一樣堅強的心智會更好。";
+				next;
+				mes "[伊美達]";
+				mes "強大的靈魂充滿了光芒。";
+				mes "黑暗中的東西會因為耀眼的光芒而無法靠近";
+				next;
+				mes "[伊美達]";
+				mes "我想今天就這樣吧。";
+				mes "非常感謝你。";
+				setquest 7375;
+				erasequest 7374;
+				erasequest 7379;
+				if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+					getitem 6497, 2; // Lesser_Agimat
+				else
+					getitem 6497, 1; // Lesser_Agimat
+				getexp 200000,200000;
+				if (rand(2))
+					$malayaNames$[0] = strcharinfo(0);
+				close;
+			} else {
+				.@playtime = checkquest(7375, PLAYTIME);
+				if (.@playtime == 0 || .@playtime == 1) {
+					mes "[伊美達]";
+					mes "之前給予的靈魂護身符仍然有效。";
+					mes "暫時沒問題。";
+					close;
+				} else if (.@playtime == 2) {
+					mes "[伊美達]";
+					mes "我還在想你什麼時候會過來。";
+					mes "今天能幫我把靈魂護身符發給鄉親們嗎？";
+					erasequest 7375;
+					next;
+					if (select("當然。:今天不行。") == 2) {
+						mes "[伊美達]";
+						mes "好吧。";
+						mes "今天何不在馬來港散個步？";
+						mes "當然，你還是會到處遇到鬼魂。";
+						close;
+					}
+					if ((checkquest(7381) == 0) || (checkquest(7381) == 1)) {
+						mes "[伊美達]";
+						mes "非常感謝你。";
+						mes "全部發完後就回來吧。";
+						setquest 7374;
+						setquest 7368;
+						setquest 7369;
+						setquest 7370;
+						setquest 7371;
+						setquest 7372;
+						setquest 7373;
+						getitem 6503, 6; // Soul_Protection
+						close;
+					} else {
+						mes "[伊美達]";
+						mes "謝謝你的關心，但我因為材料用完所以做不出來了。";
+						mes "很可惜，對吧？";
+						mes "我真希望能有人願意幫我去拿材料。";
+						close;
+					}
+				} else {
+					mes "[伊美達]";
+					mes "你平靜嗎？我從這裡就能感受到你的寧靜。";
+					mes "你願意花點額外的時間幫我嗎？";
+					next;
+					mes "[伊美達]";
+					mes "你能幫我把這些靈魂護身符發給村民嗎？";
+					next;
+					switch (select("可以。:今天不行。") == 2) {
+						mes "[伊美達]";
+						mes "好吧。";
+						mes "今天何不在馬來港散個步？";
+						mes "當然，你還是會到處遇到鬼魂。";
+						close;
+					}
+					if ((checkquest(7381, PLAYTIME) == 0) || (checkquest(7381, PLAYTIME) == 1)) {
+						mes "[伊美達]";
+						mes "非常感謝你。";
+						mes "全部發完後就回來吧。";
+						setquest 7374;
+						setquest 7368;
+						setquest 7369;
+						setquest 7370;
+						setquest 7371;
+						setquest 7372;
+						setquest 7373;
+						getitem 6503, 6; // Soul_Protection
+						close;
+					} else {
+						mes "[伊美達]";
+						mes "謝謝你的關心，但我因為材料用完所以做不出來了。";
+						mes "很可惜，對吧？";
+						mes "我真希望能有人願意幫我去拿材料。";
+						close;
+					}
+				}
+			}
+			break;
+		}
+	}
+	end;
+}
+
+malaya,181,353,5	script	老爺爺 納多#malaya	574,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi < 10) {
+		mes "[老爺爺 納多]";
+		mes ".......";
+		mes "看來你不是本地人。我沒什麼好說的。";
+		close;
+	} else if (malaya_hi == 10) {
+		if (checkquest(7353) == 2) {
+			mes "[老爺爺 納多]";
+			mes "幫幫可憐的老爺爺怎麼樣？";
+			mes "即使只是你襯衫的袖子我也無所謂，只要給我一些帶有你活力的東西就好。";
+			next;
+			mes "[老爺爺 納多]";
+			mes "你知道的，我剩下的日子不多了...";
+			mes "幫我安詳地走完最後一程吧。";
+			close;
+		} else {
+			mes "[老爺爺 納多]";
+			mes "你... 你！！";
+			mes "你就是那個用強大精神力擊退黑暗鬼魂的年輕人？！";
+			mes "能不能... 把你的精神力分一點給我？";
+			next;
+			mes "[老爺爺 納多]";
+			mes "鎮上惡作劇的鬼魂讓我無法入睡，而且下雨時我的背還會痛。";
+			next;
+			mes "[老爺爺 納多]";
+			mes "請把你那神奇的精神力分給我吧。";
+			mes "只要你的一個鈕扣怎麼樣？";
+			next;
+			mes "-陷入困擾的村民渴望得到你的物品，因為你能擊退鬼魂。 -";
+			setquest 7353;
+			completequest 7353;
+			if ((checkquest(7352) + checkquest(7353) + checkquest(7354) + checkquest(7355) + checkquest(7356) + checkquest(7357)) > 9) {
+				next;
+				mes "-已經有這麼多人向你要這個了。或許去和巫師 馮談談會比較好。-";
+				set malaya_hi, 11;
+				setquest 7358;
+			}
+			close;
+		}
+	} else if (malaya_hi == 11) {
+		mes "[" + strcharinfo(0) + "]";
+		mes "如果我現在跟他說話，他會把我的鈕扣全扒光的。";
+		mes "必須先去跟巫師商量一下！";
+		close;
+	} else if (malaya_hi == 12) {
+		if (checkquest(7360) != -1) {
+			mes "[老爺爺 納多]";
+			mes "說實話，我不相信這個聖物有什麼能力。";
+			mes "這只是為了圖個安心。";
+			next;
+			mes "[老爺爺 納多]";
+			mes "儘管如此，我現在對你刮目相看了";
+			mes "因為別人是外地人就排斥他們，似乎不再是個好主意了。";
+			mes "我很抱歉忽視了你。";
+			close;
+		}
+		if (!countitem(523) || !countitem(717)) {
+			mes "^4d4dff準備並交出藍色魔力礦石和聖水。 ^000000";
+			close;
+		}
+		mes "[老爺爺 納多]";
+		mes "那麼，改變主意要分享你的精神力了嗎？";
+		next;
+		select("交出準備好的物品。");
+		mes "[老爺爺 納多]";
+		mes "啊... 謝謝你。";
+		mes "現在我可以安寧一段時間了...";
+		mes "...安寧總是好的。是的。";
+		next;
+		mes "- 將聖水和藍色魔力礦石交給了老爺爺 納多。-";
+		delitem 717, 1; //Blue_Gemstone
+		delitem 523, 1; //Holy_Water
+		setquest 7360;
+		completequest 7360;
+		if ((checkquest(7359) + checkquest(7360) + checkquest(7361) + checkquest(7362) + checkquest(7363) + checkquest(7364)) > 11) {
+			mes "-老爺爺是最後一位，聖物已經全部分發完畢了。-";
+			set malaya_hi, 13;
+			erasequest 7351;
+			setquest 7365;
+		}
+		close;
+	} else if ((malaya_hi > 12) && (malaya_hi < 20)) {
+		mes "[老爺爺 納多]";
+		mes "說實話，我不相信這個聖物有什麼能力。";
+		mes "這只是為了圖個安心。";
+		next;
+		mes "[老爺爺 納多]";
+		mes "你有空的時候，能不能幫我個忙？";
+		mes "我現在很好... 我是指之後。";
+		close;
+	} else {
+		mes "[老爺爺 納多]";
+		switch(rand(1, 6)) {
+		case 1:
+			mes "你認識卡普雷嗎？我聽說有 " + $malayaNames$[1] + " 旅行者正在幫助卡普雷... 總之...";
+			break;
+		case 2:
+			mes "最近有很多靈魂護身符。" + $malayaNames$[0] + " 很熱衷於分發靈魂護身符。這是你們家鄉的傳統嗎？";
+			break;
+		case 3:
+			mes "我聽說，在商人之間，" + $malayaNames$[1] + "？這個名字似乎很常出現。他似乎很有商業頭腦。";
+			break;
+		case 4:
+			mes "有一次，我看到一個旅行者滑倒在水果皮上。『誰來幫幫 " + $malayaNames$[1] + "~』他大喊著，讓我好好地笑了一頓。";
+			break;
+		case 5:
+			mes "啊，又是你？謝謝你之前的幫忙。";
+			break;
+		case 6:
+			mes "我聽說 " + $malayaNames$[2] + " 在巴里優很有名。你為什麼不試著出點名呢？";
+			break;
+		}
+		mes "什麼事？";
+		next;
+		switch (select("說話。:給予靈魂護身符。:老爺爺與鑄鐵鍋")) {
+		case 1:
+			mes "[老爺爺 納多]";
+			mes "馬來港是一座美麗的城市。";
+			mes "新舊在這裡完美融合。";
+			next;
+			mes "[老爺爺 納多]";
+			mes "當然，最近有鬼魂遊蕩的問題...";
+			mes "看到你和其他年輕人為此努力，我感到很欣慰。";
+			mes "謝謝你。";
+			close;
+		case 2:
+			if ((checkquest(7374) != -1) && (checkquest(7369) != -1)) {
+				if (!countitem(6503)) {
+					mes "^4d4dff沒有靈魂護身符可以給老爺爺。^000000";
+					close;
+				}
+				mes "[老爺爺 納多]";
+				mes "這是用傳統方法製作的新靈魂護身符嗎？";
+				mes "我很感激你為我換一個新的。";
+				mes "我一直欠你和伊美達人情。";
+				next;
+				mes "-將靈魂護身符交給了老爺爺 納多。-";
+				delitem 6503, 1; // Soul_Protection
+				erasequest 7369;
+				setquest 7383;
+				if ((checkquest(7382) + checkquest(7383) + checkquest(7384) + checkquest(7385) + checkquest(7386) + checkquest(7387)) > 5) {
+					mes "- 老爺爺是最後一位，所有的靈魂護身符都已發送完畢。回去找伊美達吧。-";
+					if (malaya_hi == 23) {
+						set malaya_hi, 24;
+					}
+					setquest 7379;
+					erasequest 7382;
+					erasequest 7383;
+					erasequest 7384;
+					erasequest 7385;
+					erasequest 7386;
+					erasequest 7387;
+				}
+				close;
+			} else {
+				mes "[老爺爺 納多]";
+				mes "什麼？新的靈魂護身符？";
+				mes "我還好。我還有你之前給我的那個。";
+				mes "等這個用壞了，你能再給我一個新的嗎？";
+				close;
+			}
+			break;
+		case 3:
+			if (BaseLevel < 100) {
+				mes "[老爺爺 納多]";
+				mes "嗯... 你看起來不夠強壯，沒辦法去巴里優旅行。";
+				mes "很抱歉，我不能讓你搬運珍貴的鑄鐵鍋。";
+				close;
+			}
+			if ((checkquest(7378, PLAYTIME) == 0) || (checkquest(7378, PLAYTIME) == 1)) {
+				mes "[老爺爺 納多]";
+				mes "你已經把鑄鐵鍋送到巴里優了，所以今天就到此為止吧。";
+				mes "不管鍋子有多堅固，即使是最堅硬的鑄鐵，也只能撐一天。";
+				next;
+				mes "[老爺爺 納多]";
+				mes "如果你能的話，明天再來幫我吧。";
+				close;
+			} else if (checkquest(7378, PLAYTIME) == 2) {
+				mes "[老爺爺 納多]";
+				mes "嘿！";
+				mes "那麼，你吃得好睡得好嗎？";
+				mes "有空再來吧。";
+				next;
+				mes "[老爺爺 納多]";
+				mes "這是有關鑄鐵鍋的事，但可以等你現在的差事辦完再說。";
+				erasequest 7378;
+				close;
+			 } else {
+				if (checkquest(7377) != -1) {
+					if (countitem(6503) < 5) {
+						mes "[老爺爺 納多]";
+						mes "你把鍋子完好無缺地送到了嗎？";
+						mes "巫師 基科應該有給你一個靈魂護身符。你帶了嗎？";
+						mes "你一定是忘在哪裡了。請去拿回來。";
+						close;
+					}
+					mes "[老爺爺 納多]";
+					mes "很好。這是巫師 基科承諾給予作為回報的靈魂護身符。";
+					mes "我知道伊美達會做，你每天也都會帶來，但靈魂護身符越多越好。";
+					next;
+					mes "[老爺爺 納多]";
+					mes "請務必再來。";
+					mes "我隨時準備著巴里優需要的鑄鐵鍋。";
+					delitem 6503, 5; // Soul_Protection
+					setquest 7378;
+					erasequest 7377;
+					if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+						getitem 6497, 2; // Lesser_Agimat
+					else
+						getitem 6497, 1; // Lesser_Agimat
+					getexp 200000,200000;
+					if (!rand(3))
+						$malayaNames$[2] = strcharinfo(0);
+					close;
+				} else {
+					if (checkquest(7376) > -1) {
+						mes "[老爺爺 納多]";
+						mes "去巴里優 馬西瓦卡找巫師 基科，把鑄鐵鍋交給他。";
+						mes "這對防範巴科納瓦的麻煩應該有幫助。";
+						close;
+					} else {
+						mes "[老爺爺 納多]";
+						mes "是的，鑄鐵鍋。";
+						mes "去附近的巴里優 馬西瓦卡鎮找巫師 基科，把鑄鐵鍋交給他。";
+						mes "我希望你能幫我跑一趟...";
+						next;
+						switch (select("鑄鐵鍋？？:我來做。:我現在很忙。")) {
+						case 1:
+							mes "[老爺爺 納多]";
+							mes "這是因為巴科納瓦的關係。";
+							mes "敲打鍋子，受驚的巴科納瓦就會把月亮吐出來。";
+							next;
+							mes "[老爺爺 納多]";
+							mes "巴里優 馬西瓦卡靠近巴科納瓦的棲息地，所以他們隨時準備應對麻煩。";
+							next;
+							mes "[老爺爺 納多]";
+							mes "必須準備足夠用來敲打的鑄鐵鍋。";
+							mes "但這裡的鍛造技術比較好。";
+							mes "所以我每天都會送去。";
+							close;
+						case 2:
+							mes "[老爺爺 納多]";
+							mes "這就是鑄鐵鍋。馬來港有很好的鐵匠。";
+							mes "把這個送到附近巴里優 馬西瓦卡鎮的巫師 基科那裡。";
+							setquest 7376;
+							getitem 6504, 5; // Cast_Iron_Caldron
+							close;
+						case 3:
+							mes "[老爺爺 納多]";
+							mes "這樣啊。";
+							mes "很抱歉，你一定很忙。";
+							close;
+						}
+					}
+				}
+			}
+			break;
+		}
+	}
+	end;
+}
+
+malaya,224,267,3	script	羅梅爾#malaya	573,{
+	if (malaya_hi < 10) {
+		mes "[羅梅爾]";
+		mes ".........";
+		mes " ";
+		mes "(他避開了你的視線，無視你。)";
+		close;
+	} else if (malaya_hi == 10) {
+		if (checkquest(7357) == 2) {
+			mes "[羅梅爾]";
+			mes "....真是冷酷無情。";
+			mes "而我們只能一直處於恐懼與焦慮之中...";
+			next;
+			mes "[羅梅爾]";
+			mes "連內心的一絲平靜都不被允許...";
+			close;
+		} else {
+			mes "[羅梅爾]";
+			mes "啊....";
+			mes "...是你..";
+			mes "很抱歉我剛剛無視了你。";
+			mes "但是... 你一定就是他們談論的那個人...";
+			next;
+			mes "[羅梅爾]";
+			mes "你就是那個擊退鬼魂的人嗎？";
+			mes "如果可以的話，能不能給我一件你的隨身物品或是一點頭髮？";
+			next;
+			mes "[羅梅爾]";
+			mes "我想帶在身上... 當作護身符一樣。";
+			next;
+			mes "- 陷入困擾的村民渴望得到你的物品，因為你能擊退鬼魂。 -";
+			setquest 7357;
+			completequest 7357;
+			if ((checkquest(7352) + checkquest(7353) + checkquest(7354) + checkquest(7355) + checkquest(7356) + checkquest(7357)) > 9) {
+				next;
+				mes "- 已經有這麼多人向你要這個了。或許去和巫師 馮談談會比較好。 -";
+				set malaya_hi, 11;
+				setquest 7358;
+			}
+			close;
+		}
+	} else if (malaya_hi == 11) {
+		mes "羅梅爾用悲傷的眼神看著你。";
+		mes "如果讓他得逞，他肯定會拔根頭髮或扯下你的袖子！";
+		close;
+	} else if (malaya_hi == 12) {
+		if (checkquest(7364) != -1) {
+			mes "[羅梅爾]";
+			mes "坦白說，這只是為了圖個安心。";
+			mes "有了它，我就能更勇敢地去面對他們。";
+			next;
+			mes "[羅梅爾]";
+			mes "我的意思是，雖然我是依賴這類物品，";
+			mes "但有了它們，我確實變得更勇敢了。";
+			close;
+		}
+		if (!countitem(523) || !countitem(717)) {
+			mes "^4d4dff準備並交出藍色魔力礦石和聖水。 ^000000";
+			close;
+		}
+		mes "[羅梅爾]";
+		mes "...什麼事？";
+		next;
+		select ("交出準備好的物品。");
+		mes "[羅梅爾]";
+		mes "喔... 謝謝你。";
+		mes "我能感受到你的精神。";
+		mes "這會保佑我平安。";
+		next;
+		mes "[羅梅爾]";
+		mes "嘿... 你能給我的女兒一些嗎？";
+		next;
+		mes "- 將準備好的聖水和藍色魔力礦石交給了羅梅爾。-";
+		delitem 717, 1; //Blue_Gemstone
+		delitem 523, 1; //Holy_Water
+		setquest 7364;
+		completequest 7364;
+		if ((checkquest(7359) + checkquest(7360) + checkquest(7361) + checkquest(7362) + checkquest(7363) + checkquest(7364)) > 11) {
+			mes "- 羅梅爾是最後一位，聖物已經全部分發完畢了。-";
+			set malaya_hi, 13;
+			erasequest 7351;
+			setquest 7365;
+		}
+		close;
+	} else if (malaya_hi == 13) {
+		mes "[羅梅爾]";
+		mes "聖物被妥善保管著。";
+		mes "我女兒的也是。";
+		close;
+	} else {
+		mes "[羅梅爾]";
+		mes "你好啊。";
+		switch(rand(1, 6)) {
+		case 1:
+			mes "哈哈，我昨晚做了個夢，夢裡有 " + $malayaNames$[0] + "。哈哈... 真是奇怪...";
+			break;
+		case 2:
+			mes "有時候，我老婆睡覺時會發出聲音。她喊著：" + $malayaNames$[0] + "... " + $malayaNames$[0] + "...。那是誰？你認識嗎？！她是被鬼附身了嗎？";
+			break;
+		case 3:
+			mes  "這全都要感謝 " + $malayaNames$[0] + " 改變了家裡的氣氛。看來我們是被聖物和靈魂護身符拯救了。";
+			break;
+		case 4:
+			mes  "隔壁巴里優 馬西瓦卡的人都很強壯。就連他們的孩子也在森林裡玩耍。我無法想像自己也那樣做。";
+			break;
+		case 5:
+			mes  "毫無疑問，鎮上最有名的人就是 " + $malayaNames$[2] + " 了。聽說在巴里優也很有名。";
+			break;
+		case 6:
+			mes  "商人 沃恩喝酒時總是說『我們 " + $malayaNames$[1] + " 大人』『我們 " + $malayaNames$[1] + " 大人』。我想知道他們兩個之間發生了什麼事？";
+			break;
+		}
+		next;
+		if (select("給予靈魂護身符。:最近怎麼樣？") == 2) {
+			mes "[羅梅爾]";
+			mes "最近我過得很平靜。";
+			close;
+		}
+		if ((checkquest(7374) == -1) || (checkquest(7373) == -1)) {
+			mes "[羅梅爾]";
+			mes "新的靈魂護身符？";
+			mes "你之前給我的那個還是很有效。";
+			mes "我現在很好。";
+			close;
+		}
+		if (!countitem(6503)) {
+			mes "^4d4dff沒有靈魂護身符可以給羅梅爾。^000000";
+			close;
+		}
+		mes "[羅梅爾]";
+		mes "新的靈魂護身符。";
+		mes "我還在想這個是不是快失效了... 謝謝你跑一趟。";
+		mes "這個靈魂護身符會繼續保護我們。";
+		next;
+		mes "- 將靈魂護身符交給了羅梅爾。-";
+		delitem 6503, 1; // Soul_Protection
+		erasequest 7373;
+		setquest 7387;
+		if ((checkquest(7382) + checkquest(7383) + checkquest(7384) + checkquest(7385) + checkquest(7386) + checkquest(7387)) > 5) {
+			mes "- 羅梅爾是最後一位，所有的靈魂護身符都已發送完畢。回去找伊美達吧。-";
+			if (malaya_hi == 23) {
+				set malaya_hi, 24;
+			}
+			setquest 7379;
+			erasequest 7382;
+			erasequest 7383;
+			erasequest 7384;
+			erasequest 7385;
+			erasequest 7386;
+			erasequest 7387;
+		}
+		close;
+	}
+	end;
+}
+
+malaya,223,267,5	script	塔拉#malaya	941,{
+	if (malaya_hi < 10) {
+		mes "[塔拉]";
+		mes "..........(倒抽一口氣)！";
+		mes " ";
+		mes "(當你的視線和她交會時，她跑去躲在爸爸身後。)";
+		close;
+	} else if (malaya_hi == 10) {
+		if (checkquest(7356) == 2) {
+			mes "[塔拉]";
+			mes "塔拉今晚可能會被抓走。";
+			mes "可怕的孩子們可能會來找塔拉。";
+			next;
+			mes "當塔拉拉著羅梅爾的襯衫時，羅梅爾用悲傷的眼神看著你。";
+			mes "最好在他們扯下你的鈕扣前做點什麼...";
+			close;
+		} else {
+			mes "[塔拉]";
+			mes "....我..嗯... 那個.....";
+			mes ".........喔... 爸爸....";
+			next;
+			mes "[羅梅爾]";
+			mes "嘿，你能給我的女兒一個鈕扣或是一點頭髮嗎？";
+			mes "她晚上總是睡不好 .......";
+			next;
+			mes "[羅梅爾]";
+			mes "如果有你的東西當作護身符，她是不是就能睡得好了？";
+			next;
+			mes "- 陷入困擾的村民渴望得到你的物品，因為你能擊退鬼魂。 -";
+			setquest 7356;
+			completequest 7356;
+			if ((checkquest(7352) + checkquest(7353) + checkquest(7354) + checkquest(7355) + checkquest(7356) + checkquest(7357)) > 9) {
+				next;
+				mes "- 已經有這麼多人向你要這個了。或許去和巫師 馮談談會比較好。 -";
+				set malaya_hi, 11;
+				setquest 7358;
+			}
+			close;
+		}
+	} else if (malaya_hi == 11) {
+		mes "塔拉用好奇的眼神在妳和她爸爸之間來回看著。";
+		close;
+	} else if (malaya_hi == 12) {
+		if (checkquest(7363) != -1) {
+			mes "[塔拉]";
+			mes "我也不太確定，";
+			mes "但我能從它們身上感覺到溫暖。";
+			mes "爸爸現在變得更勇敢了，這也讓塔拉變得更堅強。";
+			close;
+		}
+		if (!countitem(523) || !countitem(717)) {
+			mes "^4d4dff準備並交出藍色魔力礦石和聖水。 ^000000";
+			close;
+		}
+		mes "[塔拉]";
+		mes "....我可以打招呼嗎？";
+		mes "你... 你好...";
+		next;
+		select("交出準備好的物品。");
+		mes "[塔拉]";
+		mes "漂亮的藍色石頭...！";
+		mes "哇喔~ 它們好漂亮！";
+		mes "這顆石頭會保護塔拉安全嗎？";
+		next;
+		mes "- 將聖水和藍色魔力礦石交給了塔拉。 -";
+		delitem 717, 1; //Blue_Gemstone
+		delitem 523, 1; //Holy_Water
+		setquest 7363;
+		completequest 7363;
+		if ((checkquest(7359) + checkquest(7360) + checkquest(7361) + checkquest(7362) + checkquest(7363) + checkquest(7364)) > 11) {
+			mes "- 塔拉是最後一位，聖物已經全部分發完畢了。-";
+			set malaya_hi, 13;
+			erasequest 7351;
+			setquest 7365;
+		}
+		close;
+	} else if (malaya_hi == 13) {
+		mes "[塔拉]";
+		mes "爸爸告訴我要緊緊握住聖物。";
+		mes "這樣它就能趕走壞鬼魂...";
+		close;
+	} else {
+		mes "[塔拉]";
+		mes "你好...";
+		next;
+		if (select("給予靈魂護身符。:嗨？") == 2) {
+			mes "[塔拉]";
+			mes "...嘿...謝謝你。";
+			mes "你在保護我們的安全，對吧？";
+			close;
+		}
+		if ((checkquest(7374) != -1) && (checkquest(7372) != -1)) {
+			if (!countitem(6503)) {
+				mes "^4d4dff沒有靈魂護身符可以給塔拉。^000000";
+				close;
+			}
+			mes "[塔拉]";
+			mes "這是新的靈魂護身符嗎？";
+			mes "謝謝你。";
+			mes "有了靈魂護身符，塔拉現在可以睡得很好。";
+			mes "爸爸也很喜歡。";
+			next;
+			mes "- 將新的靈魂護身符交給了塔拉。-";
+			delitem 6503, 1; // Soul_Protection
+			erasequest 7372;
+			setquest 7386;
+			if ((checkquest(7382) + checkquest(7383) + checkquest(7384) + checkquest(7385) + checkquest(7386) + checkquest(7387)) > 5) {
+				mes "- 塔拉是最後一位，所有的靈魂護身符都已發送完畢。回去找伊美達吧。 -";
+				if (malaya_hi == 23) {
+					set malaya_hi, 24;
+				}
+				setquest 7379;
+				erasequest 7382;
+				erasequest 7383;
+				erasequest 7384;
+				erasequest 7385;
+				erasequest 7386;
+				erasequest 7387;
+			}
+			close;
+		} else {
+			mes "[塔拉]";
+			mes "嗯...";
+			mes "你之前給的那個仍然在保護塔拉。";
+			mes "我沒事。";
+			close;
+		}
+	}
+	end;
+}
+
+malaya,62,274,0	script	沙坑#malaya	557,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if ((checkquest(7366) == -1) && (checkquest(7380) == -1)) {
+		mes "用來蒸發海水的裝置被埋在沙子裡...";
+		close;
+	}
+	if (countitem(6501) >= 6) {
+		mes "鹽已經足夠了。";
+		close;
+	}
+	mes "沙坑裡安裝了一個用來蒸發海水的裝置。";
+	next;
+	mes "可以從乾燥的葉子上刮下鹽";
+	mes "那是某人撒在海水上的。";
+	close2;
+	progressbar "0xffff00", 5;
+	disablenpc();
+	initnpctimer;
+	getitem 6501, 1; // Salt_Bag
+	mes "[" + strcharinfo(0) + "]";
+	mes "這些應該足夠了。";
+	close;
+
+OnTimer30000:
+	enablenpc();
+	stopnpctimer;
+	end;
+}
+malaya,66,277,0	duplicate(沙坑#malaya)	沙坑#malaya01	557
+malaya,70,282,0	duplicate(沙坑#malaya)	沙坑#malaya02	557
+
+ma_fild01,178,206,0	script	黑竹#malaya	844,4,4,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if ((checkquest(7366) == -1) && (checkquest(7380) == -1)) {
+		mes "這裡有一棵矮小且漆黑的竹子。";
+		close;
+	}
+	if (countitem(6500) >= 6) {
+		mes "尖銳的竹子已經足夠了...";
+		close;
+	}
+	mes "這裡的竹子有著黑色的莖和葉子。";
+	mes "如果砍下一些並削尖，我想應該就能符合伊美達想要的尖銳的竹子了。";
+	close2;
+	progressbar "0xffff00", 3;
+	disablenpc();
+	initnpctimer;
+	getitem 6500, 1; //Sharp_Bamboo
+	mes "[" + strcharinfo(0) + "]";
+	mes "我就知道我做得到！";
+	close;
+OnTouch_:
+	if ((checkquest(7366) != -1) || (checkquest(7380) != -1)) {
+		specialeffect EF_LEVEL99_4;
+	}
+	end;
+OnTimer30000:
+	enablenpc();
+	stopnpctimer;
+	end;
+}
+ma_fild01,225,186,0	duplicate(黑竹#malaya)	黑竹#malaya01	844,4,4
+ma_fild01,230,244,0	duplicate(黑竹#malaya)	黑竹#malaya02	844,4,4
+ma_fild01,174,238,0	duplicate(黑竹#malaya)	黑竹#malaya03	844,4,4
+ma_fild01,180,273,0	duplicate(黑竹#malaya)	黑竹#malaya04	844,4,4
+ma_fild01,179,145,0	duplicate(黑竹#malaya)	黑竹#malaya05	844,4,4
+
+malaya,295,171,3	script	收集品商人 沃恩	582,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi < 10) {
+		mes "[沃恩]";
+		mes "呃... 呃... 我頭好痛...";
+		mes "我的頭痛一定是你們這些外地人帶來的！";
+		mes "走開。去去，快走！";
+		close;
+	} else if (malaya_hi == 10) {
+		if (checkquest(7355) == 2) {
+			mes "[沃恩]";
+			mes "現在，聽著朋友...";
+			mes "只要給我一個鈕扣就能解決這一切。";
+			mes "它看起來也沒那麼貴。";
+			close;
+		} else {
+			mes "[沃恩]";
+			mes "啊哈！你就是大家都在談論的那個人！";
+			mes "我剛剛有點無禮對吧？忘了它吧！";
+			mes "對，務必要忘記...";
+			next;
+			mes "[沃恩]";
+			mes "如果你急需工作，我可以在這附近幫你找份差事，你知道的..";
+			mes ".... 能不能把你的一些東西給我？";
+			next;
+			mes "[沃恩]";
+			mes "我聽說了你趕走鬼魂的傳聞！";
+			mes "你沒看到我因為害怕那些鬼魂而發抖的雙手嗎？";
+			mes "如果你能把你袖子上的鈕扣給我，我會感覺好多了...";
+			next;
+			mes "- 陷入困擾的村民渴望得到你的物品，因為你能擊退鬼魂。 -";
+			setquest 7355;
+			completequest 7355;
+			if ((checkquest(7352) + checkquest(7353) + checkquest(7354) + checkquest(7355) + checkquest(7356) + checkquest(7357)) > 9) {
+				next;
+				mes "- 已經有這麼多人向你要這個了。或許去和巫師 馮談談會比較好。 -";
+				set malaya_hi, 11;
+				setquest 7358;
+			}
+			close;
+		}
+	} else if (malaya_hi == 11) {
+		mes "[沃恩]";
+		mes "唉... 最近日子真難熬。";
+		mes "為什麼鬼魂偏偏要來找我麻煩。";
+		mes "真希望我有個護身符什麼的...";
+		next;
+		mes "[沃恩]";
+		mes "你為什麼不給我一件你的隨身物品，好讓我當作護身符帶在身邊呢？";
+		mes "拜託，一隻襪子也能救人一命，你知道的。";
+		mes "真是個冷血的傢伙...";
+		close;
+	} else if (malaya_hi == 12) {
+		if (checkquest(7362) != -1) {
+			mes "[沃恩]";
+			mes "嗯。看我的手。";
+			mes "比較不抖了，對吧？";
+			mes "是不是這樣啊？";
+			close;
+		}
+		if (!countitem(523) || !countitem(717)) {
+			mes "^4d4dff準備並交出藍色魔力礦石和聖水。 ^000000";
+			close;
+		}
+		mes "[沃恩]";
+		mes "哼！你要做什麼？";
+		next;
+		select ("交出準備好的物品。");
+		mes "[沃恩]";
+		mes "噢天啊... 忘了剛才的事吧。";
+		mes "你看，你離開後我又被另一隻鬼魂纏上了...";
+		mes "別放在心上..";
+		next;
+		mes "[沃恩]";
+		mes "這就是你精神的泉源嗎？";
+		mes "感覺有點酷喔！";
+		mes "或許這能趕走一些鬼魂...";
+		next;
+		mes "[沃恩]";
+		mes "無論如何，非常感謝。";
+		mes "如果有適合的工作，我會第一個通知你。";
+		next;
+		mes "- 將聖水和藍色魔力礦石交給了沃恩。-";
+		delitem 717, 1; //Blue_Gemstone
+		delitem 523, 1; //Holy_Water
+		setquest 7362;
+		completequest 7362;
+		if ((checkquest(7359) + checkquest(7360) + checkquest(7361) + checkquest(7362) + checkquest(7363) + checkquest(7364)) > 11) {
+			mes "- 沃恩是最後一位，聖物已經全部分發完畢了。-";
+			set malaya_hi, 13;
+			erasequest 7351;
+			setquest 7365;
+		}
+		close;
+	} else if (malaya_hi == 13) {
+		mes "[沃恩]";
+		mes "現在... 讓我們回到正事上。";
+		mes "多虧了你，我現在看不到那些該死的鬼魂了。";
+		mes "哈哈哈哈哈";
+		close;
+	} else {
+		mes "[沃恩]";
+		mes "喔，你好啊！";
+		next;
+		if (select("給予靈魂護身符。:商人與他的收集品") == 1) {
+			if (((checkquest(7374) == 0) || (checkquest(7374) == 1)) && ((checkquest(7371) == 0) || (checkquest(7371) == 1))) {
+				if (!countitem(6503)) {
+					mes "^4d4dff沒有靈魂護身符可以給沃恩。^000000";
+					close;
+				}
+				mes "[沃恩]";
+				mes "呼~ 新的靈魂護身符？";
+				mes "這是正式製作的護身符嗎？伊美達的手藝真不錯。";
+				mes "當然，我也非常感謝你。";
+				next;
+				mes "- 將靈魂護身符交給了沃恩。-";
+				delitem 6503, 1;
+				// Soul_Protection
+				erasequest 7371;
+				setquest 7385;
+				if ((checkquest(7382) + checkquest(7383) + checkquest(7384) + checkquest(7385) + checkquest(7386) + checkquest(7387)) > 5) {
+					mes "- 沃恩是最後一位，所有的靈魂護身符都已發送完畢。-";
+					if (malaya_hi == 23) {
+						set malaya_hi, 24;
+					}
+					setquest 7379;
+					erasequest 7382;
+					erasequest 7383;
+					erasequest 7384;
+					erasequest 7385;
+					erasequest 7386;
+					erasequest 7387;
+				}
+				close;
+			} else {
+				mes "[沃恩]";
+				mes "靈魂護身符？";
+				mes "我的那個還是很有效。";
+				mes "確實非常有效。";
+				close;
+			}
+		} else {
+			if (BaseLevel < 100) {
+				mes "[沃恩]";
+				mes "是的，我收集各種怪物的副產品。";
+				mes "其實，我正在收集傑傑勒比結晶...";
+				next;
+				mes "[沃恩]";
+				mes "這對你來說太困難了。";
+				mes "這裡的情況可能會變得很糟，你知道的。";
+				mes "等你變強之後，我會讓你也來參與的，我的朋友！";
+				close;
+			}
+			if ((checkquest(7392, PLAYTIME) == 0) || (checkquest(7392, PLAYTIME) == 1)) {
+				mes "[沃恩]";
+				mes "喔，收集傑傑勒比結晶嗎？";
+				mes "我今天的量已經足夠了。";
+				mes "明天再來吧。";
+				close;
+			} else if (checkquest(7392, PLAYTIME) == 2) {
+				mes "[沃恩]";
+				mes "喔，對了對了。";
+				mes "你今天也要去收集傑傑勒比結晶嗎？";
+				mes "我知道這是份艱難的工作... 但你做得非常好。";
+				erasequest 7392;
+				next;
+				if (select("我今天太忙了。:交給我吧！") == 1) {
+					mes "[沃恩]";
+					mes "這樣啊？那就這樣吧。";
+					mes "如果你需要工作就順道過來看看吧。";
+					close;
+				}
+				mes "[沃恩]";
+				mes "跟平常一樣，請幫我帶 30 個傑傑勒比結晶。";
+				mes "你可以從傑傑林身上得到它們。";
+				setquest 7391;
+				close;
+			} else {
+				if ((checkquest(7391) == 0) || (checkquest(7391) == 1)) {
+					if (countitem(6498) < 30) {
+						mes "[沃恩]";
+						mes "嗯？我想你收集得不夠多。";
+						mes "我要求的是 30 個傑傑勒比結晶。在商言商。";
+						close;
+					}
+					mes "[沃恩]";
+					mes "喔，你收集到指定的數量了嗎？";
+					mes "我就收下了。";
+					mes "你不需要它們，對吧？";
+					next;
+					mes "[沃恩]";
+					mes "那麼我就拿到所有的傑傑勒比結晶了...";
+					mes "歡迎再來！";
+					delitem 6498, countitem(6498); //Jejellopy
+					setquest 7392;
+					erasequest 7391;
+					if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+						getitem 6497, 2;
+					// Lesser_Agimat
+					else
+						getitem 6497, 1; // Lesser_Agimat
+					getexp 200000,200000;
+					set .@memo_name, rand(1,3);
+					if (!rand(3))
+						$malayaNames$[1] = strcharinfo(0);
+					close;
+				} else {
+					mes "[沃恩]";
+					mes "如你所見，我是一名收集品商人。";
+					mes "我交易各種怪物或動物的副產品。";
+					next;
+					mes "[沃恩]";
+					mes "它們被當作製造商品的材料。";
+					mes "當然，在馬來港最受歡迎的，是來自怪物傑傑林的..";
+					next;
+					mes "[沃恩]";
+					mes "傑傑勒比結晶可以從傑傑林身上取得。";
+					mes "你能幫我弄來 30 個傑傑勒比結晶嗎？";
+					next;
+					if (select("好，沒問題。:不。") == 2) {
+						mes "[沃恩]";
+						mes "這樣啊。真可惜。";
+						mes "等你想要工作時再來找我吧。";
+						close;
+					}
+					mes "[沃恩]";
+					mes "很好，我相信你做得到。";
+					mes "記住，是 30 個傑傑勒比結晶。";
+					setquest 7391;
+					close;
+				}
+			}
+		}
+	}
+	end;
+}
+
+malaya,119,217,3	script	鐵匠 潘多伊	538,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi < 10) {
+		mes "[潘多伊]";
+		mes "...(倒抽一口氣)！";
+		mes "走... 走開！";
+		close;
+	} else if (malaya_hi == 10) {
+		if (checkquest(7354) == 2) {
+			mes "[潘多伊]";
+			mes "拜託..";
+			mes "你難道就不能看在情面上，幫我這個忙嗎？";
+			mes "你真的認為無視我是最好的選擇嗎？！";
+			next;
+			mes "[潘多伊]";
+			mes "現在，聽我說。";
+			mes "拜託讓我看一眼就好..";
+			mes "只是一顆鈕扣而已...";
+			close;
+		} else {
+			mes "[潘多伊]";
+			mes "你好啊！";
+			mes "我聽說了你的威名。";
+			mes "我在想能不能拿到什麼東西，來證明我親眼見過你...";
+			next;
+			mes "[潘多伊]";
+			mes "喔... 你是不是對我突然變得這麼友善感到驚訝。";
+			mes "我聽說了你擊退鬼魂的消息。";
+			mes "真是太出色了！";
+			next;
+			mes "[潘多伊]";
+			mes "有了帶有你精神的物品，就能嚇跑鬼魂了，對吧？";
+			mes "拜託，慷慨一點，我求求你...";
+			next;
+			mes "- 陷入困擾的村民渴望得到你的物品，因為你能擊退鬼魂。 -";
+			setquest 7354;
+			completequest 7354;
+			if ((checkquest(7352) + checkquest(7353) + checkquest(7354) + checkquest(7355) + checkquest(7356) + checkquest(7357)) > 9) {
+				next;
+				mes "- 已經有這麼多人向你要這個了。或許去和巫師 馮談談會比較好。 -";
+				set malaya_hi, 11;
+				setquest 7358;
+			}
+			close;
+		}
+	} else if (malaya_hi == 11) {
+		mes "[潘多伊]";
+		mes "唉... 最近日子真難熬。";
+		mes "為什麼鬼魂偏偏要來找我麻煩。";
+		mes "真希望我有個護身符什麼的...";
+		next;
+		mes "[潘多伊]";
+		mes "拜託..";
+		mes "你難道就不能看在情面上，幫我這個忙嗎？";
+		mes "你真的認為無視我是最好的選擇嗎？！";
+		close;
+	} else if (malaya_hi == 12) {
+		if (checkquest(7361) != -1) {
+			mes "[潘多伊]";
+			mes "現在我有信心了，我唯一要做的就是衝進醫院或原野去收集材料！";
+			mes "但... 可是，我還是太害怕了...";
+			close;
+		}
+		if (!countitem(523) || !countitem(717)) {
+			mes "^4d4dff準備並交出藍色魔力礦石和聖水。 ^000000";
+			close;
+		}
+		mes "[潘多伊]";
+		mes "什、什麼，你終於決定要幫我了嗎？！";
+		mes "你要給潘多伊一份帶來安寧的禮物？！";
+		next;
+		select ("交出準備好的物品。");
+		mes "[潘多伊]";
+		mes "太好了！我就知道你會回來！";
+		mes "是的... 現在我有了你精神的加持，晚上終於能睡個好覺了。";
+		next;
+		mes "- 將聖水和藍色魔力礦石交給了潘多伊。-";
+		delitem 717, 1; //Blue_Gemstone
+		delitem 523, 1; //Holy_Water
+		setquest 7361;
+		completequest 7361;
+		if ((checkquest(7359) + checkquest(7360) + checkquest(7361) + checkquest(7362) + checkquest(7363) + checkquest(7364)) > 11) {
+			mes "- 潘多伊是最後一位，聖物已經全部分發完畢了。-";
+			set malaya_hi, 13;
+			erasequest 7351;
+			setquest 7365;
+		}
+		close;
+	} else if (malaya_hi == 13) {
+		mes "[潘多伊]";
+		mes "銀... 銀。我需要銀，拜託。";
+		mes "我以為等鬼魂消失後我就能去弄到銀，但我還是辦不到...";
+		close;
+	} else {
+		mes "[潘多伊]";
+		switch(rand(1, 6)) {
+		case 1:
+			mes "你知道嗎。" + $malayaNames$[1] + "。你是我變強的英雄。我非常景仰你！";
+			break;
+		case 2:
+			mes "我看到你了，" + $malayaNames$[1] + " 在鎮外痛扁那些傑傑林。那股力量... 我... 我真是太佩服了！";
+			break;
+		case 3:
+			mes "你，" + $malayaNames$[0] + "，點亮了我的靈魂。它在閃閃發光，你知道嗎。沒有？你沒感覺？";
+			break;
+		case 4:
+			mes "就我所見，最近 " + $malayaNames$[1] + " 是這裡最勤奮的人。他簡直是勤奮之神。";
+			break;
+		case 5:
+			mes $malayaNames$[5] + "有了重大發現。聽說是一條龍。";
+			break;
+		case 6:
+			mes "你好嗎？！";
+			break;
+		}
+		next;
+		switch (select("給予靈魂護身符。:銀刃。:銀十字架")) {
+		case 1:
+			if ((checkquest(7374) == -1) || (checkquest(7370) == -1)) {
+				mes "[潘多伊]";
+				mes "我很感謝你幫我留意我的靈魂護身符的有效期限。";
+				mes "我想我的現在還能用。 ";
+				mes "等它失效後，我會再向你要一個的！";
+				close;
+			}
+			if (!countitem(6503)) {
+				mes "^4d4dff沒有靈魂護身符可以給潘多伊。^000000";
+				close;
+			}
+			mes "[潘多伊]";
+			mes "很好。一個新的靈魂護身符。";
+			mes "知道自己不會再看到那些黑色的東西，感覺總是很好的！";
+			next;
+			mes "- 將靈魂護身符交給了潘多伊。-";
+			delitem 6503, 1; // Soul_Protection
+			erasequest 7370;
+			setquest 7384;
+			if ((checkquest(7382) + checkquest(7383) + checkquest(7384) + checkquest(7385) + checkquest(7386) + checkquest(7387)) > 5) {
+				mes "- 潘多伊是最後一位，所有的靈魂護身符都已發送完畢。-";
+				if (malaya_hi == 23) {
+					set malaya_hi, 24;
+				}
+				setquest 7379;
+				erasequest 7382;
+				erasequest 7383;
+				erasequest 7384;
+				erasequest 7385;
+				erasequest 7386;
+				erasequest 7387;
+			}
+			close;
+		case 2:
+			if (BaseLevel < 100) {
+				mes "[潘多伊]";
+				mes "嗯... 要製作銀刃，你需要銀。";
+				mes "我可以熔化銀手鍊來取得銀。";
+				mes "銀手鍊可以在醫院取得。";
+				next;
+				mes "[潘多伊]";
+				mes "不過，我不認為你現在能辦到。很抱歉，這對你來說實在太難了！";
+				mes "如果你就這樣進去... 你絕對無法活著出來！";
+				close;
+			}
+			.@hunting = checkquest(7393, HUNTING);
+			if (.@hunting == 2) {
+				if (countitem(6508) < 10) {
+					mes "[潘多伊]";
+					mes "銀手鍊在哪裡？";
+					mes "我知道你是無敵的...";
+					mes "但是我必須要有銀手鍊才能製作銀刃。";
+					next;
+					mes "[潘多伊]";
+					mes "10 個銀手鍊！";
+					mes "不管你擊退了多少怪物，我就是需要 10 個銀手鍊！！";
+					mes "現在就全靠你了！";
+					close;
+				}
+				mes "[潘多伊]";
+				mes "致上最高的敬意！";
+				mes "你擊退了它們，還帶回了銀手鍊。";
+				next;
+				mes "[潘多伊]";
+				mes "從今天起，我將嘗試熔煉一把新的銀製武器..！！";
+				mes "我會不斷敲打鍛造它們，直到我手中誕生出一把精良的銀刃...！！";
+				next;
+				mes "[潘多伊]";
+				mes "這不算什麼，但這是慰勞你為了取得銀手鍊所經歷的辛苦。";
+				mes "如果我失敗了... 我會再次拜託你幫忙！";
+				delitem 6508, 10; //Silver_Bracelet
+				setquest 7394;
+				erasequest 7393;
+				if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+					getitem 6497, 2; // Lesser_Agimat
+				else
+					getitem 6497, 1; // Lesser_Agimat
+				getexp 200000,200000;
+				if (!rand(3))
+					$malayaNames$[1] = strcharinfo(0);
+				close;
+			} else if (.@hunting == 0 || .@hunting == 1) {
+				mes "[潘多伊]";
+				mes "村莊的醫院裡面藏著最可怕的東西。";
+				mes "我也不確定那到底是什麼... 不管裡面有什麼，我都不想靠近它...";
+				next;
+				mes "[潘多伊]";
+				mes "請除掉那些傳聞中的怪物，並帶回那些銀手鍊。";
+				mes "你是我唯一能信任的人！";
+				close;
+			} else {
+				.@playtime = checkquest(7394, PLAYTIME);
+				if (.@playtime == 0 || .@playtime == 1) {
+					mes "[潘多伊]";
+					mes "我還有一些銀需要熔煉。";
+					mes "如果我再失敗，我會要求更多的。";
+					close;
+				} else if (.@playtime == 2) {
+					erasequest 7394;
+					mes "[潘多伊]";
+					mes "喔... 我該怎麼辦？";
+					mes "我浪費了你幫我帶回來的珍貴材料...";
+					next;
+					mes "[潘多伊]";
+					mes "也許我不適合當個鐵匠！";
+					mes "不過，我很擅長製作銀器喔！";
+					next;
+					if (select("我會去幫你找材料。振作點。:放棄吧。放棄會輕鬆很多。") == 2) {
+						mes "[潘多伊]";
+						mes "...你說得對...";
+						mes "我永遠無法製作出一把銀刃...";
+						mes "放棄... 我還以為你會鼓勵我.. 我對你有點失望。";
+						close;
+					}
+					mes "[潘多伊]";
+					mes "我就知道可以指望你！";
+					mes "我就知道可以指望你！";
+					mes "麻煩你，10 個銀手鍊。";
+					setquest 7393;
+					next;
+					mes "[潘多伊]";
+					mes "潘多伊會永遠對你微笑~";
+					mes "*咧嘴笑*";
+					close;
+				} else {
+					mes "[潘多伊]";
+					mes "銀刃！";
+					mes "太棒了。太完美了！這把能一擊斬斷所有邪惡的神聖之刃...！";
+					next;
+					mes "[潘多伊]";
+					mes "我想藉由製作銀刃成為一名著名的鐵匠。";
+					mes "然而，我無法取得材料。";
+					next;
+					mes "[潘多伊]";
+					mes "我聽說在醫院裡，他們會戴上銀手鍊作為識別。";
+					mes "但是當我到那裡時，那裡已經不是我熟悉的醫院了。";
+					next;
+					mes "[潘多伊]";
+					mes "你能消滅那些可怕的怪物，幫我帶回銀手鍊嗎？";
+					next;
+					if (select("當然！:想得美。") == 2) {
+						mes "[潘多伊]";
+						mes "...你說得對...";
+						mes "我永遠無法製作出一把銀刃...";
+						mes "這麼明顯的厭惡表情。你知道嗎？我現在也不想做了。";
+						close;
+					}
+					mes "[潘多伊]";
+					mes "我就知道！";
+					mes "去教訓一下醫院裡的那些東西吧...";
+					mes "麻煩帶回 10 個銀手鍊。";
+					setquest 7393;
+					next;
+					mes "[潘多伊]";
+					mes "潘多伊會永遠對你微笑~";
+					mes "*咧嘴笑*";
+					close;
+				}
+			}
+		case 3:
+			mes "[潘多伊]";
+			mes "你需要銀十字架嗎？";
+			mes "潘多伊會幫你做！";
+			mes "不過，我沒辦法憑空捏造，所以我會需要一些銀。";
+			next;
+			mes "[潘多伊]";
+			mes "怪物身上的 ^4d4dff2 個銀手鍊^000000，我就能幫你做成 1 個銀十字架...";
+			mes "如果你有銀手鍊，我就可以用它們來製作銀十字架。";
+			next;
+			switch(select("製作 1 個銀十字架:製作 6 個銀十字架:輸入數量:退出。")) {
+			case 1:
+				set .@amount,1;
+			case 2:
+				if (!.@amount) set .@amount,6;
+				if (countitem(6508) < (.@amount * 2)) {
+					mes "[潘多伊]";
+					mes "你需要至少 " + (.@amount * 2) + " 個銀手鍊才能製作 " + .@amount + " 個銀十字架。";
+					close;
+				}
+				set .@time,5;
+				break;
+			case 3:
+				mes "[潘多伊]";
+				mes "你需要幾個銀十字架？";
+				mes "我一次最多可以製作 50 個。";
+				next;
+				input .@amount;
+				if (.@amount == 0) {
+					mes "[潘多伊]";
+					mes "不需要銀十字架嗎？";
+					mes "好吧，那我可以休息了。哈哈哈哈~";
+					close;
+				} else if (.@amount > 50) {
+					mes "[潘多伊]";
+					mes "一次最多 50 個！";
+					close;
+				}
+				if (countitem(6508) < (2 * .@amount)) {
+					mes "[潘多伊]";
+					mes "要製作 " + .@amount + " 個銀十字架，我需要至少 " + (2 * .@amount) + " 個銀手鍊。";
+					close;
+				}
+				set .@time,15;
+				break;
+			case 4:
+				mes "[潘多伊]";
+				mes "如果你需要我，我會在這裡！";
+				close;
+			}
+			mes "[潘多伊]";
+			mes "只需要一秒鐘。";
+			mes "潘多伊馬上就能做好！";
+			close2;
+			progressbar "0xffff00", .@time;
+			delitem 6508, .@amount * 2; //Silver_Bracelet
+			getitem 6502, .@amount; // Silver_Cross
+			mes "[潘多伊]";
+			mes "看看這個！";
+			mes "真的很不錯吧。";
+			mes "我真該去當工匠，而不是鐵匠！";
+			close;
+		}
+	}
+	end;
+}
+
+malaya,326,68,2	script	水手 佩德羅	100,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (malaya_hi < 10) {
+		mes "[水手 佩德羅]";
+		mes "喔... 這艘船現在停駛了。";
+		mes "或者說，它根本無法出航。*竊笑*";
+		mes "我看到了鬼魂。我想我是活不久了。";
+		close;
+	} else if (malaya_hi == 10) {
+		if (checkquest(7352) == 2) {
+			mes "- 水手 佩德羅似乎已經放棄了，但他的目光無法從我身上移開。-";
+			close;
+		}
+		mes "[水手 佩德羅]";
+		mes "喔，你就是那... 那個揮揮手就能趕走鬼魂的人？！";
+		mes "你能不能留下來聽我說幾句？！";
+		next;
+		if (select("抱歉。:好啊。") == 1) {
+			mes "[水手 佩德羅]";
+			mes "喔，被果斷地拒絕了。";
+			mes "你剛剛刺穿了我最後的一絲希望。";
+			mes "也許我不夠有說服力...";
+			close;
+		}
+		mes "[水手 佩德羅]";
+		mes "開門見山地說，這個城鎮是鬼魂的巢穴！";
+		mes "唉... 我當水手這麼久，去過很多地方，但這種事我還是頭一次遇到。";
+		next;
+		mes "[水手 佩德羅]";
+		mes "你看到那邊那艘船了嗎？";
+		mes "那是一艘小渡輪，但也因為這些該死的鬼魂而停駛了！";
+		next;
+		mes "[水手 佩德羅]";
+		mes "從外面看起來還好，但我告訴你，裡面全都是鬼魂。";
+		mes "但我聽說，它們很怕你，對吧？";
+		next;
+		select ("喔不，連你也...:別想動我的鈕扣！");
+		mes "[水手 佩德羅]";
+		mes "我看已經有很多人向你要東西當護身符了，對吧。";
+		mes "我也能排隊要一個嗎？";
+		next;
+		mes "[水手 佩德羅]";
+		mes "我需要和那邊那個鬼魂好好談談。";
+		mes "但那個靈魂太強大了，我無法靠近。";
+		next;
+		mes "[水手 佩德羅]";
+		mes "...........這個故事真無聊。";
+		mes "而且要把自己的東西送給別人也不是件容易的事。";
+		next;
+		mes "- 水手 佩德羅似乎已經放棄了，但他的目光無法從我身上移開。-";
+		setquest 7352;
+		completequest 7352;
+		if ((checkquest(7352) + checkquest(7353) + checkquest(7354) + checkquest(7355) + checkquest(7356) + checkquest(7357)) > 9) {
+			next;
+			mes "- 已經有這麼多人向你要這個了。或許去和巫師 馮談談會比較好。 -";
+			set malaya_hi, 11;
+			setquest 7358;
+		}
+		close;
+	} else if (malaya_hi == 11) {
+		mes "[水手 佩德羅]";
+		mes "唉...";
+		mes "這真是太尷尬了。";
+		close;
+	} else if (malaya_hi == 12) {
+		if (checkquest(7359) != -1) {
+			mes "[水手 佩德羅]";
+			mes "總之，現在我有了它們討厭的東西...";
+			mes "是時候衝進我的船裡了...！";
+			close;
+		}
+		if (!countitem(523) || !countitem(717)) {
+			mes "^4d4dff準備並交出藍色魔力礦石和聖水。^000000";
+			close;
+		}
+		mes "[水手 佩德羅]";
+		mes "什麼？我能感覺到你手裡有某種令人神清氣爽的東西。那是什麼？";
+		next;
+		mes "[水手 佩德羅]";
+		mes "你要把它給我？";
+		mes "鬼魂會討厭它？";
+		mes "那真是個好消息！";
+		next;
+		mes "[水手 佩德羅]";
+		mes "佩德羅，為您服務！";
+		mes "等你解決了這裡的鬼魂，我就開著我的船帶你到世界盡頭！";
+		next;
+		mes "- 將聖水和藍色魔力礦石交給了水手 佩德羅。 -";
+		delitem 717, 1; //Blue_Gemstone
+		delitem 523, 1;
+		//Holy_Water
+		setquest 7359;
+		completequest 7359;
+		if ((checkquest(7359) + checkquest(7360) + checkquest(7361) + checkquest(7362) + checkquest(7363) + checkquest(7364)) > 11) {
+			mes "-水手 佩德羅是最後一位，我想我已經給出足夠的聖物了。-";
+			set malaya_hi, 13;
+			erasequest 7351;
+			setquest 7365;
+		}
+		close;
+	} else if (malaya_hi == 13) {
+		mes "[水手 佩德羅]";
+		mes "總之，現在我有了它們討厭的東西...";
+		mes "是時候衝進我的船裡了...！";
+		next;
+		mes "-水手 佩德羅看起來下定了決心。-";
+		close;
+	} else {
+		mes "[水手 佩德羅]";
+		mes "哇... 你看到了嗎？";
+		mes "那些黑色的靈魂剛出現就消失了。";
+		mes "嗯，像做夢一樣，對吧？";
+		next;
+		if (select("給予靈魂護身符。:關於乘坐渡輪") == 1) {
+			if ((checkquest(7374) == -1) || (checkquest(7368) == -1)) {
+				mes "[水手 佩德羅]";
+				mes "你之前給我的靈魂護身符很有效。";
+				mes "我現在很好。";
+				mes "它還能繼續發揮作用！";
+				close;
+			}
+			if (!countitem(6503)) {
+				mes "^4d4dff沒有靈魂護身符可以給水手 佩德羅。^000000";
+				close;
+			}
+			mes "[水手 佩德羅]";
+			mes "一個全新的靈魂護身符。";
+			mes "太好了。我今天就要帶著它去對付它們。";
+			next;
+			mes "- 將靈魂護身符交給了水手 佩德羅。-";
+			delitem 6503, 1; // Soul_Protection
+			erasequest 7368;
+			setquest 7382;
+			if ((checkquest(7382) + checkquest(7383) + checkquest(7384) + checkquest(7385) + checkquest(7386) + checkquest(7387)) > 5) {
+				mes "-水手 佩德羅是最後一位，所有的靈魂護身符都已發送完畢。-";
+				if (malaya_hi == 23) {
+					set malaya_hi, 24;
+				}
+				setquest 7379;
+				erasequest 7382;
+				erasequest 7383;
+				erasequest 7384;
+				erasequest 7385;
+				erasequest 7386;
+				erasequest 7387;
+			}
+			close;
+		}
+		if (BaseLevel < 100) {
+			mes "[水手 佩德羅]";
+			mes "嗯... 你不記得我說過關於鬼魂的事嗎？";
+			mes "渡輪上全是鬼魂。";
+			mes "等等，是一個還是很多個來著？";
+			next;
+			mes "[水手 佩德羅]";
+			mes "不管啦。以你現在的狀況，這是不可能的。";
+			mes "沒錯。你辦不到的。你會被裝在屍袋裡拖出來。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "我可不會站在這裡等著那種事發生。絕對不會。";
+			close;
+		}
+		if (malaya_diwata == 0) {
+			mes "[水手 佩德羅]";
+			mes "很抱歉，但我不是說過那邊有鬼魂嗎？";
+			mes "因為那樣所以無法出航。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "你想知道這是怎麼一回事嗎？";
+			mes "嗯..........";
+			mes "說來話長...";
+			next;
+			if (select("我聽著呢。:下次再說吧。") == 2) {
+				mes "[水手 佩德羅]";
+				mes "我就知道。";
+				mes "不過，這故事並不是那麼無聊。";
+				mes "畢竟，這是一個鬼故事。";
+				close;
+			}
+			mes "[水手 佩德羅]";
+			mes "這故事要從我第一次在這裡停泊時說起。";
+			mes "那是我第一次擔任客輪經理，真的很令人緊張。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "當我準備下船時，我看到了令人難以置信的景象。";
+			mes "黑色的霧氣從鎮上各處湧向港口。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "起初，我以為那只是一場非常濃的霧。";
+			mes "隨著時間一天天過去，它到底是什麼就變得越來越清楚了。";
+			mes "那是一大群的靈魂。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "一群非常令人不快的靈魂。";
+			mes "有些甚至在即將出航的渡輪周圍發出可怕的哀號...";
+			next;
+			mes "[水手 佩德羅]";
+			mes "在那次事件之後，那艘船就一直停在原地直到今天。";
+			mes "為什麼？因為它們佔領了那艘船！那艘船鬧鬼了！";
+			next;
+			mes "[水手 佩德羅]";
+			mes "如果你不相信我，你自己去看看。";
+			mes "然後你就會相信我了。";
+			set malaya_diwata, 1;
+			setquest 7395;
+			close;
+		} else if (malaya_diwata == 1) {
+			mes "[水手 佩德羅]";
+			mes "如果你想知道的話，自己去看看並上船吧。";
+			close;
+		} else if (malaya_diwata == 2) {
+			mes "[水手 佩德羅]";
+			mes "一個小女孩的靈魂？";
+			mes "那那些欺負人的傢伙呢？";
+			mes "他們來了又走了？";
+			next;
+			mes "[水手 佩德羅]";
+			mes "我不明白。";
+			mes "也許巫師首領會知道該怎麼做。";
+			close;
+		} else if (malaya_diwata == 3) {
+			mes "[水手 佩德羅]";
+			mes "嗯... 用來安撫靈魂的獻花....";
+			mes "你想等它平靜下來後聽它的故事？";
+			mes "好吧... 祝你好運。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "為了讓渡輪再次出航，這也是沒辦法的事。";
+			mes "因為那些卑鄙的傢伙，我無法靠近它。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "現在我請你幫忙，不是因為我怕麻煩，";
+			mes "而是因為我自己真的辦不到。";
+			close;
+		} else if (malaya_diwata == 4) {
+			mes "[水手 佩德羅]";
+			mes "巫師已經為花朵祝福過了嗎？";
+			mes "希望這能奏效...";
+			mes "祝你一切順利！！";
+			next;
+			mes "[水手 佩德羅]";
+			mes "希望你能談判成功！";
+			mes "我會盡全力對付船外那些粗魯的傢伙。";
+			close;
+		} else if (malaya_diwata == 5) {
+			mes "[水手 佩德羅]";
+			mes "我明白了。";
+			mes "也許渡輪可以再次開動了...";
+			mes "謝謝你為我們所做的一切。";
+			next;
+			mes "[水手 佩德羅]";
+			mes "那我也該準備出航了。";
+			mes "這點小意思不成敬意，請收下。";
+			mes "如果我們能恢復營運，我會載你到伊斯魯得島，只要 1000 zeny。";
+			set malaya_diwata, 6;
+			erasequest 7399;
+			setquest 7401;
+			if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+				getitem 6497, 2; // Lesser_Agimat
+			else
+				getitem 6497, 1; // Lesser_Agimat
+			getexp 200000,200000;
+			if (!rand(3))
+				$malayaNames$[0] = strcharinfo(0);
+			close;
+		} else {
+			.@playtime = checkquest(7401, PLAYTIME);
+			if (.@playtime == 0 || .@playtime == 1) {
+				mes "[水手 佩德羅]";
+				mes "如果你想去艾爾貝塔，請搭那邊那艘大船。";
+				mes "這艘小船是開往伊斯魯得島的。";
+				mes "費用是 1000 zeny。";
+				next;
+				if (select("搭乘。:這簡直是搶劫！") == 2) {
+					mes "[水手 佩德羅]";
+					mes "什麼？！";
+					mes "你搭艾爾貝塔客輪來這裡花了多少錢！？";
+					mes "這叫搶劫... 你以為我在做慈善嗎？";
+					close;
+				}
+				if (Zeny < 1000) {
+					mes "[水手 佩德羅]";
+					mes "費用是 1000 zeny。";
+					mes "我幫不了你喔~";
+					close;
+				}
+				mes "[水手 佩德羅]";
+				mes "謝謝你~";
+				mes "趁鬼魂還沒回來，我們出發吧！";
+				set Zeny, Zeny - 1000;
+				close2;
+				warp "izlude",195,180;
+				end;
+			} else if (.@playtime == 2) {
+				erasequest 7401;
+				goto L_SetQuest;
+			} else {
+				if (checkquest(7403) == -1) {
+					if (checkquest(7402) == -1) {
+						goto L_SetQuest;
+					}
+					mes "[水手 佩德羅]";
+					mes "你知道該怎麼做。";
+					mes "去收集花朵，然後帶去給巫師做成獻花用的花束。";
+					next;
+					mes "[水手 佩德羅]";
+					mes "把花束交給迪瓦塔小姐讓她開心點。";
+					mes "....謝謝你。";
+					close;
+				}
+				mes "[水手 佩德羅]";
+				mes "迪瓦塔平靜下來了！";
+				mes "連我在這裡都能感覺到不一樣了。";
+				mes "我一直欠你人情。";
+				next;
+				mes "[水手 佩德羅]";
+				mes "你知道嗎？你為什麼不更常來做這件事呢？";
+				mes "我覺得你好像滿喜歡做這件事的。";
+				setquest 7401;
+				erasequest 7403;
+				if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+					getitem 6497, 2;
+				// Lesser_Agimat
+				else
+					getitem 6497, 1; // Lesser_Agimat
+				getexp 200000,200000;
+				if (!rand(3))
+					$malayaNames$[0] = strcharinfo(0);
+				close;
+			}
+		}
+	}
+	end;
+
+L_SetQuest:
+	mes "[水手 佩德羅]";
+	mes "啊，事情是這樣的...";
+	mes "我們現在沒辦法出發..";
+	mes "你看，那些鬼魂又回來了...";
+	mes "我受夠這些麻煩了。";
+	next;
+	mes "[水手 佩德羅]";
+	mes "我是說... 迪瓦塔小姐... 心情不太好，即使有靈魂護身符";
+	mes "一般人也受不了。";
+	next;
+	if (select("我明白了。那保重囉。:要不要試試獻花？") == 1) {
+		mes "[水手 佩德羅]";
+		mes "很高興你能理解。";
+		mes "唉...";
+		close;
+	}
+	mes "[水手 佩德羅]";
+	mes "嗯。那應該不錯。";
+	mes "如果能用花來安撫她的話...！";
+	mes "祝你好運。";
+	setquest 7402;
+	close;
+}
+
+ma_in01,125,107,3	script	鬼魂 迪瓦塔	1761,4,4,{
+	end;
+OnTouch:
+	if (malaya_diwata == 0) {
+		cutin "malaya_diwata01", 2;
+		mes "- 站著一個令人毛骨悚然的小女孩。";
+		mes "當我們眼神交會時，一股寒意順著我的脊椎竄下，讓我全身起了雞皮疙瘩。 -";
+		next;
+		mes "[迪瓦塔]";
+		mes "你也是來欺負迪瓦塔的嗎？";
+		mes "我不會讓你們得逞的！";
+		next;
+		cutin "", 255;
+		mes "-在小女孩低沉令人毛骨悚然的叫聲和她眼中的閃光之後，我被拋了出去。-";
+		close;
+		warp "malaya", 324, 66;
+		end;
+	} else if (malaya_diwata == 1) {
+		cutin "malaya_diwata01", 2;
+		mes "- 站著一個令人毛骨悚然的小女孩。";
+		mes "當我們眼神交會時，一股寒意順著我的脊椎竄下，讓我全身起了雞皮疙瘩。 -";
+		next;
+		mes "[迪瓦塔]";
+		mes "你也是來欺負迪瓦塔的嗎？";
+		mes "我不會讓你們得逞的！";
+		next;
+		select ("等等！我只是想跟你談談！");
+		mes "[迪瓦塔]";
+		mes "那你身後那些傢伙是誰？";
+		mes "你跟他們是一夥的！";
+		next;
+		cutin "malaya_ghost01", 4;
+		mes "- 熟悉的靈魂正在靠近迪瓦塔。 -";
+		next;
+		if (select("這是一個誤會！:你也是那些..！") == 2) {
+			cutin "malaya_ghost02", 4;
+			mes "[" + strcharinfo(0) + "]";
+			mes "我就知道！你怕我對吧？！";
+			mes "閃一邊去！";
+			mes "我需要和她談談。";
+			next;
+			cutin "malaya_diwata01", 2;
+			mes "[迪瓦塔]";
+			mes "我不知道他們為什麼要退後...";
+			mes "你也從我眼前消失！";
+			next;
+			cutin "", 255;
+			mes "-在小女孩惱怒的叫聲和她眼中的閃光之後，我被拋了出去。-";
+			set malaya_diwata, 2;
+			setquest 7396;
+			erasequest 7395;
+			close2;
+			warp "malaya", 324, 66;
+			end;
+		}
+		cutin "malaya_diwata01",2;
+		mes "[迪瓦塔]";
+		mes "夠了！";
+		next;
+		cutin "", 255;
+		mes "-在小女孩堅決的叫聲和她眼中的閃光之後，我被拋了出去。-";
+		set malaya_diwata, 2;
+		setquest 7396;
+		erasequest 7395;
+		close2;
+		warp "malaya", 324, 66;
+		end;
+	} else if ((malaya_diwata == 2) || (malaya_diwata == 3)) {
+		cutin "malaya_diwata01", 2;
+		mes "[迪瓦塔]";
+		mes "你又爬回來了？";
+		mes "滾出去-！！！！！";
+		next;
+		cutin "", 255;
+		mes "-在小女孩尖銳的叫聲和她眼中的閃光之後，我被拋了出去。-";
+		close;
+		warp "malaya", 324, 66;
+		end;
+	} else if (malaya_diwata == 4) {
+		if (!countitem(6506)) {
+			cutin "malaya_diwata01", 2;
+			mes "- 小女孩 迪瓦塔的靈魂正惡狠狠地盯著我。";
+			mes "沒有獻花用的花束...！！！";
+			next;
+			cutin "", 255;
+			mes "-在她冷漠的注視下，我被拋了出去。-";
+			close;
+			warp "malaya", 324, 66;
+			end;
+		}
+		mes "- 小女孩 迪瓦塔的靈魂正惡狠狠地盯著我。 -";
+		mes "- 獻花用的花束... -";
+		cutin "malaya_diwata01", 2;
+		next;
+		if (select("把它丟給小女孩。:讓它沿著地板滑過去。") == 1) {
+			mes "- 我趕在她把我扔出去之前把花束丟了過去，她驚訝地接住了...";
+			mes "既然她拿到了花，現在就不會把我扔... 太遠了吧。-";
+		} else {
+			mes "- 我讓花沿著地板滑向她。她看起來很困惑。 -";
+		}
+		next;
+		mes "[迪瓦塔]";
+		mes "這到底是什麼意思？";
+		mes "你不是敵人？";
+		next;
+		mes "[迪瓦塔]";
+		mes "什麼？你也是個外地人？";
+		mes "哈，所以活人可以上來，我就不行？";
+		next;
+		mes "[迪瓦塔]";
+		mes "鄉下人對外地人總是有刻板印象。";
+		mes "我真的很煩。我真想把它們從地圖上抹去。";
+		next;
+		mes "[迪瓦塔]";
+		mes "什麼？我不該這麼做？";
+		mes "為什麼我不應該？";
+		mes "是我讓這艘船停駛的？";
+		next;
+		mes "[迪瓦塔]";
+		mes "看在花的份上，我本來打算聽你說話的";
+		mes "但你竟然對我說謊？！";
+		next;
+		mes "[迪瓦塔]";
+		mes "所以你的意思是，是我把這些鄉巴佬帶到這艘船上的";
+		mes "而且我和他們的爭吵導致了停駛？";
+		next;
+		mes "[迪瓦塔]";
+		mes "... 嗯... 哼。這不是我本來打算做的事。";
+		mes "但是是他們先來惹我的！";
+		next;
+		mes "[迪瓦塔]";
+		mes "... 反正我也下不去。";
+		mes "這意味著我隨時可能又會不爽。懂嗎？";
+		next;
+		mes "[迪瓦塔]";
+		mes "... 今天我會試著忍耐一下。";
+		mes "這可不是因為我喜歡這些花，或是我喜歡有人陪！";
+		mes "那是因為我被當作跟那些廉價的鬼魂一樣對待！";
+		next;
+		mes "[迪瓦塔]";
+		mes "現在恕我失陪。";
+		mes "我醜話說在前面，我可不會忍耐太久的。";
+		next;
+		mes "[迪瓦塔]";
+		mes "現在，走... 走開！";
+		set malaya_diwata, 5;
+		delitem 6506, 1; // Memorial_Boquet
+		erasequest 7398;
+		setquest 7399;
+		close3;
+	} else if (malaya_diwata == 5) {
+		cutin "malaya_diwata02", 2;
+		mes "[迪瓦塔]";
+		mes "如果那些鄉巴佬不來煩我，我保證我會是個乖女孩。";
+		mes "但是，如果他們再來煩我，那我就不敢保證了。";
+		close3;
+	} else {
+		if (checkquest(7402) == -1) {
+			if (checkquest(7403) == -1) {
+				if ((checkquest(7401, PLAYTIME) == 0) || (checkquest(7401, PLAYTIME) == 1)) {
+					cutin "malaya_diwata02", 2;
+					mes "[迪瓦塔]";
+					mes "令人驚訝的是，我現在感覺還不錯。";
+					mes "當然，為了防止他們回來，我還是很警戒，";
+					mes "但是，就像往常一樣，我會贏的。";
+					next;
+					mes "[迪瓦塔]";
+					mes "然後那些可憐的船員們又會開始哭了";
+					mes "打完架後，我就是沒辦法讓自己平靜下來。";
+					next;
+					mes "[迪瓦塔]";
+					mes "你帶來的花讓我平靜了下來。";
+					mes "....";
+					mes "..這不是因為我想念人類或是我喜歡花。別誤會了。";
+					close3;
+				}
+				cutin "malaya_diwata01", 2;
+				mes "[迪瓦塔]";
+				mes "滾開！";
+				mes "什麼？喔，是你啊。";
+				mes "那些鄉巴佬又回來了！";
+				mes "我要殺了他們！";
+				close3;
+			}
+			cutin "malaya_diwata02", 2;
+			mes "[迪瓦塔]";
+			mes "看著外國來的花真不錯~";
+			mes "世界上溫暖地方的花都這麼香嗎？";
+			next;
+			mes "[迪瓦塔]";
+			mes "你帶來的花讓我平靜了下來。";
+			mes "....";
+			mes "..這不是因為我想念人類或是我喜歡花。別誤會了。";
+			close3;
+		}
+		cutin "malaya_diwata01", 2;
+		mes "[迪瓦塔]";
+		mes "可惡！你還想再來嗎？！";
+		mes "什麼？";
+		mes "喔。是你嗎？";
+		mes "我現在真的很沮喪。";
+		next;
+		mes "- 迪瓦塔伸出雙手，似乎在期待著什麼。 -";
+		next;
+		if (select("給予花束。:握住她的手。") == 2) {
+			mes "[迪瓦塔]";
+			mes "你以為你在做什麼？！！？？！？？！！";
+			mes "啊啊啊啊啊 - 這裡的怪胎已經夠多了，謝了！！";
+			next;
+			cutin "", 255;
+			mes "-伴隨著迪瓦塔雷鳴般的尖叫聲，我被拋了出去。-";
+			close;
+			warp "malaya", 324, 66;
+			end;
+		}
+		if (!countitem(6506)) {
+			mes "[迪瓦塔]";
+			mes "什麼？你想讓我揮手？";
+			mes "你沒帶？";
+			mes "你沒帶？！？";
+			mes "啊啊啊啊，真是誰都不能相信！任何人都不能信！";
+			next;
+			cutin "", 255;
+			mes "-伴隨著迪瓦塔雷鳴般的尖叫聲，我被拋了出去。-";
+			close;
+			warp "malaya", 324, 66;
+			end;
+		}
+		cutin "malaya_diwata02", 2;
+		mes "[迪瓦塔]";
+		mes "... 喔... 果然不出我所料！";
+		mes "我唯一的幸福，我唯一的心靈慰藉..！";
+		mes "外國來的花~！";
+		next;
+		mes "-迪瓦塔似乎覺得好多了。氣氛轉變成了一種更加清新的氛圍。-";
+		next;
+		mes "[迪瓦塔]";
+		mes "去告訴水手 佩德羅！";
+		mes "迪瓦塔將成為海洋女神，所以在我的寬宏大量下出航吧。";
+		delitem 6506, 1; // Memorial_Boquet
+		setquest 7403;
+		erasequest 7402;
+		close3;
+	}
+	cutin "", 255;
+	end;
+}
+
+ma_fild01,261,208,2	script	巫師 基科	580,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	mes "[巫師 基科]";
+	mes "歡迎來到巴里優，陌生人。";
+	mes "我是靈魂的引導者，巴里優這裡的人民和靈魂的保護者。";
+	mes "所以，我是一個優秀的首領 巫師 基科。";
+	next;
+	switch (select("交出鑄鐵鍋。:請求淨化儀式。:用傑傑勒比結晶交換黃金。")) {
+		case 1:
+			if (checkquest(7376) == -1) {
+				if (checkquest(7377) == -1) {
+					mes "[巫師 基科]";
+					mes "什麼鍋子？";
+					mes "據我所知，你不是送鍋子來的人。";
+					next;
+					mes "[巫師 基科]";
+					mes "可憐的傢伙。";
+					mes "不要過著謊言連篇的生活。";
+					close;
+				}
+				mes "[巫師 基科]";
+				mes "巴里優不是個適合打鐵的地方。";
+				mes "所以我們總是委託馬來港的鍛造坊。";
+				next;
+				mes "[巫師 基科]";
+				mes "巴科納瓦不喜歡巨大的噪音。";
+				mes "所以我們才要敲打堅固的鑄鐵鍋。";
+				next;
+				mes "[巫師 基科]";
+				mes "這個靈魂護身符就是我收到鍋子的證明，";
+				mes "所以好好把它送達吧。好嗎？很好。";
+				close;
+			}
+			if (countitem(6504) < 5) {
+				mes "[巫師 基科]";
+				mes "喔，一定是我訂購的鍋子。";
+				mes "但是，它在哪裡？";
+				mes "你是在耍我嗎？！";
+				close;
+			}
+			mes "[巫師 基科]";
+			mes "是的，太棒了！";
+			mes "非常好。";
+			mes "有了這個，我們就能進一步激怒巴科納瓦了。";
+			next;
+			mes "[巫師 基科]";
+			mes "這個給你，作為鍋子的回報。";
+			mes "我聽說你被靈魂弄得有些困擾？";
+			mes "拿著這個。它會對你有幫助的。";
+			delitem 6504, 5;
+			// Cast_Iron_Caldron
+			getitem 6503, 5; // Soul_Protection
+			setquest 7377;
+			erasequest 7376;
+			close;
+		case 2:
+			if (checkquest(7406) == -1) {
+				if (checkquest(7407) == -1) {
+					mes "[巫師 基科]";
+					mes "這個村莊裡唯一需要淨化的就是凡泰的食物。";
+					mes "這裡沒有什麼儀式是像你這樣的外地人可以參加的。";
+					close;
+				}
+				mes "[巫師 基科]";
+				mes "凡泰一定餓了。";
+				mes "快拿去給牠。";
+				mes "動作快點。";
+				close;
+			}
+			if ((countitem(523) < 10) || (countitem(6507) < 10)) {
+				mes "[巫師 基科]";
+				mes "看門狗凡泰需要啃咬的骨頭淨化？";
+				mes "我在這裡的工作真是越來越棒了。";
+				next;
+				mes "[巫師 基科]";
+				mes "去森林裡幫我找 ^4d4dff10 個邪惡氣息的骨頭^000000 和 ^4d4dff10 個聖水^000000 來進行淨化儀式。";
+				mes "我會親自主持儀式。";
+				close;
+			}
+			mes "[巫師 基科]";
+			mes "這座森林裡動物的骨頭都附著著邪惡的靈魂。";
+			mes "當然，因為那些惡靈四處遊蕩，這也是無可奈何的事...";
+			next;
+			mes "[巫師 基科]";
+			mes "你這樣做，然後在那裡這樣做，然後...";
+			mes "好了。邪靈已經離開，這根骨頭現在純淨到你可以直接咀嚼了。";
+			next;
+			mes "[巫師 基科]";
+			mes "現在，把這個帶回給守衛 咚。";
+			mes "凡泰吃了這個淨化過的邪惡骨頭後會變得更強壯。";
+			next;
+			mes "[巫師 基科]";
+			mes "此外，帶著邪惡氣息的骨頭只會對你有害，";
+			mes "所以我把它們全部拿來淨化了。";
+			delitem 6507, countitem(6507); // Evil_Bone
+			delitem 523, 10; //Holy_Water
+			getitem 6505, 10; //Purified_Bone
+			setquest 7407;
+			erasequest 7406;
+			close;
+		case 3:
+			mes "[巫師 基科]";
+			mes "喔，你別想！";
+			mes "你敢！";
+			close;
+	}
+	end;
+}
+
+ma_fild01,239,253,3	script	守衛 咚	570,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	mes "[守衛 咚]";
+	mes "嗨！";
+	mes "歡迎來到巴里優。";
+	next;
+	if (select("你的工作似乎很辛苦~:看門狗 凡泰") == 1) {
+		mes "[守衛 咚]";
+		mes "一點也不。我只是在這裡看著誰進誰出。";
+		mes "旅行者才是經歷了更多艱辛的人。";
+		close;
+	}
+	if (BaseLevel < 100) {
+		mes "[守衛 咚]";
+		mes "凡泰是隻好狗。";
+		mes "牠可能比你還強壯。";
+		next;
+		mes "[守衛 咚]";
+		mes "無意冒犯，但是";
+		mes "你看起來比凡泰啃的那些骨頭原來的主人還要虛弱。";
+		next;
+		mes "[守衛 咚]";
+		mes "這意味著你跟我差不多強！";
+		mes "哈哈哈哈哈哈哈！";
+		close;
+	}
+	.@playtime = checkquest(7408, PLAYTIME);
+	if (.@playtime == 0 || .@playtime == 1) {
+		mes "[守衛 咚]";
+		mes "你給凡泰帶來的骨頭讓牠飽餐了一頓。";
+		mes "牠現在會吃得飽飽的、開開心心的一陣子。";
+		mes "這附近沒有人的偵察能力能比得上凡泰。";
+		next;
+		mes "[守衛 咚]";
+		mes "雖然說一個人不如狗不太好聽，";
+		mes "但確實有些人連狗都不如。";
+		close;
+	} else if (.@playtime == 2) {
+		erasequest 7408;
+		mes "[守衛 咚]";
+		mes "凡泰嗎？";
+		mes "還是一樣老樣子。";
+		mes "你這麼一說，差不多又到了牠肚子餓的時候了。";
+		next;
+		mes "[守衛 咚]";
+		mes "當然，牠也會吃一般的狗糧，但牠不能沒有那些。";
+		mes "你知道我指的是什麼，對吧？";
+		mes "笑...";
+		next;
+		mes "[守衛 咚]";
+		mes "我和凡泰總是在等待";
+		mes "能幫我們從森林裡帶些邪惡氣息的骨頭回來的英雄。";
+		close;
+	} else {
+		if (checkquest(7406) != -1) {
+			mes "[守衛 咚]";
+			mes "我的意思是，要成為一隻稱職的看門狗，牠必須能夠抵禦惡靈。";
+			mes "為此，牠需要吃邪惡氣息的骨頭，但在牠吃之前必須先進行淨化。";
+			next;
+			mes "[守衛 咚]";
+			mes "你可以從森林裡的怪物或動物身上取得邪惡氣息的骨頭。";
+			mes "巫師 基科會幫你淨化它們。";
+			close;
+		} else {
+			if (checkquest(7407) == 1) {
+				if (countitem(6505) < 10) {
+					mes "[守衛 咚]";
+					mes "巫師 基科要求了 10 個淨化過的骨頭。";
+					mes "他一次至少需要 10 個。當然，這撐不了一天...";
+					close;
+				}
+				mes "[守衛 咚]";
+				mes "嘿，凡泰會愛死這些的！";
+				mes "全都是上等貨...";
+				mes "透過神聖儀式淨化的邪惡骨頭...";
+				next;
+				mes "[守衛 咚]";
+				mes "這是最棒的狗糧！！";
+				mes "現在牠可以感知並偵測到惡靈，";
+				mes "而且因為牠吃了淨化過的骨頭，牠將獲得消滅牠們的能力。";
+				next;
+				mes "[守衛 咚]";
+				mes "我敢打賭牠現在是村子裡最強大的生物了。";
+				mes "當然不是指我。我是說凡泰。";
+				next;
+				mes "[守衛 咚]";
+				mes "這是給你的獎勵。";
+				mes "如果你明天能再來幫忙那就太好了。";
+				delitem 6505, 10; // Purified_Bone
+				setquest 7408;
+				erasequest 7407;
+				if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+					getitem 6497, 2; // Lesser_Agimat
+				else
+					getitem 6497, 1; // Lesser_Agimat
+				getexp 200000,200000;
+				if (!rand(0, 2))
+					$malayaNames$[2] = strcharinfo(0);
+				close;
+			} else {
+				mes "[守衛 咚]";
+				mes "凡泰不僅是一隻看門狗，牠也是一個出色的偵測器和偵察兵。";
+				mes "但要做到這些，牠需要吃淨化過的骨頭。";
+				next;
+				mes "[守衛 咚]";
+				mes "如你所見，我不能離開這裡，";
+				mes "所以我在想你能不能幫凡泰弄點骨頭...";
+				next;
+				if (select("好的。:抱歉。") == 2) {
+					mes "[守衛 咚]";
+					mes "我明白了。";
+					mes "凡泰！";
+					mes "今天沒有點心了..！！";
+					next;
+					mes "- 凡泰的眼睛今天似乎特別濕潤。 -";
+					close;
+				}
+				mes "[守衛 咚]";
+				mes "骨頭可以從這附近的動物或怪物身上取得。";
+				mes "把牠們帶去給巫師 基科淨化，然後再拿來給凡泰吃。";
+				next;
+				mes "[守衛 咚]";
+				mes "帶給我們 10 個淨化過的骨頭。";
+				mes "這倒提醒了我。你需要聖水來進行淨化儀式。";
+				next;
+				mes "[守衛 咚]";
+				mes "慢慢來。";
+				mes "看這裡。凡泰也很喜歡。";
+				setquest 7406;
+				close;
+			}
+		}
+	}
+	end;
+}
+
+ma_fild01,238,257,2	script	看門狗 凡泰	972,{
+	mes "[凡泰]";
+	mes "Grrrrrrr...";
+	mes " ";
+	mes "(牠被你嚇到了。)";
+	close;
+}
+
+ma_fild01,200,190,3	script	瑪麗斯#malaya	579,{
+	if (MaxWeight - Weight < 1000 || checkweight(1201,1) == 0) {
+		mes "- 無法進行任務。你攜帶了太多物品。 -";
+		close;
+	}
+	if (BaseLevel < 100) {
+		mes "[瑪麗斯]";
+		mes "嗯... 嘿...";
+		mes "喔，不，抱歉。你看起來不怎麼強壯或勇敢。";
+		mes "對不起。我只是有點心神不寧...";
+		close;
+	}
+	if (malaya_hi < 20) {
+		mes "站著一位神情焦慮的女子。";
+		close;
+	}
+	.@playtime = checkquest(7390, PLAYTIME);
+	if (.@playtime == 0 || .@playtime == 1) {
+		mes "[瑪麗斯]";
+		mes "現在孩子們知道他們只要有一件反穿的襯衫就能回家，";
+		mes "他們就在森林裡不顧一切、沒日沒夜地玩耍。";
+		next;
+		mes "[瑪麗斯]";
+		mes "在這種情況下，孩子們肯定又會迷路的。";
+		mes "如果又發生了，我會再來找你幫忙。";
+		close;
+	} else if (.@playtime == 2) {
+		mes "[瑪麗斯]";
+		mes "我的一個孩子不見了... 又一次。";
+		mes "喔，我的天啊...";
+		erasequest 7390;
+		close;
+	} else {
+		if (checkquest(7389) != -1) {
+			mes "[瑪麗斯]";
+			mes "你回來了。";
+			mes "多虧了你，孩子已經平安回家了。";
+			next;
+			mes "[瑪麗斯]";
+			mes "雖然襯衫是反穿的，但它奇蹟般地把他們帶回了應該去的地方。";
+			mes "謝謝你把那些珍貴的襯衫交給我的孩子們。";
+			setquest 7390;
+			erasequest 7389;
+			if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+				getitem 6497, 2; // Lesser_Agimat
+			else
+				getitem 6497, 1; // Lesser_Agimat
+			getexp 200000,200000;
+			if (!rand(3))
+				$malayaNames$[2] = strcharinfo(0);
+			close;
+		} else {
+			if (checkquest(7388) != -1) {
+				mes "[瑪麗斯]";
+				mes "我敢肯定他們是因為那些調皮的鬼魂才會在森林裡迷路的。";
+				mes "找到孩子時，請把 ^4d4dff反穿的襯衫^000000 交給他。";
+				next;
+				mes "[瑪麗斯]";
+				mes "反穿的襯衫...";
+				mes "你或許可以從惡魔那裡拿回來，因為是他們帶著襯衫跑掉的。";
+				close;
+			} else {
+				mes "[瑪麗斯]";
+				mes "你好... 我在找我的孩子...";
+				mes "我的女兒沒有回來。";
+				mes "請幫幫忙，我想她在森林裡迷路了。";
+				next;
+				switch (select("當然沒問題。:我現在太忙了。:妳有這麼多孩子。")) {
+				case 1:
+					mes "[瑪麗斯]";
+					mes "我敢肯定她是因為那些調皮的鬼魂才會在森林裡迷路的。";
+					next;
+					mes "[瑪麗斯]";
+					mes "如果她被詛咒了，要把她從那裡救出來會很困難。";
+					mes "她會在迷宮裡四處漂流，甚至連你也會被迷惑，真的。";
+					next;
+					mes "[瑪麗斯]";
+					mes "取得一件 ^4d4dff反穿的襯衫^000000 並把它交給我的女兒。";
+					mes "雖然襯衫是反穿的，但它奇蹟般地把他們帶回了應該去的地方。";
+					next;
+					mes "[瑪麗斯]";
+					mes "反穿的襯衫...";
+					mes "你或許可以從惡魔那裡拿回來，因為是他們帶著襯衫跑掉的。";
+					setquest 7388;
+					close;
+				case 2:
+					mes "[瑪麗斯]";
+					mes "... 是的... 我明白了。";
+					mes "我只好去拜託別人了。";
+					mes "好吧。";
+					mes "唉...";
+					close;
+				case 3:
+					mes "[瑪麗斯]";
+					mes "...結果我生了三胞胎。";
+					mes "連我有時都會搞混。*輕笑*";
+					next;
+					mes "[瑪麗斯]";
+					mes "他們似乎被詛咒了，因為他們其中一個總是在森林裡迷路..";
+					mes "唉...";
+					close;
+				}
+			}
+		}
+	}
+	end;
+}
+
+ma_fild01,203,189,3	script	小女孩#malaya	576,{
+	mes "[小女孩]";
+	mes "嘿嘿，森林雖然很可怕，但也很好玩，所以我常常去那裡玩~";
+	mes "真奇怪，我們總是會迷路。";
+	next;
+	mes "[小女孩]";
+	mes "不過沒關係，因為不只我一個人會迷路~";
+	mes "我們是三胞胎~ 而且我們弄丟了另外兩個~ 咯咯笑~";
+	close;
+}
+
+ma_fild01,251,93,3	script	迷路的孩子#malaya01	576,{
+	if (checkquest(7388) > -1) {
+		if (!countitem(12700)) {
+			mes "[迷路的孩子]";
+			mes "唉。你也迷路了嗎？";
+			mes "它們真是太調皮了。";
+			next;
+			mes "[迷路的孩子]";
+			mes "我現在正需要一件反穿的襯衫。";
+			mes "*輕笑*...";
+			close;
+		}
+		mes "[迷路的孩子]";
+		mes "喔，該死。";
+		mes "它們一定又騙我迷路了！";
+		next;
+		select ("你想回家嗎？");
+		mes "[迷路的孩子]";
+		mes "如果我不快點回去，媽媽會擔心死的。";
+		mes "唉... 要是我有一件反穿的襯衫能回去就好了。";
+		next;
+		select ("給你。");
+		mes "[迷路的孩子]";
+		mes "真的嗎？";
+		mes "真的是襯衫！";
+		mes "這能帶我直接回家！";
+		next;
+		mes "[迷路的孩子]";
+		mes "是媽媽派你來的嗎？";
+		mes "她一定很擔心..！";
+		mes "我現在就要回家了！";
+		mes "非常感謝！";
+		delitem 12700, 1; // Insideout_Shirt
+		setquest 7389;
+		erasequest 7388;
+		close2;
+		disablenpc();
+		if (strnpcinfo(0) == "迷路的孩子#malaya01") {
+			enablenpc "迷路的孩子#malaya02";
+		} else if (strnpcinfo(0) == "迷路的孩子#malaya01") {
+			enablenpc "迷路的孩子#malaya03";
+		} else {
+			enablenpc "迷路的孩子#malaya01";
+		}
+		end;
+	} else {
+		if (checkquest(7389) != -1) {
+			mes "[迷路的孩子]";
+			mes "我還想再玩一會兒。";
+			mes "有了這件襯衫我隨時都可以回去。";
+			mes "媽媽不會擔心的。";
+			close;
+		} else {
+			mes "[迷路的孩子]";
+			mes "嗯。我又迷路了嗎？";
+			mes "我在哪裡...";
+			mes "我確定我必須從第三棵樹朝著日出的方向走才能回家... 咦？";
+			next;
+			mes "[迷路的孩子]";
+			mes "為什麼~ 我總是在這裡繞圈子？";
+			mes "你知道為什麼嗎，" + ((Sex == SEX_MALE) ? "大哥哥" : "大姊姊") + "？";
+			mes "這條路是怎麼回事？";
+			mes "有人在耍我嗎？";
+			close;
+		}
+	}
+	end;
+	
+OnInit:
+	if (strnpcinfo(0) != "迷路的孩子#malaya01")
+		disablenpc();
+}
+ma_fild01,114,141,3	duplicate(迷路的孩子#malaya01)	迷路的孩子#malaya02	576
+ma_fild01,130,314,3	duplicate(迷路的孩子#malaya01)	迷路的孩子#malaya03	576
+
+ma_fild02,241,39,5	script	好卡普雷 布迪代	572,{
+	mes "[布迪代]";
+	mes "嘿嘿嘿~";
+	mes "我是個多麼好的卡普雷啊~ 嘿！";
+	mes "我要去一間好咖啡廳~ YO！";
+	mes "我比昨天更好~ 嘿！";
+	mes "我是個很會押韻的卡普雷~ 喔？";
+	next;
+	mes "[布迪代]";
+	mes "嘿朋友，你是來聽布迪代唱歌的嗎？";
+	next;
+	switch (select("你喜歡唱歌嗎？:對獨眼怪物的深入研究。:再見！")) {
+	case 1:
+		mes "[布迪代]";
+		mes "沒錯，布迪代喜歡唱歌。";
+		mes "牛、馬、羊、公雞、野豬都喜歡我的歌。";
+		mes "牠們都是我的朋友。";
+		next;
+		mes "[布迪代]";
+		mes "除了那個獨眼的邦吉順吉蘇。";
+		mes "牠欺負我的朋友們。";
+		mes "我很生氣，但布迪代很弱。";
+		next;
+		mes "[布迪代]";
+		mes "我害怕牠的獨眼凝視，但我更怕牠揮舞的棍棒。";
+		mes "我必須唱些歌給我的朋友們聽，但因為牠的關係，牠們都不來了。";
+		next;
+		mes "[布迪代]";
+		mes "所以布迪代，就在這裡唱歌。";
+		mes "有很多旅行者經過。";
+		mes "卡普雷是流浪者的好夥伴。";
+		mes "你也是我的好夥伴。";
+		close;
+	case 2:
+		if (BaseLevel < 100) {
+			mes "[布迪代]";
+			mes "你對那個惡魔有興趣嗎，我的朋友？";
+			mes "牠只是森林裡的惡霸！";
+			mes "牠欺負我的動物朋友！";
+			next;
+			mes "[布迪代]";
+			mes "可悲的是，唱歌是布迪代唯一擅長的事。";
+			mes "我對那可怕的凝視和揮舞的棍棒無能為力。";
+			next;
+			mes "[布迪代]";
+			mes "邦吉順吉蘇！只要和牠在同一座森林裡，我就會不寒而慄...";
+			mes "但布迪代很弱。";
+			next;
+			mes "[布迪代]";
+			mes "你和我，流浪者。";
+			mes "我們絕對辦不到的。";
+			close;
+		}
+		.@playtime = checkquest(7410, PLAYTIME);
+		if (.@playtime == 0 || .@playtime == 1) {
+			mes "[布迪代]";
+			mes "旅行者，我的朋友！";
+			mes "邦吉順吉蘇跑到很遠很遠的地方了。";
+			mes "狗、牛、馬、羊和公雞會回到我身邊，對吧？";
+			next;
+			mes "[布迪代]";
+			mes "但布迪代很擔心。";
+			mes "那個獨眼惡霸遲早會回來的。";
+			mes "你願意再幫我一次嗎？";
+			next;
+			mes "[布迪代]";
+			mes "你，布迪代的朋友";
+			mes "你不會背棄一個好的卡普雷吧？";
+			close;
+		} else {
+			if (checkquest(7409) != -1) {
+				if (checkquest(7409, HUNTING) == 2) {
+					mes "[布迪代]";
+					mes "太驚人了，流浪者！";
+					mes "我在這裡就能聽到邦吉順吉蘇可憐的哀嚎聲！";
+					mes "布迪代又可以唱歌給他的朋友們聽了，對吧？";
+					next;
+					mes "[布迪代]";
+					mes "現在，布迪代能為這位善良的流浪者，獨眼怪物的殺手做些什麼呢？";
+					mes "啊哈！這是一個護身符。";
+					mes "這對你們旅行者會很有用的。";
+					next;
+					mes "[布迪代]";
+					mes "善良的卡普雷是旅行者的朋友。";
+					mes "希望能再次見到你，流浪者。";
+					mes "這是給朋友的祝福。嘿嘿嘿~";
+					setquest 7410;
+					erasequest 7409;
+					if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+						getitem 6497, 2;
+					// Lesser_Agimat
+					else
+						getitem 6497, 1; // Lesser_Agimat
+					getexp 200000,200000;
+					if (!rand(3))
+						$malayaNames$[1] = strcharinfo(0);
+					close;
+				} else {
+					mes "[布迪代]";
+					mes "請幫忙殺死那個具有破壞性的放蕩者邦吉順吉蘇。";
+					mes "為了我，一個想再次為朋友唱歌的卡普雷。";
+					close;
+				}
+			} else {
+				if (.@playtime == 2) {
+					mes "[布迪代]";
+					mes "嘿，善良的流浪者。";
+					mes "邦吉順吉蘇，那個獨眼放蕩者又回來了！";
+					mes "我該怎麼辦？我該做什麼才好？";
+					next;
+					mes "[布迪代]";
+					mes "我唱歌時牠就會生氣。";
+					mes "但馬、牛、山羊、狗和野豬都很喜歡。";
+					mes "這讓布迪代很為難。";
+					erasequest 7410;
+					close;
+				} else {
+					mes "[布迪代]";
+					mes "你對那個惡魔有興趣嗎，我的朋友？";
+					mes "牠只是森林裡的惡霸！";
+					mes "牠欺負我的動物朋友！";
+					next;
+					mes "[布迪代]";
+					mes "可悲的是，唱歌是布迪代唯一擅長的事。";
+					mes "我對那可怕的凝視和揮舞的棍棒無能為力。";
+					next;
+					mes "[布迪代]";
+					mes "邦吉順吉蘇！只要和牠在同一座森林裡，我就會不寒而慄...";
+					mes "但布迪代很弱。";
+					next;
+					if (select("要我來處理牠嗎？:那的確讓人不寒而慄。") == 2) {
+						mes "[布迪代]";
+						mes "別提醒我。";
+						mes "因為那個龐然大物，我的朋友們都不能來聽我唱歌了。";
+						mes "這太令人沮喪了。";
+						close;
+					}
+					mes "[布迪代]";
+					mes "你要給邦吉順吉蘇一個教訓？！";
+					mes "善良的流浪者！！";
+					mes "去踢那個放蕩者的屁股吧！！";
+					setquest 7409;
+					close;
+				}
+			}
+		}
+		break;
+	case 3:
+		mes "[布迪代]";
+		mes "離開我吧，流浪者~";
+		mes "卡普雷布迪代將歌唱奇蹟~";
+		mes "你比其他人都棒~";
+		mes "你帶來了所有的野獸~";
+		mes "回卡普拉那裡去吧~";
+		next;
+		mes "[布迪代]";
+		mes "嘿嘿嘿~";
+		mes "善良和美好卡普雷的祝福~";
+		mes "流浪者的朋友，卡普雷的禮物~";
+		mes "嘿嘿嘿~";
+		close;
+	}
+	end;
+}
+
+// Traders :: malaya_npc
+//============================================================
+ma_fild01,166,214,6	script	陷入困境的老爺爺#GA	575,{
+	if (MaxWeight - Weight < 600 || checkweight(1201,1) == 0) {
+		mes "無法進行任務，因為你身上攜帶了太多物品。";
+		close;
+	}
+	mes "[陷入困境的老爺爺]";
+	mes "喔！惡魔在這個世界上的力量越來越強大了。";
+	next;
+	switch(select("我們需要收集物品來擊退他們。:無視。")) {
+	case 1:
+		if (countitem(6497) >= 3 && Zeny >= 1000) {
+			mes "[陷入困境的老爺爺]";
+			mes "你看起來似乎還不夠強大，無法擊退惡魔。";
+			next;
+			mes "[陷入困境的老爺爺]";
+			mes "你要用 3 個次級阿吉瑪特（Lesser Agimat）和 1,000 Zeny 來製作古代精靈的高級阿吉瑪特（Greater Agimat of Ancient Spirit）嗎？";
+			next;
+			if(select("製作。:不用了，謝謝。") == 1) {
+				if (countitem(6497) >= 3 && Zeny >= 1000) {
+					specialeffect2 EF_CONE;
+					specialeffect EF_FORESTLIGHT2;
+					set Zeny, Zeny-1000;
+					delitem 6497,3; //Lesser_Agimat
+					getitem 12775,1; //Ancient_Spirit_Agimat
+				} else {
+					mes "[陷入困境的老爺爺]";
+					mes "材料不足。";
+					close;
+				}
+			}
+			mes "[陷入困境的老爺爺]";
+			mes "希望你能在與惡魔的戰鬥中獲勝。";
+			close;
+		}
+		mes "[陷入困境的老爺爺]";
+		mes "現在做不出來，但有一種代代相傳的古老製作方法。";
+		next;
+		mes "[陷入困境的老爺爺]";
+		mes "你需要召喚古代精靈的力量。但你必須先準備幾個重要的材料。";
+		next;
+		select("是什麼材料？");
+		mes "[陷入困境的老爺爺]";
+		mes "3 個用來容納古代精靈力量的次級阿吉瑪特，以及另一種代代相傳的特殊材料。";
+		next;
+		mes "[陷入困境的老爺爺]";
+		mes "但現在已經沒有人能取得這種特殊物品了。";
+		next;
+		select("是用錢買不到的東西嗎？");
+		mes "[陷入困境的老爺爺]";
+		mes "不，不... 是這種圓圓的小東西，你看到了嗎？";
+		next;
+		select("你是在說 Zeny 嗎？");
+		mes "[陷入困境的老爺爺]";
+		mes "看起來跟代代相傳的特殊物品很像。";
+		next;
+		mes "[陷入困境的老爺爺]";
+		mes "只要我們有足夠的數量，我們就能製作古代精靈的高級阿吉瑪特來對抗惡魔。";
+		next;
+		select("聽起來不錯。");
+		mes "[陷入困境的老爺爺]";
+		mes "如果你太累而無法對付惡魔...";
+		next;
+		mes "[陷入困境的老爺爺]";
+		mes "帶 3 個次級阿吉瑪特和 1,000 個被稱為 Zeny 的東西來找我。";
+		next;
+		mes "[陷入困境的老爺爺]";
+		mes "我會製作一個古代精靈的高級阿吉瑪特，它可以在 20 分鐘內增加你對惡魔 10% 的攻擊力。";
+		close;
+	case 2:
+		mes "[陷入困境的老爺爺]";
+		mes "希望你能在與惡魔的戰鬥中獲勝。";
+		close;
+	}
+}
+
+ma_fild01,238,198,4	script	提克巴蘭專家#malaya	582,{
+	if (MaxWeight - Weight < 50 || checkweight(1201,1) == 0) {
+		mes "無法進行任務，因為你身上攜帶了太多物品。";
+		close;
+	}
+	mes "[提克巴蘭專家]";
+	mes "我花了 90% 的生命在研究提克巴蘭。";
+	next;
+	switch(select("但你看起來很年輕？:什麼是提克巴蘭？:教我如何抓住提克巴蘭。")) {
+	case 1:
+		mes "[提克巴蘭專家]";
+		mes "什麼！我可能是在幻想。";
+		next;
+		mes "[提克巴蘭專家]";
+		mes "我看起來比實際年齡年輕，是因為我有一張娃娃臉。哈哈哈~";
+		next;
+		select("... ... ...");
+		mes "[提克巴蘭專家]";
+		mes "相信我！！他們說信念會為你帶來好運。";
+		close;
+	case 2:
+		mes "[提克巴蘭專家]";
+		mes "哈哈... 你問對問題了。";
+		mes "我是這方面的專家。儘管問我。";
+		next;
+		select("你為什麼不回答我？");
+		mes "[提克巴蘭專家]";
+		mes "你... 有被身邊的人騙過嗎？你為什麼不能相信別人的話？真的，隨便問我。";
+		next;
+		while(1) {
+			switch(select("我沒有任何問題。:特徵？:外貌特徵？:傳聞？:棲息地？")) {
+			case 1:
+				mes "[提克巴蘭專家]";
+				mes "我想現在的解釋已經足夠了。反正你也不會懂其他帶有專業術語的高度複雜話題。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "喔！你還有其他問題嗎？";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "你覺得如何？對我淵博的知識感到印象深刻嗎？有任何問題隨時歡迎過來。";
+				close;
+			case 2:
+				mes "[提克巴蘭專家]";
+				mes "提克巴蘭有一種方法可以在遇到旅行者時讓他們感到困惑，無論他們走到哪裡、走多遠，都會讓他們在原地打轉。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "牠們是調皮的生物。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "但當然有辦法阻止牠們的惡作劇。你知道反穿的襯衫嗎？你可以把上衣反著穿。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "或者安靜地繼續你的路，不要打擾到提克巴蘭。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "哈哈哈哈~ 但大家都知道冒險家在旅行時從來都不安靜，對吧？";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "從來不會...";
+				break;
+			case 3:
+				mes "[提克巴蘭專家]";
+				mes "他們說提克巴蘭有幾個特徵。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "首先，牠們非常高 ^AAAAAA（嘖... 真希望我也很高）^000000，有著瘦弱、不平衡的四肢。看起來幾乎像人類，但坐下時膝蓋會比上半身還高。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "其次，這是協會認可的標準特徵。牠們的頭和腳像馬一樣。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "綜合這些外貌特徵，提克巴蘭有時被稱為來自地獄的生物。";
+				break;
+			case 4:
+				mes "[提克巴蘭專家]";
+				mes "關於提克巴蘭有幾個有趣的傳聞。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "其中一個是提克巴蘭是某個崇拜自然的王國的守護者。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "因此，提克巴蘭會讓那些帶著惡意來到王國的旅行者在原地打轉來欺騙他們。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "另一個傳聞是，這附近的人說『如果晴天下雨，那一定是提克巴蘭結婚的日子』。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "協會推測，像是『巫婆結婚時會下雨』或『月夜貓結婚時會下雨』等說法，可能是從提克巴蘭的俗語衍生而來的。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "最後，古老的童話故事說提克巴蘭可以變成人形，甚至可以讓自己變透明，但至今還沒有人證實這一點。";
+				break;
+			case 5:
+				mes "[提克巴蘭專家]";
+				mes "提克巴蘭通常住在陰暗、繁忙但人煙稀少的地方。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "嗯... 例如，據說牠們住在橋下、香蕉林、竹林以及大樹下。";
+				next;
+				mes "[提克巴蘭專家]";
+				mes "這只是我的看法，但你不覺得牠們住在陰暗的地方是因為這樣更容易對人惡作劇嗎？";
+				break;
+			}
+			next;
+		}
+	case 3:
+		mes "[提克巴蘭專家]";
+		mes "哈哈哈。現在你知道我有多厲害了吧？";
+		next;
+		if (countitem(6496) >= 3 && countitem(6497) >= 5) {
+			mes "[提克巴蘭專家]";
+			mes "喔！這不就是用來製作馴服提克巴蘭的『提克巴蘭腰帶』的材料嗎？";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "『^F80835提克巴蘭腰帶^000000』可以用來輕鬆捕捉提克巴蘭。但這不代表 100% 會成功。有興趣嗎？你要我幫你做一個嗎？";
+			next;
+			switch(select("好，我有興趣。:不用了，我自己就能抓到。")) {
+			case 1:
+				delitem 6496,3; //Tikbalang_Thick_Spine
+				delitem 6497,5; //Lesser_Agimat
+				getitem 12699,1; //Tikbalang_Belt
+				mes "[提克巴蘭專家]";
+				mes "咿咿咿咿咿咿咿！呀！";
+				next;
+				specialeffect EF_SONICBLOW2;
+				select("咦？");
+				mes "[提克巴蘭專家]";
+				mes "『^F80835提克巴蘭腰帶^000000』已經做好了。";
+				close;
+			case 2:
+				mes "[提克巴蘭專家]";
+				mes "你？哈... 你想試就試吧。";
+				close;
+			}
+		}
+		mes "[提克巴蘭專家]";
+		mes "捕捉提克巴蘭有簡單的方法和困難的方法。你比較喜歡哪一種？";
+		next;
+		switch(select("簡單的方法。:困難的方法。")) {
+		case 1:
+			mes "[提克巴蘭專家]";
+			mes "哈哈。這簡單的方法是我自己想出來的。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "帶給我 3 個提克巴蘭的粗脊椎和 5 個次級阿吉瑪特，我就能為你製作一條『^F80835提克巴蘭腰帶^000000』，幫助你輕鬆捕捉提克巴蘭。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "哈哈哈哈哈！";
+			mes "我再說一次。";
+			mes "是 3 個提克巴蘭的粗脊椎和 5 個次級阿吉瑪特。明白了嗎？";
+			close;
+		case 2:
+			mes "[提克巴蘭專家]";
+			mes "這對我來說很容易，但我不知道你行不行。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "提克巴蘭的脖子後面有著鋒利、尖銳的鬃毛。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "當然！那裡有很多根，但你必須拿到最粗的三根。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "這三根鬃毛是牠們的弱點。你可以透過拔出這些鬃毛來馴服提克巴蘭。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "現在讓我解釋一下如何拔出這些鬃毛。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "你必須像蝴蝶一樣飛舞，像蜜蜂一樣落在提克巴蘭的背上。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "當然！提克巴蘭會生氣，並用盡全力想把你甩下來。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "你要做的就是緊緊抓牢，直到提克巴蘭筋疲力盡。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "話說回來，因為提克巴蘭是很強壯的生物，大概需要 4 天 3 夜才會累。但我們還是不要太在意這些細節吧。";
+			next;
+			mes "[提克巴蘭專家]";
+			mes "這意味著！！提克巴蘭已經被馴服了。";
+			close;
+		}
+	}
+}
+
+// Upgrade Boss Equipment :: malaya_mvpitem
+//============================================================
+ma_fild01,158,243,6	script	部落鐵匠#malaya	582,{
+	disable_items;
+	mes "[巴亞尼]";
+	mes "如果你帶來擁有強大力量的防具，我會幫你升級。";
+	next;
+	switch (select("會升級哪種裝備？:需要什麼材料？:升級後會變成什麼？:請幫我升級這個。")) {
+	case 1:
+		mes "[巴亞尼]";
+		mes "你的問題太簡單了，但是！";
+		next;
+		mes "[巴亞尼]";
+		mes "也很重要。";
+		next;
+		mes "[巴亞尼]";
+		mes "由據說會吞噬月亮的怪物巴科納瓦的鱗片製成的 ^7B4772巴科納瓦鱗片鎧甲^000000。";
+		next;
+		mes "[巴亞尼]";
+		mes "由馬來港周圍野生藤蔓製成，輕便但堅固的 ^7B4772卡拉薩格^000000。";
+		next;
+		mes "[巴亞尼]";
+		mes "由食人鱷魚布瓦亞的袋子製成的 ^7B4772布瓦亞的布袋^000000。";
+		next;
+		mes "[巴亞尼]";
+		mes "充滿了怪物班古歐特的仇恨與復仇的 ^7B4772班古歐特的夢魘長靴^000000。";
+		next;
+		mes "[巴亞尼]";
+		mes "正如剛剛所提到的。";
+		next;
+		mes "[巴亞尼]";
+		mes "我只會用可怕怪物掉落的最強防具來製作強大的防具。";
+		close;
+	case 2:
+		mes "[巴亞尼]";
+		mes "學得很好。";
+		mes "看來你已經學到了生活中沒有白吃的午餐。";
+		next;
+		mes "[巴亞尼]";
+		mes "首先要記住的是，要升級的物品本身必須夠強大。至少要強大到能承受 ^FF0000+9 的精煉^000000。";
+		next;
+		mes "[巴亞尼]";
+		mes "接下來是只有從自然獲得的力量中才能產生出的真正力量。我在精煉時需要 ^FF000020 個古老的怨恨^000000 來保護我不受邪惡侵擾。";
+		next;
+		mes "[巴亞尼]";
+		mes "當一件 ^FF0000+9 的精煉堅固防具^000000 結合 ^FF000020 個古老的怨恨^000000 的保護時！！";
+		next;
+		mes "[巴亞尼]";
+		mes "你就能從舊的碎片中獲得一件全新且經過改良的防具。";
+		next;
+		mes "[巴亞尼]";
+		mes "永遠期待這個吧。";
+		close;
+	case 3:
+		mes "[巴亞尼]";
+		mes "聽好了，因為這是一個非常重要的問題。";
+		next;
+		mes "[巴亞尼]";
+		mes "就算我說了一百多次升級後的防具很強大也沒有用。";
+		next;
+		mes "[巴亞尼]";
+		mes "除非持有它的人不相信！問問看有什麼改變，然後自己決定吧！";
+		next;
+		while (1) {
+			switch (select("沒別的了。:巴科納瓦鱗片鎧甲:卡拉薩格:布瓦亞的布袋:班古歐特的夢魘長靴")) {
+			case 1:
+				mes "[巴亞尼]";
+				mes "看來你已經問完問題了。";
+				mes "別忘了。你必須放棄某些東西才能獲得某些東西。";
+				close;
+			case 2:
+				mes "[巴亞尼]";
+				mes "巴科納瓦鱗片鎧甲對所有職業的所有屬性都增加 +1，總體來說對每個人都是一件很棒的鎧甲。";
+				next;
+				mes "[巴亞尼]";
+				mes "但我相信你內心深處一定覺得這還不夠。";
+				next;
+				mes "[巴亞尼]";
+				mes "這就是為什麼如果升級的話，可以為所有屬性增加 +2，並為你增加一個卡片插槽。";
+				next;
+				break;
+			case 3:
+				mes "[巴亞尼]";
+				mes "卡拉薩格是一面好盾牌，每精煉 3 次就能減少來自首領怪物 1% 的傷害。";
+				next;
+				mes "[巴亞尼]";
+				mes "但這還不夠。真不敢相信一面盾牌竟然沒有可以裝備卡片的地方。";
+				next;
+				mes "[巴亞尼]";
+				mes "這就是為什麼如果升級的話，我可以為你增加一個卡片插槽。";
+				next;
+				break;
+			case 4:
+				mes "[巴亞尼]";
+				mes "布瓦亞的布袋每精煉 3 次就能提升 1% 的治癒能力和治癒物品效果。更不用說它還能減少來自水、地、火和風屬性怪物 10% 的傷害。";
+				next;
+				mes "[巴亞尼]";
+				mes "但這還不夠。真不敢相信這些衣服竟然沒有可以裝備卡片的地方。大家都知道衣服上應該要插幽靈劍士卡片（Raydric）！";
+				next;
+				mes "[巴亞尼]";
+				mes "別擔心！如果升級的話，我可以為你增加一個卡片插槽。";
+				next;
+				break;
+			case 5:
+				mes "[巴亞尼]";
+				mes "班古歐特的夢魘長靴每精煉 1 次就能增加 +1 的 MDEF，並且在精煉 +14 及以上時會提升移動速度。";
+				next;
+				mes "[巴亞尼]";
+				mes "像月夜貓長靴和斯雷普尼爾之靴等物品提升移動速度的效果，對一般人來說是遙不可及的。";
+				next;
+				mes "[巴亞尼]";
+				mes "當然，+14 的精煉並不容易，但有一個簡單的方法可以得到。";
+				next;
+				mes "[巴亞尼]";
+				mes "透過升級你的長靴，你可以在精煉 +12 時就獲得提升移動速度的效果！";
+				next;
+				mes "[巴亞尼]";
+				mes "而且還不僅如此！！";
+				mes "我也會為你增加一個卡片插槽。";
+				next;
+				break;
+			}
+			mes "[巴亞尼]";
+			mes "不過，你必須放棄某些東西才能獲得某些東西。";
+			next;
+			mes "[巴亞尼]";
+			mes "^0000FF同時裝備卡拉薩格、布瓦亞的布袋、巴科納瓦鱗片鎧甲和班古歐特的夢魘長靴時，將會失去 ^FF0000套裝效果^0000FF。^000000";
+			next;
+			mes "[巴亞尼]";
+			mes "仔細想清楚。還有下一個問題嗎？";
+			next;
+		}
+	}
+	mes "[巴亞尼]";
+	mes "哈哈哈哈哈哈哈！很好！";
+	mes "你帶材料來了吧？";
+	next;
+	if (select("喔... 抱歉...:準備完成了！！") == 1) {
+		mes "[巴亞尼]";
+		mes "喔不！！";
+		mes "我需要一件輕便但堅固的防具，精煉程度達到 +9 或以上，以及 20 個古老的怨恨！！";
+		close;
+	}
+	if (countitem(6499) < 20) {
+		mes "[巴亞尼]";
+		mes "你說都準備好了，結果你給我這個？！我至少需要 20 個古老的怨恨才能幫你精煉物品。";
+		close;
+	}
+	mes "[巴亞尼]";
+	mes "那麼你要升級哪件防具？";
+	next;
+	switch (select("巴科納瓦鱗片鎧甲:卡拉薩格:布瓦亞的布袋:班古歐特的夢魘長靴")) {
+	case 1:
+		.@part    = EQI_ARMOR;
+		.@item    = 15051;
+		.@newItem = 15052;
+		break;
+	case 2:
+		.@part    = EQI_HAND_L;
+		.@item    = 2169;
+		.@newItem = 2170;
+		break;
+	case 3:
+		.@part    = EQI_GARMENT;
+		.@item    = 2590;
+		.@newItem = 2591;
+		break;
+	case 4:
+		.@part    = EQI_SHOES;
+		.@item    = 2491;
+		.@newItem = 2492;
+		break;
+	}
+	
+	if (!getequipisequiped(.@part)) {
+		mes "[巴亞尼]";
+		mes "你應該穿著要升級的裝備，而不是沒有穿在身上就跑來。";
+		close;
+	} else if (getequipid(.@part) != .@item) {
+		mes "[巴亞尼]";
+		mes "這是什麼！你說你想升級 " + getitemname(.@item) + "，但你為什麼給我這個？你應該要裝備著 " + getitemname(.@item) + "。";
+		close;
+	}
+	.@equip_refine = getequiprefinerycnt(.@part);
+	if (.@equip_refine < 9) {
+		mes "[巴亞尼]";
+		mes "不，這件物品的堅固程度還沒有經過測試。它至少必須精煉到 +9，我才能說：『喔，這是一件相當堅固的防具。』";
+		close;
+	}
+
+	mes "[巴亞尼]";
+	mes "看來你有做好功課！找不出什麼瑕疵！那麼在開始精煉之前，我有一個問題要問你。";
+	next;
+	mes "[巴亞尼]";
+	mes "^0000FF物品精煉後，精煉等級將會變成 ^FF00000^0000FF，並且物品會被升級。^000000 你明白這點嗎？";
+	next;
+	if (select("不明白。:明白。") == 1) {
+		mes "[巴亞尼]";
+		mes "什麼？你不知道嗎？那麼，看清楚我的說明後再來吧。";
+		close;
+	}
+	mes "[巴亞尼]";
+	mes "很好。下一個問題。一旦精煉完成，";
+	mes "^0000FF同時裝備卡拉薩格、布瓦亞的布袋、巴科納瓦鱗片鎧甲和班古歐特的夢魘長靴時，將會失去 ^FF0000套裝效果^0000FF。^000000";
+	mes "你明白這一點嗎？";
+	next;
+	if (select("不明白。:明白。") == 1) {
+		mes "[巴亞尼]";
+		mes "什麼？你不知道嗎？那麼，看清楚我的說明後再來吧。";
+		close;
+	}
+	mes "[巴亞尼]";
+	mes "太棒了！那我們開始精煉 " + getitemname(.@item) + " 吧。";
+	next;
+	specialeffect EF_SONICBLOW;
+	mes "[巴亞尼]";
+	mes "砰！！哇！！劈里... 啪啦！";
+	next;
+	specialeffect2 EF_TRIPLEATTACK;
+	mes "[巴亞尼]";
+	mes "砰！！";
+	next;
+	delitem 6499,20;
+	//Ancient_Grudge
+
+	// anti-hack
+	if (callfunc("F_IsEquipIDHack", .@part, .@item) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
+		close;
+
+	delequip .@part;
+	getitem .@newItem, 1; 
+	mes "[巴亞尼]";
+	mes "哈哈。太完美了。";
+	mes "恭喜你。你的防具比以前更棒了。";
+	close;
+}
+
+// Secret in the Woods :: malaya_buwaya
+//============================================================
+malaya,305,281,3	script	守衛#buwaya	570,7,7,{
+	if (malaya_hi < 10) {
+		mes "- 從守衛臉上警惕的神情來看，很明顯他一看到你就提高了警覺。他不會威嚇你，但似乎也不打算理你。 -";
+		next;
+		mes "- 村子裡會有其他人願意交談嗎？ -";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[守衛]";
+		mes "馬來港外有一個叫做 ^3131FF巴里優 馬西瓦卡^000000 的小區域。";
+		mes "那個地方比我們這裡更貼近大自然。";
+		next;
+		mes "[守衛]";
+		mes "另一方面，該地區充滿了兇猛的怪物。去那裡旅行時請多保重。";
+		close;
+	}
+	if (malaya_buwaya == 0) {
+		mes "[守衛]";
+		mes "最近有越來越多的人偷偷離開村子。你也是要去森林裡尋找神秘的寶藏嗎？";
+		next;
+		if (BaseLevel < 100) {
+			mes "[守衛]";
+			mes "我收回那句話。仔細想想，我不認為像你這樣的弱者敢去那裡。";
+			next;
+			mes "[守衛]";
+			mes "如果你想走出馬來港，最好緊緊牽著你媽媽的手，否則怪物會把你活活吃掉。哈哈。";
+			close;
+		}
+		mes "[守衛]";
+		mes "這就是為什麼最近這裡有更多外地人的原因嗎？現在別偷偷摸摸又自以為是了。你怎麼知道我會不會主動帶你到處看看？";
+		next;
+		if (select("寶藏？:無視。") == 2) {
+			mes "[守衛]";
+			mes "你在無視我嗎？呸。";
+			close;
+		}
+		mes "[守衛]";
+		mes "喔，所以你不是來尋寶的？";
+		next;
+		mes "[守衛]";
+		mes "我聽到人們在談論隱藏在森林深處的神秘寶藏。";
+		set malaya_buwaya,1;
+		setquest 2271;
+		next;
+	}
+	if (malaya_buwaya == 1) {
+		mes "[守衛]";
+		mes "你看到那邊那群人了嗎？他們總是聚在一起，每天都在談論這件事。";
+		mes "如果你也有興趣，可以試著跟他們談談。";
+		close;
+	}
+	mes "[守衛]";
+	mes "所以關於寶藏的說法只是個謠言？我這麼問可不是因為我想一夜致富。哈哈。";
+	close;
+OnTouch:
+	if ((malaya_hi > 19) && (malaya_buwaya == 0)) {
+		emotion ET_SURPRISE;
+		emotion ET_SURPRISE, playerattached();
+	}
+	end;
+}
+malaya,276,288,5	script	馬來港村民::buwaya_A	582,{
+	if (malaya_hi < 20) {
+		mes "- 他們一邊交頭接耳，一邊警惕地看著你。 -";
+		close;
+	} else if (malaya_buwaya == 1) {
+		emotion ET_SURPRISE, getnpcid(0, "buwaya_A");
+		mes "[馬來港村民]";
+		mes "不，我聽說他們在森林裡迷路了。";
+		mes "誰會把這樣的寶藏藏在像我們這樣的小村莊裡？";
+		next;
+		emotion ET_PROFUSELY_SWEAT, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "會不會是怪物？我奶奶說森林深處住著一隻有著巨大頭顱的龍。";
+		next;
+		emotion ET_STARE_ABOUT, getnpcid(0, "buwaya_C");
+		mes "[馬來港村民]";
+		mes "不。聽我說。";
+		next;
+		mes "[馬來港村民]";
+		mes "你們都知道 ^3131FF托托伊^000000 嗎？住在 ^3131FF旅館^000000 的那個孩子。";
+		mes "那麼，你們知道托托伊最近從森林裡回來了嗎？";
+		next;
+		emotion ET_HUK, getnpcid(0, "buwaya_A");
+		emotion ET_HUK, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "真的嗎？？？他活著回來了？";
+		next;
+		emotion ET_SURPRISE, getnpcid(0, "buwaya_C");
+		mes "[馬來港村民]";
+		mes "是啊。但奇怪的是，那個惹禍精 ^3131FF托托伊^000000 現在安靜地待在家裡，再也不出來了。";
+		next;
+		emotion ET_QUESTION, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "為什麼？";
+		next;
+		emotion ET_SURPRISE, getnpcid(0, "buwaya_C");
+		mes "[馬來港村民]";
+		mes "你們還不明白嗎？托托伊一定是找到了寶藏。";
+		next;
+		emotion ET_HUK, getnpcid(0, "buwaya_A");
+		emotion ET_HUK, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "什麼！！！！那 ^3131FF托托伊^000000 現在很有錢了？";
+		next;
+		emotion ET_STARE_ABOUT, getnpcid(0, "buwaya_C");
+		mes "[馬來港村民]";
+		mes "我不這麼認為。";
+		mes "我看到 ^3131FF托托伊^000000 回家了，但托托伊身上什麼都沒帶。";
+		mes "不過，我可能沒看清楚，因為我馬上就跑回家了。";
+		next;
+		emotion ET_QUESTION, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "那 ^3131FF托托伊^000000 在家裡做什麼？";
+		next;
+		emotion ET_THINK, getnpcid(0, "buwaya_C");
+		mes "[馬來港村民]";
+		mes "我猜托托伊正在計劃如何瞞著我們把寶藏帶回來。";
+		mes "為了把整個寶藏據為己有，那個貪心的孩子。";
+		next;
+		emotion ET_QUESTION, getnpcid(0, "buwaya_A");
+		mes "[馬來港村民]";
+		mes "那是真的嗎？";
+		next;
+		emotion ET_BIGTHROB, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "寶藏交給我保管會比較好 ~";
+		mes "我會每天把它擦得閃閃發亮，並把它當作美麗的裝飾品。啊~~~";
+		next;
+		emotion ET_THINK, getnpcid(0, "buwaya_C");
+		mes "[馬來港村民]";
+		mes "那我們去跟 ^3131FF托托伊^000000 談談，讓他把寶藏的位置說出來怎麼樣？";
+		next;
+		emotion ET_QUESTION, getnpcid(0, "buwaya_A");
+		mes "[馬來港村民]";
+		mes "哇。真是個好主意。難怪你是老大！";
+		next;
+		emotion ET_THINK, getnpcid(0, "buwaya_A");
+		mes "[馬來港村民]";
+		mes "但 ^3131FF托托伊^000000 會輕易交出情報嗎？";
+		mes "因為托托伊很狡猾，甚至想把整個寶藏據為己有。";
+		next;
+		emotion ET_CRY, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "那我們應該說服 ^3131FF托托伊^000000 告訴我們寶藏在哪裡，而不是自己去找。";
+		next;
+		emotion ET_CRY, getnpcid(0, "buwaya_B");
+		mes "[馬來港村民]";
+		mes "啊~~~ 現在要弄到漂亮的東西真是太難了 ~~~！！！！";
+		set malaya_buwaya,2;
+		erasequest 2271;
+		setquest 2272;
+		close;
+	} else if (malaya_buwaya == 2) {
+		mes "- 最好去拜訪一下這個托托伊，以獲取更多關於寶藏的情報。 -";
+		close;
+	} else {
+		mes "- 人們正神情嚴肅地交談著。 -";
+		close;
+	}
+}
+malaya,278,288,3	duplicate(buwaya_A)	馬來港村民::buwaya_B	583
+malaya,276,286,7	duplicate(buwaya_A)	馬來港村民::buwaya_C	582
+
+ma_in01,47,101,3	script	托托伊#buwaya	577,7,7,{
+	if ((malaya_hi < 20) || (malaya_buwaya < 2)) {
+		mes "- 看到一個眼神呆滯、身體發抖的人。 -";
+		close;
+	}
+	if (malaya_buwaya == 2) {
+		mes "- 看到一個眼神呆滯、身體發抖的人。 -";
+		next;
+		if (select("拍拍他的肩膀。:無視他。") == 2)
+			close;
+		emotion ET_HUK;
+		mes "[托托伊]";
+		mes "哇！不！走開！別煩我！";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "嘿，你還好嗎？";
+		next;
+		mes "[托托伊]";
+		mes "咦... 你是人？你是誰？";
+		next;
+		mes "- 他直勾勾地看著你的臉，但似乎認不出你。 -";
+		next;
+		mes "[托托伊]";
+		mes "是誰在那裡？";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "我是 " + strcharinfo(0) + "。你是托托伊，對吧？人們說你找到了寶藏。這是真的嗎？";
+		next;
+		mes "[托托伊]";
+		mes "什麼寶藏？";
+		mes "我看不見。我瞎了。請幫幫我。我又累又沮喪。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "發生了什麼事？";
+		next;
+		mes "[托托伊]";
+		mes "不能說太久。我必須先治好我的眼睛。";
+		mes "抽屜裡應該還有一些 ^3131FF綠色藥水^000000。你能幫我拿出來嗎？";
+		set malaya_buwaya,3;
+		close;
+	} else if (malaya_buwaya == 3) {
+		if (!countitem(506)) {
+			mes "[托托伊]";
+			mes "不能說太久。我必須先治好我的眼睛。";
+			mes "抽屜裡應該還有一些 ^3131FF綠色藥水^000000。你能幫我拿過來嗎？";
+			close;
+		}
+		mes "[托托伊]";
+		mes "哈囉？嘿，你還在嗎？綠色藥水怎麼了？天啊，這快把我逼瘋了。";
+		next;
+		if (select("交出綠色藥水。:不交出藥水。") == 2) {
+			mes "[托托伊]";
+			mes "你真的走了嗎？嘿！可惡！";
+		} else {
+			mes "[托托伊]";
+			mes "咕嚕，咕嚕...";
+			delitem 506,1; //Green_Potion
+			set malaya_buwaya,4;
+		}
+		close;
+	} else if (malaya_buwaya == 4) {
+		emotion ET_SURPRISE;
+		mes "[托托伊]";
+		mes "我看得見了！！我的眼睛看得見了！！！";
+		mes "耶！我現在感覺好多了！";
+		next;
+		emotion ET_THINK, playerattached();
+		emotion ET_BEST;
+		mes "[托托伊]";
+		mes "哇！你看起來比你聽起來的樣子要好。哈哈。";
+		next;
+		mes "[托托伊]";
+		mes "但你剛剛說什麼？關於寶藏的事？";
+		mes "你說我找到了寶藏？";
+		mes "那是在說什麼？";
+		next;
+		select("告訴他大家在討論的事。");
+		emotion ET_SMILE;
+		mes "[托托伊]";
+		mes "什麼？";
+		mes "噗哈哈！托托伊發財了！一夜致富！艾德老大！";
+		next;
+		emotion ET_HNG;
+		mes "[托托伊]";
+		mes "抱歉，但我去森林是為了收集蟲子。我也希望在收集時能看到寶藏。哼！";
+		next;
+		emotion ET_THINK;
+		mes "[托托伊]";
+		mes "我確實深入了森林，因為我收集蟲子一無所獲。但誰會想到我會惹上這個麻煩？";
+		next;
+		if (select("托托伊看到了什麼:關於蟲子") == 2) {
+			mes "[托托伊]";
+			mes "我只是想讓人們看看我收集的可愛蟲子。哈哈。";
+			next;
+			emotion ET_SMILE;
+			mes "[托托伊]";
+			mes "把冰塊或蟲子丟進別人的衣服裡，就像日常問候一樣，不是嗎？";
+			next;
+			mes "[托托伊]";
+			mes "我喜歡看著人們像跑馬拉松一樣在村子裡跑來跑去。嘿嘿。";
+			next;
+		}
+		mes "[托托伊]";
+		mes "我以為人們不會因為普通的蟲子而跑開，所以我跟艾德一起進了森林。";
+		next;
+		mes "[托托伊]";
+		mes "啊，艾德是我可愛的小狗。牠很乖也很惹人愛。是我在全世界最好的朋友。";
+		next;
+		emotion ET_THINK;
+		mes "[托托伊]";
+		mes "艾德通常很愛叫，但我應該在牠叫並拉我袖子時四處看看的。";
+		next;
+		mes "- 托托伊彎下腰向你竊竊私語，彷彿隔牆有耳。 -";
+		next;
+		mes "[托托伊]";
+		mes "有一隻嘴巴像房子一樣大的怪物就在我身後。";
+		next;
+		select("一隻怪物？！");
+		mes "[托托伊]";
+		mes "噓！安靜點。我從來沒見過那麼大的嘴巴。裡面滿是從尖銳牙齒流出的口水河。光是想到就讓我想躲起來。";
+		next;
+		mes "[托托伊]";
+		mes "最可怕的是那隻怪物有兩個頭。直到你親眼看到你才會相信。";
+		next;
+		emotion ET_CRY;
+		mes "[托托伊]";
+		mes "艾德用盡全力咬住怪物的腿，好讓我能逃走。但我不知道牠後來怎麼了。吸鼻涕~";
+		next;
+		mes "[托托伊]";
+		mes "就在那時我傷到了眼睛。老實說，我甚至不記得我是怎麼回來的。";
+		next;
+		select("關於那隻怪物");
+		mes "[托托伊]";
+		mes "不知道。這是我第一次看到那樣的怪物。誰能活著回來述說這個故事？";
+		next;
+		mes "[托托伊]";
+		mes "等等，也許 ^FF0000狩獵大師^000000 會知道那隻怪物的事。他們說他跟各種怪物戰鬥過。";
+		next;
+		mes "[托托伊]";
+		mes "我需要獨處一段時間。我得為艾德做個墓碑。如果你想見 ^FF0000狩獵大師^000000，你會在武器店附近找到他。";
+		next;
+		mes "[托托伊]";
+		mes "去告訴其他人別再散播寶藏的謠言了。他們根本不知道我經歷了什麼。吸鼻涕！我要把古老巨蟲塞進每個人的衣服裡！";
+		set malaya_buwaya,5;
+		erasequest 2272;
+		setquest 2273;
+		close;
+	} else if (malaya_buwaya == 5) {
+		mes "[托托伊]";
+		mes "我得為艾德做個墳墓。我忠實的朋友，艾德...";
+		mes "如果你想見 ^FF0000狩獵大師^000000，你會在武器店附近找到他。";
+		close;
+	} else if (malaya_buwaya == 6) {
+		mes "[托托伊]";
+		mes "艾德！！艾德得得得得得得得！！！";
+		mes "真不敢相信你為了救我而犧牲了自己。哀嚎！！！";
+		next;
+		mes "- 托托伊哭得這麼傷心，他肯定沒有說謊。 -";
+		close;
+	} else if (malaya_buwaya == 7) {
+		mes "[托托伊]";
+		mes "我在哪裡看到怪物的？";
+		next;
+		mes "[托托伊]";
+		mes "嗯... 嗯...";
+		mes "我忙著逃跑...";
+		next;
+		mes "[托托伊]";
+		mes "那是在森林的非常深處。可能甚至超過了巴里優 馬西瓦卡。";
+		mes "我想我聽到了 ^3131FF流水^000000 的聲音。一個巨大的嗖嗖聲。這就是我記得的全部了。";
+		close;
+	} else if ((malaya_buwaya > 7) && (malaya_buwaya < 12)) {
+		mes "[托托伊]";
+		mes "可憐的艾德。我想念艾德。哀嚎！！！！";
+		close;
+	} else if (malaya_buwaya == 12) {
+		emotion ET_CRY;
+		mes "[托托伊]";
+		mes "可憐的艾德。我想念艾德。哀嚎！！！！";
+		next;
+		enablenpc "狗#buwaya_totoi";
+		mes "[狗]";
+		mes "汪汪！！";
+		next;
+		emotion ET_HUK;
+		mes "[托托伊]";
+		mes "艾德！！";
+		mes "艾德！！！你還活著！！！";
+		mes "你回來了！！！我太高興了！！！！";
+		next;
+		mes "[托托伊]";
+		mes "是你把艾德帶回來的嗎？";
+		mes "非常感謝你！";
+		mes "你沒有看到怪物吧，對吧？";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "那隻怪物叫做布瓦亞（Buwaya）。我已經把怪物的事告訴守衛了。你最好別再靠近那個地方了。";
+		next;
+		mes "[托托伊]";
+		mes "好的！";
+		mes "嘿嘿。艾德，森林太危險了，我們不能再去那裡抓蟲子了。";
+		next;
+		mes "[狗]";
+		mes "嗚嗚...";
+		next;
+		mes "[托托伊]";
+		mes "但我相信我們能找到其他令人毛骨悚然的東西來保持我們的名聲！";
+		next;
+		mes "[狗]";
+		mes "汪汪！！";
+		next;
+		/*
+		// Better translation needed.
+		mes "[托托伊]";
+		mes "嗯... 嘿！";
+		next;
+		select("你是一個" + ((Sex == SEX_MALE) ? "男孩" : "女孩") + "，對吧？");
+		emotion ET_HUK, playerattached();
+		mes "[托托伊]";
+		mes "咦？";
+		if (Sex == SEX_FEMALE) {
+			mes "托托伊是女孩，而你是男孩。";
+			mes "你不是男孩嗎？";
+		} else {
+			mes "托托伊是女孩，而你也是女孩。";
+			mes "你不是女孩嗎？";
+		}
+		next;
+		mes "[托托伊]";
+		mes "是因為我的名字，托托伊嗎？但那是我父母在出生時以為我是個男孩才取的名字。哈哈！";
+		next;
+		*/
+		mes "[托托伊]";
+		mes "總之，謝謝你把我最好的朋友帶回來。";
+		mes "我沒什麼東西，但還是想謝謝你。等等，讓我看看我的抽屜裡有什麼。嘿嘿-";
+		set malaya_buwaya,13;
+		erasequest 2278;
+		setquest 2279;
+		close;
+	} else if (malaya_buwaya == 13) {
+		if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+			mes "- 等等！！ -";
+			mes "- 你的物品欄太滿了。 -";
+			mes "- 無法領取物品。 -";
+			mes "- 請清理你的物品 -";
+			mes "- 然後再試一次。 -";
+			close;
+		}
+		mes "- 托托伊翻遍了抽屜，把它翻了個底朝天。把房間弄得一團糟。 -";
+		next;
+		mes "[托托伊]";
+		mes "找到了！";
+		next;
+		mes "[托托伊]";
+		mes "這個。這是我媽媽給我的，但我不知道怎麼用... 嘿嘿。";
+		mes "希望你能用得上。";
+		next;
+		mes "[托托伊]";
+		mes "無聊的時候來找我玩吧！";
+		mes "只是別再問關於寶藏的事了~！";
+		next;
+		mes "[狗]";
+		mes "汪汪汪！！！！";
+		set malaya_buwaya,14;
+		if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+			getitem 6497,10; //Lesser_Agimat
+		else
+			getitem 6497,5; //Lesser_Agimat
+		disablenpc "狗#buwaya_totoi";
+		erasequest 2279;
+		setquest 2280;
+		close;
+	} else {
+		mes "[托托伊]";
+		mes "艾德出去玩了，所以我一個人。";
+		mes "會有什麼很棒的東西可以讓人們大吃一驚嗎？";
+		close;
+	}
+OnTouch_:
+	emotion ET_HUK;
+	end;
+}
+
+ma_in01,43,101,7	script	狗#buwaya_totoi	81,{
+	end;
+OnInit:
+	disablenpc "狗#buwaya_totoi";
+	end;
+}
+
+ma_in01,44,105,3	script	抽屜#buwaya	844,{
+	if (malaya_buwaya == 3) {
+		mes "- 你在托托伊的抽屜裡尋找綠色藥水。 -";
+		next;
+		mes "- 翻找，摸索。 -";
+		next;
+		mes "- 翻找，摸索。 -";
+		mes "- 翻找，摸索。 -";
+		next;
+		mes "- 喀啦，?啷，嘎吱。 -";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "什麼？我只看到一個空的藥水瓶。";
+		mes "這代表我得自己去拿藥水嗎？那個托托伊真是個麻煩製造者。";
+		close;
+	}
+	end;
+}
+
+malaya,290,152,5	script	狩獵大師#buwaya	578,{
+	if ((malaya_hi < 20) || (malaya_buwaya < 5)) {
+		mes "[狩獵大師]";
+		mes "喔！吼！吼！";
+		mes "我是狩獵大師！我什麼都不怕，只有一個例外！我怕外地人...";
+		close;
+	}
+	if (malaya_buwaya == 5) {
+		mes "[狩獵大師]";
+		mes "喲！吼！吼！";
+		mes "我大老遠跑去盧恩米德加茲王國打敗了狂暴米諾斯。";
+		next;
+		mes "[狩獵大師]";
+		mes "而且我還成功殺死了木卡，那個有著擾亂世界和平的惡魔聲音的傢伙。";
+		mes "哇！牠真的很難纏。光是想到牠我就開始冒汗。";
+		next;
+		mes "[狩獵大師]";
+		mes "喲！你看起來也有幾段自己的戰鬥故事。你見過米諾斯嗎？哈哈哈！";
+		next;
+		mes "[狩獵大師]";
+		mes "所以你來這裡是為了學習我出色的狩獵技巧？還是想請我出版一篇關於狩獵大師的文章？吼！";
+		next;
+		if (select("關於托托伊的怪物:打斷他。") == 2) {
+			mes "[狩獵大師]";
+			mes "喔？嘿！你要去哪裡？！";
+			close;
+		}
+		mes "[狩獵大師]";
+		mes "你說有人看到了怪物？";
+		next;
+		mes "[狩獵大師]";
+		mes "馬來港內外有很多怪物。這隻有什麼特別的？";
+		next;
+		select("關於一隻有兩個頭的怪物");
+		mes "[狩獵大師]";
+		mes "吼！你說有兩個頭的怪物？你在開玩笑吧？這世上哪有兩個頭的怪物？！";
+		next;
+		mes "[狩獵大師]";
+		mes "那孩子一定是被禿鷹什麼的嚇到了。";
+		mes "俗話說，被帕梅特嚇到的人，看到桃樹也會嚇一跳。哈哈哈！";
+		next;
+		mes "[狩獵大師]";
+		mes "你不該對大人撒謊。我明白你想引起狩獵大師的注意。哈哈哈！";
+		next;
+		if (select("我會證明的。:對托托伊感到懷疑。") == 2) {
+			mes "[狩獵大師]";
+			mes "小孩子說故事都有他們自己的理由。我敢說托托伊也是一樣。";
+			set malaya_buwaya,6;
+			close;
+		}
+		mes "[狩獵大師]";
+		mes "喔！真的嗎？如果你真的認為那孩子說的是實話，就拿出證據來。";
+		next;
+		mes "[狩獵大師]";
+		mes "每個生物都會留下某種痕跡。無論你走到哪裡，也會留下痕跡和氣味。特別是在私密的地方，你懂的。嘿嘿！";
+		next;
+		mes "[狩獵大師]";
+		mes "試著從那孩子看到怪物的地方收集 10 個動物樣本。我會從那些樣本中尋找那隻怪物的痕跡。";
+		next;
+		mes "[狩獵大師]";
+		mes (Sex == SEX_MALE) ?
+"這工作不會很愉快，但任何勇敢的男人都能輕鬆完成，你同意吧？"
+: "我不想讓漂亮女孩的手沾上臭味，但像妳這樣的人我就不在乎了。哈哈哈！";
+		set malaya_buwaya,7;
+		erasequest 2273;
+		setquest 2274;
+		close;
+	} else if (malaya_buwaya == 6) {
+		mes "[狩獵大師]";
+		mes "喔，你回來了！";
+		next;
+		if (select("來看看我們有沒有抓到怪物！:我不認為那裡有怪物。") == 2) {
+			mes "[狩獵大師]";
+			mes "這只是個小孩子的玩笑。哈哈哈。";
+			close;
+		}
+		mes "[狩獵大師]";
+		mes "喔！真的嗎？如果你真的認為那孩子說的是實話，就拿出證據來。";
+		next;
+		mes "[狩獵大師]";
+		mes "每個生物都會留下某種痕跡。無論你走到哪裡，也會留下痕跡和氣味。特別是在私密的地方，你懂的。嘿嘿！";
+		next;
+		mes "[狩獵大師]";
+		mes "試著從那孩子看到怪物的地方收集 10 個動物樣本。我會從那些樣本中尋找那隻怪物的痕跡。";
+		next;
+		mes "[狩獵大師]";
+		mes (Sex == SEX_MALE) ?
+"這工作不會很愉快，但任何勇敢的男人都能輕鬆完成，你同意吧？"
+: "我不想讓漂亮女孩的手沾上臭味，但像妳這樣的人我就不在乎了。哈哈哈！";
+		set malaya_buwaya,7;
+		erasequest 2273;
+		setquest 2274;
+		close;
+	} else if (malaya_buwaya == 7) {
+		if (countitem(6519) < 10) {
+			mes "[狩獵大師]";
+			mes "如果你想證明有一隻雙頭怪物，就帶樣本回來給我。";
+			close;
+		}
+		mes "[狩獵大師]";
+		mes "呃！真臭。";
+		mes "你還真的帶回了樣本。";
+		mes "吼！放在那裡，洗完手再來。帶著那種惡臭，連神都不會對你微笑的。";
+		delitem 6519,10; //Collected_Sample
+		set malaya_buwaya,8;
+		erasequest 2274;
+		setquest 2275;
+		close;
+	} else if (malaya_buwaya == 8) {
+		mes "[狩獵大師]";
+		mes "吼！我來看看？";
+		next;
+		mes "- 翻找，摸索。 -";
+		next;
+		mes "- 翻找，摸索。 -";
+		mes "- 蠕動，扭動。 -";
+		next;
+		mes "- 翻找，摸索。 -";
+		mes "- 蠕動，扭動。 -";
+		mes "- 搖晃，搖擺。 -";
+		next;
+		mes "[狩獵大師]";
+		mes "吼！這是！！";
+		next;
+		mes "[狩獵大師]";
+		mes "哇！吼！吼！吼！太驚人了！！！！！！";
+		next;
+		mes "[狩獵大師]";
+		mes "你！過來摸摸這個！";
+		set malaya_buwaya,9;
+		enablenpc "#buwaya_soil";
+		close;
+	} else if (malaya_buwaya == 9) {
+		mes "[狩獵大師]";
+		mes "別光站在那裡。摸摸看樣本！";
+		enablenpc "#buwaya_soil";
+		close;
+	} else if (malaya_buwaya == 10) {
+		mes "[狩獵大師]";
+		mes "快去告訴守衛隊長布瓦亞又開始活動了。快去！你可以在村莊北部找到守衛隊長。";
+		close;
+	} else {
+		mes "[狩獵大師]";
+		mes "打呼...";
+		close;
+	}
+}
+
+malaya,291,152,3	script	#buwaya_soil	557,{
+	if (malaya_buwaya == 9) {
+		mes "- 翻找，摸索。 -";
+		next;
+		mes "- 翻找，摸索。 -";
+		mes "- 蠕動，扭動。 -";
+		next;
+		mes "- 翻找，摸索。 -";
+		mes "- 蠕動，扭動。 -";
+		mes "- 搖晃，搖擺。 -";
+		next;
+		if (rand(1,10) <= 5) {
+			mes "[" + strcharinfo(0) + "]";
+			mes "我什麼都沒看到。";
+			next;
+			mes "[狩獵大師]";
+			mes "不可能！再看仔細一點！";
+		} else {
+			mes "- 你的指尖摸到了某個尖銳的東西。 -";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "哎喲！";
+			mes "這是什麼？";
+			next;
+			mes "[狩獵大師]";
+			mes "吼！這太巨大了！而且密度極高，連鋼鐵都能輕易刮傷！";
+			next;
+			mes "[狩獵大師]";
+			mes "這是 ^3131FF布瓦亞^000000 的牙齒！";
+			mes "怎麼會這樣！";
+			next;
+			select("布瓦亞？");
+			mes "[狩獵大師]";
+			mes "啊！對！別再拿著它了。好臭。去洗洗手吧。";
+			next;
+			mes "[狩獵大師]";
+			mes "嗯。那孩子看到的怪物一定就是布瓦亞。毫無疑問。";
+			next;
+			mes "[狩獵大師]";
+			mes "我聽說我媽媽那邊的叔公的鄰居的妻子也是被布瓦亞殺死的。";
+			next;
+			mes "[狩獵大師]";
+			mes "傳說布瓦亞經過的地方，沒有任何生物能倖存。";
+			mes "托托伊真是個幸運的孩子。哇！";
+			next;
+			mes "[狩獵大師]";
+			mes "布瓦亞已經沉寂了很長一段時間。不知道是不是在冬眠？嗯。";
+			next;
+			mes "[狩獵大師]";
+			mes "既然我知道有那樣的怪物在外面，我也應該謹慎一點。";
+			mes "必須告訴村民不要走進森林深處。";
+			next;
+			mes "[狩獵大師]";
+			mes "請去告訴守衛隊長，布瓦亞又開始活動了。";
+			mes "同時我會聯絡其他獵人，想出一個殺死布瓦亞的計畫。";
+			set malaya_buwaya,10;
+			disablenpc "#buwaya_soil";
+			erasequest 2275;
+			setquest 2276;
+		}
+		close;
+	}
+	end;
+OnInit:
+	disablenpc "#buwaya_soil";
+	end;
+}
+
+-	script	不明痕跡#buwaya	-1,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+		mes "- 等等！！ -";
+		mes "- 你的物品欄太滿了。 -";
+		mes "- 無法領取物品。 -";
+		mes "- 請清理你的物品 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	if (malaya_buwaya == 7) {
+		if (countitem(6519) >= 10) {
+			mes "- 你不需要收集更多樣本了。 -";
+			close;
+		}
+		mes "- 你看到某個跟泥土和草糾結在一起的東西。 -";
+		next;
+		if (rand(1,10) <= 2) {
+			mes "- 你收集的樣本發出的惡臭讓你感到噁心。 -";
+			sc_start SC_POISON,5000,0;
+			close;
+		}
+		mes "- 你緩慢而謹慎地收集了那些黏糊糊且微微發熱的物質。 -";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "像母親的胸膛一樣溫暖。";
+		getitem 6519,1; //Collected_Sample
+		disablenpc();
+		initnpctimer;
+		close;
+	}
+	end;
+OnTimer20000:
+	enablenpc();
+	stopnpctimer;
+	end;
+}
+ma_fild02,155,235,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_1	557
+ma_fild02,143,142,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_2	557
+ma_fild02,266,155,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_3	557
+ma_fild02,221,91,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_4	557
+ma_fild02,205,85,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_5	557
+ma_fild02,300,98,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_6	557
+ma_fild02,100,275,3	duplicate(不明痕跡#buwaya)	不明痕跡#buwaya_7	557
+
+malaya,290,340,3	script	守衛隊長#buwaya	571,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+		mes "- 等等！！ -";
+		mes "- 你的物品欄太滿了。 -";
+		mes "- 無法領取物品。 -";
+		mes "- 請清理你的物品 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	if (malaya_hi < 20) {
+		mes "- 他們一邊交頭接耳，一邊警惕地看著你。 -";
+		close;
+	}
+	if (malaya_buwaya < 10) {
+		mes "[守衛隊長]";
+		mes "因為班古歐特的僕從攻擊了醫院，我們現在忙得不可開交。";
+		next;
+		mes "[守衛隊長]";
+		mes "我們正在盡力確保村莊的安全，所以請好好享受你在馬來港的時光。";
+		next;
+	}
+	if (malaya_buwaya == 10) {
+		if (select("告訴他關於布瓦亞的事。:結束對話。") == 2) {
+			close;
+		}
+		mes "[守衛隊長]";
+		mes "布瓦亞？那隻無情的生物又回來了？";
+		next;
+		mes "[守衛隊長]";
+		mes "這真是個壞消息。我們為了擊退班古歐特已經把所有人都派了出去，人手嚴重不足。";
+		next;
+		mes "[守衛隊長]";
+		mes "而且村民們還必須去森林裡採集水果和蔬菜。";
+		next;
+		mes "[守衛隊長]";
+		mes "嗯... 你能幫忙馬來港嗎？";
+		next;
+		if (select("交給我吧！:我自己也很忙。") == 2) {
+			mes "[守衛隊長]";
+			mes "真的嗎？那可不妙。如果我們不採取行動，所有村民的生命都會面臨危險。像你這樣的年輕人怎麼能這麼無情。外地人都像你一樣嗎？哼！現在的年輕人真不可靠。哼。";
+			close;
+		}
+		mes "[守衛隊長]";
+		mes "我就知道我可以指望你。";
+		next;
+		mes "[守衛隊長]";
+		mes "很好。我會相信你。";
+		mes "我需要知道布瓦亞可能出現的地點，以確保村民生活區域的安全。";
+		mes "布瓦亞的巢穴應該是最好的目標。";
+		next;
+		mes "[守衛隊長]";
+		mes "到達該區域後，請^3131FF發射一枚煙霧彈^000000。";
+		mes "然後我們就會趕往發射煙霧彈的地方。";
+		next;
+		mes "[守衛隊長]";
+		mes "那麼，保重並祝你好運。";
+		set malaya_buwaya,11;
+		erasequest 2276;
+		setquest 2277;
+	} else if (malaya_buwaya == 11) {
+		mes "[守衛隊長]";
+		mes "到達該區域後，請^3131FF發射一枚煙霧彈^000000。";
+		mes "然後我們就會趕往發射煙霧彈的地方。";
+	} else if ((malaya_buwaya == 12) || (malaya_buwaya == 13)) {
+		mes "[" + strcharinfo(0) + "]";
+		mes "我們先把艾德帶回給托托伊吧。";
+	} else if (malaya_buwaya == 14) {
+		mes "[守衛隊長]";
+		mes "守衛隊長告訴了你布瓦亞洞穴的位置。";
+		mes "這不可能發生。";
+		next;
+		mes "[守衛隊長]";
+		mes "我已經沒有人手可以派去處理布瓦亞的情況了，但我們必須盡我們所能採取行動。";
+		next;
+		mes "[守衛隊長]";
+		mes "來，這代表了我們的感激之意。";
+		mes "如果你願意再次協助對抗布瓦亞，請來找我。";
+		mes "祝你有個愉快的旅程。";
+		set malaya_buwaya,15;
+		getexp 1000000, 600000;
+		completequest 2280;
+	} else {
+		set .@hunting, checkquest(2281,HUNTING);
+		if (.@hunting == -1) {
+			mes "[守衛隊長]";
+			mes "聽說布瓦亞從森林深處出現了。";
+			mes "如大家所知，我們所有的人力都派去處理最近攻擊醫院的班古歐特僕從了。";
+			next;
+			mes "[守衛隊長]";
+			mes "這就是為什麼我們別無選擇，只能請求外地人幫忙消滅布瓦亞。";
+			mes "他們說布瓦亞是一隻非常強大且醜陋的雙頭怪物。";
+			mes "你願意幫助我們打敗布瓦亞嗎？";
+			next;
+			if (select("當然。:不要。") == 2) {
+				mes "[守衛隊長]";
+				mes "眾所皆知，布瓦亞是一隻非常危險的怪物。";
+				mes "拒絕這個請求並不丟臉。";
+				close;
+			}
+			if (BaseLevel < 130) {
+				mes "[守衛隊長]";
+				mes "這個任務將會非常危險。";
+				mes "如果你想幫忙消滅布瓦亞，你必須做好準備。";
+				mes "等你達到 130 級後再來吧。";
+				close;
+			}
+			mes "[守衛隊長]";
+			mes "根據傳說，布瓦亞會綁架人類並把他們放在背上的袋子裡，之後再吃掉他們。";
+			next;
+			mes "[守衛隊長]";
+			mes "記住這一點，並隨時保持謹慎。";
+			mes "我建議你尋求可靠的同伴協助。";
+			setquest 2281;
+		} else if (.@hunting == 0 || .@hunting == 1) {
+			mes "[守衛隊長]";
+			mes "布瓦亞的情況處理得如何了？";
+			next;
+			if (select("我放棄了。:還在戰鬥中。") == 2) {
+				mes "[守衛隊長]";
+				mes "記住這一點，並隨時保持謹慎。";
+				mes "我建議你尋求可靠的同伴協助。";
+				close;
+			}
+			mes "[守衛隊長]";
+			mes "眾所皆知，布瓦亞是一隻非常危險的怪物。";
+			mes "拒絕這個請求並不丟臉。";
+			erasequest 2281;
+		} else if (.@hunting == 2) {
+			mes "[守衛隊長]";
+			mes "真不敢相信你真的消滅了布瓦亞！";
+			mes "你不是普通的年輕人，對吧？馬來港的居民現在終於能在晚上安睡了。";
+			next;
+			mes "[守衛隊長]";
+			mes "做得好。";
+			erasequest 2281;
+			if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+				getitem 6497,10; //Lesser_Agimat
+			else
+				getitem 6497,5; //Lesser_Agimat
+			getexp 0,600000;
+		} else {
+			mes "[守衛隊長]";
+			mes "直到整個馬來港，包括巴里優 馬西瓦卡都免於布瓦亞的威脅，我才會卸下職務。答應我，好好照顧自己。";
+			erasequest 2281;
+		}
+	}
+	close;
+}
+
+ma_fild02,307,245,0	script	#buwaya_todog1	139,3,3,{
+	end;
+OnTouch:
+	if (malaya_buwaya == 11) {
+		enablenpc "狗#buwaya";
+		//mes "[Here something]";
+		mes "汪汪！！";
+		close;
+	}
+	end;
+}
+ma_fild02,320,241,0	duplicate(#buwaya_todog1)	#buwaya_todog2	139,3,3
+ma_fild02,317,250,0	duplicate(#buwaya_todog1)	#buwaya_todog3	139,7,7
+
+ma_fild02,312,259,3	script	狗#buwaya	81,{
+	if (malaya_buwaya == 11) {
+		mes "[狗]";
+		mes "汪汪！！";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "為什麼這裡有一隻狗？";
+		next;
+		if (select("仔細看看這隻狗。:無視牠。") == 2) {
+			mes "[" + strcharinfo(0) + "]";
+			mes "看起來像是一隻走失的狗。";
+			close;
+		}
+		mes "- 仔細看著這隻髒兮兮的狗，注意到牠脖子上有一條舊項圈。 -";
+		next;
+		mes "- 項圈上寫著：『永遠與托托伊在一起』。 -";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "所以你是艾德？";
+		next;
+		mes "[狗]";
+		mes "汪汪！";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "你沒有被布瓦亞殺死。你這幸運的小狗。我們回到你主人那邊吧。";
+		next;
+		emotion ET_DELIGHT;
+		mes "[狗]";
+		mes "汪汪！！";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "啊，在我們走之前，你該不會知道布瓦亞的巢穴在哪裡吧？";
+		next;
+		mes "[狗]";
+		mes "汪！";
+		next;
+		mes "- 艾德是一隻聰明的狗，聽懂了你的問題。艾德開始朝著北方吠叫。 -";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "布瓦亞在那邊！";
+		mes "那我應該在這裡發射煙霧彈。";
+		next;
+		mes "- 你從物品欄中拿出煙霧彈，並朝著天空發射。 -";
+		next;
+		mes "^FF0000- 咻—— -^000000";
+		enablenpc "守衛#buwayacave";
+		specialeffect2 EF_MVP;
+		next;
+		mes "[守衛]";
+		mes "幹得好！";
+		mes "原來布瓦亞住在這麼偏僻的地方。我一定會把這個情報傳達給守衛隊長！";
+		disablenpc "守衛#buwayacave";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "我應該先把艾德帶回給托托伊，然後再去見守衛隊長嗎？";
+		next;
+		mes "[狗]";
+		mes "汪汪！";
+		set malaya_buwaya,12;
+		disablenpc "狗#buwaya";
+		erasequest 2277;
+		setquest 2278;
+		close;
+	} else if (malaya_buwaya == 12) {
+		mes "[" + strcharinfo(0) + "]";
+		mes "我們先把艾德帶回給托托伊，然後再回去找守衛隊長吧。";
+		close;
+	}
+	end;
+OnInit:
+	disablenpc "狗#buwaya";
+	end;
+}
+
+ma_fild02,308,262,3	script	守衛#buwayacave	570,{
+	end;
+OnInit:
+	disablenpc "守衛#buwayacave";
+	end;
+}
+
+// Bakonawa Extermination :: malaya_bakonawa
+//============================================================
+malaya,280,331,4	script	唱歌的男人#bako1	578,{
+	if (malaya_bakona1 < 5) {
+		mes "[唱歌的男人]";
+		mes "關於住在湖裡的龍的故事~";
+		mes "關於一位老太太的故事";
+		mes "很久以前她變成了一條龍~";
+		next;
+		mes "[唱歌的男人]";
+		mes "等待著前往異鄉的兒子，";
+		mes "我的兒子將會回來";
+		mes "當月亮第 90 次落下的時候";
+		next;
+		mes "[唱歌的男人]";
+		mes "月亮落下了第 89 次，";
+		mes "月亮落下了第 90 次，";
+		mes "月亮落下了第 191 次...";
+		next;
+		mes "[唱歌的男人]";
+		mes "那月亮帶走了我的兒子~";
+		mes "那可怕的東西";
+		mes "吞噬了我的兒子，";
+		mes "我將會懲罰那月亮~";
+		next;
+		mes "[唱歌的男人]";
+		mes "當憤怒的月亮將自己隱藏起來的那一天，";
+		mes "整個世界將會被雨水淹沒";
+		mes "所有的村莊和人們將會在水下迎來死亡~";
+		next;
+		mes "[唱歌的男人]";
+		mes "老太太的詛咒讓月亮變得憤怒~";
+		mes "除掉老太太以平息月亮的憤怒~";
+		mes "如果老太太不在這裡就好了，如果老太太不在這裡就好了...";
+		next;
+		mes "[唱歌的男人]";
+		mes "我聽說了一些傳聞~";
+		mes "老太太投湖自盡了~";
+		mes "老太太，現在變成了一條龍，將會吞噬月亮";
+		mes "很快也會吞噬這個村莊~";
+		close;
+	} else {
+		mes "[唱歌的男人]";
+		mes "你說傳說全是謊言？";
+		mes "你的意思是我祖先都是騙子";
+		mes "和神棍嗎？";
+		next;
+		mes "[唱歌的男人]";
+		mes "這個村莊建立在一個古老的傳說";
+		mes "和歷史之上。";
+		mes "他們可不是那種會被";
+		mes "像你這樣的蠢貨的愚蠢話語所動搖的人。";
+		close;
+	}
+}
+
+malaya,275,333,5	script	唱歌的女人#bako1	579,{
+	if (malaya_bakona1 < 5) {
+		mes "[唱歌的女人]";
+		mes "住在湖裡的巴科納瓦，";
+		mes "關於一位老太太變成龍的故事。";
+		next;
+		mes "[唱歌的女人]";
+		mes "本該在月亮第 90 次落下後歸來的兒子";
+		mes "即使月亮落下數百次後也從未回來~";
+		mes "月亮吞噬了老太太的兒子~";
+		next;
+		mes "[唱歌的女人]";
+		mes "月亮啊，月亮，你將承受老太太的詛咒~";
+		mes "整個村莊沉浸在死亡之中";
+		mes "伴隨著憤怒的月亮降下的雨水和洪水~";
+		next;
+		mes "[唱歌的女人]";
+		mes "月亮啊，月亮，保持靜止與平靜吧，";
+		mes "因為老太太已經離去，她已不復存在~";
+		mes "老太太在湖中溺水身亡了~";
+		mes "她將會變成巴科納瓦並再次歸來...";
+		next;
+		mes "[唱歌的女人]";
+		mes "...來吞噬你並";
+		mes "很快地懲罰這個村莊~";
+		mes "月亮死去的日子";
+		mes "就是村莊死去的日子~";
+		close;
+	} else {
+		mes "[唱歌的女人]";
+		mes "傳說全是謊言？";
+		mes "你為什麼要說這種胡話？";
+		mes "難道你沒有";
+		mes "需要保護的重要事物嗎？";
+		next;
+		mes "[唱歌的女人]";
+		mes "可憐的巴科納瓦...";
+		mes "如果她能在像你這樣的人身上狠狠咬一口";
+		mes "我會很高興的！";
+		close;
+	}
+}
+
+malaya,290,329,4	script	受驚的男孩#bako1	577,{
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你保持警惕。 -";
+		close;
+	}
+	if (malaya_bakona1 < 5) {
+		mes "[受驚的男孩]";
+		mes "邪惡的怪物巴科納瓦很快就會到來";
+		mes "吞噬月亮並對村莊展開報復。";
+		mes "我很害怕，請幫幫我...";
+		close;
+	} else {
+		mes "[受驚的男孩]";
+		mes "巴科納瓦的傳說全是謊言？";
+		mes "那代表巴科納瓦不存在囉？";
+		mes "我等一下要去湖邊和朋友們玩了。";
+		mes "你說這都是謊言，對吧？";
+		close;
+	}
+}
+
+malaya,264,338,4	script	受驚的少女#bako1	576,{
+	if (malaya_hi < 20) {
+		mes "- 她似乎對你保持警惕。 -";
+		close;
+	}
+	if (malaya_bakona1 < 5) {
+		mes "[受驚的少女]";
+		mes "據說巴科納瓦討厭巨大的噪音。";
+		mes "如果你想活命，就敲打鍋子吧！";
+		next;
+		switch(select("討厭巨大的噪音？:什麼是巴科納瓦？")) {
+		case 1:
+			mes "[受驚的少女]";
+			mes "你已經聽說老太太";
+			mes "死後變成了巴科納瓦，對吧？";
+			next;
+			mes "[受驚的少女]";
+			mes "傳說中";
+			mes "老太太的聽力非常敏銳";
+			mes "因為她總是全神貫注地等待著";
+			mes "出遠門的兒子歸來。";
+			next;
+			mes "[受驚的少女]";
+			mes "所以自然而然地，巴科納瓦也";
+			mes "有著非常敏銳的聽力。";
+			mes "這就是為什麼大家都要敲打";
+			mes "鍋碗瓢盆的原因。";
+			close;
+		case 2:
+			mes "[受驚的少女]";
+			mes "那是一隻住在湖裡的恐怖怪物。";
+			mes "我們都在恐懼中顫抖";
+			mes "因為我們不知道牠什麼時候會攻擊村莊。";
+			next;
+			mes "[受驚的少女]";
+			mes "有些人說，比起攻擊村莊";
+			mes "牠更執著於吞噬月亮。";
+			mes "如果是那樣的話，我希望牠只要吞噬月亮";
+			mes "然後別來煩我們就好了。";
+			close;
+		}
+	} else {
+		mes "[受驚的少女]";
+		mes "村民們現在很討厭你。";
+		mes "你一直在說巴科納瓦的傳說";
+		mes "是個謊言，他們說你比巴科納瓦";
+		mes "更像個怪物。";
+		close;
+	}
+}
+
+malaya,272,339,5	script	老占卜師#bako1	575,{
+	if (malaya_hi < 20) {
+		mes "- 老占卜師似乎對你保持警惕。 -";
+		close;
+	}
+	if (malaya_bakona1 < 5) {
+		mes "[老占卜師]";
+		mes "你絕不能憎恨巴科納瓦。";
+		mes "對牠的憎恨只會滋養牠的憤怒";
+		mes "讓其變得更加強大。";
+		next;
+		mes "[老占卜師]";
+		mes "為了平息死去老太太的憤怒，";
+		mes "我們每年都會舉行儀式並準備食物。";
+		mes "但似乎沒有任何方法能平息";
+		mes "老太太不斷增長的憤怒。";
+		next;
+		mes "[老占卜師]";
+		mes "那一天快到了。我能感覺到。";
+		mes "巴科納瓦很快就會吞噬月亮";
+		mes "並前來懲罰這個村莊。";
+		close;
+	} else {
+		mes "[老占卜師]";
+		mes "你怎麼能說傳說是謊言！";
+		mes "因為你，巴科納瓦的憤怒";
+		mes "變得更大了！";
+		mes "如果村莊毀滅了，";
+		mes "這全都是你的錯！";
+		close;
+	}
+}
+
+malaya,285,332,4	script	說古的老人#bako1	574,{
+	if (checkweight(1301,3) == 0) {
+		mes "你無法開始對話。你攜帶了太多物品。 -";
+		close;
+	}
+	if (BaseLevel < 120) {
+		mes "[說古的老人]";
+		mes "有些事情需要去完成";
+		mes "但你看起來太脆弱了";
+		mes "沒辦法幫我。";
+		next;
+		mes "[說古的老人]";
+		mes "當你的力量增長到";
+		mes "足以對抗惡魔女僕時";
+		mes "再來找我吧。";
+		close;
+	}
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你保持警惕。 -";
+		close;
+	}
+	if (malaya_bakona1 == 0) {
+		mes "[說古的老人]";
+		mes "老太太已經復活";
+		mes "變成了巴科納瓦。";
+		mes "很快她就會來對村莊展開報復。";
+		mes "我們必須平息她的憤怒";
+		mes "以防止進一步的破壞...";
+		next;
+		switch(select("平息巴科納瓦的憤怒？:進一步的破壞？")) {
+		case 1:
+			mes "[說古的老人]";
+			mes "老太太因為村民的自私";
+			mes "而遭遇了不公平的死亡。";
+			mes "她是一位充滿關愛，深愛著";
+			mes "兒子的母親。";
+			next;
+			mes "[說古的老人]";
+			mes "如果我們追查到她兒子的下落，並";
+			mes "用她兒子的遺物舉行一場儀式，";
+			mes "她不安的靈魂將會得到平息";
+			mes "她就會使我們免於毀滅。";
+			next;
+			mes "[村民]";
+			mes "沒有用的，老先生！！";
+			next;
+			mes "[村民]";
+			mes "您無法用這種方法阻止怪物的！";
+			next;
+			mes "[說古的老人]";
+			mes "當然，要追查一個已經失蹤一百年的人的下落";
+			mes "並不容易。";
+			mes "...";
+			next;
+			mes "[說古的老人]";
+			mes "儘管如此，你不覺得";
+			mes "這值得一試嗎？";
+			mes "請幫助我們，將我們從苦難中拯救出來吧。";
+			next;
+			switch(select("這沒有用。:我會幫忙。")) {
+			case 1:
+				mes "[說古的老人]";
+				mes "是的，你說的也對。";
+				mes "你面對的不是人類，";
+				mes "而是一隻怪物。";
+				mes "儘管如此，我還是相信那位老太太";
+				mes "善良的心。";
+				close;
+			case 2:
+				mes "[說古的老人]";
+				mes "你願意做嗎？";
+				mes "根據傳說，";
+				mes "老太太的兒子是個跛腳的";
+				mes "旅行商人，販賣著木娃娃。";
+				next;
+				mes "[說古的老人]";
+				mes "他留下了一塊^FF0000石板碎片^000000。";
+				mes "但碎片很小又破損了，";
+				mes "很難辨認它。";
+				next;
+				mes "[說古的老人]";
+				mes "首先，把它帶給我。";
+				mes "沿著這條路走下去";
+				mes "你會在港口附近遇到我的孫女。";
+				mes "從那裡拿到石板碎片。";
+				set malaya_bakona1,1;
+				setquest 1174;
+				close;
+			}
+		case 2:
+			mes "[說古的老人]";
+			mes "對這些人的怨恨";
+			mes "巴科納瓦——我是說，死去的老太太。";
+			mes "月亮和這個村莊...";
+			mes "她會試圖毀滅它。";
+			next;
+			select("展開報復？在過了這麼多年之後？");
+			mes "[說古的老人]";
+			mes "一段時間以來，她一直";
+			mes "責怪著月亮並";
+			mes "怨恨著村民。";
+			mes "隨著時間的推移，這種感覺越來越強烈。";
+			next;
+			mes "[說古的老人]";
+			mes "你認為她為什麼會變成這樣的怪物？";
+			mes "你認為在她腦海中盤旋了";
+			mes "年復一年的想法是什麼？";
+			mes "憤怒和報復。";
+			next;
+			mes "[說古的老人]";
+			mes "難以忘懷的怨恨";
+			mes "她被遺棄了。";
+			mes "對抗月亮和村莊。";
+			mes "這就是為什麼必須化解這股怨恨的原因。";
+			close;
+		}
+	} else if (malaya_bakona1 == 1) {
+		mes "[說古的老人]";
+		mes "請帶來^FF0000石板碎片^000000。";
+		mes "沿著這條路走下去";
+		mes "你會在港口附近遇到我的孫女。";
+		mes "從那裡拿到石板碎片。";
+		close;
+	} else if (malaya_bakona1 == 2) {
+		mes "[說古的老人]";
+		mes "很好，你拿到了石板碎片。";
+		mes "抓緊它，別弄丟了。";
+		mes "這對追查傳說的下落會有幫助。";
+		next;
+		mes "[說古的老人]";
+		mes "我聽說有一個男人獨自居住";
+		mes "在森林原野西北部的盡頭。";
+		mes "我聽說有人在那裡看到了一個木娃娃。";
+		mes "那是一個非常偏遠的地方，像我們這樣的人";
+		mes "根本無法前往。";
+		mes "你能幫我們去那個地方看看嗎？";
+		next;
+		switch(select("你自己去！:你的解釋太模糊了。:我這就去！")) {
+		case 1:
+			mes "[說古的老人]";
+			mes "你這彆扭的年輕人！";
+			close;
+		case 2:
+			mes "[說古的老人]";
+			mes "你說得有道理，但";
+			mes "這是我目前能做到最好的了。";
+			mes "那個地方在森林西北部的盡頭。";
+			mes "當你過了橋往西走，";
+			mes "你會看到一個人。";
+			break;
+		case 3:
+			mes "[說古的老人]";
+			mes "你有一顆善良的心，年輕人！";
+			mes "那個地方在森林西北部的盡頭。";
+			mes "當你過了橋往西走，";
+			mes "你會看到一位^0000FF馬來港移民^000000。";
+			break;
+		}
+		mes "祝你好運... 為了我們...";
+		erasequest 1175;
+		setquest 1176;
+		set malaya_bakona1,3;
+		close;
+	} else if (malaya_bakona1 == 3) {
+		mes "[說古的老人]";
+		mes "那個地方在森林西北部的盡頭。";
+		mes "當你過了橋往西走，";
+		mes "你會看到一個人。";
+		mes "祝你好運... 為了我們...";
+		close;
+	} else if (malaya_bakona1 < 6) {
+		mes "[說古的老人]";
+		mes "老太太兒子的蹤跡";
+		mes "一路連接到";
+		mes "巴里優 馬西瓦卡？";
+		mes "他有可能不是個商人...";
+		mes "我真的很好奇他是誰...";
+		next;
+		mes "[說古的老人]";
+		mes "你為什麼會回到這裡";
+		mes "而不是直接去";
+		mes "巴里優 馬西瓦卡？";
+		close;
+	} else if (malaya_bakona1 == 6) {
+		mes "[說古的老人]";
+		mes "那真的是真的嗎？";
+		mes "巴科納瓦變成了一位老太太";
+		mes "並捏造了這個傳說...";
+		mes "看來所有的村民直到現在";
+		mes "都被那可怕的怪物給操弄了。";
+		next;
+		mes "[說古的老人]";
+		mes "那麼就沒有理由猶豫了。";
+		mes "你必須進入巴科納瓦的巢穴";
+		mes "在牠發動攻擊之前。";
+		mes "我相信我們可以信任你去做這件事，對吧？";
+		next;
+		switch(select("嗯...:當然！")) {
+		case 1:
+			mes "[說古的老人]";
+			mes "氣氛本來很好的";
+			mes "但突然就被毀了。";
+			mes "我沒想到你這麼害羞...";
+			close;
+		case 2:
+			mes "[說古的老人]";
+			mes "我會去跟";
+			mes "村長說一聲";
+			mes "這樣你就可以進入巴科納瓦湖了。";
+			mes "請為我們除掉這隻怪物。";
+			erasequest 1179;
+			set malaya_bakona1,7;
+			if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+				getitem 6499,5; //Ancient_Grudge
+			else
+				getitem 6499,3;
+//Ancient_Grudge
+			getexp 500000,200000;
+			close;
+		}
+		close;
+	} else if (malaya_bakona1 == 7) {
+		if (malaya_bakona2 < 15) {
+			mes "[說古的老人]";
+			mes "如果你不介意的話，";
+			mes "能幫村長一個忙嗎？";
+			mes "因為巴科納瓦的關係...";
+			mes "大家都不再互相關心了...";
+			next;
+		}
+		mes "[說古的老人]";
+		mes "我們相信了一百年的";
+		mes "傳說，";
+		mes "全是謊言....";
+		mes "請為我們除掉這隻怪物。";
+		close;
+	}
+}
+
+ma_fild02,40,240,4	script	馬來港移民#bako1	578,{
+	if (malaya_bakona1 < 3) {
+		mes "[馬來港移民]";
+		mes "你一定有顆勇敢的心";
+		mes "才會來到這麼偏僻的地方。";
+		mes "馬來港最近好嗎？";
+		mes "我聽說住在湖裡的怪物巴科納瓦";
+		mes "正在威脅著村民。";
+		mes "因為我一直待在這裡，所以我對外面發生的事情一無所知。";
+		close;
+	} else if (malaya_bakona1 == 3) {
+		mes "[馬來港移民]";
+		mes "你一定有顆勇敢的心";
+		mes "才會來到這麼偏僻的地方。";
+		mes "馬來港最近好嗎？";
+		mes "我聽說住在湖裡的怪物巴科納瓦";
+		mes "正在威脅著村民。";
+		mes "因為我一直待在這裡，所以我對外面發生的事情一無所知。";
+		next;
+		mes "[馬來港移民]";
+		mes "你是那個以前賣木娃娃的旅行商人，對吧？";
+		mes "我不知道什麼旅行商人，但你說的木娃娃";
+		mes "（翻找東西）是指這個嗎？";
+		mes "我不知道細節，但";
+		mes "我想這跟我很久以前聽到的一件事有關。";
+		next;
+		switch(select("你在這裡做什麼？:你知道關於這塊石板碎片的事嗎？:請告訴我這個故事。:那個旅行商人是誰？")) {
+		case 1:
+			mes "[馬來港移民]";
+			mes "我喜歡這裡的環境";
+			mes "所以我決定留下來生活。";
+			mes "這裡沒有任何束縛。";
+			mes "對我來說，這裡簡直像天堂一樣美好。";
+			close;
+		case 2:
+			mes "[馬來港移民]";
+			mes "這是一塊非常古老的石板碎片。";
+			mes "很抱歉，但我以前從沒見過這個。";
+			mes "這裡有一些文字";
+			mes "但我看不懂。";
+			close;
+		case 3:
+			mes "[馬來港移民]";
+			mes "這是個很簡單的故事。";
+			mes "^0000FF一個我從沒見過的受傷男人^000000";
+			mes "^0000FF來到我家尋求幫助。^000000";
+			mes "^0000FF等他傷好後，他做了一個木娃娃^000000";
+			next;
+			mes "[馬來港移民]";
+			mes "^0000FF據說可以驅趕邪靈 ^000000";
+			mes "^0000FF作為答謝，^000000";
+			mes "^0000FF然後他就前往巴里優 馬西瓦卡了。^000000";
+			next;
+			select("他前往巴里優 馬西瓦卡了？");
+			mes "[馬來港移民]";
+			mes "根據我聽到的說法";
+			mes "是這樣的。但這個故事已經口耳相傳";
+			mes "很久了。我無法確定。";
+			next;
+			mes "從巴里優 馬西瓦卡村莊，使用關鍵字 ^0000FF馬來港^000000，";
+			mes "或是 ^0000FF巴科納瓦^000000，";
+			mes "也許我能查出那個旅行商人的身份和下落。";
+			erasequest 1176;
+			setquest 1177;
+			set malaya_bakona1,4;
+			close;
+		case 4:
+			mes "[馬來港移民]";
+			mes "嗯，因為缺乏資訊";
+			mes "所以我無法確定，但";
+			mes "我懷疑他到底是不是個商人。";
+			mes "帶著致命傷來到一個城鎮";
+			mes "看起來太可疑了...";
+			next;
+			mes "[馬來港移民]";
+			mes "而且渴望得到一個木娃娃";
+			mes "可能被視為有某種儀式上的意義。";
+			mes "保護某人免受邪惡力量的侵擾...";
+			mes "之類的。";
+			next;
+			mes "旅行商人的身份...";
+			mes "看來還有一個";
+			mes "謎團需要解開。";
+			mes "我想一切很快";
+			mes "就會水落石出的。";
+			close;
+		}
+	} else {
+		mes "[馬來港移民]";
+		mes "我會再慢慢告訴你一次";
+		mes "這個流傳下來的故事。";
+		mes "仔細聽然後跟著我重複...";
+		mes "不，我的意思是，你不用重複。";
+		next;
+		mes "[口耳相傳的故事]";
+		mes "^0000FF一個我從沒見過的受傷男人^000000";
+		mes "^0000FF來到我家尋求幫助。^000000";
+		mes "^0000FF等他傷好後，作為答謝，他做了一個木娃娃^000000";
+		mes "^0000FF據說可以驅趕邪靈。^000000";
+		mes "^0000FF然後他就前往巴里優 馬西瓦卡了。^000000";
+		next;
+		mes "從巴里優 馬西瓦卡村莊，使用關鍵字 ^0000FF馬來港^000000，";
+		mes "或是 ^0000FF巴科納瓦^000000，";
+		mes "也許我能查出那個旅行商人的身份和下落。";
+		close;
+	}
+}
+
+ma_fild01,165,237,4	script	馬來亞移民#bako2	582,{
+	if (malaya_bakona1 < 4) {
+		mes "[馬來亞移民]";
+		mes "你去過";
+		mes "馬來亞港口嗎？";
+		mes "我很好奇";
+		mes "那裡發生了什麼事，";
+		mes "但到處都是魔物，我無法去旅行。";
+		close;
+	} else if (malaya_bakona1 == 4) {
+		mes "[馬來亞移民]";
+		mes "木偶？";
+		mes "有一個與此相關的故事，";
+		mes "但你大老遠跑來，";
+		mes "不會只是為了聽民間故事吧？";
+		next;
+		switch(select("我只是來休息的。:告訴我這個故事。")) {
+		case 1:
+			mes "[馬來亞移民]";
+			mes "你一定很閒！";
+			mes "我不是旅行社人員，";
+			mes "去煩別人吧！";
+			close;
+		case 2:
+			mes "[馬來亞移民]";
+			mes "這都是胡說八道，";
+			mes "所以我不太記得細節了。";
+			next;
+			mes "[民間故事摘要]";
+			mes "很久以前，5位劍士";
+			mes "與魔物巴庫暴龍戰鬥。";
+			mes "四人死亡，一人讓魔物受了重傷，";
+			mes "但作為代價，";
+			mes "他自己的腿也受了重傷。";
+			next;
+			mes "[民間故事摘要]";
+			mes "逃離現場後，巴庫暴龍化身為人類，";
+			mes "暗中追尋那位劍士。";
+			mes "劍士製作了一個木偶，";
+			mes "可以防止魔物靠近。";
+			next;
+			mes "[馬來亞移民]";
+			mes "故事到此結束。";
+			mes "沒有任何結局...";
+			next;
+			mes "[馬來亞移民]";
+			mes "我聽說有劍士留下的紀錄，";
+			mes "但我不明白為什麼";
+			mes "他會把它留在這麼遙遠的地方，";
+			mes "而不是留在馬來亞。";
+			next;
+			select("我想看看這個紀錄。");
+			mes "[馬來亞移民]";
+			mes "紀錄刻在前面的石頭上。";
+			mes "但是，那塊石頭受損";
+			mes "太嚴重，有些碎片脫落了，";
+			mes "很難看清上面的字。";
+			next;
+			mes "調查前面的石頭。";
+			erasequest 1177;
+			setquest 1178;
+			set malaya_bakona1,5;
+			close;
+		}
+	} else if (malaya_bakona1 == 5) {
+		mes "[馬來亞移民]";
+		mes "前面的石頭上留有";
+		mes "很久以前一位劍士留下的紀錄。";
+		next;
+		switch(select("這位劍士後來去哪了？:再告訴我一次這個故事。")) {
+		case 1:
+			mes "[馬來亞移民]";
+			mes "嗯，之後就沒有故事了，所以";
+			mes "我想沒有人會知道發生了什麼事。";
+			close;
+		case 2:
+			mes "[民間故事摘要]";
+			mes "很久以前，5位劍士";
+			mes "與魔物巴庫暴龍戰鬥。";
+			mes "四人死亡，一人讓魔物受了重傷，";
+			mes "但作為代價，";
+			mes "他自己的腿也受了重傷。";
+			next;
+			mes "[民間故事摘要]";
+			mes "逃離現場後，巴庫暴龍化身為人類，";
+			mes "暗中追尋那位劍士。";
+			mes "劍士製作了一個木偶，";
+			mes "可以防止魔物靠近。";
+			close;
+		}
+	} else {
+		mes "[馬來亞移民]";
+		mes "我想你希望再聽一次這個故事對吧？";
+		mes "沒問題！這故事我說幾次都行！";
+		next;
+		mes "[民間故事摘要]";
+		mes "很久以前，5位劍士";
+		mes "與魔物巴庫暴龍戰鬥。";
+		mes "四人死亡，一人讓魔物受了重傷，";
+		mes "但作為代價，";
+		mes "他自己的腿也受了重傷。";
+		next;
+		mes "[民間故事摘要]";
+		mes "逃離現場後，巴庫暴龍化身為人類，";
+		mes "暗中追尋那位劍士。";
+		mes "劍士製作了一個木偶，";
+		mes "可以防止魔物靠近。";
+		close;
+	}
+}
+
+ma_fild01,171,235,0	script	#bako1	139,2,2,{
+	end;
+OnTouch_:
+	if (malaya_bakona1 == 5) {
+		mes "損壞太嚴重了，";
+		mes "紀錄已經無法辨識。";
+		mes "將石板碎片插入";
+		mes "牆上的洞時，它像拼圖一樣完美契合。";
+		mes "字跡雖然不清楚，但你還是能閱讀。";
+		next;
+		callsub L_Record;
+		set malaya_bakona1,6;
+		erasequest 1178;
+		setquest 1179;
+		close;
+	} else if (malaya_bakona1 == 6) {
+		mes "這是一百年前一位劍士";
+		mes "留下的紀錄。";
+		next;
+		switch(select("我不需要讀它。:再讀一次紀錄。")) {
+		case 1:
+			mes "我清楚記得這個故事。";
+			mes "去告訴馬來亞的^0000FF說傳說的老人^000000";
+			mes "關於我發現的事情吧。";
+			close;
+		case 2:
+			callsub L_Record;
+			close;
+		}
+	}
+	end;
+L_Record:
+	mes "[一百年前劍士留下的紀錄]";
+	mes "與巴庫暴龍戰鬥後，我受了重傷，";
+	mes "並來到了這個地方。";
+	mes "我唯一能做的就是";
+	mes "把木偶放在";
+	mes "魔物會來的地方。";
+	next;
+	mes "[一百年前劍士留下的紀錄]";
+	mes "^0000FF有時變成小孩，甚至變成老婦人，^000000";
+	mes "我知道^0000FF巴庫暴龍^000000一直";
+	mes "在暗中追殺我。";
+	mes "因為魔物 * 受了重傷，";
+	next;
+	mes "[一百年前劍士留下的紀錄]";
+	mes "** 這將需要將近一百年的時間";
+	mes "讓巴庫暴龍吸收月亮的力量";
+	mes "才能完全恢復它的力量。";
+	mes "當心月亮消失的那一天。";
+	next;
+	mes "[一百年前劍士留下的紀錄]";
+	mes "巴庫暴龍發狂的";
+	mes "那一天將會到來。";
+	mes "但它需要將近一百年的時間才能完全恢復力量。";
+	mes "總會有比我更強的人";
+	mes "來擊敗這隻邪惡的生物。";
+	next;
+	mes "[一百年前劍士留下的紀錄]";
+	mes "我會將希望寄託在未來的接替者身上...";
+	next;
+	mes "怎麼會這樣...";
+	mes "巴庫暴龍為了向劍士復仇";
+	mes "化身為老婦人時所說的謊言，";
+	mes "經過這麼多年竟變成了傳說。";
+	next;
+	mes "我發現巴庫暴龍";
+	mes "只不過是一隻嗜血的魔物。";
+	mes "我必須把我知道的告訴馬來亞的^0000FF說傳說的老人^000000。";
+	return;
+}
+
+malaya,304,100,4	script	老人的孫女	576,{
+	if (malaya_hi < 20) {
+		mes "- 她似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona1 == 0) {
+		mes "[老人的孫女]";
+		mes "爺爺相信";
+		mes "巴庫暴龍可以";
+		mes "變好。";
+		mes "你覺得這可能嗎？";
+		close;
+	} else if (malaya_bakona1 == 1) {
+		mes "[老人的孫女]";
+		mes "^FF0000石板碎片^000000？";
+		mes "你為什麼需要這種";
+		mes "幾乎無法辨認的東西？";
+		mes "如果你想要的話，我可以給你。";
+		next;
+		mes "現在我拿到了石板碎片，";
+		mes "我們去見";
+		mes "^FF0000說傳說的老人^000000吧。";
+		erasequest 1174;
+		setquest 1175;
+		set malaya_bakona1,2;
+		close;
+	} else if (malaya_bakona1 == 2) {
+		mes "[老人的孫女]";
+		mes "請帶著這塊石板碎片，";
+		mes "交給我的爺爺。";
+		next;
+		mes "現在我拿到了石板碎片，";
+		mes "我們去見^FF0000說傳說的老人^000000吧。";
+		close;
+	} else {
+		mes "[老人的孫女]";
+		mes "因為巴庫暴龍，";
+		mes "村子裡總是不平靜。";
+		close;
+	}
+}
+
+malaya,286,269,4	script	憤怒的男子#bako2	578,{
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	mes "[憤怒的男子]";
+	mes "平息巴庫暴龍的憤怒？";
+	mes "你知道有多少人";
+	mes "成為巴庫暴龍的犧牲品嗎？";
+	mes "如果必須的話，我會自己去戰鬥！";
+	close;
+}
+
+malaya,276,269,5	script	冷靜的女子#bako2	579,{
+	if (malaya_hi < 20) {
+		mes "- 她似乎對你很警惕。 -";
+		close;
+	}
+	mes "[冷靜的小女孩]";
+	mes "與巴庫暴龍戰鬥";
+	mes "太危險了。這有可能";
+	mes "會讓牠更生氣，並讓小孩和";
+	mes "老人陷入危險之中。";
+	close;
+}
+
+malaya,276,262,4	script	憤怒的男孩#bako2	577,{
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	mes "[憤怒的男孩]";
+	mes "因為那隻巴庫暴龍，";
+	mes "我失去了父親和朋友。";
+	mes "我一定會為他們報仇！";
+	close;
+}
+
+malaya,283,265,4	script	村長#bako2	580,{
+	if (checkweight(1301,3) == 0) {
+		mes "你身上攜帶太多物品，無法開始對話。 -";
+		close;
+	}
+	if (BaseLevel < 120) {
+		mes "[村長]";
+		mes "我非常渴望有人能幫忙，";
+		mes "但你看起來";
+		mes "太過虛弱脆弱。";
+		next;
+		mes "[村長]";
+		mes "請等你變得夠強，";
+		mes "能與夢魘匹敵時";
+		mes "再來吧。";
+		close;
+	}
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona2 == 0) {
+		if (malaya_bakona1 <= 5) {
+			mes "[村長]";
+			mes "我不知道什麼才是正確的決定。";
+			mes "是與巴庫暴龍戰鬥，";
+			mes "還是獻上祭品來平息它的憤怒。";
+		} else {
+			mes "[村長]";
+			mes "傳說全都是謊言？";
+			mes "看來直到現在，所有村民";
+			mes "都被那隻邪惡的魔物操縱了。";
+			next;
+			mes "[村長]";
+		}
+		mes "最近，有越來越多人";
+		mes "受到巴庫暴龍的傷害。";
+		next;
+		mes "[村長]";
+		mes "有一些失蹤的村民，";
+		mes "但我無法確定";
+		mes "他們只是失蹤，還是已經";
+		mes "被巴庫暴龍殺害了。";
+		next;
+		mes "[村長]";
+		mes "我聽說在瑪希瓦加村落原野";
+		mes "發現了失蹤者的遺物。";
+		mes "請去那裡尋找^0000FF遺失的物品^000000，";
+		mes "並將它們交給";
+		mes "失蹤者的家屬，";
+		mes "看他們需要多少就給多少。";
+		next;
+		mes "[村長]";
+		mes "^0000FF遺失的物品^000000";
+		mes "據說是由在瑪希瓦加遊蕩的";
+		mes "^FF0000提亞納克^000000所攜帶。";
+		next;
+		switch(select("你自己去吧。:我馬上出發。")) {
+		case 1:
+			mes "[村長]";
+			mes "你讓我有了很多省思。";
+			mes "立刻離開村莊。";
+			close;
+		case 2:
+			mes "[村長]";
+			mes "那我們開始吧。首先，";
+			mes "從提亞納克身上找回兩個^FF0000遺失的物品^000000，";
+			mes "並替我把它們交給^0000FF失蹤者的父親^000000。";
+			set malaya_bakona2,1;
+			setquest 1180;
+			close;
+		}
+	} else if (malaya_bakona2 == 1) {
+		mes "[村長]";
+		mes "從在瑪希瓦加村落原野遊蕩的提亞納克身上，";
+		mes "找回兩個^FF0000遺失的物品^000000，";
+		mes "並替我交給^0000FF失蹤者的父親^000000。";
+		close;
+	} else if (malaya_bakona2 == 2) {
+		mes "[村長]";
+		mes "從提亞納克身上找回七個^FF0000遺失的物品^000000，";
+		mes "並替我交給^0000FF失蹤者的朋友^000000。";
+		close;
+	} else if (malaya_bakona2 == 3) {
+		mes "[村長]";
+		mes "從提亞納克身上找回三個^FF0000遺失的物品^000000，";
+		mes "並替我交給^0000FF失蹤者的兒子^000000。";
+		close;
+	} else if (malaya_bakona2 == 4) {
+		mes "[村長]";
+		mes "從提亞納克身上找回五個^FF0000遺失的物品^000000，";
+		mes "並替我交給^0000FF失蹤者的母親^000000。";
+		close;
+	} else if (malaya_bakona2 == 5) {
+		mes "[村長]";
+		mes "看來很明顯，所有失蹤的人";
+		mes "都已經被巴庫暴龍殺害了。";
+		next;
+		mes "[村民們]";
+		mes "殺死巴庫暴龍！";
+		mes "讓我們自己除掉那隻魔物吧！";
+		next;
+		mes "[村長]";
+		mes "看來我們再也無法";
+		mes "舉行儀式來平息巴庫暴龍了。";
+		next;
+		mes "[村長]";
+		mes "年輕的算命師正在尋求你的幫助，";
+		mes "說月亮的能量似乎有些異常。";
+		erasequest 1184;
+		setquest 1185;
+		set malaya_bakona2,6;
+		if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+			getitem 12700,7; //Insideout_Shirt
+		else
+			getitem 12700,5; //Insideout_Shirt
+		close;
+	} else if (malaya_bakona2 == 6) {
+		mes "[村長]";
+		mes "年輕的算命師正在尋求你的幫助，";
+		mes "說月亮的能量似乎有些異常。";
+		close;
+	} else if (malaya_bakona2 == 7) {
+		mes "[村長]";
+		mes "我知道很久以前";
+		mes "月亮消失時曾發生過可怕的事。";
+		mes "我希望在你的努力下，";
+		mes "月亮能恢復它的力量。";
+		close;
+	} else if (malaya_bakona2 == 8) {
+		mes "[村長]";
+		mes "我會告訴";
+		mes "年輕的算命師來幫助你。";
+		mes "但在那之前，有";
+		mes "一件事你必須立刻去做。";
+		next;
+		mes "[村長]";
+		mes "我們不知道巴庫暴龍什麼時候會襲擊";
+		mes "村莊，所以我們必須在村莊入口";
+		mes "和洞穴附近設置陷阱。";
+		next;
+		mes "[村長]";
+		mes "如果你能幫忙，我會非常感激。";
+		mes "我已經派遣工人前往";
+		mes "將要設置陷阱的地點附近，";
+		mes "所以你只需要拜訪大約5個地方。";
+		next;
+		switch(select("聽起來太麻煩了。:沒問題。")) {
+		case 1:
+			mes "[村長]";
+			mes "這次行動對我們來說生死攸關，";
+			mes "你卻像對待雜物一樣輕易拒絕...";
+			next;
+			mes "[村長]";
+			mes "真是個英雄啊！";
+			close;
+		case 2:
+			mes "[村長]";
+			mes "第一個陷阱將設置在";
+			mes "瑪希瓦加村落原野";
+			mes "靠近村莊入口的地方。^0000FF粗獷的工人^000000";
+			mes "會在那裡等你。他會很有幫助的。";
+			erasequest 1187;
+			setquest 1188;
+			set malaya_bakona2,9;
+			close;
+		}
+	} else if (malaya_bakona2 == 9) {
+		mes "[村長]";
+		mes "第一個陷阱將設置在";
+		mes "瑪希瓦加村落原野";
+		mes "靠近村莊入口的地方。^0000FF粗獷的工人^000000";
+		mes "會在那裡等你。他會很有幫助的。";
+		close;
+	} else if (malaya_bakona2 == 10) {
+		mes "[村長]";
+		mes "第二個陷阱將設置在";
+		mes "連接瑪希瓦加村落原野";
+		mes "和巴庫暴龍之湖的地方。";
+		mes "^0000FF脾氣暴躁的工人^000000";
+		mes "會在那裡等你。他會很有幫助的。";
+		close;
+	} else if (malaya_bakona2 == 11) {
+		mes "[村長]";
+		mes "第三個陷阱將設置在";
+		mes "巴庫暴龍之湖入口附近。";
+		mes "^0000FF膽小的工人^000000";
+		mes "會在那裡等你。他會很有幫助的。";
+		close;
+	} else if (malaya_bakona2 == 12) {
+		mes "[村長]";
+		mes "第四個陷阱也將設置在";
+		mes "巴庫暴龍之湖入口附近。";
+		mes "^0000FF憂鬱的工人^000000會在那裡等你。";
+		mes "他會很有幫助的。";
+		close;
+	} else if (malaya_bakona2 == 13) {
+		mes "[村長]";
+		mes "第五個陷阱也將設置在";
+		mes "巴庫暴龍之湖入口附近。";
+		mes "^0000FF多愁善感的工人^000000";
+		mes "會在那裡等你。他會很有幫助的。";
+		close;
+	} else if (malaya_bakona2 == 14) {
+		mes "[村長]";
+		mes "看來陷阱都設置好了。";
+		mes "我們剛剛結束了關於";
+		mes "如何對付巴庫暴龍的村民大會。";
+		next;
+		mes "[村長]";
+		mes "我們的結論是";
+		mes "我們將與巴庫暴龍戰鬥。";
+		mes "請協助我們";
+		mes "攻擊它的巢穴。";
+		erasequest 1193;
+		set malaya_bakona2,15;
+		getexp 1000000,600000;
+		if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+			getitem 6497,7; //Lesser_Agimat
+		else
+			getitem 6497,5; //Lesser_Agimat
+		close;
+	} else if (malaya_bakona2 == 15) {
+		mes "[村長]";
+		if (malaya_bakona1 < 7) {
+			mes "如果有機會，你能去拜訪一下^0000FF說傳說的老人^000000嗎？";
+			mes "我想你應該能幫上他的忙。";
+			next;
+			mes "[村長]";
+			mes "謝謝你。";
+		}
+		mes "請想想那些無數的受害者，";
+		mes "並為了他們";
+		mes "打敗巴庫暴龍。";
+		close;
+	}
+}
+
+malaya,269,267,5	script	失蹤者的父親	582,{
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona2 == 0) {
+		mes "[失蹤者的父親]";
+		mes "請找到我們的";
+		mes "孩子。";
+		mes "巴庫暴龍不會傷害我們的孩子的。";
+		mes "他一定還在附近某個地方。";
+		close;
+	} else if (malaya_bakona2 == 1) {
+		if (countitem(6520) < 2) {
+			mes "[失蹤者的父親]";
+			mes "你在找他遺失的兩個^FF0000遺失的物品^000000？";
+			mes "你確定";
+			mes "他已經死了嗎？";
+			close;
+		}
+		mes "[失蹤者的父親]";
+		mes "這... 確實是我們孩子的";
+		mes "^FF0000遺失的物品^000000。";
+		mes "魔物終究還是找上他了...";
+		next;
+		mes "這位父親努力強忍著淚水，無法再說下去。";
+		mes "繼續尋找其他失蹤者的遺物吧。";
+		mes "從在瑪希瓦加村落原野遊蕩的提亞納克身上，";
+		mes "找回七個^FF0000遺失的物品^000000，";
+		mes "並把它們交給^0000FF失蹤者的朋友^000000。";
+		delitem 6520,2; //Lost_Belongings
+		erasequest 1180;
+		setquest 1181;
+		set malaya_bakona2,2;
+		close;
+	} else if (malaya_bakona2 == 2) {
+		mes "[失蹤者的父親]";
+		mes "我的寶貝... 我可憐的寶貝...";
+		next;
+		mes "這位父親努力強忍著淚水，無法再說下去。";
+		mes "繼續尋找其他失蹤者的遺物吧。";
+		mes "從提亞納克身上找回七個^FF0000遺失的物品^000000，";
+		mes "並交給^0000FF失蹤者的朋友^000000。";
+		close;
+	} else {
+		mes "[失蹤者的父親]";
+		mes "我的寶貝... 我可憐的寶貝...";
+		close;
+	}
+}
+
+malaya,265,274,5	script	失蹤者的朋友	577,{
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona2 < 2) {
+		mes "[失蹤者的朋友]";
+		mes "請找到";
+		mes "我的朋友。";
+		mes "我們原本在一起玩球，";
+		mes "然後我的朋友突然就消失了。";
+		next;
+		mes "[失蹤者的朋友]";
+		mes "我相信他一定還好好的活在";
+		mes "某個地方。";
+		close;
+	} else if (malaya_bakona2 == 2) {
+		if (countitem(6520) < 7) {
+			mes "[失蹤者的朋友]";
+			mes "你在找我朋友的";
+			mes "七個^FF0000遺失的物品^000000？";
+			mes "我的朋友沒有死！";
+			close;
+		}
+		mes "[失蹤者的朋友]";
+		mes "這些是我給他的彈珠和玩具...";
+		mes "這些很明顯是我朋友的";
+		mes "^FF0000遺失的物品^000000... 我的朋友在哪裡？";
+		mes "把他帶來，現在就把他帶來！";
+		callsub L_Quest;
+		delitem 6520,7;
+		//Lost_Belongings
+		erasequest 1181;
+		setquest 1182;
+		set malaya_bakona2,3;
+		close;
+	} else {
+		mes "[失蹤者的朋友]";
+		mes "把我的朋友還給我！";
+		mes "現在就把我的朋友還給我！";
+		mes "我的朋友還活著，";
+		mes "這全都是謊言，嗚嗚~";
+		if (malaya_bakona2 == 3)
+			callsub L_Quest;
+		close;
+	}
+
+L_Quest:
+	next;
+	mes "把哭泣的男孩留在身後，";
+	mes "繼續尋找其他失蹤者的遺物吧。";
+	mes "從提亞納克身上找回三個^FF0000遺失的物品^000000，";
+	mes "並交給^0000FF失蹤者的兒子^000000。";
+	return;
+}
+
+malaya,270,278,4	script	失蹤者的兒子	578,{
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona2 < 3) {
+		mes "[失蹤者的兒子]";
+		mes "巴庫暴龍傷害了我的父親？";
+		mes "我無法相信。";
+		mes "請找到我的父親！";
+		close;
+	} else if (malaya_bakona2 == 3) {
+		if (countitem(6520) < 3) {
+			mes "[失蹤者的兒子]";
+			mes "你在找我父親的";
+			mes "三個^FF0000遺失的物品^000000？為什麼是遺物而不是我父親？";
+			mes "不，不可能的。他一定還活在某個地方！";
+			close;
+		}
+		mes "[失蹤者的兒子]";
+		mes "這些很明顯是他的衣服和鞋子...";
+		mes "這些是我父親的^FF0000遺失的物品^000000。";
+		mes "噢，天啊... 父親！";
+		callsub L_Quest;
+		delitem 6520,3; //Lost_Belongings
+		erasequest 1182;
+		setquest 1183;
+		set malaya_bakona2,4;
+		close;
+	} else {
+		mes "[失蹤者的兒子]";
+		mes "為什麼會發生這種事....";
+		if (malaya_bakona2 == 4)
+			callsub L_Quest;
+		close;
+	}
+
+L_Quest:
+	next;
+	mes "痛苦哭泣的男子。";
+	mes "繼續尋找其他失蹤者的遺物吧。";
+	mes "從提亞納克身上找回五個^FF0000遺失的物品^000000，";
+	mes "並交給^0000FF失蹤者的母親^000000。";
+	return;
+}
+
+malaya,265,284,4	script	失蹤者的母親	579,{
+	if (malaya_hi < 20) {
+		mes "- 她似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona2 < 4) {
+		mes "[失蹤者的母親]";
+		mes "請找到我的孩子。";
+		mes "我派她出去辦事，";
+		mes "但她到現在還沒回來。";
+		close;
+	} else if (malaya_bakona2 == 4) {
+		if (countitem(6520) < 5) {
+			mes "[失蹤者的母親]";
+			mes "你在找我孩子的五個^FF0000遺失的物品^000000？";
+			mes "這是什麼意思？";
+			mes "你是說我的孩子死了嗎？";
+			close;
+		}
+		mes "[失蹤者的母親]";
+		mes "這是我孩子的梳子。";
+		mes "為什麼你有我孩子的五個^FF0000遺失的物品^000000？";
+		mes "為什麼...？她... 死了？";
+		next;
+		mes "[失蹤者的母親]";
+		mes "不，等等... 我好像聽到她的聲音了。";
+		mes "她很快就會到家了。我現在該回家了。";
+		mes "我得為她準備晚餐。她一定餓壞了。";
+		mes "哈哈...";
+		next;
+		mes "一位已經發瘋的母親...";
+		mes "既然我已經找完了所有失蹤者，";
+		mes "我應該回去向村長報告。";
+		delitem 6520,5; //Lost_Belongings
+		erasequest 1183;
+		setquest 1184;
+		set malaya_bakona2,5;
+		close;
+	} else {
+		mes "[失蹤者的母親]";
+		mes "哈哈哈... 我能聽到我孩子的聲音，";
+		mes "仔細聽。";
+		mes "難道你沒聽到她在叫媽媽嗎？";
+		mes "哈哈哈...";
+		next;
+		mes "一位已經發瘋的母親...";
+		if (malaya_bakona2 == 5) {
+			mes "既然我已經找完了所有失蹤者，";
+			mes "我應該回去向村長報告。";
+		}
+		close;
+	}
+}
+
+malaya,289,364,4	script	年輕的算命師	583,{
+	if (checkweight(1301,3) == 0) {
+		mes "你身上攜帶太多物品，無法開始對話。 -";
+		close;
+	}
+	if (malaya_hi < 20) {
+		mes "- 他似乎對你很警惕。 -";
+		close;
+	}
+	if (malaya_bakona2 < 6) {
+		mes "[年輕的算命師]";
+		mes "月亮的能量變弱了。";
+		mes "魔物變多的原因，";
+		mes "還有受害者增加的原因，";
+		mes "全都是因為這個。";
+		close;
+	} else if (malaya_bakona2 == 6) {
+		mes "[年輕的算命師]";
+		mes "這幾天月亮的能量變弱了。";
+		mes "魔物變多的原因，";
+		mes "還有受害者增加的原因，全都是因為這個。";
+		next;
+		mes "[年輕的算命師]";
+		mes "我正準備舉行一場儀式，";
+		mes "透過獻祭魔物的血液來恢復月亮的能量，";
+		mes "所以我需要你去瑪希瓦加村落原野";
+		mes "狩獵15隻^FF0000迪塔巴林^000000。";
+		next;
+		switch(select("這不關我的事。:包在我身上。")) {
+		case 1:
+			mes "[年輕的算命師]";
+			mes "你太自私了！";
+			mes "在儀式中，";
+			mes "我也會祈禱你走霉運的。";
+			close;
+		case 2:
+			mes "[年輕的算命師]";
+			mes "快點。";
+			mes "如果月亮完全消失，";
+			mes "將會發生一場大災難。";
+			erasequest 1185;
+			setquest 1186;
+			set malaya_bakona2,7;
+			close;
+		}
+	} else if (malaya_bakona2 == 7) {
+		if (checkquest(1186,HUNTING) == 2) {
+			mes "[年輕的算命師]";
+			mes "看來你已經妥善處理了^FF0000迪塔巴林^000000。";
+			mes "我想我現在可以開始儀式了。";
+			mes "我們還需要一些物品，請去找";
+			mes "村長幫忙。";
+			erasequest 1186;
+			setquest 1187;
+			set malaya_bakona2,8;
+			if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+				getitem 12699,7; //Tikbalang_Belt
+			else
+				getitem 12699,5; //Tikbalang_Belt
+			close;
+		} else {
+			mes "[年輕的算命師]";
+			mes "我需要你去瑪希瓦加村落原野";
+			mes "狩獵15隻^FF0000迪塔巴林^000000。";
+			next;
+			mes "[年輕的算命師]";
+			mes "快點。";
+			mes "如果月亮完全消失，";
+			mes "將會發生一場大災難。";
+			close;
+		}
+	} else if (malaya_bakona2 == 8) {
+		mes "[年輕的算命師]";
+		mes "我想我現在可以開始儀式了。";
+		mes "我們還需要一些物品，請去找";
+		mes "村長幫忙。";
+		close;
+	} else {
+		mes "[年輕的算命師]";
+		mes "當月亮完全消失的那一天，";
+		mes "這條惡龍就會襲擊村莊。";
+		mes "沒有人會是安全的。";
+		close;
+	}
+	end;
+}
+
+ma_fild01,54,253,4	script	粗獷的工人#bako2	582,{
+	if (malaya_bakona2 < 9) {
+		mes "[粗獷的工人]";
+		mes "村長叫我";
+		mes "在這裡等你。";
+		close;
+	} else if (malaya_bakona2 == 9) {
+		mes "[粗獷的工人]";
+		mes "陷阱將設置在正前方。";
+		mes "往前走一點。";
+		close;
+	} else if (malaya_bakona2 == 10) {
+		mes "[粗獷的工人]";
+		mes "你可以在連接";
+		mes "瑪希瓦加村落原野和巴庫暴龍之湖的地方";
+		mes "找到脾氣暴躁的工人。";
+		mes "去和他一起設置陷阱吧。";
+		close;
+	} else {
+		mes "[粗獷的工人]";
+		mes "你是想大肆宣傳";
+		mes "這裡有陷阱嗎？閃開。";
+		close;
+	}
+	end;
+}
+
+ma_fild01,54,244,0	script	#bako2	139,2,2,{
+	end;
+OnTouch_:
+	if (malaya_bakona2 == 9) {
+		mes "我應該把陷阱設置在";
+		mes "這裡附近。";
+		next;
+		mes "[粗獷的工人]";
+		mes "像這樣使用工具，";
+		mes "砰砰砰！";
+		next;
+		mes "砰砰砰！";
+		next;
+		mes "陷阱設置好了。";
+		next;
+		mes "[粗獷的工人]";
+		mes "你可以在連接";
+		mes "瑪希瓦加村落原野和巴庫暴龍之湖的地方";
+		mes "找到脾氣暴躁的工人。";
+		mes "去和他一起設置陷阱吧。";
+		erasequest 1188;
+		setquest 1189;
+		set malaya_bakona2,10;
+		close;
+	} else if (malaya_bakona2 == 10) {
+		mes "陷阱設置好了。";
+		next;
+		mes "[粗獷的工人]";
+		mes "這個陷阱不是用來抓你的，";
+		mes "所以閃開。";
+		next;
+		mes "[粗獷的工人]";
+		mes "你可以在連接";
+		mes "瑪希瓦加村落原野和巴庫暴龍之湖的地方";
+		mes "找到脾氣暴躁的工人。";
+		mes "去他那裡吧。";
+		close;
+	}
+	end;
+}
+
+ma_fild01,236,119,5	script	脾氣暴躁的工人#bako2	577,{
+	if (malaya_bakona2 < 10) {
+		mes "[脾氣暴躁的工人]";
+		mes "村長叫我";
+		mes "在這裡等你。";
+		mes "太無聊了！";
+		close;
+	} else if (malaya_bakona2 == 10) {
+		mes "[脾氣暴躁的工人]";
+		mes "要在這裡前面挖個洞？";
+		mes "我也得挖？";
+		mes "誰說的？";
+		close;
+	} else if (malaya_bakona2 == 11) {
+		mes "[脾氣暴躁的工人]";
+		mes "去巴庫暴龍之湖入口附近";
+		mes "找膽小的工人。";
+		mes "快點，動起來！";
+		close;
+	} else {
+		mes "[脾氣暴躁的工人]";
+		mes "我設置了陷阱，";
+		mes "你卻在這裡大肆宣傳。";
+		mes "滾開！";
+		close;
+	}
+}
+
+ma_fild01,242,116,0	script	#bako3	139,2,2,{
+	end;
+OnTouch_:
+	if (malaya_bakona2 == 10) {
+		mes "我應該把陷阱設置在";
+		mes "這裡附近。";
+		next;
+		mes "[脾氣暴躁的工人]";
+		mes "我真的很討厭這裡！";
+		mes "...";
+		mes "用這把十字鎬，";
+		mes "挖挖挖！";
+		next;
+		mes "挖挖挖！";
+		next;
+		mes "陷阱設置好了。";
+		next;
+		mes "[脾氣暴躁的工人]";
+		mes "去巴庫暴龍之湖入口附近";
+		mes "找膽小的工人。";
+		mes "快點，動起來！";
+		erasequest 1189;
+		setquest 1190;
+		set malaya_bakona2,11;
+		close;
+	} else if (malaya_bakona2 == 11) {
+		mes "陷阱設置好了。";
+		next;
+		mes "[脾氣暴躁的工人]";
+		mes "你是想用你的身體";
+		mes "測試這陷阱有沒有用嗎？";
+		mes "閃開！";
+		next;
+		mes "[脾氣暴躁的工人]";
+		mes "去巴庫暴龍之湖入口附近";
+		mes "找膽小的工人。";
+		mes "快點，動起來！";
+		close;
+	}
+	end;
+}
+
+ma_scene01,177,89,4	script	膽小的工人#bako2	578,{
+	if (malaya_bakona2 < 11) {
+		mes "[膽小的工人]";
+		mes "村長叫我";
+		mes "在這裡等你。";
+		mes "為什麼是我？我有種不祥的預感....";
+		close;
+	} else if (malaya_bakona2 == 11) {
+		mes "[膽小的工人]";
+		mes "要在這裡前面設置陷阱？";
+		mes "村長說我也得幫忙？";
+		mes "你能自己弄嗎？";
+		close;
+	} else if (malaya_bakona2 == 12) {
+		mes "[膽小的工人]";
+		mes "往上走，你就會";
+		mes "找到憂鬱的工人。";
+		mes "去吧！你嚇到我了。";
+		mes "你看起來像要揍我一頓。";
+		close;
+	} else {
+		mes "[膽小的工人]";
+		mes "走開！";
+		mes "如果巴庫暴龍因為你";
+		mes "出現了怎麼辦？";
+		mes "我快嚇死了！";
+		close;
+	}
+	end;
+}
+
+ma_scene01,179,85,0	script	#bako4	139,2,2,{
+	end;
+OnTouch_:
+	if (malaya_bakona2 == 11) {
+		mes "我應該把陷阱設置在";
+		mes "這裡附近。";
+		next;
+		mes "[膽小的工人]";
+		mes "這裡沒有埋什麼";
+		mes "奇怪的東西吧？";
+		mes "...";
+		mes "用這把鏟子，挖挖挖！";
+		next;
+		mes "挖挖挖！";
+		next;
+		mes "陷阱設置好了。";
+		next;
+		mes "[膽小的工人]";
+		mes "往上走，你就會";
+		mes "找到憂鬱的工人。";
+		erasequest 1190;
+		setquest 1191;
+		set malaya_bakona2,12;
+		close;
+	} else if (malaya_bakona2 == 12) {
+		mes "陷阱設置好了。";
+		next;
+		mes "[膽小的工人]";
+		mes "立刻閃開！";
+		mes "巴庫暴龍可能會發現這是陷阱";
+		mes "並來找我們。";
+		next;
+		mes "[膽小的工人]";
+		mes "往上走，你就會";
+		mes "找到憂鬱的工人。";
+		emotion ET_SWEAT, playerattached();
+		close;
+	}
+	end;
+}
+
+ma_scene01,141,118,4	script	憂鬱的工人#bako2	582,{
+	if (malaya_bakona2 < 12) {
+		mes "[憂鬱的工人]";
+		mes "村長叫我";
+		mes "在這裡等你。";
+		mes "他一定是想讓我做點什麼。";
+		mes "唉...";
+		close;
+	} else if (malaya_bakona2 == 12) {
+		mes "[憂鬱的工人]";
+		mes "在左邊設置陷阱？";
+		mes "我不認為會有什麼用...";
+		mes "唉，我早該搬走什麼的...";
+		close;
+	} else if (malaya_bakona2 == 13) {
+		mes "[憂鬱的工人]";
+		mes "反正我們都會死在巴庫暴龍手裡。";
+		mes "這毫無意義。";
+		mes "沿著路往上走，你就會找到";
+		mes "多愁善感的工人。";
+		close;
+	} else {
+		mes "[憂鬱的工人]";
+		mes "反正巴庫暴龍還是會攻擊我們。";
+		mes "真是毫無意義的工作...";
+		close;
+	}
+	end;
+}
+
+ma_scene01,138,122,0	script	#bako5	139,2,2,{
+	end;
+OnTouch_:
+	if (malaya_bakona2 == 12) {
+		mes "我應該把陷阱設置在";
+		mes "這裡附近。";
+		next;
+		mes "[憂鬱的工人]";
+		mes "只要抓住這個網子，";
+		mes "丟丟丟！";
+		next;
+		mes "丟丟丟！";
+		next;
+		mes "陷阱設置好了。";
+		next;
+		mes "[憂鬱的工人]";
+		mes "沿著路往上走，你就會找到";
+		mes "多愁善感的工人。";
+		mes "雖然我懷疑這會有什麼幫助。";
+		erasequest 1191;
+		setquest 1192;
+		set malaya_bakona2,13;
+		close;
+	} else if (malaya_bakona2 == 13) {
+		mes "陷阱設置好了。";
+		next;
+		mes "[憂鬱的工人]";
+		mes "這個陷阱毫無意義。";
+		mes "看吧？它根本沒用。";
+		close;
+	}
+	end;
+}
+
+ma_scene01,175,170,5	script	多愁善感的工人#bako2	578,{
+	if (malaya_bakona2 < 13) {
+		mes "[多愁善感的工人]";
+		mes "村長叫我在這裡等你。";
+		mes "是有什麼驚喜活動嗎？";
+		mes "我的心跳變快了?";
+		close;
+	} else if (malaya_bakona2 == 13) {
+		mes "[多愁善感的工人]";
+		mes "哇！所以我們要一起合作";
+		mes "在這個地方後面設置陷阱？";
+		mes "這太酷了！";
+		mes "這是世界上最酷的事情了！";
+		close;
+	} else if (malaya_bakona2 == 14) {
+		mes "[多愁善感的工人]";
+		mes "既然陷阱設置好了，";
+		mes "我們要回去向村長報告嗎？";
+		mes "哦，太有趣了！";
+		mes "聽起來好刺激！";
+		close;
+	} else {
+		mes "[多愁善感的工人]";
+		mes "越想越覺得興奮。";
+		mes "我正在暗中守護陷阱！";
+		mes "我想大聲喊出來。";
+		mes "我面前有一個陷阱！哈哈哈哈?";
+		emotion ET_PROFUSELY_SWEAT, playerattached();
+		close;
+	}
+	end;
+}
+
+ma_scene01,171,174,0	script	#bako6	139,2,2,{
+	end;
+OnTouch_:
+	if (malaya_bakona2 == 13) {
+		mes "我應該把陷阱設置在";
+		mes "這裡附近。";
+		next;
+		mes "[多愁善感的工人]";
+		mes "哇！這真的是一個";
+		mes "設置陷阱的完美地點。";
+		mes "我要扔繩子了！";
+		mes "繩子去吧！";
+		next;
+		mes "繩子去吧！";
+		next;
+		mes "陷阱設置好了。";
+		mes "既然陷阱設置好了，";
+		mes "我們去找村長吧。";
+		erasequest 1192;
+		setquest 1193;
+		set malaya_bakona2,14;
+		close;
+	} else if (malaya_bakona2 == 14) {
+		mes "陷阱設置好了。";
+		next;
+		mes "[多愁善感的工人]";
+		mes "先試試這個陷阱吧！";
+		mes "我很好奇";
+		mes "會發生什麼事！";
+		mes "一定會很好玩的！";
+		close;
+	}
+	end;
+}
+
+// Original name: "Bakonawa Introduction Quest Helper#bako1"
+sec_in02,10,16,5	script	巴庫暴龍介紹助手	543,{
+	if (callfunc("F_GM_NPC",1854,0) < 1) {
+		mes "海鮮炸醬麵！";
+		close;
+	}
+	mes "[煤球計謀]";
+	mes "大膽地告訴我";
+	mes "你想要什麼！";
+	next;
+	switch(select("重置所有任務:在第一個任務結束之前:重置次要任務:分配遺失的物品:剛狩獵完畢")) {
+	case 1:
+		mes "給你！";
+		set malaya_bakona1,0;
+		set malaya_bakona2,0;
+		for(set .@i,1174; .@i<=1193; set .@i,.@i+1) {
+			if (checkquest(.@i) > -1)
+				erasequest .@i;
+		}
+		close;
+	case 2:
+		mes "[煤球計謀]";
+		mes "給你！";
+		set malaya_bakona1,6;
+		for(set .@i,1174; .@i<=1178; set .@i,.@i+1) {
+			if (checkquest(.@i) > -1)
+				erasequest .@i;
+		}
+		setquest 1179;
+		close;
+	case 3:
+		mes "[煤球計謀]";
+		mes "給你！";
+		set malaya_bakona2,0;
+		for(set .@i,1180; .@i<=1193; set .@i,.@i+1) {
+			if (checkquest(.@i) > -1)
+				erasequest .@i;
+		}
+		close;
+	case 4:
+		mes "[煤球計謀]";
+		mes "給你！";
+		getitem 6520,17; //Lost_Belongings
+		close;
+	case 5:
+		mes "[煤球計謀]";
+		mes "給你！";
+		set malaya_bakona2,8;
+		setquest 1187;
+		for(set .@i,1178; .@i<=1193; set .@i,.@i+1) {
+			if (checkquest(.@i) > -1)
+				erasequest .@i;
+		}
+		close;
+	}
+}
+
+// Nurse in Port Malaya :: malaya_bang
+//============================================================
+function	script	F_Malaya_Nurse	{
+	if (malaya_bang == 30) {
+		mes "[護士 拉斯]";
+		mes "符咒？";
+		mes "我想你應該找找別的東西。";
+		cutin "malaya_nurseA01",2;
+		callsub L_Warp, getarg(0);
+	} else if (malaya_bang == 31) {
+		mes "[護士 拉斯]";
+		mes "一個符咒和一個人？";
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "我確實看到了符咒，但我沒有靠近它，因為我對它有一種不祥的預感。";
+		next;
+		mes "[護士 拉斯]";
+		mes "喔！";
+		mes "說到符咒，那個老奶奶在村子周圍貼了一些，她會不會知道些什麼？";
+		mes "我覺得去問問她會是個好主意。";
+		set malaya_bang,32;
+		changequest 11303,11304;
+		callsub L_Warp, getarg(0), 1;
+	} else if (malaya_bang == 32) {
+		mes "[護士 拉斯]";
+		mes "喔！";
+		mes "說到符咒，那個老奶奶在醫院周圍貼了一些，她會不會知道些什麼？";
+		mes "我覺得去問問她會是個好主意。";
+		cutin "malaya_nurseA01",2;
+		callsub L_Warp, getarg(0), 1;
+	} else if (malaya_bang == 33) {
+		mes "[護士 拉斯]";
+		mes "一個薩滿... 我們最好去見見她。";
+		cutin "malaya_nurseA01",2;
+		callsub L_Warp, getarg(0), 1;
+	} else if (malaya_bang == 34) {
+		mes "[護士 拉斯]";
+		mes "喔！";
+		mes "你一定見過她了。";
+		mes "我感覺到一股強大的力量...";
+		cutin "malaya_nurseA01",2;
+		next;
+		select("告訴她關於符咒的事。");
+		mes "[護士 拉斯]";
+		mes "對了！";
+		mes "我有一個主意。";
+		mes "我們何不把那個符咒貼在我們在二樓門上看到的那個符咒上面？";
+		emotion ET_AHA;
+		next;
+		mes "[護士 拉斯]";
+		mes "也許它可以阻擋它散發出來的邪惡能量。";
+		set malaya_bang,35;
+		changequest 11306,11307;
+		callsub L_Warp, getarg(0), 1;
+	} else if (malaya_bang == 35) {
+		mes "[護士 拉斯]";
+		mes "對了！";
+		mes "我有一個主意。";
+		mes "我們何不把那個符咒貼在我們在二樓門上看到的那個符咒上面？";
+		emotion ET_AHA;
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "也許它可以阻擋它散發出來的邪惡能量。";
+		callsub L_Warp, getarg(0), 1;
+	} else if (malaya_bang == 36) {
+		callsub L_Weight;
+		mes "[護士 瑪恩妮]";
+		mes "*嘆氣*...";
+		mes "當你站在我身後時，我就覺得很奇怪....";
+		cutin "malaya_nurseB",2;
+		next;
+		mes "[護士 瑪恩妮]";
+		mes "我沒想到你會做這樣的事。";
+		emotion ET_THINK;
+		next;
+		mes "[護士 瑪恩妮]";
+		mes "我們正準備進入惡靈之魅的房間，然後我們就被趕出來了...";
+		next;
+		switch(select("惡靈之魅？:護士 瑪恩妮？")) {
+		case 1:
+			callsub L_Bangungot;
+			select("護士 瑪恩妮");
+			callsub L_Maenne;
+			break;
+		case 2:
+			callsub L_Maenne;
+			select("惡靈之魅");
+			callsub L_Bangungot;
+			break;
+		}
+		callsub L_Incomplete;
+		set malaya_bang,42;
+		changequest 11308,11309;
+		callsub L_Reward;
+		callsub L_Warp, getarg(0), 1;
+	} else if (malaya_bang == 40) {
+		callsub L_Weight;
+		if (checkquest(11309,HUNTING) == 2) {
+			callsub L_Complete;
+			set malaya_bang,41;
+			completequest 11309;
+			callsub L_Reward;
+			callsub L_Warp, getarg(0), 1;
+		} else {
+			callsub L_Incomplete;
+			set malaya_bang,42;
+			callsub L_Reward;
+			callsub L_Warp, getarg(0);
+		}
+	} else if (malaya_bang > 40) {
+		if (malaya_bang == 42) {
+			if (checkquest(11309,HUNTING) == 2) {
+				callsub L_Complete;
+				set malaya_bang,41;
+				completequest 11309;
+				callsub L_Warp, getarg(0), 1;
+			} else {
+				callsub L_Incomplete;
+				callsub L_Warp, getarg(0);
+			}
+		}
+		callsub L_Incomplete;
+		switch(getarg(0)) {
+		case 1:
+			next;
+			switch(select("進入醫院。:離開。")) {
+			case 1:
+				callsub L_Warp, getarg(0);
+			case 2:
+				mes "[護士 瑪恩妮]";
+				mes "嗯...";
+				close2;
+				cutin "",255;
+				end;
+			}
+		case 2:
+			callsub L_Warp, getarg(0);
+		}
+	}
+	return;
+
+L_Weight:
+	if (checkweight(1201,1) == 0) {
+		mes "- 等等 !! -";
+		mes "- 你的物品太多了。 -";
+		mes "- 無法獲得物品。 -";
+		mes "- 請減輕你的負重 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	if (MaxWeight - Weight < 1000) {
+		mes "- 等等 !! -";
+		mes "- 你攜帶了太多物品。 -";
+		mes "- 無法獲得物品。 -";
+		mes "- 請減輕你的負重 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	return;
+
+L_Warp:
+	switch(getarg(0)) {
+	case 1:
+		close2;
+		cutin "",255;
+		if (getarg(1,0) == 0)
+			warp "ma_dun01",33,110;
+		end;
+	case 2:
+		next;
+		switch(select("走到外面。:離開。")) {
+		case 1:
+			close2;
+			cutin "",255;
+			warp "malaya",58,76;
+			end;
+		case 2:
+			mes "[護士 拉斯]";
+			mes "嘖...";
+			close2;
+			cutin "",255;
+			end;
+		}
+	}
+
+L_Reward:
+	if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE)) {
+		getitem 6499,5;
+		//Ancient_Grudge
+		getitem 6497,10; //Lesser_Agimat
+	} else {
+		getitem 6499,3; //Ancient_Grudge
+		getitem 6497,5; //Lesser_Agimat
+	}
+	getitem 617,1; //Old_Violet_Box
+	getexp 1000000,0;
+	return;
+
+L_Bangungot:
+	mes "[護士 瑪恩妮]";
+	mes "這是一隻在這家醫院裡遊蕩的邪惡魔物。";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "嗯...";
+	mes "這不完全是一隻魔物....";
+	mes "更像是一種詛咒或疾病...";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "有傳言說它曾經是一個樹精。";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "無論如何，這改變不了她殺死了這家醫院裡的病人並把他們變成魔物的事實。";
+	next;
+	return;
+
+L_Maenne:
+	mes "[護士 瑪恩妮]";
+	mes "我？";
+	mes "如你所見，我是這裡的新護士。";
+	mes "我是一名專門從事『這種』工作的護士，而不是照顧病人。";
+	cutin "malaya_nurseB",2;
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "喔！";
+	mes "惡靈之魅假扮成我了？";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "看來它把你嚇得不輕。";
+	mes "它算是個相當聰明的傢伙。";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "簡單來說，我負責治癒醫院周圍發生的超自然現象。";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "這個世界上會發生很多事情。";
+	next;
+	return;
+
+L_Complete:
+	mes "[護士 瑪恩妮]";
+	mes "她可能比我想像的更深植於此。";
+	mes "我還能感覺到她的存在。";
+	cutin "malaya_nurseB",2;
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "你殺死的只是她的一部分...";
+	mes "但是，這幫了很大的忙，因為你同時混淆並傷害了她。";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "這讓事情變得容易多了。";
+	mes "謝謝你。";
+	return;
+
+L_Incomplete:
+	mes "[護士 瑪恩妮]";
+	mes "如果她離開了她的身體會比較容易對付，但現在她回到了她的房間，這將會有點棘手。";
+	cutin "malaya_nurseB",2;
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "當然，你敢拍拍屁股走人試試看，因為你打擾了我的工作並引導她回到了她的房間。";
+	next;
+	mes "[護士 瑪恩妮]";
+	mes "如果你到了二樓的門口，我會為你開一扇通往她房間的小門。";
+	mes "之後，她就交給你了。";
+	return;
+}
+
+malaya,55,72,4	script	護士#ma_n1	569,{
+	if (malaya_hi < 20) {
+		mes "[護士]";
+		mes "這個鎮上的人對外地人太有戒心了。";
+		emotion ET_ANGER;
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士]";
+		mes "我相信他們有他們的理由，但我希望他們能告訴我如何更親近...";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if (BaseLevel < 100) {
+		mes "醫院外面有一個護士拿著一個大包包。";
+		mes "我不覺得我能幫她。";
+		close;
+	}
+	if (malaya_bang == 0) {
+		mes "[護士]";
+		mes "嘿，等一下。";
+		mes "你打算進去嗎？";
+		cutin "malaya_nurseA01",2;
+		next;
+		switch(select("是。:否。")) {
+		case 1:
+			mes "[護士]";
+			mes "喔~";
+			mes "我太高興了！";
+			mes "我簡直是在這裡等了一整天，就盼著有人來。";
+			cutin "malaya_nurseA02",2;
+			next;
+			switch(select("關於醫院。:叫住我的原因。:無視她。")) {
+			case 1:
+				mes "[護士]";
+				mes "這家醫院是鎮上唯一的一家。";
+				mes "而且這將是我的新工作。";
+				cutin "malaya_nurseA03",2;
+				next;
+				mes "[護士]";
+				mes "我聽說它是剛建好的，但它看起來好令人毛骨悚然....";
+				emotion ET_SWEAT;
+				next;
+				mes "[護士]";
+				mes "我來的時候也很驚訝。";
+				mes "周圍都寫著『關閉』！";
+				next;
+				select("叫住我的原因。");
+				mes "[護士]";
+				mes "有人告訴我這個鎮需要護士，";
+				mes "所以我拒絕了無數的工作邀請來到了這裡。";
+				next;
+				mes "[護士]";
+				mes "我聽說他們對外地人非常有戒心...";
+				next;
+				mes "[護士]";
+				mes "竟然連個歡迎我的人影都沒有，更別說是派對了！";
+				mes "太震驚了！";
+				emotion ET_CRY;
+				next;
+				mes "[護士]";
+				mes "更糟的是，我迷路後才好不容易來到這裡，現在面對的卻是一家令人毛骨悚然且鎖著門的醫院！";
+				next;
+				break;
+			case 2:
+				mes "[護士]";
+				mes "有人告訴我這個鎮需要護士，";
+				mes "所以我拒絕了無數的工作邀請來到了這裡。";
+				cutin "malaya_nurseA03",2;
+				next;
+				mes "[護士]";
+				mes "我聽說他們對外地人非常有戒心...";
+				next;
+				mes "[護士]";
+				mes "竟然連個歡迎我的人影都沒有，更別說是派對了！";
+				mes "太震驚了！";
+				emotion ET_CRY;
+				next;
+				mes "[護士]";
+				mes "更糟的是，我迷路後才好不容易來到這裡，現在面對的卻是一家令人毛骨悚然且鎖著門的醫院！";
+				next;
+				select("關於醫院。");
+				mes "[護士]";
+				mes "這家醫院是鎮上唯一的一家。";
+				mes "而且這將是我的新工作。";
+				next;
+				mes "[護士]";
+				mes "我聽說它是剛建好的，但它看起來好令人毛骨悚然....";
+				emotion ET_SWEAT;
+				next;
+				mes "[護士]";
+				mes "我來的時候也很驚訝。";
+				mes "周圍都寫著『關閉』！";
+				next;
+				break;
+			case 3:
+				mes "[護士]";
+				mes "是的，你一定很忙。";
+				mes "喔，好吧。";
+				mes "你走你的路吧。";
+				mes "別管我。*嗚咽*";
+				emotion ET_CRY;
+				cutin "malaya_nurseA03",2;
+				close2;
+				cutin "",255;
+				end;
+			}
+			break;
+		case 2:
+			mes "[護士]";
+			mes "喔，我明白了...";
+			emotion ET_CRY;
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[護士]";
+		mes "既然你都這麼說了... 如果你要進去，你能帶我一起進去嗎？";
+		cutin "malaya_nurseA04",2;
+		next;
+		mes "[護士]";
+		mes "門鎖上了！";
+		mes "我的包包好重！";
+		mes "我的腿也快痛死了。";
+		cutin "malaya_nurseA03",2;
+		next;
+		mes "[護士]";
+		mes "如果我知道會發生這種事，我就會穿急診室夜班的鞋子，而不是第一天上班穿的鞋子... *吸鼻子*";
+		emotion ET_CRY;
+		next;
+		switch(select("幫忙。:不幫忙。")) {
+		case 1:
+			mes "[護士]";
+			mes "*嗚咽*";
+			mes "我想這個世界還是值得活下去的。";
+			mes "你太善良了。";
+			emotion ET_CRY;
+			next;
+			mes "[護士 拉斯]";
+			mes "我是『拉斯』，本來應該在這家醫院工作的。";
+			mes "不過看樣子，我可能要失業了...";
+			next;
+			mes "[護士 拉斯]";
+			mes "讓我們先從進去裡面開始吧。";
+			next;
+			mes "[護士 拉斯]";
+			mes "在那之前....";
+			mes "你能弄點東西來包紮我的腳嗎？我因為起水泡而無法穿鞋了。";
+			emotion ET_HELP;
+			cutin "malaya_nurseA04",2;
+			next;
+			mes "[護士 拉斯]";
+			mes "2個腐爛繃帶應該足夠包紮我的雙腳。它們看起來可能很髒，但上面有特殊的液體，有著驚人的效果。";
+			set malaya_bang,1;
+			setquest 11284;
+			close2;
+			cutin "",255;
+			end;
+		case 2:
+			mes "[護士]";
+			mes "是的，你一定很忙。";
+			mes "喔，好吧。";
+			mes "你走你的路吧。";
+			mes "別管我。*嗚咽*";
+			emotion ET_CRY;
+			cutin "malaya_nurseA03",2;
+			close2;
+			cutin "",255;
+			end;
+		}
+	} else if (malaya_bang == 1) {
+		if (countitem(930) > 1) {
+			mes "[護士 拉斯]";
+			mes "喔......";
+			mes "我知道它們很有效，但是... 並不吸引人。";
+			cutin "malaya_nurseA01",2;
+			next;
+			mes "[護士 拉斯]";
+			mes "腐爛繃帶... 這個名字很適合這種看起來像是剛從木乃伊身上剪下來的東西。";
+			next;
+			mes "[護士 拉斯]";
+			mes "看著它們我有點猶豫了，但身為一名專業的護士！！";
+			mes "拼了！！！";
+			mes "噁！！";
+			next;
+			mes "[護士 拉斯]";
+			mes "*吧唧*";
+			mes "*噗嗤*";
+			delitem 930,2; //Rotten_Bandage
+			set malaya_bang,2;
+			close2;
+			cutin "",255;
+			end;
+		} else {
+			mes "[護士 拉斯]";
+			mes "在那之前...";
+			mes "你能弄點東西來包紮我的腳嗎？我因為起水泡而無法穿鞋了。";
+			emotion ET_HELP;
+			cutin "malaya_nurseA03",2;
+			next;
+			mes "[護士 拉斯]";
+			mes "2個腐爛繃帶應該足夠包紮我的雙腳。它們看起來可能很髒，但上面有特殊的液體，有著驚人的效果。";
+			close2;
+			cutin "",255;
+			end;
+		}
+	} else if (malaya_bang == 2) {
+		mes "[護士 拉斯]";
+		mes "啊......";
+		mes "我的腳現在感覺好多了，但聞起來怪怪的。";
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "喔...... 這個味道......";
+		mes "我的新鞋要毀了...";
+		emotion ET_PROFUSELY_SWEAT;
+		next;
+		mes "[護士 拉斯]";
+		mes "好吧！！！！！！";
+		mes "我不知道它是鎖上了還是卡住了，我們一起試著推開它吧！";
+		set malaya_bang,3;
+		changequest 11284,11285;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 3) {
+		mes "[護士 拉斯]";
+		mes "好吧！！！！！！";
+		mes "我不知道它是鎖上了還是卡住了，我們一起試著推開它吧！";
+		cutin "malaya_nurseA01",2;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 4) {
+		mes "["+strcharinfo(0)+"]";
+		mes "我們推了又拉，但它就是不動。";
+		emotion ET_PROFUSELY_SWEAT, playerattached();
+		next;
+		mes "[護士 拉斯]";
+		mes "奇怪~";
+		mes "他們不會把我送到一家已經關閉的醫院的。";
+		cutin "malaya_nurseA03",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "嗯！";
+		mes "我受不了了！";
+		emotion ET_FRET;
+		next;
+		mes "[護士 拉斯]";
+		mes "你能去向鎮上的居民打聽一下關於醫院的事嗎？我來聯絡總部。";
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "嘿，你何不從那邊那個女孩開始問起呢？";
+		mes "也許她會告訴你一些事情。";
+		set malaya_bang,5;
+		changequest 11286,11287;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 5) {
+		mes "[護士 拉斯]";
+		mes "你能去向鎮上的居民打聽一下關於醫院的事嗎？我來聯絡總部。";
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "嘿，你何不從那邊那個女孩開始問起呢？";
+		mes "也許她會告訴你一些事情。";
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 6) {
+		mes "[護士 拉斯]";
+		mes "她說了什麼？";
+		emotion ET_QUESTION;
+		cutin "malaya_nurseA02",2;
+		next;
+		select("告訴她女孩說的話。");
+		mes "[護士 拉斯]";
+		mes "真奇怪。";
+		mes "總部確認我被分配到了這裡。";
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "也許那個女孩不知道這個地方？";
+		mes "總部不可能把我送到這裡還對此說謊。你能去問問鎮上的其他人嗎？";
+		next;
+		mes "[護士 拉斯]";
+		mes "我會再次聯絡總部獲取更多資訊。";
+		mes "嘿，何不去問問那邊那個男人呢？";
+		mes "我相信他一定知道些什麼。";
+		set malaya_bang,7;
+		changequest 11288,11289;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 7) {
+		mes "[護士 拉斯]";
+		mes "我會再次聯絡總部獲取更多資訊。";
+		mes "嘿，何不去問問那邊那個男人呢？";
+		mes "我相信他一定知道些什麼。";
+		cutin "malaya_nurseA01",2;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 8) {
+		mes "[護士 拉斯]";
+		mes "旅館？";
+		mes "我的天啊！";
+		mes "如果他們早點告訴我，我就不用在這裡站這麼久了！";
+		emotion ET_HNG;
+		cutin "malaya_nurseA01",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "嗯......";
+		mes "......";
+		mes "......";
+		next;
+		mes "[護士 拉斯]";
+		mes "嘿... 你知道嗎...";
+		next;
+		mes "[護士 拉斯]";
+		mes "因為我的腳，我覺得我走不動了。你能替我去一趟旅館嗎？";
+		emotion ET_PROFUSELY_SWEAT;
+		cutin "malaya_nurseA03",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "我沒辦法帶著行李到處走，所以我會留在這裡看管它們，同時治療我的腳。";
+		next;
+		mes "[護士 拉斯]";
+		mes "反正我還得再回到這裡。";
+		mes "謝謝你。";
+		set malaya_bang,9;
+		changequest 11290,11291;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 9) {
+		mes "[護士 拉斯]";
+		mes "因為我的腳，我覺得我走不動了。你能替我去一趟旅館嗎？";
+		emotion ET_PROFUSELY_SWEAT;
+		cutin "malaya_nurseA03",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "我沒辦法帶著行李到處走，所以我會留在這裡看管它們，同時治療我的腳。";
+		next;
+		mes "[護士 拉斯]";
+		mes "反正我還得再回到這裡。";
+		mes "謝謝你。";
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 10) {
+		mes "[護士 拉斯]";
+		mes "嘿~";
+		mes "進行得怎麼樣？";
+		cutin "malaya_nurseA02",2;
+		next;
+		select("交出鑰匙和訊息。");
+		mes "[護士 拉斯]";
+		mes "鑰匙？";
+		mes "看來距離我的目標又近了一步！";
+		mes "我們現在就開門吧！";
+		set malaya_bang,11;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 11) {
+		mes "[護士 拉斯]";
+		mes "鑰匙？";
+		mes "看來距離我的目標又近了一步！";
+		mes "我們現在就開門吧！";
+		cutin "malaya_nurseA02",2;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 12) {
+		mes "[護士 拉斯]";
+		mes "真奇怪~！";
+		mes "門沒鎖？";
+		mes "怎麼會這樣？？？？？";
+		mes "？？？？";
+		emotion ET_QUESTION;
+		emotion ET_QUESTION, playerattached();
+		cutin "malaya_nurseA04",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "喔不！！！";
+		mes "一切都泡湯了。";
+		mes "也許我們應該等醫生來.....";
+		cutin "malaya_nurseA03",2;
+		next;
+		mes "[???]";
+		mes "...";
+		cutin "",255;
+		next;
+		mes "[???]";
+		mes "*竊笑*";
+		emotion ET_QUESTION, playerattached();
+		emotion ET_QUESTION;
+		next;
+		mes "[???]";
+		mes "嘿，"+((Sex == SEX_MALE)?"大哥哥":"大姐姐")+",";
+		mes "你們進不去醫院的。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "誰在那裡？！";
+		next;
+		mes "[???]";
+		mes "*竊笑*";
+		next;
+		mes "[???]";
+		mes "這是個秘密~";
+		mes "如果我媽媽知道我在這裡，她會殺了我的！";
+		next;
+		switch(select("關於進入醫院。:關於他媽媽。:關於 ???:離開。")) {
+		case 1:
+			mes "[???]";
+			mes "幾天前，住在我們附近的老奶奶繞著醫院走，把某種棍子插在地上。";
+			next;
+			mes "[???]";
+			mes "她一直在咕噥，還到處張望。";
+			next;
+			mes "[???]";
+			mes "我躲在這裡躲得很好，因為我不應該出現在這裡。";
+			next;
+			break;
+		case 2:
+			mes "[???]";
+			mes "我媽媽曾經告訴我。";
+			mes "那個老奶奶的女兒在這家醫院住院。";
+			next;
+			mes "[???]";
+			mes "不過她再也沒有出來過...";
+			next;
+			mes "[???]";
+			mes "她不是唯一的一個。醫院裡發生了許多奇怪的事情。";
+			next;
+			mes "[???]";
+			mes "這就是為什麼我媽媽不希望我來這裡。";
+			next;
+			break;
+		case 3:
+			mes "[???]";
+			mes "門都沒有！";
+			mes "上次我在這附近被抓到時挨了一頓打！";
+			next;
+			mes "[???]";
+			mes "如果我再被抓到，那可就不只是挨打而已了....";
+			mes "太可怕了。";
+			next;
+			break;
+		case 4:
+			mes "[???]";
+			mes "哼！！";
+			close;
+		}
+		mes "聲音似乎是從醫院入口附近的灌木叢中傳來的。";
+		specialeffect EF_STEAL,AREA,"Bushes#ma";
+		set malaya_bang,13;
+		changequest 11293,11294;
+		close;
+	} else if (malaya_bang == 13) {
+		mes "聲音似乎是從醫院入口附近的灌木叢中傳來的。";
+		mes "我們到處看看吧。";
+		specialeffect EF_STEAL,AREA,"Bushes#ma";
+		close;
+	} else if (malaya_bang == 14) {
+		mes "[護士 拉斯]";
+		mes "嗯... 我們在醫院周圍看看吧。";
+		cutin "malaya_nurseA01",2;
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 15) {
+		mes "[護士 拉斯]";
+		mes "嘿... 嗯...";
+		mes "你知道的...";
+		mes "你能去拜訪一下那個老奶奶嗎？";
+		cutin "malaya_nurseA04",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "喔，我？我會在這裡到處看看。";
+		next;
+		mes "[護士 拉斯]";
+		mes "如你所知，我的腳很痛...";
+		mes "好嗎？";
+		mes "好嗎？";
+		next;
+		switch(select("去。:不去。")) {
+		case 1:
+			mes "[護士 拉斯]";
+			mes "好的，去吧。";
+			mes "我想她住在鎮上的西邊。";
+			mes "去吧。";
+			next;
+			mes "[護士 拉斯]";
+			mes "嘿，灌木叢裡的那傢伙，如果你現在不回家，我就去告發你！";
+			set malaya_bang,16;
+			changequest 11296,11297;
+			close2;
+			cutin "",255;
+			end;
+		case 2:
+			mes "[護士 拉斯]";
+			mes "為什麼！？";
+			mes "待在這裡無法解決任何問題。";
+			close2;
+			cutin "",255;
+			end;
+		}
+	} else if (malaya_bang == 16 || malaya_bang == 17) {
+		mes "[護士 拉斯]";
+		mes "好的，去吧。";
+		mes "我想她住在鎮上的西邊。";
+		mes "去吧。";
+		cutin "malaya_nurseA04",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "嘿，灌木叢裡的那傢伙，如果你現在不回家，我就去告發你！";
+		emotion ET_HUK, getnpcid(0, "Bushes#ma");
+		close2;
+		cutin "",255;
+		end;
+	} else if (malaya_bang == 18) {
+		mes "[護士 拉斯]";
+		mes "進行得怎麼樣？";
+		mes "你見到那個老奶奶了嗎？";
+		cutin "malaya_nurseA02",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "喔，順帶一提，當["+strcharinfo(0)+"]，你不在的時候，我試了試門。";
+		mes "它確實開了...";
+		next;
+		mes "[護士 拉斯]";
+		mes "但是通往二樓的路被擋住了。";
+		mes "我原本以為門開了是個突破，結果並不是。";
+		cutin "malaya_nurseA03",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "無論如何，一樓的門開了，我們進去吧。";
+		mes "如果二樓的門沒開，一切都將毫無意義。";
+		emotion ET_CRY;
+		set malaya_bang,19;
+		changequest 11299,11300;
+		close2;
+		cutin "",255;
+		warp "ma_dun01",33,110;
+		end;
+	} else if (malaya_bang == 19) {
+		mes "[護士 拉斯]";
+		mes "無論如何，一樓的門開了，我們進去吧。";
+		mes "如果二樓的門沒開，一切都將毫無意義。";
+		emotion ET_CRY;
+		cutin "malaya_nurseA01",2;
+		close2;
+		cutin "",255;
+		warp "ma_dun01",33,110;
+		end;
+	} else if (malaya_bang < 30) {
+		mes "[護士 拉斯]";
+		mes "你能再檢查一次二樓的門嗎，以防我漏掉了什麼？";
+		cutin "malaya_nurseA01",2;
+		close2;
+		cutin "",255;
+		warp "ma_dun01",33,110;
+		end;
+	} else {
+		callfunc "F_Malaya_Nurse",1;
+		end;
+	}
+	mes "醫院外面有一個護士拿著一個大包包。";
+	mes "我不覺得我能幫她。";
+	close;
+}
+
+ma_dun01,35,108,4	script	護士#ma_n2	569,{
+	if (malaya_bang < 19) {
+		// fall through
+	} else if (malaya_bang < 30) {
+		if (malaya_bang == 19) {
+			mes "醫院裡到處都是魔物，就像那個老奶奶說的一樣。";
+			mes "她的腳那個樣子，當初是怎麼在二樓來回走動的....";
+			next;
+			set malaya_bang,20;
+			changequest 11300,11301;
+		}
+		mes "[護士 拉斯]";
+		mes "你能再檢查一次二樓的門嗎，以防我漏掉了什麼？";
+		cutin "malaya_nurseA01",2;
+		next;
+		switch(select("走到外面。:離開。")) {
+		case 1:
+			close2;
+			cutin "",255;
+			warp "malaya",58,76;
+			end;
+		case 2:
+			mes "[護士 拉斯]";
+			mes "嘖...";
+			close2;
+			cutin "",255;
+			end;
+		}
+	} else {
+		callfunc "F_Malaya_Nurse",2;
+		end;
+	}
+	mes "[護士]";
+	mes "我想一個人靜一靜。";
+	mes "請離開。";
+	close2;
+	warp "malaya",58,76;
+	end;
+}
+
+ma_dun01,152,23,4	script	可疑的木棍::MalayaStick0	858,{
+	if (malaya_bang == 20) {
+		mes "這裡有一個類似醫院外面的符咒。";
+		mes "我們找找其他東西吧。";
+		set malaya_bang,30;
+		changequest 11301,11302;
+		close;
+	} else if (malaya_bang == 30) {
+		mes "這裡有一個類似醫院外面的符咒。";
+		mes "我們找找其他東西吧。";
+		close;
+	} else if (malaya_bang == 35) {
+		mes "把符咒貼在另一個符咒上面後，那種陰暗的感覺消散了，就像拉斯說的那樣。";
+		next;
+		mes "[護士 拉斯]";
+		mes "*竊笑*";
+		cutin "malaya_nurseA05",2;
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "？！";
+		cutin "",255;
+		next;
+		mes "[護士 拉斯]";
+		mes "對，對！";
+		cutin "malaya_nurseA05",2;
+		next;
+		mes "[護士 拉斯]";
+		mes "那些煩人的符咒不見了！";
+		next;
+		mes "[護士 拉斯]";
+		mes "*咯咯笑*";
+		next;
+		mes "[護士 拉斯]";
+		mes "人類真是愚蠢。只要給他們看一點無助的樣子，他們就會上當。";
+		next;
+		mes "[護士 拉斯]";
+		mes "*竊笑*";
+		next;
+		mes "[護士 拉斯]";
+		mes "為了獎勵你的工作，我將帶你到我的房間...";
+		mes "該死...";
+		next;
+		mes "[護士 拉斯]";
+		mes "......";
+		next;
+		mes "[護士 拉斯]";
+		mes "不，不，不！";
+		mes "你身上還有那些煩人的符咒！！！";
+		next;
+		mes "[護士 拉斯]";
+		mes "算你走運！";
+		mes "*竊笑*";
+		set malaya_bang,36;
+		changequest 11307,11308;
+		close2;
+		cutin "",255;
+		warp "malaya",58,76;
+		end;
+	} else if (malaya_bang > 35) {
+		mes "感覺不到符咒有任何邪惡的氣息。";
+		mes "只剩下被拉斯愚弄的苦澀感覺...";
+		close;
+	} else {
+		mes "感覺不到任何力量。";
+		close;
+	}
+}
+
+malaya,48,76,4	script	醫院大門#ma_n1	844,{
+	if (malaya_bang == 3) {
+		mes "用力推了門，但打不開。";
+		mes "感覺不像是鎖上了或卡住了，而是被一層什麼東西包覆著。";
+		set malaya_bang,4;
+		changequest 11285,11286;
+		close;
+	} else if (malaya_bang == 4) {
+		mes "用力推了門，但打不開。";
+		mes "感覺不像是鎖上了或卡住了，而是被一層什麼東西包覆著。";
+		close;
+	} else if (malaya_bang == 11) {
+		mes "把鑰匙插進醫院大門的鎖裡...";
+		mes "但它並沒有像預期的那樣鎖著。";
+		next;
+		mes "那為什麼門打不開？";
+		set malaya_bang,12;
+		changequest 11292,11293;
+		close;
+	} else if (malaya_bang == 12) {
+		mes "把鑰匙插進醫院大門的鎖裡...";
+		mes "但它並沒有像預期的那樣鎖著。";
+		next;
+		mes "那為什麼門打不開？";
+		close;
+	} else if (malaya_bang > 18) {
+		if(select("進入醫院。:離開。") == 1)
+			warp "ma_dun01",33,110;
+		end;
+	} else {
+		mes "醫院的大門似乎關閉著。";
+		close;
+	}
+}
+
+malaya,64,78,4	script	村莊女子#mab	583,{
+	if (malaya_hi < 20) {
+		mes "[村莊女子]";
+		mes "......";
+		next;
+		mes "似乎對你非常有戒心。";
+		close;
+	}
+	if (malaya_bang == 5) {
+		mes "[村莊女子]";
+		mes "喔~你是冒險家嗎？";
+		mes "看來我們鎮上最近來了很多冒險家。";
+		next;
+		mes "[村莊女子]";
+		mes "我出生在這裡，從來沒去過很遠的地方，所以我每次聽到他們帶來的故事，總會覺得自己也跟著去冒險了。";
+		next;
+		switch(select("詢問關於醫院的事。:結束對話。")) {
+		case 1:
+			mes "[村莊女子]";
+			mes "醫院？";
+			mes "它已經關閉很久了。";
+			mes "這裡的人不談論它。";
+			next;
+			mes "[村莊女子]";
+			mes "我從來不需要去醫院。";
+			mes "我小時候肚子痛去過一次。我記得那裡很令人毛骨悚然。";
+			next;
+			mes "[村莊女子]";
+			mes "小孩從來不喜歡醫院。";
+			next;
+			select("詢問關於護士的事。");
+			mes "[村莊女子]";
+			mes "新護士？";
+			mes "我不知道。";
+			mes "我沒想過這件事。";
+			mes "有一位新護士來到一家已經關閉的醫院，這的確很奇怪。";
+			set malaya_bang,6;
+			changequest 11287,11288;
+			close;
+		case 2:
+			mes "[村莊女子]";
+			mes "祝你有個美好的一天~";
+			close;
+		}
+	} else if (malaya_bang == 6) {
+		mes "[村莊女子]";
+		mes "新護士？";
+		mes "我不知道。";
+		mes "我沒想過這件事。";
+		mes "有一位新護士來到一家已經關閉的醫院，這的確很奇怪。";
+		set malaya_bang,6;
+		changequest 11287,11288;
+		close;
+	} else {
+		mes "[村莊女子]";
+		mes "喔~你是冒險家嗎？";
+		mes "看來我們鎮上最近來了很多冒險家。";
+		next;
+		mes "[村莊女子]";
+		mes "我出生在這裡，從來沒去過很遠的地方，所以我每次聽到他們帶來的故事，總會覺得自己也跟著去冒險了。";
+		close;
+	}
+}
+
+malaya,62,37,4	script	村莊男子#mab	582,{
+	if (malaya_hi < 20) {
+		mes "[村莊男子]";
+		mes "嗯！沒見過你？";
+		mes "是什麼風把你吹來我們鎮上的？";
+		next;
+		mes "似乎對你非常有戒心。";
+		close;
+	}
+	if (malaya_bang == 7) {
+		mes "[村莊男子]";
+		mes "*笑*";
+		mes "你是個冒險家，對吧？";
+		mes "有空的時候，來我的鳳梨園逛逛吧。";
+		next;
+		mes "[村莊男子]";
+		mes "離村子只有一點點~";
+		mes "遠，但只要你跟我講個好聽的故事，你要多少鳳梨我都給你！";
+		next;
+		switch(select("詢問關於醫院的事。:結束對話。")) {
+		case 1:
+			mes "[村莊男子]";
+			mes "嗯......";
+			mes "你是說那家醫院嗎？";
+			next;
+			mes "[村莊男子]";
+			mes "它因為一場事故而關閉了。";
+			mes "但我不會用細節來煩擾一個外地人......";
+			mes "我能告訴你的不多。";
+			next;
+			select("詢問關於護士的事。");
+			mes "[村莊男子]";
+			mes "喔！！！";
+			mes "你見到護士了嗎？！";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "她站在醫院前面。";
+			mes "喔！";
+			mes "她一定是去聯絡總部了。";
+			next;
+			mes "[村莊男子]";
+			mes "我們請求『那位護士』過來，而她已經到了！我們有救了！";
+			next;
+			select("那位護士？");
+			mes "[村莊男子]";
+			mes "她被邀請來拯救我們的醫院。";
+			next;
+			mes "[村莊男子]";
+			mes "現在我必須去散播這個好消息！你能帶她去鎮中心的旅館嗎？";
+			next;
+			mes "[村莊男子]";
+			mes "那是醫生住的地方。";
+			mes "自從醫院關閉後，他一直住在那裡。";
+			set malaya_bang,8;
+			changequest 11289,11290;
+			close;
+		case 2:
+			mes "[村莊男子]";
+			mes "呀呼！";
+			close;
+		}
+	} else if (malaya_bang == 8) {
+		mes "[村莊男子]";
+		mes "現在我必須去散播這個好消息！你能帶她去鎮中心的旅館嗎？";
+		next;
+		mes "[村莊男子]";
+		mes "那是醫生住的地方。";
+		mes "自從醫院關閉後，他一直住在那裡。";
+		close;
+	} else {
+		mes "[村莊男子]";
+		mes "呀呼！";
+		mes "你是個冒險家，對吧？";
+		mes "有空的時候，來我的鳳梨園逛逛吧。";
+		next;
+		mes "[村莊男子]";
+		mes "離村子只有一點點~";
+		mes "遠，但只要你跟我講個好聽的故事，你要多少鳳梨我都給你！";
+		close;
+	}
+}
+
+malaya,210,200,5	script	醫生 布恩#ma	865,{
+	if (malaya_hi < 20) {
+		mes "[醫生 布恩]";
+		mes "......";
+		next;
+		mes "似乎對你非常有戒心。";
+		close;
+	}
+	if (malaya_bang == 9) {
+		mes "[醫生 布恩]";
+		mes "所以~ 你是新來的護士？";
+		next;
+		switch(select("是。:否。")) {
+		case 1:
+			mes "[醫生 布恩]";
+			mes "對於護士來說，沒有什麼比她們的白色制服更重要的了。";
+			mes "去換衣服！";
+			close;
+		case 2:
+			mes "[醫生 布恩]";
+			mes "喔！對不起。";
+			mes "我們正在等一位新護士。";
+			mes "我的錯。";
+			next;
+			select("解釋情況。");
+			mes "[醫生 布恩]";
+			mes "啊哈~";
+			mes "原來是這樣。";
+			mes "哎呀，看來是有點誤會。";
+			next;
+			mes "[醫生 布恩]";
+			mes "你知道的，自從醫院發生了那件事之後，我就一直在旅館裡為病人治療。";
+			next;
+			mes "[醫生 布恩]";
+			mes "即使如此，我還是必須為讓她在那裡站了這麼久而道歉。";
+			next;
+			mes "[醫生 布恩]";
+			mes "我現在不能離開，因為我還有病人要照顧。你何不過去把這把鑰匙交給她？";
+			next;
+			mes "[醫生 布恩]";
+			mes "把鑰匙交給她時，順便帶個口信，就說『一切由妳自己決定』。";
+			next;
+			mes "[醫生 布恩]";
+			mes "我這裡一忙完就會過去。";
+			mes "祝你好運~";
+			set malaya_bang,10;
+			changequest 11291,11292;
+			close;
+		}
+	} else if (malaya_bang == 10) {
+		mes "[醫生 布恩]";
+		mes "我現在不能離開，因為我還有病人要照顧。你何不過去把這把鑰匙交給她？";
+		next;
+		mes "[醫生 布恩]";
+		mes "把鑰匙交給她時，順便帶個口信，就說『一切由妳自己決定』。";
+		next;
+		mes "[醫生 布恩]";
+		mes "我這裡一忙完就會過去。";
+		mes "祝你好運~";
+		close;
+	} else {
+		mes "[醫生 布恩]";
+		mes "*嘆氣*";
+		mes "工作... 永遠做不完...";
+		mes "我一個人怎麼可能應付得了這麼多病人？";
+		next;
+		mes "[醫生 布恩]";
+		mes "什麼？醫生在旅館裡做什麼？";
+		mes "嗯，有何不可呢？";
+		close;
+	}
+}
+
+malaya,53,68,4	script	灌木叢#ma	844,{
+	if (malaya_bang < 13) {
+		mes "這只是一個灌木叢。";
+		mes "搖晃時會散發出甜美的木頭香味。";
+		close;
+	}
+	if (malaya_bang == 13) {
+		mes "[???]";
+		mes "別再靠近了！";
+		mes "老"+((Sex == SEX_MALE)?"頭":"太婆")+"！";
+		mes "你怎麼知道我在這裡？";
+		emotion ET_HUK;
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我不老。";
+		emotion ET_FRET, playerattached();
+		next;
+		switch(select("關於進入醫院。:關於他媽媽。:關於 ???。:詢問關於老奶奶的事。:詢問關於醫院場地的事。:離開。")) {
+		case 1:
+			mes "[???]";
+			mes "幾天前，住在我們附近的老奶奶繞著醫院走，把某種棍子插在地上。";
+			next;
+			mes "[???]";
+			mes "她一直在咕噥，還到處張望。";
+			next;
+			mes "[???]";
+			mes "我躲在這裡躲得很好，因為我不應該出現在這裡。";
+			next;
+			break;
+		case 2:
+			mes "[???]";
+			mes "我媽媽曾經告訴我。";
+			mes "那個老奶奶的女兒在這家醫院住院。";
+			next;
+			mes "[???]";
+			mes "不過她再也沒有出來過...";
+			next;
+			mes "[???]";
+			mes "她不是唯一的一個。醫院裡發生了許多奇怪的事情。";
+			next;
+			mes "[???]";
+			mes "這就是為什麼我媽媽不希望我來這裡。";
+			next;
+			break;
+		case 3:
+			mes "[???]";
+			mes "門都沒有！";
+			mes "上次我在這附近被抓到時挨了一頓打！";
+			next;
+			mes "[???]";
+			mes "如果我再被抓到，那可就不只是挨打而已了....";
+			mes "太可怕了。";
+			next;
+			break;
+		case 4:
+			mes "[???]";
+			mes "是住在我們隔壁的那個老奶奶。";
+			next;
+			mes "[???]";
+			mes "幾天前我看到她在醫院周圍做些什麼。";
+			next;
+			mes "[???]";
+			mes "從這裡我看不到她在做什麼，但她離開後我在那裡找到了一些棍子。";
+			set malaya_bang,14;
+			changequest 11294,11295;
+			close;
+		case 5:
+			mes "[???]";
+			mes "我不知道。";
+			mes "除了那些棍子，沒有什麼不同。";
+			next;
+			mes "[???]";
+			mes "老奶奶偶爾會回來檢查那些棍子。";
+			mes "那時候我的心跳得好快！";
+			next;
+			break;
+		case 6:
+			mes "[???]";
+			mes "哼！！";
+			emotion ET_HNG;
+			close;
+		}
+		mes "[???]";
+		mes "答應我，你不會告訴任何人你見過我！！！";
+		mes "答應我？！";
+		close;
+	} else if (malaya_bang == 14) {
+		mes "[???]";
+		mes "從這裡我看不到她在做什麼，但她離開後我在那裡找到了一些棍子。";
+		close;
+	} else if (malaya_bang == 15) {
+		mes "[???]";
+		mes "別再靠近了！";
+		mes "老"+((Sex == SEX_MALE)?"頭":"太婆")+"！";
+		mes "你怎麼知道我在這裡？";
+		emotion ET_HUK;
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我不老。";
+		emotion ET_FRET, playerattached();
+		close;
+	} else {
+		mes "這裡有小孩子的蹤跡。";
+		mes "我想那孩子現在已經回家了。";
+		close;
+	}
+}
+
+-	script	可疑的木棍::MalayaStick	-1,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 等等 !! -";
+		mes "- 你的物品太多了。 -";
+		mes "- 無法獲得物品。 -";
+		mes "- 請減輕你的負重 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	if (MaxWeight - Weight < 1000) {
+		mes "- 等等 !! -";
+		mes "- 你攜帶了太多物品。 -";
+		mes "- 無法獲得物品。 -";
+		mes "- 請減輕你的負重 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	if (malaya_bang == 14) {
+		mes "地上插著一根奇怪的棍子。";
+		mes "可以感覺到一股神秘的力量。";
+		next;
+		switch(select("拔出來。:別管它。")) {
+		case 1:
+			if (rand(1,5) == 4) {
+				mes "拔出了深深插在地上的棍子。";
+				mes "醫院似乎變得更加陰暗了。";
+				if (rand(2)) {
+					set malaya_bang,15;
+					changequest 11295,11296;
+					getitem 6497,1; //Lesser_Agimat
+					donpcevent "帳篷"+replacestr(strnpcinfo(3),"MalayaStick","")+"#ma::OnEnable";
+					next;
+					mes "最好把符咒給拉斯看看。";
+					close;
+				} else {
+					getitem 6497,1; //Lesser_Agimat
+					donpcevent "帳篷"+replacestr(strnpcinfo(3),"MalayaStick","")+"#ma::OnEnable";
+					close;
+				}
+			} else {
+				mes "拔出深深插在地上的棍子後，一股不安的感覺襲來。";
+				donpcevent "帳篷"+replacestr(strnpcinfo(3),"MalayaStick","")+"#ma::OnEnable";
+				close;
+			}
+		case 2:
+			mes "它看起來很不祥。最好別管它。";
+			close;
+		}
+	} else {
+		mes "這裡有一根看起來很奇怪的棍子。";
+		close;
+	}
+	end;
+OnEnable:
+	enablenpc strnpcinfo(3); // NPC name is too long for strnpcinfo(0).
+	end;
+OnDisable:
+	disablenpc strnpcinfo(3);
+	end;
+}
+malaya,40,52,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick1	858
+malaya,31,42,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick2	858
+malaya,34,36,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick3	858
+malaya,40,32,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick4	858
+malaya,50,85,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick5	858
+malaya,46,93,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick6	858
+malaya,36,98,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick7	858
+malaya,48,79,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick8	858
+malaya,50,46,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick9	858
+malaya,59,84,4	duplicate(MalayaStick)	可疑的木棍::MalayaStick10	858
+
+-	script	帳篷#ma	-1,{ //557
+	end;
+OnInit:
+	disablenpc();
+	end;
+OnEnable:
+	enablenpc();
+	initnpctimer;
+	end;
+OnDisable:
+	stopnpctimer;
+	disablenpc();
+	end;
+OnTimer1000:
+	donpcevent "MalayaStick"+replacestr(strnpcinfo(1),"帳篷","")+"::OnDisable";
+	end;
+OnTimer30000:
+	donpcevent "MalayaStick"+replacestr(strnpcinfo(1),"帳篷","")+"::OnEnable";
+	donpcevent strnpcinfo(0)+"::OnDisable";
+	end;
+}
+-	duplicate(帳篷#ma)	帳篷1#ma	-1
+-	duplicate(帳篷#ma)	帳篷2#ma	-1
+-	duplicate(帳篷#ma)	帳篷3#ma	-1
+-	duplicate(帳篷#ma)	帳篷4#ma	-1
+-	duplicate(帳篷#ma)	帳篷5#ma	-1
+-	duplicate(帳篷#ma)	帳篷6#ma	-1
+-	duplicate(帳篷#ma)	帳篷7#ma	-1
+-	duplicate(帳篷#ma)	帳篷8#ma	-1
+-	duplicate(帳篷#ma)	帳篷9#ma	-1
+-	duplicate(帳篷#ma)	帳篷10#ma	-1
+
+malaya,114,183,3	script	彎腰的老奶奶#ma	575,{
+	if (malaya_bang == 16) {
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶，不好意思，我可以問您一個問題嗎？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶！！！！！！！！！";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "誰？什麼？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "不好意思，我可以問您一些事情嗎？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "什麼？我聽不到。";
+		mes "大聲點！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我！有！事！情！要！問！您！";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "喔~好的親愛的~";
+		mes "我會告訴你所有我知道的事，親愛的~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "您知道關於醫院的任何事情嗎？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "醫院？";
+		mes "........";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "醫院？！？？！？！？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "那家醫院被詛咒了！";
+		mes "有邪惡的東西住在那裡！";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "那個東西帶走了我可憐的小女兒。";
+		next;
+		switch(select("詢問關於醫院的事。:詢問關於她女兒的事。")) {
+		case 1:
+			mes "[彎腰的老奶奶]";
+			mes "聽到醫院要建好，大家都很高興。";
+			next;
+			mes "[彎腰的老奶奶]";
+			mes "我們再也不用去其他城鎮看病了。";
+			next;
+			mes "[彎腰的老奶奶]";
+			mes "但他們建的那家醫院並沒有那麼好。";
+			mes "它治不好人。";
+			mes "當他們砍掉那棵老樹來建醫院時，我就知道會發生這種事。";
+			next;
+			mes "[彎腰的老奶奶]";
+			mes "但管理員不聽。";
+			mes "不但沒有治好人，人們還開始死去。";
+			mes "我的女兒也...";
+			set malaya_bang,17;
+			changequest 11297,11298;
+			close;
+		case 2:
+			mes "[彎腰的老奶奶]";
+			mes "她得的不是什麼致命的病。";
+			mes "只是...";
+			mes "只是感冒......";
+			next;
+			mes "[彎腰的老奶奶]";
+			mes "那個邪惡的東西.... 我的女兒...";
+			mes "那家醫院裡有某種東西。";
+			close;
+		}
+	} else if (malaya_bang == 17) {
+		select("給她看棍子。");
+		mes "[彎腰的老奶奶]";
+		mes "什麼？";
+		mes "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊";
+		emotion ET_HUK;
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊";
+		emotion ET_HUK;
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊";
+		emotion ET_HUK;
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "啊啊啊啊啊啊啊啊啊啊！！！！！！！！！";
+		emotion ET_HUK;
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "你做了什麼！";
+		mes "那... 那是阻止那個邪惡東西的符咒！";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "如果你把它們拔出來，它會再次去追捕人的！";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "我看到了！";
+		mes "當他們關閉醫院並說大家都死了的時候，我看到了。";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "但他們都知道。";
+		mes "病人們並沒有全死。";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "活生生地被帶走...";
+		mes "被那個帶走我女兒的東西...";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "天啊。";
+		next;
+		mes "護士 拉斯可能會有危險，她一個人站在醫院前面。";
+		mes "如果我不趕快回去...";
+		set malaya_bang,18;
+		changequest 11298,11299;
+		close;
+	} else if (malaya_bang == 18) {
+		mes "護士 拉斯可能會有危險，她一個人站在醫院前面。";
+		mes "如果我不趕快回去...";
+		close;
+	} else if (malaya_bang == 32) {
+		mes "[彎腰的老奶奶]";
+		mes "是嗎？符咒？";
+		mes "我請村子北邊的薩滿做的，";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "他不出名，但卻是個有才華的薩滿。";
+		set malaya_bang,33;
+		changequest 11304,11305;
+		close;
+	} else {
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶，不好意思，我可以問您一個問題嗎？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "呵呵呵呵~~";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "老奶奶！！！！！！！！！";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "誰？什麼？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "不好意思，我可以問您一些事情嗎？";
+		next;
+		mes "[彎腰的老奶奶]";
+		mes "什麼？我聽不到。";
+		mes "大聲點！";
+		close;
+	}
+}
+
+malaya,276,367,4	script	彎腰的薩滿#ma	782,{
+	if (malaya_hi < 20) {
+		mes "[彎腰的薩滿]";
+		mes "呃 呃 呃啊啊啊啊啊";
+		next;
+		mes "連看都不看一眼...";
+		close;
+	}
+	mes "[彎腰的薩滿]";
+	mes "嗯...";
+	mes "我感覺，感覺....";
+	next;
+	mes "[彎腰的薩滿]";
+	mes "我從你身上感覺到不好的東西...";
+	if (malaya_bang == 33) {
+		next;
+		mes "[彎腰的薩滿]";
+		mes "不 不...";
+		mes "你什麼都不用說！";
+		mes "你會需要這個的。";
+		next;
+		mes "[彎腰的薩滿]";
+		mes "沒關係。";
+		mes "不用給錢。";
+		mes "這是這個村子必須面對的業障...";
+		set malaya_bang,34;
+		changequest 11305,11306;
+	}
+	close;
+}
+
+// Pintados Festival :: malaya_pintados
+//============================================================
+/*
+Description
+-----------
+The Pintados Festival begins when players have accumulated 1000 Lesser Agimats,
+1000 Silver Crosses, and 300 dyestuffs, and lasts for 7 days.
+During that time,
+players are able to create a tattoo.
+
+Global Variables
+----------------
+$malaya_pintados_00  - Festival time limit, in 30-minute intervals.
+(range: 0~344)
+$malaya_pintados_01  - Number of Lesser Agimats collected. (range: 0~1000)
+$malaya_pintados_02  - Number of Silver Crosses collected.
+(range: 0~1000)
+$malaya_pintados_03  - Number of dyestuffs collected. (range: 0~300)
+$malaya_pintados_04$ - Last player to create a tattoo.
+*/
+
+ma_fild01,1,1,4	script	平塔多斯節慶管理員#pin	894,{
+	if (callfunc("F_GM_NPC",1854,0) == 1) {
+		mes "賓果！";
+		next;
+	} else {
+		mes "發生錯誤。";
+		close;
+	}
+	mes "你好，我是平塔多斯節慶管理員。請選擇一個項目。";
+	mes "時間值：("+$malaya_pintados_00+"/344)";
+	mes "次級神聖護符值：("+$malaya_pintados_01+"/1,000)";
+	mes "十字架值：("+$malaya_pintados_02+"/1,000)";
+	mes "染料值：("+$malaya_pintados_03+"/300)";
+	mes "最近製作紋身的人："+$malaya_pintados_04$;
+	next;
+	switch(select("中藥按鈕 ? 開始與結束:詳細按鈕 ? 調整數值:開始計時器:結束計時器")) {
+	case 1:
+		mes "這是中藥控制按鈕。";
+		mes "你可以設定節慶的開始或結束值。";
+		next;
+		switch(select("開始平塔多斯節慶:結束平塔多斯節慶:開啟_NPC:關閉_NPC")) {
+		case 1:
+			set $malaya_pintados_00,1;
+			donpcevent "平塔多斯節慶管理員#pin::OnEnable";
+			mes "開始平塔多斯節慶。";
+			close;
+		case 2:
+			donpcevent "平塔多斯節慶管理員#pin::OnDisable";
+			mes "結束平塔多斯節慶。";
+			close;
+		case 3:
+			donpcevent "平塔多斯節慶管理員#pin::OnEnableNPC";
+			mes "增加一個 NPC。";
+			close;
+		case 4:
+			donpcevent "平塔多斯節慶管理員#pin::OnDisableNPC";
+			mes "移除一個 NPC。";
+			close;
+		}
+	case 2:
+		mes "調整全域數值。請選擇要調整的數值。";
+		next;
+		while(1) {
+			switch(select("完成調整:時間 ("+$malaya_pintados_00+"):次級神聖護符 ("+$malaya_pintados_01+"):銀十字架 ("+$malaya_pintados_02+"):染料 ("+$malaya_pintados_03+")")) {
+			case 1:
+				mes "全域調整完成。";
+				close;
+			case 2:
+				mes "調整時間 [0~344]";
+				mes "全域每 30 分鐘增加 1。";
+				mes "1 - 49 -> 第 1 天";
+				mes "50 - 98 -> 第 2 天";
+				mes "99 - 147 -> 第 3 天";
+				mes "148 - 196 -> 第 4 天";
+				mes "197 - 245 -> 第 5 天";
+				mes "246 - 294 -> 第 6 天";
+				mes "295 - 343 -> 第 7 天";
+				mes "全域 1 = 1 小時。";
+				next;
+				input .@input;
+				if (.@input < 0 || .@input > 344)
+					close;
+				set $malaya_pintados_00, .@input;
+				break;
+			case 3:
+				mes "調整次級神聖護符的累積數值。";
+				mes "數值可在 0 到 1000 之間調整。";
+				next;
+				input .@input;
+				if (.@input < 0 || .@input > 1000)
+					close;
+				set $malaya_pintados_01, .@input;
+				break;
+			case 4:
+				mes "調整銀十字架的累積數值。";
+				mes "數值可在 0 到 1000 之間調整。";
+				next;
+				input .@input;
+				if (.@input < 0 || .@input > 1000)
+					close;
+				set $malaya_pintados_02, .@input;
+				break;
+			case 5:
+				mes "調整染料的累積數值。";
+				mes "數值可在 0 到 300 之間調整。";
+				next;
+				input .@input;
+				if (.@input < 0 || .@input > 300)
+					close;
+				set $malaya_pintados_03, .@input;
+				break;
+			}
+			mes "時間值：("+$malaya_pintados_00+"/344)";
+			mes "次級神聖護符值：("+$malaya_pintados_01+"/1,000)";
+			mes "十字架值：("+$malaya_pintados_02+"/1,000)";
+			mes "染料值：("+$malaya_pintados_03+"/300)";
+			mes "這是當前的數值。你想調整它嗎？";
+			next;
+		}
+	case 3:
+		initnpctimer;
+		break;
+	case 4:
+		stopnpctimer;
+		break;
+	}
+	end;
+// Moved to individual NPCs for smoother processing.
+OnInit:
+	if ($malaya_pintados_00 > 0) {
+		// donpcevent "平塔多斯節慶管理員#pin::OnEnableNPC";
+		initnpctimer;// unoffical fix
+	}
+	end;
+OnTimer1800000:
+	if ($malaya_pintados_00 > 0 && $malaya_pintados_00 < 344) {
+		set $malaya_pintados_00,$malaya_pintados_00+1;
+		initnpctimer;
+	} else {
+		set $malaya_pintados_00,0;
+		donpcevent "平塔多斯節慶管理員#pin::OnDisable";
+	}
+	end;
+OnEnable:
+	initnpctimer;
+	donpcevent "平塔多斯節慶管理員#pin::OnEnableNPC";
+	announce "「平塔多斯節慶」將在瑪希瓦加村落舉行一週。",bc_all,"0xFB9D04",FW_NORMAL,12;
+	end;
+OnDisable:
+	stopnpctimer;
+	set $malaya_pintados_00,0;
+	set $malaya_pintados_01,0;
+	set $malaya_pintados_02,0;
+	set $malaya_pintados_03,0;
+	donpcevent "平塔多斯節慶管理員#pin::OnDisableNPC";
+	announce "「平塔多斯節慶」圓滿落幕。",bc_all,"0xFB9D04",FW_NORMAL,12;
+	end;
+OnEnableNPC:
+	set .@str$, "::OnEnable";
+OnDisableNPC:
+	if (.@str$ == "")
+		set .@str$, "::OnDisable";
+	donpcevent "遊客#pin01"+.@str$;
+	donpcevent "遊客#pin02"+.@str$;
+	donpcevent "遊客#pin03"+.@str$;
+	donpcevent "年輕紋身師#pin04"+.@str$;
+	donpcevent "遊客#pin05"+.@str$;
+	donpcevent "打鼓的年輕人#pin06"+.@str$;
+	donpcevent "打鼓的年輕人#pin07"+.@str$;
+	donpcevent "打鼓的年輕人#pin08"+.@str$;
+	donpcevent "打拍子的男孩#pin09"+.@str$;
+	donpcevent "打拍子的男孩#pin10"+.@str$;
+	donpcevent "打拍子的男孩#pin11"+.@str$;
+	end;
+}
+
+ma_fild01,179,260,2	script	節慶小幫手男孩#pin	577,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 1000) {
+		mes "由於你身上的物品太多，無法繼續。";
+		close;
+	}
+	if ($malaya_pintados_00 == 0) {
+		if ($malaya_pintados_01 > 999 && $malaya_pintados_02 > 999 && $malaya_pintados_03 > 299) {
+			set $malaya_pintados_00,1;
+			donpcevent "平塔多斯節慶管理員#pin::OnEnable";
+			emotion ET_THROB;
+			mes "[依斯可]";
+			mes "許多冒險家幫忙尋找了節慶物品，我把它們帶回了村子。";
+			next;
+			emotion ET_DELIGHT;
+			mes "[依斯可]";
+			mes "呵呵... 現在我們可以舉辦「^7A96E0平塔多斯節慶^000000」了。";
+			close;
+		}
+		// fall through
+	} else {
+		mes "[依斯可]";
+		mes "呵呵... 有趣的「^7A96E0平塔多斯節慶^000000」正在熱烈進行中。";
+		next;
+		if ($malaya_pintados_00 > 0 && $malaya_pintados_00 < 50) {
+			emotion ET_DELIGHT;
+			mes "[依斯可]";
+			mes "今天是「^7A96E0平塔多斯節慶^000000」的第一天。節慶會舉辦 7 天，好好玩吧。";
+			close;
+		} else if ($malaya_pintados_00 > 49 && $malaya_pintados_00 < 99) {
+			mes "[依斯可]";
+			mes "喔！你知道嗎？";
+			mes "村莊的紋身師只在「^7A96E0平塔多斯節慶^000000」期間才會幫人紋身。";
+			close;
+		} else if ($malaya_pintados_00 > 98 && $malaya_pintados_00 < 148) {
+			mes "[依斯可]";
+			mes "今天是「^7A96E0平塔多斯節慶^000000」的第三天。";
+			next;
+			mes "[依斯可]";
+			mes "村民們說，有一位名叫 "+$malaya_pintados_04$+" 的冒險家在節慶上弄了個紋身。";
+			close;
+		} else if ($malaya_pintados_00 > 147 && $malaya_pintados_00 < 197) {
+			mes "[依斯可]";
+			mes "村民們說，有一位名叫 "+$malaya_pintados_04$+" 的冒險家在節慶上弄了個紋身。";
+			next;
+			mes "[依斯可]";
+			mes "紋身師很可怕，而且不會隨便幫人紋身，所以那位冒險家一定很特別。";
+			close;
+		} else if ($malaya_pintados_00 > 196 && $malaya_pintados_00 < 246) {
+			mes "[依斯可]";
+			mes "一位名叫 "+$malaya_pintados_04$+" 的冒險家在村子裡很有名。";
+			next;
+			mes "[依斯可]";
+			mes "你見過以吞噬月亮而聞名的魔物^FF8440巴庫暴龍^000000嗎？聽說牠非常兇猛。";
+			close;
+		} else if ($malaya_pintados_00 > 245 && $malaya_pintados_00 < 295) {
+			emotion ET_CRY;
+			mes "[依斯可]";
+			mes "我好難過。許多冒險家幫忙舉辦「^7A96E0平塔多斯節慶^000000」，現在只剩下一天了。";
+			close;
+		} else {
+			emotion ET_CRY;
+			mes "[依斯可]";
+			mes "天啊！這已經是「^7A96E0平塔多斯節慶^000000」的最後一天了。真不敢相信不會再有更多的慶祝活動了。";
+			close;
+		}
+	}
+	emotion ET_CONFUSE;
+	mes "[依斯可]";
+	mes "喔不。節慶即將結束，我們該怎麼辦。";
+	next;
+	switch(select("怎麼了？:你收集了多少了？:帶回了遺失的物品。")) {
+	case 1:
+		mes "[依斯可]";
+		mes "在瑪希瓦加村落，有一個從古時候就開始舉辦的傳統節慶，";
+		mes "叫做「^7A96E0平塔多斯節慶^000000」。";
+		next;
+		emotion ET_OTL;
+		mes "[依斯可]";
+		mes "我想我這次趕不上節慶了。";
+		next;
+		select("為什麼？");
+		mes "[依斯可]";
+		mes "我正準備回村子，因為馬來亞港口交代我要送 1000 個次級神聖護符、1000 個銀十字架和 300 個染料過去。";
+		next;
+		mes "[依斯可]";
+		mes "但是「^FF8440邦吉順吉蘇^000000」不知從哪裡冒出來，把我的東西都搶走了。";
+		next;
+		select("你受傷了嗎？");
+		emotion ET_OHNO;
+		mes "[依斯可]";
+		mes "幸好沒有。";
+		next;
+		mes "[依斯可]";
+		mes "但我有大麻煩了。沒有那些東西，「^7A96E0平塔多斯節慶^000000」就辦不成了。我該怎麼辦。";
+		close;
+	case 2:
+		mes "[依斯可]";
+		mes "許多冒險家都在幫忙，但目前只收集到...";
+		next;
+		mes "[依斯可]";
+		mes "次級神聖護符 "+$malaya_pintados_01+" 個，銀十字架 "+$malaya_pintados_02+" 個，染料 "+$malaya_pintados_03+" 個。";
+		next;
+		emotion ET_OHNO;
+		mes "[依斯可]";
+		mes "唉... 我們開始「^7A96E0平塔多斯節慶^000000」的材料還是不夠。";
+		close;
+	case 3:
+		set .@str$, (Sex == SEX_MALE)?"大哥哥":"大姐姐";
+		break;
+	}
+	emotion ET_THROB;
+	mes "[依斯可]";
+	mes "喔~ 真的嗎？哇！";
+	mes "謝謝！"+strcharinfo(0)+" "+.@str$+"！！";
+	mes "呵呵。你帶來了什麼？";
+	next;
+	set .@i, select(
+		"次級神聖護符 (^FF0000"+(($malaya_pintados_01 > 999)?"收集完成":"還差 "+(1000 - $malaya_pintados_01))+"^000000):"+
+		"銀十字架 (^FF0000"+(($malaya_pintados_02 > 999)?"收集完成":"還差 "+(1000 - $malaya_pintados_02))+"^000000):"+
+		"染料 (^FF0000"+(($malaya_pintados_03 > 299)?"收集完成":"還差 "+(300 - $malaya_pintados_03))+"^000000)"
+	);
+	switch(.@i) {
+	case 1:
+		set .@item,6497; //Lesser_Agimat
+		set .@name$,"次級神聖護符";
+		set .@total,1000;
+		break;
+	case 2:
+		set .@item,6502; //Silver_Cross
+		set .@name$,"銀十字架";
+		set .@total,1000;
+		break;
+	case 3:
+		setarray .@items[0],975,976,978,979,980,981,982,983;
+		set .@name$,"染料";
+		set .@total,300;
+		break;
+	}
+	mes "[依斯可]";
+	mes "哇！"+.@str$+" 你帶來了"+.@name$+"！";
+	next;
+	mes "[依斯可]";
+	mes "等等。一... 二...";
+	if (getd("$malaya_pintados_0"+.@i) >= .@total) {
+		mes "咦... 喔？我需要的"+.@name$+"已經全部都有了。"+.@str$+"！但還是謝謝你的幫忙。";
+		close;
+	}
+	if (.@i < 3) {
+		mes "我還差 "+(.@total - getd("$malaya_pintados_0"+.@i))+" 個"+.@name$+"。你帶了多少個來？";
+		next;
+		switch(select("一個？！:輸入數量。")) {
+		case 1:
+			set .@amount,1;
+			mes "[依斯可]";
+			mes "呵呵... 你帶回來了一個。";
+			next;
+			break;
+		case 2:
+			mes "[依斯可]";
+			mes "呵呵... 我對數字反應很慢。超過 50 我就搞不清楚了。你要給我多少個？";
+			next;
+			input .@amount;
+			if (.@amount < 1 || .@amount > 50) {
+				mes "[依斯可]";
+				mes "唉~ 我搞糊塗了！如果數字太奇怪我就不會算了。";
+				close;
+			}
+			break;
+		}
+		if (countitem(.@item) < .@amount) {
+			mes "[依斯可]";
+			mes "唉~ "+.@str$+"！"+getitemname(.@item)+"在哪裡？";
+			close;
+		}
+	} else {
+		mes "我還差 "+(.@total - getd("$malaya_pintados_0"+.@i))+" 個染料。你帶來了哪種染料？";
+		next;
+		for(set .@j,0; .@j<getarraysize(.@items); set .@j,.@j+1)
+			set .@menu$, .@menu$+getitemname(.@items[.@j])+" (^FF0000"+countitem(.@items[.@j])+"^000000):";
+		set .@item, .@items[select(.@menu$)-1];
+		if (countitem(.@item) == 0) {
+			mes "[依斯可]";
+			mes "唉~ 你沒有任何"+getitemname(.@item)+"。";
+			close;
+		}
+		mes "[依斯可]";
+		mes .@str$+"！從你擁有的 "+countitem(.@item)+" 個 "+getitemname(.@item)+" 中，你能給我幾個？";
+		next;
+		switch(select("輸入數量:全部")) {
+		case 1:
+			mes "[依斯可]";
+			mes "呵呵... 我對數字反應很慢。超過 50 我就搞不清楚了。你要給我多少個？";
+			next;
+			input .@amount;
+			if (.@amount < 1 || .@amount > 50) {
+				mes "[依斯可]";
+				mes "唉~ 我早說過我對數字不在行了。";
+				close;
+			}
+			break;
+		case 2:
+			set .@amount, countitem(.@item);
+			break;
+		}
+		if (countitem(.@item) < .@amount) {
+			mes "[依斯可]";
+			mes "唉... 我的"+getitemname(.@item)+"不夠了。";
+			close;
+		}
+	}
+	delitem .@item,.@amount;
+	setd "$malaya_pintados_0"+.@i, getd("$malaya_pintados_0"+.@i)+.@amount;
+	set .@amount_left, .@total - getd("$malaya_pintados_0"+.@i);
+	mes "[依斯可]";
+	mes "呵呵... 謝謝。"+.@str$+"！";
+	if (.@amount_left <= 0)
+		mes "哇！我們已經收集齊了所有需要的"+.@name$+"了。好開心~！";
+	else
+		mes "我只需要再 "+.@amount_left+" 個"+.@name$+"了。";
+	close;
+}
+
+ma_fild01,172,223,6	script	紋身師#pin	574,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 1000) {
+		mes "由於你身上的物品太多，無法繼續。";
+		close;
+	}
+	emotion ET_QUESTION;
+	mes "[紋身師]";
+	mes "你為什麼想要紋身？";
+	next;
+	switch(select("紋身是什麼？:我對紋身的效果很好奇。:我需要一個紋身。")) {
+	case 1:
+		mes "[紋身師]";
+		mes "據說擁有強大魔物的紋身可以增加持有者的能力。";
+		next;
+		select("太棒了。我要怎麼獲得一個？");
+		mes "[紋身師]";
+		mes "繪製紋身是一項非常神聖的工作。";
+		next;
+		mes "[紋身師]";
+		mes "需要10個遠古的怨恨，在我繪製紋身時保護我。";
+		next;
+		mes "[紋身師]";
+		mes "1個看起來像強大魔物的娃娃。";
+		next;
+		mes "[紋身師]";
+		mes "最後同樣重要的是，1個精神碎片，用來將強大魔物的能量注入紋身中。";
+		next;
+		select("你會畫哪種紋身？");
+		mes "[紋身師]";
+		mes "我可以畫3種紋身。";
+		next;
+		mes "[紋身師]";
+		mes "惡靈之魅護符紋身，代表來自馬來亞港口一棵古老巨樹的強大魔物。";
+		next;
+		mes "[紋身師]";
+		mes "巴庫暴龍護符紋身，代表能吞噬月亮的巨大魔物。";
+		next;
+		mes "[紋身師]";
+		mes "卜瓦亞護符紋身，代表會綁架人的巨大鱷魚。";
+		next;
+		select("我可以在哪裡獲得精神碎片和娃娃？");
+		mes "[紋身師]";
+		mes "你可以從卜瓦亞、惡靈之魅和巴庫暴龍身上獲得這些強大的物品，但這不會是一件容易的事。";
+		next;
+		mes "[紋身師]";
+		mes "這項神聖的工作不是每天都有的。只有在「^7A96E0平塔多斯節慶^000000」期間才會繪製紋身。";
+		close;
+	case 2:
+		mes "[紋身師]";
+		mes "你對哪種紋身的效果好奇？";
+		next;
+		while(1) {
+			switch (select("惡靈之魅護符紋身:卜瓦亞護符紋身:巴庫暴龍護符紋身:我沒有問題了。")) {
+			case 1:
+				mes "[紋身師]";
+				mes "需要10個遠古的怨恨、1個惡靈之魅精神碎片和1個惡靈之魅娃娃來製作";
+				next;
+				mes "[紋身師]";
+				mes "惡靈之魅護符紋身蘊含著馬來亞港口古老巨樹的能量。";
+				next;
+				mes "[紋身師]";
+				mes "對他人使用的治癒量提升4%，並使自己受到的治癒量提升7%。";
+				next;
+				break;
+			case 2:
+				mes "[紋身師]";
+				mes "需要10個遠古的怨恨、1個卜瓦亞精神碎片和1個卜瓦亞娃娃來製作";
+				next;
+				mes "[紋身師]";
+				mes "卜瓦亞護符紋身蘊含著巨大鱷魚的能量。";
+				next;
+				mes "[紋身師]";
+				mes "MATK增加7%，固定詠唱時間減少7%。";
+				next;
+				break;
+			case 3:
+				mes "[紋身師]";
+				mes "需要10個遠古的怨恨、1個巴庫暴龍精神碎片和1個巴庫暴龍娃娃來製作";
+				next;
+				mes "[紋身師]";
+				mes "巴庫暴龍護符紋身蘊含著能吞噬月亮的巨大魔物的能量。";
+				next;
+				mes "[紋身師]";
+				mes "ATK增加7%，ASPD增加10%。";
+				next;
+				break;
+			case 4:
+				mes "[紋身師]";
+				mes "看來你已經得到了所有答案。祝你旅途愉快。";
+				close;
+			}
+			mes "[紋身師]";
+			mes "你對其他紋身的效果還有任何疑問嗎？";
+			next;
+		}
+	case 3:
+		break;
+	}
+	if ($malaya_pintados_00 == 0) {
+		mes "[紋身師]";
+		mes "繪製紋身這項神聖的工作只有在「^7A96E0平塔多斯節慶^000000」期間才會進行。抱歉，看來現在節慶沒有舉行。";
+		close;
+	}
+	mes "[紋身師]";
+	mes "你來得正是時候，現在正是「^7A96E0平塔多斯節慶^000000」期間。";
+	next;
+	mes "[紋身師]";
+	mes "沒有什麼比在神聖的「^7A96E0平塔多斯節慶^000000」期間更適合畫紋身了。";
+	next;
+	mes "[紋身師]";
+	mes "節慶持續的時間不長，所以我該開始畫了。你需要什麼紋身？";
+	next;
+	switch(select("我會考慮一下。:惡靈之魅護符紋身:卜瓦亞護符紋身:巴庫暴龍護符紋身")) {
+	case 1:
+		mes "[紋身師]";
+		mes "希望你喜歡「^7A96E0平塔多斯節慶^000000」。";
+		close;
+	case 2:
+		set .@tattoo,2911; //Bangungot_Tattoo
+		set .@doll,6517; //Bangungot_Doll
+		set .@spirit,6524; //Bangungot_Spirit_Piece
+		set .@name$,"惡靈之魅";
+		break;
+	case 3:
+		set .@tattoo,2907; //Buwaya_Tattoo
+		set .@doll,6518; //Buwaya_Doll
+		set .@spirit,6525; //Buwaya_Spirit_Piece
+		set .@name$,"卜瓦亞";
+		break;
+	case 4:
+		set .@tattoo,2910; //Bakonawa_Tattoo
+		set .@doll,6516; //Bakonawa_Doll
+		set .@spirit,6523; //Bakonawa_Spirit_Piece
+		set .@name$,"巴庫暴龍";
+		break;
+	}
+	if (countitem(6499) < 10 || countitem(.@spirit) == 0 || countitem(.@doll) == 0) {
+		mes "[紋身師]";
+		mes "我想你的材料不夠。";
+		mes "需要10個遠古的怨恨、1個"+.@name$+"精神碎片和1個"+.@name$+"娃娃來製作^EE1D11"+.@name$+"護符紋身^000000。";
+		close;
+	}
+	emotion ET_SPARK;
+	mes "[紋身師]";
+	mes "這些材料充滿了神聖的能量。我相信用這些材料一定能做出一個很棒的紋身。";
+	next;
+	mes "[紋身師]";
+	mes "如果你希望紋身畫得好，請不要在我繪製神聖紋身時打擾我。";
+	next;
+	mes "紋身師將遠古的怨恨放在工作區域周圍。";
+	next;
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#01";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#02";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#03";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#04";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#05";
+	mes "遠古的怨恨亮了起來，工具也開始發光。他對著發光的工具和材料露出了滿意的微笑。";
+	next;
+	mes "然後他專注地盯著"+.@name$+"娃娃，彷彿要把它的每一個細節都記在腦海裡。";
+	next;
+	if(select("你不開始嗎？:... ... ..") == 1) {
+		emotion ET_FRET;
+		delitem 6499,5; //Ancient_Grudge
+		mes "[紋身師]";
+		mes "喔不，現在你把它搞砸了。";
+		mes "我無法為像你這樣不懂藝術的人畫紋身。你可以拿回剩下的材料。";
+		next;
+		mes "拿回了5個遠古的怨恨、"+.@name$+"娃娃和"+.@name$+"精神碎片。";
+		close;
+	}
+	emotion ET_STARE;
+	mes "他會不會用眼神把娃娃融化掉？";
+	next;
+	specialeffect EF_SONICBLOWHIT;
+	mes "他慢慢地閉上又睜開眼睛，彷彿要把娃娃的模樣烙印在腦海中，然後舉起發光的工具開始畫。";
+	next;
+	mes ""+.@name$+"紋身幾乎是瞬間就完成了。";
+	next;
+	emotion ET_FRET;
+	mes "但他一直看著圖案的每個角落，似乎對一些細節不滿意。";
+	next;
+	if(select("我覺得看起來不錯。:... ... ..") == 1) {
+		emotion ET_FRET;
+		emotion ET_ANGER;
+		delitem 6499,5; //Ancient_Grudge
+		mes "[紋身師]";
+		mes "呃啊！我告訴過你不要打擾我！";
+		next;
+		mes "紋身師煩躁地撕毀了圖案。";
+		next;
+		mes "[紋身師]";
+		mes "這樣我畫不下去了。也許下次吧。你可以拿回剩下的材料。";
+		next;
+		mes "拿回了5個遠古的怨恨、"+.@name$+"娃娃和"+.@name$+"精神碎片。";
+		close;
+	}
+	mes "他專注地看了圖案很久，然後滿意地點頭微笑。";
+	next;
+	mes "看來他對"+.@name$+"的圖案很滿意。";
+	next;
+	emotion ET_HUM;
+	mes "但他現在盯著天空什麼也沒做。他在等什麼？";
+	next;
+	if(select("什麼時候會完成？:... ... ..") == 1) {
+		emotion ET_FRET;
+		emotion ET_ANGER;
+		delitem 6499,5; //Ancient_Grudge
+		mes "[紋身師]";
+		mes "呃啊！我告訴過你不要打擾我！";
+		next;
+		mes "紋身師煩躁地撕毀了圖案。";
+		next;
+		mes "[紋身師]";
+		mes "這樣我畫不下去了。也許下次吧。你可以拿回剩下的材料。";
+		next;
+		mes "拿回了5個遠古的怨恨、"+.@name$+"娃娃和"+.@name$+"精神碎片。";
+		close;
+	}
+	emotion ET_THINK;
+	mes "[紋身師]";
+	mes ".";
+	next;
+	mes "[紋身師]";
+	mes ". .";
+	next;
+	mes "[紋身師]";
+	mes ". . .";
+	next;
+	emotion ET_THINK;
+	mes "[紋身師]";
+	mes ". . . .";
+	next;
+	mes "[紋身師]";
+	mes ". . . . .";
+	next;
+	mes "[紋身師]";
+	mes ". . . . . .";
+	next;
+	mes "[紋身師]";
+	mes ". . . . . . .";
+	next;
+	emotion ET_SPARK;
+	mes "紋身師盯著天空看了一會兒後，眼睛開始閃閃發光，然後他用雙手捏碎了"+.@name$+"精神碎片。";
+	next;
+	specialeffect EF_DETOXICATION;
+	mes ""+.@name$+"精神碎片碎成了粉末。紋身師的雙手發著光。";
+	next;
+	if(select("你為什麼要把碎片弄碎...:... ... ..") == 1) {
+		delitem 6499,5; //Ancient_Grudge
+		delitem .@spirit,1;
+		emotion ET_FRET;
+		emotion ET_ANGER;
+		mes "[紋身師]";
+		mes "呃啊！我告訴過你不要打擾我！";
+		next;
+		mes "他手上的光芒消失了。他盯著自己的手看了一會兒，然後煩躁地撕毀了圖案。";
+		next;
+		mes "[紋身師]";
+		mes "我差一點就能完成一件完美的傑作，但你把它毀了。我現在心情不好。你可以拿走剩下的材料。";
+		next;
+		mes "拿回了5個遠古的怨恨和娃娃。";
+		close;
+	}
+	mes "他雙手捧著粉末，然後把它吹到圖案上。";
+	next;
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#01";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#02";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#03";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#04";
+	specialeffect EF_FLAMELAUNCHER,AREA,"遠古的怨恨#05";
+	mes "所有的遠古的怨恨開始燃燒，然後"+.@name$+"圖案上的光芒逐漸消散。";
+	next;
+	specialeffect EF_LIGHTSPHERE;
+	mes "圖案上方閃爍著光芒。";
+	next;
+	mes "光芒消散，"+.@name$+"圖案已經不再是之前那個簡單的圖案了。";
+	next;
+	mes ""+.@name$+"圖案看起來彷彿... 活了過來。";
+	next;
+	mes "紋身師終於滿意了，滿臉笑容。";
+	next;
+	emotion ET_SMILE;
+	mes "[紋身師]";
+	mes "哈哈。作品非常完美。";
+	next;
+	delitem 6499,10; //Ancient_Grudge
+	delitem .@spirit,1;
+	delitem .@doll,1;
+	getitem .@tattoo,1;
+	set $malaya_pintados_04$, strcharinfo(0);
+	mes "[紋身師]";
+	mes "抱歉讓你等了這麼久。但這是值得的，因為我已經很久沒有創作出這種品質的紋身了。";
+	next;
+	mes "[紋身師]";
+	mes "你等待的^EE1D11"+.@name$+"護符紋身^000000現在完成了。";
+	next;
+	mes "[紋身師]";
+	mes "希望你喜歡「^7A96E0平塔多斯節慶^000000」。";
+	close;
+}
+
+ma_fild01,171,224,0	script	遠古的怨恨#01	139,{ end;
+}
+ma_fild01,173,224,0	duplicate(遠古的怨恨#01)	遠古的怨恨#02	139
+ma_fild01,173,223,0	duplicate(遠古的怨恨#01)	遠古的怨恨#03	139
+ma_fild01,172,222,0	duplicate(遠古的怨恨#01)	遠古的怨恨#04	139
+ma_fild01,171,223,0	duplicate(遠古的怨恨#01)	遠古的怨恨#05	139
+
+ma_fild01,192,200,8	script	遊客#pin01	58,{
+	mes "[遊客]";
+	mes "我不遠千里放下一切，就為了來參加「平塔多斯節慶」。";
+	next;
+	mes "[遊客]";
+	mes "我不後悔來這趟，但是...";
+	next;
+	mes "[遊客]";
+	mes "我費盡千辛萬苦才弄到這個紋身，但我並不喜歡。";
+	next;
+	mes "[遊客]";
+	mes "我在陽光下仔細看了看，我想紋身師一定是弄錯了。";
+	next;
+	mes "[遊客]";
+	mes "這毀了我整趟旅程。";
+	next;
+	mes "[遊客]";
+	mes "嘖！";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "遊客#pin01";
+	end;
+OnEnable:
+	enablenpc "遊客#pin01";
+	end;
+OnDisable:
+	disablenpc "遊客#pin01";
+	end;
+}
+
+ma_fild01,211,200,6	script	遊客#pin02	775,{
+	mes "[遊客]";
+	mes "我聽說了「平塔多斯節慶」，所以大老遠從崑崙跑來。";
+	next;
+	mes "[遊客]";
+	mes "以免你誤會，我臉上戴的是面具，不是紋身。";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "遊客#pin02";
+	end;
+OnEnable:
+	enablenpc "遊客#pin02";
+	end;
+OnDisable:
+	disablenpc "遊客#pin02";
+	end;
+}
+
+ma_fild01,251,205,2	script	遊客#pin03	824,{
+	mes "[遊客]";
+	mes "喂，聽我說。這不是我想要的紋身。";
+	next;
+	mes "[遊客]";
+	mes "我要求的是巴庫暴龍紋身，但這越看越像惡靈之魅。";
+	next;
+	mes "[紋身師]";
+	mes "不... 你自己說要那個的。別這麼難伺候。";
+	next;
+	mes "[遊客]";
+	mes "你難道不知道顧客至上嗎？蛤？你想敗壞名聲嗎？";
+	next;
+	mes "[紋身師]";
+	mes "呃... 真不敢相信。";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "遊客#pin03";
+	end;
+OnEnable:
+	enablenpc "遊客#pin03";
+	end;
+OnDisable:
+	disablenpc "遊客#pin03";
+	end;
+}
+
+ma_fild01,249,206,6	script	年輕紋身師#pin04	582,{
+	mes "[紋身師]";
+	mes "啊... 我沒辦法應付這種客人。";
+	next;
+	mes "[紋身師]";
+	mes "我要說多少次，是你自己說要惡靈之魅的。";
+	next;
+	mes "[紋身師]";
+	mes "哎喲，我的喉嚨... 扯著嗓子喊也沒用。";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "年輕紋身師#pin04";
+	end;
+OnEnable:
+	enablenpc "年輕紋身師#pin04";
+	end;
+OnDisable:
+	disablenpc "年輕紋身師#pin04";
+	end;
+}
+
+ma_fild01,162,235,6	script	遊客#pin05	815,{
+	mes "[遊客]";
+	mes "他們說平塔多斯節慶只會舉辦一個禮拜。";
+	next;
+	mes "[遊客]";
+	mes "我從洛陽來，原本根本不知道有這個節慶。今天一定是我的幸運日。";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "遊客#pin05";
+	end;
+OnEnable:
+	enablenpc "遊客#pin05";
+	end;
+OnDisable:
+	disablenpc "遊客#pin05";
+	end;
+}
+
+ma_fild01,164,234,6	script	打鼓的年輕人#pin06	578,{
+	mes "咚-噠-噠- 咚-噠-噠";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "如果沒有鼓手，平塔多斯節慶就不叫節慶了。";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "你要不要也來加入？";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "打鼓的年輕人#pin06";
+	end;
+OnEnable:
+	enablenpc "打鼓的年輕人#pin06";
+	end;
+OnDisable:
+	disablenpc "打鼓的年輕人#pin06";
+	end;
+}
+
+ma_fild01,170,231,4	script	打鼓的年輕人#pin07	578,{
+	mes "咚-噠-噠- 咚-噠-噠";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "平塔多斯節慶的「平塔多斯」在我們的語言中是「彩繪」的意思。";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "所以這大概就是為什麼我們在節慶期間會有人繪製特別的紋身。";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "打鼓的年輕人#pin07";
+	end;
+OnEnable:
+	enablenpc "打鼓的年輕人#pin07";
+	end;
+OnDisable:
+	disablenpc "打鼓的年輕人#pin07";
+	end;
+}
+
+ma_fild01,164,228,6	script	打鼓的年輕人#pin08	578,{
+	mes "咚-噠-噠- 咚-噠-噠";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "我記不太清楚了，但他們說平塔多斯節慶是為了慶祝豐收。";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "打鼓的年輕人#pin08";
+	end;
+OnEnable:
+	enablenpc "打鼓的年輕人#pin08";
+	end;
+OnDisable:
+	disablenpc "打鼓的年輕人#pin08";
+	end;
+}
+
+ma_fild01,170,234,4	script	打拍子的男孩#pin09	577,{
+	mes "咚-噠-嚓- 咚-噠-嚓-";
+	next;
+	mes "[打拍子的男孩]";
+	mes "每當聽到鼓聲和鼓棒敲擊出充滿節奏感的拍子，我就會渾身充滿活力。";
+	next;
+	mes "[打拍子的男孩]";
+	mes "咚-噠-嚓- 咚-噠-嚓- 真好玩！";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc "打拍子的男孩#pin09";
+	end;
+OnEnable:
+	enablenpc "打拍子的男孩#pin09";
+	end;
+OnDisable:
+	disablenpc "打拍子的男孩#pin09";
+	end;
+}
+
+ma_fild01,164,231,6	script	打拍子的男孩#pin10	577,{
+	mes "咚-噠-嚓- 咚-噠-嚓-";
+	next;
+	mes "[打拍子的男孩]";
+	mes "我現在雖然只能用棍子打拍子，但誰知道等我長大後，會不會也能去打鼓呢？";
+	close;
+OnInit:
+	if (!$malaya_pintados_00)
+		disablenpc();
+	end;
+OnEnable:
+	enablenpc();
+	end;
+OnDisable:
+	disablenpc();
+	end;
+}
+ma_fild01,170,228,4	duplicate(打拍子的男孩#pin10)	打拍子的男孩#pin11	577

@@ -1,0 +1,168 @@
+//===== rAthena Script =======================================
+//= Abyss Cave Warper
+//===== By: ==================================================
+//= erKURITA
+//===== Current Version: =====================================
+//= 1.4
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Warper to Abyss Cave. and warper out
+//===== Additional Comments: =================================
+//= 1.0 Added by Nexon [Nexon]
+//= 1.1 Removed Duplicates [Silent]
+//= 1.2 Fixed tab - missing pillar's appeared [Lupus]
+//= 1.3 Updated Abyss Lake entrance based on official [SinSloth]
+//= 1.3a Removed .GATs [Lupus]
+//= 1.4 Corrected NPC names to fall within proper restrictions. [L0ne_W0lf]
+//============================================================
+
+hu_fild05,168,304,0	script	石柱#abyss1	111,{
+
+	mes "^3355FF這根石柱的表面上，";
+	mes "有 3 個形狀奇特的凹槽。";
+	mes "看起來，某些龍的";
+	mes "身體部位似乎";
+	mes "可以完美地";
+	mes "嵌入這些";
+	mes "石柱凹槽中。^000000";
+	if((countitem(1035)) && (countitem(1036)) && (countitem(1037)))
+	{
+		next;
+		switch( select( "放入龍的身體部位","吃下龍的身體部位" ) )
+		{
+			case 1:
+				mes "^3355FF你小心翼翼地將一個";
+				mes "龍牙放入其中一個";
+				mes "凹槽中，接著你";
+				mes "聽到石柱內傳出";
+				mes "強烈的轟隆聲。^000000";
+				specialeffect EF_WINDHIT;
+				next;
+				mes "^3355FF你慢慢地將一個";
+				mes "龍鱗放入石柱的另一個";
+				mes "凹槽中，";
+				mes "引發了石柱的";
+				mes "另一次小震動。^000000";
+				specialeffect EF_WINDHIT;
+				next;
+				mes "^3355FF你謹慎地將";
+				mes "一個龍尾放入";
+				mes "最後的凹槽中。光芒";
+				mes "從石柱表面的";
+				mes "裂縫中閃爍而出...^000000";
+				specialeffect EF_WINDHIT;
+				next;
+				mes "^3355FF你腳下的";
+				mes "地面開始";
+				mes "劇烈搖晃。^000000";
+				specialeffect EF_BOWLINGBASH;
+				donpcevent "AbyssWarp::OnWarp";
+				specialeffect2 EF_PORTAL;
+				delitem 1035,1;
+				delitem 1036,1;
+				delitem 1037,1;
+				close2;
+				warp "hu_fild05",184,204;
+				end;
+
+			case 2:
+				mes "^3355FF你小心翼翼地將一個";
+				mes "龍牙、一個龍鱗";
+				mes "和一個龍尾放入口中，";
+				mes "並慢慢開始咀嚼。";
+				mes "什麼也沒發生，";
+				mes "而且這些東西的味道";
+				mes "出奇地腐敗難吃。^000000";
+				next;
+				emotion ET_HUNGRY, playerattached();
+				delitem 1035,1;
+				delitem 1036,1;
+				delitem 1037,1;
+				percentheal -10,0;
+				close;
+		}
+	}
+	close;
+}
+
+hu_fild05,171,211,0	script	石柱#abyss2	111,1,1,{
+
+	mes "^3355FF這根石柱看起來";
+	mes "和你之前在";
+	mes "湖邊看到的那根";
+	mes "非常相似。它的";
+	mes "表面上有一個顯眼的";
+	mes "藍色凹槽。^000000";
+	next;
+	switch( select( "觸摸凹槽","將物品從凹槽中拔出" ) )
+	{
+		case 1:
+			mes "^3355FF*喀啦喀啦*^000000";
+			next;
+			mes "^3355FF凹槽散發出的";
+			mes "光芒開始扭曲，";
+			mes "石柱也跟著搖晃。";
+			mes "你聽到石柱內部";
+			mes "傳來微弱的轟隆聲。^000000";
+			specialeffect EF_WINDHIT;
+			next;
+			mes "*嘎嘎嘎嘶嘶！*";
+			mes "*砰！*";
+			next;
+			mes "^3355FF從石柱凹槽";
+			mes "散發出的光芒變得更亮，";
+			mes "你感覺腳下的";
+			mes "地面開始";
+			mes "慢慢下陷...^000000";
+			next;
+			specialeffect EF_BOWLINGBASH;
+			specialeffect2 EF_PORTAL;
+			close2;
+			warp "hu_fild05",169,305;
+			end;
+
+		case 2:
+			mes "^3355FF*噗嘶嘶嘶！*";
+			mes "你不小心";
+			mes "弄壞了這個物品。^000000";
+			specialeffect EF_WINDHIT;
+			next;
+			mes "^3355FF*嘎嘎嘎嘎嘎嘎嘶嘶嘶嘶嘶嘰嘰嘰！*^000000";
+			next;
+			mes "^3355FF凹槽散發出的光芒";
+			mes "開始扭曲，";
+			mes "石柱也跟著搖晃。";
+			mes "地面的震動";
+			mes "讓你難以站穩，";
+			mes "但突然間你";
+			mes "被傳送到了其他地方...^000000";
+			next;
+			specialeffect EF_BOWLINGBASH;
+			specialeffect2 EF_PORTAL;
+			close2;
+			warp "hu_fild05",157,284;
+			end;
+	}
+}
+
+hu_fild05,196,210,1	script	AbyssWarp	45,2,2,{
+
+OnInit:
+	disablenpc "AbyssWarp";
+	end;
+
+OnTouch_:
+	warp "abyss_01",260,268;
+	end;
+
+OnWarp:
+	initnpctimer;
+	enablenpc "AbyssWarp";
+	end;
+
+OnTimer30000:
+	stopnpctimer;
+	disablenpc "AbyssWarp";
+	end;
+}

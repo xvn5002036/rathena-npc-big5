@@ -1,0 +1,710 @@
+//===== rAthena Script ======================================= 
+//= Mage Job Quest
+//===== By: ================================================== 
+//= kobra_k88;
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 2.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Mage classes
+//===== Additional Comments: ================================= 
+//= 1.0 Fully working.
+//= 1.1 Fixed input ingridients bug [Lupus]
+//= 1.2 Added instant job change for High Novice [Lupus]
+//= 1.3 Added Baby Class support [Lupus]
+//= 1.4 Optimised and moved first checker to Jfunc1-1 [massdriller]
+//= 1.5 Now saves/restores all quest skills [Lupus]
+//= 1.6 Merged back JFunc, CHANGED NUMBERS TO CONSTANTS [Lupus]
+//= 1.7 Rescripted to Aegis 10.3 stadards.
+//=     [L0ne_W0lf]
+//=     No longer uses function "F_ToHigh"
+//= 1.7a Fixed a "If" in the quest.
+//=      (bugreport:489) [Samuray22]
+//= 1.8 Added Quest Log commands. [L0ne_W0lf]
+//= 1.9 Fixed an issue with completequest by adding checkquest.
+//=     [Kisuka]
+//= 2.0 Moved "Dollshoi" and "Ponka-Hontas" NPCs. [Euphy]
+//============================================================ 
+
+geffen_in,164,124,4	script	魔法師公會人員	123,{
+	if (Upper == 1) {
+		if (ADVJOB == Job_High_Wizard || ADVJOB == Job_Professor) {
+			if (Class == Job_Novice_High) {
+				mes "[魔法師公會人員]";
+				mes "哇，好久不見！但你不是應該死了嗎？";
+				next;
+				mes "[魔法師公會人員]";
+				mes "啊，你一定是轉生了。很高興能看到你回來。";
+				next;
+				if (!callfunc("F_CanChangeJob")) {
+					mes "[魔法師公會人員]";
+					mes "抱歉，但我認為你還沒準備好學習魔法。要不要先去把基本技能學完呢？";
+					next;
+					mes "[魔法師公會人員]";
+					mes "慢慢來。你學得越多，就越能準備好再次學習魔法。";
+					close;
+				}
+				mes "[魔法師公會人員]";
+				mes "嗯，既然你已經通過過一次魔法師的測驗，我就不懷疑你的資格了。你想馬上恢復你的魔法技能，對吧？";
+				next;
+				skill "NV_TRICKDEAD",0,SKILL_PERM;
+				jobchange Job_Mage_High;
+				skill "MG_ENERGYCOAT",1,SKILL_PERM;
+				mes "[魔法師公會人員]";
+				mes "哇，不知為何，你看起來比以前更棒了。總之，我相信你這次也會成為一名出色的魔法師。";
+				close;
+			}
+			else {
+				mes "[魔法師公會人員]";
+				mes "還有什麼我可以幫忙的嗎？如果沒有，何不去測試一下你的技能呢？世界正在等著你呢?！";
+				close;
+			}
+		}
+		else {
+			mes "[魔法師公會人員]";
+			mes "什麼，你對魔法師公會感興趣嗎？雖然不想這麼說，但你不屬於這裡。";
+			next;
+			mes "[魔法師公會人員]";
+			mes "我不知道你為什麼還站在我面前，但我看得出來你注定當不了魔法師。";
+			close;
+		}
+	}
+	mes "[魔法師公會人員]";
+	mes "喲。有什麼事嗎？";
+	next;
+	switch(select("我想轉職成魔法師。:請告訴我轉職條件。:沒什麼事。")) {
+	case 1:
+		mes "[魔法師公會人員]";
+		if (BaseJob == Job_Mage) {
+			mes "嘿，你還沒發現嗎？你已經是魔法師了，傻瓜！";
+			next;
+			mes "[魔法師公會人員]";
+			mes "總有一天，當你能用意識生火時，你就會意識到你體內的力量！";
+			close;
+		}
+		if (BaseJob != Job_Novice) {
+			mes "嘿?拜託。別鬧了。你已經有其他職業，所以不能再轉職成魔法師了。";
+			close;
+		}
+		if (job_magician_q == 0) {
+			mes "想成為魔法師，是嗎……？";
+			if (Sex == SEX_MALE)
+				mes "嘿，看看你！你長得挺可愛的嘛?！不過不是我的菜……";
+			else {
+				mes "哦哦，妳真是個辣妹呢?！";
+				mes "我喜歡妳這種女孩?";
+			}
+			next;
+			mes "[魔法師公會人員]";
+			mes "對了，你說你想成為魔法師？好吧，請在魔法師申請書上簽名。";
+			next;
+			if (select("簽名。:放棄。") == 1) {
+				mes "[魔法師公會人員]";
+				mes "好的。就在那邊簽名。噢，你的字寫得真好看。好了。所以你的名字是……" + strcharinfo(0) + "。";
+				next;
+				mes "[魔法師公會人員]";
+				mes "現在是時候";
+				mes "讓我給你測驗了。";
+				switch(rand(0,3)) {
+				case 1:
+					mes "幫我製作^3355FF1號混合液^000000";
+					mes "然後帶回來給我。";
+					set job_magician_q,1;
+					break;
+				case 2:
+					mes "幫我製作^3355FF2號混合液^000000";
+					mes "然後帶回來給我。";
+					set job_magician_q,2;
+					break;
+				case 3:
+					mes "幫我製作^3355FF3號混合液^000000";
+					mes "然後帶回來給我。";
+					set job_magician_q,3;
+					break;
+				default:
+					mes "幫我製作^3355FF4號混合液^000000";
+					mes "然後帶回來給我。";
+					set job_magician_q,4;
+				}
+				next;
+				getitem 1092,1;
+				//Empty_Cylinder
+				mes "[魔法師公會人員]";
+				mes "你可以在公會的指南書中找到所需的材料。所以你最好在出發前查一下需要什麼。";
+				next;
+				mes "[魔法師公會人員]";
+				mes "一旦你收集齊所有材料，就使用房間中央的機器來混合水溶液。祝你好運！";
+				close;
+			}
+			mes "[魔法師公會人員]";
+			mes "什麼??？！才剛說想當魔法師，馬上就改變主意了？！稍微果斷一點吧！";
+			close;
+		}
+		mes "嗯？準備好了嗎……？";
+		if (!callfunc("F_CanChangeJob")) {
+			mes "喔，真可惜。你還沒達到要求呢。";
+			next;
+			mes "[魔法師公會人員]";
+			mes "先回去把初學者的職業等級練到 9 吧。別忘了回來之前還要學會所有的基本技能喔。";
+			close;
+		}
+		mes "" + strcharinfo(0) + " 的測驗是……";
+		if (job_magician_q == 1)
+			mes "製作1號混合液。";
+		else if (job_magician_q == 2)
+			mes "製作2號混合液。";
+		else if (job_magician_q == 3)
+			mes "製作3號混合液。";
+		else
+			mes "製作4號混合液。";
+		next;
+		mes "[魔法師公會人員]";
+		mes "好的，讓我";
+		mes "檢查一下你製作的";
+		mes "混合液正不正確……";
+		next;
+		mes "[魔法師公會人員]";
+		if (countitem(1071) == 0 && countitem(1085) == 0 && countitem(1086) == 0 && countitem(1087) == 0 && countitem(1090) == 0) {
+			mes "嘿，混合液在哪裡";
+			mes "我要的呢……？你不拿給我看，我要怎麼檢查啊？";
+			close;
+		}
+		else {
+			if ((job_magician_q == 1 && countitem(1071) == 0) || (job_magician_q == 2 && countitem(1085) == 0) || (job_magician_q == 3 && countitem(1086) == 0) || (job_magician_q == 4 && countitem(1087) == 0)) {
+				mes "等等。";
+				mes "這不是我要的";
+				mes "混合液啊！";
+				next;
+				mes "[魔法師公會人員]";
+				if (job_magician_q == 1)
+					mes "你應該要製作1號混合液並帶回來給我。現在回去再試一次。";
+				else if (job_magician_q == 2)
+					mes "你應該要製作2號混合液並帶回來給我。現在回去再試一次。";
+				else if (job_magician_q == 3)
+					mes "你應該要製作3號混合液並帶回來給我。現在回去再試一次。";
+				else
+					mes "你應該要製作4號混合液並帶回來給我。現在回去再試一次。";
+				if (countitem(1071) != 0) delitem 1071,1; //Mage_Test_1
+				else if (countitem(1085) != 0) delitem 1085,1; //Mage_Test_2
+				else if (countitem(1086) != 0) delitem 1086,1;
+				//Mage_Test_3
+				else if (countitem(1087) != 0) delitem 1087,1; //Mage_Test_4
+				else delitem 1090,1; //Mage_Test_Etc
+				close;
+			}
+		}
+		if (countitem(1071) != 0) delitem 1071,1;
+		//Mage_Test_1
+		else if (countitem(1085) != 0) delitem 1085,1; //Mage_Test_2
+		else if (countitem(1086) != 0) delitem 1086,1;
+		//Mage_Test_3
+		else if (countitem(1087) != 0) delitem 1087,1; //Mage_Test_4
+		else delitem 1090,1;
+		//Mage_Test_Etc
+		mes "嗯。看得出來你非常努力。以初學者來說，這已經做得很好了。";
+		mes "幹得好！";
+		next;
+		mes "[魔法師公會人員]";
+		mes "太好了！我很高興地宣布你通過了魔法師的測驗。我現在就為你轉職！";
+		next;
+		mes "[魔法師公會人員]";
+		mes "*咳咳*";
+		mes "恭喜！";
+		mes "你現在是一名魔法師了！";
+		next;
+		for ( .@quest_id = 1005; .@quest_id <= 1008; .@quest_id++ ) {
+			if (isbegin_quest(.@quest_id) == 1)
+				completequest .@quest_id;
+		}
+		callfunc "Job_Change",Job_Mage;
+		callfunc "F_ClearJobVar";
+		set Zeny,Zeny+50;
+		mes "[魔法師公會人員]";
+		mes "『歡迎來到我的世界?』";
+		mes "嘿嘿，我只是想說說看這句話。你知道的，這是一部著名電影的台詞?";
+		next;
+		mes "[魔法師公會人員]";
+		mes "既然你現在也和我們一樣是魔法師了，我們就交個朋友吧，好嗎？";
+		close;
+	case 2:
+		mes "[魔法師公會人員]";
+		mes "想成為魔法師，是嗎？";
+		if (Sex == SEX_MALE)
+			mes "為了像你這樣的小可愛，我很樂意向你說明轉職條件！";
+		else
+			mes "我很樂意向像妳這樣的漂亮女孩說明轉職條件！";
+		next;
+		mes "[魔法師公會人員]";
+		mes "首先，你必須達到初學者職業等級 10 級並學會所有的基本技能。接著，你必須通過魔法師的測驗。";
+		next;
+		if (job_magician_q != 0) {
+			mes "[魔法師公會人員]";
+			mes "你的測驗是";
+			switch(job_magician_q) {
+			case 1:
+				mes "幫我製作";
+				mes "^3355FF1號混合液^000000";
+				mes "然後帶回來給我。";
+				if (isbegin_quest(1005) == 0)
+					setquest 1005;
+				break;
+			case 2:
+				mes "幫我製作";
+				mes "^3355FF2號混合液^000000";
+				mes "然後帶回來給我。";
+				if (isbegin_quest(1006) == 0)
+					setquest 1006;
+				break;
+			case 3:
+				mes "幫我製作";
+				mes "^3355FF3號混合液^000000";
+				mes "然後帶回來給我。";
+				if (isbegin_quest(1007) == 0)
+					setquest 1007;
+				break;
+			default:
+				mes "幫我製作";
+				mes "^3355FF4號混合液^000000";
+				mes "然後帶回來給我。";
+				if (isbegin_quest(1008) == 0)
+					setquest 1008;
+				break;
+			}
+			next;
+			mes "[魔法師公會人員]";
+			mes "你可以在這間公會的指南書裡查閱製作混合液所需的材料。";
+		}
+		else {
+			mes "[魔法師公會人員]";
+			mes "在簽署申請書後，你將會被告知需要製作哪種混合液。";
+		}
+		next;
+		mes "[魔法師公會人員]";
+		mes "準備好成為魔法師的時候再跟我說，好嗎？";
+		close;
+	case 3:
+		mes "[魔法師公會人員]";
+		mes "沒什麼事……？";
+		close;
+	}
+}
+
+geffen_in,164,112,4	script	混合機	111,{
+	mes "[混合機]";
+	mes "本機器為吉芬魔法師公會財產，僅限於魔法目的之混合液調配使用。";
+	next;
+	if (select("使用機器。:取消。") == 1) {
+		mes "[混合機]";
+		mes "請選擇";
+		mes "調配水溶液用的";
+		mes "溶劑。";
+		next;
+		switch(select("斐揚水溶液。:夢羅克水溶液。:不需要溶劑。")) {
+		case 1:
+			if (countitem(1089) == 0) {
+				mes "[混合機]";
+				mes "錯誤。";
+				mes "找不到該物品。";
+				mes "請再檢查一次。";
+				mes "程序中止。";
+				close;
+			}
+			set .@mixitem2,1;
+			break;
+		case 2:
+			if (countitem(1088) == 0) {
+				mes "[混合機]";
+				mes "錯誤。";
+				mes "找不到該物品。";
+				mes "請再檢查一次。";
+				mes "程序中止。";
+				close;
+			}
+			set .@mixitem2,2;
+			break;
+		case 3:
+			set .@mixitem2,0;
+			break;
+		}
+		while (1) {
+			if (.@progress == 2) {
+				mes "[混合機]";
+				if (.@mixitem1_1 != 0) mes "傑勒比結晶: " + .@mixitem1_1 + " 個";
+				if (.@mixitem1_2 != 0) mes "毛: " + .@mixitem1_2 + " 個";
+				if (.@mixitem1_3 != 0) mes "牛奶: " + .@mixitem1_3 + " 個";
+				if (.@mixitem2 == 0) mes "溶劑: 無。";
+				if (.@mixitem2 == 1) mes "溶劑: 斐揚水溶液。";
+				if (.@mixitem2 == 2) mes "溶劑: 夢羅克水溶液。";
+				next;
+				mes "[混合機]";
+				mes "請選擇是否開始混合，或是重新輸入混合物品的數量。";
+				next;
+				switch(select("開始混合。:重新輸入物品數量。:重置。")) {
+				case 1:
+					mes "[混合機]";
+					mes "請將物品放入混合槽。確認物品數量無誤。";
+					next;
+					mes "[混合機]";
+					mes "物品放入混合槽後，將無法調整或退回。";
+					next;
+					mes "[混合機]";
+					mes "如果確認無誤，準備好後請按下「混合」按鈕。否則，請按下「取消」按鈕。";
+					next;
+					if (select("按下「混合」按鈕。:按下「取消」按鈕。") == 1) {
+						mes "[混合機]";
+						mes "正在將物品放入混合槽。請稍候。";
+						next;
+						mes "[混合機]";
+						if (countitem(909) < .@mixitem1_1) {
+							mes "傑勒比結晶不足。";
+							mes "請再檢查一次。";
+							mes "程序中止。";
+							close;
+						}
+						else if (countitem(914) < .@mixitem1_2) {
+							mes "毛不足。";
+							mes "請再檢查一次。";
+							mes "程序中止。";
+							close;
+						}
+						else if (countitem(519) < .@mixitem1_3) {
+							mes "牛奶不足。";
+							mes "請再檢查一次。";
+							mes "程序中止。";
+							close;
+						}
+						else if (.@mixitem2 == 1 || .@mixitem2 == 2) {
+							if (countitem(1089) == 0 && countitem(1088) == 0) {
+								mes "找不到水溶液。";
+								mes "請再檢查一次。";
+								mes "程序中止。";
+								close;
+							}
+						}
+						if (.@mixitem1_1 != 0) delitem 909,.@mixitem1_1; //Jellopy
+						if (.@mixitem1_2 != 0) delitem 914,.@mixitem1_2;
+						//Fluff
+						if (.@mixitem1_3 != 0) delitem 519,.@mixitem1_3; //Milk
+						if (.@mixitem2 == 1) delitem 1089,1; //Payon_Potion
+						if (.@mixitem2 == 2) delitem 1088,1;
+						//Morocc_Potion
+						mes "物品已準備完畢。";
+						mes "蓋上蓋子。";
+						set .@progress,3;
+						next;
+					}
+					break;
+				case 2:
+					set .@continue,0;
+					next;
+					break;
+				case 3:
+					set .@mixitem1_1,0;
+					set .@mixitem1_2,0;
+					set .@mixitem1_3,0;
+					set .@progress,0;
+					set .@continue,0;
+					mes "[混合機]";
+					mes "重置完成。";
+					mes "要重新開始嗎？";
+					next;
+					if (select("是。:否。") == 1)
+						break;
+					mes "[混合機]";
+					mes "程序中止。";
+					mes "謝謝你。";
+					close;
+				}
+				if (.@progress == 3) break;
+			}
+			else if (.@progress == 1) {
+				mes "[混合機]";
+				mes "什麼都沒找到。";
+				next;
+			}
+			mes "[混合機]";
+			mes "選擇要混合的物品。";
+			while(1) {
+				switch(select("傑勒比結晶。:毛。:牛奶。:準備混合。")) {
+				case 1:
+					while(1) {
+						input .@input;
+						if (.@input > 10000) {
+							next;
+							mes "[混合機]";
+							mes "錯誤：超過物品限制。請輸入小於 10,000 的數值並重試。";
+							next;
+						}
+						else {
+							if (countitem(909) > 0) set .@mixitem1_1,.@mixitem1_1 + .@input;
+							set .@progress,2;
+							break;
+						}
+					}
+					break;
+				case 2:
+					while(1) {
+						input .@input;
+						if (.@input > 10000) {
+							next;
+							mes "[混合機]";
+							mes "錯誤：超過物品限制。請輸入小於 10,000 的數值並重試。";
+							next;
+						}
+						else {
+							if (countitem(914) > 0) set .@mixitem1_2,.@mixitem1_2 + .@input;
+							set .@progress,2;
+							break;
+						}
+					}
+					break;
+				case 3:
+					while(1) {
+						input .@input;
+						if (.@input > 10000) {
+							next;
+							mes "[混合機]";
+							mes "錯誤：超過物品限制。請輸入小於 10,000 的數值並重試。";
+							next;
+						}
+						else {
+						if (countitem(519) > 0) set .@mixitem1_3,.@mixitem1_3 + .@input;
+							set .@progress,2;
+							break;
+						}
+					}
+					break;
+
+				case 4:
+					if (.@progress != 2)
+						set .@progress,1;
+					set .@continue,1;
+					next;
+				}
+				if (.@continue) break;
+			}
+		}
+		mes "[混合機]";
+		mes "請輸入";
+		mes "魔法粉末的";
+		mes "流水號。";
+		next;
+		while(1) {
+			input .@input;
+			if (.@input < 1000 || .@input > 9999) {
+				mes "[混合機]";
+				if (.@input == 0) {
+					mes "你想跳過這個選單嗎？";
+					next;
+					if (select("是。:否。") == 1) {
+						break;
+					}
+				}
+				else {
+					mes "無效的流水號。";
+					mes "請再試一次。";
+					next;
+				}
+			}
+			else {
+				mes "[混合機]";
+				mes "流水號是 #" + .@input + "，對嗎？";
+				next;
+				if (select("確認。:取消。") == 1) {
+					if (.@input == 8472)
+						set .@magic_powder,1;
+					else if (.@input == 3735)
+						set .@magic_powder,2;
+					else if (.@input == 2750)
+						set .@magic_powder,3;
+					else if (.@input == 5429)
+						set .@magic_powder,4;
+					else
+						set .@magic_powder,5;
+				}
+				break;
+			}
+		}
+		mes "[混合機]";
+		mes "選擇一顆";
+		mes "觸媒礦石。";
+		next;
+		switch(select("黃色魔力礦石。:紅色魔力礦石。:藍色魔力礦石。:1克拉鑽石。:跳過。")) {
+		case 1: set .@mixitem3,1; break;
+		case 2: set .@mixitem3,2; break;
+		case 3: set .@mixitem3,3; break;
+		case 4: set .@mixitem3,4; break;
+		case 5: break;
+		}
+		mes "[混合機]";
+		mes "設定完成。";
+		mes "啟動";
+		mes "混合程序。";
+		mes "請稍候。";
+		next;
+		mes "[混合機]";
+		mes "- 每日一句 -";
+		switch(rand(1,5)) {
+		case 1:
+			mes "以眼還眼：當你從別人那裡拿走東西時，你必須以某種方式替換或償還。";
+			break;
+		case 2:
+			mes "信譽是人的貨幣：真正的信任具有無法估量的價值。";
+			break;
+		case 3:
+			mes "善有善報，惡有惡報：最終，你對待別人的方式將會回報到自己身上。";
+			mes "這意味著「當你傷害別人時，在不可避免的情況下你也會被他傷害」。";
+			break;
+		case 4:
+			mes "遠親不如近鄰：當你需要幫助時，你可以指望身邊的人。";
+			break;
+		default:
+			mes "物以類聚：你可以從一個人的朋友看出他們的性格。";
+		}
+		next;
+		if (.@mixitem1_1 == 2 && .@mixitem1_2 == 3 && .@mixitem1_3 == 1 && .@mixitem2 == 1 && .@mixitem3 == 1 && .@magic_powder == 1) {
+			mes "[混合機]";
+			mes "魔法師測試1號混合液。";
+			getitem 1071,1; //Mage_Test_1
+			next;
+		}
+		else if (.@mixitem1_1 == 3 && .@mixitem1_2 == 1 && .@mixitem1_3 == 1 && .@mixitem2 == 0 && .@mixitem3 == 2 && .@magic_powder == 2) {
+			mes "[混合機]";
+			mes "魔法師測試2號混合液。";
+			getitem 1085,1; //Mage_Test_2
+			next;
+		}
+		else if (.@mixitem1_1 == 6 && .@mixitem1_2 == 1 && .@mixitem1_3 == 0 && .@mixitem2 == 1 && .@mixitem3 == 3 && .@magic_powder == 3) {
+			mes "[混合機]";
+			mes "魔法師測試3號混合液。";
+			getitem 1086,1; //Mage_Test_3
+			next;
+		}
+		else if (.@mixitem1_1 == 2 && .@mixitem1_2 == 3 && .@mixitem1_3 == 0 && .@mixitem2 == 2 && .@mixitem3 == 4 && .@magic_powder == 4) {
+			mes "[混合機]";
+			mes "魔法師測試4號混合液。";
+			getitem 1087,1; //Mage_Test_4
+			next;
+		}
+		else {
+			mes "[混合機]";
+			mes "發生";
+			mes "未知的錯誤。";
+			getitem 1090,1;
+			//Mage_Test_Etc
+			next;
+		}
+		mes "[混合機]";
+		mes "混合完成。";
+		mes "謝謝你。";
+		close;
+	}
+	close;
+}
+
+// The Morocc Solution and Payon Solution traders
+// are also used in the Sage skill quests, and have
+// been moved to npc/quests/mage_solution.txt.
+//
+// pay_arche,122,100,0	script	Dollshoi	88,{}
+// moc_ruins,91,150,0	script	Ponka-Hontas	93,{}
+
+geffen_in,177,112,4	script	書櫃	111,{
+	mes "[指南書]";
+	mes "這本指南書是吉芬魔法師公會的財產。請小心翻閱。";
+	next;
+	switch(select("1號混合液。:2號混合液。:3號混合液。:4號混合液。:關閉。")) {
+	case 1:
+		mes "[魔法師測驗1號混合液]";
+		mes "* 材料清單 *";
+		mes "2個 傑勒比結晶";
+		mes "3個 毛";
+		mes "1個 牛奶";
+		next;
+		mes "[魔法師測驗1號混合液]";
+		mes "* 溶劑 *";
+		mes "斐揚水溶液";
+		mes "取得地點：";
+		mes "弓箭手村（斐揚）的一個小湧泉處。";
+		next;
+		mes "[魔法師測驗1號混合液]";
+		mes "* 魔法粉末流水號 *";
+		mes "8472";
+		next;
+		mes "[魔法師測驗1號混合液]";
+		mes "* 觸媒 *";
+		mes "黃色魔力礦石";
+		mes "(由";
+		mes "混合機提供)";
+		close;
+	case 2:
+		mes "[魔法師測驗2號混合液]";
+		mes "* 材料清單 *";
+		mes "3個 傑勒比結晶";
+		mes "1個 毛";
+		mes "1個 牛奶";
+		next;
+		mes "[魔法師測驗2號混合液]";
+		mes "* 溶劑 *";
+		mes "無";
+		next;
+		mes "[魔法師測驗2號混合液]";
+		mes "* 魔法粉末流水號 *";
+		mes "3735";
+		next;
+		mes "[魔法師測驗2號混合液]";
+		mes "* 觸媒 *";
+		mes "紅色魔力礦石";
+		mes "(由";
+		mes "混合機提供)";
+		close;
+	case 3:
+		mes "[魔法師測驗3號混合液]";
+		mes "* 材料清單 *";
+		mes "6個 傑勒比結晶";
+		mes "1個 毛";
+		next;
+		mes "[魔法師測驗3號混合液]";
+		mes "* 溶劑 *";
+		mes "斐揚水溶液";
+		mes "取得地點：";
+		mes "弓箭手村（斐揚）的一個小湧泉處。";
+		next;
+		mes "[魔法師測驗3號混合液]";
+		mes "* 魔法粉末流水號 *";
+		mes "2750";
+		next;
+		mes "[魔法師測驗3號混合液]";
+		mes "* 觸媒 *";
+		mes "藍色魔力礦石";
+		mes "(由";
+		mes "混合機提供)";
+		close;
+	case 4:
+		mes "[魔法師測驗4號混合液]";
+		mes "* 材料清單 *";
+		mes "2個 傑勒比結晶";
+		mes "3個 毛";
+		next;
+		mes "[魔法師測驗4號混合液]";
+		mes "* 溶劑 *";
+		mes "夢羅克水溶液";
+		mes "取得地點：";
+		mes "夢羅克金字塔入口附近的一個小湧泉處。";
+		next;
+		mes "[魔法師測驗4號混合液]";
+		mes "* 魔法粉末流水號 *";
+		mes "5429";
+		next;
+		mes "[魔法師測驗4號混合液]";
+		mes "* 觸媒 *";
+		mes "1克拉鑽石";
+		mes "(由";
+		mes "混合機提供)";
+		close;
+	}
+	close;
+}

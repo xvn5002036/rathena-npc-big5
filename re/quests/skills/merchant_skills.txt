@@ -1,0 +1,153 @@
+//===== rAthena Script =======================================
+//= Merchant Skills Quests
+//===== Description: =========================================
+//= [Official Conversion]
+//- NPC for skills Pushcart Decoration.
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//============================================================
+
+alberta,47,37,5	script	手推車改裝專家	4_M_REPAIR,{
+	.@max_skill_lvl = 1;
+	if (cart_remodel == 0) {
+		mes "[傑森]";
+		mes "原本的手推車就很漂亮了！";
+		next;
+		mes "[傑森]";
+		mes "那純灰色的手推車。";
+		next;
+		mes "[傑森]";
+		mes "我可以把它改裝成新的可愛造型。";
+		next;
+		switch( select( "什麼是手推車裝飾？", "學習手推車裝飾", "結束對話" ) ) {
+		case 1:
+			mes "[傑森]";
+			mes "我想把那台可憐的手推車徹底改裝一番。";
+			next;
+			mes "[傑森]";
+			mes "只有一點點改裝是不夠的，你同意嗎？";
+			next;
+			mes "[傑森]";
+			mes "所以我發明了一些新造型。";
+			next;
+			mes "[傑森]";
+			mes "非常可愛又令人耳目一新！";
+			close;
+		case 2:
+			if (BaseClass != Job_Merchant) {
+				mes "[傑森]";
+				mes "你為什麼想學手推車裝飾？別來打擾我！";
+				close;
+			}
+			if (countitem(6606) == 0) {
+				mes "[傑森]";
+				mes "學習手推車裝飾是很困難的。";
+				next;
+				mes "[傑森]";
+				mes "如果你能帶^3131FF可愛手推車改裝券^000000來給我，我就教你。";
+				close;
+			}
+			mes "[傑森]";
+			mes "你帶來了可愛手推車改裝券。你確定要學習手推車裝飾嗎？";
+			next;
+			if (select("是", "否") == 2) {
+				mes "[傑森]";
+				mes "等你改變主意再來吧！";
+				close;
+			}
+			mes "[傑森]";
+			mes "好吧！跟著我做。";
+			next;
+			mes "[傑森]";
+			mes "這個設計";
+			mes "要這樣裝在手推車上...";
+			next;
+			mes "[傑森]";
+			mes "這個設計";
+			mes "要這樣裝在手推車上。";
+			mes "然後加上這個....";
+			mes "...";
+			next;
+			mes "[傑森]";
+			mes "你真是個天才！你學會了！";
+			next;
+			mes "[傑森]";
+			mes "現在輪到你自己試試了。";
+			mes "按下 Alt+S 來更換你的手推車造型！";
+			next;
+			mes "[傑森]";
+			mes "這就是新的可愛造型手推車。你現在是我們的一份子了...！";
+			delitem 6606,1; // P_Cart_C
+			cart_remodel = 1;
+			skill "MC_CARTDECORATE",1,SKILL_PERM;
+			close;
+		case 3:
+			close;
+		}
+	}
+	mes "[傑森]";
+	mes "你裝飾過手推車了嗎？";
+	next;
+	switch( select( "還有更多可以學的嗎？", "我忘記怎麼裝飾手推車了" ) ) {
+	case 1:
+		if (cart_remodel == .@max_skill_lvl) {
+			mes "[傑森]";
+			mes "沒了。我還在摸索新的設計。等我學會了再教你。";
+			close;
+		}
+		mes "[傑森]";
+		mes "我還有東西可以教你，你想學嗎？";
+		next;
+		mes "[傑森]";
+		mes "我需要一張^3131FF可愛手推車改裝券^000000。";
+		next;
+		if (select("我想學", "不要") == 2) {
+			mes "[傑森]";
+			mes "你隨時可以再來。";
+			close;
+		}
+		if (countitem(6606) < 0) {
+			mes "[傑森]";
+			mes "你沒有任何可愛手推車改裝券嗎？";
+			close;
+		}
+		mes "[傑森]";
+		mes "好，我們開始吧！";
+		next;
+		mes "[傑森]";
+		mes "這樣做會比較好。";
+		mes "那個也像這樣處理...";
+		next;
+		mes "[傑森]";
+		mes "....";
+		mes "動手吧！";
+		next;
+		mes "[傑森]";
+		mes "我已經把技能教給你了，你現在可以試試看。";
+		delitem 6606,1;	// P_Cart_C
+		cart_remodel++;
+		skill "MC_CARTDECORATE", cart_remodel ,SKILL_PERM;
+		close;
+	case 2:
+		mes "[傑森]";
+		mes "喔？讓我看看。";
+		next;
+		if (BaseClass != Job_Merchant) {
+			mes "[傑森]";
+			mes "等你能夠使用手推車時再來吧！";
+			close;
+		}
+		mes "[傑森]";
+		mes "你不記得我教過你的東西了嗎？";
+		mes "我教過你這個方法的。";
+		next;
+		mes "[傑森]";
+		mes "你忘記了嗎？";
+		mes "現在讓我們來回想一下吧！";
+		next;
+		mes "[傑森]";
+		mes "仔細想想，你會再次想起來的。";
+		skill "MC_CARTDECORATE",1,SKILL_PERM;
+		close;
+	}
+}

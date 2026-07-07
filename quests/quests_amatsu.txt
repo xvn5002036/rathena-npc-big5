@@ -1,0 +1,2219 @@
+//===== rAthena Script ======================================= 
+//= Quest NPCs related to Amatsu
+//===== By: ================================================== 
+//= rAthena Dev Team & MasterOfMuppets
+//===== Current Version: ===================================== 
+//= 1.5
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Momotaro Event
+//= Sushi Quest
+//= Dungeon Quest
+//===== Additional Comments: ================================= 
+//= 1.3 Rescripted to Aegis 10.3 Standards.
+//= 1.4 Added missing checkweight. [L0ne_W0lf]
+//= 1.4a Fixed typo in condition check [Gepard]
+//= 1.5 Added questlog support. [Euphy]
+//============================================================ 
+
+// Momotaro Event :: japan_momo_q
+//============================================================ 
+amatsu,223,236,3	script	發行商#ama	763,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 等等！！ -";
+		mes "- 你現在身上帶的 -";
+		mes "- 物品太多了。 -";
+		mes "- 請把一些物品放進卡普拉儲藏箱 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	if (event_momo < 2) {
+		mes "[發行商]";
+		mes "你好~！！";
+		mes "我們^009CFF卷軸出版社^000000";
+		mes "專門負責發行";
+		mes "各種童話故事。";
+		mes " ";
+		next;
+		mes "[發行商]";
+		mes "我們設立了";
+		mes "^3163FF桃太郎體驗之旅^000000";
+		mes "來慶祝^009CFF《桃太郎的故事》^000000銷量突破一百萬冊。";
+		next;
+		mes "[發行商]";
+		mes "化身為桃太郎，";
+		mes "像故事中一樣消滅土人吧！";
+		mes "還會有豐富的獎勵喔。";
+		next;
+		switch(select("什麼是桃太郎的故事？:我想試試看！:我現在有點忙...")) {
+		case 1:
+			mes "[發行商]";
+			mes "咦?！？你怎麼會不知道";
+			mes "桃太郎？難道米德加爾特沒有這個";
+			mes "故事嗎？？好吧...";
+			mes "讓我來告訴你這個故事。";
+			next;
+			mes "[發行商]";
+			mes "很久以前，有一對老夫妻。他們生活得很幸福，但卻沒有孩子。";
+			next;
+			mes "[發行商]";
+			mes "有一天，當老奶奶在洗衣服時，她發現了一顆巨大的";
+			mes "桃子。她把它切成兩半...";
+			mes "「砰！」裡面竟然有一個嬰兒！";
+			next;
+			mes "[發行商]";
+			mes "老爺爺和老奶奶嚇了一跳。";
+			mes "他們決定收養那個嬰兒，";
+			mes "並給予他滿滿的愛...";
+			next;
+			mes "[發行商]";
+			mes "那個嬰兒長得飛快，就像「傑克與魔豆」裡的豌豆樹一樣，幾天內就變成了一個強壯的男孩。";
+			mes " ";
+			next;
+			mes "[發行商]";
+			mes "那個男孩的名字就是...";
+			mes "《桃太郎》！！！";
+			mes "桃太郎踏上了旅程，去消滅";
+			mes "那些騷擾村民的土人。";
+			next;
+			mes "[發行商]";
+			mes "他與";
+			mes "^3163FF溜溜猴、大嘴鳥和沙漠之狼^000000";
+			mes "成為了朋友，並消滅了所有的土人。從此他與老夫妻過著幸福快樂的日子。";
+			next;
+			mes "[發行商]";
+			mes "覺得如何？";
+			mes "很棒吧？";
+			mes "這可是賣了一百萬冊的故事呢！";
+			close;
+		case 2:
+			if (BaseLevel > 29) {
+				mes "[發行商]";
+				mes "耶——！你看起來很興奮！";
+				mes "你很快就可以出發了。";
+				mes "請填寫這張報名表。";
+				next;
+				mes "[發行商]";
+				mes "....................";
+				mes "......嗯.....讓我看看.....";
+				mes ".............很好！";
+				mes "那麼！";
+				mes "開始囉???！！！！！！！！！";
+				mes "《桃太郎體驗之旅》?！";
+				next;
+				warp "ama_test",52,35;
+				end;
+			}
+			mes "[發行商]";
+			mes "嗯?";
+			mes "你為什麼不多練練";
+			mes "再來呢？";
+			close;
+		case 3:
+			mes "[發行商]";
+			mes "咦？";
+			mes "...但是有很棒的獎勵在等著你喔...";
+			close;
+		}
+	}
+	else if (event_momo == 4) {
+		mes "[發行商]";
+		mes "啊?天氣真好！";
+		mes "這真是適合閱讀的完美天氣。";
+		close;
+	}
+	else if (event_momo > 1) {
+		mes "[發行商]";
+		mes "感覺如何？好玩嗎？";
+		mes "希望你在體驗之旅中";
+		mes "玩得開心。";
+		mes " ";
+		mes " ";
+		next;
+		mes "[發行商]";
+		mes "這是給你的獎勵。";
+		mes "請繼續享受故事吧?";
+		mes " ";
+		set .@event_momo, event_momo;
+		set event_momo,4;
+		completequest 8128;
+		completequest 8129;
+		completequest 8130;
+		if (.@event_momo == 3) {
+			set .@gift_1,rand(1,10);
+			if (.@gift_1 == 1) {
+				getitem 659,1; //Heart_Of_Her
+			}
+			if (.@gift_1 == 2) {
+				getitem 633,1; //Baked_Yam
+			}
+			if (.@gift_1 == 3) {
+				getitem 634,1; //Tropical_Banana
+			}
+			if (.@gift_1 == 4) {
+				getitem 639,1; //Armlet_Of_Obedience
+			}
+			if (.@gift_1 == 5) {
+				getitem 636,1; //No_Recipient
+			}
+			if (.@gift_1 == 6) {
+				getitem 628,1; //Well_Dried_Bone
+			}
+			if (.@gift_1 == 7) {
+				getitem 637,1; //Old_Broom
+			}
+			if (.@gift_1 == 8) {
+				getitem 635,1; //Horror_Of_Tribe
+			}
+			if (.@gift_1 == 9) {
+				getitem 626,1; //Monster_Juice
+			}
+			if (.@gift_1 == 10) {
+				getitem 641,1; //Contracts_In_Shadow
+			}
+		}
+		else {
+			set .@gift_2,rand(1,10);
+			if (.@gift_2 == 1) {
+				getitem 622,1; //Rainbow_Carrot
+			}
+			if (.@gift_2 == 2) {
+				getitem 627,1; //Sweet_Milk
+			}
+			if (.@gift_2 == 3) {
+				getitem 629,1; //Singing_Flower
+			}
+			if (.@gift_2 == 4) {
+				getitem 632,1; //Fatty_Chubby_Earthworm
+			}
+			if (.@gift_2 == 5) {
+				getitem 623,1; //Earthworm_The_Dude
+			}
+			if (.@gift_2 == 6) {
+				getitem 619,1; //Unripe_Apple
+			}
+			if (.@gift_2 == 7) {
+				getitem 621,1; //Bitter_Herb
+			}
+			if (.@gift_2 == 8) {
+				getitem 620,1; //Orange_Juice
+			}
+			if (.@gift_2 == 9) {
+				getitem 625,1; //Lusty_Iron
+			}
+			if (.@gift_2 == 10) {
+				getitem 624,1; //Rotten_Fish
+			}
+		}
+		close;
+	}
+}
+
+ama_test,52,44,3	script	助手#ama	109,{
+	if (event_momo == 0) {
+		mes "[智史]";
+		mes "歡迎來到《桃太郎體驗之旅》";
+		mes " ";
+		next;
+		mes "[智史]";
+		mes "我是負責《桃太郎體驗之旅》等候室的智史。";
+		next;
+		mes "[智史]";
+		mes "我原本在出版社工作，但體驗之旅人手不足...";
+		mes "但在這裡工作好多了！";
+		mes "現在我只要看著大家努力完成任務就好。嘿嘿嘿?";
+		next;
+		mes "[智史]";
+		mes "................";
+		mes "開玩笑的";
+		mes "*擦汗*";
+		next;
+		mes "[智史]";
+		mes "那麼，讓我來說明一下";
+		mes "體驗之旅的規則。";
+		mes " ";
+		next;
+		mes "[智史]";
+		mes "首先...你聽發行商說過";
+		mes "這個故事了嗎？";
+		next;
+		if (select("有:沒有") == 1) {
+			mes "[智史]";
+			mes "呵呵...很好。";
+			mes "桃太郎的故事是我們的";
+			mes "驕傲。這是史上最棒的故事。";
+			mes "哈哈哈哈！！！";
+			next;
+			mes "[智史]";
+			mes "...咳咳。";
+			next;
+			mes "[智史]";
+			mes "體驗之旅很簡單。";
+			mes "進去然後勇敢地";
+			mes "消滅土人！！！";
+			mes "就像桃太郎一樣！！！";
+			mes "懂嗎？勇敢地！！！";
+			next;
+			mes "[智史]";
+			mes "此外，有三件事";
+			mes "你需要知道。";
+			next;
+			mes "[智史]";
+			mes "第一....";
+			mes "一旦你通關了體驗之旅，就不能再回來了。請記住這點。";
+			next;
+			mes "[智史]";
+			mes "第二....";
+			mes "體驗之旅內禁止攜帶";
+			mes "寵物。";
+			mes "如果你帶著寵物，";
+			mes "請將牠變回寵物蛋狀態。";
+			next;
+			mes "[智史]";
+			mes "最後...";
+			mes "每個人在體驗之旅的";
+			mes "時間限制為6分鐘。";
+			next;
+			mes "[智史]";
+			mes "那麼，請在";
+			mes "等候室等待輪到你。";
+			mes "祝你戰鬥順利！！";
+			close;
+		}
+		mes "[助手]";
+		mes "咦？你不能";
+		mes "跳過故事";
+		mes "就參加體驗之旅！！";
+		mes "身為桃太郎的粉絲，";
+		mes "我絕不允許你這麼做！！！";
+		next;
+		mes "[助手]";
+		mes "請去聽發行商講述";
+		mes "這個故事。";
+		mes "謝謝。";
+		mes "掰??";
+		next;
+		warp "amatsu",223,230;
+		end;
+	}
+	else if (event_momo == 1) {
+		mes "[智史]";
+		mes "天啊...你還好嗎？";
+		mes "我以為這很有趣，但也許這對你來說太難了？";
+		next;
+		mes "[智史]";
+		mes "現在你打算怎麼辦？";
+		mes "想再進去一次嗎？";
+		next;
+		if (select("想:不想，我想回去") == 1) {
+			mes "[智史]";
+			mes "你付出的努力越多，勝利的果實就越甜美。";
+			mes "祝你戰鬥順利！";
+			close;
+		}
+		mes "[智史]";
+		mes "嗯，看來現實的情況是，你實在無法勝任桃太郎的角色...";
+		mes "不過，別灰心。";
+		next;
+		mes "[智史]";
+		mes "我想你已經從體驗之旅中獲得了足夠的經驗。";
+		next;
+		mes "[助手]";
+		mes "如果你聽到好的故事，";
+		mes "請聯繫我們";
+		mes "出版社。";
+		mes "再見?";
+		close2;
+		percentheal 100,0;
+		set event_momo,0;
+		warp "amatsu",223,230;
+		end;
+	}
+	else if (event_momo == 2) {
+		mes "[智史]";
+		mes "嗚呼?恭喜！！";
+		mes "你太棒了！";
+		next;
+		mes "[智史]";
+		mes "是時候說再見了。";
+		mes "如果你聽到好的故事，";
+		mes "請聯繫我們";
+		mes "出版社。";
+		mes "再見?";
+		close2;
+		percentheal 100,0;
+		warp "amatsu",223,230;
+		end;
+	}
+	mes "[智史]";
+	mes "嗚呼?恭喜！！";
+	mes "你太棒了！！";
+	mes "雖然你最後的收尾有點弱...";
+	next;
+	mes "[智史]";
+	mes "是時候說再見了。";
+	mes "如果你聽到好的故事，";
+	mes "請聯繫我們";
+	mes "出版社。";
+	mes "再見?";
+	close2;
+	warp "amatsu",223,230;
+	end;
+
+OnInit:
+	waitingroom "等候室.",10,"助手#ama::OnStartArena",1;
+	enablewaitingroomevent "助手#ama";
+	end;
+
+OnStartArena:
+	disablenpc "教練#ama";
+	donpcevent "阿姆特#ama::OnReset";
+	donpcevent "土人#ez::OnReset";
+	donpcevent "土人#hd::OnReset";
+	enablenpc "老奶奶#ama1";
+	enablenpc "老爺爺#ama";
+	warpwaitingpc "ama_test",50,83;
+	donpcevent "計時器#ama::OnEnable";
+	disablewaitingroomevent "助手#ama";
+	end;
+
+OnReset:
+	enablewaitingroomevent "助手#ama";
+	end;
+}
+
+ama_test,34,25,0	script	小花#ama	-1,2,2,{
+OnTouch_:
+	mes "[小花]";
+	mes ".......嘻嘻嘻嘻";
+	mes ".....................";
+	next;
+	mes "[小花]";
+	mes "..嘻嘻嘻嘻嘻嘻嘻嘻";
+	mes "..........................";
+	next;
+	mes "[小花]";
+	mes "......................";
+	mes "...想要紅色的衛生紙....";
+	mes ".....還是藍色的衛生紙.... ";
+	close;
+}
+
+ama_test,49,93,4	script	老爺爺#ama	766,{
+	end;
+
+OnInit:
+	disablenpc "老爺爺#ama";
+	end;
+}
+
+ama_test,50,93,4	script	老奶奶#ama1	761,10,10,{
+	end;
+
+OnInit:
+	disablenpc "老奶奶#ama1";
+	end;
+
+OnTouch_:
+	mes "[老奶奶]";
+	mes "啊啊啊！！！";
+	next;
+	mes "[老奶奶]";
+	mes "老伴！！有人盜了我的帳號，偷走了我的裝備！！ ";
+	next;
+	mes "[老爺爺]";
+	mes "嗯。村長說土人靠著盜用別人的帳號賺了兩千萬 Zeny...";
+	next;
+	setquest 8127;
+	mes "[老奶奶]";
+	mes "不????！！！ ";
+	next;
+	mes "[老爺爺]";
+	mes "....咦，我好像在哪聽過這句話....... ";
+	next;
+	mes "[老爺爺]";
+	mes "總而言之，桃太郎...";
+	next;
+	mes "[老爺爺]";
+	mes "如你所知，既然我們村民把時間都花在坐著聊天上，";
+	mes "我們等級太低打不贏土人，所以...拜託你幫我們搞定。 ";
+	next;
+	mes "[老奶奶]";
+	mes "桃太郎...";
+	mes "我原本很想給你一瓶我親手做的";
+	mes "^3163FF世界上最美味的紅色藥水^000000 ...但是...";
+	mes ".....我製作失敗了 ....";
+	next;
+	mes "[老奶奶]";
+	mes "...對不起。我早該練等了...*嗚嗚*";
+	next;
+	mes "[老奶奶 & 老爺爺]";
+	mes "所以...幫我這個忙吧，孩子?";
+	close2;
+	set event_momo,1;
+	if (countitem(9010) > 0 || countitem(9005) > 0 || countitem(9016) > 0) {
+		disablenpc "老爺爺#ama";
+		disablenpc "老奶奶#ama1";
+		donpcevent "土人#ez::OnEnable";
+	}
+	else {
+		disablenpc "老爺爺#ama";
+		disablenpc "老奶奶#ama1";
+		donpcevent "土人#hd::OnEnable";
+	}
+	end;
+}
+
+ama_test,34,15,0	script	土人#ez	-1,{
+OnInit:
+	disablenpc "土人#ez";
+	end;
+
+OnEnable:
+	enablenpc "土人#ez";
+	set .MyMobs,9;
+	monster "ama_test",45,95,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",45,99,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",47,101,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",51,101,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",55,101,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",55,97,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",55,93,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",53,91,"土人",1110,1,"土人#ez::OnMyMobDead";
+	monster "ama_test",49,91,"土人",1110,1,"土人#ez::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "ama_test","土人#ez::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "ama_test","我...我會再回來的~~~~！！！",bc_map;
+		enablenpc "教練#ama";
+		set event_momo,2;
+	}
+	else {
+		set .@dokebi_tel,rand(1,4);
+		if (.@dokebi_tel == 1) {
+			mapannounce "ama_test","！！有人偷襲！！！！快跑！！",bc_map;
+		}
+		else if (.@dokebi_tel == 2) {
+			mapannounce "ama_test"," 噢，好痛！！！ ",bc_map;
+		}
+		else if (.@dokebi_tel == 3) {
+			mapannounce "ama_test"," 但我根本沒做什麼壞事啊~！！",bc_map;
+		}
+		else if (.@dokebi_tel == 4) {
+			mapannounce "ama_test"," 對不起~~ 哇啊啊~~ ",bc_map;
+		}
+	}
+	end;
+}
+
+ama_test,34,16,0	script	土人#hd	-1,{
+OnInit:
+	disablenpc "土人#hd";
+	end;
+
+OnEnable:
+	enablenpc "土人#hd";
+	set .MyMobs,9;
+	monster "ama_test",45,95,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",45,99,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",47,101,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",51,101,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",55,101,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",55,97,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",55,93,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",53,91,"土人",1110,1,"土人#hd::OnMyMobDead";
+	monster "ama_test",49,91,"土人",1110,1,"土人#hd::OnMyMobDead";
+	end;
+OnReset:
+	killmonster "ama_test","土人#hd::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "ama_test"," 我會再回來的~~~~！！！",bc_map;
+		enablenpc "教練#ama";
+		set event_momo,2;
+	}
+	else {
+		set .@dokebi_tel,rand(1,4);
+		if (.@dokebi_tel == 1) {
+			mapannounce "ama_test","！！有人偷襲！！！！快跑！！",bc_map;
+		}
+		if (.@dokebi_tel == 2) {
+			mapannounce "ama_test"," 噢，好痛！！！ ",bc_map;
+		}
+		if (.@dokebi_tel == 3) {
+			mapannounce "ama_test"," 但我根本沒做什麼壞事啊~！",bc_map;
+		}
+		if (.@dokebi_tel == 4) {
+			mapannounce "ama_test"," 對不起~~！哇啊啊~~ ",bc_map;
+		}
+	}
+	end;
+}
+
+ama_test,50,100,3	script	教練#ama	762,15,15,{
+	mes "[教練]";
+	mes "呵呵?很好。";
+	mes "我一直在貴賓室觀察你。你真是不簡單。";
+	mes "我真的驚呆了。";
+	next;
+	mes "[教練]";
+	mes "我還以為你真的是";
+	mes "故事裡的桃太郎呢！";
+	mes "呵呵呵呵...";
+	next;
+	switch(select("哎呀呀。這沒什麼啦?:太無聊了。")) {
+	case 1:
+		mes "[教練]";
+		mes "...呵呵呵..";
+		mes "別太得意忘形。";
+		mes "當我像你這麼年輕的時候，";
+		mes "我用一根小指頭就能捏死";
+		mes "土人了。呵呵呵?";
+		next;
+		mes "[教練]";
+		mes "..............";
+		mes "...別用那種眼神看著我。";
+		mes "我開玩笑的啦。咳咳。";
+		next;
+		changequest 8127,8128;
+		mes "[教練]";
+		mes "好了，桃太郎的故事結束了。";
+		mes "你可以去跟一開始見到的發行商小姐說話，領取你的獎勵。";
+		next;
+		mes "[教練]";
+		mes "希望你未來也能保持這份自信。";
+		mes "再會了。";
+		close2;
+		donpcevent "計時器#ama::OnDisable";
+		warp "amatsu",223,230;
+		disablenpc "教練#ama";
+		donpcevent "助手#ama::OnReset";
+		end;
+	case 2:
+		mes "[教練]";
+		mes ".....!!!!!!";
+		mes "....呵呵呵呵..";
+		mes "你還挺有趣的嘛。";
+		mes "好吧，熱血的傢伙。";
+		mes "你想聽聽我的提議嗎？";
+		next;
+		changequest 8127,8129;
+		mes "[教練]";
+		mes "這時候我本該送你回去的...但是！";
+		mes "我真的很想知道";
+		mes "你的能耐。嘿嘿?";
+		mes "呵呵呵?";
+		next;
+		mes "[教練]";
+		mes "所以，我給你一個機會。";
+		mes "但如果你失敗了，";
+		mes "^3163FF你就無法再挑戰了。^000000";
+		mes "而且，這個任務會非常困難。";
+		next;
+		if (select("不了..我不用了。:放馬過來吧，老頭！") == 1) {
+			erasequest 8129;
+			mes "[教練]";
+			mes "呵呵?我了解...";
+			mes "剛經歷過一場戰鬥，你一定累壞了吧。這本來會是一場史詩般的戰鬥的...";
+			next;
+			mes "[教練]";
+			mes "好了，桃太郎的故事結束了。";
+			mes "你可以去跟";
+			mes "一開始說話的";
+			mes "發行商小姐領取你的獎勵。";
+			next;
+			mes "[教練]";
+			mes "希望你未來也能保持這份自信。";
+			mes "再會了。";
+			next;
+			setquest 8128;
+			warp "amatsu",223,230;
+			disablenpc "教練#ama";
+			donpcevent "計時器#ama::OnDisable";
+			donpcevent "助手#ama::OnReset";
+			end;
+		}
+		mes "[教練]";
+		mes "呵呵呵?我喜歡你的態度。";
+		mes "那麼，這是最後一場戰鬥了！";
+		mes "讓我看看你的本事吧。";
+		mes "我很期待呢。";
+		percentheal 70,0;
+		disablenpc "教練#ama";
+		donpcevent "阿姆特#ama::OnEnable";
+		close;
+	}
+
+OnInit:
+	disablenpc "教練#ama";
+	end;
+
+OnTouch_:
+	mes "[教練]";
+	mes "蹦！碰！轟！！！";
+	mes "搭啦???！";
+	close;
+}
+
+ama_test,34,17,0	script	阿姆特#ama	-1,{
+OnInit:
+	disablenpc "阿姆特#ama";
+	end;
+
+OnEnable:
+	enablenpc "阿姆特#ama";
+	set .MyMobs,3;
+	monster "ama_test",35,102,"阿姆特",1301,1,"阿姆特#ama::OnMyMobDead";
+	monster "ama_test",40,91,"阿姆特",1301,1,"阿姆特#ama::OnMyMobDead";
+	monster "ama_test",56,108,"阿姆特",1301,1,"阿姆特#ama::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "ama_test","阿姆特#ama::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		enablenpc "教練#after";
+	}
+	else {
+		set .@am_mut_tel,rand(1,3);
+		if (.@am_mut_tel == 1) {
+			mapannounce "ama_test"," 呃啊！！我、我失誤了...！",bc_map;
+		}
+		if (.@am_mut_tel == 2) {
+			mapannounce "ama_test"," 呃...我怎麼可能會輸？！... ",bc_map;
+		}
+		if (.@am_mut_tel == 3) {
+			mapannounce "ama_test"," 媽咪??！！！",bc_map;
+		}
+	}
+	end;
+}
+
+ama_test,50,100,3	script	教練#after	762,5,5,{
+	end;
+OnInit:
+	disablenpc "教練#after";
+	end;
+
+OnTouch_:
+	mes "[教練]";
+	mes "( 拍手- 拍手- 拍手- )";
+	next;
+	mes "[教練]";
+	mes "呵呵呵?你真不簡單。";
+	mes "你的身手很俐落，小伙子。";
+	mes "我承認你的實力。";
+	next;
+	mes "[教練]";
+	mes "好了，時間到了，所以...";
+	mes "讓我帶你找出口吧。";
+	mes "我很享受這段時間...";
+	mes "別忘了去領你的獎勵?";
+	close2;
+	set event_momo,3;
+	changequest 8129,8130;
+	warp "amatsu",223,230;
+	disablenpc "教練#after";
+	donpcevent "計時器#ama::OnDisable";
+	donpcevent "助手#ama::OnReset";
+	end;
+}
+
+ama_test,34,18,0	script	計時器#ama	-1,{
+OnInit:
+	disablenpc "計時器#ama";
+	end;
+
+OnEnable:
+	enablenpc "計時器#ama";
+	initnpctimer;
+	end;
+OnDisable:
+	stopnpctimer;
+	end;
+
+OnTimer1000:
+	mapannounce "ama_test"," 計時器已啟動。你有 6 分鐘的時間。請在時限內殲滅怪物！ ",bc_map;
+	end;
+
+OnTimer181000:
+	mapannounce "ama_test"," 剩下 3 分鐘。 ",bc_map;
+	end;
+
+OnTimer301000:
+	mapannounce "ama_test"," 剩下 1 分鐘。 ",bc_map;
+	end;
+OnTimer361000:
+	mapannounce "ama_test","嗶- 嗶- 嗶- 時間到。",bc_map;
+	end;
+
+OnTimer361500:
+	enablenpc "返回傳送#ama";
+	end;
+
+OnTimer362000:
+	disablenpc "返回傳送#ama";
+	end;
+
+OnTimer362500:
+	donpcevent "助手#ama::OnReset";
+	donpcevent "計時器#ama::OnDisable";
+	end;
+}
+
+ama_test,50,100,0	script	返回傳送#ama	-1,25,25,{
+OnInit:
+	disablenpc "返回傳送#ama";
+	end;
+
+OnTouch_:
+	warp "amatsu",115,95;
+	end;
+}
+
+// Sushi Quest :: japan_sushi
+//============================================================ 
+ama_in01,162,17,1	script	壽司師傅#ama	765,{
+	if (MaxWeight - Weight < 5000) {
+		mes "[瑪古瑪古]";
+		mes "嘿。你看起來好重。";
+		mes "你走路不吃力嗎？";
+		mes "不好意思，我的店裡沒有空間";
+		mes "讓你放東西。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "把一些東西存到別的地方吧。";
+		mes "你幹嘛帶這麼多東西...？";
+		mes "呵呵呵...";
+		close;
+	}
+	else if (ama_sushi == 4) {
+		mes "[瑪古瑪古]";
+		mes "每天練習切生魚片，";
+		mes "你就會成為壽司大師。";
+		mes "所以別在這裡浪費時間了，去學習你擅長的事情吧。";
+		mes " ";
+		close;
+	}
+	else if (fish_r == 1) {
+		if (countitem(529) > 9) {
+			mes "[瑪古瑪古]";
+			mes "喔！太感謝你了。";
+			mes "真是及時雨！";
+			mes "我正需要這些來做甜點。";
+			next;
+			mes "[瑪古瑪古]";
+			mes "謝謝。這點心意不成敬意，";
+			mes "我會送你本店的特製料理「生魚片」作為回報。";
+			next;
+			set fish_r,0;
+			erasequest 10036;
+			delitem 529,10; //Candy
+			getitem 544,15; //Fish_Slice
+			mes "[瑪古瑪古]";
+			mes "這裡是 15 份生魚片。";
+			mes "請和你的朋友一起享用吧。";
+			mes "如果你想念天津町料理的美味，隨時歡迎再來。";
+			close;
+		}
+		mes "[瑪古瑪古]";
+		mes "天啊，你沒有準備";
+		mes "我要的東西...";
+		mes "別忘了我交代的。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "10 顆^0000FF糖果^000000";
+		mes "你沒忘記吧？";
+		mes "請把這些材料帶來給我。";
+		close;
+	}
+	else if (fish_r == 2) {
+		if (countitem(964) > 9) {
+			mes "[瑪古瑪古]";
+			mes "喔！太感謝你了。";
+			mes "真是及時雨！";
+			mes "我需要這些來做醬汁。";
+			next;
+			mes "[瑪古瑪古]";
+			mes "謝謝。這點心意不成敬意，";
+			mes "我會送你兩份壽司作為回報。";
+			next;
+			set fish_r,0;
+			erasequest 10037;
+			delitem 964,10; //Crap_Shell
+			getitem 551,20; //Shusi
+			mes "[瑪古瑪古]";
+			mes "和你的朋友及";
+			mes "家人分享吧。";
+			mes "歡迎下次光臨。";
+			close;
+		}
+		mes "[瑪古瑪古]";
+		mes "天啊，你沒有準備";
+		mes "我要的東西...";
+		mes "別忘了我交代的。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "10 個^0000FF螃蟹外殼^000000...";
+		mes "你沒忘記吧？";
+		mes "請把這些材料帶來給我。";
+		close;
+	}
+	else if (fish_r == 3) {
+		if (countitem(961) > 9) {
+			mes "[瑪古瑪古]";
+			mes "喔！太感謝你了。";
+			mes "真是及時雨！";
+			mes "我正在準備開胃菜...";
+			next;
+			mes "[瑪古瑪古]";
+			mes "謝謝。這點心意不成敬意，";
+			mes "我會送你幾份壽司作為回報。";
+			next;
+			set fish_r,0;
+			erasequest 10038;
+			delitem 961,10; //Conch
+			getitem 551,30; //Shusi
+			mes "[瑪古瑪古]";
+			mes "這些是三人份的，";
+			mes "和你的朋友分享吧。";
+			mes "如果你還想幫忙，隨時歡迎再來。";
+			close;
+		}
+		mes "[瑪古瑪古]";
+		mes "天啊，你沒有準備";
+		mes "我要的東西...";
+		mes "別忘了我交代的。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "10 個^0000FF海螺^000000";
+		mes "你沒忘記吧？";
+		mes "請把這些材料帶來給我。";
+		close;
+	}
+	else if (fish_r == 4) {
+		if (countitem(1023) > 9) {
+			mes "[瑪古瑪古]";
+			mes "喔！太感謝你了。";
+			mes "真是及時雨！";
+			mes "我正在裝飾拼盤。";
+			next;
+			mes "[瑪古瑪古]";
+			mes "謝謝。這點心意不成敬意，";
+			mes "我會送你大量的食物作為回報。";
+			next;
+			set fish_r,0;
+			erasequest 10039;
+			delitem 1023,10;
+			//Fish_Tail
+			getitem 544,20; //Fish_Slice
+			getitem 551,30; //Shusi
+			mes "[瑪古瑪古]";
+			mes "你可以用這些食物餵飽";
+			mes "你的公會。";
+			mes "帶個朋友一起來吧。";
+			close;
+		}
+		mes "[瑪古瑪古]";
+		mes "天啊，你沒有準備";
+		mes "我要的東西...";
+		mes "別忘了我交代的。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "10 個^0000FF魚尾^000000";
+		mes "你沒忘記吧？";
+		mes "請把這些材料帶來給我。";
+		close;
+	}
+	else if (fish_r == 5) {
+		if (countitem(736) > 0) {
+			mes "[瑪古瑪古]";
+			mes "喔！太感謝你了。";
+			mes "真是及時雨！";
+			mes "我沒有白色的拼盤了。";
+			next;
+			mes "[瑪古瑪古]";
+			mes "謝謝。這點心意不成敬意，";
+			mes "我會送你兩份壽司作為回報。";
+			next;
+			delitem 736,1;
+			//White_Platter
+			set fish_r,0;
+			erasequest 10040;
+			getitem 551,20; //Shusi
+			mes "[瑪古瑪古]";
+			mes "和你的朋友及";
+			mes "家人分享吧。";
+			mes "歡迎下次光臨。";
+			close;
+		}
+		mes "[瑪古瑪古]";
+		mes "天啊，你沒有準備";
+		mes "我要的東西...";
+		mes "別忘了我交代的。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "我需要一個白色的拼盤：";
+		mes "1 個^0000FF瓷盤^000000";
+		mes "你沒忘記吧？";
+		mes "幫我帶過來，好嗎？";
+		close;
+	}
+	else if (fish_r == 6) {
+		if (countitem(950) > 99) {
+			if (ama_sushi == 2) {
+				mes "[瑪古瑪古]";
+				mes "..............................";
+				next;
+				mes "[瑪古瑪古]";
+				mes "你真是個好人。";
+				mes "你把我要求的東西";
+				mes "都帶來了...";
+				next;
+				mes "[瑪古瑪古]";
+				mes "你不是我遇到過的第一個外國人。";
+				mes "天津町的遊客越來越多了。";
+				mes "我只是想考驗考驗你。";
+				mes " ";
+				next;
+				mes "[瑪古瑪古]";
+				mes "你的工作雖然只是跑腿，";
+				mes "但我希望能了解...";
+				mes "你是如何全心投入，";
+				mes "面對工作有多認真且永不放棄。";
+				next;
+				mes "[瑪古瑪古]";
+				mes "我當時在想，";
+				mes "『如果真有這樣的人，";
+				mes "我願意將我畢生所學的烹飪技巧全部傳授給他』";
+				next;
+				mes "[瑪古瑪古]";
+				mes "然後.....";
+				mes "你...";
+				mes "你就是那個人。";
+				next;
+				mes "[瑪古瑪古]";
+				mes "我老了。沒人知道我還能握這把菜刀多久。你被選為繼承我廚藝的人選...";
+				mes " ";
+				next;
+				delitem 950,100; //Heart_Of_Mermaid
+				set ama_sushi,4;
+				completequest 10041;
+				getitem 1144,1; //Sasimi
+				mes "[瑪古瑪古]";
+				mes "來，收下我的菜刀。";
+				mes "從今以後，用這把菜刀製作頂級料理吧。";
+				mes "...去學習怎麼切生魚片。";
+				mes " ";
+				mes " ";
+				next;
+				mes "[瑪古瑪古]";
+				mes "從今以後，我不會再要求你幫忙並拿生魚片做為回報了....";
+				mes "用那把菜刀練習你的技巧，並教導大陸上的人們享受高級美食的樂趣...";
+				close;
+			}
+			else {
+				mes "[瑪古瑪古]";
+				mes "哇...這真的是人魚之心。";
+				mes "傳說中可以在另一塊大陸";
+				mes "找到這東西的傳聞竟然是真的...";
+				mes " ";
+				next;
+				mes "[瑪古瑪古]";
+				mes "收集這些一定很辛苦吧...那麼。";
+				mes "今天，我要用我所有的";
+				mes "食材為你做一道特別的料理！";
+				next;
+				mes "[瑪古瑪古]";
+				mes "給我一點時間...";
+				mes "我將向你展示我^0000FF真正的廚藝^000000。";
+				next;
+				delitem 950,20; //Heart_Of_Mermaid
+				getitem 551,20; //Shusi
+				mes "[瑪古瑪古]";
+				mes "先嚐嚐這個。";
+				mes "用最新鮮的食材做的。";
+				next;
+				delitem 950,20; //Heart_Of_Mermaid
+				getitem 544,20; //Fish_Slice
+				mes "[瑪古瑪古]";
+				mes "也嚐嚐這個。";
+				mes "我店裡的生魚片絕對是極品！";
+				next;
+				delitem 950,20; //Heart_Of_Mermaid
+				getitem 551,20; //Shusi
+				mes "[瑪古瑪古]";
+				mes "再吃點。別客氣...！";
+				mes "好吃嗎？嗯？很好吃對吧？";
+				next;
+				delitem 950,20; //Heart_Of_Mermaid
+				getitem 544,20;
+				//Fish_Slice
+				mes "[瑪古瑪古]";
+				mes "哈哈?！還沒完呢！";
+				mes "沒關係，多吃點！";
+				next;
+				delitem 950,20; //Heart_Of_Mermaid
+				getitem 544,10; //Fish_Slice
+				getitem 551,10;
+				//Shusi
+				mes "[瑪古瑪古]";
+				mes "剩下的打包帶走吧。";
+				mes "你看起來吃得很撐了...";
+				mes "把剩下的分給你的朋友和家人吧。";
+				next;
+				set ama_sushi,ama_sushi+1;
+				set fish_r,0;
+				erasequest 10041;
+				mes "[瑪古瑪古]";
+				mes "今天真是太感謝你了！哈哈！";
+				mes "如果你還想幫忙，隨時歡迎再來。保重...！！！";
+				close;
+			}
+		}
+		mes "[瑪古瑪古]";
+		mes "天啊，你沒有準備";
+		mes "我要的東西...";
+		mes "別忘了我交代的。";
+		next;
+		mes "[瑪古瑪古]";
+		mes "100 顆^0000FF人魚之心^000000，好嗎？";
+		mes "你沒忘記吧？";
+		mes "請把這些材料帶來給我。";
+		close;
+	}
+	mes "[瑪古瑪古]";
+	mes "我的天啊?";
+	mes "這下傷腦筋了.....";
+	mes "客人這麼多，但我卻拿不到我需要的所有食材...";
+	next;
+	mes "[瑪古瑪古]";
+	mes "這太糟糕了...";
+	mes "我的一些客人可能沒機會吃到";
+	mes "美味的天津町料理了...";
+	mes " ";
+	next;
+	mes "[瑪古瑪古]";
+	mes "哎呀呀。你是客人嗎？";
+	mes "歡迎光臨。一如既往，我的店";
+	mes "非常注重生魚片的新鮮度。";
+	mes "你來這裡有什麼事嗎...？";
+	next;
+	switch(select("我想買壽司:我想買生魚片:需要幫忙嗎？:繼續保持好表現吧")) {
+	case 1:
+		mes "[瑪古瑪古]";
+		mes "沒問題...！要幾個？";
+		mes "一份壽司是 700z。如果你";
+		mes "只要 1 個壽司，那就是 74z。";
+		mes "如果想要更多，跟我說。";
+		next;
+		switch(select("700z 一份！:74z 一個！:我晚點再試試")) {
+		case 1:
+			if (Zeny < 700) {
+				mes "[瑪古瑪古]";
+				mes "天啊，你的錢不夠。";
+				mes "如果你想吃美味的生魚片，最好多帶點錢來。";
+				close;
+			}
+			set Zeny, Zeny-700;
+			getitem 551,10; //Shusi
+			mes "[瑪古瑪古]";
+			mes "給你。如果你喜歡這個味道，請再多點一些。";
+			close;
+		case 2:
+			if (Zeny < 74) {
+				mes "[瑪古瑪古]";
+				mes "天啊，你的錢不夠。";
+				mes "如果你想吃美味的壽司，";
+				mes "最好多帶點錢來。";
+				close;
+			}
+			set Zeny, Zeny-74;
+			getitem 551,1;
+			//Shusi
+			mes "[瑪古瑪古]";
+			mes "給你。如果你喜歡這個味道，請再多點一些。";
+			close;
+		case 3:
+			mes "[瑪古瑪古]";
+			mes "隨你便。我的壽司可是";
+			mes "極品！口感和新鮮度";
+			mes "都是世界第一。";
+			mes "如果有時間，來嚐嚐我的壽司吧。";
+			close;
+		}
+	case 2:
+		mes "[瑪古瑪古]";
+		mes "沒問題...！要幾個？";
+		mes "一份生魚片是 350z。";
+		mes "1 份生魚片是 37z。";
+		mes "如果想要更多，跟我說。";
+		next;
+		switch(select("350z 一份！:37z 一個！:我晚點再試試")) {
+		case 1:
+			if (Zeny < 350) {
+				mes "[瑪古瑪古]";
+				mes "天啊，你的錢不夠。";
+				mes "如果你想吃美味的生魚片，最好多帶點錢來。";
+				close;
+			}
+			set Zeny, Zeny-350;
+			getitem 544,10; //Fish_Slice
+			mes "[瑪古瑪古]";
+			mes "給你。如果你喜歡這個味道，請再多點一些。";
+			close;
+		case 2:
+			if (Zeny < 37) {
+				mes "[瑪古瑪古]";
+				mes "天啊，你的錢不夠。";
+				mes "如果你想吃美味的生魚片，最好多帶點錢來。";
+				close;
+			}
+			set Zeny, Zeny-37;
+			getitem 544,1;
+			//Fish_Slice
+			mes "[瑪古瑪古]";
+			mes "給你。如果你喜歡這個味道，請再多點一些。";
+			close;
+		case 3:
+			mes "[瑪古瑪古]";
+			mes "隨你便。我的生魚片可是";
+			mes "極品！口感和新鮮度";
+			mes "都是世界第一。";
+			mes "如果有時間，來嚐嚐我的生魚片吧。";
+			close;
+		}
+	case 3:
+		if (BaseJob == Job_Novice) {
+			mes "[瑪古瑪古]";
+			mes "哈哈?你才是那個需要";
+			mes "幫忙的人！等你能夠";
+			mes "照顧好自己再來幫別人吧。";
+			mes " ";
+			close;
+		}
+		else {
+			mes "[瑪古瑪古]";
+			mes "能幫忙就太好了?！！";
+			mes "我正擔心我們的食材老是";
+			mes "用光...";
+			mes "你可以幫我個忙嗎？";
+			mes "我會給你報酬的。";
+			next;
+			set .@fish_m1,rand(1,10);
+			if (.@fish_m1 == 1 || .@fish_m1 == 2) {
+				set fish_r,1;
+				setquest 10036;
+				mes "[瑪古瑪古]";
+				mes "我需要一些糖果來為客人";
+				mes "製作甜點。";
+				mes "幫我帶 ^0000FF10 顆糖果^000000。";
+				mes "這不難，對吧？";
+				mes " ";
+			}
+			else if (.@fish_m1 == 3 || .@fish_m1 == 4) {
+				set fish_r,2;
+				setquest 10037;
+				mes "[瑪古瑪古]";
+				mes "我需要一些螃蟹外殼來為";
+				mes "我的料理製作醬汁...";
+				mes "如果你幫我帶 ^0000FF10 個螃蟹外殼^000000，";
+				mes "我會給你報酬的。";
+				mes "好嗎？";
+			}
+			else if (.@fish_m1 == 5 || .@fish_m1 == 6) {
+				set fish_r,3;
+				setquest 10038;
+				mes "[瑪古瑪古]";
+				mes "我的海螺用光了。";
+				mes "我需要它來做開胃菜...";
+				mes "請幫我帶 ^0000FF10 個海螺^000000。";
+				mes "這附近很難找到海螺...";
+				mes "拜託幫我這個忙。";
+			}
+			else if (.@fish_m1 == 7 || .@fish_m1 == 8) {
+				set fish_r,4;
+				setquest 10039;
+				mes "[瑪古瑪古]";
+				mes "裝飾用的魚尾缺貨了。";
+				mes "這很緊急...";
+				mes "請幫我帶 ^0000FF10 個魚尾^000000。";
+				mes "當我急需的時候它們總是不見...";
+				mes "拜託幫我這個忙。";
+			}
+			else if (.@fish_m1 == 9) {
+				set fish_r,5;
+				setquest 10040;
+				mes "[瑪古瑪古]";
+				mes "我們少了一個用來盛";
+				mes "生魚片給客人的拼盤。";
+				mes "這太糟糕了...";
+				mes "你能幫我買個精美的瓷器^0000FF瓷盤^000000嗎？";
+				mes "我不能隨便找個地方放食物...";
+			}
+			else {
+				if (rand(1,10) == 1) {
+					set fish_r,6;
+					setquest 10041;
+					mes "[瑪古瑪古]";
+					mes "別問我為什麼...";
+					mes "但是，我需要一些特別的東西...";
+					mes "^0000FF100 顆人魚之心^000000.....";
+					mes "我知道這聽起來像是不可能的事，但這對我真的很重要...";
+					next;
+					mes "[瑪古瑪古]";
+					mes "不要問任何關於我請求的問題...";
+					mes "只要記住我想要的東西。";
+				}
+				else {
+					set fish_r,5;
+					setquest 10040;
+					mes "[瑪古瑪古]";
+					mes "我們少了一個用來盛";
+					mes "生魚片給客人的拼盤。";
+					mes "這太糟糕了...";
+					mes "你能幫我買個精美的瓷器^0000FF瓷盤^000000嗎？我不能隨便找個地方放食物...";
+				}
+			}
+			next;
+			mes "[瑪古瑪古]";
+			mes "那麼，祝你好運...";
+			mes "我會等你的。";
+			mes "別忘了我交代的...";
+			close;
+		}
+	case 4:
+		mes "[瑪古瑪古]";
+		mes "哈哈，只要你嚐過一次我生魚片的味道，你就永遠不會忘記。";
+		mes "如果有時間，來嚐嚐我的生魚片吧。";
+		mes " ";
+		close;
+	}
+}
+
+// Dungeon Quest :: japan_mono
+//============================================================ 
+amatsu,112,164,4	script	城門士兵#ama1	767,{
+	mes "[城門士兵]";
+	mes "這裡是偉大的宮殿，";
+	mes "東閣城。";
+	mes "當地居民禁止";
+	mes "進入...";
+	next;
+	mes "[城門士兵]";
+	mes "你的打扮看起來很面生。";
+	mes "你是從其他大陸來的嗎？";
+	mes "城主已經允許";
+	mes "旅客進入，所以你可以進去。";
+	mes " ";
+	close;
+}
+	
+amatsu,119,164,4	script	城門士兵#ama2	767,{
+	mes "[城門士兵]";
+	mes "你是從米德加爾特來的嗎？";
+	mes "歡迎來到天津町。";
+	mes "進去後可以去天守閣";
+	mes "拜訪我們的城主。";
+	mes " ";
+	next;
+	mes "[城門士兵]";
+	mes "他非常仁慈。";
+	mes "他在天津町投資了";
+	mes "各個領域，與其他大陸進行貿易也是他的主意。";
+	close;
+}
+	
+ama_in02,207,40,6	script	城門士兵#ama3	767,{
+	mes "[城門士兵]";
+	mes "歡迎。城主";
+	mes "特別允許來自";
+	mes "其他大陸的客人進入。";
+	next;
+	mes "[城門士兵]";
+	mes "四處看看，慢慢逛。";
+	mes "祝你玩得愉快。";
+	close;
+}
+	
+ama_in02,207,49,6	script	城門士兵#ama4	767,{
+	mes "[城門士兵]";
+	mes "城主是個非常好的人。";
+	mes "誰能想到我們的城鎮";
+	mes "曾經只是一個小村莊？";
+	next;
+	mes "[城門士兵]";
+	mes "我很感謝他僱用我。";
+	mes "這陣子，他似乎";
+	mes "心事重重。";
+	mes "最近他看起來相當憂鬱。";
+	mes " ";
+	close;
+}
+	
+amatsu,164,174,4	script	城門士兵#ama5	767,{
+	mes "[城門士兵]";
+	if (event_amatsu == 0) {
+		mes "你不能進入這裡。";
+		mes "城主的母親正在裡面休息。她需要靜養。";
+		next;
+		set event_amatsu,1;
+		setquest 8131;
+		mes "[城門士兵]";
+		mes "她已經病了好幾個月了。";
+		mes "這就是她待在這裡的原因。";
+		mes "這是一種相當可怕的疾病...";
+	}
+	else if (event_amatsu == 1) {
+		mes "她應該要恢復健康的...";
+		mes "但城主還是非常擔心。";
+		mes " ";
+	}
+	else if (event_amatsu == 5) {
+		mes "呃啊！我被那巨大的聲響嚇到了。";
+		mes "發生了什麼事？咦？";
+		mes " ";
+	}
+	else if (event_amatsu == 6) {
+		mes "城主的母親還沒有";
+		mes "完全恢復健康。";
+		mes "不過，她已經比以前好多了。";
+		mes " ";
+	}
+	else {
+		mes "如果你是城主派來的，";
+		mes "進去是沒問題的...";
+		mes "但你應該無法治好";
+		mes "她。已經有許多人嘗試過但都失敗了。";
+	}
+	close;
+}
+	
+amatsu,171,174,4	script	城門士兵#ama6	767,{
+	mes "[城門士兵]";
+	if (event_amatsu == 0) {
+		mes "你不能進入這裡。";
+		mes "城主的母親正在裡面休息。";
+		mes " ";
+		next;
+		setquest 8131;
+		set event_amatsu,1;
+		mes "[城門士兵]";
+		mes "她已經病了好幾個月了。";
+		mes "這就是她待在這裡的原因。";
+		mes "...";
+	}
+	else if (event_amatsu == 1) {
+		mes "請安靜。";
+		mes "城主的母親正在裡面。她需要休息。";
+		next;
+		mes "[城門士兵]";
+		mes "為什麼這種事會發生在";
+		mes "仁慈的城主身上...";
+		mes "怎麼會這樣？*嗚嗚*...";
+	}
+	else if (event_amatsu == 5) {
+		mes "咦？剛才好像有什麼東西";
+		mes "飛上天了...你沒看到嗎？呃。";
+		mes "那聲音嚇了我一跳。";
+	}
+	else if (event_amatsu == 6) {
+		mes "現在我們的城主終於鬆了一口氣。";
+		mes "我們之前都非常擔心。";
+		mes "現在沒事了...*嗚嗚*。";
+	}
+	else {
+		mes "噢...天啊。來自其他";
+		mes "大陸的人難道都是醫生嗎！";
+		mes "到底有多少醫生來拜訪過啦？！我都數不清了！";
+	}
+	close;
+}
+	
+ama_in02,187,57,2	script	士兵#ama1	767,{
+	mes "[一郎]";
+	mes "歡迎。";
+	mes "我們的城主為像你一樣的";
+	mes "旅行者準備了客房。";
+	next;
+	mes "[一郎]";
+	mes "如果你有任何問題，";
+	mes "請告訴我。如果可以的話，請向我們的城主道謝。";
+	mes "這一切都是他提供的。";
+	close;
+}
+	
+ama_in02,170,62,4	script	士兵#ama2	767,{
+	mes "[二郎]";
+	mes "我是二郎，這座宮殿的";
+	mes "管理員。有什麼我能為你效勞的嗎？";
+	next;
+	switch(select("請發給我通行證:我想住在天津町:沒事")) {
+	case 1:
+		if (event_amatsu == 6) {
+			if (countitem(7160) > 0) {
+				mes "[二郎]";
+				mes "你已經有一張了...";
+				mes "你不需要有兩張。";
+				close;
+			}
+			mes "[二郎]";
+			mes "你弄丟了通行證嗎？";
+			mes "你需要支付 10,000 Zeny 的稅金";
+			mes "來補發另一張通行證。";
+			next;
+			if (select("發給我一張:晚點再說") == 1) {
+				set Zeny, Zeny-10000;
+				getitem 7160,1; //Lord's_Passable_Ticket
+				mes "[二郎]";
+				mes "拿去吧。";
+				mes "這次別再弄丟了。";
+				close;
+			}
+			mes "[二郎]";
+			mes "那好吧...";
+			mes "需要幫忙時再來找我。";
+			close;
+		}
+		mes "[城門士兵]";
+		mes "城主宣布";
+		mes "他賦予來自米德加爾特的客人去任何地方的權利。";
+		mes "你不需要我發給你通行證。";
+		close;
+	case 2:
+		mes "[二郎]";
+		mes "這是不可能的。你可以自由地";
+		mes "在天津町四處走動，但城主不想干涉移民事務。";
+		mes "不過，你可以想在這裡住多久就住多久。";
+		close;
+	case 3:
+		mes "[二郎]";
+		mes "那好吧...";
+		mes "需要幫忙時再來找我。";
+		close;
+	}
+}
+	
+ama_in02,37,157,4	script	士兵#ama3	767,{
+	mes "[三郎]";
+	mes "這裡是我們精進戰鬥技巧的訓練場。";
+	mes "請隨便看看...";
+	next;
+	mes "[三郎]";
+	mes "對了，最近我總覺得";
+	mes "士兵們變了。";
+	mes "該怎麼說呢...";
+	mes "他們神情憂鬱，而且";
+	mes "有些人也不見蹤影了。";
+	mes "難道他們去了米德加爾特嗎？？";
+	next;
+	mes "[三郎]";
+	mes "因為這份工作，我會接觸到";
+	mes "許多陌生人。但在樓下，";
+	mes "有個來自遠方的客人看起來很可疑...";
+	mes "我已經告訴守衛要注意他了...";
+	next;
+	mes "[三郎]";
+	mes "當然，城主對發生的一切都瞭若指掌。";
+	mes "哈哈，別把我的話當真?";
+	mes "再見...";
+	close;
+}
+	
+ama_in02,32,51,6	script	士兵#ama4	767,{
+	mes "[四郎]";
+	mes "*咳咳、咳咳* 什麼...";
+	mes "別跟我說話...";
+	mes "*咳咳、咳咳*...噢，我可憐的脖子。";
+	next;
+	mes "[四郎]";
+	mes "那個庸醫的感冒藥";
+	mes "根本沒用！我當初就不該相信米德加爾特的人！";
+	mes "*咳咳、咳咳*...";
+	next;
+	mes "[四郎]";
+	mes "我不知道為什麼，但...";
+	mes "我的病情越來越嚴重了...";
+	mes "這到底是什麼感冒？";
+	mes "*咳*... *咳*...";
+	close;
+}
+	
+ama_in02,40,167,3	script	士兵#ama5	767,{
+	mes "[五郎]";
+	mes "*噓*...請安靜。";
+	mes "我來告訴你一個故事，好嗎？";
+	mes " ";
+	next;
+	mes "[五郎]";
+	mes "天津町有個傳聞。";
+	mes "這座宮殿的城主不是";
+	mes "真的... *噓*，安靜！";
+	mes "別慌張，聽我說。";
+	next;
+	mes "[五郎]";
+	mes "在仁慈的城主背後";
+	mes "還有一個真正的城主，他正在策劃著";
+	mes "某個陰謀。他在某個隱密的地方";
+	mes "控制著我們的城鎮。";
+	mes "...我們仁慈的城主只是個傀儡?！";
+	next;
+	mes "[五郎]";
+	mes "這是真的！相信我?";
+	mes "我看到他了。那個在";
+	mes "天守閣嘲笑著鎮民的";
+	mes "城主！！";
+	mes "千萬別告訴別人是我告訴你的，好嗎？";
+	close;
+}
+	
+ama_in02,32,167,5	script	士兵#ama6	767,{
+	mes "[六郎]";
+	mes "他總是在胡說八道。";
+	mes "他說我們的城主";
+	mes "是假的。";
+	mes "這一點都不好笑。";
+	next;
+	mes "[六郎]";
+	mes "不過，最近的確";
+	mes "發生了一些奇怪的事。";
+	mes "以前根本沒有什麼禁區...";
+	next;
+	mes "[六郎]";
+	mes "我有時候會聽到奇怪的聲音。";
+	mes "城主的母親已經被醫生";
+	mes "看過好幾次了。";
+	mes "我想她的健康狀況在他們拜訪後";
+	mes "並沒有好轉...";
+	close;
+}
+	
+ama_in02,42,34,2	script	士兵#ama7	767,{
+	mes "[七郎]";
+	mes "祝你玩得愉快。";
+	mes "城主準備了一些";
+	mes "客房。";
+	next;
+	mes "[七郎]";
+	mes "如果你有任何問題，";
+	mes "請叫我。另外，請盡量不要打擾到其他客人。";
+	mes " ";
+	next;
+	mes "[七郎]";
+	mes "祝你有美好的一天。";
+	close;
+}
+	
+ama_in02,203,156,4	script	士兵#ama8	767,{
+	mes "[八郎]";
+	mes "城主在裡面。";
+	mes "如果你想向他致意，請隨意進入。";
+	next;
+	mes "[八郎]";
+	mes "在他面前別太失禮。";
+	mes "他不知怎麼的，身體不太舒服。";
+	mes "通常，他會很樂意迎接來自";
+	mes "其他大陸的人，但是...";
+	mes "他到底發生了什麼事...？";
+	close;
+}
+	
+ama_in02,195,156,4	script	士兵#ama9	767,{
+	mes "[九郎]";
+	mes "情況不太妙。";
+	mes "城主非常仁慈，但";
+	mes "他最近狀況不太好...";
+	next;
+	mes "[九郎]";
+	mes "我聽說過那些傳聞，";
+	mes "但我相信他。他把";
+	mes "天津町發展成了一個偉大的城鎮。";
+	mes "這就是我作為士兵";
+	mes "追隨他的原因。";
+	close;
+}
+	
+ama_in02,115,177,7	script	士兵#ama10	767,{
+	mes "[十郎]";
+	mes "你在這裡做什麼？";
+	mes "這裡沒什麼有趣的。";
+	next;
+	if (select("確實如此:打開大門") == 1) {
+		mes "[十郎]";
+		mes "鎮上還有更多好玩的事物。祝你玩得開心...";
+		close;
+	}
+	if (event_amatsu == 6) {
+		if (countitem(7160) > 0) {
+			mes "[十郎]";
+			mes "你有通行證...";
+			mes "你想讓我現在就送你進去，還是需要我稍微說明一下？";
+			next;
+			if (select("我要進去:請說明一下") == 1) {
+				mes "[十郎]";
+				mes "我來打開大門。";
+				mes "自己保重...";
+			}
+			else {
+				mes "[十郎]";
+				mes "這扇門後面的區域";
+				mes "被某種魔法保護著。";
+				mes "你可能會被某人殺死，";
+				mes "或是迷路。";
+				mes " ";
+				next;
+				mes "[十郎]";
+				mes "我不能告訴你太多。";
+				mes "我沒有走得很深，";
+				mes "只是稍微看了一眼。";
+				mes " ";
+				mes " ";
+				next;
+				mes "[十郎]";
+				mes "首先.....";
+				mes "『不要相信你眼前所見的事物。』我不知道那是什麼";
+				mes "意思，但我猜你不該相信眼前的一切。";
+				next;
+				mes "[十郎]";
+				mes "第二.....";
+				mes "『魔法是有特定規則的。』凡事都有其";
+				mes "存在的理由。魔法也不例外。你也許能找到答案...";
+				next;
+				mes "[十郎]";
+				mes "好吧，我會打開這扇門。";
+				mes "自己保重...";
+			}
+			close2;
+			warp "ama_dun01",229,10;
+			end;
+		}
+		mes "[十郎]";
+		mes "抱歉。";
+		mes "你需要有通行證才能進去。";
+		mes "請回吧。";
+		close;
+	}
+	mes "[十郎]";
+	mes "你在說什麼門？";
+	mes "大門？在建築物的頂樓？？？你肯定是搞錯了。";
+	emotion ET_SWEAT;
+	next;
+	if (countitem(7160) > 0) {
+		if (select("給他看通行證:取消") == 1) {
+			mes "[十郎]";
+			mes "什麼？那是通行證...？";
+			mes "那張通行證是城主核發的，";
+			mes "但我猜它應該是發給錯人了。";
+			next;
+			delitem 7160,1; //Lord's_Passable_Ticket
+			mes "[十郎]";
+			mes "我會沒收這張通行證，因為";
+			mes "這是在未經許可的情況下發放的。";
+			mes "這是一個警告。";
+			mes "小心點。";
+			close;
+		}
+		mes "[十郎]";
+		mes "鎮上還有更多好玩的事物。祝你玩得開心...";
+		close;
+	}
+	mes "[十郎]";
+	mes "鎮上還有更多好玩的事物。祝你玩得開心...";
+	close;
+}
+	
+ama_dun01,229,7,0	script	士兵#ama11	767,{
+	mes "[十郎]";
+	mes "你想回去嗎？";
+	next;
+	if (select("是的，我想回去:我會待在這裡") == 1) {
+		mes "[十郎]";
+		mes "自己保重。";
+		close2;
+		warp "ama_in02",119,181;
+		end;
+	}
+	mes "[十郎]";
+	mes "保重...";
+	close;
+}
+	
+ama_in02,200,176,4	script	城主#ama	768,{
+	if (event_amatsu == 0) {
+		mes "[石田 吉長]";
+		mes "什麼！外國人...？*嘆氣*";
+		mes "抱歉，我現在沒有";
+		mes "心情見客！";
+		next;
+		mes "[石田 吉長]";
+		mes "出去！我對你是誰";
+		mes "不感興趣。";
+		mes "我身體不舒服！";
+		close;
+	}
+	else if (event_amatsu == 1) {
+		mes "[石田 吉長]";
+		mes "什麼！外國人？什麼風";
+		mes "把你吹來了？如果不是急事，";
+		mes "改天再來找我...！";
+		next;
+		switch(select("我聽說了關於您母親的事...:您的姓氏真好聽:你是誰？")) {
+		case 1:
+			mes "[石田 吉長]";
+			mes "噢...所以你知道她的病了？";
+			mes "我聽說在外國，";
+			mes "醫學知識";
+			mes "非常驚人。";
+			next;
+			mes "[石田 吉長]";
+			mes "歡迎。如你所知，我是";
+			mes "東閣城的城主，";
+			mes "石田 吉長。很高興";
+			mes "認識你。";
+			next;
+			mes "[石田 吉長]";
+			mes "我們切入正題吧。";
+			mes "我母親最近身體欠佳。我知道你就是為此而來。";
+			mes "你能治好她的病嗎？";
+			next;
+			mes "[石田 吉長]";
+			mes "到目前為止，許多著名的醫生";
+			mes "都來看過她，但他們";
+			mes "都無法治癒她的病，";
+			mes "反而讓病情惡化...";
+			mes "他們讓我非常失望。";
+			next;
+			mes "[石田 吉長]";
+			mes "來自米德加爾特的你，";
+			mes "也許能治癒我母親的病。如果你成功了，我會給你豐厚的獎勵...";
+			next;
+			set event_amatsu,2;
+			if (isbegin_quest(8131) == 1)
+				changequest 8131,8132;
+			else
+				setquest 8132;
+			mes "[石田 吉長]";
+			mes "拜託你了...求求你。";
+			mes "我母親住在宮殿外的一棟房子裡。";
+			mes "治療結束後再來找我。";
+			close;
+		case 2:
+			mes "[石田 吉長]";
+			mes "好聽！？那又怎樣？！";
+			mes "唸我的名字唸到你";
+			mes "厭煩為止吧！該死！";
+			next;
+			mes "[石田 吉長]";
+			mes "在這種危急的情況下還有心情開玩笑...*嘆氣*...";
+			mes "祝你在天津町玩得愉快。";
+			mes "...隨便啦！";
+			close;
+		case 3:
+			mes "[石田 吉長]";
+			mes "...我？你不知道嗎？蛤？";
+			mes "我是這座宮殿的城主。";
+			mes "如果你不知道，去問";
+			mes "外面的士兵！";
+			close;
+		}
+	}
+	else if (event_amatsu == 5) {
+		if (countitem(1022) > 0) {
+			mes "[石田 吉長]";
+			mes "我聽到好消息了！";
+			mes "我母親似乎好多了。她得的是什麼病？";
+			next;
+			mes "[石田 吉長]";
+			mes "狐狸？是這樣嗎？噢...";
+			mes "那根本不是病...！！";
+			mes "我怎麼沒注意到？！";
+			next;
+			mes "[石田 吉長]";
+			mes "該死的狐狸。竟然逃跑並";
+			mes "用這種方式向我復仇...";
+			mes "好吧，那麼。現在沒機會復仇了...哈哈哈！";
+			next;
+			mes "[石田 吉長]";
+			mes "嗯，唔。嗯...";
+			next;
+			mes "[石田 吉長]";
+			mes "總之，謝謝你的幫忙。";
+			mes "母親現在沒事了...";
+			mes "我想獎賞你...";
+			mes "但給什麼好呢...？";
+			next;
+			mes "[石田 吉長]";
+			mes "好吧，我給你一張";
+			mes "通行證。";
+			mes "有了這張通行證，你可以";
+			mes "去任何地方。";
+			next;
+			set event_amatsu,6;
+			completequest 8135;
+			delitem 1022,1; //Fox_Tail
+			getitem 7160,1; //Lord's_Passable_Ticket
+			mes "[石田 吉長]";
+			mes "這雖然不是什麼大獎勵，但";
+			mes "總有一天會對你有用的。";
+			mes "去問我的士兵『十郎』詳細的資訊吧。";
+			close;
+		}
+		mes "[石田 吉長]";
+		mes "嗯，我聽說我母親";
+		mes "好多了...但是";
+		mes "我怎麼知道你是不是真的";
+		mes "治好了她？";
+		next;
+		mes "[石田 吉長]";
+		mes "有任何證據能證明";
+		mes "你治好她了嗎？";
+		next;
+		mes "[石田 吉長]";
+		mes "拿出證明你治療過她的證據。";
+		mes "我見過太多外國人了。";
+		mes "但不是每個人都值得信任。";
+		mes "好了...祝你玩得愉快。";
+		close;
+	}
+	else if (event_amatsu == 6) {
+		mes "[石田 吉長]";
+		mes "*輕笑* 祝你在天津町";
+		mes "玩得開心.....";
+		mes "我們隨時歡迎外國人。";
+		close;
+	}
+	mes "[石田 吉長]";
+	mes "我母親的狀況如何？";
+	mes "如果你查出了病名，請告訴我。";
+	mes "我整晚都在";
+	mes "擔心她。";
+	next;
+	mes "[石田 吉長]";
+	mes "因為你帶著來自米德加爾特的";
+	mes "知識，";
+	mes "我相信你的能力。";
+	close;
+}
+	
+ama_in01,22,111,0	script	老奶奶#ama2	761,{
+	if (event_amatsu == 4) {
+		mes "[....]";
+		mes "^FF6060呀，呀，又是一個愚蠢的人類！";
+		mes "你想做什麼";
+		mes "來趕走我！？^000000";
+		next;
+		mes "[....]";
+		mes "^FF6060你這傢伙看起來好像在哪學過";
+		mes "兩下子，但那";
+		mes "對我起不了作用！！呀！^000000";
+		next;
+		select("喝啊啊啊！！");
+		if (BaseJob == Job_Priest) {
+			if (rand(1,4) == 1)
+				set .@fox_kill,0;
+			else
+				set .@fox_kill,1;
+		}
+		else if (BaseJob == Job_Acolyte || BaseJob == Job_Monk || countitem(523) > 0 || countitem(948) > 0 || countitem(1029) > 0) {
+			if (rand(1,2) == 1)
+				set .@fox_kill,0;
+			else
+				set .@fox_kill,1;
+		}
+		else {
+			if (rand(1,4) == 1)
+				set .@fox_kill,1;
+			else
+				set .@fox_kill,0;
+		}
+		if (.@fox_kill == 1) {
+			mes "[....]";
+			mes "^FF6060呀！呀！呀！人類！";
+			mes "竟然把我從這副身軀裡";
+			mes "趕出來！詛咒你！該死的傢伙！！^000000";
+			next;
+			mes "[....]";
+			mes "^FF6060我會詛咒石田家族，";
+			mes "是他們把我變成這樣的！永遠詛咒他們！";
+			mes "你最好小心點，人類！^000000";
+			next;
+			monster "ama_in01",22,111,"九尾狐",1180,1;
+			killmonsterall "ama_in01";
+			set event_amatsu,5;
+			changequest 8134,8135;
+			getitem 1022,1; //Fox_Tail
+			mes "[....]";
+			mes "^FF6060吉長所做的一切";
+			mes "將會帶給你";
+			mes "不幸...^000000";
+			mes "^FF0000呀啊啊啊啊啊啊啊啊啊！！^000000";
+			close;
+		}
+		mes "[....]";
+		mes "^FF6060呀！哈哈！呀！哈哈哈！";
+		mes "你想把我從這副身軀裡趕出來嗎！？";
+		mes "去去！！呀！^000000";
+		close2;
+		warp "amatsu",167,197;
+		end;
+	}
+	else if (event_amatsu == 5) {
+		mes "[石田 紗子]";
+		mes "...咦？你為什麼在這裡...？";
+		mes "*呃嗯* 我的頭好痛...";
+		mes "但我開始記起所有事情了...";
+		next;
+		mes "[石田 紗子]";
+		mes "謝謝你，來自遠方的";
+		mes "旅行者。我欠你一個天大的人情...非常感謝你...";
+		next;
+		mes "[石田 紗子]";
+		mes "我會告訴我兒子";
+		mes "是你驅除了那隻狐狸...";
+		mes "謝謝你...";
+		next;
+		mes "[石田 紗子]";
+		mes "我該休息了。";
+		mes "我的頭很痛，年輕人.....";
+		mes "去找我兒子吧...";
+		close;
+	}
+	else if (event_amatsu == 6) {
+		mes "[石田 紗子]";
+		mes "噢，你是...？你就是那個";
+		mes "驅除狐狸的人...歡迎。";
+		mes "請坐...";
+		next;
+		mes "[石田 紗子]";
+		mes "回想起來，被狐狸附身";
+		mes "是我的錯。我沒有";
+		mes "把兒子教好...噢?";
+		mes "他小時候是個好孩子。我都沒有嚴格管教他...";
+		next;
+		mes "[石田 紗子]";
+		mes "很久以前，這個城鎮沒有現在";
+		mes "這麼大。也沒有像東閣城";
+		mes "這樣的大宮殿。後來，有";
+		mes "一天，我兒子為村子帶來了";
+		mes "巨大的財富。他從未告訴我他做了什麼才賺到那筆錢...";
+		next;
+		mes "[石田 紗子]";
+		mes "他建造了宮殿，幫助了";
+		mes "鎮民，並把城鎮擴大了。";
+		mes "他本來很完美，直到...";
+		mes "他開始做一些奇怪的事。";
+		next;
+		mes "[石田 紗子]";
+		mes "那些...激怒神明的事。";
+		mes "他學習了禁忌的魔法，";
+		mes "在宮殿裡進行實驗，";
+		mes "把怪物關在籠子裡，";
+		mes "做了各種可怕的事情...";
+		next;
+		mes "[石田 紗子]";
+		mes "這就是為什麼東閣城裡";
+		mes "會有怪物...最後，";
+		mes "神明的憤怒降臨了。就連神社的祭司也無能為力...";
+		next;
+		mes "[石田 紗子]";
+		mes "最後，憤怒降臨到了";
+		mes "我身上...看來神明試圖藉由那隻狐狸來警告我兒子。";
+		mes "然而，我兒子卻沒有停手。";
+		next;
+		mes "[石田 紗子]";
+		mes "如果可以的話，請阻止我兒子。";
+		mes "我剩下的時間不多了。";
+		mes "我不知道該怎麼辦...";
+		mes "請拯救這個和平的村莊。";
+		mes "我求求你...";
+		mes "他心裡到底在想什麼...？";
+		close;
+	}
+	mes "[....]";
+	mes "^FF6060呀，呀，另一個愚蠢的人類！";
+	mes "呀，呀，誰！人類！？";
+	mes "你在做什麼！";
+	mes "去去...呀！呀！^000000";
+	next;
+	mes "[....]";
+	mes "^FF6060我會一直待在這裡，直到";
+	mes "石田家族絕後為止！";
+	mes "別打擾我！呀！^000000";
+	close2;
+	warp "amatsu",167,197;
+	end;
+}
+	
+amatsu,189,166,5	script	浩二#ama	764,{
+	mes "[浩二]";
+	mes "啦啦啦 啦啦啦 啦啦啦啦啦啦?";
+	mes "啦啦啦 啦啦啦 啦啦啦啦啦啦?";
+	next;
+	mes "[浩二]";
+	if (event_amatsu == 1) {
+		mes "生病的時候，吃麻糬也沒用?";
+		mes "家人的陪伴才是最好的良藥?";
+		mes "當藥物無效時，你就會明白?";
+		mes "媽媽的愛對我來說最重要?";
+	}
+	else if (event_amatsu == 2) {
+		set event_amatsu,3;
+		mes "祭司，祭司?";
+		mes "有隻狐狸跟著我！";
+		mes "雖然有點好笑又有點荒謬，";
+		mes "但我需要一碗油豆腐烏龍麵！";
+	}
+	else if (event_amatsu == 3) {
+		mes "祭司，祭司?";
+		mes "有隻狐狸跟著我！";
+		mes "如果我大聲尖叫牠還不走！";
+		mes "北邊神社的祭司應該能幫幫我?";
+		if (isbegin_quest(8132) == 1)
+			changequest 8132,8133;
+	}
+	else if (event_amatsu == 4) {
+		mes "祭司，祭司?";
+		mes "有隻狐狸跟著我。";
+		mes "如果光靠大叫嚇不跑狐狸，";
+		mes "我也許需要老虎和熊來幫忙?！";
+		next;
+		mes "[浩二]";
+		mes "這場戰鬥還需要什麼嗎？？？";
+		mes "也許服事能給我一點聖水?！";
+	}
+	else if (event_amatsu == 5) {
+		mes "可怕可怕的港口船?";
+		mes "空無一人，滿載著寶物?";
+		mes "但我不記得了?！";
+		mes "這首...歌的後半段？？？";
+	}
+	else {
+		mes "藍天下的藍色屋頂";
+		mes "藍色湖泊上的藍色牆壁";
+		mes "藍色心靈中的藍色願望";
+		mes "藍色 藍色 一切都是藍色";
+	}
+	next;
+	mes "[浩二]";
+	mes "啦啦啦 啦啦啦 啦啦啦啦啦啦?";
+	mes "啦啦啦 啦啦啦 啦啦啦啦啦啦?";
+	close;
+}
+	
+ama_in01,169,173,1	script	東佳子#ama	769,{
+	mes "[東佳子]";
+	mes "呃，我其實不是巫女...";
+	mes "是我的朋友竹笛君帶我";
+	mes "來這裡，邀請我試穿這些衣服的。";
+	next;
+	mes "[東佳子]";
+	mes "他總是叫我做很多";
+	mes "奇怪的事，不過他挺有趣的。";
+	mes "有時候，我不知道他腦子裡";
+	mes "在想什麼。不過，他是個好朋友。";
+	next;
+	mes "[東佳子]";
+	mes "如果你對某些事感到好奇，";
+	mes "可以去問竹笛君。";
+	mes "他知道許多別人不知道的";
+	mes "神秘學和超自然現象。";
+	mes " ";
+	close;
+}
+	
+ama_in01,180,173,3	script	狐狸面具#ama	762,{
+	if (event_amatsu == 3) {
+		mes "[竹笛]";
+		mes "咦，你是個外國人。";
+		mes "我猜你來找我，一定是因為";
+		mes "你遇上了狐狸的麻煩。";
+		mes "我從你的臉上就看出來了。";
+		next;
+		mes "[竹笛]";
+		mes "原本，神社的祭司應該";
+		mes "幫助你，但這間神社已經";
+		mes "廢棄很久了。";
+		next;
+		mes "[竹笛]";
+		mes "要把狐狸從人體內趕出來";
+		mes "是很困難的。如果你有酒";
+		mes "和油豆腐烏龍麵，";
+		mes "就會簡單得多，但這些東西很難找。";
+		next;
+		mes "[竹笛]";
+		mes "我對狐狸略知一二，讓我告訴你一些事...";
+		mes "狐狸喜歡捉弄人，但";
+		mes "牠們很少會渴望";
+		mes "復仇。";
+		mes " ";
+		next;
+		mes "[竹笛]";
+		mes "如果一隻狐狸懷有復仇之心，那就代表有人類傷害了牠。";
+		mes "狐狸會向你、你的家人，";
+		mes "甚至你的親密朋友";
+		mes "展開報復！";
+		next;
+		mes "[竹笛]";
+		mes "總而言之，一個更強大的靈魂";
+		mes "才能將狐狸從人體內驅除。";
+		mes "來吧，大叫一聲，讓我看看你的精神力！";
+		mes " ";
+		next;
+		select("喝啊啊啊！！");
+		set event_amatsu,4;
+		mes "[竹笛]";
+		mes "很好。把這股精神能量";
+		mes "多向狐狸展示幾次。";
+		mes "遲早你會成功的。";
+		if (isbegin_quest(8132) == 1)
+			changequest 8132,8134;
+		else if (isbegin_quest(8133) == 1)
+			changequest 8133,8134;
+		close;
+	}
+	else if (event_amatsu == 4) {
+		mes "[竹笛]";
+		mes "別忘了。你還需要";
+		mes "比狐狸更強大的動物的";
+		mes "化身。沒有這些，你的";
+		mes "精神力將毫無用處。";
+		close;
+	}
+	else {
+		mes "[竹笛]";
+		mes "咦？一個外國人。這間神社";
+		mes "已經很久沒有祭司了。";
+		mes "我的朋友東佳子和我偶爾會來這裡玩。";
+		next;
+		mes "[竹笛]";
+		mes "如果你被怪物追趕，";
+		mes "請放輕鬆。";
+		mes "怪物進不來這裡，所以";
+		mes "在這裡休息一下吧。";
+		close;
+	}
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= 1.0 Rewrote parts of other/momotaro.txt to make it work.
+//=     I'm sorry for the mess, I couldn't do much better with
+//=     the current code I had.
+//= 1.1 Added Sushi Quest and Amatsu Event from cities/ [Evera]
+//= 1.2 Fixed Momotaro Quest, thanks to .~Abism0~. [Lupus]
+//============================================================

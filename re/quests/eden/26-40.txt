@@ -1,0 +1,676 @@
+//===== rAthena Script =======================================
+//= Eden Group Quests - Mission [26 - 40]
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.4
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Repetable Quests for Players between Baselevel 26 - 40.
+//===== Additional Comments: =================================
+//= 1.0 First Version.
+//= 1.1 Some little optimization here and there. [Masao]
+//= 1.2 Optimized. [Euphy]
+//= 1.3 Added support to Para_Team_Mark_ in Eden Group. [Ragno]
+//= 1.4 Added use of F_HasEdenGroupMark function. [Ragno]
+//============================================================
+
+moc_para01,38,38,3	script	任務 [26 - 40]	857,{
+	if (!callfunc("F_HasEdenGroupMark")) {
+		mes "你不是合格的會員。你不能使用這個公佈欄。";
+		close;
+	}
+	mes "[26 ~ 40 Lv. 任務公佈欄]";
+	mes "- 有許多任務公佈在 -";
+	mes "- 任務公佈欄上。 -";
+	next;
+	if ((BaseLevel < 26) || (BaseLevel > 40)) {
+		mes "你的等級不符合條件。你不能使用這個公佈欄。";
+		close;
+	}
+	switch(select("狩獵任務:配送任務:收集任務:護衛任務")) {
+	case 1:
+		mes "[狩獵任務公佈欄]";
+		mes "- 狩獵任務的詳細資訊 -";
+		mes "- 都在公佈欄上。 -";
+		next;
+		switch(select("狩獵毒蘑菇:狩獵狸貓:狩獵長老樹精(Lv.30以上):狩獵庫克(Lv.35以上):狩獵達拉蛙(Lv.38以上)")) {
+			case 1: callsub L_Quest,8266,0,"狩獵毒蘑菇","斯波尼亞克","吉芬","狩獵10隻毒蘑菇";
+			case 2: callsub L_Quest,8267,0,"狩獵狸貓","斯波尼亞克","吉芬","狩獵10隻狸貓";
+			case 3: callsub L_Quest,8268,30,"狩獵長老樹精","斯波尼亞克","吉芬","狩獵10隻長老樹精";
+			case 4: callsub L_Quest,8269,35,"狩獵庫克","斯波尼亞克","吉芬","狩獵10隻庫克";
+			case 5: callsub L_Quest,8270,38,"狩獵達拉蛙","斯波尼亞克","吉芬","狩獵10隻達拉蛙";
+		}
+	case 2:
+		mes "[配送任務公佈欄]";
+		mes "- 配送任務的詳細資訊 -";
+		mes "- 都在公佈欄上。 -";
+		next;
+		switch(select("運送殺蟲劑:運送蜂蜜:運送毛毯(Lv.35以上)")) {
+			case 1: callsub L_Quest,8271,0,"運送殺蟲劑","迪辛送貨員","夢羅克廢墟","從迪辛送貨員那裡獲得「殺蟲劑」並送往斐揚東南方";
+			case 2: callsub L_Quest,8272,0,"運送蜂蜜","迪辛送貨員","夢羅克廢墟","從迪辛送貨員那裡獲得「蜂蜜」並送往聖卡畢托利那修道院西方";
+			case 3: callsub L_Quest,8273,35,"運送毛毯","迪辛送貨員","夢羅克廢墟","從迪辛送貨員那裡獲得毛毯並送往薑餅城原野南方";
+		}
+	case 3:
+		mes "[收集任務公佈欄]";
+		mes "- 收集任務的詳細資訊 -";
+		mes "- 都在公佈欄上。 -";
+		next;
+		switch(select("收集骨頭:收集動物的皮:收集外殼(Lv.30以上):收集尾巴(Lv.32以上):收集餅乾(Lv.35以上):收集鬍鬚(Lv.35以上)")) {
+			case 1: callsub L_Quest,8274,0,"收集骨頭","達西亞","斐揚","收集「10個死人骨頭」並交給達西亞";
+			case 2: callsub L_Quest,8275,0,"收集動物的皮","達西亞","斐揚","收集「10個熊掌」和「5個動物的皮」並交給達西亞";
+			case 3: callsub L_Quest,8276,30,"收集外殼","達西亞","斐揚","收集「20個昆蟲外殼」和「20個加勒結晶」並交給達西亞";
+			case 4: callsub L_Quest,8277,32,"收集尾巴","達西亞","斐揚","收集「10個溜溜猴尾巴」、「10個橡實」和「10個狸貓樹葉」並交給達西亞";
+			case 5: callsub L_Quest,8278,35,"收集餅乾","達西亞","斐揚","收集「5個烤好的餅乾」和「1個蛋糕」並交給達西亞";
+			case 6: callsub L_Quest,8279,35,"收集鬍鬚","達西亞","斐揚","收集「5個鼴鼠鬍鬚」和「3個鼴鼠爪子」並交給達西亞";
+		}
+	case 4:
+		mes "[護衛任務公佈欄]";
+		mes "目前公佈欄上沒有登記護衛任務。";
+		close;
+	}
+	end;
+L_Quest:
+	//QuestID,ReqLvl,Quest,Client,Loc,Desc
+	.@string$ = getarg(2);
+	if (BaseLevel < getarg(1,26)) {
+		mes "你的等級不符合條件。你無法接取「"+ .@string$ +"」任務。";
+		close;
+	}
+	mes "["+ .@string$ +" !!]";
+	mes "委託人 : "+getarg(3);
+	mes "委託人位置 : "+getarg(4);
+	mes "任務要求 : "+getarg(5);
+	mes " ";
+	mes "你要接取這個任務嗎？";
+	next;
+	if(select("不，我不接取。:是，我要接取。") == 1) {
+		mes "你拒絕了 "+ .@string$ +" 任務。";
+		close;
+	}
+	if (checkquest(getarg(0)) > -1) mes "你已經在進行這個任務了。";
+	else {
+		setquest getarg(0);
+		mes "你已經接取了 "+ .@string$ +" 任務。";
+	}
+	mes "任務完成後你可以向委託人領取獎勵。";
+	next;
+	mes "更多詳細資訊，請按下「Alt + U」從任務視窗查看。";
+	close;
+}
+
+geffen,103,42,5	script	斯波尼亞克	99,{
+	if (checkweight(1201,1) == 0 || (MaxWeight - Weight) < 3500) {
+		mes "[斯波尼亞克]";
+		mes "你為什麼帶這麼多東西？";
+		mes "你是在進行什麼訓練嗎？";
+		close;
+	}
+	mes "[斯波尼亞克]";
+	mes "嚕?嚕?嚕?嚕?";
+	mes "嚕? 咦？";
+	next;
+	mes "[斯波尼亞克]";
+	mes "哇，你一定是個初學者吧？";
+	mes "多麼純真的臉龐啊！哈?哈哈哈。";
+	emotion ET_KIK;
+	next;
+	mes "[斯波尼亞克]";
+	mes "與其到處閒晃浪費時間，何不去外面打點獵呢？";
+	next;
+	if(select("我現在就準備離開。:我接了狩獵任務。") == 1) {
+		mes "[斯波尼亞克]";
+		mes "喔，好吧。那就隨便你囉。";
+		mes "拜?拜。";
+		close;
+	}
+	mes "[斯波尼亞克]";
+	mes "喔，你是伊甸園的成員？";
+	mes "你接了什麼任務？";
+	next;
+	switch(select("狩獵毒蘑菇:狩獵狸貓:狩獵長老樹精:狩獵庫克:狩獵達拉蛙")) {
+		case 1: callsub L_Quest,8266,"狩獵毒蘑菇",1000,0,100,"你可以在吉芬地下密穴1樓或普隆德拉東北方找到毒蘑菇。還有其他地方有，但我讓你親自去發掘。";
+		case 2: callsub L_Quest,8267,"狩獵狸貓",1000,0,100,"你可以在吉芬東北方和西北方找到狸貓。哦，哎喲泰雅東方的原野也是尋找牠們的好地方。";
+		case 3: callsub L_Quest,8268,"狩獵長老樹精",1000,100,110,"你可以在吉芬東北方、斐揚東方和普隆德拉西南方找到長老樹精。";
+		case 4: callsub L_Quest,8269,"狩獵庫克",1000,200,150,"你可以在斐揚東方、普隆德拉西南方以及哎喲泰雅東方原野的周圍找到庫克。";
+		case 5: callsub L_Quest,8270,"狩獵達拉蛙",1500,300,200,"你可以在克魔島東方洞穴或龜島找到達拉蛙。";
+	}
+	end;
+L_Quest:
+	//QuestID,Quest,BExp,JExp,PotionAmt,Desc
+	.@quest_id = getarg(0);
+	if (checkquest(.@quest_id) == 1) {
+		if (checkquest(.@quest_id,HUNTING) == 2) {
+			mes "[斯波尼亞克]";
+			mes getarg(1)+"！";
+			mes "哇，我沒想到你真的完成了那個任務。我本來都要放棄了。你做得很好，我很感激！";
+			next;
+			mes "[斯波尼亞克]";
+			mes "那麼，這是我發出的委託，而你完成得非常出色。";
+			mes "我會照約定給你獎勵。";
+			next;
+			mes "[斯波尼亞克]";
+			mes "拿去吧。非常感謝你。願神保佑你！";
+			getitem 569,getarg(4); //Novice_Potion
+			getexp getarg(2),getarg(3);
+			erasequest .@quest_id;
+			close;
+		}
+		mes "[斯波尼亞克]";
+		mes "喔，你說得對。";
+		next;
+		mes "[斯波尼亞克]";
+		mes "但是，你還沒完成任務啊。你怎麼現在跑來找我？你根本還沒完成任務！";
+		mes "如果你完成任務，我就會給你獎勵。好嗎？我們說定了喔？";
+		next;
+		mes "[斯波尼亞克]";
+		mes getarg(5);
+		mes "你可以按下「Ctrl + ~」鍵來查看世界地圖。";
+		next;
+		mes "[斯波尼亞克]";
+		mes "總之，我會在這裡等你。完成任務後請回來找我！";
+		close;
+	}
+	mes "[斯波尼亞克]";
+	mes "咦？你確定嗎？好像哪裡搞錯了...";
+	next;
+	mes "[斯波尼亞克]";
+	mes "真奇怪。";
+	mes "請按下「Alt + U」檢查你的任務視窗。";
+	close;
+}
+
+moc_ruins,173,55,3	script	迪辛送貨員	89,{
+	if (checkweight(1201,1) == 0 || (MaxWeight - Weight) < 3500) {
+		mes "[迪辛送貨員]";
+		mes "你為什麼帶這麼多東西？";
+		mes "你是在進行什麼訓練嗎？";
+		close;
+	}
+	mes "[迪辛送貨員]";
+	mes "呼呼??我們是送貨員?";
+	mes "我們比任何飛行器都快?！";
+	next;
+	mes "[迪辛送貨員]";
+	mes "歡迎?歡迎！";
+	mes "我們是最快的物流公司，迪辛企業。";
+	next;
+	mes "[迪辛送貨員]";
+	mes "我能為你服務嗎？";
+	next;
+	if(select("我不需要幫忙。:我接了配送任務。") == 1) {
+		mes "[迪辛送貨員]";
+		mes "喔，好吧。那就隨便你囉。拜?！";
+		close;
+	}
+	mes "[迪辛送貨員]";
+	mes "喔，你是伊甸園的成員？";
+	mes "你接了什麼任務？";
+	next;
+	switch(select("運送殺蟲劑。:運送蜂蜜。:運送毛毯。")) {
+		case 1: callsub L_Quest,8271;
+		case 2: callsub L_Quest,8272;
+		case 3: callsub L_Quest,8273;
+	}
+	end;
+L_Quest:
+	if (checkquest(getarg(0)) != 1) {
+		mes "[迪辛送貨員]";
+		mes "咦？你確定嗎？好像哪裡搞錯了...";
+		next;
+		mes "[迪辛送貨員]";
+		mes "真奇怪。";
+		mes "請按下「Alt + U」檢查你的任務視窗。";
+		close;
+	}
+	if (countitem(6218) > 0) {
+		mes "[迪辛送貨員]";
+		mes "等等，你已經有一個配送箱了。";
+		next;
+		mes "[迪辛送貨員]";
+		mes "我們不允許你一次運送兩個箱子。所以，請先完成你手邊的運送任務。";
+		next;
+		mes "[迪辛送貨員]";
+		mes "如果你忘了要送到哪裡，請按下「Alt + U」檢查任務視窗。";
+		close;
+	}
+	switch(getarg(0)) {
+	case 8271:
+		mes "[迪辛送貨員]";
+		mes "啊哈！我知道了！";
+		mes "殺蟲劑？那一定是斐揚東南方的動物學家訂購的。";
+		break;
+	case 8272:
+		mes "[迪辛送貨員]";
+		mes "啊哈！我知道了！";
+		mes "蜂蜜？那一定是普隆德拉東北方、聖卡畢托利那修道院西方的昆蟲學家訂購的。";
+		break;
+	case 8273:
+		mes "[迪辛送貨員]";
+		mes "喔，對了！";
+		mes "毛毯！那一定是薑餅城原野南方的生物學家訂購的。";
+		next;
+		mes "[迪辛送貨員]";
+		mes "你可以去艾爾帕蘭東北方找聖誕老公公前往薑餅城。";
+		break;
+	}
+	next;
+	mes "[迪辛送貨員]";
+	mes "迪辛企業的宗旨就是提供最快且可靠的配送服務。所以請立刻送去，不要有任何延誤。";
+	next;
+	mes "[迪辛送貨員]";
+	mes "如果你忘了要送去哪裡，請按下「Alt + U」檢查任務視窗。";
+	getitem 6218,1; //Disin_Delivery_Box
+	close;
+}
+
+pay_fild07,83,89,7	script	動物學家	89,{
+	if (checkweight(1201,1) == 0 || (MaxWeight - Weight) < 3500) {
+		mes "[動物學家]";
+		mes "你為什麼帶這麼多東西？";
+		mes "你是在進行什麼訓練嗎？";
+		close;
+	}
+	mes "[動物學家]";
+	mes "你聽過一種叫大腳熊的怪物嗎？";
+	mes "牠看起來像一隻紅毛的熊，肩膀上有一個「X」形狀的疤痕。";
+	next;
+	mes "[動物學家]";
+	mes "根據最近的研究，蒼蠅和大腳熊之間存在共生關係。";
+	next;
+	mes "[動物學家]";
+	mes "我目前正在研究這個現象並試圖證明這個理論。所以我計畫殺死大腳熊周圍的蒼蠅，觀察牠的反應。";
+	next;
+	if(select("...我沒興趣。:這是你的殺蟲劑。") == 1) {
+		mes "[動物學家]";
+		mes "喔，我需要殺蟲劑才能繼續研究啊。";
+		close;
+	}
+	if (checkquest(8271) != 1) {
+		mes "[動物學家]";
+		mes "咦？";
+		mes "你不是迪辛的送貨員嗎？";
+		next;
+		mes "[動物學家]";
+		mes "我正在等一個特別的包裹。";
+		close;
+	}
+	if (countitem(6218) > 0) {
+		mes "[動物學家]";
+		mes "哦霍！對！就是那個！";
+		next;
+		mes "[動物學家]";
+		mes "那是我訂的殺蟲劑！你是迪辛派來的，對吧？";
+		next;
+		mes "[動物學家]";
+		mes "我等這個等好久了！";
+		mes "給我吧！";
+		next;
+		mes "[動物學家]";
+		mes "它比我想像的快多了。我現在就想試試看！";
+		next;
+		mes "[動物學家]";
+		mes "幹得好。做得不錯！非常感謝你！這是一點小禮物。";
+		delitem 6218,1; //Disin_Delivery_Box
+		erasequest 8271;
+		getitem 569,100; //Novice_Potion
+		getexp 1000,0;
+		close;
+	}
+	mes "[動物學家]";
+	mes "我很感謝你的好意。";
+	mes "但是，你帶了什麼來？";
+	next;
+	mes "[動物學家]";
+	mes "嗯，我以為迪辛又快又準確，但你卻給我帶了一個空箱子來。真令人失望。";
+	next;
+	mes "[動物學家]";
+	mes "請把我的訂單拿來。迪辛會把我的產品交給你。";
+	close;
+}
+
+prt_fild03,30,254,3	script	昆蟲學家	83,{
+	if (checkweight(1201,1) == 0 || (MaxWeight - Weight) < 3500) {
+		mes "[昆蟲學家]";
+		mes "你為什麼帶這麼多東西？";
+		mes "你是在進行什麼訓練嗎？";
+		close;
+	}
+	mes "[昆蟲學家]";
+	mes "你聽過獨角仙這種怪物嗎？";
+	mes "牠的形狀像昆蟲，有著黑亮的外殼，頭上還長著一根巨大的角。";
+	next;
+	mes "[昆蟲學家]";
+	mes "最近有研究指出，這種怪物可以用蜂蜜來馴服和訓練。";
+	next;
+	mes "[昆蟲學家]";
+	mes "我目前正在研究並試圖證明這個理論。所以我計畫在牠經常經過的地方設置蜂蜜陷阱，觀察牠的反應。";
+	next;
+	if(select("...我沒興趣。:這是你的蜂蜜。") == 1) {
+		mes "[昆蟲學家]";
+		mes "喔，我需要蜂蜜才能繼續研究啊。";
+		close;
+	}
+	if (checkquest(8272) != 1) {
+		mes "[昆蟲學家]";
+		mes "咦？";
+		mes "你不是迪辛的送貨員嗎？";
+		next;
+		mes "[昆蟲學家]";
+		mes "我正在等一個特別的包裹。";
+		close;
+	}
+	if (countitem(6218) > 0) {
+		mes "[昆蟲學家]";
+		mes "哦霍！對！就是那個！";
+		next;
+		mes "[昆蟲學家]";
+		mes "那是我訂的蜂蜜！你是迪辛派來的，對吧？";
+		next;
+		mes "[昆蟲學家]";
+		mes "我等這個等好久了！";
+		mes "給我吧！";
+		next;
+		mes "[昆蟲學家]";
+		mes "它比我想像的快多了。我現在就想試試看！";
+		next;
+		mes "[昆蟲學家]";
+		mes "幹得好。做得不錯！非常感謝你！這是一點小禮物。";
+		delitem 6218,1; //Disin_Delivery_Box
+		erasequest 8272;
+		getitem 569,100; //Novice_Potion
+		getexp 1000,0;
+		close;
+	}
+	mes "[昆蟲學家]";
+	mes "我很感謝你的好意。";
+	mes "但是，你帶了什麼來？";
+	next;
+	mes "[昆蟲學家]";
+	mes "嗯，我以為迪辛又快又準確，但你卻給我帶了一個空箱子來。真令人失望。";
+	next;
+	mes "[昆蟲學家]";
+	mes "請把我的訂單拿來。迪辛會把我的產品交給你。";
+	close;
+}
+
+xmas_fild01,92,57,3	script	生物學家	97,{
+	if (checkweight(1201,1) == 0 || (MaxWeight - Weight) < 3500) {
+		mes "[生物學家]";
+		mes "你為什麼帶這麼多東西？";
+		mes "你是在進行什麼訓練嗎？";
+		close;
+	}
+	mes "[生物學家]";
+	mes "你聽過海神這種怪物嗎？";
+	mes "牠看起來就像普通的波利，但有著獨特的特徵。";
+	next;
+	mes "[生物學家]";
+	mes "波利看到地上的物品就會偷走。然而，海神對掉落的物品毫無興趣。所以我很好奇，明明都是波利同類的怪物，為什麼海神不會去收集物品呢。";
+	next;
+	mes "[生物學家]";
+	mes "但是，這地方冷得要命。";
+	next;
+	if(select("...我沒興趣。:這是你的毛毯。") == 1) {
+		mes "[生物學家]";
+		mes "哼，隨便啦。但要小心！這裡很滑喔。";
+		close;
+	}
+	if (checkquest(8273) != 1) {
+		mes "[生物學家]";
+		mes "咦？";
+		mes "你不是迪辛的送貨員嗎？";
+		next;
+		mes "[生物學家]";
+		mes "我正在等一個特別的包裹。";
+		close;
+	}
+	if (countitem(6218) > 0) {
+		mes "[生物學家]";
+		mes "哦霍！對！就是那個！";
+		next;
+		mes "[生物學家]";
+		mes "那是我訂的毛毯！你是迪辛派來的，對吧？";
+		next;
+		mes "[生物學家]";
+		mes "我等這個等好久了！";
+		mes "給我吧！";
+		next;
+		mes "[生物學家]";
+		mes "它比我想像的快多了。我現在就想試試看！";
+		next;
+		mes "[生物學家]";
+		mes "幹得好。做得不錯！非常感謝你！這是一點小禮物。";
+		delitem 6218,1; //Disin_Delivery_Box
+		erasequest 8273;
+		getitem 569,100; //Novice_Potion
+		getexp 1000,0;
+		close;
+	}
+	mes "[生物學家]";
+	mes "我很感謝你的好意。";
+	mes "但是，你帶了什麼來？";
+	next;
+	mes "[生物學家]";
+	mes "嗯，我以為迪辛又快又準確，但你卻給我帶了一個空箱子來。真令人失望。";
+	next;
+	mes "[生物學家]";
+	mes "請把我的訂單拿來。迪辛會把我的產品交給你。";
+	close;
+}
+
+payon,179,66,3	script	達西亞	931,{
+	if (checkweight(1201,1) == 0 || (MaxWeight - Weight) < 3500) {
+		mes "[達西亞]";
+		mes "你為什麼帶這麼多東西？";
+		mes "你是在進行什麼訓練嗎？";
+		close;
+	}
+	mes "[達西亞]";
+	mes "這裡有些頭髮? 一個壞掉的時鐘?！";
+	next;
+	mes "[達西亞]";
+	mes "壞掉的時鐘..？呼呼..";
+	next;
+	mes "[達西亞]";
+	mes "嘿?！老兄！你看起來像個非常有錢的冒險者。";
+	next;
+	if(select("我是個窮酸的冒險者。:我有一個收集任務。") == 1) {
+		mes "[達西亞]";
+		mes "真的嗎？嗯，喔對。你看起來確實不怎麼精緻。";
+		next;
+		mes "[達西亞]";
+		mes "你這個窮酸的冒險者?！祝你好運！";
+		close;
+	}
+	mes "[達西亞]";
+	mes "喔，你是伊甸園的成員？";
+	mes "你接了什麼任務？";
+	next;
+	switch(select("收集骨頭:收集動物的皮:收集外殼:收集尾巴:收集餅乾:收集鬍鬚")) {
+	case 1:
+		callsub L_Quest,8274;
+		if (countitem(932) > 9) {
+			callsub L_Reward;
+			delitem 932,10; //Skel_Bone
+			getitem 569,100; //Novice_Potion
+			getexp 1000,100;
+			erasequest 8274;
+			close;
+		}
+		mes "[達西亞]";
+		mes "我看出來你接了收集任務。";
+		mes "但是，死人骨頭在哪裡？";
+		next;
+		mes "[達西亞]";
+		mes "你還沒完成任務。你為什麼回來這裡？";
+		next;
+		mes "[達西亞]";
+		mes "你的「死人骨頭」數量不夠... 你可以在狩獵邪骸戰士時找到它。";
+		next;
+		mes "[達西亞]";
+		mes "要找邪骸戰士，你最好去斐揚地下洞穴1樓，它位於斐揚北方的弓箭手村。";
+		break;
+	case 2:
+		callsub L_Quest,8275;
+		if ((countitem(948) > 9) && (countitem(919) > 4)) {
+			callsub L_Reward;
+			getitem 569,100; //Novice_Potion
+			delitem 948,10; //Bear's_Foot
+			delitem 919,5; //Animal's_Skin
+			getexp 1000,100;
+			erasequest 8275;
+			close;
+		}
+		mes "[達西亞]";
+		mes "我看出來你接了收集任務。";
+		mes "但是，熊掌和動物的皮在哪裡？";
+		next;
+		mes "[達西亞]";
+		mes "你還沒完成任務。你為什麼回來這裡？";
+		next;
+		mes "[達西亞]";
+		mes "你必須帶來10個「熊掌」和5個「動物的皮」！";
+		mes "你可以從大腳熊身上找到熊掌，從動物身上找到動物的皮。";
+		next;
+		mes "[達西亞]";
+		mes "大腳熊在吉芬北方的原野或是斐揚東南方的原野。";
+		break;
+	case 3:
+		callsub L_Quest,8276;
+		if ((countitem(955) > 19) && (countitem(910) > 19)) {
+			callsub L_Reward;
+			delitem 955,20; //Worm_Peelings
+			delitem 910,20; //Garlet
+			getitem 569,100; //Novice_Potion
+			getexp 1000,100;
+			erasequest 8276;
+			close;
+		}
+		mes "[達西亞]";
+		mes "我看出來你接了收集任務。";
+		mes "但是，昆蟲外殼和加勒結晶在哪裡？";
+		next;
+		mes "[達西亞]";
+		mes "你必須帶來「20個昆蟲外殼」和「20個加勒結晶」才能完成任務。";
+		next;
+		mes "[達西亞]";
+		mes "你可以從「白蟻」、「工蟻」、「兵蟻」、「維塔塔」、「盜蟲」、「雌盜蟲」和「雄盜蟲」身上取得這些物品。";
+		next;
+		mes "[達西亞]";
+		mes "「白蟻」、「工蟻」、「兵蟻」和「維塔塔」在螞蟻地獄，位於夢羅克西南方的聖達爾民要塞附近。";
+		next;
+		mes "[達西亞]";
+		mes "「盜蟲」、「雌盜蟲」和「雄盜蟲」在普隆德拉地下水道。要進入那裡，你需要成為普隆德拉地下水道討伐隊的志願者。";
+		break;
+	case 4:
+		callsub L_Quest,8277;
+		if ((countitem(942) > 9) && (countitem(1026) > 9) && (countitem(945) > 9)) {
+			callsub L_Reward;
+			delitem 942,10; //Yoyo_Tail
+			delitem 1026,10; //Acorn
+			delitem 945,10; //Raccoon_Leaf
+			getitem 569,150; //Novice_Potion
+			getexp 1000,200;
+			erasequest 8277;
+			close;
+		}
+		mes "[達西亞]";
+		mes "我看出來你接了收集任務。";
+		mes "但是，溜溜猴尾巴、橡實和狸貓樹葉在哪裡？";
+		next;
+		mes "[達西亞]";
+		mes "你還沒完成任務。你為什麼回來這裡？";
+		mes "你必須帶來「10個溜溜猴尾巴」、「10個橡實」和「10個狸貓樹葉」才能完成任務。";
+		next;
+		mes "[達西亞]";
+		mes "你可以從「溜溜猴」身上獲得溜溜猴尾巴，從「庫克」身上獲得橡實，從「狸貓」身上獲得狸貓樹葉。";
+		next;
+		mes "[達西亞]";
+		mes "你可以輕易在原野周圍找到牠們，但是哎喲泰雅東方的原野是狩獵這3種怪物的最佳地點。";
+		next;
+		mes "[達西亞]";
+		mes "要前往哎喲泰雅，你最好去找艾爾貝塔的「艾巴丁」(Aibakthing) 並且支付他的船費。";
+		break;
+	case 5:
+		callsub L_Quest,8278;
+		if ((countitem(538) > 4) && (countitem(539) > 0)) {
+			callsub L_Reward;
+			delitem 538,5; //Well_Baked_Cookie
+			delitem 539,1; //Piece_Of_Cake
+			getitem 569,150; //Novice_Potion
+			getexp 1000,200;
+			erasequest 8278;
+			close;
+		}
+		mes "[達西亞]";
+		mes "我看出來你接了收集任務。";
+		mes "但是，烤好的餅乾和蛋糕在哪裡？";
+		next;
+		mes "[達西亞]";
+		mes "你還沒完成任務。你為什麼回來這裡？";
+		mes "你必須帶來「5個烤好的餅乾」和「1個蛋糕」才能完成任務。";
+		next;
+		mes "[達西亞]";
+		mes "你可以從穿著紅色或綠色襯衫的「餅乾人」身上取得烤好的餅乾。";
+		mes "想要取得蛋糕，你應該尋找「邪惡禮盒」。";
+		next;
+		mes "[達西亞]";
+		mes "這兩種怪物都可以在玩具工廠倉庫或玩具工廠分類所找到。要前往那裡，可以詢問艾爾帕蘭東北方的聖誕老公公。";
+		break;
+	case 6:
+		callsub L_Quest,8279;
+		if ((countitem(1017) > 4) && (countitem(1018) > 2)) {
+			callsub L_Reward;
+			delitem 1017,5; //Moustache_Of_Mole
+			delitem 1018,3; //Nail_Of_Mole
+			getitem 569,150; //Novice_Potion
+			getexp 1000,200;
+			erasequest 8279;
+			close;
+		}
+		mes "[達西亞]";
+		mes "我看出來你接了收集任務。";
+		mes "但是，鼴鼠鬍鬚和鼴鼠爪子在哪裡？";
+		next;
+		mes "[達西亞]";
+		mes "你還沒完成任務。你為什麼回來這裡？";
+		mes "你必須帶來「5個鼴鼠鬍鬚」和「3個鼴鼠爪子」才能完成任務。";
+		next;
+		mes "[達西亞]";
+		mes "你可以從「瑪汀」身上取得這些物品。";
+		mes "可以在妙勒尼廢棄礦坑找到瑪汀，但是二樓很危險，所以要小心！";
+		next;
+		mes "[達西亞]";
+		mes "要前往那裡，可以詢問吉芬的卡普拉服務人員，她們可以將你傳送過去。";
+		break;
+	}
+	next;
+	mes "[達西亞]";
+	mes "總之，我會在這裡等你。完成任務後請回來找我！";
+	close;
+L_Quest:
+	if (checkquest(getarg(0)) != 1) {
+		mes "[達西亞]";
+		mes "咦？你確定嗎？好像哪裡搞錯了...";
+		next;
+		mes "[達西亞]";
+		mes "真奇怪。";
+		mes "請按下「Alt + U」檢查你的任務視窗。";
+		close;
+	}
+	return;
+L_Reward:
+	mes "[達西亞]";
+	mes "哇?你做得非常出色！";
+	next;
+	mes "[達西亞]";
+	mes "非常感謝你。願神保佑你！";
+	emotion ET_SMILE;
+	next;
+	mes "[達西亞]";
+	mes "哈?！哈?！";
+	mes "我會照約定給你獎勵。";
+	return;
+}

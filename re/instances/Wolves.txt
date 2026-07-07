@@ -1,0 +1,3336 @@
+//===== rAthena Script =======================================
+//= Instances: Wolves Gathering Place and Sanctuary Purification.
+//===== Description: =========================================
+//- [Walkthrough conversion]
+//- "Wolves Gathering Place" is a part of the Episode 18 main quest.
+//- Sanctuary Purification is a daily quest.
+//===== Changelogs: ==========================================
+//= 1.0 First version.
+//============================================================
+
+// Main Quest: Step 54. (entrance npc is a part of the instance Wolves Gathering Place)
+rachel,167,244,5	duplicate(dummy_cloaked_npc)	蘇亞德#sms03	4_EP18_SUAD
+rachel,167,242,7	duplicate(dummy_cloaked_npc)	米莉亞#sms03	4_EP18_MIRIAM
+
+rachel,169,245,3	script	普通人#sms04	4_EP18_GW_WOMAN01,{
+	if (BaseLevel < 170) {
+		mes "[灰狼]";
+		mes "你是來參加抗議的嗎？但你看起來不像是有經驗的抗議者。";
+		next;
+		mes "- 此任務需達到 BaseLevel 170 以上才可進行。 -";
+		close;
+	}
+	if (ep18_main < 50) {
+		mes "[普通人]";
+		mes "此區域正在維護，禁止進入。裡面很危險，請退後。";
+		close;
+	}
+	if (ep18_main == 50 || ep18_main == 51) {
+		if (ep18_main == 50) {
+			mes "[普通人]";
+			mes "此區域正在維護，禁止進入。";
+			next;
+			cutin "ep18_suad_01.png",2;
+			cloakoffnpcself( "蘇亞德#sms03" );
+			mes "[蘇亞德]";
+			mes "不用那麼戒備。這位是跟我們一起的冒險家。";
+			next;
+			cutin "ep18_miriam_01.png",0;
+			cloakoffnpcself( "米莉亞#sms03" );
+			mes "[米莉亞]";
+			mes "大家都到齊了嗎？";
+			next;
+			cutin "ep18_suad_01.png",2;
+			mes "[蘇亞德]";
+			mes "嗯，都準備好了。只要向散佈在周圍的我們的人發送信號，就可以進入神殿了。";
+			next;
+			cutin "ep18_miriam_01.png",0;
+			mes "[米莉亞]";
+			mes "我們得快點行動。";
+			next;
+		}
+		cutin "ep18_suad_01.png",2;
+		mes "[蘇亞德]";
+		mes "從這裡進去，我們可以通往神殿的側門。向那邊發送信號後，只要收到回應我們就進去。冒險家，你能發送這個信號嗎？";
+		next;
+
+		.@md_name$ = "Wolves Gathering Place";
+
+		if (is_party_leader()) {
+			.@menu$[0] = "好的，我來發送信號。";
+			.@menu$[1] = "我們快進去吧。";
+		}
+
+		switch( select( .@menu$[0], .@menu$[1], "我們還需要準備。" ) ) {
+		case 1:
+			mes "嗶——";
+			next;
+			instance_create(.@md_name$);
+			mes "[蘇亞德]";
+			mes "信號已經發出，緊急通道很快就會打開。準備好就告訴我們，我們會立刻進去。";
+			if (ep18_main == 50) {
+				changequest 17519,17520;
+				ep18_main = 51;
+			}
+			close3;
+		case 2:
+			switch( instance_enter(.@md_name$) ) {
+			case IE_OTHER:
+				mes "[蘇亞德]";
+				mes "^ff0000發生了未知的錯誤。^000000";
+				close3;
+			case IE_NOINSTANCE:
+				mes "[蘇亞德]";
+				mes "我們還沒發送信號。等大家都準備好，我們就會立刻發送信號。";
+				close3;
+			case IE_NOMEMBER:
+				mes "[蘇亞德]";
+				mes "^ff0000只有隊伍成員才能進入副本。^000000";
+				close3;
+			case IE_OK:
+				mes "[蘇亞德]";
+				mes "信號來了，我們行動吧。馬上進去。";
+				if (ep18_main == 50) {	// debug
+					changequest 17519,17520;
+					ep18_main = 51;
+				}
+				cutin "",255;
+				mapannounce "rachel", getpartyname( getcharid(1) ) + " 隊伍的冒險家 " + strcharinfo(0) + " 將率先進入 " + .@md_name$ + "。所有灰狼，請按順序集合。", bc_map, 0xFF99;
+				// warp "1@nyr",194,30;
+				close;
+			}
+			end;
+		case 3:
+			mes "[蘇亞德]";
+			mes "對。冒險家也是不可或缺的戰力，我們就等到準備好為止吧。";
+			close3;
+		}
+		end;
+	}
+	mes "[普通人]";
+	mes "你好，冒險家。神殿的代理人一直在等你。";
+	close2;
+	cloakoffnpcself( "祭司#sms01" );
+	npctalk "冒險家，歡迎。", "祭司#sms01", bc_self;
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(17519) == 1" );
+	// Sanctuary Purification
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "checkquest(17527,PLAYTIME) == 2" );
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "ep18_main >= 52 && checkquest(17527,PLAYTIME) == -1 && isbegin_quest(17522) == 0 && isbegin_quest(17523) == 0" );
+	end;
+}
+
+// Instance Sanctuary Purification entrance
+rachel,167,244,5	script(CLOAKED)	祭司#sms01	4_F_TRAINEE,{
+	if (checkweight(1000405,4) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 你現在身上攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請在減輕重量後 -";
+		mes "- 再試一次。 -";
+		close;
+	}
+	if (ep18_main < 52)
+		end;
+	// repeatable instance Sanctuary Purification
+	if (BaseLevel < 170) {
+		mes "[祭司]";
+		mes "你必須達到 BaseLevel 170 才能進入此副本。";
+		close;
+	}
+	if (isbegin_quest(17524) == 1 || isbegin_quest(17526) == 1) {
+		mes "[祭司]";
+		mes "歡迎，冒險家。你經歷了不少困難。";
+		if (isbegin_quest(17524) == 1) {
+			erasequest 17524;
+			.@count = 2;
+		}
+		if (isbegin_quest(17526) == 1) {
+			erasequest 17526;
+			.@count += 2;
+		}
+		getitem 1000405,.@count;
+		// Ep18_Amethyst_Fragment
+		next;
+		mes "[祭司]";
+		mes "請先休息一下吧！我們下次見！";
+		close;
+	}
+	.@md_name$ = "Sanctuary Purification";
+
+	switch( checkquest(17527,PLAYTIME) ) {
+	case -1:
+		if (isbegin_quest(17522) == 0 && isbegin_quest(17523) == 0)
+			callsub( S_Take, 0, "既然都要做，就兩個都接吧。", "突襲叛變的神殿守衛。", "突襲心之獵手。", "", "這將會很艱難。" );
+		break;
+	case 0:
+	case 1:
+		mes "[祭司]";
+		mes "下一次行動的計畫還沒完成。因為一天只能進行一次，我們必須謹慎。在那之前請先休息吧，冒險家。";
+		close;
+	case 2:
+		mes "[祭司]";
+		mes "你好！休息得好嗎？如果你今天能幫忙，我會非常感激。請注意，這項行動一天只能進行一次。";
+		erasequest 17527;
+		if (isbegin_quest(17522) == 0 && isbegin_quest(17523) == 0)
+			callsub( S_Take, 2, "既然都要做，就兩個都接吧。", "突襲叛變的神殿守衛。", "突襲心之獵手。", "", "這將會很艱難。" );
+		break;
+	}
+	mes "[祭司]";
+	mes "準備好了嗎？我將發送會合信號。";
+	next;
+	switch( select( "好的。我來發送信號。", "我這就去。", "我還有任務沒完成！", "還需要更多準備。" ) ) {
+	case 1:
+		mes "[祭司]";
+		mes "我已收到會合點的資訊。你可以直接透過這個緊急出口前往。準備好後就可以進入了。";
+		if (instance_create(.@md_name$) < 0) {
+			mes "隊伍：" + getpartyname(getcharid(1)) + "";
+			mes "隊長：" + strcharinfo(0) + "";
+			mes "^0000ff" + .@md_name$ + " ^000000- 未知錯誤";
+			close;
+		}
+		end;
+	case 2:
+		switch( instance_enter(.@md_name$) ) {
+		case IE_OTHER:
+			mes "^ff0000發生了未知的錯誤。^000000";
+			close;
+		case IE_NOINSTANCE:
+			mes "副本不存在。";
+			mes "隊長尚未建立副本。";
+			close;
+		case IE_NOMEMBER:
+			mes "^ff0000只有隊伍成員才能進入副本。^000000";
+			close;
+		case IE_OK:
+			mes "[祭司]";
+			mes "信號來了，我們行動吧。馬上進入會合點。";
+			mapannounce "rachel", getpartyname( getcharid(1) ) + " 隊伍的 " + strcharinfo(0) + " 即將進入 " + .@md_name$ + "。",bc_map,"0x00ff99",FW_NORMAL,12;
+			setquest 17527;
+			// warp "1@nyr",194,30;
+			end;
+		}
+		end;
+	case 3:
+		callsub( S_Take, 1, "", "突襲叛變的神殿守衛。", "突襲心之獵手。", "既然都要做，就兩個都接吧。", "這將會很艱難。" );
+	case 4:
+		mes "[祭司]";
+		mes "了解。我會等你的。";
+		close;
+	}
+	end;
+
+S_Take:
+	if (getarg(0) == 0) {
+		mes "[祭司]";
+		mes "潛入神殿的主力部隊已經逃跑了，但叛變到心之獵手的神殿守衛，以及為了心臟而來的心之獵手殘黨，仍然是個麻煩。";
+		next;
+		mes "[祭司]";
+		mes "我們正在各自進行突襲，但如果能有冒險家你的協助，我們會非常感激。請注意，突襲任務一天只能進行一次。";
+	}
+	else if (getarg(0) == 1) {
+		mes "[祭司]";
+		mes "是嗎？你錯過了什麼任務？";
+	}
+	next;
+	switch( select( getarg(1), getarg(2), getarg(3), getarg(4), getarg(5) ) ) {
+	case 1:
+	case 4:	// (same menu as 1 but order is different)
+		if (isbegin_quest(17522) == 0 && isbegin_quest(17524) == 0)
+			setquest 17522;
+		if (isbegin_quest(17523) == 0 && isbegin_quest(17526) == 0)
+			setquest 17523;
+		mes "[祭司]";
+		mes "了解。";
+		next;
+		mes "[祭司]";
+		mes "那麼，準備好後請告訴我。";
+		close;
+	case 2:
+		if (isbegin_quest(17522) == 0 && isbegin_quest(17524) == 0) {
+			setquest 17522;
+			mes "[祭司]";
+			mes "突襲叛變的神殿守衛。是這樣嗎？了解。";
+			next;
+			mes "[祭司]";
+			mes "那麼，準備好後請告訴我。";
+			close;
+		}
+		mes "[祭司]";
+		mes "看來你已經在執行任務了。很好，請多加小心。";
+		next;
+		mes "[祭司]";
+		mes "那麼，準備好後請告訴我。";
+		close;
+	case 3:
+		if (isbegin_quest(17523) == 0 && isbegin_quest(17526) == 0) {
+			setquest 17523;
+			mes "[祭司]";
+			mes "感謝你的協助。準備好後請告訴我。";
+			close;
+		}
+		mes "[祭司]";
+		mes "看來你已經在執行任務了。很好，請多加小心。";
+		next;
+		mes "[祭司]";
+		mes "那麼，準備好後請告訴我。";
+		close;
+	case 5:
+		mes "[祭司]";
+		mes "既然如此，那我們也無能為力了。下次見！";
+		close2;
+		cloakonnpcself( "祭司#sms01" );
+		end;
+	}
+	end;
+}
+
+
+// Define the instance variables and disable the unused NPCs
+1@nyr,1,1,0	script	nyr_starter	-1,{
+	end;
+OnInstanceInit:
+	'nyr_main_step = 0;
+	'nyr_daily_step = 0;
+	'code = 0;
+	'map_1nyr$ = instance_mapname("1@nyr");
+	'map_2nyr$ = instance_mapname("2@nyr");
+
+	if (instance_live_info(ILI_NAME) == "Wolves Gathering Place") {	// Wolves Gathering Place instance : disable the stater NPCs of Sanctuary Purification
+		disablenpc instance_npcname("#qar101sw");
+		for ( .@i = 1; .@i < 16; ++.@i ) {
+			if (.@i < 10)
+				.@string$ = "0" + .@i;
+			else
+				.@string$ = "" + .@i;
+			disablenpc instance_npcname("#cell" + .@string$);
+		}
+		disablenpc instance_npcname("#cell42");
+		disablenpc instance_npcname("#cell51");
+		disablenpc instance_npcname("#cell66");
+		
+		// disablenpc instance_npcname("#cell41");
+		// duplicate of 8
+		disablenpc instance_npcname("#qmobg101");
+	}
+	else {	// Sanctuary Purification instance : disable the stater NPCs of Wolves Gathering Place
+		// Step 1 - Wolves Gathering Place
+		disablenpc instance_npcname("米莉亞#dms101");
+		disablenpc instance_npcname("蘇亞德#dms101");
+		disablenpc instance_npcname("拉馬庫斯#dms102");
+		disablenpc instance_npcname("坤#dms112");
+		disablenpc instance_npcname("尤琵#dms122");
+		disablenpc instance_npcname("憤怒的群眾#dms171");
+		disablenpc instance_npcname("神殿守衛#dms101");
+		disablenpc instance_npcname("神殿守衛#dms111");
+		disablenpc instance_npcname("神殿守衛#dms121");
+		disablenpc instance_npcname("神殿守衛#dms131");
+		disablenpc instance_npcname("神殿守衛#dms141");
+		disablenpc instance_npcname("神殿守衛#dms151");
+		disablenpc instance_npcname("神殿守衛#dms181");
+		disablenpc instance_npcname("神殿守衛#dms191");
+		disablenpc instance_npcname("憤怒的群眾#dms101");
+		disablenpc instance_npcname("憤怒的群眾#dms111");
+		disablenpc instance_npcname("憤怒的群眾#dms121");
+		disablenpc instance_npcname("憤怒的群眾#dms131");
+		disablenpc instance_npcname("憤怒的群眾#dms141");
+		disablenpc instance_npcname("憤怒的群眾#dms151");
+		disablenpc instance_npcname("憤怒的群眾#dms161");
+		disablenpc instance_npcname("憤怒的群眾#dms181");
+		disablenpc instance_npcname("憤怒的群眾#dms191");
+		
+		// walls
+		setcell 'map_1nyr$,89,24,89,153,cell_walkable,0;
+		setcell 'map_1nyr$,150,24,150,153,cell_walkable,0;
+	}
+
+	// Sanctuary Purification instance - 1@nyr
+	disablenpc instance_npcname("神殿守衛#qdms01");
+	disablenpc instance_npcname("神殿守衛#qdms02");
+	disablenpc instance_npcname("神殿守衛#qdms03");
+	disablenpc instance_npcname("神殿守衛#qdms21");
+	disablenpc instance_npcname("神殿守衛#qdms22");
+	disablenpc instance_npcname("神殿守衛#qdms23");
+	disablenpc instance_npcname("神殿守衛#qdms31");
+	disablenpc instance_npcname("神殿守衛#qdms32");
+	disablenpc instance_npcname("神殿守衛#qdms33");
+	disablenpc instance_npcname("神殿守衛#qdms41");
+	disablenpc instance_npcname("神殿守衛#qdms42");
+
+	// disablenpc instance_npcname("#qmobg401");
+	// disablenpc instance_npcname("#qar201sw");
+	// warps
+	disablenpc instance_npcname("#qwpto01");
+	disablenpc instance_npcname("#qwpto02");
+	disablenpc instance_npcname("#qwpto03");
+	disablenpc instance_npcname("#areaw03");
+
+	// disablenpc instance_npcname("#qwptora");	// unknown
+
+	disablenpc instance_npcname("神殿守衛#qdms101");
+	disablenpc instance_npcname("神殿守衛#qdms111");
+	disablenpc instance_npcname("神殿守衛#qdms121");
+	disablenpc instance_npcname("神殿守衛#qdms131");
+	disablenpc instance_npcname("神殿守衛#qdms141");
+	disablenpc instance_npcname("神殿守衛#qdms151");
+	disablenpc instance_npcname("神殿守衛#qdms161");
+	disablenpc instance_npcname("神殿守衛#qdms171");
+	disablenpc instance_npcname("神殿守衛#qdms181");
+	disablenpc instance_npcname("神殿守衛#qdms102");
+	disablenpc instance_npcname("神殿守衛#qdms112");
+	disablenpc instance_npcname("神殿守衛#qdms122");
+	disablenpc instance_npcname("神殿守衛#qdms132");
+	disablenpc instance_npcname("神殿守衛#qdms142");
+	disablenpc instance_npcname("神殿守衛#qdms152");
+	disablenpc instance_npcname("神殿守衛#qdms162");
+	disablenpc instance_npcname("神殿守衛#qdms172");
+	disablenpc instance_npcname("神殿守衛#qdms182");
+
+	// Step 2 - Wolves Gathering Place
+	disablenpc instance_npcname("米莉亞#dms201");
+	disablenpc instance_npcname("神殿守衛#dms201");
+	disablenpc instance_npcname("神殿守衛#dms211");
+	disablenpc instance_npcname("神殿守衛#dms221");
+	disablenpc instance_npcname("神殿守衛#dms231");
+	disablenpc instance_npcname("神殿守衛#dms241");
+	disablenpc instance_npcname("#msna01");
+	// Step 3 - Wolves Gathering Place
+	disablenpc instance_npcname("米莉亞#dms301");
+	disablenpc instance_npcname("拉馬庫斯#dms201");
+	disablenpc instance_npcname("尤琵#dms221");
+	disablenpc instance_npcname("坤#dms211");
+	disablenpc instance_npcname("神殿守衛#dms301");
+	disablenpc instance_npcname("神殿守衛#dms311");
+	disablenpc instance_npcname("神殿守衛#dms321");
+	disablenpc instance_npcname("神殿守衛#dms331");
+	disablenpc instance_npcname("神殿守衛#dms341");
+
+	// Step 4 - Wolves Gathering Place
+	disablenpc instance_npcname("米莉亞#dms401");
+	disablenpc instance_npcname("拉馬庫斯#dms301");
+	disablenpc instance_npcname("坤#dms311");
+	disablenpc instance_npcname("尤琵#dms321");
+	disablenpc instance_npcname("神殿守衛#dms401");
+	disablenpc instance_npcname("神殿守衛#dms411");
+	disablenpc instance_npcname("神殿守衛#dms421");
+	disablenpc instance_npcname("神殿守衛#dms431");
+	disablenpc instance_npcname("神殿守衛#dms441");
+	// Step 5 - Wolves Gathering Place
+	disablenpc instance_npcname("米莉亞#dms501");
+	disablenpc instance_npcname("拉馬庫斯#dms401");
+	disablenpc instance_npcname("坤#dms411");
+	disablenpc instance_npcname("尤琵#dms421");
+	disablenpc instance_npcname("修朗#dms101");
+	disablenpc instance_npcname("神殿守衛#dms501");
+	disablenpc instance_npcname("神殿守衛#dms511");
+	disablenpc instance_npcname("神殿守衛#dms521");
+	disablenpc instance_npcname("神殿守衛#dms531");
+	disablenpc instance_npcname("神殿守衛#dms541");
+	// Step 6 - Wolves Gathering Place
+	// disablenpc instance_npcname("#dmss101");
+	disablenpc instance_npcname("米莉亞#dms601");
+	disablenpc instance_npcname("拉馬庫斯#dms501");
+	disablenpc instance_npcname("坤#dms511");
+	disablenpc instance_npcname("尤琵#dms521");
+	disablenpc instance_npcname("修朗#dms201");
+	disablenpc instance_npcname("巴戈特#dms101");
+	disablenpc instance_npcname("私兵#dms101");
+	disablenpc instance_npcname("神殿守衛#dms601");
+	disablenpc instance_npcname("神殿守衛#dms611");
+	disablenpc instance_npcname("神殿守衛#dms621");
+	disablenpc instance_npcname("#effc01");
+	// Step 7 + 8 - Wolves Gathering Place
+	// disablenpc instance_npcname("#dms701");
+	disablenpc instance_npcname("米莉亞#dms701");
+	disablenpc instance_npcname("拉馬庫斯#dms601");
+	disablenpc instance_npcname("坤#dms611");
+	disablenpc instance_npcname("尤琵#dms621");
+	disablenpc instance_npcname("尼倫#dms101");
+	disablenpc instance_npcname("最高階神官#dms201");
+	disablenpc instance_npcname("巴戈特#dms201");
+	disablenpc instance_npcname("修朗#dms301");
+	disablenpc instance_npcname("神殿守衛#dms701");
+	disablenpc instance_npcname("神殿守衛#dms711");
+	disablenpc instance_npcname("神殿守衛#dms721");
+	disablenpc instance_npcname("神殿守衛#dms731");
+	disablenpc instance_npcname("神殿守衛#dms741");
+	disablenpc instance_npcname("神殿守衛#dms751");
+	disablenpc instance_npcname("神殿守衛#dms761");
+	disablenpc instance_npcname("神殿守衛#dms771");
+	// Step 9 - Wolves Gathering Place
+	disablenpc instance_npcname("#dmswch02");
+	disablenpc instance_npcname("米莉亞#dms801");
+
+	// Step 10 - Wolves Gathering Place
+	disablenpc instance_npcname("蘇亞德#dms102");
+
+	disablenpc instance_npcname("傑特#dms101");
+	disablenpc instance_npcname("尼倫#dms201");
+
+	disablenpc instance_npcname("神殿守衛#dms802");
+	disablenpc instance_npcname("神殿守衛#dms812");
+	disablenpc instance_npcname("神殿守衛#dms822");
+	disablenpc instance_npcname("神殿守衛#dms832");
+	disablenpc instance_npcname("神殿守衛#dms842");
+
+	disablenpc instance_npcname("神殿守衛#dms801");
+	disablenpc instance_npcname("神殿守衛#dms811");
+	disablenpc instance_npcname("神殿守衛#dms821");
+	disablenpc instance_npcname("神殿守衛#dms831");
+	disablenpc instance_npcname("神殿守衛#dms841");
+	disablenpc instance_npcname("神殿守衛#dms851");
+	disablenpc instance_npcname("神殿守衛#dms861");
+	disablenpc instance_npcname("神殿守衛#dms871");
+	disablenpc instance_npcname("神殿守衛#dms881");
+	disablenpc instance_npcname("神殿守衛#dms891");
+
+	disablenpc instance_npcname("心之獵手#dms101");
+	disablenpc instance_npcname("心之獵手#dms111");
+	disablenpc instance_npcname("心之獵手#dms121");
+	disablenpc instance_npcname("心之獵手#dms131");
+	disablenpc instance_npcname("心之獵手#dms141");
+	disablenpc instance_npcname("心之獵手#dms151");
+	disablenpc instance_npcname("心之獵手#dms161");
+	disablenpc instance_npcname("心之獵手#dms171");
+	disablenpc instance_npcname("心之獵手#dms181");
+	disablenpc instance_npcname("心之獵手#dms191");
+
+	disablenpc instance_npcname("憤怒的群眾#dms201");
+	disablenpc instance_npcname("憤怒的群眾#dms211");
+	disablenpc instance_npcname("憤怒的群眾#dms221");
+	disablenpc instance_npcname("憤怒的群眾#dms231");
+	disablenpc instance_npcname("憤怒的群眾#dms241");
+	disablenpc instance_npcname("憤怒的群眾#dms251");
+	disablenpc instance_npcname("憤怒的群眾#dms261");
+	disablenpc instance_npcname("憤怒的群眾#dms271");
+	disablenpc instance_npcname("憤怒的群眾#dms281");
+	disablenpc instance_npcname("憤怒的群眾#dms291");
+
+	disablenpc instance_npcname("憤怒的群眾#dms202");
+	disablenpc instance_npcname("憤怒的群眾#dms212");
+	disablenpc instance_npcname("憤怒的群眾#dms222");
+	disablenpc instance_npcname("憤怒的群眾#dms232");
+	disablenpc instance_npcname("憤怒的群眾#dms242");
+
+	// daily (2@nyr)
+	disablenpc instance_npcname("神殿守衛#2dms221");
+	disablenpc instance_npcname("神殿守衛#2dms231");
+	disablenpc instance_npcname("神殿守衛#2dms241");
+	disablenpc instance_npcname("#2mstep11");
+	disablenpc instance_npcname("神殿守衛#2dms201");
+	disablenpc instance_npcname("神殿守衛#2dms251");
+	disablenpc instance_npcname("神殿守衛#2dms211");
+
+	disablenpc instance_npcname("#2ar101sw");
+	disablenpc instance_npcname("神殿守衛#2dms101");
+	disablenpc instance_npcname("神殿守衛#2dms111");
+	disablenpc instance_npcname("神殿守衛#2dms121");
+	disablenpc instance_npcname("神殿守衛#2dms131");
+	disablenpc instance_npcname("神殿守衛#2dms141");
+	disablenpc instance_npcname("神殿守衛#2dms151");
+	disablenpc instance_npcname("神殿守衛#2dms161");
+	disablenpc instance_npcname("#2mstep01");
+	disablenpc instance_npcname("#2mstep02");
+	disablenpc instance_npcname("保安裝置#2dms10");
+	disablenpc instance_npcname("#2mstep03");
+	disablenpc instance_npcname("#2mstep04");
+	disablenpc instance_npcname("保安裝置#2dms20");
+	disablenpc instance_npcname("#2mstep05");
+	disablenpc instance_npcname("#2mstep06");
+	disablenpc instance_npcname("保安裝置#2dms30");
+	disablenpc instance_npcname("#2mstep07");
+	disablenpc instance_npcname("#2mstep08");
+	disablenpc instance_npcname("#2mstep09");
+	disablenpc instance_npcname("保安裝置#2dms40");
+	disablenpc instance_npcname("#2mstep10");
+	disablenpc instance_npcname("#msnavi01");
+	disablenpc instance_npcname("神殿守衛#2dms261");
+
+	disablenpc instance_npcname("#2ar201sw");
+	disablenpc instance_npcname("心之獵手#2dms50");
+
+	disablenpc instance_npcname("神殿守衛#2dms10");
+	disablenpc instance_npcname("心之獵手#2dms11");
+	disablenpc instance_npcname("心之獵手#2dms12");
+	disablenpc instance_npcname("心之獵手#2dms13");
+
+	disablenpc instance_npcname("心之獵手#2dms20");
+	disablenpc instance_npcname("心之獵手#2dms21");
+	disablenpc instance_npcname("心之獵手#2dms22");
+
+	disablenpc instance_npcname("心之獵手#2dms30");
+	disablenpc instance_npcname("心之獵手#2dms31");
+	disablenpc instance_npcname("心之獵手#2dms32");
+
+	disablenpc instance_npcname("心之獵手#2dms40");
+	disablenpc instance_npcname("心之獵手#2dms41");
+	disablenpc instance_npcname("心之獵手#2dms42");
+	disablenpc instance_npcname("心之獵手#2dms43");
+	disablenpc instance_npcname("心之獵手#2dms44");
+	disablenpc instance_npcname("心之獵手#2dms45");
+	disablenpc instance_npcname("心之獵手#2dms46");
+	disablenpc instance_npcname("心之獵手#2dms47");
+	disablenpc instance_npcname("心之獵手#2dms48");
+	disablenpc instance_npcname("心之獵手#2dms49");
+
+	// warps
+	disablenpc instance_npcname("#dmswp01");
+	disablenpc instance_npcname("#dmwrp02");
+
+	disablenpc instance_npcname("#mstep01");
+	disablenpc instance_npcname("#mstep02");
+	disablenpc instance_npcname("#mstep03");
+	disablenpc instance_npcname("#mstep04");
+	disablenpc instance_npcname("#mstep05");
+	disablenpc instance_npcname("#mstep06");
+	disablenpc instance_npcname("#mstep07");
+	disablenpc instance_npcname("#mstep08");
+	disablenpc instance_npcname("#mstep09");
+	disablenpc instance_npcname("#mstep10");
+	disablenpc instance_npcname("#mstep11");
+	end;
+}
+
+//------------------------------------------------------------
+// Warp NPCs
+//------------------------------------------------------------
+1@nyr,179,168,0	warp	#dmswp01	1,1,2@nyr,34,221
+
+1@nyr,43,26,0	script	#dmwrp02	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp "rachel",117,197;
+	if ('nyr_main_step == 22) {
+		if (ep18_main == 51) {
+			changequest 17520,17521;
+			ep18_main = 52;
+		}
+	}
+	end;
+}
+
+2@nyr,56,104,0	warp	#mstep01	1,1,2@nyr,49,104
+
+2@nyr,49,55,0	script	#mstep02	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp 'map_2nyr$,53,55;
+	if ('nyr_main_step == 8)
+		navigateto("2@nyr",119,73);
+	end;
+}
+
+2@nyr,119,73,0	warp	#mstep03	1,1,2@nyr,119,65
+
+2@nyr,119,67,0	script	#mstep04	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp 'map_2nyr$,119,75;
+	if ('nyr_main_step == 10)
+		navigateto("2@nyr",183,104);
+	end;
+}
+
+2@nyr,183,104,0	warp	#mstep05	1,1,2@nyr,190,104
+
+2@nyr,186,104,0	script	#mstep06	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp 'map_2nyr$,180,104;
+	if ('nyr_main_step == 12)
+		navigateto("2@nyr",133,109);
+	end;
+}
+
+2@nyr,120,123,0	warp	#mstep07	1,1,2@nyr,120,126
+
+2@nyr,120,137,0	script	#mstep08	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp 'map_2nyr$,120,147;
+	if ('nyr_main_step == 13)
+		navigateto("2@nyr",118,199);
+	end;
+}
+
+2@nyr,120,141,0	script	#mstep09	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp 'map_2nyr$,120,134;
+	if ('nyr_main_step == 16)
+		navigateto("2@nyr",151,131);
+	end;
+}
+
+2@nyr,151,131,0	script	#mstep10	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	warp 'map_2nyr$,159,131;
+	if ('nyr_main_step == 16)
+		navigateto("2@nyr",203,220);
+	end;
+}
+
+2@nyr,203,220,0	warp	#mstep11	1,1,1@nyr,65,169
+
+
+//------------------------------------------------------------
+// Step 1
+//------------------------------------------------------------
+1@nyr,192,31,3	script	米莉亞#dms101	EP18_NPC_MIRIAM,5,5,{
+	end;
+OnTouch:
+	if ('nyr_main_step == 1) {
+		navigateto("1@nyr",125,41);
+		end;
+	}
+	if ('nyr_main_step != 0)
+		end;
+	'nyr_main_step = 1;
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "冒險家！";
+	emotion ET_SURPRISE;
+	sleep2 1000;
+	navigateto("1@nyr",125,41);
+	setpcblock PCBLOCK_NPC, false;
+	npctalk "前面就是集結點了。";
+	unitwalk getnpcid(0), 162,31, instance_npcname("米莉亞#dms101") + "::OnMove1";
+	sleep 2000;
+	npctalk "這邊請。";
+	end;
+OnMove1:
+	unitwalk getnpcid(0), 137,31, instance_npcname("米莉亞#dms101") + "::OnMove2";
+	end;
+OnMove2:
+	unitwalk getnpcid(0), 128,41, instance_npcname("米莉亞#dms101") + "::OnMove3";
+	npctalk "就在前面。";
+	end;
+OnMove3:
+	if ('nyr_main_step != 1)
+		end;
+	'nyr_main_step = 2;
+
+	npctalk "蘇亞德，現在情況怎麼樣？", instance_npcname("米莉亞#dms101");
+	npctalk "禁止繼續前進！", instance_npcname("神殿守衛#dms101");
+	sleep 1000;
+	npctalk "米莉亞，冒險家。再往這邊一點。", instance_npcname("蘇亞德#dms101");
+	sleep 1000;
+	npctalk "太過分了！他們把我們當罪犯看待！", instance_npcname("坤#dms112");
+	npctalk "我們待在不該待的地方了嗎？", instance_npcname("憤怒的群眾#dms131");
+	sleep 1500;
+	npctalk "喂，那裡可是我曾曾祖母的土地！", instance_npcname("憤怒的群眾#dms121");
+	npctalk "我們有權利待在這裡！", instance_npcname("憤怒的群眾#dms161");
+	sleep 2000;
+	npctalk "沒錯！！別擋路！", instance_npcname("憤怒的群眾#dms191");
+	npctalk "是你們把我們趕走的！", instance_npcname("憤怒的群眾#dms181");
+	sleep 2000;
+	npctalk "是因為我們看起來不像人類嗎？", instance_npcname("憤怒的群眾#dms101");
+	npctalk "是因為我們看起來很好欺負嗎？", instance_npcname("憤怒的群眾#dms131");
+	sleep 2000;
+	npctalk "我們只是在討回我們應得的地方！", instance_npcname("憤怒的群眾#dms121");
+	npctalk "搞什麼鬼！！把我們的土地還來！！", instance_npcname("憤怒的群眾#dms181");
+	sleep 2000;
+	npctalk "我們是這片土地長久以來的主人，卻被那些定居者趕出了家園。", instance_npcname("憤怒的群眾#dms101");
+	npctalk "是誰在阻撓我們？！", instance_npcname("憤怒的群眾#dms141");
+	sleep 2000;
+	npctalk "我們作為這片土地長久以來的居民，是來討回應得的地方的。", instance_npcname("憤怒的群眾#dms101");
+	npctalk "那些非法佔用我們土地的人才該滾出去！", instance_npcname("憤怒的群眾#dms191");
+	sleep 2000;
+	npctalk "禁止非法抗議！立刻解散！", instance_npcname("神殿守衛#dms101");
+	npctalk "誰說我們的抗議是非法的？", instance_npcname("憤怒的群眾#dms151");
+	npctalk "你們只是隨便捏造說這是非法的吧？", instance_npcname("憤怒的群眾#dms171");
+	sleep 2000;
+	npctalk "我們的訴求如下！", instance_npcname("憤怒的群眾#dms101");
+	sleep 2000;
+	npctalk "第一！我們才是這片土地的主人！那些非法佔用的人必須離開！", instance_npcname("憤怒的群眾#dms101");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms111");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms121");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms131");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms141");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms151");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms161");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms171");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms181");
+	npctalk "退後！", instance_npcname("憤怒的群眾#dms191");
+	sleep 2000;
+	npctalk "第二！廢除不公平的歧視政策，並承認我們的權利！", instance_npcname("憤怒的群眾#dms101");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms111");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms121");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms131");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms141");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms151");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms161");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms171");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms181");
+	npctalk "承認吧！", instance_npcname("憤怒的群眾#dms191");
+	end;
+
+OnStartMove2:
+	npcspeed 100;
+	unitwalk getnpcid(0), 137,31, instance_npcname("米莉亞#dms101") + "::OnMove4";
+	end;
+OnMove4:
+	disablenpc instance_npcname("米莉亞#dms101");
+	end;
+
+OnGuy1:
+	disablenpc instance_npcname("拉馬庫斯#dms102");
+	end;
+OnGuy2:
+	disablenpc instance_npcname("坤#dms112");
+	end;
+OnGuy3:
+	disablenpc instance_npcname("尤琵#dms122");
+	end;
+}
+
+1@nyr,125,41,3	script	蘇亞德#dms101	4_EP18_SUAD,{
+	if (is_party_leader() == false) {
+		cutin "ep18_Suad_01.png",0;
+		mes "[蘇亞德]";
+		mes "隊長在哪裡？";
+		close3;
+	}
+	if ('nyr_main_step == 2) {
+		cutin "ep18_suad_01.png",0;
+		mes "[蘇亞德]";
+		mes "現在情況不太妙。我想... 武裝守衛正在加強戒備..";
+		next;
+		select( "看來上面的暴動問題很嚴重。" );
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "或者是情報走漏了。否則，他們不會準備得這麼齊全。";
+		next;
+		cutin "",255;
+		mes "[神殿守衛]";
+		mes "禁止繼續前進。乖乖束手就擒吧。";
+		next;
+		mes "[原住民]";
+		mes "我們做了什麼？我們不是不該在這裡嗎！";
+		next;
+		mes "[原住民]";
+		mes "這是我們的土地！如果主人想進入自己的土地，憑什麼有人要阻止？";
+		next;
+		mes "[原住民]";
+		mes "你們才是非法佔用的人！";
+		next;
+		mes "[原住民]";
+		mes "搞什麼鬼，還來！！我們的土地！！";
+		next;
+		mes "[原住民領袖]";
+		mes "我們是這片土地長久以來的主人，卻被那些定居者趕出了家園。";
+		next;
+		mes "[原住民領袖]";
+		mes "我們作為這片土地長久以來的居民，是來討回應得的地方的。";
+		next;
+		mes "[原住民領袖]";
+		mes "我們的訴求如下。";
+		next;
+		mes "[原住民領袖]";
+		mes "第一！我們有...";
+		next;
+		npctalk "就是現在。悄悄地跟著我。", instance_npcname("拉馬庫斯#dms102");
+		npcspeed( 50, instance_npcname("拉馬庫斯#dms102") );
+		npcspeed( 50, instance_npcname("坤#dms112") );
+		npcspeed( 50, instance_npcname("尤琵#dms122") );
+		unitwalk getnpcid(0,instance_npcname("拉馬庫斯#dms102")), 145,34, instance_npcname("米莉亞#dms101") + "::OnGuy1";
+		sleep2 1000;
+		unitwalk getnpcid(0,instance_npcname("坤#dms112")), 145,32, instance_npcname("米莉亞#dms101") + "::OnGuy2";
+		unitwalk getnpcid(0,instance_npcname("尤琵#dms122")), 145,31, instance_npcname("米莉亞#dms101") + "::OnGuy3";
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "蘇亞德，你有對上面暴動的那些人下達什麼具體指示嗎？";
+		next;
+		cutin "ep18_suad_01.png",0;
+		mes "[蘇亞德]";
+		mes "沒有？怎麼了？";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "看到那邊那些傢伙了嗎？他們行動得很謹慎。那群就是剛剛在上面發起攻擊的人。";
+		next;
+		cutin "ep18_suad_03.png",0;
+		mes "[蘇亞德]";
+		mes "我沒有給過指示。難道他們打算擅自行動嗎？";
+		next;
+		select( "看來他們是朝著神殿去的。" );
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "這是事先沒討論過的行動。我已經有前科了，這可不是什麼好事，對吧？我得悄悄跟過去，不知道他們還會做出什麼事..";
+		next;
+		cutin "ep18_suad_01.png",0;
+		mes "[蘇亞德]";
+		mes "你要自己一個人去嗎？";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "我只是跟在後面，為什麼需要組隊？我一個人就夠了。你留在這裡，有情況我會發信號的。";
+		next;
+		if ('nyr_main_step == 2) {
+			'nyr_main_step = 3;
+			enablenpc instance_npcname("#dmswp01");
+			enablenpc instance_npcname("米莉亞#dms201");
+		}
+		donpcevent instance_npcname("米莉亞#dms101") + "::OnStartMove2";
+		cutin "ep18_suad_03.png",0;
+		mes "[蘇亞德]";
+		mes "她說只是跟著，但天曉得他們會做什麼。就算他們手無寸鐵，也可能藏著什麼東西...";
+		next;
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 讓我跟上去吧。";
+		mes "[蘇亞德]";
+		mes "那真是太好了。我在這裡不能輕舉妄動。米莉亞留下了記號。現在請幫個忙，順著記號跟上去吧。";
+		close2;
+		navigateto("1@nyr",179,164);
+		cutin "",255;
+		end;
+	}
+	if ('nyr_main_step == 3) {
+		cutin "ep18_suad_01.png",0;
+		mes "[蘇亞德]";
+		mes "萬事小心。";
+		close2;
+		navigateto("1@nyr",179,164);
+		cutin "",255;
+		end;
+	}
+	end;
+}
+
+1@nyr,130,34,1	script	拉馬庫斯#dms102	EP18_ARMED_VILLAGER01,{
+	end;
+OnInstanceInit:
+	npcspeed 100;
+	end;
+}
+1@nyr,132,32,1	duplicate(拉馬庫斯#dms102)	坤#dms112	EP18_ARMED_VILLAGER02
+1@nyr,130,31,1	duplicate(拉馬庫斯#dms102)	尤琵#dms122	EP18_ARMED_VILLAGER03
+
+1@nyr,117,38,7	duplicate(dummy_npc)	憤怒的群眾#dms171	4_EP18_GW_MIDDLE02
+1@nyr,139,46,3	duplicate(dummy_npc)	神殿守衛#dms101	4_M_RASWORD
+1@nyr,132,46,3	duplicate(dummy_npc)	神殿守衛#dms111	4_M_RASWORD
+1@nyr,126,46,3	duplicate(dummy_npc)	神殿守衛#dms121	4_M_RASWORD
+1@nyr,122,46,3	duplicate(dummy_npc)	神殿守衛#dms131	4_M_RASWORD
+1@nyr,118,46,5	duplicate(dummy_npc)	神殿守衛#dms141	4_M_RASWORD
+1@nyr,110,46,5	duplicate(dummy_npc)	神殿守衛#dms151	4_M_RASWORD
+
+1@nyr,120,44,5	duplicate(dummy_npc)	神殿守衛#dms181	4_M_RASWORD
+1@nyr,124,44,3	duplicate(dummy_npc)	神殿守衛#dms191	4_M_RASWORD
+1@nyr,137,38,1	duplicate(dummy_npc)	憤怒的群眾#dms101	4_EP18_GW_MAN01
+1@nyr,124,36,1	duplicate(dummy_npc)	憤怒的群眾#dms111	4_EP18_GW_WOMAN01
+1@nyr,131,38,1	duplicate(dummy_npc)	憤怒的群眾#dms121	4_EP18_GW_MAN02
+1@nyr,127,34,1	duplicate(dummy_npc)	憤怒的群眾#dms131	4_M_MIDDLE
+1@nyr,121,40,7	duplicate(dummy_npc)	憤怒的群眾#dms141	4_EP18_GW_WOMAN02
+1@nyr,122,37,7	duplicate(dummy_npc)	憤怒的群眾#dms151	4_EP18_GW_MIDDLE01
+1@nyr,118,35,7	duplicate(dummy_npc)	憤怒的群眾#dms161	4_M_RACHMAN1
+1@nyr,114,36,7	duplicate(dummy_npc)	憤怒的群眾#dms181	4_F_SHABBY
+1@nyr,116,41,7	duplicate(dummy_npc)	憤怒的群眾#dms191	4_EP18_GW_WOMAN01
+
+
+//------------------------------------------------------------
+// Step 2
+//------------------------------------------------------------
+// (disabled since we are using Miriam instead)
+// 2@nyr,37,219,0	script	#ar101sw	HIDDEN_WARP_NPC,5,5
+
+2@nyr,37,219,3	script	米莉亞#dms201	4_EP18_MIRIAM,5,5,{
+	end;
+OnTouch:
+	// note: player can move
+	if ('nyr_main_step != 3 || is_party_leader() == false)
+		end;
+	'nyr_main_step = 4;
+	npctalk "冒險家？", instance_npcname("米莉亞#dms201");
+	npctalk "冒險家？你怎麼會在這裡？", instance_npcname("米莉亞#dms201");
+	sleep 2000;
+	npctalk "是蘇亞德讓我來的。別太擔心。", instance_npcname("米莉亞#dms201");
+	sleep 1000;
+	enablenpc instance_npcname("神殿守衛#dms201");
+	enablenpc instance_npcname("神殿守衛#dms211");
+	enablenpc instance_npcname("神殿守衛#dms221");
+	enablenpc instance_npcname("神殿守衛#dms231");
+	enablenpc instance_npcname("神殿守衛#dms241");
+	sleep 500;
+	npctalk "站住！報上名來。", instance_npcname("神殿守衛#dms201");
+	npctalk "... 看來很難悄悄通過了。", instance_npcname("米莉亞#dms201");
+	end;
+}
+
+2@nyr,35,215,7	script	神殿守衛#dms201	4_M_RASWORD,{
+	if (is_party_leader() == false) {
+		npctalk "隊伍的隊長是誰？";
+		end;
+	}
+	if ('nyr_main_step != 4)
+		end;
+	mes "[神殿守衛]";
+	mes "這裡禁止進入。";
+	next;
+	cutin "ep18_miriam_01.png",2;
+	mes "[米莉亞]";
+	mes "我是米莉亞，最高階神官阿瑪爾的女兒。我們一路跟蹤一群可疑的人來到這個區域..";
+	next;
+	cutin "",255;
+	mes "[神殿守衛]";
+	mes "你是來協助最高階神官處理工作的嗎？";
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "工作... 協助...？我父親在這裡嗎？";
+	next;
+	cutin "",255;
+	mes "[神殿守衛]";
+	mes "啊...";
+	next;
+	mes "[神殿守衛]";
+	mes "這裡沒有可疑的人。你們可以離開了。";
+	next;
+	mapannounce 'map_2nyr$, "慢慢來。", bc_map, 0xFFCC;
+	mapannounce 'map_2nyr$, "請小心。", bc_map, 0xFFCC;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "你確定沒有任何可疑的人進來嗎？他們明明跑進這個地方了，給我一秒鐘，我馬上檢查一下。";
+	next;
+	cutin "",255;
+	mes "[神殿守衛]";
+	mes "如果你再靠近，我們就會採取行動。";
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "...那也沒辦法了。交給你行嗎，冒險家？";
+	next;
+	select( "沒問題。我來處理，你快去追他們。" );
+	mes "[米莉亞]";
+	mes "那就拜託你了，我會留下痕跡讓你能找到我..";
+	next;
+	cutin "",255;
+	disablenpc instance_npcname("米莉亞#dms201");
+	mes "[神殿守衛]";
+	mes "入侵者...！呃啊！！！";
+	if ('nyr_main_step == 4) {
+		'nyr_main_step = 5;
+		donpcevent instance_npcname("nyr_step_2") + "::OnStart";
+	}
+	close;
+}
+
+2@nyr,34,212,7	duplicate(dummy_npc)	神殿守衛#dms211	4_M_RASWORD
+2@nyr,36,212,1	duplicate(dummy_npc)	神殿守衛#dms221	4_M_RASWORD
+2@nyr,33,209,7	duplicate(dummy_npc)	神殿守衛#dms231	4_M_RASWORD
+2@nyr,38,209,1	duplicate(dummy_npc)	神殿守衛#dms241	4_M_RASWORD
+
+
+2@nyr,1,1,0	script	nyr_step_2	-1,{
+	end;
+OnStart:
+	// disabled npcs from step 1
+	disablenpc instance_npcname("米莉亞#dms101");
+	disablenpc instance_npcname("蘇亞德#dms101");
+	disablenpc instance_npcname("拉馬庫斯#dms102");
+	disablenpc instance_npcname("坤#dms112");
+	disablenpc instance_npcname("尤琵#dms122");
+	disablenpc instance_npcname("憤怒的群眾#dms171");
+	disablenpc instance_npcname("神殿守衛#dms101");
+	disablenpc instance_npcname("神殿守衛#dms111");
+	disablenpc instance_npcname("神殿守衛#dms121");
+	disablenpc instance_npcname("神殿守衛#dms131");
+	disablenpc instance_npcname("神殿守衛#dms141");
+	disablenpc instance_npcname("神殿守衛#dms151");
+	disablenpc instance_npcname("神殿守衛#dms181");
+	disablenpc instance_npcname("神殿守衛#dms191");
+	disablenpc instance_npcname("憤怒的群眾#dms101");
+	disablenpc instance_npcname("憤怒的群眾#dms111");
+	disablenpc instance_npcname("憤怒的群眾#dms121");
+	disablenpc instance_npcname("憤怒的群眾#dms131");
+	disablenpc instance_npcname("憤怒的群眾#dms141");
+	disablenpc instance_npcname("憤怒的群眾#dms151");
+	disablenpc instance_npcname("憤怒的群眾#dms161");
+	disablenpc instance_npcname("憤怒的群眾#dms181");
+	disablenpc instance_npcname("憤怒的群眾#dms191");
+	disablenpc instance_npcname("#dmswp01");
+	disablenpc instance_npcname("米莉亞#dms201");
+	disablenpc instance_npcname("神殿守衛#dms201");
+	disablenpc instance_npcname("神殿守衛#dms211");
+	disablenpc instance_npcname("神殿守衛#dms221");
+	disablenpc instance_npcname("神殿守衛#dms231");
+	disablenpc instance_npcname("神殿守衛#dms241");
+	sleep 500;
+	.@label$ = instance_npcname("nyr_step_2") + "::OnMobDead";
+	monster 'map_2nyr$,35,215,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,34,212,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,36,212,"神殿守衛",21310,1, .@label$;
+	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,33,209,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,38,209,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	end;
+OnMobDead:
+	if ('nyr_main_step != 5)
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("nyr_step_2") + "::OnMobDead") < 1) {
+		'nyr_main_step = 6;
+		mapannounce 'map_2nyr$, "我好像聽到哪裡有打鬥聲？", bc_map, 0xFFCC;
+		enablenpc instance_npcname("#mstep01");
+		enablenpc instance_npcname("米莉亞#dms301");
+		enablenpc instance_npcname("拉馬庫斯#dms201");
+		enablenpc instance_npcname("尤琵#dms221");
+		enablenpc instance_npcname("坤#dms211");
+		enablenpc instance_npcname("#msna01");
+	}
+	end;
+}
+
+2@nyr,37,145,0	script	#msna01	HIDDEN_WARP_NPC,5,5,{
+	end;
+OnTouch:
+	if ('nyr_main_step == 6)
+		navigateto("2@nyr",56,104);
+	end;
+}
+
+
+//------------------------------------------------------------
+// Step 3
+//------------------------------------------------------------
+2@nyr,43,94,3	script	米莉亞#dms301	4_EP18_MIRIAM,5,5,{
+	end;
+OnTouch:
+	if ('nyr_main_step != 6)
+		end;
+	npctalk "你來得正好。噓——看到那邊那些人了嗎？", instance_npcname("米莉亞#dms301");
+	npctalk "書的味道讓我好想睡。", instance_npcname("拉馬庫斯#dms201");
+	end;
+}
+
+2@nyr,37,93,5	script	拉馬庫斯#dms201	EP18_ARMED_VILLAGER01,{
+	if ('nyr_main_step != 6)
+		end;
+	if (is_party_leader() == false)
+		end;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "你們在這裡做什麼？";
+	next;
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "哇！你到底為什麼會在這裡，還帶著一個冒險家？";
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "你們現在不該在這裡。如果神殿發現了，只會讓我們的處境更加困難。";
+	next;
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "你看不出來嗎？我們闖進了圖書館。這裡肯定有很多定居者的秘密。";
+	npctalk "想想看。如果我們把這些都弄到手呢？", instance_npcname("坤#dms211");
+	npctalk "我們就可以抓住他們的弱點！", instance_npcname("尤琵#dms221");
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "那個可以之後再想。現在，先回去吧。你們現在的行為會讓我們陷入更大的危險..";
+	next;
+	cutin "",255;
+	mes "[尤琵]";
+	mes "回家吧，米莉亞。我再也不想配合你那古板的做法了。";
+	npctalk "你憑什麼對我們指手畫腳？", instance_npcname("坤#dms211");
+	next;
+	enablenpc instance_npcname("神殿守衛#dms301");
+	mes "[神殿守衛]";
+	mes "在那裡，是入侵者！";
+	next;
+	enablenpc instance_npcname("神殿守衛#dms311");
+	enablenpc instance_npcname("神殿守衛#dms321");
+	enablenpc instance_npcname("神殿守衛#dms331");
+	enablenpc instance_npcname("神殿守衛#dms341");
+	mes "[神殿守衛]";
+	mes "所有人放下武器，舉起手來！";
+	next;
+	select( "我該怎麼做？" );
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "我們人數處於劣勢，想辦法解決吧。";
+	next;
+	cutin "",255;
+	mes "[坤]";
+	mes "真是好時機。那我們就先走一步了！";
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "撐著點，冒險家！";
+	next;
+	select( "這裡就交給我吧！" );
+	if ('nyr_main_step == 6) {
+		'nyr_main_step = 7;
+		donpcevent instance_npcname("nyr_step_3") + "::OnStart";
+	}
+	cutin "",255;
+	end;
+}
+
+2@nyr,35,90,5	duplicate(dummy_npc)	尤琵#dms221	EP18_ARMED_VILLAGER03
+2@nyr,32,93,1	duplicate(dummy_npc)	坤#dms211	EP18_ARMED_VILLAGER02
+
+2@nyr,1,1,0	script	nyr_step_3	-1,{
+	end;
+OnStart:
+	disablenpc instance_npcname("米莉亞#dms301");
+	disablenpc instance_npcname("拉馬庫斯#dms201");
+	disablenpc instance_npcname("尤琵#dms221");
+	disablenpc instance_npcname("坤#dms211");
+	disablenpc instance_npcname("神殿守衛#dms301");
+	disablenpc instance_npcname("神殿守衛#dms311");
+	disablenpc instance_npcname("神殿守衛#dms321");
+	disablenpc instance_npcname("神殿守衛#dms331");
+	disablenpc instance_npcname("神殿守衛#dms341");
+	.@label$ = instance_npcname("nyr_step_3") + "::OnMobDead";
+	monster 'map_2nyr$,45,96,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,47,94,"神殿守衛",21310,1, .@label$; // EP18_MD_GUARD_A
+	monster 'map_2nyr$,43,96,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,47,98,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,44,98,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	end;
+OnMobDead:
+	if ('nyr_main_step != 7)
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("nyr_step_3") + "::OnMobDead") < 1) {
+		'nyr_main_step = 8;
+		mapannounce 'map_2nyr$, "我感到背脊發涼... 好像有人在看著...？", bc_map, 0xFFCC;
+		disablenpc instance_npcname("#mstep01");
+		enablenpc instance_npcname("#mstep02");
+		enablenpc instance_npcname("#mstep03");
+		enablenpc instance_npcname("米莉亞#dms401");
+		enablenpc instance_npcname("拉馬庫斯#dms301");
+		enablenpc instance_npcname("坤#dms311");
+		enablenpc instance_npcname("尤琵#dms321");
+	}
+	end;
+}
+
+2@nyr,45,96,3	duplicate(dummy_npc)	神殿守衛#dms301	4_M_RASWORD
+2@nyr,47,94,3	duplicate(dummy_npc)	神殿守衛#dms311	4_M_RASWORD
+2@nyr,43,96,3	duplicate(dummy_npc)	神殿守衛#dms321	4_M_RASWORD
+2@nyr,47,98,3	duplicate(dummy_npc)	神殿守衛#dms331	4_M_RASWORD
+2@nyr,44,98,3	duplicate(dummy_npc)	神殿守衛#dms341	4_M_RASWORD
+
+
+//------------------------------------------------------------
+// Step 4
+//------------------------------------------------------------
+2@nyr,87,47,5	script	米莉亞#dms401	4_EP18_MIRIAM,5,5,{
+	end;
+OnTouch:
+	npctalk "聲音是從這邊傳來的。", instance_npcname("米莉亞#dms401");
+	npctalk "那個... 心臟....", instance_npcname("拉馬庫斯#dms301");
+	end;
+}
+
+2@nyr,99,47,1	script	拉馬庫斯#dms301	EP18_ARMED_VILLAGER01,{
+	if ('nyr_main_step != 8)
+		end;
+	if (is_party_leader() == false)
+		end;
+	mes "[拉馬庫斯]";
+	mes "你找到了嗎？這到底是什麼地方？";
+	next;
+	mes "[坤]";
+	mes "還沒。我覺得不在這邊。哦，等等... 最高階神官的...？";
+	next;
+	mes "[尤琵]";
+	mes "別管那些不相關的書了。那不是我們在找的東西。";
+	next;
+	cutin "ep18_miriam_03.png",0;
+	mes "[米莉亞]";
+	mes "你們這些傢伙...！";
+	next;
+	select( "噓——等一下。" );
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "就算是再怎麼隱密的圖書館，也不會把那樣的書隨便亂放。";
+	next;
+	mes "[坤]";
+	mes "所以這個秘密圖書館裡面還有另一個秘密圖書館？";
+	next;
+	mes "[尤琵]";
+	mes "我不知道。我們繼續找就對了。";
+	next;
+	mes "[坤]";
+	mes "要是能知道書名就好了。";
+	next;
+	mes "[拉馬庫斯]";
+	mes "如果我知道的話，我就不會在這裡了。我就會說：『把看起來像那個的東西都給我拿來。』快去找。";
+	next;
+	select( "他們看起來不像是在找一本特定的書嗎？" );
+	mes "[米莉亞]";
+	mes "特定的書...？不只是一本用來抓住弱點的書？";
+	next;
+	cutin "ep18_miriam_03.png",0;
+	mes "[米莉亞]";
+	mes "不，你是說這個？喂！你們到底在找什麼？有什麼目的？";
+	next;
+	cutin "",255;
+	mes "[尤琵]";
+	mes "噢，你又來了！你幹嘛偷聽？搞得好像你有什麼不可告人的秘密一樣。";
+	npctalk "你為什麼一直跟著我？為什麼一直打擾我？", instance_npcname("坤#dms311");
+	next;
+	cutin "ep18_miriam_03.png",0;
+	mes "[米莉亞]";
+	mes "是你們帶著不可告人的秘密偷偷溜進來的，還記得嗎？你們到底在找什麼書？";
+	next;
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "這真的很傷人，老兄。你難道沒意識到我們是在試圖做好事嗎？你難道不能理解我們是在為了讓大家過上更好的生活嗎？";
+	npctalk "你是在給我們設局嗎？", instance_npcname("尤琵#dms321");
+	npctalk "他們對我們說了什麼？", instance_npcname("坤#dms311");
+	next;
+	mes "[拉馬庫斯]";
+	mes "他們永遠不會知道我們有多在乎。順帶一提，你們也該出現了... ";
+	next;
+	cutin "ep18_miriam_03.png",0;
+	mes "[米莉亞]";
+	mes "你必須抓住他們，讓他們開口...！";
+	next;
+	enablenpc instance_npcname("神殿守衛#dms401");
+	enablenpc instance_npcname("神殿守衛#dms411");
+	enablenpc instance_npcname("神殿守衛#dms421");
+	enablenpc instance_npcname("神殿守衛#dms431");
+	enablenpc instance_npcname("神殿守衛#dms441");
+	cutin "",255;
+	mes "[神殿守衛]";
+	mes "來了！入侵者在這裡！！！";
+	npctalk "我們走！！！祝好運！走吧，小伙子們！", instance_npcname("拉馬庫斯#dms301");
+	npctalk "我去追他們，冒險家，你來對付這些傢伙！", instance_npcname("米莉亞#dms401");
+	next;
+	mes "[神殿守衛]";
+	mes "放下武器！！";
+	if ('nyr_main_step == 8) {
+		'nyr_main_step = 9;
+		donpcevent instance_npcname("nyr_step_4") + "::OnStart";
+	}
+	close;
+}
+
+2@nyr,93,36,3	duplicate(dummy_npc)	坤#dms311	EP18_ARMED_VILLAGER02
+2@nyr,99,38,5	duplicate(dummy_npc)	尤琵#dms321	EP18_ARMED_VILLAGER03
+2@nyr,88,44,5	duplicate(dummy_npc)	神殿守衛#dms401	4_M_RASWORD
+2@nyr,87,46,5	duplicate(dummy_npc)	神殿守衛#dms411	4_M_RASWORD
+2@nyr,87,42,5	duplicate(dummy_npc)	神殿守衛#dms421	4_M_RASWORD
+2@nyr,85,46,5	duplicate(dummy_npc)	神殿守衛#dms431	4_M_RASWORD
+2@nyr,85,42,5	duplicate(dummy_npc)	神殿守衛#dms441	4_M_RASWORD
+
+
+2@nyr,1,1,0	script	nyr_step_4	-1,{
+	end;
+OnStart:
+	disablenpc instance_npcname("米莉亞#dms401");
+	disablenpc instance_npcname("拉馬庫斯#dms301");
+	disablenpc instance_npcname("坤#dms311");
+	disablenpc instance_npcname("尤琵#dms321");
+	disablenpc instance_npcname("神殿守衛#dms401");
+	disablenpc instance_npcname("神殿守衛#dms411");
+	disablenpc instance_npcname("神殿守衛#dms421");
+	disablenpc instance_npcname("神殿守衛#dms431");
+	disablenpc instance_npcname("神殿守衛#dms441");
+	.@label$ = instance_npcname("nyr_step_4") + "::OnMobDead";
+	monster 'map_2nyr$,88,44,"神殿守衛",21310,1, .@label$; // EP18_MD_GUARD_A
+	monster 'map_2nyr$,87,46,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,87,42,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,85,46,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,85,42,"神殿守衛",21310,1, .@label$; // EP18_MD_GUARD_A
+	end;
+OnMobDead:
+	if ('nyr_main_step != 9)
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("nyr_step_4") + "::OnMobDead") < 1) {
+		'nyr_main_step = 10;
+		mapannounce 'map_2nyr$, "感覺很不妙。我總覺得它還在跟著我們。", bc_map, 0xFFCC;
+		disablenpc instance_npcname("#mstep02");
+		disablenpc instance_npcname("#mstep03");
+		enablenpc instance_npcname("#mstep04");
+		enablenpc instance_npcname("#mstep05");
+		enablenpc instance_npcname("米莉亞#dms501");
+		enablenpc instance_npcname("拉馬庫斯#dms401");
+		enablenpc instance_npcname("坤#dms411");
+		enablenpc instance_npcname("尤琵#dms421");
+	}
+	end;
+}
+
+
+//------------------------------------------------------------
+// Step 5
+//------------------------------------------------------------
+2@nyr,209,98,5	script	米莉亞#dms501	4_EP18_MIRIAM,5,5,{
+	if (is_party_leader() == false)
+		npctalk "隊長沒有決定要來嗎？", instance_npcname("米莉亞#dms501");
+	end;
+OnTouch:
+	npctalk "看到那邊那個架子了嗎？", instance_npcname("米莉亞#dms501");
+	npctalk "我的手指都要燒焦了。", instance_npcname("拉馬庫斯#dms401");
+	end;
+}
+
+2@nyr,212,104,1	script	拉馬庫斯#dms401	EP18_ARMED_VILLAGER01,{
+	if ('nyr_main_step != 10)
+		end;
+	if (is_party_leader() == false)
+		end;
+	mes "[尤琵]";
+	mes "這裡不是盡頭了嗎？";
+	next;
+	mes "[拉馬庫斯]";
+	mes "我知道。他們一定有個真正的秘密圖書館。";
+	npctalk "哎呀，真是白費力氣。", instance_npcname("尤琵#dms421");
+	npctalk "你不會要我為失敗負責吧？", instance_npcname("坤#dms411");
+	next;
+	mes "[拉馬庫斯]";
+	mes "我一開始就叫你們去找，而不是因為它在那裡才來找我。";
+	next;
+	mes "[坤]";
+	mes "問問看能不能退出。";
+	next;
+	npctalk "這裡是灰狼。", instance_npcname("拉馬庫斯#dms401");
+	sleep2 2000;
+	npctalk "？？？：你找到東西了嗎？", instance_npcname("拉馬庫斯#dms401");
+	sleep2 2000;
+	npctalk "這是最後一個圖書館了，但我覺得它不在這裡。", instance_npcname("拉馬庫斯#dms401");
+	sleep2 2000;
+	npctalk "？？？：等等。", instance_npcname("拉馬庫斯#dms401");
+	mes "[坤]";
+	mes "等等，我眼花了嗎？那是米莉亞和冒險家。";
+	npctalk "你真執著。我很驚訝你竟然打敗了所有的守衛。", instance_npcname("尤琵#dms421");
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "你們在跟誰說話？";
+	next;
+	select( "你們是拿錢辦事的嗎？" );
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "報酬？我們可沒有拿那個，不是嗎？";
+	npctalk "我算是有點信仰的人。", instance_npcname("坤#dms411");
+	npctalk "我們絕不背叛。", instance_npcname("尤琵#dms421");
+	next;
+	enablenpc instance_npcname("神殿守衛#dms501");
+	enablenpc instance_npcname("神殿守衛#dms511");
+	enablenpc instance_npcname("神殿守衛#dms521");
+	enablenpc instance_npcname("神殿守衛#dms531");
+	enablenpc instance_npcname("神殿守衛#dms541");
+	unitwalk getnpcid(0,instance_npcname("神殿守衛#dms501")),203,95;
+	unitwalk getnpcid(0,instance_npcname("神殿守衛#dms511")),201,96;
+	unitwalk getnpcid(0,instance_npcname("神殿守衛#dms521")),201,93;
+	unitwalk getnpcid(0,instance_npcname("神殿守衛#dms531")),199,98;
+	unitwalk getnpcid(0,instance_npcname("神殿守衛#dms541")),199,92;
+
+	sleep2 500;
+	npctalk "在這邊！", instance_npcname("神殿守衛#dms501");
+	npctalk "嘿！原來你在這裡！！", instance_npcname("拉馬庫斯#dms401");
+	sleep2 1000;
+	enablenpc instance_npcname("修朗#dms101");
+	unitwalk getnpcid(0,instance_npcname("修朗#dms101")),206,96;
+	npctalk "......", instance_npcname("修朗#dms101");
+	npctalk "你來了！", instance_npcname("拉馬庫斯#dms401");
+	npctalk "你來了！", instance_npcname("坤#dms411");
+	npctalk "你來了！", instance_npcname("尤琵#dms421");
+	sleep2 2000;
+
+	cutin "ep18_shulang.png",0;
+	mes "[？？]";
+	mes "這裡就是圖書館的盡頭了嗎？";
+	next;
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "是的。";
+	next;
+	cutin "ep18_shulang.png",0;
+	mes "[？？]";
+	mes "真希望我能找到那本書，但我找不到。他們已經完成了他們的工作，所以我們要離開這裡了。";
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "你是誰？你跟這些人有什麼關係？";
+	next;
+	cutin "ep18_shulang.png",0;
+	mes "[？？]";
+	mes "怎麼了？還有什麼事嗎？";
+	next;
+	cutin "",255;
+	mes "[尤琵]";
+	mes "有人嗅到了灰狼的氣味並決定跟蹤我們。我們很快就會處理掉。";
+	next;
+	cutin "ep18_shulang.png",0;
+	mes "[？？]";
+	mes "沒那個必要。你們趕快離開這裡，讓新人來接手吧。";
+	next;
+	cutin "",255;
+	mes "[拉馬庫斯]";
+	mes "是！！";
+	next;
+	disablenpc instance_npcname("修朗#dms101");
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "等等！！！";
+	next;
+	cutin "",255;
+	mes "[神殿守衛]";
+	mes "解決所有入侵者！";
+	unittalk getcharid(3), "" + strcharinfo(0) + " : 誰是入侵者？";
+	next;
+	cutin "ep18_miriam_03.png",2;
+	mes "[米莉亞]";
+	mes "看來命運真是開了個奇怪的玩笑，對吧？神殿守衛被收買了。我們得查清楚是怎麼回事... ";
+	unittalk getcharid(3), "" + strcharinfo(0) + " : 這些人交給我。";
+	next;
+	cutin "",255;
+	mes "[神殿守衛]";
+	mes "所有人擺好陣型！";
+	next;
+	mes "[尤琵]";
+	mes "噢，不?很抱歉我們狹路相逢，我們弄髒了，所以別再見面了吧？";
+	if ('nyr_main_step == 10) {
+		'nyr_main_step = 11;
+		donpcevent instance_npcname("nyr_step_5") + "::OnStart";
+	}
+	close;
+}
+
+2@nyr,220,98,5	duplicate(dummy_npc)	坤#dms411	EP18_ARMED_VILLAGER02
+2@nyr,220,95,5	duplicate(dummy_npc)	尤琵#dms421	EP18_ARMED_VILLAGER03
+
+2@nyr,197,96,5	duplicate(dummy_npc)	修朗#dms101	EP18_MD_SCHULANG
+2@nyr,197,95,5	duplicate(dummy_npc)	神殿守衛#dms501	EP18_MD_GUARD_A
+2@nyr,197,96,5	duplicate(dummy_npc)	神殿守衛#dms511	EP18_MD_GUARD_A
+2@nyr,197,93,5	duplicate(dummy_npc)	神殿守衛#dms521	EP18_MD_GUARD_A
+2@nyr,197,98,5	duplicate(dummy_npc)	神殿守衛#dms531	EP18_MD_GUARD_A
+2@nyr,197,92,5	duplicate(dummy_npc)	神殿守衛#dms541	EP18_MD_GUARD_A
+
+
+2@nyr,1,1,0	script	nyr_step_5	-1,{
+	end;
+OnStart:
+	disablenpc instance_npcname("神殿守衛#dms501");
+	disablenpc instance_npcname("神殿守衛#dms511");
+	disablenpc instance_npcname("神殿守衛#dms521");
+	disablenpc instance_npcname("神殿守衛#dms531");
+	disablenpc instance_npcname("神殿守衛#dms541");
+	disablenpc instance_npcname("拉馬庫斯#dms401");
+	disablenpc instance_npcname("坤#dms411");
+	disablenpc instance_npcname("尤琵#dms421");
+	disablenpc instance_npcname("米莉亞#dms501");
+	.@label$ = instance_npcname("nyr_step_5") + "::OnMobDead";
+
+	monster 'map_2nyr$,203,95,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,201,96,"神殿守衛",21310,1, .@label$; // EP18_MD_GUARD_A
+	monster 'map_2nyr$,201,93,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,199,98,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,199,92,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	end;
+OnMobDead:
+	if ('nyr_main_step != 11)
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("nyr_step_5") + "::OnMobDead") < 1) {
+		'nyr_main_step = 12;
+		mapannounce 'map_2nyr$, "嗶—— 金庫解鎖程序已啟動", bc_map, 0xFFCC;
+		disablenpc instance_npcname("#mstep04");
+		disablenpc instance_npcname("#mstep05");
+
+		enablenpc instance_npcname("#mstep06");
+		enablenpc instance_npcname("米莉亞#dms601");
+		enablenpc instance_npcname("拉馬庫斯#dms501");
+		enablenpc instance_npcname("坤#dms511");
+		enablenpc instance_npcname("尤琵#dms521");
+		enablenpc instance_npcname("修朗#dms201");
+		enablenpc instance_npcname("巴戈特#dms101");
+		enablenpc instance_npcname("私兵#dms101");
+		enablenpc instance_npcname("神殿守衛#dms601");
+		enablenpc instance_npcname("神殿守衛#dms611");
+		enablenpc instance_npcname("神殿守衛#dms621");
+	}
+	end;
+}
+
+
+//------------------------------------------------------------
+// Step 6
+//------------------------------------------------------------
+// 2@nyr,132,108,0	duplicate(dummy_npc)	#dmss101	HIDDEN_WARP_NPC,3,3
+
+2@nyr,133,109,3	script	米莉亞#dms601	EP18_NPC_MIRIAM,5,5,{
+	if (is_party_leader() == false) {
+		npctalk "我想隊伍還沒到齊。";
+		end;
+	}
+	.@miriam$ = instance_npcname("米莉亞#dms601");
+
+	if ('nyr_main_step == 12) {
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "你們在做什麼？那裡有幾個人？我從這裡看不清楚。";
+		next;
+		select( "有幾個人我不認識。" );
+		cutin "ep18_shulang.png",1;
+		mes "[？？？]";
+		mes "我們離那裡還有多遠？";
+		next;
+		cutin "",255;
+		mes "[拉馬庫斯]";
+		mes "我們快到了。";
+		next;
+		cutin "ep18_bagot_01.png",1;
+		mes "[？？？]";
+		mes "那裡真的、真的、真的很安全。我只是說說而已。";
+		next;
+		cutin "",255;
+		mes "[？？？]";
+		mes "... 難道你連這點安全防護都沒有嗎？";
+		next;
+		cutin "ep18_bagot_02.png",1;
+		mes "[？？？]";
+		mes "嘿，天才先生，你難道聽不出這是在諷刺嗎？！戒備森嚴並不等於繁瑣苛刻的程序，對吧？";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "這個聲音是... ";
+		donpcevent .@miriam$ + "::OnEffect";
+		next;
+		select( "你認識他們嗎？" );
+		mes "[米莉亞]";
+		mes "被擋住了，所以我不太確定... ";
+		next;
+		cutin "",255;
+		mes "[？？？]";
+		mes "進去。";
+		close2;
+		if ('nyr_main_step != 12)
+			end;
+		'nyr_main_step = 13;
+		disablenpc instance_npcname("#mstep06");
+		enablenpc instance_npcname("#mstep07");
+		enablenpc instance_npcname("#mstep08");
+
+		enablenpc instance_npcname("米莉亞#dms701");
+		enablenpc instance_npcname("拉馬庫斯#dms601");
+		enablenpc instance_npcname("坤#dms611");
+		enablenpc instance_npcname("尤琵#dms621");
+		enablenpc instance_npcname("修朗#dms301");
+		enablenpc instance_npcname("巴戈特#dms201");
+		enablenpc instance_npcname("神殿守衛#dms721");
+		enablenpc instance_npcname("神殿守衛#dms731");
+		enablenpc instance_npcname("神殿守衛#dms741");
+
+		npcspeed( 150, instance_npcname("坤#dms511") );
+		npcspeed( 150, instance_npcname("尤琵#dms521") );
+		npcspeed( 150, instance_npcname("修朗#dms201") );
+
+		unitwalk getnpcid(0,instance_npcname("拉馬庫斯#dms501")), 120,120, .@miriam$ + "::OnMove1";
+		sleep 2000;
+		unitwalk getnpcid(0,instance_npcname("坤#dms511")), 120,121, .@miriam$ + "::OnMove2";
+		unitwalk getnpcid(0,instance_npcname("尤琵#dms521")), 122,121, .@miriam$ + "::OnMove3";
+		sleep 1000;
+		unitwalk getnpcid(0,instance_npcname("修朗#dms201")), 120,121, .@miriam$ + "::OnMove4";
+		sleep 500;
+		disablenpc instance_npcname("巴戈特#dms101");
+		disablenpc instance_npcname("私兵#dms101");
+		end;
+	}
+	if ('nyr_main_step == 13) {
+		npctalk "這邊！快追上他！";
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "我們也進去吧。";
+		sleep2 1000;
+		unitwalk getnpcid(0,instance_npcname("神殿守衛#dms601")), 118,121, .@miriam$ + "::OnMove5";
+		unitwalk getnpcid(0,instance_npcname("神殿守衛#dms611")), 118,121, .@miriam$ + "::OnMove6";
+		unitwalk getnpcid(0,instance_npcname("神殿守衛#dms621")), 117,121, .@miriam$ + "::OnMove7";
+		close2;
+		unitwalk getnpcid(0,.@miriam$), 122,119, .@miriam$ + "::OnMove8";
+		cutin "",255;
+		end;
+	}
+	end;
+
+OnEffect:
+	enablenpc instance_npcname("#effc01");
+	specialeffect EF_MAPPILLAR2, AREA, instance_npcname("#effc01");
+	sleep 1000;
+	npctalk "鏘—— 啪——", instance_npcname("#effc01");
+	end;
+
+OnMove1:
+	disablenpc instance_npcname("拉馬庫斯#dms501");
+	end;
+OnMove2:
+	disablenpc instance_npcname("坤#dms511");
+	end;
+OnMove3:
+	disablenpc instance_npcname("尤琵#dms521");
+	end;
+OnMove4:
+	disablenpc instance_npcname("修朗#dms201");
+	end;
+OnMove5:
+	disablenpc instance_npcname("神殿守衛#dms601");
+	end;
+OnMove6:
+	disablenpc instance_npcname("神殿守衛#dms611");
+	end;
+OnMove7:
+	disablenpc instance_npcname("神殿守衛#dms621");
+	end;
+OnMove8:
+	disablenpc instance_npcname("米莉亞#dms601");
+	end;
+OnTouch:
+	if ('nyr_main_step == 12)
+		npctalk "嘿，那裡還有其他人，他們在說什麼？", instance_npcname("米莉亞#dms601");
+	end;
+}
+2@nyr,125,111,3	duplicate(dummy_npc)	拉馬庫斯#dms501	EP18_ARMED_VILLAGER01
+2@nyr,128,107,3	duplicate(dummy_npc)	坤#dms511	EP18_ARMED_VILLAGER02
+2@nyr,128,104,3	duplicate(dummy_npc)	尤琵#dms521	EP18_ARMED_VILLAGER03
+2@nyr,125,101,1	duplicate(dummy_npc)	修朗#dms201	EP18_MD_SCHULANG
+2@nyr,122,106,3	duplicate(dummy_npc)	巴戈特#dms101	4_EP18_BAGOT
+2@nyr,120,107,3	duplicate(dummy_npc)	私兵#dms101	4_M_RACHOLD
+2@nyr,115,102,5	duplicate(dummy_npc)	神殿守衛#dms601	EP18_MD_GUARD_A
+2@nyr,116,106,5	duplicate(dummy_npc)	神殿守衛#dms611	EP18_MD_GUARD_A
+2@nyr,117,98,7	duplicate(dummy_npc)	神殿守衛#dms621	EP18_MD_GUARD_A
+2@nyr,119,103,0	duplicate(dummy_npc)	#effc01	HIDDEN_WARP_NPC
+
+
+
+//------------------------------------------------------------
+// Step 7 + 8
+//------------------------------------------------------------
+// 2@nyr,118,199,0	duplicate(dummy_npc)	#dms701	HIDDEN_WARP_NPC,1,5
+
+2@nyr,118,199,1	script	米莉亞#dms701	4_EP18_MIRIAM,5,5,{
+	if (is_party_leader() == false) {
+		npctalk "誰是隊伍的隊長？";
+		end;
+	}
+	if ('nyr_main_step == 13) {
+		mes "[？？？]";
+		mes "修朗，你得手了嗎？我巴戈特快要失去耐心了。";
+		next;
+		mes "[拉馬庫斯]";
+		mes "但我們必須一直穿著這個嗎？";
+		npctalk "真是令人沮喪。", instance_npcname("尤琵#dms621");
+		next;
+		cutin "ep18_shulang.png",0;
+		mes "[修朗]";
+		mes "誰在乎？你們都走到這一步了。隨你們高興吧。";
+		next;
+		setnpcdisplay( instance_npcname("拉馬庫斯#dms601"), 21308 ); // EP18_MD_HEARTHUNTER_A
+		setnpcdisplay( instance_npcname("坤#dms611"), 21308 );	// EP18_MD_HEARTHUNTER_A
+		setnpcdisplay( instance_npcname("尤琵#dms621"), 21308 );	// EP18_MD_HEARTHUNTER_A
+		cutin "",255;
+		mes "[尤琵]";
+		mes "哈—— 現在感覺活過來了。";
+		npctalk "我還以為我要憋死了！", instance_npcname("坤#dms611");
+		next;
+		select( "心之獵手是臥底。" );
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "心之獵手... 從一開始... 你們就和那些你們說的瘋狂科學家是一夥的...！";
+		next;
+		cutin "",255;
+		mes "[" + strcharinfo(0) + "]";
+		mes "還有很多用伊美樂的心臟改造的心之獵手留下來，對吧？";
+		next;
+		cutin "ep18_shulang.png",0;
+		mes "[修朗]";
+		mes "是我們以前的熟面孔嗎？啊，就是那些據說在追蹤你們的雜魚。我聽說了。";
+		npctalk "哦，那些人？他們對我們窮追不捨，連我們自己都很驚訝。我們都沒意識到自己欠了債。", instance_npcname("巴戈特#dms201");
+		next;
+		select( "那應該是幻影。" );
+		cutin "ep18_bagot_02.png",1;
+		mes "[巴戈特]";
+		mes "哦，我的天，我不想讓你難堪。";
+		npctalk "誰在乎，反正遲早都要消失的。", instance_npcname("修朗#dms301");
+		next;
+		enablenpc instance_npcname("最高階神官#dms201");
+		enablenpc instance_npcname("神殿守衛#dms701");
+		enablenpc instance_npcname("神殿守衛#dms711");
+		cutin "",255;
+		mes "[？？？]";
+		mes "你們可以走了。";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "...父親？？";
+		next;
+		cutin "",255;
+		mes "[阿瑪爾]";
+		mes "米莉亞，妳都走到這裡了。妳已經盡了妳的本分，現在回家吧。";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "你這話是什麼意思？你在做什麼...？";
+		next;
+		cutin "ep18_bagot_03.png",1;
+		mes "[巴戈特]";
+		mes "哇，你被你爸爸稱讚了。太棒了。良好的教養需要稱讚，這很重要。";
+		mes "我甚至不記得有被稱讚過。嗯... 啊！我不記得是因為我從來沒被稱讚過！";
+		npctalk "既然你已經被稱讚了，你可以回家洗洗腳睡覺了..", instance_npcname("巴戈特#dms201");
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "什麼，發生了什麼事？為什麼我爸爸... 你們對他做了什麼？";
+		next;
+		cutin "",255;
+		mes "[阿瑪爾]";
+		mes "... 既然你們拿到想要的東西了，我們走吧。";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "父親！父親！！！";
+		next;
+		disablenpc instance_npcname("最高階神官#dms201");
+		cutin "ep18_bagot_01.png",1;
+		mes "[巴戈特]";
+		mes "一個稱讚你卻從不愛你的父親？";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "你們對我父親做了什麼？";
+		next;
+		cutin "ep18_bagot_03.png",1;
+		mes "[巴戈特]";
+		mes "哦，你不知道，對吧？他的願望是把所有原住民趕出阿盧納貝茲。我們幫了一點忙，但可不是免費的。";
+		npctalk "你應該總是隨心所欲地過自己的生活。否則，你會生病的。", instance_npcname("巴戈特#dms201");
+		npctalk "嘿嘿——你喜歡你的角色扮演嗎？給我們拍拍手吧。", instance_npcname("拉馬庫斯#dms601");
+		next;
+		cutin "",255;
+		mes "[心之獵手]";
+		mes "米莉亞，你和你的朋友們幫我完成了這幅暴動的畫面。非常感謝！";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "你覺得這合理嗎？";
+		next;
+		cutin "ep18_bagot_01.png",1;
+		mes "[巴戈特]";
+		mes "你在說什麼，少數幾起針對神殿的衝動抗議嗎？";
+		next;
+		cutin "ep18_bagot_03.png",1;
+		mes "[巴戈特]";
+		mes "外面的抗議很快就會變成暴動，然後你的願望就會實現，接著你會許下另一個願望，然後我們又能拿到錢了？";
+		next;
+		cutin "ep18_shulang.png",0;
+		mes "[修朗]";
+		mes "我不會一直說下去。我們走吧。";
+		mes "把你們的爛攤子收拾乾淨。";
+		next;
+		cutin "",255;
+		mes "[拉馬庫斯]";
+		mes "四！";
+		next;
+		disablenpc instance_npcname("修朗#dms301");
+		disablenpc instance_npcname("巴戈特#dms201");
+		mes "[心之獵手]";
+		mes "我真希望蘇亞德也在這裡。真希望我有時候能幫上他的忙。";
+		next;
+		mes "[心之獵手]";
+		mes "嗨，讓我正式介紹一下我們自己。我們是心之獵手，我們準備把你們埋在這裡。";
+		npctalk "不是隨便哪個心之獵手。他是一個非常、非常優秀的心之獵手。", instance_npcname("坤#dms611");
+		next;
+		select( "小心，他們被改造過了。" );
+		next;
+		specialeffect EF_UNDEADBODY, AREA, instance_npcname("拉馬庫斯#dms601");
+		specialeffect EF_NPC_STOP, AREA, instance_npcname("拉馬庫斯#dms601");
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "他一直都是那樣... 那有什麼不祥的預兆嗎？";
+		next;
+		select( "似乎與這裡的伊美樂心臟產生了共鳴。" );
+		mes "[米莉亞]";
+		mes "這基本上就是快速倒數，對吧？好吧，我們速戰速決吧。";
+		if ('nyr_main_step == 13) {
+			'nyr_main_step = 14;
+			donpcevent instance_npcname("nyr_step_7") + "::OnStart";
+			removespecialeffect EF_UNDEADBODY, AREA, instance_npcname("拉馬庫斯#dms601");
+			removespecialeffect EF_NPC_STOP, AREA, instance_npcname("拉馬庫斯#dms601");
+		}
+		close3;
+	}
+	if ('nyr_main_step == 15) {
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "哈... 哈... 冒險家，你沒事吧？";
+		next;
+		select( "但是他們都去哪了？" );
+		enablenpc instance_npcname("尼倫#dms101");
+		enablenpc instance_npcname("神殿守衛#dms751");
+		enablenpc instance_npcname("神殿守衛#dms761");
+		enablenpc instance_npcname("神殿守衛#dms771");
+		npctalk "這到底是怎麼回事？", instance_npcname("尼倫#dms101");
+		cutin "ra_gwoman.bmp",0;
+		mes "[尼倫]";
+		mes "什麼，外面在吵什麼？";
+		mes "冒險家...？你為什麼在這裡，冒險家？";
+		next;
+		select( "事情是這樣的... " );
+		mes "[尼倫]";
+		mes "你一直在追蹤一個行跡可疑的同事，結果發現他們其實是內鬼。";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "妳和我父親是一夥的嗎？";
+		next;
+		cutin "ra_gwoman.bmp",0;
+		mes "[尼倫]";
+		mes "最高階神官？？這到底是什麼意思？";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "我覺得我父親牽涉其中。";
+		next;
+		cutin "ra_gwoman.bmp",0;
+		mes "[尼倫]";
+		mes "怎麼會這樣... 最高階神官...？我們必須調查清楚。";
+		mes "我敢肯定外面的群眾裡潛伏著煽動者，是壞人安插的... ";
+		next;
+		select( "神殿守衛裡也有。" );
+		mes "[尼倫]";
+		mes "我們需要進行一次大清查... 首先我們得弄清楚我們在這裡做了什麼，確保沒有危險的東西，也沒有任何東西遺失... 就算是神殿守衛也一樣。";
+		next;
+		mes "[尼倫]";
+		mes "...!!";
+		mes "不用調查了，伊美樂心臟碎片不見了。它本來應該在那裡的。";
+		next;
+		select( "我知道... " );
+		mes "[尼倫]";
+		mes "他們到底打算拿它做什麼... 我連想都不敢想。";
+		mes "這不是我們現在該做的，我們需要說出真相並追蹤他們...！！";
+		next;
+		mes "[尼倫]";
+		mes "啊...！你說神殿守衛中會有敵人，所以我們必須先挑出我們信任的人。";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "我去。那可能是我父親的，因為我很清楚它可能會去哪裡。";
+		next;
+		cutin "ra_gwoman.bmp",0;
+		mes "[尼倫]";
+		mes "我們出去再說，因為外面的情況看起來不太妙。";
+		close2;
+		cutin "",255;
+		if ('nyr_main_step == 15) {
+			'nyr_main_step = 16;
+			disablenpc instance_npcname("尼倫#dms101");
+			disablenpc instance_npcname("神殿守衛#dms751");
+			disablenpc instance_npcname("神殿守衛#dms761");
+			disablenpc instance_npcname("神殿守衛#dms771");
+			disablenpc instance_npcname("米莉亞#dms701");
+
+			enablenpc instance_npcname("#mstep09");
+			enablenpc instance_npcname("#mstep10");
+			enablenpc instance_npcname("#mstep11");
+			enablenpc instance_npcname("米莉亞#dms801");
+			enablenpc instance_npcname("#dmswch02");
+
+			enablenpc instance_npcname("米莉亞#dms801");
+
+			enablenpc instance_npcname("神殿守衛#dms801");
+			enablenpc instance_npcname("神殿守衛#dms811");
+			enablenpc instance_npcname("神殿守衛#dms821");
+			enablenpc instance_npcname("神殿守衛#dms831");
+			enablenpc instance_npcname("神殿守衛#dms841");
+			enablenpc instance_npcname("神殿守衛#dms851");
+			enablenpc instance_npcname("神殿守衛#dms861");
+			enablenpc instance_npcname("神殿守衛#dms871");
+			enablenpc instance_npcname("神殿守衛#dms881");
+			enablenpc instance_npcname("神殿守衛#dms891");
+			enablenpc instance_npcname("憤怒的群眾#dms211");
+			enablenpc instance_npcname("憤怒的群眾#dms221");
+			enablenpc instance_npcname("憤怒的群眾#dms231");
+			enablenpc instance_npcname("憤怒的群眾#dms241");
+			enablenpc instance_npcname("憤怒的群眾#dms251");
+			enablenpc instance_npcname("憤怒的群眾#dms261");
+			enablenpc instance_npcname("憤怒的群眾#dms271");
+			enablenpc instance_npcname("憤怒的群眾#dms281");
+			enablenpc instance_npcname("憤怒的群眾#dms291");
+			enablenpc instance_npcname("憤怒的群眾#dms202");
+			enablenpc instance_npcname("憤怒的群眾#dms212");
+			enablenpc instance_npcname("憤怒的群眾#dms222");
+			enablenpc instance_npcname("憤怒的群眾#dms232");
+			enablenpc instance_npcname("憤怒的群眾#dms242");
+
+			enablenpc instance_npcname("神殿守衛#dms802");
+			enablenpc instance_npcname("神殿守衛#dms812");
+			enablenpc instance_npcname("神殿守衛#dms822");
+			enablenpc instance_npcname("神殿守衛#dms832");
+			enablenpc instance_npcname("神殿守衛#dms842");
+		}
+		navigateto("2@nyr",120,141);
+		end;
+	}
+	end;
+OnTouch:
+	if ('nyr_main_step == 13)
+		npctalk "大家都聚集在那邊了。";
+	end;
+}
+
+2@nyr,120,206,3	duplicate(dummy_npc)	拉馬庫斯#dms601	EP18_ARMED_VILLAGER01
+2@nyr,119,207,3	duplicate(dummy_npc)	坤#dms611	EP18_ARMED_VILLAGER02
+2@nyr,111,207,5	duplicate(dummy_npc)	尤琵#dms621	EP18_ARMED_VILLAGER03
+2@nyr,115,204,5	duplicate(dummy_npc)	修朗#dms301	4_EP18_SHULANG
+2@nyr,117,205,3	duplicate(dummy_npc)	巴戈特#dms201	4_EP18_BAGOT
+
+2@nyr,112,201,5	duplicate(dummy_npc)	神殿守衛#dms721	4_M_RASWORD
+2@nyr,121,203,3	duplicate(dummy_npc)	神殿守衛#dms731	4_M_RASWORD
+2@nyr,121,201,3	duplicate(dummy_npc)	神殿守衛#dms741	4_M_RASWORD
+
+2@nyr,115,202,5	duplicate(dummy_npc)	最高階神官#dms201	4_M_RACHOLD
+
+2@nyr,113,203,5	duplicate(dummy_npc)	神殿守衛#dms701	4_M_RASWORD
+2@nyr,118,203,3	duplicate(dummy_npc)	神殿守衛#dms711	4_M_RASWORD
+2@nyr,120,202,3	duplicate(dummy_npc)	神殿守衛#dms751	4_M_RASWORD
+2@nyr,114,203,5	duplicate(dummy_npc)	神殿守衛#dms761	4_M_RASWORD
+2@nyr,115,199,7	duplicate(dummy_npc)	神殿守衛#dms771	4_M_RASWORD
+2@nyr,117,204,3	duplicate(dummy_npc)	尼倫#dms101	4_F_MADAME
+
+
+
+2@nyr,1,1,0	script	nyr_step_7	-1,{
+	end;
+OnStart:
+	disablenpc instance_npcname("#mstep07");
+	disablenpc instance_npcname("#mstep08");
+	disablenpc instance_npcname("米莉亞#dms701");
+	disablenpc instance_npcname("拉馬庫斯#dms601");
+	disablenpc instance_npcname("坤#dms611");
+	disablenpc instance_npcname("尤琵#dms621");
+	disablenpc instance_npcname("神殿守衛#dms701");
+	disablenpc instance_npcname("神殿守衛#dms711");
+	disablenpc instance_npcname("神殿守衛#dms721");
+	disablenpc instance_npcname("神殿守衛#dms731");
+	disablenpc instance_npcname("神殿守衛#dms741");
+	sleep 500;
+	.@label$ = instance_npcname("nyr_step_7") + "::OnMobDead";
+	monster 'map_2nyr$,120,206,"心之獵手",21308,1, .@label$; // EP18_MD_HEARTHUNTER_A
+	monster 'map_2nyr$,119,207,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_2nyr$,111,207,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_2nyr$,113,203,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,118,203,"神殿守衛",21310,1, .@label$; // EP18_MD_GUARD_A
+	monster 'map_2nyr$,112,201,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,121,203,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	monster 'map_2nyr$,121,201,"神殿守衛",21310,1, .@label$;	// EP18_MD_GUARD_A
+	end;
+OnMobDead:
+	if ('nyr_main_step != 14)
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("nyr_step_7") + "::OnMobDead") < 1) {
+		'nyr_main_step = 15;
+		enablenpc instance_npcname("米莉亞#dms701");
+	}
+	end;
+}
+
+
+//------------------------------------------------------------
+// Step 9
+//------------------------------------------------------------
+1@nyr,65,169,0	script	#dmswch02	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch:
+	if ('nyr_main_step == 17) {
+		navigateto("1@nyr",129,165);
+		end;
+	}
+	if ('nyr_main_step != 16)
+		end;
+	'nyr_main_step = 17;
+	donpcevent instance_npcname("米莉亞#dms801") + "::OnMove1";
+	navigateto("1@nyr",129,165);
+	mapannounce 'map_2nyr$, "我們活著！請正視我們！", bc_map, 0xFFCC;
+	npctalk "我覺得情況不太好。我需要靠近一點。", instance_npcname("米莉亞#dms801");
+	sleep 2000;
+	npctalk "這邊。", instance_npcname("米莉亞#dms801");
+	mapannounce 'map_2nyr$, "我們活著！我們活著！！", bc_map, 0xFFCC;
+	sleep 3000;
+	mapannounce 'map_2nyr$, "我們存在！！存在！！", bc_map, 0xFFCC;
+	sleep 5000;
+	mapannounce 'map_2nyr$, "把權利還給這片土地的主人！還來！！", bc_map, 0xFFCC;
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms201");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms211");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms221");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms231");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms241");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms251");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms261");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms271");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms281");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms291");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms202");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms212");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms222");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms232");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms242");
+	sleep 5000;
+	mapannounce 'map_2nyr$, "我們也活著！活著！", bc_map, 0xFFCC;
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms201");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms211");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms221");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms231");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms241");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms251");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms261");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms271");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms281");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms291");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms202");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms212");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms222");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms232");
+	npctalk "我們活著！", instance_npcname("憤怒的群眾#dms242");
+	sleep 5000;
+	mapannounce 'map_2nyr$, "我們也存在！存在！！", bc_map, 0xFFCC;
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms201");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms211");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms221");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms231");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms241");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms251");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms261");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms271");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms281");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms291");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms202");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms212");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms222");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms232");
+	npctalk "我們存在！", instance_npcname("憤怒的群眾#dms242");
+	sleep 5000;
+	mapannounce 'map_2nyr$, "把這片土地還給它真正的主人！還來！！", bc_map, 0xFFCC;
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms201");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms211");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms221");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms231");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms241");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms251");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms261");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms271");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms281");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms291");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms202");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms212");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms222");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms232");
+	npctalk "還來！", instance_npcname("憤怒的群眾#dms242");
+	end;
+}
+
+1@nyr,68,163,5	script	米莉亞#dms801	EP18_NPC_MIRIAM,{
+	if (is_party_leader() == false) {
+		npctalk "隊長還沒到嗎？";
+		end;
+	}
+	if ('nyr_main_step == 18) {
+		mes "[群眾]";
+		mes "承認我們！";
+		next;
+		mes "[群眾]";
+		mes "我們活著！我們在這裡！！";
+		next;
+		mes "[群眾]";
+		mes "這是我們的土地！";
+		next;
+		mes "[群眾]";
+		mes "把土地還給土地真正的主人！";
+		next;
+		mes "[神殿守衛]";
+		mes "如果你們現在解散，我們就不會指控你們擅闖神殿！";
+		next;
+		mes "[神殿守衛]";
+		mes "我只給你們30分鐘！在時限內回去！";
+		next;
+		mes "[群眾]";
+		mes "你現在是在威脅我們嗎？";
+		next;
+		mes "[群眾]";
+		mes "你想怎麼樣？";
+		next;
+		mes "[群眾]";
+		mes "你們打算把所有人都抓起來關進監獄，對吧？";
+		next;
+		mes "[群眾]";
+		mes "事已至此，我們直接衝進去吧！！！";
+		next;
+		cutin "ep18_miriam_03.png",1;
+		mes "[米莉亞]";
+		mes "情況不太對勁。人們變得太有攻擊性了。";
+		next;
+		mes "[米莉亞]";
+		mes "這看起來不太妙。我得去找蘇亞德，但副官在哪裡？";
+		npctalk "快去找蘇亞德，事情很緊急！", instance_npcname("米莉亞#dms801");
+		next;
+		enablenpc instance_npcname("尼倫#dms201");
+		enablenpc instance_npcname("傑特#dms101");
+		cutin "ra_gwoman.bmp",2;
+		mes "[尼倫]";
+		mes "妳在這裡啊。我把傑特祭司帶來了。";
+		next;
+		cutin "ra_gman2.bmp",2;
+		mes "[傑特]";
+		mes "這裡發生了什麼事？這和蜂擁而至的人群有關嗎？還是說，神殿裡有什麼東西引起了這些... ";
+		next;
+		if ('nyr_main_step == 18) {
+			'nyr_main_step = 19;
+			disablenpc instance_npcname("#mstep09");
+			disablenpc instance_npcname("#mstep10");
+			disablenpc instance_npcname("#mstep11");
+			disablenpc instance_npcname("#dmswch02");
+			enablenpc instance_npcname("蘇亞德#dms102");
+			npctalk "發生什麼事了？你說你匆忙找到了？", instance_npcname("蘇亞德#dms102");
+		}
+		cutin "ep18_suad_04.png",0;
+		mes "[蘇亞德]";
+		mes "發生什麼事了？你說有緊急情況。";
+		npctalk "發生什麼事了？你說有緊急情況。", instance_npcname("蘇亞德#dms102");
+		close3;
+	}
+	if ('nyr_main_step == 21) {
+		'nyr_main_step = 22;
+		enablenpc instance_npcname("#dmwrp02");
+		navigateto("1@nyr",45,28);
+		npctalk "冒險家，請注意安全。", instance_npcname("米莉亞#dms801");
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "處理好之後，動作要快。他們在安全屋等你。";
+		disablenpc instance_npcname("米莉亞#dms801");
+		close3;
+	}
+	end;
+OnMove1:
+	unitwalk getnpcid(0),90,153, instance_npcname("米莉亞#dms801") + "::OnMove2";
+	end;
+OnMove2:
+	unitwalk getnpcid(0),107,165, instance_npcname("米莉亞#dms801") + "::OnMove3";
+	end;
+OnMove3:
+	unitwalk getnpcid(0),128,165, instance_npcname("米莉亞#dms801") + "::OnMove4";
+	end;
+OnMove4:
+	'nyr_main_step = 18;
+	end;
+}
+
+//------------------------------------------------------------
+// Step 10
+//------------------------------------------------------------
+1@nyr,127,163,5	script	蘇亞德#dms102	4_EP18_SUAD,{
+	if (is_party_leader() == false) {
+		npctalk "真希望隊長能作為代表來告訴我。";
+		end;
+	}
+	if ('nyr_main_step != 19)
+		end;
+	cutin "ep18_suad_04.png",0;
+	mes "[蘇亞德]";
+	mes "發生什麼事了？";
+	next;
+	cutin "ep18_miriam_03.png",1;
+	mes "[米莉亞]";
+	mes "我們之中有內鬼。";
+	next;
+	cutin "ep18_suad_04.png",0;
+	mes "[蘇亞德]";
+	mes "內鬼？在哪裡？";
+	next;
+	cutin "ep18_miriam_03.png",1;
+	mes "[米莉亞]";
+	mes "蘇亞德，首先，告訴我們這裡的概況。聽起來我們正處於暴動的邊緣，對嗎？哦，你好，傑特祭司。";
+	next;
+	cutin "ep18_suad_02.png",0;
+	mes "[蘇亞德]";
+	mes "為什麼最高階神官會在這裡？";
+	next;
+	cutin "ra_gman2.bmp",2;
+	mes "[傑特]";
+	mes "米莉亞？米莉亞跟這件事有關係嗎？";
+	next;
+	cutin "ep18_miriam_03.png",1;
+	mes "[米莉亞]";
+	mes "這是有原因的，但首先，我們來談談情況，蘇亞德？";
+	next;
+	cutin "ep18_suad_03.png",0;
+	mes "[蘇亞德]";
+	mes "情況很糟。事情已經失控了。神殿正在嚴厲鎮壓我們。他們建議我們解散。我們沒時間了。我們正準備撤離。";
+	next;
+	cutin "ep18_suad_01.png",0;
+	mes "[蘇亞德]";
+	mes "你們跟蹤的人怎麼了？";
+	next;
+	select( "讓我來解釋。" );
+	cutin "",255;
+	mes "- 神殿內發生的事。 -";
+	next;
+	cutin "ep18_miriam_03.png",1;
+	mes "[米莉亞]";
+	mes "我父親和外來勢力勾結，企圖分裂阿盧納貝茲並壓迫原住民...";
+	next;
+	cutin "ep18_suad_04.png",0;
+	mes "[蘇亞德]";
+	mes "我們之中有內鬼...但誰是冒名頂替者？";
+	next;
+	cutin "ep18_miriam_03.png",1;
+	mes "[米莉亞]";
+	mes "與其說是叛徒，不如說他們潛伏得更深。他們從一開始就不是我們這邊的人。";
+	next;
+	cutin "ep18_suad_02.png",0;
+	mes "[蘇亞德]";
+	mes "所以我們從一開始就差點陷入一場有組織的暴動？";
+	next;
+	cutin "ra_gwoman.bmp",2;
+	mes "[尼倫]";
+	mes "現在不是說這個的時候。他們也潛入了神殿，所以我們必須兩邊兼顧..";
+	next;
+	mapannounce 'map_2nyr$, "嗶——", bc_map, 0xFF0000;
+	cutin "ep18_suad_04.png",0;
+	mes "[蘇亞德]";
+	mes "那哨聲是什麼？那不是我們的信號。";
+	next;
+	setnpcdisplay( instance_npcname("神殿守衛#dms802"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("神殿守衛#dms812"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("神殿守衛#dms822"), 21308 );
+// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("神殿守衛#dms832"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("神殿守衛#dms842"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("憤怒的群眾#dms202"), 21308 );
+// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("憤怒的群眾#dms212"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("憤怒的群眾#dms222"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("憤怒的群眾#dms232"), 21308 );
+// EP18_MD_HEARTHUNTER_A
+	setnpcdisplay( instance_npcname("憤怒的群眾#dms242"), 21308 );	// EP18_MD_HEARTHUNTER_A
+	npctalk "就是現在嗎？", instance_npcname("憤怒的群眾#dms202");
+	npctalk "現在！", instance_npcname("神殿守衛#dms832");
+	cutin "",255;
+	mes "[群眾]";
+	mes "你們為什麼脫衣服？？";
+	next;
+	disablenpc instance_npcname("神殿守衛#dms812");
+	disablenpc instance_npcname("神殿守衛#dms832");
+	disablenpc instance_npcname("神殿守衛#dms842");
+	disablenpc instance_npcname("憤怒的群眾#dms202");
+	disablenpc instance_npcname("憤怒的群眾#dms212");
+	disablenpc instance_npcname("憤怒的群眾#dms222");
+	disablenpc instance_npcname("憤怒的群眾#dms232");
+	disablenpc instance_npcname("憤怒的群眾#dms242");
+	enablenpc instance_npcname("心之獵手#dms101");
+	enablenpc instance_npcname("心之獵手#dms111");
+	enablenpc instance_npcname("心之獵手#dms141");
+	enablenpc instance_npcname("心之獵手#dms161");
+	enablenpc instance_npcname("心之獵手#dms171");
+	enablenpc instance_npcname("心之獵手#dms181");
+	enablenpc instance_npcname("心之獵手#dms191");
+	mes "[神殿守衛]";
+	mes "保持警戒！";
+	next;
+	mes "[群眾]";
+	mes "你們到底在做什麼？？";
+	next;
+	npctalk "抱歉。沒有私人恩怨。", instance_npcname("心之獵手#dms101");
+	npctalk "我還是不明白。發生什麼事了？", instance_npcname("心之獵手#dms141");
+	npctalk "她是哪門子的女神？你們應該相信我！", instance_npcname("心之獵手#dms171");
+	npctalk "嚐嚐被鎮壓的滋味如何？", instance_npcname("心之獵手#dms191");
+	specialeffect EF_M03, AREA, instance_npcname("心之獵手#dms101");
+	specialeffect EF_M03, AREA, instance_npcname("心之獵手#dms111");
+	specialeffect EF_M02, AREA, instance_npcname("心之獵手#dms121");
+	specialeffect EF_M03, AREA, instance_npcname("心之獵手#dms131");
+	specialeffect EF_M03, AREA, instance_npcname("心之獵手#dms141");
+	specialeffect EF_M02, AREA, instance_npcname("心之獵手#dms151");
+	specialeffect EF_M03, AREA, instance_npcname("心之獵手#dms161");
+	specialeffect EF_M02, AREA, instance_npcname("心之獵手#dms171");
+	specialeffect EF_M02, AREA, instance_npcname("心之獵手#dms181");
+	specialeffect EF_M03, AREA, instance_npcname("心之獵手#dms191");
+	mes "[群眾]";
+	mes "啊！！！！啊！！！神殿守衛抓人了！！！";
+	next;
+	mes "[神殿守衛]";
+	mes "這是暴動！放下武器！";
+	next;
+	cutin "ep18_miriam_03.png",1;
+	mes "[米莉亞]";
+	mes "哦... 我來遲了...！";
+	next;
+	cutin "ep18_suad_02.png",0;
+	mes "[蘇亞德]";
+	mes "我們必須阻止那些使用暴力的襲擊者。";
+	next;
+	cutin "ra_gwoman.bmp",2;
+	mes "[尼倫]";
+	mes "我去疏散人群。";
+	if ('nyr_main_step == 19) {
+		'nyr_main_step = 20;
+		donpcevent instance_npcname("nyr_step_10") + "::OnStart";
+	}
+	close3;
+}
+
+1@nyr,1,1,0	script	nyr_step_10	-1,{
+	end;
+OnStart:
+	disablenpc instance_npcname("蘇亞德#dms102");
+	disablenpc instance_npcname("米莉亞#dms801");
+	disablenpc instance_npcname("尼倫#dms201");
+	disablenpc instance_npcname("傑特#dms101");
+	disablenpc instance_npcname("神殿守衛#dms801");
+	disablenpc instance_npcname("神殿守衛#dms811");
+	disablenpc instance_npcname("神殿守衛#dms821");
+	disablenpc instance_npcname("神殿守衛#dms831");
+	disablenpc instance_npcname("神殿守衛#dms841");
+	disablenpc instance_npcname("神殿守衛#dms851");
+	disablenpc instance_npcname("神殿守衛#dms861");
+	disablenpc instance_npcname("神殿守衛#dms871");
+	disablenpc instance_npcname("神殿守衛#dms881");
+	disablenpc instance_npcname("神殿守衛#dms891");
+
+	disablenpc instance_npcname("憤怒的群眾#dms201");
+	disablenpc instance_npcname("憤怒的群眾#dms211");
+	disablenpc instance_npcname("憤怒的群眾#dms221");
+	disablenpc instance_npcname("憤怒的群眾#dms231");
+	disablenpc instance_npcname("憤怒的群眾#dms241");
+	disablenpc instance_npcname("憤怒的群眾#dms251");
+	disablenpc instance_npcname("憤怒的群眾#dms261");
+	disablenpc instance_npcname("憤怒的群眾#dms271");
+	disablenpc instance_npcname("憤怒的群眾#dms281");
+	disablenpc instance_npcname("憤怒的群眾#dms291");
+
+	disablenpc instance_npcname("心之獵手#dms101");
+	disablenpc instance_npcname("心之獵手#dms111");
+	disablenpc instance_npcname("心之獵手#dms121");
+	disablenpc instance_npcname("心之獵手#dms131");
+	disablenpc instance_npcname("心之獵手#dms141");
+	disablenpc instance_npcname("心之獵手#dms151");
+	disablenpc instance_npcname("心之獵手#dms161");
+	disablenpc instance_npcname("心之獵手#dms171");
+	disablenpc instance_npcname("心之獵手#dms181");
+	disablenpc instance_npcname("心之獵手#dms191");
+	disablenpc instance_npcname("神殿守衛#dms802");
+	disablenpc instance_npcname("神殿守衛#dms822");
+	.@label$ = instance_npcname("nyr_step_10") + "::OnMobDead";
+	monster 'map_1nyr$,123,168,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,118,168,"心之獵手",21308,1, .@label$;
+// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,113,165,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,114,171,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,128,170,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,115,176,"心之獵手",21308,1, .@label$;
+// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,120,174,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,125,175,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,126,177,"心之獵手",21308,1, .@label$;	// EP18_MD_HEARTHUNTER_A
+	monster 'map_1nyr$,128,172,"心之獵手",21308,1, .@label$;
+// EP18_MD_HEARTHUNTER_A
+	end;
+OnMobDead:
+	if ('nyr_main_step != 20)
+		end;
+	if (mobcount('map_1nyr$, instance_npcname("nyr_step_10") + "::OnMobDead") < 1) {
+		'nyr_main_step = 21;
+		npctalk "冒險家，你安全嗎？", instance_npcname("米莉亞#dms801");
+		enablenpc instance_npcname("米莉亞#dms801");
+	}
+	end;
+}
+
+1@nyr,113,172,5	duplicate(dummy_npc)	神殿守衛#dms802	4_M_RASWORD
+1@nyr,126,172,3	duplicate(dummy_npc)	神殿守衛#dms812	4_M_RASWORD
+1@nyr,112,178,5	duplicate(dummy_npc)	神殿守衛#dms822	4_M_RASWORD
+1@nyr,127,178,3	duplicate(dummy_npc)	神殿守衛#dms832	4_M_RASWORD
+1@nyr,118,172,5	duplicate(dummy_npc)	神殿守衛#dms842	4_M_RASWORD
+1@nyr,130,163,1	duplicate(dummy_npc)	尼倫#dms201	4_F_MADAME
+1@nyr,131,165,3	duplicate(dummy_npc)	傑特#dms101	4_M_RACHOLD1
+
+1@nyr,130,172,3	duplicate(dummy_npc)	神殿守衛#dms801	4_M_RASWORD
+1@nyr,127,174,3	duplicate(dummy_npc)	神殿守衛#dms811	4_M_RASWORD
+1@nyr,112,174,5	duplicate(dummy_npc)	神殿守衛#dms821	4_M_RASWORD
+1@nyr,109,172,5	duplicate(dummy_npc)	神殿守衛#dms831	4_M_RASWORD
+1@nyr,116,172,5	duplicate(dummy_npc)	神殿守衛#dms841	4_M_RASWORD
+1@nyr,120,172,3	duplicate(dummy_npc)	神殿守衛#dms851	4_M_RASWORD
+1@nyr,123,172,3	duplicate(dummy_npc)	神殿守衛#dms861	4_M_RASWORD
+1@nyr,117,176,5	duplicate(dummy_npc)	神殿守衛#dms871	4_M_RASWORD
+1@nyr,122,176,3	duplicate(dummy_npc)	神殿守衛#dms881	4_M_RASWORD
+1@nyr,119,178,5	duplicate(dummy_npc)	神殿守衛#dms891	4_M_RASWORD
+
+1@nyr,123,168,3	duplicate(dummy_npc)	心之獵手#dms101	EP18_MD_HEARTHUNTER_A
+1@nyr,118,168,5	duplicate(dummy_npc)	心之獵手#dms111	EP18_MD_HEARTHUNTER_A
+1@nyr,113,165,5	duplicate(dummy_npc)	心之獵手#dms121	EP18_MD_HEARTHUNTER_A
+1@nyr,114,171,5	duplicate(dummy_npc)	心之獵手#dms131	EP18_MD_HEARTHUNTER_A
+1@nyr,128,170,3	duplicate(dummy_npc)	心之獵手#dms141	EP18_MD_HEARTHUNTER_A
+1@nyr,115,176,5	duplicate(dummy_npc)	心之獵手#dms151	EP18_MD_HEARTHUNTER_A
+1@nyr,120,174,3	duplicate(dummy_npc)	心之獵手#dms161	EP18_MD_HEARTHUNTER_A
+1@nyr,125,175,3	duplicate(dummy_npc)	心之獵手#dms171	EP18_MD_HEARTHUNTER_A
+1@nyr,123,177,3	duplicate(dummy_npc)	心之獵手#dms181	EP18_MD_HEARTHUNTER_A
+1@nyr,128,172,3	duplicate(dummy_npc)	心之獵手#dms191	EP18_MD_HEARTHUNTER_A
+
+// Note: dms201 and dms231 on the same cells on official
+1@nyr,109,167,7	duplicate(dummy_npc)	憤怒的群眾#dms201	4_EP18_GW_MAN01
+1@nyr,117,164,1	duplicate(dummy_npc)	憤怒的群眾#dms211	4_EP18_GW_WOMAN01
+1@nyr,109,167,7	duplicate(dummy_npc)	憤怒的群眾#dms231	4_M_MIDDLE
+1@nyr,112,166,1	duplicate(dummy_npc)	憤怒的群眾#dms221	4_EP18_GW_MAN02
+1@nyr,122,166,1	duplicate(dummy_npc)	憤怒的群眾#dms241	4_EP18_GW_WOMAN02
+1@nyr,115,166,7	duplicate(dummy_npc)	憤怒的群眾#dms251	4_EP18_GW_MIDDLE01
+1@nyr,120,167,1	duplicate(dummy_npc)	憤怒的群眾#dms261	4_M_RACHMAN1
+1@nyr,116,170,1	duplicate(dummy_npc)	憤怒的群眾#dms271	4_EP18_GW_MIDDLE02
+1@nyr,112,168,1	duplicate(dummy_npc)	憤怒的群眾#dms281	4_F_SHABBY
+1@nyr,124,171,1	duplicate(dummy_npc)	憤怒的群眾#dms291	4_EP18_GW_WOMAN01
+
+1@nyr,118,171,1	duplicate(dummy_npc)	憤怒的群眾#dms202	4_M_RACHMAN2
+1@nyr,127,166,7	duplicate(dummy_npc)	憤怒的群眾#dms212	4_M_DESERT
+1@nyr,125,168,7	duplicate(dummy_npc)	憤怒的群眾#dms222	4_M_RACHMAN1
+1@nyr,123,164,7	duplicate(dummy_npc)	憤怒的群眾#dms232	4_M_MIDDLE1
+1@nyr,127,169,7	duplicate(dummy_npc)	憤怒的群眾#dms242	4_F_SHABBY
+
+
+
+
+//-------------------------------------------------------------------------
+// Daily quest
+//-------------------------------------------------------------------------
+1@nyr,153,145,0	warp	#qwpto01	1,7,1@nyr,146,145
+1@nyr,91,33,0	warp	#qwpto03	1,7,1@nyr,86,33
+1@nyr,120,181,0	script	#qwpto02	WARPNPC,7,1,{
+	end;
+OnTouch:
+	if ('nyr_daily_step > 12 && isbegin_quest(17522) == 1)
+		changequest 17522,17524;
+	warp 'map_2nyr$,35,222;
+	end;
+}
+1@nyr,88,146,0	warp	#areaw03	1,5,1@nyr,94,158
+// 1@nyr,43,26,0	duplicate(dummy_npc)	#qwptora	WARPNPC,7,1	// unknown
+
+// probably starter npcs
+// 1@nyr,194,30,0	script	#mson101	HIDDEN_WARP_NPC,5,5
+1@nyr,196,30,0	script	#qar101sw	HIDDEN_WARP_NPC,5,5,{
+	end;
+OnTouch:
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 0)
+		end;
+	'nyr_daily_step = 1;
+	disablenpc instance_npcname("#qar101sw");
+
+	enablenpc instance_npcname("神殿守衛#qdms101");
+	enablenpc instance_npcname("神殿守衛#qdms111");
+	enablenpc instance_npcname("神殿守衛#qdms121");
+	enablenpc instance_npcname("神殿守衛#qdms131");
+	enablenpc instance_npcname("神殿守衛#qdms141");
+	enablenpc instance_npcname("神殿守衛#qdms151");
+	enablenpc instance_npcname("神殿守衛#qdms161");
+	enablenpc instance_npcname("神殿守衛#qdms171");
+	enablenpc instance_npcname("神殿守衛#qdms181");
+
+	sleep 1000;	// (player can walk)
+	npctalk "冒險家，歡迎。感謝你加入我們的淨化行動。", instance_npcname("神殿守衛#qdms101");
+	sleep 1500;
+	npctalk "大家都集合了嗎？", instance_npcname("神殿守衛#qdms101");
+	sleep 1000;
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms111");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms121");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms131");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms141");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms151");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms161");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms171");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#qdms181");
+	sleep 1000;
+	npctalk "那些背棄了侍奉女神的誓言、破壞誓約的叛徒正在擾亂這裡！", instance_npcname("神殿守衛#qdms101");
+	sleep 1500;
+	npctalk "對他們執行女神的意志也是我們的職責！", instance_npcname("神殿守衛#qdms101");
+	sleep 1500;
+	npctalk "從這裡開始，我們封鎖了四個區域：三個花園區和一個神殿入口。讓我們依序淨化它們。", instance_npcname("神殿守衛#qdms101");
+	sleep 1500;
+	npctalk "注意，在黑暗中可能無法分辨敵我！請小心，避免攻擊自己人！", instance_npcname("神殿守衛#qdms101");
+	enablenpc instance_npcname("神殿守衛#qdms01");
+	sleep 1500;
+	npctalk "各位就位！", instance_npcname("神殿守衛#qdms101");
+
+	disablenpc instance_npcname("神殿守衛#qdms101");
+	disablenpc instance_npcname("神殿守衛#qdms111");
+	disablenpc instance_npcname("神殿守衛#qdms121");
+	disablenpc instance_npcname("神殿守衛#qdms131");
+	disablenpc instance_npcname("神殿守衛#qdms141");
+	disablenpc instance_npcname("神殿守衛#qdms151");
+	disablenpc instance_npcname("神殿守衛#qdms161");
+	disablenpc instance_npcname("神殿守衛#qdms171");
+	disablenpc instance_npcname("神殿守衛#qdms181");
+	end;
+}
+
+// Guards entrance daily
+1@nyr,190,31,1	duplicate(dummy_npc)	神殿守衛#qdms101	4_M_RASWORD
+1@nyr,186,31,5	duplicate(dummy_npc)	神殿守衛#qdms111	4_M_RASWORD
+1@nyr,187,32,5	duplicate(dummy_npc)	神殿守衛#qdms121	4_M_RASWORD
+1@nyr,188,33,5	duplicate(dummy_npc)	神殿守衛#qdms131	4_M_RASWORD
+1@nyr,189,34,5	duplicate(dummy_npc)	神殿守衛#qdms141	4_M_RASWORD
+1@nyr,185,32,5	duplicate(dummy_npc)	神殿守衛#qdms151	4_M_RASWORD
+1@nyr,186,33,5	duplicate(dummy_npc)	神殿守衛#qdms161	4_M_RASWORD
+1@nyr,187,34,5	duplicate(dummy_npc)	神殿守衛#qdms171	4_M_RASWORD
+1@nyr,188,35,5	duplicate(dummy_npc)	神殿守衛#qdms181	4_M_RASWORD
+
+
+// 1@nyr,120,173,0	duplicate(dummy_npc)	#qar201sw	HIDDEN_WARP_NPC,5,5
+// 1@nyr,108,167,0	duplicate(dummy_npc)	#qmobg401	HIDDEN_WARP_NPC,5,5
+
+// 1@nyr,165,32,0	duplicate(dummy_npc)	#qmobg101	HIDDEN_WARP_NPC,5,5
+1@nyr,1,1,0	script	#qmobg101	-1,{
+	end;
+OnStart01:
+	callsub( S_Call, 1, "沒有人能阻止我們！", "神殿守衛#qdms01", 165,45, 168,47, 170,58 );
+// basic routine to spawn the monsters
+OnMobDead1:
+	callsub( S_Next, 2, "第一區仍有敵人殘留！搜索並消滅！", "神殿守衛#qdms02" );
+// basic routine to enable the next npcs
+
+OnStart02:
+	callsub( S_Call, 2, "我們現在變強了！", "神殿守衛#qdms02", 159,114, 162,114, 186,122 );
+OnMobDead2:
+	callsub( S_Next, 3, "第一區仍潛伏著敵人！搜索並消滅他們！", "神殿守衛#qdms03" );
+OnStart03:
+	callsub( S_Call, 3, "他們把我們當獵物一樣驅趕！！不可原諒！", "神殿守衛#qdms03", 165,141, 164,132, 165,136, 165,127 );
+OnMobDead3:
+	callsub( S_Next, 4, "第一區已清除！所有人，移動到第二區！", "神殿守衛#qdms21", "#qwpto01" );
+OnStart21:
+	callsub( S_Call, 4, "你知道我心裡在想什麼嗎？", "神殿守衛#qdms21", 137,124 );
+OnMobDead4:
+	callsub( S_Next, 5, "第二區仍有敵人殘留！搜索並消滅！", "神殿守衛#qdms22" );
+OnStart22:
+	callsub(S_Call, 5, "我們必須趕快避開他們！", "神殿守衛#qdms22", 114,111, 102,98, 108,78, 120,78, 126,110 );
+OnMobDead5:
+	callsub( S_Next, 6, "第二區仍有敵人殘留！搜索並消滅！", "神殿守衛#qdms23" );
+OnStart23:
+	callsub( S_Call, 6, "你以為我會袖手旁觀嗎？", "神殿守衛#qdms23", 138,61, 130,47, 123,35, 105,47, 103,35 );
+OnMobDead6:
+	callsub( S_Next, 7, "第二區已清除！所有人，移動到第三區！", "神殿守衛#qdms31", "#qwpto03" );
+OnStart31:
+	callsub( S_Call, 7, "我們做錯了什麼？？", "神殿守衛#qdms31", 74,39, 59,31, 54,47 );
+OnMobDead7:
+	callsub( S_Next, 8, "第三區仍有敵人殘留！搜索並消滅！", "神殿守衛#qdms32" );
+OnStart32:
+	callsub( S_Call, 8, "我們必須趕快避開他們！", "神殿守衛#qdms32", 63,61, 54,76, 77,100 );
+OnMobDead8:
+	callsub( S_Next, 9, "第三區仍有敵人殘留！搜索並消滅！", "神殿守衛#qdms33" );
+OnStart33:
+	callsub( S_Call, 9, "咿！！", "神殿守衛#qdms33", 55,111, 74,120, 54,127, 80,140, 64,141 );
+OnMobDead9:
+	callsub( S_Next, 10, "第三區已清除！所有人，移動到第四區！", "神殿守衛#qdms41", "#areaw03" );
+OnStart41:
+	callsub( S_Call, 10, "你們這些傢伙真的很難纏。", "神殿守衛#qdms41", 94,185, 79,180, 62,183, 68,199 );
+OnMobDead10:
+	callsub( S_Next, 11, "第四區仍有敵人殘留！搜索並消滅！", "神殿守衛#qdms42" );
+OnStart42:
+	callsub( S_Call, 11, "我們必須趕快避開他們！", "神殿守衛#qdms42", 119,168, 146,183, 177,182 );
+OnMobDead11:
+	if ('nyr_daily_step != 12)
+		end;
+	if (mobcount('map_1nyr$, instance_npcname("#qmobg101") + "::OnMobDead11") > 0)
+		end;
+	mapannounce 'map_1nyr$, "所有區域已清除！在神殿入口集合！", bc_map, 0xFFCC;
+	for ( .@i = 0; .@i < 9; ++.@i )
+		enablenpc instance_npcname("神殿守衛#qdms1" + .@i + "2");
+	end;
+S_Next:	// basic routine to mapannounce and enable the npcs
+	if ('nyr_daily_step != getarg(0))
+		end;
+	if (mobcount('map_1nyr$, instance_npcname("#qmobg101") + "::OnMobDead" + ('nyr_daily_step-1)) > 0)
+		end;
+	mapannounce 'map_1nyr$, getarg(1), bc_map, 0xFFCC;
+	for ( .@i = 2; .@i < getargcount(); ++.@i )
+		enablenpc instance_npcname( getarg(.@i) );
+	end;
+S_Call:	// basic routine to display the message and spawn the monsters
+	.@num = getarg(0);
+	if ('nyr_daily_step != .@num)
+		end;
+	'nyr_daily_step = .@num + 1;
+	npctalk getarg(1), instance_npcname( getarg(2) );
+	sleep 500;
+	disablenpc instance_npcname( getarg(2) );
+	getmapxy .@map$, .@x, .@y, BL_NPC, getarg(2);
+	.@label$ = instance_npcname("#qmobg101") + "::OnMobDead" + .@num;
+	areamonster 'map_1nyr$, .@x-2, .@y-2, .@x+2, .@y+2, "叛變守衛",21311,1, .@label$;	// EP18_MD_GUARD_B
+	for ( .@i = 3; .@i < getargcount(); .@i += 2 ) {
+		if (rand(2))
+			monster 'map_1nyr$, getarg(.@i), getarg(.@i+1),"神殿守衛",21310,1, .@label$;
+// EP18_MD_GUARD_A
+		else
+			monster 'map_1nyr$, getarg(.@i), getarg(.@i+1),"叛變守衛",21311,1, .@label$;	// EP18_MD_GUARD_B
+	}
+	end;
+}
+
+1@nyr,165,32,5	script	神殿守衛#qdms01	4_M_RASWORD,5,5,{
+	end;
+OnTouch:
+	if (is_party_leader() == false)
+		end;
+	.@string$ = replacestr( strnpcinfo(2), "qdms", "" );
+	donpcevent instance_npcname("#qmobg101") + "::OnStart" + .@string$;
+	end;
+}
+1@nyr,165,98,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms02	4_M_RASWORD,5,5
+1@nyr,184,141,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms03	4_M_RASWORD,5,5
+1@nyr,139,134,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms21	4_M_RASWORD,5,5
+1@nyr,102,109,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms22	4_M_RASWORD,5,5
+1@nyr,137,78,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms23	4_M_RASWORD,5,5
+1@nyr,74,32,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms31	4_M_RASWORD,5,5
+1@nyr,54,61,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms32	4_M_RASWORD,5,5
+1@nyr,65,108,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms33	4_M_RASWORD,5,5
+1@nyr,108,167,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms41	4_M_RASWORD,5,5
+1@nyr,107,178,5	duplicate(神殿守衛#qdms01)	神殿守衛#qdms42	4_M_RASWORD,5,5
+
+// Final map 1
+1@nyr,119,175,3	script	神殿守衛#qdms102	4_M_RASWORD,2,2,{
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 12)
+		end;
+	mes "[神殿守衛隊長]";
+	mes "大家做得好！淨化行動將每天繼續！今天先解散休息吧！";
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms112");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms122");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms132");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms142");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms152");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms162");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms172");
+	npctalk "是的，長官！！", instance_npcname("神殿守衛#qdms182");
+	next;
+	mes "[神殿守衛隊長]";
+	mes "冒險家，感謝你的協助。";
+	next;
+	mes "[神殿守衛隊長]";
+	mes "我聽說你也將加入我們在神殿內部進行的另一次淨化行動。就全靠你了！";
+	close2;
+	if ('nyr_daily_step != 12)
+		end;
+	'nyr_daily_step = 13;
+	enablenpc instance_npcname("#qwpto02");
+	enablenpc instance_npcname("#2ar101sw");
+	end;
+}
+1@nyr,116,171,7	duplicate(dummy_npc)	神殿守衛#qdms112	4_M_RASWORD
+1@nyr,118,171,7	duplicate(dummy_npc)	神殿守衛#qdms122	4_M_RASWORD
+1@nyr,120,171,1	duplicate(dummy_npc)	神殿守衛#qdms132	4_M_RASWORD
+1@nyr,122,171,1	duplicate(dummy_npc)	神殿守衛#qdms142	4_M_RASWORD
+1@nyr,116,173,7	duplicate(dummy_npc)	神殿守衛#qdms152	4_M_RASWORD
+1@nyr,118,173,7	duplicate(dummy_npc)	神殿守衛#qdms162	4_M_RASWORD
+1@nyr,120,173,1	duplicate(dummy_npc)	神殿守衛#qdms172	4_M_RASWORD
+1@nyr,122,173,1	duplicate(dummy_npc)	神殿守衛#qdms182	4_M_RASWORD
+
+// nowalk delimiter npcs
+1@nyr,89,24,5	duplicate(dummy_npc)	#cell01	2_MONEMUS
+1@nyr,89,37,5	duplicate(dummy_npc)	#cell02	2_MONEMUS
+1@nyr,89,58,5	duplicate(dummy_npc)	#cell03	2_MONEMUS
+1@nyr,89,65,5	duplicate(dummy_npc)	#cell04	2_MONEMUS
+1@nyr,89,106,5	duplicate(dummy_npc)	#cell05	2_MONEMUS
+1@nyr,89,113,5	duplicate(dummy_npc)	#cell06	2_MONEMUS
+1@nyr,89,134,5	duplicate(dummy_npc)	#cell07	2_MONEMUS
+1@nyr,89,153,5	duplicate(dummy_npc)	#cell08	2_MONEMUS
+1@nyr,150,134,5	duplicate(dummy_npc)	#cell09	2_MONEMUS
+1@nyr,150,153,5	duplicate(dummy_npc)	#cell10	2_MONEMUS
+1@nyr,150,24,5	duplicate(dummy_npc)	#cell11	2_MONEMUS
+1@nyr,150,37,5	duplicate(dummy_npc)	#cell12	2_MONEMUS
+1@nyr,150,58,5	duplicate(dummy_npc)	#cell13	2_MONEMUS
+1@nyr,150,65,5	duplicate(dummy_npc)	#cell14	2_MONEMUS
+1@nyr,150,106,5	duplicate(dummy_npc)	#cell15	2_MONEMUS
+1@nyr,150,113,5	duplicate(dummy_npc)	#cell66	2_MONEMUS
+
+// 1@nyr,89,153,5	duplicate(dummy_npc)	#cell41	2_MONEMUS	// duplicate of 8
+1@nyr,98,153,5	duplicate(dummy_npc)	#cell42	2_MONEMUS
+1@nyr,141,153,5	duplicate(dummy_npc)	#cell51	2_MONEMUS
+
+
+// map 2
+2@nyr,35,200,0	script	#2ar101sw	HIDDEN_WARP_NPC,5,5,{
+	end;
+OnTouch:
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 13)
+		end;
+	'nyr_daily_step = 14;
+	for ( .@i = 0; .@i < 7; ++.@i )
+		enablenpc instance_npcname("神殿守衛#2dms1" + .@i + "1");
+	npctalk "檢查所有設施並確保安全。任何企圖闖入並獲取力量的人都必須處理掉！", instance_npcname("神殿守衛#2dms101");
+	sleep 2000;
+	npctalk "是的，長官！", instance_npcname("神殿守衛#2dms111");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#2dms121");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#2dms131");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#2dms141");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#2dms151");
+	npctalk "是的，長官！", instance_npcname("神殿守衛#2dms161");
+	sleep 2000;
+	npctalk "各位就位！", instance_npcname("神殿守衛#2dms101");
+	sleep 2000;
+	for ( .@i = 1; .@i < 7; ++.@i )
+		disablenpc instance_npcname("神殿守衛#2dms1" + .@i + "1");
+	npctalk "冒險家，感謝你參與淨化行動！", instance_npcname("神殿守衛#2dms101");
+	sleep 2000;
+	npctalk "除了處理入侵者之外，我還有另一個任務要交給你。", instance_npcname("神殿守衛#2dms101");
+	sleep 2000;
+	npctalk "我會暫時將管理員權限授予隊伍的隊長。請每天重置不斷變更的保安設施的安全碼。", instance_npcname("神殿守衛#2dms101");
+	sleep 2000;
+	'code = rand(1000,9999);
+	npctalk "今天的安全碼是 " + 'code + "。在設定之前，請確保儲藏室和倉庫是空的！", instance_npcname("神殿守衛#2dms101");
+	sleep 2000;
+	npctalk "現在，讓我們開始任務吧！", instance_npcname("神殿守衛#2dms101");
+	enablenpc instance_npcname("神殿守衛#2dms10");
+	end;
+}
+
+2@nyr,35,187,7	script	神殿守衛#2dms101	4_M_RASWORD,{
+	if ('code > 0)
+		npctalk "你忘記安全碼了嗎？今天的安全碼是 " + 'code + "！快點！我稍後就來與你會合！", instance_npcname("神殿守衛#2dms101");
+	end;
+}
+
+2@nyr,37,191,3	duplicate(dummy_npc)	神殿守衛#2dms111	4_M_RASWORD
+2@nyr,35,191,3	duplicate(dummy_npc)	神殿守衛#2dms121	4_M_RASWORD
+2@nyr,33,191,3	duplicate(dummy_npc)	神殿守衛#2dms131	4_M_RASWORD
+2@nyr,33,189,5	duplicate(dummy_npc)	神殿守衛#2dms141	4_M_RASWORD
+2@nyr,35,189,5	duplicate(dummy_npc)	神殿守衛#2dms151	4_M_RASWORD
+2@nyr,37,189,5	duplicate(dummy_npc)	神殿守衛#2dms161	4_M_RASWORD
+
+
+// mobs spawn npcs
+2@nyr,1,1,0	script	#nyr_puri_mob_2	-1,{
+	end;
+OnStart10:
+	callsub( S_Call, 14, "啊！真是個驚喜！", "神殿守衛#2dms10" );
+OnMobDead14:
+	callsub( S_Next, 15, "第一區仍有敵人殘留！搜索並消滅！", "心之獵手#2dms11" );
+OnStart11:
+	callsub( S_Call, 15, "什麼？為什麼是他們？？", "心之獵手#2dms11" );
+OnMobDead15:
+	callsub( S_Next, 16, "第一區仍有敵人殘留！搜索並消滅！", "心之獵手#2dms12" );
+OnStart12:
+	callsub( S_Call, 16, "咿！！", "心之獵手#2dms12" );
+OnMobDead16:
+	callsub( S_Next, 17, "一號儲藏室附近的走廊已清除！前往一號儲藏室！", "心之獵手#2dms13", "#2mstep01" );
+OnStart13:
+	callsub( S_Call, 17, "呃！真煩人！他們就不能放過我們嗎！", "心之獵手#2dms13", 33,104, 31,79, 31,67, 18,81 );
+OnMobDead17:
+	callsub( S_Next, 18, "一號儲藏室已清除！等待安全碼重置", "#2mstep02" );
+OnStart20:
+	callsub( S_Call, 20, "為什麼每個人都這麼執著！！", "心之獵手#2dms20" );
+OnMobDead20:
+	callsub( S_Next, 21, "第二區仍有敵人殘留！搜索並消滅！", "心之獵手#2dms21" );
+OnStart21:
+	callsub( S_Call, 21, "離我們遠點！", "心之獵手#2dms21" );
+OnMobDead21:
+	callsub( S_Next, 22, "二號儲藏室附近的走廊已清除！前往二號儲藏室！", "心之獵手#2dms22", "#2mstep03" );
+OnStart22:
+	callsub( S_Call, 22, "要是我能找到那本書就好了...！倒抽一口氣！你是誰？", "心之獵手#2dms22", 94,62, 132,62, 156,48, 150,40, 132,17, 100,16 , 83,33, 93,44);
+OnMobDead22:
+	callsub( S_Next, 23, "二號儲藏室已清除！等待安全碼重置", "#2mstep04" );
+OnStart30:
+	callsub( S_Call, 25, "我不會放過你的！！", "心之獵手#2dms30" );
+OnMobDead25:
+	callsub( S_Next, 26, "第三區仍有敵人殘留！搜索並消滅！", "心之獵手#2dms31" );
+OnStart31:
+	callsub( S_Call, 26, "這麼執著！我受夠了！", "心之獵手#2dms31" );
+OnMobDead26:
+	callsub( S_Next, 27, "三號儲藏室附近的走廊已清除！前往三號儲藏室！", "心之獵手#2dms32", "#2mstep05" );
+OnStart32:
+	callsub( S_Call, 27, "我們必須趕緊去倉庫！啊！！", "心之獵手#2dms32", 195,99, 214,101, 198,86, 205,64, 213,52 );
+OnMobDead27:
+	callsub( S_Next, 28, "三號儲藏室已清除！等待安全碼重置", "#2mstep06" );
+OnStart40:
+	callsub( S_Call, 30, "我還沒得到我想要的東西！", "心之獵手#2dms40" );
+OnMobDead30:
+	callsub( S_Next, 31, "中心已清除！前往儲藏室！", "#2mstep07", "#2mstep08", "心之獵手#2dms41", "心之獵手#2dms42", "心之獵手#2dms43", "心之獵手#2dms44", "心之獵手#2dms45",
+		"心之獵手#2dms46", "心之獵手#2dms47", "心之獵手#2dms48", "心之獵手#2dms49", "#2ar201sw" );
+S_Next:
+	if ('nyr_daily_step != getarg(0))
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("#nyr_puri_mob_2") + "::OnMobDead" + ('nyr_daily_step-1)) > 0)
+		end;
+	mapannounce 'map_2nyr$, getarg(1), bc_map, 0xFFCC;
+	for ( .@i = 2; .@i < getargcount(); ++.@i )
+		enablenpc instance_npcname( getarg(.@i) );
+	end;
+
+S_Call:
+	.@num = getarg(0);
+	if ('nyr_daily_step != .@num)
+		end;
+	'nyr_daily_step = .@num + 1;
+	npctalk getarg(1), instance_npcname( getarg(2) );
+	sleep 500;
+	disablenpc instance_npcname( getarg(2) );
+	.@label$ = instance_npcname("#nyr_puri_mob_2") + "::OnMobDead" + .@num;
+	if (getargcount() < 4) {
+		getmapxy .@map$, .@x, .@y, BL_NPC, getarg(2);
+		monster 'map_2nyr$, .@x, .@y,"心之獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	}
+	else {
+		for ( .@i = 3; .@i < getargcount(); .@i += 2 ) {
+			monster 'map_2nyr$, getarg(.@i), getarg(.@i+1),"心之獵手",21312,1, .@label$;
+// EP18_MD_HEARTHUNTER_R
+		}
+	}
+	end;
+
+OnFinal:
+	if ('nyr_daily_step != 32)
+		end;
+	if (mobcount('map_2nyr$, instance_npcname("#nyr_puri_mob_2") + "::OnFinal") > 0)
+		end;
+	mapannounce 'map_2nyr$, "金庫安全碼重置進行中！", bc_map, 0xFFCC;
+	disablenpc instance_npcname("#2mstep07");
+	disablenpc instance_npcname("#2mstep08");
+	// enablenpc instance_npcname("#2mstep09");
+	// enablenpc instance_npcname("#2mstep10");
+	end;
+}
+
+2@nyr,35,171,5	script	神殿守衛#2dms10	EP18_MD_HEARTHUNTER_R,5,5,{
+	end;
+OnTouch:
+	if (is_party_leader() == false)
+		end;
+	.@string$ = replacestr( strnpcinfo(2), "2dms", "" );
+	donpcevent instance_npcname("#nyr_puri_mob_2") + "::OnStart" + .@string$;
+	end;
+}
+2@nyr,36,146,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms11	EP18_MD_HEARTHUNTER_R,5,5
+2@nyr,64,131,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms12	EP18_MD_HEARTHUNTER_R,5,5
+2@nyr,42,104,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms13	EP18_MD_HEARTHUNTER_R,5,5
+
+2@nyr,69,103,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms20	EP18_MD_HEARTHUNTER_R,5,5
+2@nyr,106,78,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms21	EP18_MD_HEARTHUNTER_R,5,5
+2@nyr,94,62,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms22	EP18_MD_HEARTHUNTER_R,5,5
+
+2@nyr,129,75,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms30	EP18_MD_HEARTHUNTER_R,5,5
+2@nyr,158,104,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms31	EP18_MD_HEARTHUNTER_R,5,5
+2@nyr,195,99,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms32	EP18_MD_HEARTHUNTER_R,5,5
+
+2@nyr,174,109,5	duplicate(神殿守衛#2dms10)	心之獵手#2dms40	EP18_MD_HEARTHUNTER_R,5,5
+
+	
+// final battle
+2@nyr,115,177,3	script	心之獵手#2dms41	EP18_MD_HEARTHUNTER_R,5,5,{
+	end;
+OnTouch:
+	npctalk "啊，看來有什麼東西要來了?", instance_npcname("心之獵手#2dms41");
+	end;
+}
+
+2@nyr,126,174,5	script	心之獵手#2dms42	EP18_MD_HEARTHUNTER_R,5,5,{
+	end;
+OnTouch:
+	npctalk "刺激！！！太不可思議了！！！", instance_npcname("心之獵手#2dms42");
+	end;
+}
+
+2@nyr,117,207,1	script	心之獵手#2dms43	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "我記得上次見過這個，但我們當初是怎麼處理的...", instance_npcname("心之獵手#2dms43");
+	end;
+}
+
+2@nyr,115,206,7	script	心之獵手#2dms44	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "不是這樣做的。", instance_npcname("心之獵手#2dms44");
+	end;
+}
+
+2@nyr,119,206,1	script	心之獵手#2dms45	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "如果你做不到，閃一邊去。我來處理。", instance_npcname("心之獵手#2dms45");
+	end;
+}
+
+2@nyr,129,199,5	script	心之獵手#2dms46	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "哦，我有懼高症。", instance_npcname("心之獵手#2dms46");
+	end;
+}
+
+2@nyr,113,194,3	script	心之獵手#2dms47	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "這裡有東西！", instance_npcname("心之獵手#2dms47");
+	end;
+}
+
+2@nyr,111,209,5	script	心之獵手#2dms48	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "嘿！這太令人興奮了?", instance_npcname("心之獵手#2dms48");
+	end;
+}
+
+2@nyr,112,206,5	script	心之獵手#2dms49	EP18_MD_HEARTHUNTER_R,2,2,{
+	end;
+OnTouch:
+	npctalk "這什麼時候才會結束...", instance_npcname("心之獵手#2dms49");
+	end;
+}
+
+2@nyr,115,201,5	script	心之獵手#2dms50	EP17_1_BELLARE1,{
+	npctalk "怎麼了？可能只是你的錯覺。", instance_npcname("心之獵手#2dms50");
+	end;
+}
+
+
+2@nyr,118,200,0	script	#2ar201sw	HIDDEN_WARP_NPC,5,5,{
+	end;
+OnTouch:
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 31)
+		end;
+	'nyr_daily_step = 32;
+	disablenpc();
+	enablenpc instance_npcname("心之獵手#2dms50");
+	emotion ET_QUESTION, getnpcid(0,instance_npcname("心之獵手#2dms50"));
+	sleep 500;
+	npctalk "這是什麼？不速之客？", instance_npcname("心之獵手#2dms50");
+	sleep 2000;
+	npctalk "有人進來了你們都沒注意到，你們到底在幹嘛？振作點！", instance_npcname("心之獵手#2dms50");
+	sleep 2000;
+	npctalk "啊?我醉了?沉醉在心臟的魔力中?", instance_npcname("心之獵手#2dms48");
+	sleep 2000;
+	npctalk "這不是王國唯一允許的魔法嗎？", instance_npcname("心之獵手#2dms48");
+	npctalk "你在說什麼？這也不被王國允許。你忘了嗎？", instance_npcname("心之獵手#2dms44");
+	sleep 2000;
+	npctalk "哦，對了。我們是非法入侵，對吧？", instance_npcname("心之獵手#2dms49");
+	sleep 200;
+	npctalk "也許這種刺激感正是因為它是非法的？", instance_npcname("心之獵手#2dms48");
+	npctalk "嘿！這很奇怪。不管我怎麼操作，心臟的魔力就是釋放不出來。", instance_npcname("心之獵手#2dms43");
+	npctalk "那閃開！讓我來試試！！", instance_npcname("心之獵手#2dms45");
+	sleep 2000;
+	npctalk "什麼？那麼，現在流經我全身的這種興奮感是什麼？", instance_npcname("心之獵手#2dms48");
+	sleep 2000;
+	npctalk "嗯，難得我的心情感到這麼興奮。", instance_npcname("心之獵手#2dms48");
+	npctalk "仔細檢查一下。可能被動過手腳了。", instance_npcname("心之獵手#2dms49");
+	npctalk "你說你以前見過這種操作手法？你還要我們只相信你？", instance_npcname("心之獵手#2dms50");
+	sleep 1000;
+	npctalk "那個... 等一下，它顯示安全碼不符？", instance_npcname("心之獵手#2dms43");
+	sleep 2000;
+	npctalk "安全碼不符？嗯... 我想這可能和這裡的冒險家有關？對吧？", instance_npcname("心之獵手#2dms50");
+	sleep 2000;
+	npctalk "你能輸入更改後的安全碼嗎？這樣我們大家都會真正的高興。", instance_npcname("心之獵手#2dms50");
+	sleep 2000;
+	npctalk "閃開。有時候機器就是得敲一敲才聽話！", instance_npcname("心之獵手#2dms45");
+	specialeffect EF_HITDARK, AREA, instance_npcname("心之獵手#2dms45");
+	specialeffect EF_MAGICCRASHER, AREA, instance_npcname("心之獵手#2dms45");
+	npctalk "嘿！誰像那樣操作機器的？", instance_npcname("心之獵手#2dms43");
+	sleep 2000;
+	specialeffect EF_LIGHTNINGLOADER, AREA, instance_npcname("心之獵手#2dms48");
+	specialeffect EF_MAGICALATTHIT, AREA, instance_npcname("心之獵手#2dms48");
+	npctalk "哎呀！！！突然變得更刺激了！！這也是因為我的心情嗎？", instance_npcname("心之獵手#2dms48");
+	npctalk "看來是短路了！它發出光芒了！", instance_npcname("心之獵手#2dms44");
+	sleep 2000;
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms48");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms48");
+	npctalk "啊啊啊！！！", instance_npcname("心之獵手#2dms48");
+	npctalk "嘿！！這個太厲害了！！！", instance_npcname("心之獵手#2dms44");
+	npctalk "為什麼只有那個...？這裡有什麼不對勁嗎？", instance_npcname("心之獵手#2dms43");
+	sleep 2000;
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms43");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms44");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms45");
+	npctalk "咦...？", instance_npcname("心之獵手#2dms43");
+	npctalk "這是什麼？", instance_npcname("心之獵手#2dms44");
+	npctalk "果然，故障的機器就是要敲一敲！", instance_npcname("心之獵手#2dms45");
+	sleep 2000;
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms49");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms49");
+	npctalk "我也觸電了嗎？我的身體是不是也有問題？", instance_npcname("心之獵手#2dms49");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms43");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms44");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms45");
+	sleep 2000;
+	npctalk "不是那樣的，我成功了。你看，我們都跟心臟產生共鳴了，不是嗎？", instance_npcname("心之獵手#2dms45");
+	sleep 200;
+	npctalk "啊...", instance_npcname("心之獵手#2dms50");
+	sleep 2000;
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms41");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms42");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms46");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms47");
+	specialeffect EF_NPC_STOP, AREA, instance_npcname("心之獵手#2dms50");
+	npctalk "隨便啦。雖然我們無法提取心臟的魔力，但我們的共鳴運作得很好。那我們要測試一下這股力量嗎？", instance_npcname("心之獵手#2dms50");
+	npctalk "幸好，這裡有個冒險家。時機正好。", instance_npcname("心之獵手#2dms49");
+	npctalk "很好。真是幸運。否則我們可能就會自己打起來了，對吧？", instance_npcname("心之獵手#2dms45");
+	npctalk "啊！我在普隆德拉見過類似的事。大家都在那裡打蛋，對吧？", instance_npcname("心之獵手#2dms44");
+	sleep 2000;
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms41");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms42");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms46");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms47");
+	specialeffect EF_UNDEADBODY, AREA, instance_npcname("心之獵手#2dms50");
+	npctalk "我們沒有任何私人恩怨，但如果我們就這樣放過這件事，我們會有麻煩的。", instance_npcname("心之獵手#2dms50");
+	sleep 2000;
+	npctalk "如果你假裝沒看見直接走過去就好了。算了，再見。", instance_npcname("心之獵手#2dms50");
+	for ( .@i = 41; .@i < 51; ++.@i ) {
+		hideonnpc instance_npcname("心之獵手#2dms" + .@i );
+		disablenpc instance_npcname("心之獵手#2dms" + .@i );
+	}
+
+	.@label$ = instance_npcname("#nyr_puri_mob_2") + "::OnFinal";
+	monster 'map_2nyr$,122,194,"共鳴者",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_2nyr$,118,196,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,117,207,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,115,206,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,119,206,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,113,194,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,111,209,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,112,206,"共鳴者",21312,1, .@label$;
+	monster 'map_2nyr$,115,201,"共鳴者",21313,1, .@label$;	// EP18_MD_HEARTHUNTER_F
+	end;
+}
+
+
+// warp npcs
+2@nyr,56,104,0	warp	#2mstep01	1,1,2@nyr,49,104
+
+2@nyr,49,55,0	script	#2mstep02	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,53,55;
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 18)
+		end;
+	'nyr_daily_step = 19;
+	disablenpc instance_npcname("#2mstep01");
+	enablenpc instance_npcname("保安裝置#2dms10");
+	end;
+}
+
+2@nyr,119,71,0	warp	#2mstep03	1,1,2@nyr,119,65
+
+2@nyr,119,66,0	script	#2mstep04	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,117,73;
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 23)
+		end;
+	'nyr_daily_step = 24;
+	disablenpc instance_npcname("#2mstep03");
+	enablenpc instance_npcname("保安裝置#2dms20");
+	end;
+}
+
+2@nyr,183,104,0	warp	#2mstep05	1,1,2@nyr,190,104
+
+2@nyr,186,104,0	script	#2mstep06	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,180,104;
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 28)
+		end;
+	'nyr_daily_step = 29;
+	disablenpc instance_npcname("#2mstep05");
+	enablenpc instance_npcname("保安裝置#2dms30");
+	end;
+}
+
+2@nyr,120,123,0	script	#2mstep07	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,120,126;
+	navigateto("2@nyr",120,137);
+	end;
+}
+
+2@nyr,120,137,0	script	#2mstep08	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,120,147;
+	navigateto("2@nyr",120,200);
+	end;
+}
+
+2@nyr,120,141,0	script	#2mstep09	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,120,134;
+	navigateto("2@nyr",151,131);
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 32)
+		end;
+	'nyr_daily_step = 33;
+	enablenpc instance_npcname("保安裝置#2dms40");
+	end;
+}
+
+2@nyr,151,131,0	script	#2mstep10	WARPNPC,1,1,{
+	end;
+OnTouch:
+	warp 'map_2nyr$,159,131;
+	navigateto("2@nyr",203,220);
+	end;
+}
+
+2@nyr,203,220,0	script	#2mstep11	WARPNPC,1,1,{
+	end;
+OnTouch:
+	if ('nyr_daily_step == 35 && isbegin_quest(17523) == 1)
+		changequest 17523,17526;
+	warp "rachel",167,240;
+	end;
+}
+
+
+// Code
+2@nyr,51,57,5	script	保安裝置#2dms10	4_POINT_BLUE,5,5,{
+	if (is_party_leader() == false)
+		end;
+	switch( atoi( replacestr( strnpcinfo(2), "2dms", "" ) ) ) {
+	case 10:
+		.@step = 19;
+		.@mes$ = "一號儲藏室的安全碼已重置。";
+		.@enable$ = "心之獵手#2dms20";
+		setarray .@xy[0],119,73;
+		break;
+	case 20:
+		.@step = 24;
+		.@mes$ = "二號儲藏室的安全碼已重置。";
+		.@enable$ = "心之獵手#2dms30";
+		setarray .@xy[0],183,104;
+		break;
+	case 30:
+		.@step = 29;
+		.@mes$ = "三號儲藏室的安全碼已重置。";
+		.@enable$ = "心之獵手#2dms40";
+		setarray .@xy[0],120,123;
+		break;
+	default:
+		end;
+	}
+	if ('nyr_daily_step != .@step)
+		end;
+	mes "等待安全碼重置。請輸入新的安全碼。";
+	next;
+	input .@num;
+	if (.@num != 'code) {
+		mes "取消輸入";
+		close;
+	}
+	mes .@mes$;
+	if (.@npctalk$ != "")
+		npctalk .@npctalk$;
+	if ('nyr_daily_step == .@step) {
+		'nyr_daily_step = .@step + 1;
+		enablenpc instance_npcname( .@enable$ );
+	}
+	navigateto("2@nyr",.@xy[0],.@xy[1]);
+	close;
+OnTouch:
+	switch( atoi( replacestr( strnpcinfo(2), "2dms", "" ) ) ) {
+	case 10:
+		.@step = 19;
+		break;
+	case 20:
+		.@step = 24;
+		break;
+	case 30:
+		.@step = 29;
+		break;
+	}
+	if ('nyr_daily_step <= .@step)
+		npctalk "等待安全碼重置";
+	else
+		npctalk "安全碼重置完成。";
+	end;
+}
+2@nyr,115,69,5	duplicate(保安裝置#2dms10)	保安裝置#2dms20	4_POINT_BLUE,5,5
+2@nyr,184,100,5	duplicate(保安裝置#2dms10)	保安裝置#2dms30	4_POINT_BLUE,5,5
+
+2@nyr,124,138,5	script	保安裝置#2dms40	4_POINT_BLUE,5,5,{
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 33)
+		end;
+	mes "金庫安全碼重置進行中。請輸入新的安全碼。";
+	next;
+	input .@num;
+	if (.@num != 'code) {
+		mes "取消輸入";
+		close;
+	}
+	mes "金庫安全碼已重置。";
+	if ('nyr_daily_step == 33) {
+		'nyr_daily_step = 34;
+		enablenpc instance_npcname("#2mstep10");
+		enablenpc instance_npcname("#2mstep11");
+		enablenpc instance_npcname("神殿守衛#2dms201");
+		enablenpc instance_npcname("神殿守衛#2dms211");
+		enablenpc instance_npcname("神殿守衛#2dms221");
+		enablenpc instance_npcname("神殿守衛#2dms231");
+		enablenpc instance_npcname("神殿守衛#2dms241");
+		enablenpc instance_npcname("神殿守衛#2dms251");
+		enablenpc instance_npcname("神殿守衛#2dms261");
+		enablenpc instance_npcname("#msnavi01");
+		mapannounce 'map_2nyr$, "你以為我們會就這樣放棄嗎？我們已經嚐到甜頭了。走著瞧！", bc_map, 0xFFCC;
+		mapannounce 'map_2nyr$, "你以為群眾會因為拖延而放棄嗎？狒狒乾的味道？別管它了！", bc_map, 0xFFCC;
+		sleep2 1000;
+		mapannounce 'map_2nyr$, "所有區域已清除！在出口集合！", bc_map, 0xFFCC;
+	}
+	navigateto("2@nyr",151,131);
+	close;
+OnTouch:
+	if ('nyr_daily_step <= 33)
+		npctalk "金庫安全碼重置進行中";
+	else
+		npctalk "金庫安全碼已重置。";
+	end;
+}
+
+2@nyr,174,135,5	script	神殿守衛#2dms201	4_M_RASWORD,5,5,{
+	end;
+OnTouch:
+	if (is_party_leader() == false)
+		end;
+	if ('nyr_daily_step != 34)
+		end;
+	'nyr_daily_step = 35;
+	npctalk "大家辛苦了！", instance_npcname("神殿守衛#2dms201");
+	sleep 2000;
+	npctalk "我們需要每天淨化神殿一段時間！", instance_npcname("神殿守衛#2dms201");
+	sleep 2000;
+	npctalk "四！！", instance_npcname("神殿守衛#2dms211");
+	npctalk "四！！", instance_npcname("神殿守衛#2dms221");
+	npctalk "四！！", instance_npcname("神殿守衛#2dms231");
+	npctalk "四！！", instance_npcname("神殿守衛#2dms241");
+	npctalk "四！！", instance_npcname("神殿守衛#2dms251");
+	npctalk "四！！", instance_npcname("神殿守衛#2dms261");
+	npctalk "各位，現在可以解散了！", instance_npcname("神殿守衛#2dms201");
+	sleep 2000;
+	npctalk "冒險家們，也謝謝你們的努力！後會有期！", instance_npcname("神殿守衛#2dms201");
+	end;
+}
+
+2@nyr,177,134,1	duplicate(dummy_npc)	神殿守衛#2dms211	4_M_RASWORD,3,0
+2@nyr,176,133,1	duplicate(dummy_npc)	神殿守衛#2dms221	4_M_RASWORD
+2@nyr,175,132,1	duplicate(dummy_npc)	神殿守衛#2dms231	4_M_RASWORD
+2@nyr,178,133,1	duplicate(dummy_npc)	神殿守衛#2dms241	4_M_RASWORD
+2@nyr,177,132,1	duplicate(dummy_npc)	神殿守衛#2dms251	4_M_RASWORD
+2@nyr,176,131,1	duplicate(dummy_npc)	神殿守衛#2dms261	4_M_RASWORD
+
+// 2@nyr,179,131,0	duplicate(dummy_npc)	#msnavi01	WARPNPC,3,3
+2@nyr,179,131,0	script	#msnavi01	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch_:
+	navigateto("2@nyr",203,220);
+	end;
+}

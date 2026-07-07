@@ -1,0 +1,1242 @@
+//===== rAthena Script =======================================
+//= Eden Group Quests - Mission [100-111]
+//===== By: ==================================================
+//= Capuche
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Repeatable quests for players between BaseLevel 100 - 111.
+//===== Additional Comments: =================================
+//= 1.0 First version.
+//= 1.1 Added support to Para_Team_Mark_ in Eden Group. [Ragno]
+//= 1.2 Added use of F_HasEdenGroupMark function. [Ragno]
+//============================================================
+
+moc_para01,37,95,5	script	琪露卡#1	4_F_GELKA,{
+	cutin "gelca01",2;
+	if (checkweight(1201,1) == 0) {
+		mes "^FF0000-警告訊息-";
+		mes "- 請稍等一下！！ -";
+		mes "- 您的物品太多了 -";
+		mes "- 無法接收物品。 -";
+		mes "- 請減輕負重 -";
+		mes "- 然後再試一次。 -^000000";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "[琪露卡]";
+	if (!callfunc("F_HasEdenGroupMark")) {
+		mes "向我證明你是伊甸園的一員，否則我沒什麼好跟你談的。";
+		mes "我只派發任務給 Base Level ^FF0000100 - 110^000000 的冒險者。";
+	}
+	else if (BaseLevel < 100) {
+		mes "你還不是個足夠成熟的冒險者。你至少要達到 Base Level 100。也就是說，至少要三轉。";
+		next;
+		mes "[琪露卡]";
+		mes "這個委託來自米德加爾特以外的^FF0000其他地方^000000。";
+	}
+	else if (BaseLevel < 111) {
+		if (para_100lv01 == 0) {
+			mes "冒險者！";
+			emotion ET_SMILE;
+			next;
+			cutin "gelca03",2;
+			mes "[琪露卡]";
+			mes "我最近收到好幾個委託人的請求，他們需要像你這樣的冒險者來幫忙。";
+			next;
+			if (select( "我喜歡委託！", "無聊的任務...不用了！" ) == 2) {
+				mes "[琪露卡]";
+				mes "你知道越困難的委託，報酬就越好，對吧？";
+				next;
+			}
+			mes "[琪露卡]";
+			mes "其實，我也不能隨便接受街上的阿貓阿狗。我師父討厭優柔寡斷的人。";
+			next;
+			if (select( "你師父是誰？", "我一點也不優柔寡斷！" ) == 1) {
+				cutin "gelca03",2;
+				mes "[琪露卡]";
+				mes "站在我旁邊的那個人就是我師父...他經過漫長的修行之旅後回來了。";
+				next;
+				mes "[琪露卡]";
+				mes "我明白你可能會好奇為什麼一個修羅會想要一個主教當老師...";
+			}
+			else {
+				cutin "gelca03",2;
+				mes "[琪露卡]";
+				if (BaseLevel < 110)
+					mes "你以為你三轉了就是個老手了...";
+				else
+					mes "我知道你不是個新手，但我師父認為你跟新手沒兩樣。在我看來，你是個偉大的冒險者！";
+			}
+			next;
+			mes "[琪露卡]";
+			mes "我們需要願意幫忙的冒險者。你願意幫我們嗎？";
+			next;
+			cutin "gelca01",2;
+			if (select( "好吧，我幫忙。", "我沒興趣幫你。" ) == 2) {
+				mes "[琪露卡]";
+				mes "沒做過怎麼知道呢。";
+			}
+			else {
+				mes "[琪露卡]";
+				mes "這才是冒險者該有的樣子！";
+				next;
+				mes "[琪露卡]";
+				mes "我想知道你是否有能力完成委託。讓我看看...";
+				next;
+				mes "[琪露卡]";
+				mes "收集 50 個^ff0000布里刊。^000000這是一個既簡單又複雜的測試。";
+				next;
+				mes "[琪露卡]";
+				mes "這很容易從龜島或克雷斯特漢姆古城的魔物身上找到。";
+				next;
+				mes "[琪露卡]";
+				mes "完成這個簡單的測試後，我們再來進行真正的委託吧。";
+				setquest 13002;// Brigan collecting
+				para_100lv01 = 1;
+				para_100lv02 += 1;
+			}
+		}
+		else if (para_100lv01 == 1) {
+			if (countitem(7054) > 49) {// Brigan
+				mes "我要求的布里刊你都帶來了嗎？";
+				next;
+				mes "[琪露卡]";
+				mes "我不需要一個一個數。這個委託是為了挑選最優秀的冒險者。";
+				next;
+				mes "[琪露卡]";
+				mes "別生氣，如果冒險者在執行任務期間受傷，我師父可是要負最終責任的。";
+				next;
+				mes "[琪露卡]";
+				mes "師父決定冒險者的安全才是最重要的，因為很多新的委託都很危險。";
+				next;
+				cutin "rote01",2;
+				mes "[羅特特]";
+				mes "嗯...";
+				emotion ET_HNG, getnpcid(0, "Rohtert#12");
+				next;
+				cutin "gelca01",2;
+				mes "[琪露卡]";
+				mes "希望你沒偷看。對於你能否執行標準委託的能力評估差不多完成了。";
+				next;
+				mes "[琪露卡]";
+				mes "沒時間做^ff0000伊甸園進階徽章了。^000000";
+				next;
+				mes "[琪露卡]";
+				mes "^ff0000時間就是金錢，菜鳥！^000000";
+				mes "我想這才是真正的大師該有的口吻，對吧？";
+				next;
+				mes "[琪露卡]";
+				mes strcharinfo(0) +" 會為你準備一份委託清單，所以現在去跟我師父談談，表達你的敬意。";
+				delitem 7054,50;// Brigan
+				completequest 13002;// Brigan collecting
+				para_100lv01 = 2;
+				getitem 6549,1;// Courtesy_Ticket
+			}
+			else {
+				cutin "gelca02",2;
+				mes "還沒找到 50 個布里刊嗎？師父說這任務很簡單的...";
+				next;
+				mes "[琪露卡]";
+				mes "請快一點！我們需要一個真正的冒險者來執行委託。";
+			}
+		}
+		else if (para_100lv01 == 2)
+			mes "等一下。我正在製作委託清單。我只是不知道該給你哪一個。我是個好人。";
+		else if (para_100lv01 > 2) {
+			mes "委託清單準備好了。你想開始了嗎？";
+			next;
+			switch( select( "狩獵任務", "寒暄問暖", "出示善良通行證" ) ) {
+				mes "[琪露卡]";
+				case 1:
+				mes "你不需要一次接下所有的委託。選擇一個適合你特殊技能的委託區域。一個能讓你一邊執行委託一邊享受旅行的區域。";
+				next;
+				switch( select( "克雷斯特漢姆古城相關委託", "異世界相關委託", "冰洞相關委託", "諾克羅德相關委託", "其他委託" ) ) {
+					mes "[琪露卡]";
+					case 1:
+					mes "這些是克雷斯特漢姆古城區域的委託。";
+					next;
+					switch( select( "狩獵兔斯拉", "狩獵捲甲蟲", "狩獵鐘乳巨石怪", "狩獵史汀", "狩獵瑪幽林" ) ) {
+						mes "[琪露卡]";
+						case 1:
+						if (checkquest(13004,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。休息一下很重要。這裡總會有委託等著你。";
+						else if (checkquest(13003,HUNTING) == 1) {
+							cutin "????",3;  //carat_card
+							mes "這個委託是清除克雷斯特漢姆古城一樓的 ^0000FF30^000000 隻^FF0000兔斯拉^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成委託後請通知我。";
+						}
+						else if (checkquest(13003,HUNTING) == 2) {
+							mes "去可怕的古堡一定很辛苦。我相信總有一天這對我來說也會是個很好的經驗。";
+							callsub S_Quest,13003,13004,106000,148000;
+						}
+						else {
+							cutin "????",3;  //carat_card
+							mes "這個委託來自夢羅克的一位商人，不知為何，他在克雷斯特漢姆古城的生意因為這些魔物而受損。";
+							next;
+							mes "[琪露卡]";
+							mes "伊甸園總部知道這不是個好理由，但委託就是委託。所以請清除克雷斯特漢姆古城裡的 ^FF000030 隻兔斯拉^000000魔物。";
+							callsub S_Quest,13004,13003;
+						}
+						break;
+					case 2:
+						if (checkquest(13006,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。請休息一下。這裡總會有委託等著你。";
+						else if (checkquest(13005,HUNTING) == 1) {
+							cutin "???????",3;  //arclouse_card
+							mes "請清除 ^FF000022 隻捲甲蟲^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13005,HUNTING) == 2) {
+							mes "你做得很好。";
+							emotion ET_BEST;
+							callsub S_Quest,13005,13006,106000,148000;
+						}
+						else {
+							cutin "???????",3;  //arclouse_card
+							mes "你知道米德加爾特有一種豆子被用來當作食物嗎？當捲甲蟲捲起來的時候，牠就像一顆豆子。";
+							next;
+							mes "[琪露卡]";
+							mes "伊甸園總部想調查捲甲蟲作為吉祥物的可能性。";
+							next;
+							mes "[琪露卡]";
+							mes "請清除 ^FF000022 隻捲甲蟲^000000。";
+							if (callsub( S_Quest,13006,13005 ) == 0) {
+								mes "[琪露卡]";
+								mes "太可惜了。這是一個很有趣的委託。";
+							}
+						}
+						break;
+						case 3:
+						if (checkquest(13008,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。這裡總會有委託等著。";
+						else if (checkquest(13007,HUNTING) == 1) {
+							cutin "??????",3;  //anolian_card
+							mes "一位武僧正在朝聖，尋求保護以對抗一些像鱷魚一樣的生物。";
+							next;
+							mes "[琪露卡]";
+							mes "總之，這個委託是要清除地下水道裡的鐘乳巨石怪，為安全的朝聖之旅開路。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13007,HUNTING) == 2) {
+							mes "你在這個委託中表現得很好。";
+							callsub S_Quest,13007,13008,112000,186500;
+						}
+						else {
+							cutin "??????",3;
+							//anolian_card
+							mes "克雷斯特漢姆古城似乎不僅對冒險者來說是個神聖的好地方，對武僧來說也是。我不知道那裡到底有什麼吸引他們。";
+							next;
+							mes "[琪露卡]";
+							mes "從修道院到地下水道的朝聖之旅是一段旅程。這個委託是為了安全的朝聖之旅，清除克雷斯特漢姆古城下水道裡的 ^FF000030 隻鐘乳巨石怪^000000。";
+							callsub S_Quest,13008,13007;
+						}
+						break;
+					case 4:
+						if (checkquest(13010,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。這裡總會有委託等著。";
+						else if (checkquest(13009,HUNTING) == 1) {
+							cutin "????",3;  //sting_card
+							mes "地下水道和地下洞穴有很多史汀魔物，所以很容易清除。";
+							next;
+							mes "[琪露卡]";
+							mes "這個委託是為了安全的朝聖之旅，清除地下水道和地下洞穴裡的 ^FF000030 隻史汀^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13009,HUNTING) == 2) {
+							mes "去骯髒又臭的地下一定很辛苦。這對你來說會是個很好的經驗。";
+							callsub S_Quest,13009,13010,112000,186500;
+						}
+						else {
+							cutin "????",3;  //sting_card
+							mes "你聽說過武僧的朝聖之旅嗎？地下水道和洞穴裡有很多史汀，所以牠們打擾了平靜的武僧。";
+							next;
+							mes "[琪露卡]";
+							mes "師父接受了這個委託，因為他尊重那些武僧。這個委託是為了安全的朝聖之旅，清除地下水道裡的 ^FF000030 隻史汀^000000魔物。";
+							callsub S_Quest,13010,13009;
+						}
+						break;
+					case 5:
+						if (checkquest(13012,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。朝聖之旅還會繼續，所以以後還會有另一個委託。";
+						else if (checkquest(13011,HUNTING) == 1) {
+							cutin "????????",3;  //majoruros_card
+							mes "我想知道這些武僧朝聖背後的原因是什麼，以及他們為什麼要一直這樣做...這背後一定有什麼隱藏的原因。";
+							next;
+							mes "[琪露卡]";
+							mes "我以前會處理這個委託，但我很擔心。這個委託是清除地下洞穴2樓的 ^FF000030 隻瑪幽林^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13011,HUNTING) == 2) {
+							mes "為了一次漫長的朝聖之旅而去拜訪那裡，一定很累人。";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13011,13012,112000,252000;
+						}
+						else {
+							cutin "????????",3;
+							//majoruros_card
+							mes "武僧朝聖的目的地在克雷斯特漢姆古城地下洞穴的二樓。這不是一段輕鬆的旅程，但會是個很好的經驗。";
+							next;
+							mes "[琪露卡]";
+							mes "瑪幽林不容易狩獵，所以要小心。這個委託是清除地下洞穴二樓的 ^FF000030 隻瑪幽林^000000。";
+							callsub S_Quest,13012,13011;
+						}
+					}
+					break;
+				case 2:
+					mes "有很多委託是來自米德加爾特遠征隊。";
+					next;
+					if (select( "狩獵任務","創傷" ) == 1) {
+						mes "[琪露卡]";
+						if (checkquest(13014,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。請休息一下。這裡總會有委託等著你。";
+						else if (checkquest(13013,HUNTING) == 1) {
+							cutin "??????",3;  //pinguicula_card
+							mes "異世界很神秘.. 魔物也很獨特。";
+							next;
+							mes "[琪露卡]";
+							mes "這是一個不尋常的委託。請清除 ^FF000030 隻捕蟲草^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13013,HUNTING) == 2) {
+							mes "去異世界一定很辛苦。";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13013,13014,106000,148000;
+						}
+						else {
+							cutin "??????",3;
+							//pinguicula_card
+							mes "捕蟲草是冒險者踏入異世界時最早遇到的魔物之一。他們希望我們能減少遠征營地周圍的魔物。";
+							next;
+							mes "[琪露卡]";
+							mes "面對新魔物發生更多意外是很正常的。這是一個常見的委託。請清除 ^FF000030 隻捕蟲草^000000。";
+							callsub S_Quest,13014,13013;
+						}
+					}
+					else {
+						mes "[琪露卡]";
+						if (checkquest(13016,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。請休息一下。這個委託不值得這麼拚命。";
+						else if (checkquest(13015,HUNTING) == 1) {
+							cutin "?????????",3;  //luciola_vespa_card
+							mes "這是一個奇怪的委託，理由也很奇怪，但我們還是應該接受。";
+							next;
+							mes "[琪露卡]";
+							mes "請清除 ^FF000030 隻胡蜂^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13015,HUNTING) == 2) {
+							mes "要執行這麼奇怪的委託一定很辛苦。";
+							callsub S_Quest,13015,13016,112000,186500;
+						}
+						else {
+							cutin "?????????",3;  //luciola_vespa_card
+							mes "這是一個非常私人的委託。這很不尋常，但這個委託來自一位與羅特特很要好的冒險者.. 是一位漂亮男孩委託的。他為什麼要寫這個？";
+							next;
+							mes "[琪露卡]";
+							mes "這太私人了，他小時候被蜜蜂螫過。這給他留下了心理創傷，所以他無法去異世界旅行。";
+							next;
+							mes "琪露卡正盯著羅特特。";
+							next;
+							mes "[琪露卡]";
+							mes "這似乎是一個為了增加前往新世界旅客的委託。請清除 ^FF000030 隻胡蜂^000000。";
+							callsub S_Quest,13016,13015;
+						}
+					}
+					break;
+				case 3:
+					mes "在拉赫的冰洞附近或裡面有很多委託。";
+					next;
+					switch( select( "狩獵沙漠之狼", "狩獵雪獸", "冰塊巨怪..." ) ) {
+						mes "[琪露卡]";
+						case 1:
+						if (checkquest(13018,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。";
+						else if (checkquest(13017,HUNTING) == 1) {
+							cutin "???????",3;  //desert_wolf_card
+							mes "你讀過古書嗎？那是一個關於冒險者與大野狼戰鬥，最後結下友誼的故事。它叫做《與狼共舞》。";
+							next;
+							mes "[琪露卡]";
+							mes "小說就是小說。請清除拉赫冰洞入口附近的 ^FF000030 隻沙漠之狼^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13017,HUNTING) == 2) {
+							mes "這不是很可愛嗎？";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13017,13018,106000,148000;
+						}
+						else {
+							cutin "???????",3;  //desert_wolf_card
+							mes "冰洞就在拉赫的正北方。問題是，當遊客前往參觀冰洞時，那些狼會嚇到他們。";
+							next;
+							mes "[琪露卡]";
+							mes "如果我們能跟狼說話和跳舞那就太有趣了！請清除冰洞附近的 ^FF000030 隻沙漠之狼^000000。";
+							callsub S_Quest,13018,13017;
+						}
+						break;
+					case 2:
+						if (checkquest(13020,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。";
+						else if (checkquest(13019,HUNTING) == 1) {
+							cutin "??????",3;  //snowier_card
+							mes "粗重的呼吸、不安的眼神、刺骨的寒冷.. 這不是個簡單的委託，所以要做好保暖。";
+							next;
+							mes "[琪露卡]";
+							mes "請清除冰洞二樓的 ^FF000030 隻雪獸^000000。";
+							cutin "gelca01",2;
+							next;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13019,HUNTING) == 2) {
+							mes "去寒冷刺骨的冰洞一定很辛苦。";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13019,13020,106000,148000;
+						}
+						else {
+							cutin "??????",3;
+							//snowier_card
+							mes "去過冰洞的人說，那裡有吵雜的魔物會打擾他們參觀。如果你能忍受的話，請清除牠們。";
+							next;
+							mes "[琪露卡]";
+							mes "請清除冰洞二樓的 ^FF000030 隻雪獸^000000。";
+							callsub S_Quest,13020,13019;
+						}
+						break;
+						case 3:
+						if (checkquest(13022,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。冒險很重要，但休息也很重要。";
+						else if (checkquest(13021,HUNTING) == 1) {
+							cutin "???????",3;  //ice_titan_card
+							mes "請清除冰洞裡的 ^FF000030 隻冰塊巨怪^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13021,HUNTING) == 2) {
+							mes "去那個又冷又暗的洞穴一定很辛苦。";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13021,13022,112000,186500;
+						}
+						else {
+							cutin "???????",3;
+							//ice_titan_card
+							mes "你去過拉赫北方的冰洞嗎？在洞穴深處有一種叫做冰塊巨怪的魔物。學者們想確定牠們是不是石頭波利。";
+							next;
+							mes "[琪露卡]";
+							mes "這個委託是為了學者的安全而減少牠們的數量。請清除冰洞裡的 ^FF000030 隻冰塊巨怪^000000。";
+							callsub S_Quest,13022,13021;
+						}
+					}
+					break;
+				case 4:
+					mes "這裡有一個在諾克羅德狩獵魔物的委託。克魔島的^DA26DA漂亮流浪者女孩^000000發出了這個委託。";
+					next;
+					if (select( "狩獵夢魘","狩獵地獄獵犬" ) == 1) {
+						mes "[琪露卡]";
+						if (checkquest(13024,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。謝謝你守住記憶..但你應該休息一下。";
+						else if (checkquest(13023,HUNTING) == 1) {
+							cutin "?????????",3;  //nightmare_terror_card
+							mes "女孩的記憶很重要！請清除 ^FF000030 隻夢魘^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13023,HUNTING) == 2) {
+							mes "考慮一下別人的回憶。這個世界還是有美好的一面的。這對你來說會是個很好的經驗。";
+							callsub S_Quest,13023,13024,106000,148000;
+						}
+						else {
+							cutin "?????????",3;  //nightmare_terror_card
+							mes "這個委託來自一位傷心的客戶，因為她和情人分手後回到諾克羅德時，發現那裡充滿了魔物。顯然，她在那裡和他度過了很多時間，並希望得到一些平靜。";
+							next;
+							mes "[琪露卡]";
+							mes "女孩的記憶很重要！請清除 ^FF000030 隻夢魘^000000。";
+							callsub S_Quest,13024,13023;
+						}
+					}
+					else {
+						mes "[琪露卡]";
+						if (checkquest(13026,PLAYTIME) == 0)
+							mes "你剛完成了一個委託。你有花足夠的時間冷靜下來嗎？好好休息一下。";
+						else if (checkquest(13025,HUNTING) == 1) {
+							cutin "???????",3;  //flying_deleter_card
+							mes "一位委託人向情人展示了一段美妙的舞蹈。有一天，他們在諾克羅德跳舞時遭到了一隻地獄獵犬的攻擊。";
+							next;
+							mes "[琪露卡]";
+							mes "這次攻擊毀了他們的舞蹈，最終也毀了他們的關係，因為男方指責女方被攻擊。";
+							next;
+							mes "[琪露卡]";
+							mes "現在她把錯怪在地獄獵犬身上，所以她發出了這個委託。請清除 ^FF000030 隻地獄獵犬^000000。";
+							next;
+							cutin "gelca03",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13025,HUNTING) == 2) {
+							cutin "gelca03",2;
+							mes "伊甸園保護愛、正義和米德加爾特！萬歲！";
+							mes "這會是一段美好的回憶。";
+							callsub S_Quest,13025,13026,106000,148000;
+						}
+						else {
+							cutin "???????",3;
+							//flying_deleter_card
+							mes "一位委託人向情人展示了一段美妙的舞蹈。有一天，他們在諾克羅德跳舞時遭到了一隻地獄獵犬的攻擊。";
+							next;
+							mes "[琪露卡]";
+							mes "這次攻擊毀了他們的舞蹈，最終也毀了他們的關係，因為男方指責女方被攻擊。";
+							next;
+							mes "[琪露卡]";
+							mes "現在她把錯怪在地獄獵犬身上，所以她發出了這個委託。請清除 ^FF000030 隻地獄獵犬^000000。";
+							callsub S_Quest,13026,13025;
+						}
+					}
+					break;
+				case 5:
+					mes "這是來自米德加爾特各地其他委託的清單。";
+					next;
+					switch( select( "狩獵兔斯拉 - 尼芙菲姆", "狩獵梅杜莎 - 克魔島", "狩獵阿努比斯 - 斯芬克斯" ) ) {
+						mes "[琪露卡]";
+						case 1:
+						if (checkquest(13041,PLAYTIME) == 0)
+							mes "我想你應該休息一下。即使是冒險者也需要休息，對吧？";
+						else if (checkquest(13040,HUNTING) == 1) {
+							cutin "??????",3;  //loli_ruri_card
+							mes "伊甸園正計畫發布一份通知，指出不成熟的冒險者不會被派去執行夜間任務，因為那太危險了。";
+							next;
+							mes "[琪露卡]";
+							mes "我想知道他們為什麼要策劃這種^FF0000無稽之談^000000...讓我不禁懷疑他們是否真的懂什麼是冒險。";
+							next;
+							mes "[琪露卡]";
+							mes "在我們開始收到更多荒謬的委託之前，我們應該接受這個簡單的委託。請清除尼芙菲姆的 ^FF000030 隻兔斯拉^000000。";
+							next;
+							cutin "gelca02",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13040,HUNTING) == 2) {
+							mes "你的精神受創了嗎？我很高興你能平安回來。";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13040,13041,112000,186500;
+						}
+						else {
+							cutin "??????",3;
+							//loli_ruri_card
+							mes "一個秘密結社要求伊甸園保護他們免受兔斯拉的傷害，因為他們認為兔斯拉具有精神力量。";
+							next;
+							mes "[琪露卡]";
+							mes "他們說作為交換條件，他們會治癒精疲力竭的伊甸園冒險者，但我們不確定他們是否會履行承諾。";
+							next;
+							mes "[琪露卡]";
+							mes "總之，我們還是應該接受這個簡單的委託。請清除尼芙菲姆的 ^FF000030 隻兔斯拉^000000。";
+							callsub S_Quest,13041,13040;
+						}
+						break;
+					case 2:
+						if (checkquest(13043,PLAYTIME) == 0)
+							mes "冒險很重要，但休息也很重要。";
+						else if (checkquest(13042,HUNTING) == 1) {
+							cutin "?????",3;  //medusa_card
+							mes "我不知道為什麼師父喜歡這種委託。他以前也常說任何委託對冒險者來說都是好委託...";
+							next;
+							mes "[琪露卡]";
+							mes "請清除克魔島西邊洞穴的 ^FF000030 隻梅杜莎^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13042,HUNTING) == 2) {
+							mes "克魔島海灘怎麼樣？到處看看，別太把注意力放在委託上。";
+							mes "這一定會是個很好的經驗。";
+							callsub S_Quest,13042,13043,106000,148000;
+						}
+						else {
+							cutin "?????",3;
+							//medusa_card
+							mes "這是一個來自艾爾貝塔的一位髮型設計師的委託。他想知道梅杜莎頭上的蛇到底是真的蛇還是花俏的髮型...";
+							next;
+							mes "[琪露卡]";
+							mes "顯然牠們是蛇，但我們是誰，有什麼資格去踐踏這個瘋子的夢想呢，對吧？";
+							next;
+							mes "[琪露卡]";
+							mes "我師父接受這個委託純粹是因為它太瘋狂了。請清除克魔島西邊洞穴的 ^FF000030 隻梅杜莎^000000魔物。";
+							callsub S_Quest,13043,13042;
+						}
+						break;
+					case 3:
+						if (checkquest(13045,PLAYTIME) == 0)
+							mes "斯芬克斯的委託完成了。請休息一下。";
+						else if (checkquest(13044,HUNTING) == 1) {
+							cutin "??????",3;  //anubis_card
+							mes "我應該親自去調查一下委託人，但現在請先清除斯芬克斯密穴 4 樓的 ^FF000020 隻阿努比斯^000000。";
+							next;
+							cutin "gelca01",2;
+							mes "[琪露卡]";
+							mes "完成這個委託後請通知我。";
+						}
+						else if (checkquest(13044,HUNTING) == 2) {
+							cutin "gelca02",2;
+							mes "斯芬克斯密穴簡直像個迷宮。";
+							mes "這對你來說會是個很好的經驗。";
+							callsub S_Quest,13044,13045,112000,186500;
+						}
+						else {
+							cutin "??????",3;
+							//anubis_card
+							mes "一位匿名的委託人發出委託，希望能幫忙清除斯芬克斯密穴的魔物，因為冒險者已經很少去夢羅克了。那裡的魔物似乎越來越猖狂。";
+							next;
+							mes "[琪露卡]";
+							mes "請清除斯芬克斯密穴 4 樓的 ^FF000020 隻阿努比斯^000000。";
+							callsub S_Quest,13045,13044;
+						}
+					}
+				}
+				break;
+				case 2:
+				if (para_100lv02 < 20) {
+					.@ran = rand(1,3);
+					if (.@ran == 1)
+						mes "我們忙著處理需要解決的委託。這是我第一次承受這麼大的壓力。";
+					else if (.@ran == 2)
+						mes "我以為伊甸園很忙，但我無法想像會有這麼多。我身為一個冒險者應該要做更多！";
+					else {
+						cutin "gelca02",2;
+						mes "真希望我能喝杯新鮮果汁...";
+					}
+				}
+				else if (para_100lv02 < 40) {
+					.@ran = rand(1,3);
+					if (.@ran == 1) {
+						cutin "gelca03",2;
+						mes "冒險者有時會從他們執行委託的地方帶回一些特別的東西或戰利品。這非常好！";
+					}
+					else if (.@ran == 2)
+						mes "如果有好東西 "+ strcharinfo(0) +" 我會試著給你一些。我不確定是否足夠分給大家，因為冒險者太多了。";
+					else
+						mes "處理文件一定很困難。在外勤工作容易多了。";
+				}
+				else if (para_100lv02 < 60) {
+					if (para_100lv01 > 3) {
+						.@ran = rand(1,3);
+						if (.@ran == 1)
+							mes "如果有好東西我會告訴你的。";
+						else if (.@ran == 2)
+							mes "你習慣這些委託了嗎？我不是親自去執行委託，而是在這裡引導冒險者，感覺真奇怪。";
+						else
+							mes "接到克雷斯特漢姆古城的所有委託後，一次清理一個會比較好。";
+					}
+					else {
+						cutin "gelca03",2;
+						mes "我很忙，但 "+ strcharinfo(0) +" 完成了這麼多委託，我很感激。讓我看看。我從一位冒險者那裡得到了一些好吃的，那是他在執行委託時得到的。";
+						next;
+						mes "[琪露卡]";
+						mes "哎呀，我全吃光了？好吧，只剩下一個了。請晚點再來！";
+						para_100lv01 = 4;
+						getitem 608,1;// Seed_Of_Yggdrasil
+					}
+				}
+				else if (para_100lv02 < 80) {
+					cutin "gelca03",2;
+					if (para_100lv01 > 4)
+						mes "振作起來！"+ strcharinfo(0) +" 我不確定他是否把你當成他的徒弟。他只是有點失控。";
+					else {
+						mes "每當委託順利完成時，就會有很多禮物送來。來，這個給你當獎勵。";
+						para_100lv01 = 5;
+						getitem 607,1;// Yggdrasilberry
+					}
+				}
+				else if (para_100lv02 > 100) {
+					mes "這是一份艱難的工作，但跟師父在一起也很有趣，對吧 "+ strcharinfo(0) +"？";
+					next;
+					switch( select( "我討厭那個脾氣暴躁的傻瓜。", "我想讓你當我的師父。", "我願意跟隨你參加任何戰鬥。" ) ) {
+						mes "[琪露卡]";
+						case 1:
+						mes "我了解你。我第一次在穆拉村見到師父時，我們就吵了一架。";
+						next;
+						mes "[琪露卡]";
+						mes "我第一次見到他的時候，他差點就哭了。要假裝輸給他還真難。請保密。";
+						emotion ET_SMILE;
+						break;
+					case 2:
+						if (Sex == SEX_MALE)
+							mes "我不確定我是否適合這份工作。再說了...";
+						else
+							mes "很抱歉這麼說，但我現在和永遠都是師父唯一的徒弟...他說^FF0000我不需要一個醜陋的女徒弟^000000，但我還是黏著他。";
+						break;
+					case 3:
+						cutin "gelca04",2;
+						mes "哦，不...請不要這樣做。對不起，請對師父保密。是我太粗心了。";
+						emotion ET_SHY;
+						break;
+					}
+					next;
+					cutin "gelca03",2;
+					mes "[琪露卡]";
+					if (para_100lv01 > 5)
+						mes "祝你剩下的委託好運。";
+					else {
+						mes "祝你剩下的委託好運。^FF0000師父說他有話對你說。^000000";
+						para_100lv01 = 6;
+					}
+				}
+				else
+					mes "對不起，我有點忙。我們可以晚點再談嗎？";
+				break;
+			case 3:
+				cutin "gelca03",2;
+				mes "你帶來善良通行證了嗎？";
+				next;
+				if (countitem(6549) > 0) {// Courtesy_Ticket
+					if (select( "那個^FF0000善良通行證^000000？", "用通行證換獎品。" ) == 1) {
+						mes "[琪露卡]";
+						mes "我知道這聽起來很幼稚。對吧？形狀就像我們小時候玩的卡片一樣。";
+						next;
+						if (select( "卡片？那是什麼？", "嗯，對，那些很好玩..." ) == 1) {
+							cutin "gelca02",2;
+							mes "[琪露卡]";
+							mes "很抱歉...這一定只在我們村子裡流行。扔出去、加熱，然後讓它飛起來。";
+							emotion ET_SORRY;
+							next;
+						}
+						cutin "gelca01",2;
+						mes "[琪露卡]";
+						mes "如你所見，師父自己做的，還把他的照片貼在上面。他以前到處旅行尋找製作卡片的紙張材料。";
+						next;
+						cutin "gelca02",2;
+						mes "[琪露卡]";
+						mes "如果它們沒有被妥善歸檔，尋找紙張的委託就會被加進委託清單裡。";
+						next;
+						mes "[琪露卡]";
+						mes "他雖然看起來不像，但其實很善良。師父用它來送些東西給冒險者，以感謝他們的付出。";
+						next;
+						cutin "gelca01",2;
+						mes "[琪露卡]";
+						mes "使用 1、10、20 和 30 張卡片，分享冒險故事或戰利品。";
+						next;
+						mes "[琪露卡]";
+						mes "如果你聽聽冒險者的故事，這將會是個很好的經驗。我們從師父那裡聽到了很多冒險故事。";
+						next;
+						mes "[琪露卡]";
+						mes "如果你已經成熟到不需要委託，請確保你不被允許使用通行證。";
+					}
+					else {
+						mes "[琪露卡]";
+						mes "你想如何使用這張通行證？";
+						next;
+						if (select( "兌換獎品", "聽故事並獲得經驗值" ) == 1) {
+							cutin "gelca03",2;
+							mes "[琪露卡]";
+							mes "你可以從這個袋子裡挑選一個戰利品。請不要因為挑到你不想要的東西而失望。你想兌換幾個？";
+							next;
+							.@amount = select( "兌換善良 ^FF00001^000000 張通行證", "兌換善良 ^FF000010^000000 張通行證" ) == 1 ? 1 : 10;
+							mes "[琪露卡]";
+							mes "請給我通行證，然後把手伸進袋子裡挑選。";
+							next;
+							if (countitem(6549) < .@amount) {// Courtesy_Ticket
+								mes "[琪露卡]";
+								mes "^FF0000善良通行證^000000數量不足。";
+							}
+							else {
+								mes "瀏覽中";
+								next;
+								.@ran = rand(1,1000);
+								if (.@amount == 1) {
+									if (.@ran <= 100)
+										setarray .@item[0],505,2;// Blue_Potion
+									else if (.@ran <= 200)
+										setarray .@item[0],547,10;// White_Slim_Potion
+									else if (.@ran == 333)
+										setarray .@item[0],603,1;// Old_Blue_Box
+									else if (.@ran == 777)
+										setarray .@item[0],617,1;// Old_Violet_Box
+									else
+										setarray .@item[0],547,5;// White_Slim_Potion
+								}
+								else {
+									if (.@ran <= 100)
+										setarray .@item[0],608,1; // Seed_Of_Yggdrasil
+									else if (.@ran <= 200)
+										setarray .@item[0],547,100;	// White_Slim_Potion
+									else if (.@ran >= 300 && .@ran <= 399)
+										setarray .@item[0],603,1; // Old_Blue_Box
+									else if (.@ran >= 600 && .@ran <= 650)
+										setarray .@item[0],616,1; // Old_Card_Album
+									else if (.@ran >= 700 && .@ran <= 800)
+										setarray .@item[0],617,1;	// Old_Violet_Box
+									else
+										setarray .@item[0],547,60;	// White_Slim_Potion
+								}
+								delitem 6549,.@amount;// Courtesy_Ticket
+								getitem .@item[0], .@item[1];
+								mes "你把手伸進袋子裡，抓住了 ^0000FF"+ .@item[1] +" 個 "+ getitemname(.@item[0]) +"^000000。";
+								next;
+								if (.@amount == 10)
+									cutin "gelca03",2;
+								mes "[琪露卡]";
+								mes "好好利用它。";
+							}
+						}
+						else {
+							mes "[琪露卡]";
+							mes "好吧，作為善良通行證的交換，我有一個故事要說給你聽。";
+							next;
+							switch( select( "給予 ^FF000010^000000 張善良通行證", "給予 ^FF000020^000000 張善良通行證", "給予 ^FF000030^000000 張善良通行證" ) ) {
+								mes "[琪露卡]";
+								case 1:
+								if (countitem(6549) < 10)// Courtesy_Ticket
+									mes "你沒有足夠的善良通行證。";
+								else {
+									.@story = rand(1,3);
+									if (.@story == 1) {
+										cutin "gelca02",2;
+										mes "你見過艾爾貝塔附近的沉船嗎？";
+										next;
+										mes "羅特特師父和我深入船內，與一隻名叫^FF0000海盜之王^000000的魔物戰鬥。那一天我下定決心要成為最優秀的冒險者。";
+										.@exp = 200000;
+										.@jexp = 148000;
+									}
+									else if (.@story == 2) {
+										cutin "gelca03",2;
+										mes "有一次，師父和我去了克魔島西邊的洞穴，當我們看到梅杜莎魔物時...";
+										next;
+										mes "天啊，他臉上的表情太有趣了！";
+										emotion ET_BIGTHROB;
+										emotion ET_THINK, playerattached();
+										.@exp = 180000;
+										.@jexp = 168000;
+									}
+									else {
+										mes "我曾經在普隆德拉北方的迷宮裡迷路過。我以為我會一直在那裡繞圈圈，直到最後我終於走了出來。";
+										next;
+										mes "謠傳如果你在那個迷宮裡迷路，你就會變成那裡的魔物之一。";
+										.@exp = 220000;
+										.@jexp = 128000;
+									}
+									if (JobLevel < 6)
+										.@jexp = 106000;
+									getexp .@exp,.@jexp;
+									delitem 6549,10;
+									para_100lv02 += 1;
+								}
+								break;
+								case 2:
+								if (countitem(6549) < 20)// Courtesy_Ticket
+									mes "你沒有足夠的善良通行證。";
+								else {
+									.@story = rand(1,3);
+									if (.@story == 1) {
+										cutin "gelca04",2;
+										mes "有一次我找到了一條去爪哇的秘密路線...那裡只有情侶才能去，但我們有些人還是知道怎麼去。";
+										next;
+										mes "一個人去那裡有點沒用，不過算了吧。";
+										emotion ET_THROB;
+										.@exp = 550000;
+										.@jexp = 340000;
+									}
+									else if (.@story == 2) {
+										cutin "gelca03",2;
+										mes "有一次，師父加入了一個叫什麼翅膀的公會...雞翅膀...？";
+										next;
+										mes "那是一個很有趣的公會，因為沒人把事情當真，但師父受夠了他們的懶散，所以他就離開了。";
+										.@exp = 400000;
+										.@jexp = 240000;
+									}
+									else {
+										mes "你去過^FF0000無限塔^000000嗎？師父和我去過那裡，但只到了20樓，因為他在爬的時候膝蓋撐不住了...";
+										next;
+										mes "^FF0000無限塔^000000在海上的某個地方。你必須在艾爾貝塔找到一個叫詹索爾或詹什麼的人，他會載你過去。";
+										.@exp = 550000;
+										.@jexp = 290000;
+									}
+									if (JobLevel < 6)
+										.@jexp = 206000;
+									getexp .@exp, .@jexp;
+									delitem 6549,20;
+									para_100lv02 += 1;
+								}
+								break;
+							case 3:
+								if (countitem(6549) < 30)// Courtesy_Ticket
+									mes "你沒有足夠的善良通行證。";
+								else {
+									.@story = rand(1,2);
+									if (.@story == 1) {
+										cutin "gelca04",2;
+										mes "師父的公會在異世界解散了，因為他們的會長在與一些獨角飛馬交戰後失蹤了。";
+										next;
+										mes "[琪露卡]";
+										mes "從那以後，他開始對較弱的冒險者很刻薄...";
+										next;
+										mes "[琪露卡]";
+										mes "我不認為他在那一天之後還有再見過那位公會會長。";
+										getexp 650000,488000;
+									}
+									else {
+										cutin "gelca03",2;
+										mes "[琪露卡]";
+										mes "師父一開始在普隆德拉修道院是一位受歡迎的輔助武僧。";
+										next;
+										mes "[琪露卡]";
+										mes "但他也因為好勝的個性而被認為是個麻煩製造者，所以他離開了。";
+										getexp 700000,430000;
+									}
+									delitem 6549,30;
+									para_100lv02 += 1;
+								}
+								break;
+							}
+						}
+					}
+				}
+				else {
+					mes "[琪露卡]";
+					mes "如果您收到了更多善良通行證，請再來找我！";
+				}
+			}
+		}
+	}
+	else {
+		cutin "gelca03",2;
+		if (para_100lv02 > 100)
+			mes strcharinfo(0) +"！你做得很好！還有更多的委託，但請留給其他冒險者吧。";
+		if (para_100lv02 < 101)
+			mes "我不認為你適合我能給的委託。請尋找其他冒險。";
+		callsub S_Hunting,13003,106000,148000,"兔斯拉";// <quest id>, <job exp if joblevel < 6>, <job exp>, <quest name>
+		callsub S_Hunting,13005,106000,148000,"捲甲蟲";
+		callsub S_Hunting,13007,112000,186500,"鐘乳巨石怪";
+		callsub S_Hunting,13009,112000,186500,"史汀";
+		callsub S_Hunting,13011,112000,252000,"瑪幽林";
+		callsub S_Hunting,13013,106000,148000,"捕蟲草";
+		callsub S_Hunting,13015,112000,186500,"胡蜂";
+		callsub S_Hunting,13017,106000,148000,"沙漠之狼";
+		callsub S_Hunting,13019,106000,148000,"雪獸";
+		callsub S_Hunting,13021,112000,186500,"冰塊巨怪";
+		callsub S_Hunting,13023,106000,148000,"夢魘";
+		callsub S_Hunting,13025,106000,148000,"地獄獵犬";
+		callsub S_Hunting,13040,112000,186500,"兔斯拉";
+		callsub S_Hunting,13042,106000,148000,"梅杜莎";
+		callsub S_Hunting,13044,112000,186500,"阿努比斯";
+		setarray .@quest_id[0],13004,13006,13008,130010,13012,13014,13016,13018,13020,13022,13024,13026,13041,13043,13045;
+		for ( .@i = 0; .@i < 15; .@i++ ) {
+			if (checkquest(.@quest_id[.@i],PLAYTIME) == 2) {
+				erasequest .@quest_id[.@i];
+				break;
+			}
+		}
+	}
+	close2;
+	cutin "",255;
+	end;
+S_Quest:
+	if (getarg(2,0)) {
+		getitem 6549,1;// Courtesy_Ticket
+		para_100lv02 += 1;
+		if (JobLevel < 6)
+			getexp 550000,getarg(1);
+		else
+			getexp 550000,getarg(2);
+	}
+	else {
+		next;
+		cutin "gelca01",2;
+		if (select( "接受委託。","拒絕。" ) == 2)
+			return 0;
+		mes "[琪露卡]";
+		mes "完成委託後請通知我。";
+		if (getarg(0) == 13012) {
+			next;
+			mes "[琪露卡]";
+			mes "前往克雷斯特漢姆古城最底層的旅程很漫長，但如果跟隊伍一起去會很有趣的。";
+		}
+	}
+	if (isbegin_quest(getarg(0)))
+		erasequest getarg(0);
+	setquest getarg(1);
+	return 1;
+
+S_Hunting:
+	switch( checkquest(getarg(0),HUNTING) ) {
+	case -1:
+		return;
+	case 2:
+		next;
+		mes "[琪露卡]";
+		mes "您已完成委託";
+		mes "^FF0000狩獵 "+ getarg(3) +"^000000。";
+		mes "我會將您標記為已完成此委託。";
+		para_100lv02 += 1;
+		if (JobLevel < 6)
+			getexp 550000,getarg(1);
+		else
+			getexp 550000,getarg(2);
+		break;
+	case 0:
+	case 1:// untranslated these cases
+	}
+	erasequest getarg(0);
+	close2;
+	cutin "",255;
+	end;
+}
+
+moc_para01,41,95,5	script	羅特特#12	4_M_ROTERT,{
+	mes "[羅特特]";
+	if (!callfunc("F_HasEdenGroupMark")) {
+		cutin "rote01",2;
+		mes "你連伊甸園的成員都不是。你在這裡做什麼？";
+		mes "我只負責 Base Level ^FF0000100 - 110^000000 的冒險者。";
+	}
+	else {
+		cutin "rote03",2;
+		mes "......";
+		next;
+		mes "[羅特特]";
+		if (BaseLevel < 100)
+			mes "真是個新手...去多練練吧。怎樣？不喜歡我說話的方式？那就變強一點。";
+		else if (BaseLevel > 110) {
+			mes "你這個冒險者有點太成熟了。我這裡沒你的事。走吧。我只負責等級110以下的新三轉冒險者。";
+			if (checkquest(13047,PLAYTIME) == 2)
+				erasequest 13047;
+			if (checkquest(13049,PLAYTIME) == 2)
+				erasequest 13049;
+			if (checkquest(13048,HUNTING) > -1)
+				erasequest 13048;
+			if (checkquest(13046,HUNTING) > -1)
+				erasequest 13046;
+		}
+		else if (para_100lv01 < 2) {
+			mes "是啊，小鬼，你想從我這裡得到什麼？你以為我會直接說好，我當你師傅，把我會的都教給你？";
+			next;
+			mes "[羅特特]";
+			mes "我可不是做慈善的，滾開。";
+		}
+		else if (para_100lv01 == 2) {
+			mes "你是新來的冒險者？";
+			next;
+			mes "[羅特特]";
+			mes "有很多事情要做，你在我這裡浪費時間。去找琪露卡，她比我健談多了。";
+			next;
+			mes "[羅特特]";
+			mes "你似乎夠勇敢，能成為一名好冒險者，但在我眼裡，你只不過是個新手。";
+			para_100lv01 = 3;
+		}
+		else if (para_100lv01 == 3) {
+			mes "我以前也跟你一樣是伊甸園的冒險者，但我當然是最棒的。";
+			next;
+			mes "[羅特特]";
+			mes "我想我現在已經退休了，因為我的冒險技巧實在太好了，無法跟你們這些小鬼競爭。";
+		}
+		else if (para_100lv01 == 4) {
+			mes "總之，我做這些是在幫伊甸園一個忙。";
+			next;
+			mes "[羅特特]";
+			mes "我正在尋找一個將友誼或忠誠視為湯匙殘骸的人。";
+			next;
+			if (select( "湯匙什麼？", "你是個壞人。" ) == 1) {
+				cutin "rote03",2;
+				mes "[羅特特]";
+				mes "你知道嗎？湯匙殘骸。腐屍戰俘會掉落它們，它們看起來似乎很有用，但其實有點沒價值。";
+				next;
+				mes "[羅特特]";
+				mes "總之，我想你似乎是那種忠誠的類型...大概吧...";
+			}
+			else {
+				mes "[羅特特]";
+				mes "這讓我感覺很奇怪。這並不壞，但我想我很壞，而且我不在乎。";
+			}
+			next;
+			cutin "rote04",2;
+			mes "[羅特特]";
+			mes "記住保持勇敢，你這個愚蠢的冒險者。";
+		}
+		else if (para_100lv01 == 5) {
+			cutin "rote03",2;
+			mes "好！你正在盡你所能做到最好。";
+			next;
+			mes "[羅特特]";
+			mes "我真怕你會變得跟琪露卡一樣。她就像一隻迷路的小狗。不要像她一樣。好嗎？";
+		}
+		else if (para_100lv01 == 6) {
+			cutin "rote03",2;
+			mes "你忙著四處張望。";
+			next;
+			mes "[羅特特]";
+			if (checkquest(13046) == 2) {
+				if (checkquest(13047,PLAYTIME) == 0) {
+					mes "我的事情辦完了。";
+					mes "我負責清理文件。我討厭做這種事。";
+					next;
+					mes "[羅特特]";
+					mes "我想我應該再跟他說一次話...明天再來吧！";
+				}
+				else if (checkquest(13047,PLAYTIME) == 2) {
+					mes "哦，多久沒見了？";
+					erasequest 13047;// Tendrilion Request Timer
+				}
+				else if (checkquest(13049,PLAYTIME) == 0)
+					mes "白紙黑字。我討厭公文。但是，我必須做這個，所以我現在有點忙。";
+				else if (checkquest(13048,HUNTING) == 1)
+					mes "我知道狩獵強悍的十萬兆對你來說應該不會太困難。";
+				else if (checkquest(13048,HUNTING) == 2) {
+					cutin "rote02",2;
+					mes "很好！你正在成為一名優秀的冒險者！盡你所能吧！";
+					erasequest 13048;// Tendrilion Request
+					setquest 13049;// Tendrilion Request Timer
+					getexp 352000,253000;
+				}
+				else {
+					cutin "rote02",2;
+					mes "十萬兆，我想我們應該給牠更多教訓，讓牠知道誰才是老大！";
+					next;
+					if (select( "我們絕對要給牠一個好教訓。", "我想一次就夠了。" ) == 2) {
+						mes "[羅特特]";
+						mes "沒關係，還有很多冒險者可以做這件事。";
+					}
+					else {
+						cutin "rote04",2;
+						mes "[羅特特]";
+						mes "這不是因為我是膽小鬼。";
+						next;
+						mes "[羅特特]";
+						mes "祝你好運。確保你這次能解決牠。哈！哈！";
+						if (checkquest(13049,PLAYTIME) == 2)
+							erasequest 13049;
+						setquest 13048;// Tendrilion Request
+					}
+				}
+			}
+			else if (checkquest(13046,HUNTING) == 1)
+				mes "你還在那裡嗎，新手？如果你無法自己處理，就找你的朋友幫忙吧，因為這可不是件容易的事。";
+			else if (checkquest(13046,HUNTING) == 2) {
+				mes "哦，你平安回來了！";
+				mes "我想你並不像我想像的那麼沒用。";
+				completequest 13046;// Tendrilion Request
+				setquest 13047;// Tendrilion Request Timer
+				getexp 352000,253000;
+			}
+			else {
+				cutin "rote04",2;
+				mes "你介意幫忙跑個簡單的腿嗎？";
+				next;
+				if (select( "不，我不介意！", "簡單的差事是給笨蛋做的。" ) == 2) {
+					mes "[羅特特]";
+					mes "你真是個奇怪的冒險者...";
+				}
+				else {
+					mes "[羅特特]";
+					mes "在一個風和日麗的日子裡，我正在米德加爾特聯軍營地西南方採集花朵，以完成伊甸園的委託。";
+					next;
+					mes "[羅特特]";
+					mes "然後那個傢伙突然出現了。";
+					next;
+					select("哪個傢伙？");
+					cutin "rote02",2;
+					mes "[羅特特]";
+					mes "那是一隻^FF0000十萬兆。^000000";
+					next;
+					cutin "gelca03",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "哎呀！其實是^FF0000強悍的十萬兆^000000！！師父！";
+					next;
+					cutin "rote04",2;
+					mes "[羅特特]";
+					mes "是啊是啊，馬鈴薯番茄！";
+					emotion ET_HNG;
+					next;
+					cutin "gelca02",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "......";
+					next;
+					cutin "rote04",2;
+					mes "[羅特特]";
+					mes "當我們直視那隻野獸的眼睛時，我們意識到牠看起來像獅子，但牠絕對不是任何普通的動物。";
+					emotion ET_HNG;
+					next;
+					mes "[羅特特]";
+					mes "^8008F8我知道那不是你死就是我亡。^000000";
+					next;
+					mes "[羅特特]";
+					mes "我當然輕鬆地擊敗了那隻野獸！簡直比從波利手中搶糖果還簡單。";
+					next;
+					mes "[羅特特]";
+					mes "但令我驚訝的是，那隻野獸又站了起來。我被迫又把牠擊倒了 12 次，牠才乖乖倒下。這不是一隻普通的十萬兆。";
+					next;
+					mes "[羅特特]";
+					mes "我聽說牠還在四處遊蕩，但我現在有點忙。";
+					next;
+					mes "[羅特特]";
+					mes "我想讓你去處理牠。對我來說，一個人去那裡沒問題。但對你來說..我建議你多帶些冒險者一起去。";
+					next;
+					select("你確定這是你自己做的？");
+					mes "[羅特特]";
+					mes "我強大這個事實比數字更重要。只要去那裡解決那隻野獸就行了。";
+					next;
+					mes "[羅特特]";
+					mes "你可以在異世界米德加爾特聯軍營地西邊找到牠。";
+					next;
+					select("我想我別無選擇。");
+					cutin "rote03",2;
+					mes "[羅特特]";
+					mes "你還在那裡嗎，新手？如果你無法自己處理，就找你的朋友幫忙吧，因為這可不是件容易的事。";
+					next;
+					cutin "gelca02",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "......."+ strcharinfo(0) +" 等一下...";
+					next;
+					cutin "gelca01",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "如果你找到牠，不要害怕。師父根本沒有跟強悍的十萬兆戰鬥過 12 次。";
+					next;
+					cutin "gelca03",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "事實上，師父當時醉得一塌糊塗，他幾乎不記得這件事了。";
+					next;
+					cutin "gelca04",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "我只是沒去管它，因為看到師父跟一隻強悍的十萬兆戰鬥有點可愛。現在這變成了一個問題。";
+					next;
+					cutin "gelca01",2;
+					mes "[^FF0000琪露卡^000000]";
+					mes "請在清除一隻強悍的十萬兆後回來。哦，還有請對師父保密這件事。";
+					setquest 13046;// Tendrilion Request
+				}
+			}
+		}
+	}
+	close2;
+	cutin "",255;
+	end;
+}

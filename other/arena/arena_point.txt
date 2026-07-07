@@ -1,0 +1,181 @@
+//===== rAthena Script =======================================
+//= Point Exchanger
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Point exchanger: Turbo track points -> Arena Points
+//===== Additional Comments: =================================
+//= 1.0 First version. [L0ne_W0lf]
+//============================================================
+
+prt_are_in,103,11,3	script	競技場點數管理員	732,{
+	mes "[競技場點數管理員]";
+	mes "希望你在競技場裡";
+	mes "玩得開心。如果你在";
+	mes "阿爾得巴蘭的極速競賽中";
+	mes "獲得了極速競賽點數，我可以";
+	mes "將它們兌換成競技場點數。";
+	next;
+	switch(select("點數查詢:兌換點數:^660000兌換資訊^000000")) {
+	case 1:
+		mes "[競技場點數管理員]";
+		mes "" + strcharinfo(0) + "，";
+		mes "你目前擁有";
+		mes "" + arena_point + " 點競技場點數";
+		mes "和 " + tt_point + " 點極速競賽點數。";
+		close;
+	case 2:
+		mes "[競技場點數管理員]";
+		mes "" + strcharinfo(0) + "，";
+		mes "你目前擁有";
+		mes "" + arena_point + " 點競技場點數";
+		mes "和 " + tt_point + " 點極速競賽點數。";
+		next;
+		mes "[競技場點數管理員]";
+		mes "請選擇你想進行的";
+		mes "極速競賽點數兌換";
+		mes "競技場點數方案。請記住，";
+		mes "當你一次兌換超過 10 點";
+		mes "極速競賽點數時，只能以 ^4D4DFF10 的倍數^000000 進行兌換。";
+		next;
+		switch(select("2 TP -> 1 AP:4 TP -> 2 AP:6 TP -> 3 AP:8 TP -> 4 AP:10 TP 及以上:取消")) {
+		case 1:
+			callsub S_ExchangePoints,28999,2,1;
+		case 2:
+			callsub S_ExchangePoints,28998,4,2;
+		case 3:
+			callsub S_ExchangePoints,28997,6,2;
+		case 4:
+			callsub S_ExchangePoints,28996,8,4;
+		case 5:
+			mes "[競技場點數管理員]";
+			mes "請輸入你想要將";
+			mes "10 點極速競賽點數";
+			mes "兌換成競技場點數的";
+			mes "次數。你能輸入的";
+			mes "最大數值為 20。";
+			mes "若要取消，請輸入 ''^3355FF0^000000''。";
+			next;
+			input .@input;
+			if (.@input <= 0) {
+				mes "[競技場點數管理員]";
+				mes "你已經";
+				mes "取消了";
+				mes "這項服務。";
+				close;
+			}
+			else if (.@input > 20) {
+				mes "[競技場點數管理員]";
+				mes "你的要求超過了";
+				mes "最大限制。請輸入";
+				mes "不大於 20 的數值。";
+				close;
+			}
+			else {
+				set .@want_point1,10 * .@input;
+				set .@want_point,5 * .@input;
+				set .@my_arena_all,arena_point + .@want_point;
+				set .@my_turbo_all,tt_point - .@want_point1;
+				if (.@my_arena_all > 28999) {
+					mes "[競技場點數管理員]";
+					mes "如果我們繼續進行";
+					mes "極速競賽點數的兌換，";
+					mes "你的競技場點數將會";
+					mes "超過最大數量限制。你不能";
+					mes "擁有超過 29,000 點競技場點數。";
+					next;
+					mes "[競技場點數管理員]";
+					mes "請在再次使用此服務前";
+					mes "先花費掉一些你的";
+					mes "競技場點數。";
+					mes "感謝你的光臨。";
+					close;
+				}
+				if (.@my_turbo_all < 0) {
+					mes "[競技場點數管理員]";
+					mes "很抱歉，但是";
+					mes "你沒有足夠的";
+					mes "極速競賽點數來";
+					mes "進行這次的競技場";
+					mes "點數兌換。";
+					close;
+				}
+				else {
+					mes "[競技場點數管理員]";
+					mes "你已經將";
+					mes "10 點極速競賽點數";
+					mes "兌換成 5 點競技場點數，共 " + .@input + " 次。";
+					mes "總共有 " + .@want_point1 + " 點極速競賽點數被兌換成了";
+					mes "" + .@want_point +" 點競技場點數。";
+					set tt_point, .@my_turbo_all;
+					set arena_point, .@my_arena_all;
+					next;
+					mes "[競技場點數管理員]";
+					mes "" + strcharinfo(0) + "，";
+					mes "你現在擁有";
+					mes "^4682B4" + arena_point + "^000000 點競技場點數";
+					mes "和 ^00688B" + tt_point + "^000000 點極速競賽點數。";
+					mes "感謝你的光臨。";
+					close;
+				}
+			}
+		case 6:
+			mes "[競技場點數管理員]";
+			mes "你已經";
+			mes "取消了";
+			mes "這項服務。";
+			close;
+		}
+	case 3:
+		// Again. no dialog for this option.
+		close;
+	}
+	close;
+
+S_ExchangePoints:
+	if (arena_point > getarg(0) ) {
+		mes "[競技場點數管理員]";
+		mes "如果我們繼續進行";
+		mes "極速競賽點數的兌換，";
+		mes "你的競技場點數將會";
+		mes "超過最大數量限制。你不能";
+		mes "擁有超過 29,000 點競技場點數。";
+		next;
+		mes "[競技場點數管理員]";
+		mes "請在再次使用此服務前";
+		mes "先花費掉一些你的";
+		mes "競技場點數。";
+		mes "感謝你的光臨。";
+		close;
+	}
+	.@track_point = getarg(1);
+	if (tt_point >= .@track_point) {
+		.@arena_point = getarg(2);
+		mes "[競技場點數管理員]";
+		mes "" + strcharinfo(0) + "，";
+		mes "你已經將 "+ .@track_point +" 點極速競賽";
+		mes "點數兌換成 "+ .@arena_point +" 點競技場點數。";
+		tt_point = tt_point - .@track_point;
+		arena_point = arena_point + .@arena_point;
+		next;
+		mes "[競技場點數管理員]";
+		mes "" + strcharinfo(0) + "，";
+		mes "你現在擁有";
+		mes "^4682B4" + arena_point + "^000000 點競技場點數";
+		mes "和 ^00688B" + tt_point + "^000000 點極速競賽點數。";
+		mes "感謝你的光臨。";
+		close;
+	}
+	else {
+		mes "[競技場點數管理員]";
+		mes "很抱歉，但是你沒有";
+		mes "足夠的極速競賽點數。";
+		mes "你需要至少 2 點極速競賽點數才能進行兌換服務。";
+		close;
+	}
+}

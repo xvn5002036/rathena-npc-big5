@@ -1,0 +1,1532 @@
+//===== rAthena Script ======================================= 
+//= Guild dungeon event, Arunafeltz.
+//===== By: ================================================== 
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.2
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Guild dungeon event, Arunafeltz. Retrieve Morestone's
+//= pickaxe from Kublin.
+//===== Additional Comments: =================================
+//= 1.0 First version
+//= 1.1 Changed spawn timer to 1 hour. [L0ne_w0lf]
+//= 1.2 Added GM management function. [Euphy]
+//============================================================
+
+arug_dun01,1,1,1	script	怪物控制器#aru_gd	81,{
+OnInit:
+	donpcevent "怪物控制器1#aru::OnKill";
+	initnpctimer;
+	end;
+
+OnTimer3600000:
+	donpcevent "怪物控制器1#aru::OnEnable";
+	mapannounce "arug_dun01", "庫柏林：啊啊！",bc_map,"0x99CC00";
+	mapannounce "arug_dun01", "莫爾斯通：給我站住！你這小偷！",bc_map,"0x99CC00";
+	stopnpctimer;
+	end;
+}
+
+arug_dun01,1,2,1	script	怪物控制器1#aru	81,{
+OnEnable:
+	set .@callwhere,rand(1,4);
+	if (.@callwhere == 1) {
+		monster "arug_dun01",150,340,"庫柏林",1980,1,"怪物控制器1#aru::OnMyMobDead";
+	}
+	else if (.@callwhere == 2) {
+		monster "arug_dun01",232,293,"庫柏林",1980,1,"怪物控制器1#aru::OnMyMobDead";
+	}
+	else if (.@callwhere == 3) {
+		monster "arug_dun01",156,167,"庫柏林",1980,1,"怪物控制器1#aru::OnMyMobDead";
+	}
+	else {
+		monster "arug_dun01",243,56,"庫柏林",1980,1,"怪物控制器1#aru::OnMyMobDead";
+	}
+	end;
+
+OnKill:
+	killmonster "arug_dun01","怪物控制器1#aru::OnMyMObDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("arug_dun01","怪物控制器1#aru::OnMyMObDead") == 0) {
+		mapannounce "arug_dun01", "庫柏林：啊啊！",bc_map,"0x99CC00";
+		mapannounce "arug_dun01", "莫爾斯通：我好像聽到庫柏林的慘叫聲！！是誰在那裡？庫柏林怎麼了？嘿，你！",bc_map,"0x99CC00";
+		donpcevent "矮人#aru_gd::OnEnable";
+	}
+	end;
+}
+
+arug_dun01,199,195,5	script	矮人#aru_gd	826,{
+	if (getcharid(2) == 0) {
+		mes "[矮人]";
+		mes "嘿，你有看到一個醜陋的哥布靈經過嗎？他偷了我的東西！";
+		close;
+	}
+	set .@chk_urquest,checkquest(2143,PLAYTIME);
+	set .@chk_yourgdname$,getguildname(getcharid(2));
+	if ($@gdeventv_a1 == 0) {
+		if ($@gdevents_a$ == "") {
+			set $@gdeventv_a1,1;
+			set $@gdevents_a$,.@chk_yourgdname$;
+			mes "[矮人]";
+			mes "幫幫我！";
+			mes "拜託，幫幫我！";
+			next;
+			switch(select("發生什麼事了？:算了。")) {
+			case 1:
+				mes "[矮人]";
+				mes "我是莫爾斯通，我收集稀有的寶石。";
+				next;
+				mes "[莫爾斯通]";
+				mes "在我的旅途中，有人告訴我華納神族（Valfreyja）和尼德霍格（Nidhoggur）有很多寶石，所以我來到了這裡。";
+				mes "但在這裡，土壤非常堅硬，很難挖掘。幸運的是，我的 ^3131FF十字鎬^000000 從未讓我失望！";
+				next;
+				select("十字鎬！");
+				mes "[莫爾斯通]";
+				mes "是的，我心愛的十字鎬！";
+				mes "我總是把它帶在身邊，你知道嗎？";
+				next;
+				mes "[莫爾斯通]";
+				mes "我們開始在這裡一起工作。";
+				mes "幾天後，我們終於發現了什麼！";
+				next;
+				select("奇怪的東西？？");
+				mes "[莫爾斯通]";
+				mes "不，但它非常值錢。";
+				mes "但我們沒有太多時間慶祝。突然，一隻魔物出現偷走了我的十字鎬。";
+				mes "他的名字是^3131FF庫柏林^000000！";
+				next;
+				mes "[莫爾斯通]";
+				mes "他偷了我的十字鎬！";
+				mes "沒有它我活不下去...";
+				next;
+				if (countitem(6010) > 0) {
+					mes "[" + strcharinfo(0) + "]";
+					mes "這是你一直在找的十字鎬嗎？";
+					next;
+					mes "[莫爾斯通]";
+					mes "你找到了我的十字鎬？";
+					mes "請給我看看！";
+					next;
+					mes "[莫爾斯通]";
+					mes "噢，天哪！你把它還給我了！";
+					mes "我珍貴的十字鎬，我還以為我永遠失去你了。";
+					next;
+					mes "[莫爾斯通]";
+					mes "你太棒了！你是哪個公會的？";
+					mes "難道是 Gravity 或 Mercury？";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "我是 ^3131FF"+.@chk_yourgdname$+"^ 公會的成員。";
+					next;
+					mes "[莫爾斯通]";
+					mes "喔... 那個公會將得到我最高的敬意。";
+					next;
+					mes "[莫爾斯通]";
+					mes "喔！我的朋友，我非常感激你的幫忙。";
+					mes "作為獎勵，我會告訴你一個我最近發現的神祕區域。";
+					next;
+					select("一個神祕區域？");
+					mes "[莫爾斯通]";
+					mes "沒錯。這是我在這裡挖掘時發現的。";
+					mes "它看起來是為了某種特殊目的而建造的，但既然那裡沒有寶石，我就對它沒興趣了。";
+					next;
+					mes "[莫爾斯通]";
+					mes "與其一個人去那裡，我想和你的朋友們一起去會更有趣...";
+					next;
+					mes "[莫爾斯通]";
+					mes "如果你願意，我可以帶 ^3131FF你和你的公會成員^000000 去探索那個區域。";
+					mes "你想現在去那裡嗎？";
+					next;
+					switch(select("等等！我還沒準備好。:我們走吧！")) {
+					case 1:
+						set $@gdeventv_a1,0;
+						set $@gdevents_a$,"";
+						mes "[莫爾斯通]";
+						mes "慢慢來，找個地方召集你的朋友們吧。";
+						close;
+					case 2:
+						mes "[莫爾斯通]";
+						mes "好的！我們出發吧。";
+						mes "如果你的朋友們稍後來找我，我會再次引導他們去那個區域。";
+						mes "別忘了，矮人是懂得感恩的生物！哈哈哈！";
+						delitem 6010,1; //Pickaxe
+						set $@gdeventv_a1,1;
+						set $@gdevents_a$,.@chk_yourgdname$;
+						close2;
+						setquest 2144;
+						warp "arug_que01",103,133;
+						end;
+					}
+				}
+				else {
+					set $@gdeventv_a1,0;
+					set $@gdevents_a$,"";
+					mes "[莫爾斯通]";
+					mes "我會告訴你怎麼找到他。";
+					mes "庫柏林戴著一頂滑稽的金色帽子，這應該很容易認出他。";
+					close;
+				}
+			case 2:
+				set $@gdeventv_a1,0;
+				set $@gdevents_a$,"";
+				emotion ET_CRY;
+				mes "[矮人]";
+				mes "啊...";
+				close;
+			}
+		}
+		else if ($@gdevents_a$ == .@chk_yourgdname$) {
+			set .@chk_urquest1,checkquest(2144);
+			if ((.@chk_urquest1 == 0) || (.@chk_urquest1 == 1)) {
+				mes "[莫爾斯通]";
+				mes "我，莫爾斯通，已經和 "+$@gdevents_a$+" 公會結成了同盟。";
+				mes "喔，你是成員。";
+				mes "你想去那個神祕的區域嗎？";
+				next;
+				switch(select("走吧。:不用了，謝謝。")) {
+				case 1:
+					mes "[莫爾斯通]";
+					mes "希望你玩得開心，我的朋友。";
+					close2;
+					warp "arug_que01",103,133;
+					end;
+				case 2:
+					mes "[莫爾斯通]";
+					mes "如果你需要我的幫助，儘管開口。";
+					mes "啊！別忘了，我討厭魔物！所以我不想看到牠們。如果你要找我幫其他忙，最好別帶著牠們。";
+					close;
+				}
+			}
+			else {
+				set $@gdeventv_a1,1;
+				set $@gdevents_a$,.@chk_yourgdname$;
+				mes "[矮人]";
+				mes "幫幫我！";
+				mes "拜託，幫幫我！";
+				next;
+				switch(select("發生什麼事了？:算了。")) {
+				case 1:
+					mes "[矮人]";
+					mes "我是莫爾斯通，我收集稀有的寶石。";
+					next;
+					mes "[莫爾斯通]";
+					mes "在我的旅途中，有人告訴我華納神族（Valfreyja）和尼德霍格（Nidhoggur）有很多寶石，所以我來到了這裡。";
+					mes "但在這裡，土壤非常堅硬，很難挖掘。幸運的是，我的 ^3131FF十字鎬^000000 從未讓我失望！";
+					next;
+					select("十字鎬！");
+					mes "[莫爾斯通]";
+					mes "是的，我心愛的十字鎬！";
+					mes "我總是把它帶在身邊，你知道嗎？";
+					next;
+					mes "[莫爾斯通]";
+					mes "我們開始在這裡一起工作。";
+					mes "幾天後，我們終於發現了什麼！";
+					next;
+					select("奇怪的東西？？");
+					mes "[莫爾斯通]";
+					mes "不，但它非常值錢。";
+					mes "但我們沒有太多時間慶祝。突然，一隻魔物出現偷走了我的十字鎬。";
+					mes "他的名字是^3131FF庫柏林^000000！";
+					next;
+					mes "[莫爾斯通]";
+					mes "他偷了我的十字鎬！";
+					mes "沒有它我活不下去...";
+					next;
+					if (countitem(6010) > 0) {
+						mes "[" + strcharinfo(0) + "]";
+						mes "這是你一直在找的十字鎬嗎？";
+						next;
+						mes "[莫爾斯通]";
+						mes "你找到了我的十字鎬？";
+						mes "請給我看看！";
+						next;
+						mes "[莫爾斯通]";
+						mes "噢，天哪！你把它還給我了！";
+						mes "我珍貴的十字鎬，我還以為我永遠失去你了。";
+						next;
+						mes "[莫爾斯通]";
+						mes "你太棒了！你是哪個公會的？";
+						mes "難道是 Gravity 或 Mercury？";
+						next;
+						mes "[" + strcharinfo(0) + "]";
+						mes "我是 ^3131FF"+.@chk_yourgdname$+"^ 公會的成員。";
+						next;
+						mes "[莫爾斯通]";
+						mes "喔... 那個公會將得到我最高的敬意。";
+						next;
+						mes "[莫爾斯通]";
+						mes "喔！我的朋友，我非常感激你的幫忙。";
+						mes "作為獎勵，我會告訴你一個我最近發現的神祕區域。";
+						next;
+						select("一個神祕區域？");
+						mes "[莫爾斯通]";
+						mes "沒錯。這是我在這裡挖掘時發現的。";
+						mes "它看起來是為了某種特殊目的而建造的，但既然那裡沒有寶石，我就對它沒興趣了。";
+						next;
+						mes "[莫爾斯通]";
+						mes "與其一個人去那裡，我想和你的朋友們一起去會更有趣...";
+						next;
+						mes "[莫爾斯通]";
+						mes "如果你願意，我可以帶 ^3131FF你和你的公會成員^000000 去探索那個區域。";
+						mes "你想現在去那裡嗎？";
+						next;
+						switch(select("等等！我還沒準備好。:我們走吧！")) {
+						case 1:
+							set $@gdeventv_a1,0;
+							set $@gdevents_a$,"";
+							mes "[莫爾斯通]";
+							mes "慢慢來，找個地方召集你的朋友們吧。";
+							close;
+						case 2:
+							mes "[莫爾斯通]";
+							mes "好的！我們出發吧。";
+							mes "如果你的朋友們稍後來找我，我會再次引導他們去那個區域。";
+							mes "別忘了，矮人是懂得感恩的生物！哈哈哈！";
+							delitem 6010,1; //Pickaxe
+							set $@gdeventv_a1,1;
+							set $@gdevents_a$,.@chk_yourgdname$;
+							close2;
+							setquest 2144;
+							warp "arug_que01",103,133;
+							end;
+						}
+					}
+					else {
+						set $@gdeventv_a1,0;
+						set $@gdevents_a$,"";
+						mes "[莫爾斯通]";
+						mes "我會告訴你怎麼找到他。";
+						mes "庫柏林戴著一頂滑稽的金色帽子，這應該很容易認出他。";
+						close;
+					}
+				case 2:
+					set $@gdeventv_a1,0;
+					set $@gdevents_a$,"";
+					emotion ET_CRY;
+					mes "[矮人]";
+					mes "啊...";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[莫爾斯通]";
+			mes "我，莫爾斯通，已經和 "+$@gdevents_a$+" 公會結成了同盟。";
+			mes "嗯，你不是成員。";
+			mes "可以請你代我向他們問好嗎？";
+			close;
+		}
+	}
+	else {
+		if ($@gdevents_a$ == .@chk_yourgdname$) {
+			set .@chk_urquest1,checkquest(2144);
+			if ((.@chk_urquest1 == 0) || (.@chk_urquest1 == 1)) {
+				mes "[莫爾斯通]";
+				mes "[莫爾斯通]";
+				mes "我，莫爾斯通，已經和 "+$@gdevents_a$+" 公會結成了同盟。";
+				mes "喔，你是成員。";
+				mes "你想去那個神祕的區域嗎？";
+				next;
+				switch(select("走吧。:不用了，謝謝。")) {
+				case 1:
+					mes "[莫爾斯通]";
+					mes "希望你玩得開心，我的朋友。";
+					close2;
+					warp "arug_que01",103,133;
+					end;
+				case 2:
+					mes "[莫爾斯通]";
+					mes "如果你需要我的幫助，儘管開口。";
+					mes "啊！別忘了，我討厭魔物！所以我不想看到牠們。如果你要找我幫其他忙，最好別帶著牠們。";
+					close;
+				}
+			}
+			else {
+				set $@gdeventv_a1,1;
+				set $@gdevents_a$,.@chk_yourgdname$;
+				mes "[矮人]";
+				mes "幫幫我！";
+				mes "拜託，幫幫我！";
+				next;
+				switch(select("發生什麼事了？:算了。")) {
+				case 1:
+					mes "[矮人]";
+					mes "我是莫爾斯通，我收集稀有的寶石。";
+					next;
+					mes "[莫爾斯通]";
+					mes "在我的旅途中，有人告訴我華納神族（Valfreyja）和尼德霍格（Nidhoggur）有很多寶石，所以我來到了這裡。";
+					mes "但在這裡，土壤非常堅硬，很難挖掘。幸運的是，我的 ^3131FF十字鎬^000000 從未讓我失望！";
+					next;
+					select("十字鎬！");
+					mes "[莫爾斯通]";
+					mes "是的，我心愛的十字鎬！";
+					mes "我總是把它帶在身邊，你知道嗎？";
+					next;
+					mes "[莫爾斯通]";
+					mes "我們開始在這裡一起工作。";
+					mes "幾天後，我們終於發現了什麼！";
+					next;
+					select("奇怪的東西？？");
+					mes "[莫爾斯通]";
+					mes "不，但它非常值錢。";
+					mes "但我們沒有太多時間慶祝。突然，一隻魔物出現偷走了我的十字鎬。";
+					mes "他的名字是^3131FF庫柏林^000000！";
+					next;
+					mes "[莫爾斯通]";
+					mes "他偷了我的十字鎬！";
+					mes "沒有它我活不下去...";
+					next;
+					if (countitem(6010) > 0) {
+						mes "[" + strcharinfo(0) + "]";
+						mes "這是你一直在找的十字鎬嗎？";
+						next;
+						mes "[莫爾斯通]";
+						mes "你找到了我的十字鎬？";
+						mes "請給我看看！";
+						next;
+						mes "[莫爾斯通]";
+						mes "噢，天哪！你把它還給我了！";
+						mes "我珍貴的十字鎬，我還以為我永遠失去你了。";
+						next;
+						mes "[莫爾斯通]";
+						mes "你太棒了！你是哪個公會的？";
+						mes "難道是 Gravity 或 Mercury？";
+						next;
+						mes "[" + strcharinfo(0) + "]";
+						mes "我是 ^3131FF"+.@chk_yourgdname$+"^ 公會的成員。";
+						next;
+						mes "[莫爾斯通]";
+						mes "喔... 那個公會將得到我最高的敬意。";
+						next;
+						mes "[莫爾斯通]";
+						mes "喔！我的朋友，我非常感激你的幫忙。";
+						mes "作為獎勵，我會告訴你一個我最近發現的神祕區域。";
+						next;
+						select("一個神祕區域？");
+						mes "[莫爾斯通]";
+						mes "沒錯。這是我在這裡挖掘時發現的。";
+						mes "它看起來是為了某種特殊目的而建造的，但既然那裡沒有寶石，我就對它沒興趣了。";
+						next;
+						mes "[莫爾斯通]";
+						mes "與其一個人去那裡，我想和你的朋友們一起去會更有趣...";
+						next;
+						mes "[莫爾斯通]";
+						mes "如果你願意，我可以帶 ^3131FF你和你的公會成員^000000 去探索那個區域。";
+						mes "你想現在去那裡嗎？";
+						next;
+						switch(select("等等！我還沒準備好。:我們走吧！")) {
+						case 1:
+							set $@gdeventv_a1,0;
+							set $@gdevents_a$,"";
+							mes "[莫爾斯通]";
+							mes "慢慢來，找個地方召集你的朋友們吧。";
+							close;
+						case 2:
+							mes "[莫爾斯通]";
+							mes "好的！我們出發吧。";
+							mes "如果你的朋友們稍後來找我，我會再次引導他們去那個區域。";
+							mes "別忘了，矮人是懂得感恩的生物！哈哈哈！";
+							delitem 6010,1; //Pickaxe
+							set $@gdeventv_a1,1;
+							set $@gdevents_a$,.@chk_yourgdname$;
+							close2;
+							setquest 2144;
+							warp "arug_que01",103,133;
+							end;
+						}
+					}
+					else {
+						set $@gdeventv_a1,0;
+						set $@gdevents_a$,"";
+						mes "[莫爾斯通]";
+						mes "我會告訴你怎麼找到他。";
+						mes "庫柏林戴著一頂滑稽的金色帽子，這應該很容易認出他。";
+						close;
+					}
+				case 2:
+					set $@gdeventv_a1,0;
+					set $@gdevents_a$,"";
+					emotion ET_CRY;
+					mes "[矮人]";
+					mes "啊...";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[莫爾斯通]";
+			mes "我，莫爾斯通，已經和 "+$@gdevents_a$+" 公會結成了同盟。";
+			mes "嗯，你不是成員。";
+			mes "可以請你代我向他們問好嗎？";
+			close;
+		}
+	}
+	end;
+
+OnInit:
+	disablenpc "矮人#aru_gd";
+	set $@gdeventv_a1,0;
+	set $@gdevents_a$,"";
+	end;
+
+OnEnable:
+	enablenpc "矮人#aru_gd";
+	end;
+}
+
+arug_que01,100,81,3	script	皮埃羅 皮爾#aru_gd	715,{
+	specialeffect EF_POISONHIT;
+	set .@sprchg_gd,rand(1,5);
+	if (.@sprchg_gd == 1) {
+		setnpcdisplay "皮埃羅 皮爾#aru_gd",950;
+	}
+	else if (.@sprchg_gd == 2) {
+		setnpcdisplay "皮埃羅 皮爾#aru_gd",715;
+	}
+	else if (.@sprchg_gd == 3) {
+		setnpcdisplay "皮埃羅 皮爾#aru_gd",714;
+	}
+	else if (.@sprchg_gd == 4) {
+		setnpcdisplay "皮埃羅 皮爾#aru_gd",785;
+	}
+	else {
+		setnpcdisplay "皮埃羅 皮爾#aru_gd",876;
+	}
+	if (checkweight(1201,1) == 0) {
+		mes "- 等等！！ -";
+		mes "- 你攜帶了太多物品， -";
+		mes "- 你無法接收材料。 -";
+		mes "- 請使用卡普拉服務， -";
+		mes "- 稍後再來。 -";
+		close;
+	}
+	if (is_guild_leader() == true) {
+		if ($@gdeventv_a2 == 0) {
+			set .@que_2143,checkquest(2143,PLAYTIME);
+			if (.@que_2143 == -1) {
+				setnpcdisplay "皮埃羅 皮爾#aru_gd",715;
+				mes "一個孤獨的小丑正在雜耍。";
+				next;
+				mes "仔細一看，這個小丑只是一個看起來像人類的木偶。";
+				next;
+				mes "小丑停了下來，然後開始隨著你的動作移動，嘴裡開始發出聲音。";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "嗶 嗶 嗶。";
+				mes "哈囉，我的朋友們！";
+				mapannounce "arug_que01", "皮埃羅 皮爾：嗶 嗶 嗶！哈囉，我的朋友們！",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "我是格爾加斯忠實的僕人，我終於收到了命令。";
+				mes "我很高興聽到所有的笑聲，但沒有我主人的允許，我什麼都不能做。";
+				mapannounce "arug_que01", "皮埃羅 皮爾：我很高興聽到所有的笑聲，但沒有我主人的允許，我什麼都不能做。",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "你得到格爾加斯的允許了嗎？";
+				mapannounce "arug_que01", "皮埃羅 皮爾：你得到格爾加斯的允許了嗎？",bc_map,"0x99CC00";
+				next;
+				switch(select("我需要確認一下。:沒有。")) {
+				case 1:
+					mes "[皮埃羅 皮爾]";
+					mes "請把你的手掌給我。";
+					mapannounce "arug_que01", "皮埃羅 皮爾：請把你的手掌給我。",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "讓我看看...";
+					mapannounce "arug_que01", "皮埃羅 皮爾：讓我看看...",bc_map,"0x99CC00";
+					next;
+					emotion ET_THINK;
+					mes "[皮埃羅 皮爾]";
+					mes "嗯...";
+					mapannounce "arug_que01", "皮埃羅 皮爾：嗯...",bc_map,"0x99CC00";
+					next;
+					emotion ET_THINK;
+					mes "[皮埃羅 皮爾]";
+					mes "好的，我明白了...";
+					mapannounce "arug_que01", "皮埃羅 皮爾：好的，我明白了...",bc_map,"0x99CC00";
+					next;
+					emotion ET_THINK;
+					mes "[皮埃羅 皮爾]";
+					mes "的確...";
+					mapannounce "arug_que01", "皮埃羅 皮爾：的確...",bc_map,"0x99CC00";
+					next;
+					emotion ET_STARE;
+					mes "[皮埃羅 皮爾]";
+					mes "驗證完成！";
+					mapannounce "arug_que01", "皮埃羅 皮爾：驗證完成！",bc_map,"0x99CC00";
+					next;
+					break;
+				case 2:
+					mes "[皮埃羅 皮爾]";
+					mes "嗯？沒錯。";
+					mes "那個人什麼時候才來？我好無聊啊?！";
+					close;
+				}
+				mes "[皮埃羅 皮爾]";
+				mes "^3131FF<你是個每天只想著廢話的人，一點專注力都沒有。>^000000";
+				mapannounce "arug_que01", "皮埃羅 皮爾：<你是個每天只想著廢話的人，一點專注力都沒有。>",bc_map,"0x99CC00";
+				next;
+				emotion ET_DELIGHT;
+				mes "[皮埃羅 皮爾]";
+				mes "嗯？你不這麼認為嗎？";
+				mapannounce "arug_que01", "皮埃羅 皮爾：嗯？你不這麼認為嗎？",bc_map,"0x99CC00";
+				next;
+				emotion ET_SMILE;
+				mes "[皮埃羅 皮爾]";
+				mes "哈哈，我開玩笑的。嗶嗶。";
+				mes "啊，你就是我主人說的那個人。";
+				mapannounce "arug_que01", "皮埃羅 皮爾：哈哈，我開玩笑的。嗶嗶。你就是我主人說的那個人。",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "來吧，格爾加斯給你留了一條訊息。";
+				mes "雖然有點舊了，但應該還看得清楚。";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "好的，我們開始吧！";
+				setquest 2143;
+				donpcevent "格爾加斯#aru_gd::OnEnable";
+				close;
+			}
+			else if ((.@que_2143 == 0) || (.@que_2143 == 1)) {
+				mes "[皮埃羅 皮爾]";
+				mes "等我讀完主人的訊息我們再談。嗶嗶。";
+				close;
+			}
+			else {
+				mes "[皮埃羅 皮爾]";
+				mes "我的主人格爾加斯真誠地祝你和你的家人每天都快樂。";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "好的，你想玩格爾加斯為你準備的遊戲嗎？";
+				next;
+				switch(select("遊戲說明。:跳過說明。:拒絕遊戲。")) {
+				case 1:
+					mes "[皮埃羅 皮爾]";
+					mes "我主人準備的遊戲非常獨特，簡單又好玩！";
+					mapannounce "arug_que01", "皮埃羅 皮爾：我主人準備的遊戲非常獨特，簡單又好玩！",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "它叫做「尋找藏寶圖」！！";
+					mapannounce "arug_que01", "皮埃羅 皮爾：它叫做「尋找藏寶圖」！！",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "你看到這片寬廣的綠色原野了嗎？嗶，嗶？";
+					mes "我將在這裡向你展示最不可思議的魔法。";
+					mes "我會把這個地方變得非常白。非?常白！";
+					mapannounce "arug_que01", "皮埃羅 皮爾：我會把這個地方變得非常白。非?常白！",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "遊戲說明就是要在時限內找到藏寶圖。";
+					mes "聽起來很簡單，對吧？";
+					mapannounce "arug_que01", "皮埃羅 皮爾：遊戲說明就是要在時限內找到藏寶圖。聽起來很簡單，對吧？",bc_map,"0x99CC00";
+					next;
+					break;
+				case 2:
+					break;
+				case 3:
+					emotion ET_CRY;
+					mes "[皮埃羅 皮爾]";
+					mes "喔，你不想玩嗎？";
+					close;
+				}
+				mes "[皮埃羅 皮爾]";
+				mes "好的，我準備好要開始了。";
+				mes "我們開始吧？嗶，嗶？";
+				next;
+				switch(select("不。:開始。")) {
+				case 1:
+					mes "[皮埃羅 皮爾]";
+					mes "準備好時告訴我。";
+					close;
+				case 2:
+					mes "[皮埃羅 皮爾]";
+					mes "好的！我們開始吧！";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "女士們，先生們。";
+					mapannounce "arug_que01", "皮埃羅 皮爾：女士們，先生們。",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "誰會在這個白色的世界裡找到藏寶圖呢？";
+					mapannounce "arug_que01", "皮埃羅 皮爾：誰會在這個白色的世界裡找到藏寶圖呢？",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "在你們之中，誰會是那個幸運兒呢？";
+					mapannounce "arug_que01", "皮埃羅 皮爾：在你們之中，誰會是那個幸運兒呢？",bc_map,"0x99CC00";
+					next;
+					mes "[皮埃羅 皮爾]";
+					mes "讓遊戲..開始！";
+					mapannounce "arug_que01", "皮埃羅 皮爾：讓遊戲..開始！",bc_map,"0x99CC00";
+					set $@gdeventv_a2,1;
+					donpcevent "控制器#gdevent_a::Ongame_start";
+					erasequest 2143;
+					close;
+				}
+			}
+		}
+		else if ($@gdeventv_a2 == 1) {
+			mes "[皮埃羅 皮爾]";
+			mes "你找到藏寶圖了嗎？";
+			mes "把你手裡的東西給我看看！嗶，嗶！";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "讓我看看...";
+			next;
+			if (countitem(6031) > 0) {
+				donpcevent "控制器#gdevent_a::OnStop";
+				set $@gdeventv_a2,3;
+				donpcevent "eff_mvp#aru_gd::Onmvp";
+				mes "[皮埃羅 皮爾]";
+				mes "哇??！！";
+				mes "成功?！！";
+				mes "多麼大的成功啊?！！";
+				mapannounce "arug_que01", "皮埃羅 皮爾：哇??！！成功?！！多麼大的成功啊?！！",bc_map,"0x99CC00";
+				delitem 6031,1; //Glitering_PaperB
+				close;
+			}
+			else {
+				if (countitem(6030) > 0) {
+					mes "[皮埃羅 皮爾]";
+					mes "啊，真可惜，看來你還沒找到藏寶圖。";
+					mes "快點！你的時間快用完了！快點！";
+					close;
+				}
+				else {
+					mes "[皮埃羅 皮爾]";
+					mes "我什麼都沒看到。你開始了嗎？嗶？";
+					mes "呵呵，當你和我說話的時候，時間正在慢慢流逝喔?";
+					close;
+				}
+			}
+		}
+		else if ($@gdeventv_a2 == 2) {
+			mes "[皮埃羅 皮爾]";
+			mes "哇，怎麼會這樣?！！";
+			mes "不夠嗎？但這才讓遊戲有趣，不是嗎？哈哈哈！";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "你覺得如何？";
+			next;
+			switch(select("太難了。:我應該會成功的...")) {
+			case 1:
+				mes "[皮埃羅 皮爾]";
+				mes "這簡直是大海撈針！";
+				mes "很難，但如果你找到了，那會是付出十倍努力的價值。嗶，嗶。";
+				next;
+				break;
+			case 2:
+				mes "[皮埃羅 皮爾]";
+				mes "啊?！時間就是金錢。";
+				mes "寶貴的時間總是過得特別快。";
+				next;
+				break;
+			}
+			mes "[皮埃羅 皮爾]";
+			mes "我，皮埃羅 皮爾，才不是無情的小丑！嗶嗶。";
+			mapannounce "arug_que01", "皮埃羅 皮爾：我，皮埃羅 皮爾，才不是無情的小丑！嗶嗶。",bc_map,"0x99CC00";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "你的成功就是我的快樂！";
+			mes "我再給你一次機會。如何？嗶？";
+			mapannounce "arug_que01", "皮埃羅 皮爾：我再給你一次機會。如何？嗶？",bc_map,"0x99CC00";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "好的，我準備好要開始了。";
+			mes "我們開始吧？嗶，嗶？";
+			mapannounce "arug_que01", "皮埃羅 皮爾：好的，我準備好要開始了。我們開始吧？嗶，嗶？",bc_map,"0x99CC00";
+			next;
+			switch(select("不。:開始。")) {
+			case 1:
+				mes "[皮埃羅 皮爾]";
+				mes "準備好時告訴我。";
+				close;
+			case 2:
+				mes "[皮埃羅 皮爾]";
+				mes "好的！我們開始吧！";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "女士們，先生們。";
+				mapannounce "arug_que01", "皮埃羅 皮爾：女士們，先生們。",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "誰會在這個白色的世界裡找到藏寶圖呢？";
+				mapannounce "arug_que01", "皮埃羅 皮爾：誰會在這個白色的世界裡找到藏寶圖呢？",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "在你們之中，誰會是那個幸運兒呢？";
+				mapannounce "arug_que01", "皮埃羅 皮爾：在你們之中，誰會是那個幸運兒呢？",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "讓遊戲..開始！";
+				mapannounce "arug_que01", "皮埃羅 皮爾：讓遊戲..開始！",bc_map,"0x99CC00";
+				set $@gdeventv_a2,10;
+				donpcevent "控制器#gdevent_a::Ongame_start";
+				close;
+			}
+		}
+		else if ($@gdeventv_a2 == 3) {
+			set .@que_2143,checkquest(2143);
+			if (.@que_2143 == 3) {
+				erasequest 2143;
+			}
+			mes "[皮埃羅 皮爾]";
+			mes "你是怎麼做到的？";
+			mapannounce "arug_que01", "皮埃羅 皮爾：你是怎麼做到的？",bc_map,"0x99CC00";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "你居然能在大海裡撈到針！";
+			mes "太驚人了！";
+			mapannounce "arug_que01", "皮埃羅 皮爾：你居然能在大海裡撈到針！太驚人了！",bc_map,"0x99CC00";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "你完成了一項令人難以置信的任務，我會給你主人準備的超棒禮物！！哈！";
+			mapannounce "arug_que01", "皮埃羅 皮爾：你完成了一項令人難以置信的任務，我會給你主人準備的超棒禮物！！哈！",bc_map,"0x99CC00";
+			mapannounce "arug_que01", "皮埃羅 皮爾：來，收下皮爾的寶箱吧。",bc_map,"0x99CC00";
+			donpcevent "eff_mvp#aru_gd::Onmvp";
+			set $@gdeventv_a2,5;
+			getitem 14596,10; //Pierre_Treasurebox
+			close;
+		}
+		else if ($@gdeventv_a2 == 4) {
+			mes "[皮埃羅 皮爾]";
+			mes "難以置信！不敢相信！嗶嗶！";
+			close;
+		}
+		else if ($@gdeventv_a2 == 5) {
+			mapannounce "arug_que01", "皮埃羅 皮爾：看到你們的笑容，讓皮埃羅覺得非常快樂? 下次見！",bc_map,"0x99CC00";
+			mes "[皮埃羅 皮爾]";
+			mes "你玩得開心嗎？";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "看到你們的笑容，讓皮埃羅覺得非常快樂?";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "希望能很快再見到你，我現在必須變回木偶了。";
+			mes "下次見！";
+			erasequest 2144;
+			close;
+		}
+		else {
+			mes "[皮埃羅 皮爾]";
+			mes "你找到藏寶圖了嗎？";
+			mes "把你手裡的東西給我看看！嗶，嗶！";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "讓我看看。";
+			next;
+			if (countitem(6031) > 0) {
+				donpcevent "控制器#gdevent_a::OnStop";
+				set $@gdeventv_a2,3;
+				donpcevent "eff_mvp#aru_gd::Onmvp";
+				mes "[皮埃羅 皮爾]";
+				mes "哇??！！";
+				mes "成功?！！";
+				mes "多麼大的成功啊?！！";
+				delitem 6031,1; //Glitering_PaperB
+				close;
+			}
+			else {
+				if (countitem(6030) > 0) {
+					mes "[皮埃羅 皮爾]";
+					mes "啊，真可惜，看來你還沒找到藏寶圖。";
+					mes "快點！你的時間快用完了！快點！";
+					close;
+				}
+				else {
+					mes "[皮埃羅 皮爾]";
+					mes "我什麼都沒看到。你開始了嗎？嗶？";
+					mes "呵呵，當你和我說話的時候，時間正在慢慢流逝喔?";
+					close;
+				}
+			}
+		}
+	}
+	else {
+		if ($@gdeventv_a2 == 0) {
+			setnpcdisplay "皮埃羅 皮爾#aru_gd",715;
+			mes "一個孤獨的小丑正在雜耍。";
+			next;
+			mes "仔細一看，這個小丑只是一個看起來像人類的木偶。";
+			next;
+			mes "小丑停了下來，然後開始隨著你的動作移動，嘴裡開始發出聲音。";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "嗶 嗶 嗶。";
+			mes "哈囉，我的朋友們！";
+			mapannounce "arug_que01", "皮埃羅 皮爾：嗶 嗶 嗶！哈囉，我的朋友們！",bc_map,"0x99CC00";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "我是格爾加斯忠實的僕人，我終於收到了命令。";
+			mes "我很高興聽到所有的笑聲，但沒有我主人的允許，我什麼都不能做。";
+			mapannounce "arug_que01", "皮埃羅 皮爾：我很高興聽到所有的笑聲，但沒有我主人的允許，我什麼都不能做。",bc_map,"0x99CC00";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "你得到格爾加斯的允許了嗎？";
+			mapannounce "arug_que01", "皮埃羅 皮爾：你得到格爾加斯的允許了嗎？",bc_map,"0x99CC00";
+			next;
+			switch(select("我需要確認一下。:沒有。")) {
+			case 1:
+				mes "[皮埃羅 皮爾]";
+				mes "請把你的手掌給我。";
+				mapannounce "arug_que01", "皮埃羅 皮爾：請把你的手掌給我。",bc_map,"0x99CC00";
+				next;
+				mes "[皮埃羅 皮爾]";
+				mes "讓我看看...";
+				mapannounce "arug_que01", "皮埃羅 皮爾：讓我看看...",bc_map,"0x99CC00";
+				next;
+				emotion ET_THINK;
+				mes "[皮埃羅 皮爾]";
+				mes "嗯...";
+				mapannounce "arug_que01", "皮埃羅 皮爾：嗯...",bc_map,"0x99CC00";
+				next;
+				emotion ET_THINK;
+				mes "[皮埃羅 皮爾]";
+				mes "好的，我明白了...";
+				mapannounce "arug_que01", "皮埃羅 皮爾：好的，我明白了...",bc_map,"0x99CC00";
+				next;
+				emotion ET_THINK;
+				mes "[皮埃羅 皮爾]";
+				mes "的確...";
+				mapannounce "arug_que01", "皮埃羅 皮爾：的確...",bc_map,"0x99CC00";
+				next;
+				emotion ET_STARE;
+				mes "[皮埃羅 皮爾]";
+				mes "驗證完成！";
+				mapannounce "arug_que01", "皮埃羅 皮爾：驗證完成！",bc_map,"0x99CC00";
+				next;
+				break;
+			case 2:
+				mes "[皮埃羅 皮爾]";
+				mes "嗯？沒錯。";
+				mes "那個人什麼時候才來？我好無聊啊?！";
+				close;
+			}
+			emotion ET_SMILE;
+			mes "[皮埃羅 皮爾]";
+			mes "^3131FF<雖然你是個怪人，但你看起來很專注>^000000。嗶嗶。";
+			next;
+			emotion ET_PROFUSELY_SWEAT;
+			mes "[皮埃羅 皮爾]";
+			mes "嗯？你不這麼認為嗎？";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "我主人指定的人是 ^3131FF< 一個領導眾人的人 >^000000。嗶。";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "皮埃羅也想成為那樣的人。嗶。";
+			close;
+		}
+		else if ($@gdeventv_a2 == 1) {
+			mes "[皮埃羅 皮爾]";
+			mes "你找到藏寶圖了嗎？";
+			mes "把你手裡的東西給我看看！嗶，嗶！";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "讓我看看...";
+			next;
+			if (countitem(6031) > 0) {
+				donpcevent "控制器#gdevent_a::OnStop";
+				set $@gdeventv_a2,3;
+				donpcevent "eff_mvp#aru_gd::Onmvp";
+				mes "[皮埃羅 皮爾]";
+				mes "哇??！！";
+				mes "成功?！！";
+				mes "多麼大的成功啊?！！";
+				mapannounce "arug_que01", "皮埃羅 皮爾：哇??！！成功?！！多麼大的成功啊?！！",bc_map,"0x99CC00";
+				delitem 6031,1; //Glitering_PaperB
+				close;
+			}
+			else {
+				if (countitem(6030) > 0) {
+					mes "[皮埃羅 皮爾]";
+					mes "啊，真可惜，看來你還沒找到藏寶圖。";
+					mes "快點！你的時間快用完了！快點！";
+					close;
+				}
+				else {
+					mes "[皮埃羅 皮爾]";
+					mes "我什麼都沒看到。你開始了嗎？嗶？";
+					mes "呵呵，當你和我說話的時候，時間正在慢慢流逝喔?";
+					close;
+				}
+			}
+		}
+		else if ($@gdeventv_a2 == 2) {
+			mes "[皮埃羅 皮爾]";
+			mes "哇，怎麼會這樣?！！";
+			mes "不夠嗎？但這才讓遊戲有趣，不是嗎？哈哈哈！";
+			close;
+		}
+		else if ($@gdeventv_a2 == 3) {
+			mes "[皮埃羅 皮爾]";
+			mes "恭喜你，你成功了！";
+			mes "我會和你們的首領談談其他細節。";
+			close;
+		}
+		else if ($@gdeventv_a2 == 4) {
+			mes "[皮埃羅 皮爾]";
+			mes "難以置信！不敢相信！嗶嗶！";
+			close;
+		}
+		else if ($@gdeventv_a2 == 5) {
+			mes "[皮埃羅 皮爾]";
+			mes "你玩得開心嗎？";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "看到你們的笑容，讓皮埃羅覺得非常快樂?";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "希望能很快再見到你，我現在必須變回木偶了。";
+			mes "下次見！";
+			close;
+		}
+		else {
+			mes "[皮埃羅 皮爾]";
+			mes "你找到寶藏了嗎？";
+			mes "現在把你手裡拿著的東西給我看！";
+			next;
+			mes "[皮埃羅 皮爾]";
+			mes "讓我看看...";
+			next;
+			if (countitem(6031) > 0) {
+				donpcevent "控制器#gdevent_a::OnStop";
+				set $@gdeventv_a2,3;
+				donpcevent "eff_mvp#aru_gd::Onmvp";
+				mes "[皮埃羅 皮爾]";
+				mes "哇??！！";
+				mes "成功?！！";
+				mes "多麼大的成功啊?！！";
+				delitem 6031,1; //Glitering_PaperB
+				close;
+			}
+			else {
+				if (countitem(6030) > 0) {
+					mes "[皮埃羅 皮爾]";
+					mes "啊，真可惜，看來你還沒找到藏寶圖。";
+					mes "快點！你的時間快用完了！快點！";
+					close;
+				}
+				else {
+					mes "[皮埃羅 皮爾]";
+					mes "我什麼都沒看到。你開始了嗎？嗶？";
+					mes "呵呵，當你和我說話的時候，時間正在慢慢流逝喔?";
+					close;
+				}
+			}
+		}
+	}
+}
+
+arug_que01,10,10,3	script	控制器#gdevent_a	81,{
+OnInit:
+	set $@gdeventv_a2,0;
+	end;
+
+Onwin:
+	donpcevent "treg#aru_gd::OnEnable";
+	end;
+Ongame_start:
+	initnpctimer;
+	donpcevent "paper_sp_1_a::OnEnable";
+	donpcevent "paper_sp_2_a::OnEnable";
+	donpcevent "paper_sp_3_a::OnEnable";
+	donpcevent "paper_sp_4_a::OnEnable";
+	donpcevent "paper_sp_5_a::OnEnable";
+	donpcevent "paper_sp_6_a::OnEnable";
+	donpcevent "paper_sp_7_a::OnEnable";
+	donpcevent "paper_sp_8_a::OnEnable";
+	donpcevent "paper_sp_9_a::OnEnable";
+	set .@roulette_where,rand(1,9);
+	if (.@roulette_where == 1) {
+		donpcevent "paper_sp_1_a::OnBingo";
+	}
+	else if (.@roulette_where == 2) {
+		donpcevent "paper_sp_2_a::OnBingo";
+	}
+	else if (.@roulette_where == 3) {
+		donpcevent "paper_sp_3_a::OnBingo";
+	}
+	else if (.@roulette_where == 4) {
+		donpcevent "paper_sp_4_a::OnBingo";
+	}
+	else if (.@roulette_where == 5) {
+		donpcevent "paper_sp_5_a::OnBingo";
+	}
+	else if (.@roulette_where == 6) {
+		donpcevent "paper_sp_6_a::OnBingo";
+	}
+	else if (.@roulette_where == 7) {
+		donpcevent "paper_sp_7_a::OnBingo";
+	}
+	else if (.@roulette_where == 8) {
+		donpcevent "paper_sp_8_a::OnBingo";
+	}
+	else {
+		donpcevent "paper_sp_9_a::OnBingo";
+	}
+	end;
+
+OnStop:
+	stopnpctimer;
+	end;
+OnTimer40000:
+	mapannounce "arug_que01", "皮埃羅 皮爾：時間快用完了，快點！",bc_map,"0x99CC00";
+	end;
+
+OnTimer60000:
+	mapannounce "arug_que01", "皮埃羅 皮爾：時間到！",bc_map,"0x99CC00";
+	mapwarp "arug_que01","arug_que01",100,79;
+	enablenpc "removepp_aru_gd";
+	set $@gdeventv_a2,2;
+	end;
+
+OnTimer63000:
+	stopnpctimer;
+	end;
+}
+
+arug_que01,87,93,0	script	paper_sp_1_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while1,0;
+	while(1) {
+		if (.@paper_while1 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while1,.@paper_while1+1;
+			set .@paper_x1,rand(81,95);
+			set .@paper_y1,rand(87,100);
+			makeitem 6030,1,"arug_que01",.@paper_x1,.@paper_y1; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x1,rand(81,95);
+	set .@paper_y1,rand(87,100);
+	makeitem 6031,1,"arug_que01",.@paper_x1,.@paper_y1; //Glitering_PaperB
+	end;
+}
+
+arug_que01,102,93,0	script	paper_sp_2_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while2,0;
+	while(1) {
+		if (.@paper_while2 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while2,.@paper_while2+1;
+			set .@paper_x2,rand(96,110);
+			set .@paper_y2,rand(87,100);
+			makeitem 6030,1,"arug_que01",.@paper_x2,.@paper_y2; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x2,rand(96,110);
+	set .@paper_y2,rand(87,100);
+	makeitem 6031,1,"arug_que01",.@paper_x2,.@paper_y2; //Glitering_PaperB
+	end;
+}
+
+arug_que01,117,93,0	script	paper_sp_3_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while3,0;
+	while(1) {
+		if (.@paper_while3 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while3,.@paper_while3+1;
+			set .@paper_x3,rand(111,124);
+			set .@paper_y3,rand(87,100);
+			makeitem 6030,1,"arug_que01",.@paper_x3,.@paper_y3; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x3,rand(111,124);
+	set .@paper_y3,rand(87,100);
+	makeitem 6031,1,"arug_que01",.@paper_x3,.@paper_y3; //Glitering_PaperB
+	end;
+}
+
+arug_que01,87,80,0	script	paper_sp_4_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while4,0;
+	while(1) {
+		if (.@paper_while4 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while4,.@paper_while4+1;
+			set .@paper_x4,rand(81,95);
+			set .@paper_y4,rand(73,86);
+			makeitem 6030,1,"arug_que01",.@paper_x4,.@paper_y4; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x4,rand(81,95);
+	set .@paper_y4,rand(73,86);
+	makeitem 6031,1,"arug_que01",.@paper_x4,.@paper_y4; //Glitering_PaperB
+	end;
+}
+
+arug_que01,102,80,0	script	paper_sp_5_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while5,0;
+	while(1) {
+		if (.@paper_while5 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while5,.@paper_while5+1;
+			set .@paper_x5,rand(96,110);
+			set .@paper_y5,rand(73,86);
+			makeitem 6030,1,"arug_que01",.@paper_x5,.@paper_y5; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x5,rand(96,110);
+	set .@paper_y5,rand(73,86);
+	makeitem 6031,1,"arug_que01",.@paper_x5,.@paper_y5; //Glitering_PaperB
+	end;
+}
+
+arug_que01,117,80,0	script	paper_sp_6_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while6,0;
+	while(1) {
+		if (.@paper_while6 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while6,.@paper_while6+1;
+			set .@paper_x6,rand(111,124);
+			set .@paper_y6,rand(73,86);
+			makeitem 6030,1,"arug_que01",.@paper_x6,.@paper_y6; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x6,rand(111,124);
+	set .@paper_y6,rand(73,86);
+	makeitem 6031,1,"arug_que01",.@paper_x6,.@paper_y6; //Glitering_PaperB
+	end;
+}
+
+arug_que01,87,65,0	script	paper_sp_7_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while7,0;
+	while(1) {
+		if (.@paper_while7 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while7,.@paper_while7+1;
+			set .@paper_x7,rand(81,95);
+			set .@paper_y7,rand(59,72);
+			makeitem 6030,1,"arug_que01",.@paper_x7,.@paper_y7; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x7,rand(81,95);
+	set .@paper_y7,rand(59,72);
+	makeitem 6031,1,"arug_que01",.@paper_x7,.@paper_y7; //Glitering_PaperB
+	end;
+}
+
+arug_que01,102,65,0	script	paper_sp_8_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while8,0;
+	while(1) {
+		if (.@paper_while8 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while8,.@paper_while8+1;
+			set .@paper_x8,rand(96,110);
+			set .@paper_y8,rand(59,72);
+			makeitem 6030,1,"arug_que01",.@paper_x8,.@paper_y8; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x8,rand(96,110);
+	set .@paper_y8,rand(59,72);
+	makeitem 6031,1,"arug_que01",.@paper_x8,.@paper_y8; //Glitering_PaperB
+	end;
+}
+
+arug_que01,117,65,0	script	paper_sp_9_a	139,{
+	end;
+
+OnEnable:
+	set .@paper_while9,0;
+	while(1) {
+		if (.@paper_while9 == 100) {
+			break;
+		}
+		else {
+			set .@paper_while9,.@paper_while9+1;
+			set .@paper_x9,rand(111,124);
+			set .@paper_y9,rand(59,72);
+			makeitem 6030,1,"arug_que01",.@paper_x9,.@paper_y9; //Glitering_PaperA
+		}
+	}
+	end;
+
+OnBingo:
+	set .@paper_x9,rand(111,124);
+	set .@paper_y9,rand(59,72);
+	makeitem 6031,1,"arug_que01",.@paper_x9,.@paper_y9; //Glitering_PaperB
+	end;
+}
+
+arug_que01,100,80,0	script	removepp_aru_gd	-1,5,5,{
+	end;
+
+OnInit:
+	disablenpc "removepp_aru_gd";
+	end;
+
+OnTouch:
+	set .@paper_aru_gd,countitem(6030);
+	set .@spaper_aru_gd,countitem(6031);
+	if ((.@paper_aru_gd > 0) || (.@spaper_aru_gd > 0)) {
+		delitem 6030,.@paper_aru_gd; //Glitering_PaperA
+		delitem 6031,.@spaper_aru_gd; //Glitering_PaperB
+	}
+	end;
+}
+
+arug_que01,6,6,1	script	eff_mvp#aru_gd	844,{
+	end;
+
+Onmvp:
+	initnpctimer;
+	end;
+
+OnTimer1000:
+	specialeffect EF_MVP,AREA,"paper_sp_1_a";
+	specialeffect EF_MVP,AREA,"paper_sp_3_a";
+	specialeffect EF_MVP,AREA,"paper_sp_5_a";
+	specialeffect EF_MVP,AREA,"paper_sp_7_a";
+	specialeffect EF_MVP,AREA,"paper_sp_9_a";
+	end;
+
+OnTimer2000:
+	specialeffect EF_MVP,AREA,"paper_sp_2_a";
+	specialeffect EF_MVP,AREA,"paper_sp_4_a";
+	specialeffect EF_MVP,AREA,"paper_sp_6_a";
+	specialeffect EF_MVP,AREA,"paper_sp_8_a";
+	end;
+
+OnTimer3000:
+	specialeffect EF_MVP,AREA,"paper_sp_1_a";
+	specialeffect EF_MVP,AREA,"paper_sp_3_a";
+	specialeffect EF_MVP,AREA,"paper_sp_5_a";
+	specialeffect EF_MVP,AREA,"paper_sp_7_a";
+	specialeffect EF_MVP,AREA,"paper_sp_9_a";
+	end;
+
+OnTimer4000:
+	specialeffect EF_MVP,AREA,"paper_sp_2_a";
+	specialeffect EF_MVP,AREA,"paper_sp_4_a";
+	specialeffect EF_MVP,AREA,"paper_sp_6_a";
+	specialeffect EF_MVP,AREA,"paper_sp_8_a";
+	stopnpctimer;
+	end;
+}
+
+arug_que01,100,75,5	script	格爾加斯#aru_gd	412,{
+	end;
+
+OnInit:
+	disablenpc "格爾加斯#aru_gd";
+	end;
+
+OnEnable:
+	enablenpc "格爾加斯#aru_gd";
+	specialeffect EF_FORESTLIGHT;
+	initnpctimer;
+	end;
+
+OnTimer5000:
+	mapannounce "arug_que01", "格爾加斯：我親愛的朋友，你最近過得好嗎？這是我為你準備的。",bc_map,"0xFFFF00";
+	end;
+
+OnTimer10000:
+	mapannounce "arug_que01", "格爾加斯：你還記得我們年輕的時候嗎？我們每天都打架，就像是不共戴天的仇人一樣。",bc_map,"0xFFFF00";
+	end;
+
+OnTimer15000:
+	mapannounce "arug_que01", "格爾加斯：不管大人們怎麼勸阻，我們都沒打算要改變。哈哈。",bc_map,"0xFFFF00";
+	end;
+OnTimer20000:
+	mapannounce "arug_que01", "格爾加斯：但我相信在我們內心深處，我們都很重視彼此的友誼。",bc_map,"0xFFFF00";
+	end;
+OnTimer25000:
+	mapannounce "arug_que01", "格爾加斯：當我在妙勒尼山脈弄丟我母親的遺物後，你來找我了。",bc_map,"0xFFFF00";
+	end;
+OnTimer30000:
+	mapannounce "arug_que01", "格爾加斯：當你把母親的遺物交給我的時候，我甚至說不出一句謝謝。",bc_map,"0xFFFF00";
+	end;
+OnTimer35000:
+	mapannounce "arug_que01", "格爾加斯：即使我現在已經是個老頭子了，我還是說不出口。",bc_map,"0xFFFF00";
+	end;
+OnTimer40000:
+	mapannounce "arug_que01", "格爾加斯：不久前我打聽到了你的下落。聽說你在照顧孤兒？",bc_map,"0xFFFF00";
+	end;
+
+OnTimer45000:
+	mapannounce "arug_que01", "格爾加斯：請收下這份來自沒用朋友的禮物，這是給你們和你心愛的孩子們的。希望你們會喜歡，哈哈。",bc_map,"0xFFFF00";
+	end;
+
+OnTimer50000:
+	mapannounce "arug_que01", "格爾加斯：皮埃羅 皮爾會幫助你的。我希望你能趁這個機會回到過去，和孩子們一起享受快樂的時光。",bc_map,"0xFFFF00";
+	disablenpc "格爾加斯#aru_gd";
+	stopnpctimer;
+	end;
+}
+
+arug_que01,104,140,0	warp	back#aru_gd	1,1,arug_dun01,199,192
+
+/*
+arug_que01,104,140,1	script	treg#aru_gd	844,{
+	end;
+
+OnEnable:
+	monster "arug_que01",87,93,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",102,93,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",117,93,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",87,80,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",102,80,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",117,80,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",87,65,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",102,65,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	monster "arug_que01",117,65,"波波利",1031,1,"treg#aru_gd::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("arug_que01","treg#aru_gd::OnMyMobDead") == 0) {
+		mapannounce "arug_que01", "皮埃羅 皮爾：嗶！喔，你已經打開禮物了？你動作真快，嗶！",bc_map,"0x99CC00";
+		set $@gdeventv_a2,5;
+	}
+	end;
+}
+*/
+
+arug_que01,98,105,3	script	#aru_flower_01::GD_Ev_Flower	978,{
+	end;
+}
+
+arug_que01,94,105,3	duplicate(GD_Ev_Flower)	#aru_flower_02	977
+arug_que01,90,105,3	duplicate(GD_Ev_Flower)	#aru_flower_03	978
+arug_que01,86,105,3	duplicate(GD_Ev_Flower)	#aru_flower_04	977
+arug_que01,82,105,3	duplicate(GD_Ev_Flower)	#aru_flower_05	978
+arug_que01,79,103,3	duplicate(GD_Ev_Flower)	#aru_flower_06	977
+arug_que01,79,100,3	duplicate(GD_Ev_Flower)	#aru_flower_07	978
+arug_que01,79,97,3	duplicate(GD_Ev_Flower)	#aru_flower_08	977
+arug_que01,79,97,3	duplicate(GD_Ev_Flower)	#aru_flower_09	978
+arug_que01,79,94,3	duplicate(GD_Ev_Flower)	#aru_flower_10	977
+arug_que01,79,91,3	duplicate(GD_Ev_Flower)	#aru_flower_11	978
+arug_que01,79,88,3	duplicate(GD_Ev_Flower)	#aru_flower_12	977
+arug_que01,79,85,3	duplicate(GD_Ev_Flower)	#aru_flower_13	978
+arug_que01,79,82,3	duplicate(GD_Ev_Flower)	#aru_flower_14	977
+arug_que01,79,79,3	duplicate(GD_Ev_Flower)	#aru_flower_15	978
+arug_que01,79,76,3	duplicate(GD_Ev_Flower)	#aru_flower_16	977
+arug_que01,79,73,3	duplicate(GD_Ev_Flower)	#aru_flower_17	978
+arug_que01,79,70,3	duplicate(GD_Ev_Flower)	#aru_flower_18	977
+arug_que01,79,67,3	duplicate(GD_Ev_Flower)	#aru_flower_19	978
+arug_que01,79,64,3	duplicate(GD_Ev_Flower)	#aru_flower_20	977
+arug_que01,79,61,3	duplicate(GD_Ev_Flower)	#aru_flower_21	978
+arug_que01,79,58,3	duplicate(GD_Ev_Flower)	#aru_flower_22	977
+arug_que01,84,58,3	duplicate(GD_Ev_Flower)	#aru_flower_23	978
+arug_que01,89,58,3	duplicate(GD_Ev_Flower)	#aru_flower_24	977
+arug_que01,94,58,3	duplicate(GD_Ev_Flower)	#aru_flower_25	978
+arug_que01,99,58,3	duplicate(GD_Ev_Flower)	#aru_flower_26	977
+arug_que01,104,58,3	duplicate(GD_Ev_Flower)	#aru_flower_27	978
+arug_que01,109,58,3	duplicate(GD_Ev_Flower)	#aru_flower_28	977
+arug_que01,114,58,3	duplicate(GD_Ev_Flower)	#aru_flower_29	978
+arug_que01,119,58,3	duplicate(GD_Ev_Flower)	#aru_flower_30	977
+arug_que01,124,58,3	duplicate(GD_Ev_Flower)	#aru_flower_31	978
+arug_que01,129,58,3	duplicate(GD_Ev_Flower)	#aru_flower_32	977
+arug_que01,129,105,3	duplicate(GD_Ev_Flower)	#aru_flower_33	978
+arug_que01,129,103,3	duplicate(GD_Ev_Flower)	#aru_flower_34	977
+arug_que01,129,100,3	duplicate(GD_Ev_Flower)	#aru_flower_35	978
+arug_que01,129,97,3	duplicate(GD_Ev_Flower)	#aru_flower_36	977
+arug_que01,129,97,3	duplicate(GD_Ev_Flower)	#aru_flower_37	978
+arug_que01,129,94,3	duplicate(GD_Ev_Flower)	#aru_flower_38	977
+arug_que01,129,91,3	duplicate(GD_Ev_Flower)	#aru_flower_39	978
+arug_que01,129,88,3	duplicate(GD_Ev_Flower)	#aru_flower_40	977
+arug_que01,129,85,3	duplicate(GD_Ev_Flower)	#aru_flower_41	978
+arug_que01,129,82,3	duplicate(GD_Ev_Flower)	#aru_flower_42	977
+arug_que01,129,79,3	duplicate(GD_Ev_Flower)	#aru_flower_43	978
+arug_que01,129,76,3	duplicate(GD_Ev_Flower)	#aru_flower_44	977
+arug_que01,129,73,3	duplicate(GD_Ev_Flower)	#aru_flower_45	978
+arug_que01,129,70,3	duplicate(GD_Ev_Flower)	#aru_flower_46	977
+arug_que01,129,67,3	duplicate(GD_Ev_Flower)	#aru_flower_47	978
+arug_que01,129,64,3	duplicate(GD_Ev_Flower)	#aru_flower_48	977
+arug_que01,129,61,3	duplicate(GD_Ev_Flower)	#aru_flower_49	978
+arug_que01,129,58,3	duplicate(GD_Ev_Flower)	#aru_flower_50	977
+arug_que01,124,105,3	duplicate(GD_Ev_Flower)	#aru_flower_51	978
+arug_que01,119,105,3	duplicate(GD_Ev_Flower)	#aru_flower_52	977
+arug_que01,114,105,3	duplicate(GD_Ev_Flower)	#aru_flower_53	978
+arug_que01,109,105,3	duplicate(GD_Ev_Flower)	#aru_flower_54	977
+arug_que01,104,105,3	duplicate(GD_Ev_Flower)	#aru_flower_55	976
+
+arug_dun01,5,5,1	script	活動控制器#aru_gd	81,{
+	if (callfunc("F_GM_NPC",1854,0) < 1) {
+		mes "密碼錯誤。";
+		close;
+	} else {
+		mes "我能為您做些什麼？";
+		next;
+		switch(select("重置。:不用了，謝謝。")) {
+		case 1:
+			mes "已完成。";
+			donpcevent "怪物控制器1#aru::OnControler1#aru_gd";
+			donpcevent "怪物控制器1#aru::OnControler1#aru_gd";
+			disablenpc "矮人#aru_gd";
+			set $@gdeventv_a1,0;
+			set $@gdeventv_a2,0;
+			set $@gdevents_a$,"";
+			close;
+		case 2:
+			mes "再見?";
+			close;
+		}
+	}
+}

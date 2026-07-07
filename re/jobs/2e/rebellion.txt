@@ -1,0 +1,855 @@
+//===== rAthena Script =======================================
+//= Rebellion Job Quest
+//===== Description: =========================================
+//= [Official Conversion]
+//= Job change Quest from Gunslinger -> Rebellion.
+//===== Changelogs: ==========================================
+//= 1.0 First version. [exneval]
+//= 1.1 Syntax change. [Capuche]
+//============================================================
+
+moc_fild12,261,318,3	script	可疑的男子	4_M_MOCASS2,2,2,{
+	end;
+OnTouch:
+	if (Class == Job_Gunslinger && BaseLevel >= 99 && JobLevel >= 70) {
+		if (isbegin_quest(12340) == 0) {
+			mes "[可疑的男子]";
+			mes "終於讓我找到你了，流浪者 斯派克！你的腦袋是我的了！";
+			next;
+			select("你說什麼？");
+			mes "[可疑的男子]";
+			mes "*哼* 別裝作一無所知的樣子。看看這張通緝令！你就在上面！";
+			next;
+			select("雖然長得很像，但那不是我。");
+			mes "["+strcharinfo(0)+"]";
+			mes "先不管長得像不像。你從哪裡拿到這張通緝令的？我從來沒犯過罪。";
+			next;
+			mes "[可疑的男子]";
+			mes "我就知道你想用謊言來脫身。";
+			next;
+			mes "[可疑的男子]";
+			mes "^0000ff艾因布羅克私人酒吧^000000發布了這張通緝令。有很多像我一樣的賞金獵人正緊跟在你的屁股後面。";
+			next;
+			mes "[可疑的男子]";
+			mes "我不在乎你是不是本尊，只要你長得像，不管是死是活我都要把你帶走。";
+		}
+		else {
+			mes "[可疑的男子]";
+			mes "又是你！你真有膽量竟然還敢回來這裡！";
+		}
+		next;
+		if (select("走為上策。:跟他戰鬥。") == 1)
+			mes "^0000ff現在還是先逃跑，晚點再想辦法吧。^000000";
+		else
+			mes "^0000ff如果他說的是真的，那盯上我的賞金獵人絕對不止他一個。我需要時間來制定戰略。^000000";
+		close2;
+		if (isbegin_quest(12340) == 0)
+			setquest 12340;// Rebellion Job Change Quest
+		warp "moc_fild12",186,83;
+	}
+	end;
+}
+
+einbroch,54,97,3	script	保全	4_M_REBELLION,{
+	if (BaseClass != Job_Gunslinger) {
+		mes "[保全]";
+		mes "別在會場附近閒晃。";
+		close;
+	}
+	switch( isbegin_quest(12340) ) {
+	case 0:
+		mes "[保全]";
+		mes "內部正在施工中，無法進入。";
+		close;
+	case 1:
+		mes "[保全]";
+		mes "*哇啊* 是你！我還以為你已經被抓到了。噢，現在無所謂了。你就是我的免罪保釋金！";
+		next;
+		select("我不是你們以為的那個罪犯！");
+		mes "[保全]";
+		mes "你不是？";
+		next;
+		mes "^0000ff保全仔細地打量著你的臉。^000000";
+		next;
+		mes "[保全]";
+		mes "嗯，你確實長得驚人地相似，不過你看起來沒有那個罪犯斯派克那麼兇狠。";
+		next;
+		select("我想和發布通緝令的發行人談談。");
+		mes "[保全]";
+		mes "你的問題有點超出了我的處理範圍。進去吧。如果我發現你一直以來都是真的本尊，我會讓你再也見不到外面的世界。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	case 2:
+		mes "[保全]";
+		mes "你回來了。有什麼事嗎？";
+		next;
+		if (select("我想進去。:我只是路過。") == 2) {
+			mes "[保全]";
+			mes "你真傻。";
+			close;
+		}
+		mes "[保全]";
+		mes "進去吧。別惹麻煩。";
+		close2;
+		warp "job_gun",70,28;
+		end;
+	}
+}
+
+job_gun,68,33,3	script	冷酷的反叛者	4_F_REBELLION,{
+	mes "[冷酷的反叛者]";
+	mes "你知道該怎麼用槍嗎？";
+	close;
+}
+
+job_gun,78,33,3	script	可疑的神槍手	4_M_JOB_BLACKSMITH,{
+	mes "[可疑的神槍手]";
+	mes "...";
+	next;
+	mes "[沉默的神槍手]";
+	mes "別說我長得像你認識的某位鐵匠。";
+	close;
+}
+
+job_gun,74,24,6	script	酩酊大醉的男子	4_M_LIEMAN,{
+	mes "[酩酊大醉的男子]";
+	mes "*打嗝* 噢，我是這裡的老闆。";
+	mes "等等，我是在酒吧還是在其他地方？唔... Zzz...";
+	close;
+}
+
+job_gun,64,33,6	script	焦慮的男子	4_M_ALCHE_A,{
+	mes "[焦慮的男子]";
+	mes "也許我走錯地方了。這個地方看起來一點都不像酒吧。";
+	close;
+}
+
+job_gun,86,29,3	script	庫爾貝蒂諾夫	4_M_REBELLION,{
+	if (Class == Job_Rebellion) {
+		mes "[庫爾貝蒂諾夫]";
+		mes "你想見老大嗎？";
+		next;
+		if (select("是。:否。") == 1) {
+			close2;
+			warp "job_gun",220,130;
+			end;
+		}
+		end;
+	}
+	if (Class != Job_Gunslinger) {
+		mes "[庫爾貝蒂諾夫]";
+		mes "你在找我嗎？";
+		close;
+	}
+	switch( isbegin_quest(12340) ) {
+	case 0:
+		mes "[庫爾貝蒂諾夫]";
+		mes "有什麼我可以幫忙的嗎？";
+		close;
+	case 1:
+		mes "[庫爾貝蒂諾夫]";
+		mes "你想要什麼？";
+		next;
+		select("我被誤認為罪犯了！");
+		mes "[庫爾貝蒂諾夫]";
+		mes "等一下... 哇啊哈哈！";
+		next;
+		mes "^0000ff他端詳了你的臉，然後哈哈大笑。^000000";
+		next;
+		mes "[庫爾貝蒂諾夫]";
+		mes "抱歉。有一瞬間，我還以為斯派克復活了。他在三天前被發現已經死了。";
+		next;
+		select("他已經被抓到了？");
+		mes "[庫爾貝蒂諾夫]";
+		mes "是的，而且賞金獵人已經拿到酬金了。消息還沒有傳開，而你恰好長得跟他一模一樣。自己想想吧。";
+		next;
+		select("你必須做點什麼！");
+		mes "[庫爾貝蒂諾夫]";
+		mes "我很抱歉，但我無法替你去和每一個賞金獵人交涉。當然，我願意為你造成的不便做出補償。";
+		next;
+		mes "[庫爾貝蒂諾夫]";
+		mes "嘿，不如你加入我們的行列怎麼樣？至少，你不會莫名其妙被槍射。";
+		next;
+		select("你想讓我成為賞金獵人嗎？");
+		mes "[庫爾貝蒂諾夫]";
+		mes "不，獵取賞金只是消遣。我們才是世界上所有槍械的專家。";
+		next;
+		mes "[庫爾貝蒂諾夫]";
+		mes "自由奔放的靈魂！";
+		mes "魔法般的噴火者！";
+		mes "我們稱自己為^0000ff反叛者^000000。";
+		next;
+		mes "[庫爾貝蒂諾夫]";
+		mes "你看起來很懂怎麼用槍。你要不要加入我們的行列？這樣你也就不用再擔心其他賞金獵人了。";
+		next;
+		if (select("讓我考慮一下。:我想我沒有別的選擇。") == 1) {
+			mes "[庫爾貝蒂諾夫]";
+			mes "你可以考慮了又考慮，但答案是不會改變的。就接受這個提議吧。";
+		}
+		else {
+			mes "[庫爾貝蒂諾夫]";
+			mes "明智的決定。倒不如現在就做，把它搞定。";
+		}
+		next;
+		mes "[庫爾貝蒂諾夫]";
+		mes "去和 艾爾文．科尼克 談談吧。她會引導像你這樣漂泊的靈魂走向反叛者之路。我會向她傳話的。啊，還有別把槍口對著她。";
+		completequest 12340;
+		setquest 12341;// Rebellion Job Change Quest
+		close2;
+		warp "job_gun",19,15;
+		end;
+	case 2:
+		mes "[庫爾貝蒂諾夫]";
+		mes "你和 艾爾文．科尼克 有事要辦嗎？";
+		next;
+		if (select("沒有。:送我到 艾爾文．科尼克 那裡。") == 1) {
+			mes "[庫爾貝蒂諾夫]";
+			mes "好的。要來一杯伏特加嗎？";
+			close;
+		}
+		mes "[庫爾貝蒂諾夫]";
+		mes "好的，我會讓她知道。";
+		close2;
+		warp "job_gun",19,15;
+		end;
+	}
+}
+
+job_gun,19,24,3	script	艾爾文．科尼克#1	4_F_REBELLION,{
+	if (Class != Job_Gunslinger) {
+		mes "[艾爾文．科尼克]";
+		mes "如果你不想加入反叛者，就請出去。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	if (isbegin_quest(12341) == 1) {
+		mes "[艾爾文．科尼克]";
+		mes "你想加入我們反叛者嗎？";
+		next;
+		mes "^0000ff這位眼神銳利、身材矮小的女性凝視著你的眼睛。^000000";
+		next;
+		mes "[艾爾文．科尼克]";
+		mes "在這裡簽名。";
+		next;
+		mes "^0000ff簽署方 '_____' 承諾，即使在測驗過程中因發生不可預知的意外而導致受傷、殘疾或死亡，也絕不透露測驗內容。^000000";
+		next;
+		select("什麼？！");
+		mes "[艾爾文．科尼克]";
+		mes "你到底想不想加入我們？";
+		next;
+		if (select("我放棄。:...我簽。") == 1) {
+			mes "[艾爾文．科尼克]";
+			mes "你的選擇。";
+			close2;
+			warp "job_gun",81,29;
+			end;
+		}
+		mes "[艾爾文．科尼克]";
+		mes "很好。現在，跟我來。";
+		close2;
+		warp "job_gun",117,41;
+		end;
+	}
+	if (isbegin_quest(12342) == 1) {
+		mes "[艾爾文．科尼克]";
+		mes "你想再試一次嗎？";
+		next;
+		if (select("我放棄。:開始吧。") == 1) {
+			mes "[艾爾文．科尼克]";
+			mes "你的選擇。";
+			close2;
+			warp "job_gun",81,29;
+			end;
+		}
+		mes "[艾爾文．科尼克]";
+		mes "跟我來。";
+		close2;
+		warp "job_gun",117,41;
+		end;
+	}
+	if (isbegin_quest(12343) > 0) {
+		mes "[艾爾文．科尼克]";
+		if (isbegin_quest(12343) == 1)
+			mes "你還有伊凡的射擊測驗，你想再試一次嗎？";
+		else
+			mes "伊凡的射擊測驗還沒有結束，你想再試一次嗎？";
+		next;
+		if (select("我放棄。:開始吧。") == 1) {
+			mes "[艾爾文．科尼克]";
+			mes "輕言放棄可不值得，現在出去放鬆一下吧。";
+			close2;
+			warp "job_gun",81,29;
+			end;
+		}
+		mes "[艾爾文．科尼克]";
+		mes "記得展現出你最好的一面。";
+		close2;
+		warp "job_gun",120,130;
+		end;
+	}
+	if (isbegin_quest(12345) == 1) {
+		mes "[艾爾文．科尼克]";
+		mes "伊凡正在等你，快去找他。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	mes "[艾爾文．科尼克]";
+	mes "你已經沒有需要進行的測驗了。為什麼不出去喝一杯呢？";
+	close2;
+	warp "job_gun",81,29;
+	end;
+}
+
+job_gun,117,46,3	script	艾爾文．科尼克#2	4_F_REBELLION,{
+	if (Class != Job_Gunslinger) {
+		mes "[艾爾文．科尼克]";
+		mes "如果你不想加入反叛者，就請出去。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	// J_REB_SHECIL1
+	.@emt_chk = getstatus(SC_MONSTER_TRANSFORM,1);
+	.@quest_12341 = isbegin_quest(12341);
+	.@quest_12342 = isbegin_quest(12342);
+	if (.@emt_chk == 3169) {
+		mes "^0000ff你已經處於測驗形態中。如果你已經完成了所有測驗，請前往集會室向 艾爾文．科尼克 報告。^000000";
+		close;
+	}
+	if (.@emt_chk) {
+		mes "[艾爾文．科尼克]";
+		mes "看看你自己，你真的想要進行測驗嗎？";
+		next;
+		mes "^0000ff艾爾文看到你變成了另一種形態，她非常生氣。請等待你當前的形態結束後再來找她。^000000";
+		next;
+		if (select("等待。:離開。") == 2) {
+			mes "[艾爾文．科尼克]";
+			mes "等你不處於任何特殊形態的時候再來吧。";
+			close2;
+			warp "job_gun",81,29;
+			end;
+		}
+		mes "[艾爾文．科尼克]";
+		mes "輕言放棄可不值得，現在出去放鬆一下吧。";
+		close;
+	}
+	if (.@quest_12341 == 1 || .@quest_12342 == 1) {
+		if (countitem(6746)) {
+			mes "[艾爾文．科尼克]";
+			mes "測驗結束後，任何剩餘的鋼鐵工藝品都必須歸還。";
+			delitem 6746,countitem(6746);// Steel_Article
+			close;
+		}
+		if (countitem(6747)) {
+			mes "[艾爾文．科尼克]";
+			mes "測驗結束後，任何剩餘的鋼鐵工藝品都必須歸還。";
+			delitem 6747,countitem(6747);// Steel_Article_
+			close;
+		}
+		if ((countitem(13118) - isequipped(13118)) > 0) {
+			mes "[艾爾文．科尼克]";
+			mes "時間到。你沒能通過測驗。讓我收回你所有剩餘的測驗材料。";
+			delitem 13118,1;// Tiny_Flame
+			close;
+		}
+		if (.@quest_12342 == 1)
+			.@menu$ = "理解了。";
+		else {
+			.@menu$ = "好的。";
+			setquest 12342;// Rebellion Job Change Quest
+			completequest 12341;
+		}
+		mes "[艾爾文．科尼克]";
+		mes "聽好了。我可不想大費周章地跟你解釋這個測驗。";
+		next;
+		select( .@menu$ );
+		mes "[艾爾文．科尼克]";
+		if (.@quest_12341 == 1) {
+			mes "這裡是用來鑄造槍械模具的地方。隨處可見鋼鐵工藝品正在被生產出來。";
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "我們反叛者骨子裡都是武器專家。在這裡你將學習如何創造和組裝槍械。";
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "你將被要求去操作入口處的熔爐控制器，並挑選出 5 個標準規格的鋼鐵工藝品。";
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "接著把它們帶到隔壁的集會室，並將它們組裝成一把槍械。你總共會有 3 分鐘的時間來完成這一切。你最好動作快點並且保持專注，否則你的測驗就會失敗。";
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "我會在隔壁房間等你，期待你為我帶來一把完整的槍械。為了檢查消耗的時間，你將會被轉化成另一種職業。^0000ff如果超過 3 分鐘並變回原狀，請回到我這裡重新開始測驗。^000000";
+		}
+		else {
+			mes "你將被要求去操作機器上的開關，並挑選出 5 個標準規格的鋼鐵工藝品。";
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "接著把它們帶到隔壁的集會室，並將它們組裝成一把完整的槍械。你將有 3 分鐘的時間來完成這一切。^0000ff為了檢查消耗的時間，你將會被轉化成另一種職業^000000。";
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "我會在隔壁房間等你，期待你為我帶來一把完整的槍械。記住，^0000ff當 3 分鐘後你的轉化形態結束時，即代表你測驗失敗^000000。";
+		}
+		transform 3169,180000;
+		close;
+	}
+	mes "[艾爾文．科尼克]";
+	mes "啊？你迷路了嗎？你需要先去登記，然後再回到這裡。";
+	close2;
+	warp "job_gun",81,29;
+	end;
+}
+
+job_gun,198,39,3	script	艾爾文．科尼克#3	4_F_REBELLION,{
+	if (Class != Job_Gunslinger) {
+		mes "[艾爾文．科尼克]";
+		mes "如果你不想加入反叛者，就請出去。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	if (isbegin_quest(12342) == 1) {
+		.@emt_chk = getstatus(SC_MONSTER_TRANSFORM,1);
+		if (.@emt_chk == 3169) {
+			if ((countitem(13118) - isequipped(13118)) < 1) {// don't count if equipped
+				mes "[艾爾文．科尼克]";
+				mes "你完成了嗎？我沒在你的背包裡看到任何組裝完成的槍械。";
+				close;
+			}
+			mes "[艾爾文．科尼克]";
+			mes "雖然有點粗糙，但考慮到時間限制，已經算不錯了。你通過了。";
+			delitem 13118,1;// Tiny_Flame
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "讓我收回你所有剩餘的測驗材料。";
+			delitem 6746,countitem(6746);// Iron_Artifact
+			delitem 6747,countitem(6747);// Steel_Artifact
+			next;
+			mes "[艾爾文．科尼克]";
+			mes "現在你可以前進到下一個課程了。伊凡．西多連科 將會監督你的測驗。";
+			completequest 12342;
+			close2;
+			warp "job_gun",120,133;
+			end;
+		}
+		if (.@emt_chk) {
+			mes "[艾爾文．科尼克]";
+			mes "看看你自己，你真的想要進行測驗嗎？";
+			next;
+			mes "^0000ff艾爾文看到你變成了另一種形態，她非常生氣。請等待你當前的形態結束後再來找她。^000000";
+			next;
+			if (select("等待。:離開。") == 2) {
+				mes "[艾爾文．科尼克]";
+				mes "等你不處於任何特殊形態的時候再來吧。";
+				close2;
+				warp "job_gun",81,29;
+				end;
+			}
+			mes "[艾爾文．科尼克]";
+			mes "輕言放棄可不值得，現在出去放鬆一下吧。";
+			close;
+		}
+		mes "[艾爾文．科尼克]";
+		mes "時間到。你沒能通過測驗。讓我收回你所有剩餘的測驗材料。";
+		delitem 6746,countitem(6746);// Iron_Artifact
+		delitem 6747,countitem(6747);// Steel_Artifact
+		delitem 13118,(countitem(13118) - isequipped(13118));// Tiny_Flame
+		next;
+		mes "[艾爾文．科尼克]";
+		mes "讓我們重新開始吧。";
+		close2;
+		warp "job_gun",117,41;
+		end;
+	}
+	mes "[艾爾文．科尼克]";
+	mes "啊？你迷路了嗎？你需要先去登記，然後再回到這裡。";
+	close2;
+	warp "job_gun",81,29;
+	end;
+}
+
+job_gun,165,18,0	script	熔爐控制器#1	CLEAR_NPC,{
+	if (Class != Job_Gunslinger) {
+		mes "只有獲得授權的使用者才能進行此操作。";
+		close;
+	}
+	if (getstatus(SC_MONSTER_TRANSFORM,1) == 3169) {
+		if (isbegin_quest(12342) == 1) {
+			mes "你想從熔爐中撈取鑄造好的模具嗎？";
+			next;
+			if (select("退出。:開始。") == 1) {
+				mes "切換至待機模式。";
+				close;
+			}
+			mes "正在初始化熔爐控制器 ZX-3100...";
+			disablenpc "熔爐控制器#1";
+			donpcevent "熔爐控制器#2::OnStart";
+			close;
+		}
+	}
+	mes "非授權使用者。終止操作。";
+	close;
+}
+
+job_gun,214,36,0	script	自動鐵砧#1	CLEAR_NPC,{
+	if (Class != Job_Gunslinger) {
+		mes "只有獲得授權的使用者才能進行此操作。";
+		close;
+	}
+	if ((countitem(13118) - isequipped(13118)) > 0) {
+		mes "偵測到未經授權的槍械製作。請向主管 艾爾文 報告。";
+		close;
+	}
+	if (getstatus(SC_MONSTER_TRANSFORM,1) == 3169) {
+		if (countitem(6747) < 5) {
+			mes "你身上沒有標準規格的鋼鐵工藝品。";
+			close;
+		}
+		if (isbegin_quest(12342) == 1) {
+			mes "你想使用自動鐵砧，將標準規格的鋼鐵工藝品塑造成一把槍械嗎？";
+			next;
+			if (select("退出。:開始。") == 1) {
+				mes "為了您的安全，請與自動鐵砧保持距離。";
+				close;
+			}
+			if (rand(1,10) > 6) {
+				mes "你已經成功使用自動鐵砧製作出了一把槍械。^ff0000請在你的轉化形態結束前去進行報告^000000。";
+				specialeffect EF_REPAIRWEAPON;
+				getitem 13118,1;// Tiny_Flame
+			}
+			else {
+				mes "製作槍械失敗。";
+				specialeffect EF_SUI_EXPLOSION;
+			}
+			delitem 6747,5;// Steel_Article_
+			close;
+		}
+	}
+	mes "非授權使用者。終止操作。";
+	close;
+}
+
+job_gun,165,18,0	script	熔爐控制器#2	CLEAR_NPC,{
+	mes "系統正忙於從熔爐中撈取鑄造完成的模具。";
+	close;
+
+OnStart:
+	enablenpc "熔爐控制器#2";
+	sleep 3000;
+	mapannounce "job_gun","熔爐控制器：正從熔爐中撈取模具... 全體員工，請在生產線上待命。",bc_map,"0x00ff44";
+	sleep 500;
+	for ( .@i = 0; .@i < 30; ++.@i ) {
+		.@eff_rnd = rand(1,100);
+		if (.@eff_rnd < 33)
+			donpcevent "加熱熔爐#3::OnStart";
+		else if (.@eff_rnd > 66)
+			donpcevent "加熱熔爐#4::OnStart";
+		else
+			donpcevent "加熱熔爐#5::OnStart";
+		sleep 200;
+		.@d_itemx = rand(127,143);
+		.@d_itemy = rand(26,29);
+		makeitem 6746,1,"job_gun",.@d_itemx,.@d_itemy;// Steel_Article
+		if (rand(1,10) > 7)
+			makeitem 6747,1,"job_gun",.@d_itemx,.@d_itemy;// Steel_Article_
+		sleep 500;
+	}
+	sleep 2000;
+	mapannounce "job_gun","熔爐控制器：操作即將結束... 將在 15 秒內進入待機模式。",bc_map,"0x00ff44";
+	sleep 15000;
+	disablenpc "熔爐控制器#2";
+	enablenpc "熔爐控制器#1";
+	end;
+OnInit:
+	disablenpc "熔爐控制器#2";
+	end;
+}
+
+job_gun,130,31,0	script	加熱熔爐#3	CLEAR_NPC,{
+	end;
+OnStart:
+	specialeffect EF_FIREPILLAR;
+	sleep 500;
+	specialeffect EF_FIREPILLARBOMB;
+	end;
+}
+job_gun,136,31,0	duplicate(加熱熔爐#3)	加熱熔爐#4	CLEAR_NPC
+job_gun,141,31,0	duplicate(加熱熔爐#3)	加熱熔爐#5	CLEAR_NPC
+
+job_gun,120,138,3	script	伊凡．西多連科#1	4_M_REBELLION,{
+	if (Class != Job_Gunslinger) {
+		mes "[伊凡．西多連科]";
+		mes "這裡是射擊測驗區域，你不能隨意來到這裡。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	if (isbegin_quest(12342) < 2) {
+		mes "[伊凡．西多連科]";
+		mes "看來有些誤會，你不能待在這裡。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	if (isbegin_quest(12343) == 0) {
+		mes "[伊凡．西多連科]";
+		mes "嘿，保持專注——我們這裡用的是實彈，你隨時都有可能被射中。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "讓我長話短說。基本上你將在這個由 5 個區域組成的射擊場內奔跑。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "目標是快速且準確地在人群中找出敵人。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "在所有的目標之中，你只能射擊^0000ff標準規格的靶子^000000。如果你弄錯了，就會被扣分。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "讓我們試試看吧。^0000ff標準規格的靶子^000000數量並不多，所以把眼睛睜大點。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "^0000ff你總共有 3 分鐘的時間來完成這項測驗。如果你在轉化形態結束前無法完成^000000，你就失敗了。如果發生那種情況，只要沿著原路走回我這裡就行。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "^0000ff如果你漏掉了一個標準規格的靶子，或者是射擊了 3 個錯誤的靶子，你就會失敗^000000。讓我們開始吧。";
+		setquest 12343;// Rebellion Job Change Quest
+		setquest 12344;// Rebellion Job Change Quest
+		transform 3169,180000;
+		close2;
+		warp "job_gun",102,146;
+		end;
+	}
+	if (isbegin_quest(12343) == 1) {
+		if (checkquest(12343,HUNTING) == 2)
+			.@j_r_s = 10;
+		if (checkquest(12344,HUNTING) == 2)
+			.@j_r_f = 2;
+		if (getstatus(SC_MONSTER_TRANSFORM,1) != 3169)
+			.@j_r_t = 5;
+		.@j_r_c = .@j_r_s - .@j_r_f - .@j_r_t;
+		if (.@j_r_c > 9) {
+			mes "[伊凡．西多連科]";
+			mes "幹得好。我沒想到你能這麼快通過。";
+			completequest 12343;
+			completequest 12344;
+			setquest 12345;// Rebellion Job Change Quest
+			next;
+			mes "[伊凡．西多連科]";
+			mes "你可以離開並在外面等待。我會把其他導師的評估報告拿來見你。";
+			close2;
+			warp "job_gun",210,132;
+			end;
+		}
+		if (.@j_r_c == 8) {
+			mes "[伊凡．西多連科]";
+			mes "你的速度夠快，但你射擊了太多錯誤的靶子。你失敗了。";
+		}
+		else if (.@j_r_c == 5) {
+			mes "[伊凡．西多連科]";
+			mes "你的準確度夠高，但你花費了太多時間。慢吞吞的反叛者是活不長久的。";
+		}
+		else if (.@j_r_c < 5) {
+			mes "[伊凡．西多連科]";
+			mes "你在速度和準確度上都失敗了。你是怎麼活到現在的？";
+		}
+		else {
+			mes "[伊凡．西多連科]";
+			mes "出現了問題，統計數據似乎不太正確。嗯... 這種情況有時候確實會發生。";
+		}
+		erasequest 12343;
+		erasequest 12344;
+		next;
+		mes "[伊凡．西多連科]";
+		mes "讓我們再試一次。這次要更加小心。";
+		setquest 12343;
+		setquest 12344;
+		transform 3169,180000;
+		close2;
+		warp "job_gun",102,146;
+		end;
+	}
+	mes "[伊凡．西多連科]";
+	mes "你怎麼還沒離開？";
+	next;
+	mes "[伊凡．西多連科]";
+	mes "你可以離開並在外面等待。我會把其他導師的評估報告拿來見你。";
+	close2;
+	warp "job_gun",210,132;
+	end;
+}
+
+job_gun,1,4,0	script	#target	CLEAR_NPC,{
+	end;
+OnStart:
+	killmonster "job_gun","#target::OnMyMobDead";
+OnInit:
+OnMyMobDead:
+	hideonnpc "#target";
+	while( mobcount("job_gun","#target::OnMyMobDead") < 16 ) {
+		.@m_rg = rand(1,5);
+		if (.@m_rg == 1)
+			monster "job_gun",rand(88,99),rand(143,147),"標準規格靶子",3169,1,"#target::OnMyMobDead";
+		else if (.@m_rg == 2)
+			monster "job_gun",rand(92,96),rand(95,122),"標準規格靶子",3169,1,"#target::OnMyMobDead";
+		else if (.@m_rg == 3)
+			monster "job_gun",rand(143,159),rand(99,100),"標準規格靶子",3169,1,"#target::OnMyMobDead";
+		else if (.@m_rg == 4)
+			monster "job_gun",rand(157,158),rand(137,160),"標準規格靶子",3169,1,"#target::OnMyMobDead";
+		else
+			monster "job_gun",rand(119,134),rand(156,160),"標準規格靶子",3169,1,"#target::OnMyMobDead";
+	}
+	end;
+}
+
+job_gun,1,5,0	script	#nontarget	CLEAR_NPC,{
+	end;
+OnStart:
+	killmonster "job_gun","#nontarget::OnMyMobDead";
+OnInit:
+OnMyMobDead:
+	hideonnpc "#nontarget";
+	while( mobcount("job_gun","#nontarget::OnMyMobDead") < 56 ) {
+		.@m_rg = rand(1,5);
+		if (.@m_rg == 1)
+			monster "job_gun",rand(88,99),rand(143,147),"瑕疵規格靶子",3170,1,"#nontarget::OnMyMobDead";
+		else if (.@m_rg == 2)
+			monster "job_gun",rand(92,96),rand(95,122),"瑕疵規格靶子",3170,1,"#nontarget::OnMyMobDead";
+		else if (.@m_rg == 3)
+			monster "job_gun",rand(143,159),rand(99,100),"瑕疵規格靶子",3170,1,"#nontarget::OnMyMobDead";
+		else if (.@m_rg == 4)
+			monster "job_gun",rand(157,158),rand(137,160),"瑕疵規格靶子",3170,1,"#nontarget::OnMyMobDead";
+		else
+			monster "job_gun",rand(119,134),rand(156,160),"瑕疵規格靶子",3170,1,"#nontarget::OnMyMobDead";
+	}
+	end;
+}
+
+job_gun,220,132,3	script	伊凡．西多連科#2	10062,{
+	if (!checkweight(1201,1)) {
+		mes "你攜帶了太多物品，請減少物品重量以繼續。";
+		close;
+	}
+	if ((MaxWeight - Weight) < 1000) {
+		mes "你背包裡的物品實在是太重了。請先減輕你的負重。";
+		close;
+	}
+	if (isbegin_quest(12345) == 0) {
+		mes "[伊凡．西多連科]";
+		mes "這一定是弄錯了。你不應該留在這裡。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	if (Class == Job_Gunslinger) {
+		if (BaseLevel < 99 || JobLevel < 70) {
+			mes "[伊凡．西多連科]";
+			mes "嗯？你看起來怎麼這麼弱？我沒什麼好說的了。";
+			close;
+		}
+		if (SkillPoint) {
+			mes "[伊凡．西多連科]";
+			mes "哦不~ 你還有剩餘的技能點數。";
+			close;
+		}
+		mes "[伊凡．西多連科]";
+		mes "庫爾貝蒂諾夫、艾爾文和我已經評估了你的反叛者測驗結果。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "而且...";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "你已經滿足了我們所有的要求，包括你的態度和測驗表現。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "沒錯，你現在已經是反叛者的一員了。準備好迎接震撼吧。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "另外，艾爾文想把這個交給你。好好珍惜它。這是他特地為你製作的。";
+		jobchange Job_Rebellion;
+		completequest 12345;
+		getitem 13119,1;// Freedom_Flame
+		next;
+		mes "[伊凡．西多連科]";
+		mes "回頭見。";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	if (Class == Job_Rebellion) {
+		mes "[伊凡．西多連科]";
+		mes "這種生活應該要很有趣，而不是枯燥乏味。";
+		next;
+		mes "[伊凡．西多連科]";
+		mes "而且在成為反叛者之後，你的生命應該要更上一層樓。所以，去創造一段偉大的旅程吧，讓我們為你感到驕傲！";
+		close2;
+		warp "job_gun",81,29;
+		end;
+	}
+	mes "[伊凡．西多連科]";
+	mes "你是不是有話想對我說？";
+	close;
+}
+
+job_gun,220,138,4	shop	道具自動販賣機	2_VENDING_MACHINE1,13210:-1,13211:-1,13212:-1,13213:-1,13214:-1,7663:-1,7664:-1,7665:-1
+
+job_gun,216,138,4	script	管家 卡爾克斯	1_M_01,{
+	mes "[管家 卡爾克斯]";
+	mes "在進行轉職測驗期間，您可以使用這個臨時倉庫來安全存放您的物品。";
+	next;
+	.@s = select("退出。:開啟倉庫。");
+	mes "[管家 卡爾克斯]";
+	mes "感謝您使用本服務。";
+	close2;
+	if (.@s == 2)
+		openstorage;
+	end;
+}
+
+job_gun,56,26,0	warp	rebelroom#1	2,2,einbroch,49,97
+job_gun,18,10,0	warp	rebelroom#2	2,2,job_gun,81,29
+job_gun,165,22,0	warp	rebelroom#3	2,2,job_gun,196,35
+job_gun,197,49,0	warp	rebelroom#4	2,2,job_gun,157,21
+job_gun,88,144,0	warp	shootingrange#1	3,3,job_gun,93,123
+job_gun,105,97,0	warp	shootingrange#2	3,3,job_gun,125,98
+job_gun,156,115,0	warp	shootingrange#3	3,3,job_gun,157,137
+job_gun,152,154,0	warp	shootingrange#4	3,3,job_gun,135,154
+job_gun,130,146,0	warp	shootingrange#5	3,3,job_gun,120,130
+
+
+job_gun,1,1,0	script	Admin1	CLEAR_NPC,{
+	callfunc "F_GM_NPC";
+	if (callfunc("F_GM_NPC",1854,0) != 1)
+		end;
+	mes "[時間管理員]";
+	mes "您想要返回到哪個時間點？";
+	next;
+	switch( select("取消:測試怪物刷出:從頭開始:熔爐區域:射擊區域:完成測驗") ) {
+	case 1:
+		end;
+	case 2:
+		donpcevent "#target::OnStart";
+		donpcevent "#nontarget::OnStart";
+		end;
+	case 3:
+		callsub S_Quest,0,0;
+	case 4:
+		callsub S_Quest,12341,12341;
+	case 5:
+		callsub S_Quest,12342,12342;
+	case 6:
+		callsub S_Quest,12345,12344;
+	}
+	end;
+S_Quest:
+	setarray .@arguments[0], getarg(0), getarg(1);
+	for ( .@quest = 12340; .@quest <= 12345; ++.@quest ) {
+		if (isbegin_quest(.@quest) > 0)
+			erasequest .@quest;
+		if (.@quest <= .@arguments[0])
+			setquest .@quest;
+		if (.@quest <= .@arguments[1])
+			completequest .@quest;
+	}
+	end;
+}

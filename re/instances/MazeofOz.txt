@@ -1,0 +1,581 @@
+//===== rAthena	script	=======================================
+//= Instance: The Maze of Oz.
+//===== Description: =========================================
+//- [Walkthrough conversion]
+//- Part of the Episode 18 main quest.
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//============================================================
+
+// Main Quest: Step 28.
+ra_fild10,179,176,5	script	商人#ep18_gorge	4_EP18_MERCHANT,{
+	.@md_name$ = "奧茲迷宮";
+	if (ep18_main == 29) {
+		mes "[偽裝的蜜莉安]";
+		mes "我們現在要進入 <FONT SIZE = 14><B>^e5555e奧茲迷宮^000000</FONT></B>。";
+		mes "^e5555e請完成準備工作^000000後再來找我。";
+		cutin "ep18_merchant.png",2;
+		erasequest 11717;
+		setquest 11719;
+		ep18_main = 30;
+		close3;
+	}
+	if (ep18_main == 30) {
+		mes "[偽裝的蜜莉安]";
+		mes "那我們出發前往^e5555e" + .@md_name$ + "^000000吧。";
+		next;
+		if (getcharid(1) == 0 || is_party_leader() == false) {
+			mes "[偽裝的蜜莉安]";
+			mes "進入之前，我覺得最好先組建一個^ff0000隊伍^000000。";
+			close;
+		}
+		switch( select( "打開門。", "進入。", "離開。" ) ) {
+		case 1:
+			if (instance_create(.@md_name$) < 0) {
+				mes "隊伍: " + getpartyname(getcharid(1)) + "";
+				mes "隊長: " + strcharinfo(0) + "";
+				mes "^0000ff" + .@md_name$ + " ^000000- 未知錯誤";
+				close;
+			}
+			mes "[偽裝的蜜莉安]";
+			mes "進入前最好先稍等一下。";
+			close;
+		case 2:
+			switch( instance_enter(.@md_name$) ) {
+			case IE_OTHER:
+				mes "[偽裝的蜜莉安]";
+				mes "^ff0000發生未知錯誤。^000000";
+				close;
+			case IE_NOINSTANCE:
+				mes "[偽裝的蜜莉安]";
+				mes "我們稍等一下再試。";
+				close;
+			case IE_NOMEMBER:
+				mes "[偽裝的蜜莉安]";
+				mes "^ff0000只有隊伍成員才能進入紀念副本。^000000";
+				close;
+			case IE_OK:
+				mapannounce "ra_fild10", "隊伍 [" + getpartyname( getcharid(1) ) + "] 的 [" + strcharinfo(0) + "] 正在進入" + .@md_name$ + "。",bc_map,"0x00ff99",FW_NORMAL ,12;
+				end;
+			}
+		case 3:
+			end;
+		}
+	}
+	mes "[商人]";
+	mes "剛剛好像有人在附近，但很快就消失了。";
+	mes "他們去哪裡了？";
+	cutin "ep18_merchant.png",2;
+	close3;
+
+OnInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(11717) == 1" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(11719) == 1" );
+	end;
+}
+
+// Step 1
+1@oz,284,164,3	script	繩索#outoz	4_ROPEPILE,{
+	mes "我想我們可以用這根繩索爬上去。";
+	next;
+	if (select( "用繩索爬上去。", "不要使用。" ) == 2)
+		end;
+	warp "ra_fild10",173,176;
+	end;
+}
+
+1@oz,282,175,3	script	蜜莉安#ozmd1	4_EP18_MIRIAM,{
+	if ('event_oz != 0)
+		end;
+	'event_oz = 1;
+	.@miriam1$ = instance_npcname("蜜莉安#ozmd1");
+	.@maggi1$ = instance_npcname("瑪姬#ozmd1");
+	.@mark1$ = instance_npcname("馬克#ozmd1");
+	.@tamarin1$ = instance_npcname("塔馬林#ozmd1");
+	.@miriam2$ = instance_npcname("蜜莉安#ozmd2");
+
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "蜜莉安: 這裡就是奧茲迷宮的入口。", .@miriam1$;
+	cutin "ep18_miriam_03.png",2;
+	sleep2 2000;
+	npctalk "蜜莉安: 大家請小心前進。", .@miriam1$;
+	sleep2 2000;
+	npctalk "瑪姬: 感覺又熱又充滿灰塵……", .@maggi1$;
+	cutin "4job_maggi_02.PNG",2;
+	cloakoffnpcself( .@maggi1$ );
+	cloakoffnpcself( .@mark1$ );
+	cloakoffnpcself( .@tamarin1$ );
+	sleep2 2000;
+	npctalk "馬克: 妳還好嗎？", .@mark1$;
+	cutin "ep18_mark_01.png",2;
+	sleep2 2000;
+	npctalk "蜜莉安: 下方就有熔岩流動，所以隨時都有火山灰在飛揚。", .@miriam1$;
+	cutin "ep18_miriam_03.png",2;
+	sleep2 2000;
+	npctalk "蜜莉安: 熔岩灰中可能還殘留著火苗，請務必小心。", .@miriam1$;
+	sleep2 2000;
+	npctalk "蜜莉安: 如果不小心吸入，會灼傷肺部的。", .@miriam1$;
+	sleep2 2000;
+	npctalk "蜜莉安: 附近似乎沒有怪物，我們最好慢慢前進，隨時確認狀況。", .@miriam1$;
+	sleep2 2000;
+	npctalk "蜜莉安: 首先，請沿著這條路往北走。", .@miriam1$;
+	sleep2 2000;
+	cutin "",255;
+	setpcblock PCBLOCK_NPC, false;
+	cloakonnpcself( .@maggi1$ );
+	cloakonnpcself( .@mark1$ );
+	cloakonnpcself( .@tamarin1$ );
+	disablenpc .@miriam1$;
+	enablenpc .@miriam2$;
+	end;
+}
+
+1@oz,279,175,5	duplicate(dummy_cloaked_npc)	瑪姬#ozmd1	4_4JOB_MAGGI
+1@oz,280,175,3	duplicate(dummy_cloaked_npc)	馬克#ozmd1	4_EP18_MARK
+1@oz,279,177,3	duplicate(dummy_cloaked_npc)	塔馬林#ozmd1	4_EP18_TAMARIN
+
+
+// Step 2
+1@oz,271,272,3	script(DISABLED)	蜜莉安#ozmd2	4_EP18_MIRIAM,{
+	if ('event_oz != 1)
+		end;
+	'event_oz = 2;
+	.@miriam2$ = instance_npcname("蜜莉安#ozmd2");
+	'miriam3$ = instance_npcname("蜜莉安#ozmd3");
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "蜜莉安: 穿過前面的橋後，才是真正的奧茲迷宮。", .@miriam2$;
+	sleep2 2000;
+	npctalk "蜜莉安: 過橋時必須非常小心，我們到橋那裡再說吧。", .@miriam2$;
+	sleep2 2000;
+	setpcblock PCBLOCK_NPC, false;
+	disablenpc .@miriam2$;
+	enablenpc 'miriam3$;
+	end;
+
+OnInstanceInit:
+	'event_oz = 0;
+
+	'map_name$ = instance_mapname("1@oz");
+	end;
+}
+
+
+// Step 3
+1@oz,241,272,3	script(DISABLED)	蜜莉安#ozmd3	EP18_NPC_MIRIAM,{
+	if ('event_oz != 2)
+		end;
+	'event_oz = 3;
+	.@maggi3$ = instance_npcname("瑪姬#ozmd3");
+	.@mark3$ = instance_npcname("馬克#ozmd3");
+	.@tamarin3$ = instance_npcname("塔馬林#ozmd3");
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "蜜莉安: 這座橋很危險，我們最好分擔一下行李，一次一個人過橋。", 'miriam3$;
+	sleep2 2000;
+	npctalk "蜜莉安: 那麼我先過去，請各位慢慢跟上。盡量不要往下看會比較好。", 'miriam3$;
+	sleep2 2000;
+	npctalk "塔馬林: 哇……深不見底啊。", .@tamarin3$;
+	cloakoffnpcself( .@maggi3$ );
+	cloakoffnpcself( .@mark3$ );
+	cloakoffnpcself( .@tamarin3$ );
+	sleep2 2000;
+	npctalk "瑪姬: 我的腿都快軟了……", .@maggi3$;
+	sleep2 2000;
+	npctalk "馬克: 大家都小心點。", .@mark3$;
+	sleep2 2000;
+	setpcblock PCBLOCK_NPC, false;
+	cloakonnpcself( .@maggi3$ );
+	cloakonnpcself( .@mark3$ );
+	cloakonnpcself( .@tamarin3$ );
+	'miriam3_id = getnpcid(0);
+	unitwalk 'miriam3_id,231,272, 'miriam3$ + "::OnEvent1";
+	end;
+OnEvent1:
+	unitwalk 'miriam3_id,211,272, 'miriam3$ + "::OnEvent2";
+	end;
+OnEvent2:
+	unitwalk 'miriam3_id,191,272, 'miriam3$ + "::OnEvent3";
+	end;
+OnEvent3:
+	unitwalk 'miriam3_id,171,272, 'miriam3$ + "::OnEvent4";
+	end;
+OnEvent4:
+	unitwalk 'miriam3_id,157,272, 'miriam3$ + "::OnEvent5";
+	end;
+OnEvent5:
+	disablenpc 'miriam3$;
+	enablenpc instance_npcname("蜜莉安#ozmd4");
+	enablenpc instance_npcname("灰燼蟾蜍#ozmd1");
+	end;
+}
+
+1@oz,245,272,3	duplicate(dummy_cloaked_npc)	瑪姬#ozmd3	4_4JOB_MAGGI
+1@oz,244,273,3	duplicate(dummy_cloaked_npc)	馬克#ozmd3	4_EP18_MARK
+1@oz,244,270,3	duplicate(dummy_cloaked_npc)	塔馬林#ozmd3	4_EP18_TAMARIN
+
+
+// Step 4 + 5
+1@oz,157,272,3	script(DISABLED)	蜜莉安#ozmd4	4_EP18_MIRIAM,{
+	if ('event_oz != 3)
+		end;
+	'event_oz = 4;
+
+	.@miriam4$ = instance_npcname("蜜莉安#ozmd4");
+	.@tamarin4$ = instance_npcname("塔馬林#ozmd4");
+	.@ashtoad2$ = instance_npcname("灰燼蟾蜍#ozmd2");
+	.@maggi4$ = instance_npcname("瑪姬#ozmd4");
+	.@mark4$ = instance_npcname("馬克#ozmd4");
+	.@ashtoad3$ = instance_npcname("灰燼蟾蜍#ozmd3");
+
+	setpcblock PCBLOCK_NPC, true;
+	mapannounce 'map_name$, "蜜莉安: 啊！！有怪物！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+	sleep2 1500;
+	mapannounce 'map_name$, "蜜莉安: 我來解決這個無禮的傢伙。", bc_map, 0xB7EE,FW_NORMAL,16;
+	sleep2 1500;
+	mapannounce 'map_name$, "塔馬林: 後面也出現了！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+	sleep2 2000;
+	enablenpc .@tamarin4$;
+	sleep2 500;
+	enablenpc .@ashtoad2$;
+	mapannounce 'map_name$, "瑪姬: 呀啊！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+	sleep2 500;
+	enablenpc .@maggi4$;
+	enablenpc .@mark4$;
+	mapannounce 'map_name$, "馬克: 請支援前方！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+	sleep2 1000;
+	'mob_count_oz = 0;
+	monster 'map_name$,145,274,"灰燼蟾蜍",21295,1, .@miriam4$ + "::OnMobDead";
+	// EP18_ASH_TOAD
+	enablenpc .@ashtoad3$;
+	monster 'map_name$,143,278,"灰燼蟾蜍",21295,1, .@miriam4$ + "::OnMobDead"; // EP18_ASH_TOAD
+	setpcblock PCBLOCK_NPC, false;
+	end;
+// Note: on official the event seems to start right after killing the 2 mobs. The character can't move.
+// There is no OnTouch area, a character outside the npc range can't see the dialog. Intended ?
+OnMobDead:
+	'mob_count_oz++;
+	if ('mob_count_oz < 2)
+		end;
+	if ('event_oz != 4)
+		end;
+	'event_oz = 5;
+
+	.@tamarin4$ = instance_npcname("塔馬林#ozmd4");
+	.@ashtoad2$ = instance_npcname("灰燼蟾蜍#ozmd2");
+	.@maggi4$ = instance_npcname("瑪姬#ozmd4");
+	.@mark4$ = instance_npcname("馬克#ozmd4");
+	.@ashtoad3$ = instance_npcname("灰燼蟾蜍#ozmd3");
+	.@maram4$ = instance_npcname("瑪藍#ozmd4");
+	.@ashtoad1$ = instance_npcname("灰燼蟾蜍#ozmd1");
+	.@tamarin4$ = instance_npcname("塔馬林#ozmd4");
+	.@miriam4$ = instance_npcname("蜜莉安#ozmd4");
+
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "塔馬林: 我解決了！！！", .@tamarin4$;
+	disablenpc .@ashtoad2$;
+	sleep2 2000;
+	npctalk "瑪姬: 這裡也解決了！！", .@maggi4$;
+	disablenpc .@ashtoad3$;
+	sleep2 2000;
+	npctalk "蜜莉安: 呼……雖然不是什麼厲害的怪物，但對普通商人來說也是很危險的。", .@miriam4$;
+	disablenpc .@ashtoad1$;
+	sleep2 2000;
+	cloakoffnpcself( .@maram4$ );
+	npctalk "瑪藍: " + strcharinfo(0) + "，你沒事吧？", .@maram4$;
+	sleep2 2000;
+	npctalk "蜜莉安: 你太慢了！瑪藍！！！", .@miriam4$;
+	sleep2 2000;
+	npctalk "瑪藍: 我在路上遇到怪物，所以稍微耽擱了一下。", .@maram4$;
+	sleep2 2000;
+	npctalk "蜜莉安: 我們剛才經過的路上並沒有怪物啊。", .@miriam4$;
+	sleep2 2000;
+	npctalk "瑪藍: 真的嗎？這些怪物到底是從哪裡冒出來的？", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 這是個大問題，因為這些怪物的關係，運送物資變得越來越困難了。", .@maram4$;
+	sleep2 2000;
+	npctalk "塔馬林: 如果走陸路呢？", .@tamarin4$;
+	sleep2 2000;
+	npctalk "塔馬林: 我聽說以前有一座橫跨峽谷的橋？", .@tamarin4$;
+	sleep2 2000;
+	npctalk "塔馬林: 現在還留有遺跡……", .@tamarin4$;
+	sleep2 2000;
+	npctalk "瑪藍: 據說原住民為了躲避強硬派的攻擊，逃跑時越過上面的橋後，就把橋給毀了。", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 橋對面的區域因為火山灰的關係已經變得無法居住，所以他們當時一定是想逼死對方。", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 要重建一座橋並不難……", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 但我們現在是隱蔽的狀態，不能因為造橋而大肆宣揚我們躲在這裡。", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 雖然現在既危險又不方便，但我們除了使用奧茲迷宮外別無選擇。", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 也正因為是這種環境，可能才一直沒被發現吧。", .@maram4$;
+	sleep2 2000;
+	npctalk "蜜莉安: 如果沒有奧茲迷宮的話……", .@miriam4$;
+	sleep2 2000;
+	npctalk "蜜莉安: 肯定會比現在艱難得多。", .@miriam4$;
+	sleep2 2000;
+	npctalk "瑪藍: 沒錯。", .@maram4$;
+	sleep2 2000;
+	npctalk "瑪藍: 那麼，我們繼續在這可愛的奧茲迷宮裡前進吧？", .@maram4$;
+	sleep2 2000;
+	npctalk "蜜莉安: 你說什麼呢……", .@miriam4$;
+	sleep2 2000;
+	npctalk "蜜莉安: " + strcharinfo(0) + "，從這裡開始，只要一直往下走，直到抵達岔路即可。", .@miriam4$;
+	sleep2 2000;
+	npctalk "蜜莉安: 如果不會出現怪物就好了，可是……", .@miriam4$;
+	sleep2 1000;
+	cloakonnpcself( .@maram4$ );
+	setpcblock PCBLOCK_NPC, false;
+	disablenpc .@maggi4$;
+	disablenpc .@mark4$;
+	disablenpc .@tamarin4$;
+	disablenpc .@miriam4$;
+	enablenpc instance_npcname("瑪藍#ozmd5");
+	end;
+}
+
+1@oz,156,272,5	duplicate(dummy_disabled_npc)	灰燼蟾蜍#ozmd1	EP18_ASH_TOAD
+1@oz,164,272,3	duplicate(dummy_disabled_npc)	灰燼蟾蜍#ozmd2	EP18_ASH_TOAD
+1@oz,153,275,5	duplicate(dummy_disabled_npc)	灰燼蟾蜍#ozmd3	EP18_ASH_TOAD
+1@oz,155,275,3	duplicate(dummy_disabled_npc)	瑪姬#ozmd4	4_4JOB_MAGGI
+1@oz,156,274,3	duplicate(dummy_disabled_npc)	馬克#ozmd4	4_EP18_MARK
+1@oz,161,272,5	duplicate(dummy_disabled_npc)	塔馬林#ozmd4	4_EP18_TAMARIN
+
+1@oz,162,275,3	duplicate(dummy_cloaked_npc)	瑪藍#ozmd4	4_EP18_MARAM
+
+
+// Step 6
+1@oz,98,172,3	script(DISABLED)	瑪藍#ozmd5	EP18_NPC_MARAM,{
+	if ('event_oz != 5)
+		end;
+	'event_oz = 6;
+	.@miriam$ = instance_npcname("蜜莉安#ozmd5");
+	.@maram$ = instance_npcname("瑪藍#ozmd5");
+	npctalk "瑪藍: 以前不是這樣的，但隨著下方的地面開始融化，也許是受到托爾火山的影響，怪物越來越多了。", .@maram$;
+	cloakoffnpcself( "瑪姬#ozmd5" );
+	cloakoffnpcself( "馬克#ozmd5" );
+	cloakoffnpcself( "塔馬林#ozmd5" );
+	enablenpc .@miriam$;
+	setpcblock PCBLOCK_NPC, true;
+	sleep2 2000;
+	npctalk "瑪藍: 尤其是在地面融化嚴重的區域，有很多人為了躲避怪物，反而被熔岩嚴重灼傷，甚至無法回來……", .@maram$;
+	sleep2 2000;
+	npctalk "瑪藍: 奧茲迷宮還能撐多久呢……", .@maram$;
+	sleep2 3000;
+	mapannounce 'map_name$, "??? : 嗚哇！！！！！", bc_map, 0x00B7EE,FW_NORMAL,16;
+	sleep2 2000;
+	npctalk "瑪藍: 這是什麼聲音！？！？！？！？", .@maram$;
+	sleep2 2000;
+	npctalk "蜜莉安: 伊姆利！！！！", .@miriam$;
+	sleep2 2000;
+	setpcblock PCBLOCK_NPC, false;
+	npctalk "瑪藍: 我朋友好像遇到危險了！我先過去，你們小心跟上！", .@maram$;
+	cloakonnpcself( "瑪姬#ozmd5" );
+	cloakonnpcself( "馬克#ozmd5" );
+	cloakonnpcself( "塔馬林#ozmd5" );
+	unitwalk getnpcid(0),68,165, .@maram$ + "::OnMove";
+	donpcevent .@miriam$ + "::OnMove";
+	end;
+OnMove:
+	disablenpc instance_npcname("瑪藍#ozmd5");
+	enablenpc instance_npcname("瑪藍#ozmd7");
+	enablenpc instance_npcname("伊姆利#ozmd6");
+	end;
+}
+
+1@oz,97,167,3	script(DISABLED)	蜜莉安#ozmd5	EP18_NPC_MIRIAM,{
+	end;
+OnMove:
+	npcwalkto 67,164;
+	end;
+}
+
+1@oz,92,170,3	duplicate(dummy_cloaked_npc)	瑪姬#ozmd5	4_4JOB_MAGGI
+1@oz,91,169,3	duplicate(dummy_cloaked_npc)	馬克#ozmd5	4_EP18_MARK
+1@oz,89,170,5	duplicate(dummy_cloaked_npc)	塔馬林#ozmd5	4_EP18_TAMARIN
+
+
+
+// Step 7
+1@oz,68,165,3	script(DISABLED)	瑪藍#ozmd7	4_EP18_MARAM,{
+	if ('event_oz != 6)
+		end;
+	'event_oz = 7;
+	npctalk "瑪藍: 伊姆利，你還好嗎？";
+	donpcevent instance_npcname("伊姆利#ozmd6") + "::OnStart";
+	disablenpc();
+	end;
+}
+
+
+// Step 8
+1@oz,61,163,5	script(DISABLED)	伊姆利#ozmd6	4_EP18_IMRIL,{
+	end;
+
+OnStart:
+	'mob_count_oz = 0;
+	.@npc_name$ = instance_npcname("伊姆利#ozmd6");
+	monster 'map_name$,64,164,"灰燼蟾蜍",21295,1, .@npc_name$ + "::OnMobDead"; // EP18_ASH_TOAD
+	monster 'map_name$,62,161,"耙手",21296,1, .@npc_name$ + "::OnMobDead"; // EP18_RAKEHAND
+	end;
+
+OnMobDead:
+	'mob_count_oz++;
+	if ('mob_count_oz < 2)
+		end;
+	if ('event_oz != 7)
+		end;
+	'event_oz = 8;
+
+	.@maram8$ = instance_npcname("瑪藍#ozmd8");
+	.@imril6$ = instance_npcname("伊姆利#ozmd6");
+	.@miriam5$ = instance_npcname("蜜莉安#ozmd5");
+	.@maggi6$ = instance_npcname("瑪姬#ozmd6");
+	.@mark6$ = instance_npcname("馬克#ozmd6");
+	.@tamarin6$ = instance_npcname("塔馬林#ozmd6");
+
+	setpcblock PCBLOCK_NPC, true;
+
+	cloakoffnpcself( .@maram8$ );
+	npctalk "伊姆利: 謝謝！我差點就沒命了！", .@imril6$;
+	sleep2 2000;
+	npctalk "伊姆利: 氣氛很不尋常，千萬不要去下層。", .@imril6$;
+	sleep2 2000;
+	npctalk "蜜莉安: 感覺出現怪物的頻率比上次高了。", .@miriam5$;
+	sleep2 2000;
+	npctalk "伊姆利: 還有，這些人是誰？", .@imril6$;
+	cloakoffnpcself( .@maggi6$ );
+	cloakoffnpcself( .@mark6$ );
+	cloakoffnpcself( .@tamarin6$ );
+	sleep2 2000;
+	npctalk "瑪藍: 他們是偶爾幫我母親做事的冒險家。", .@maram8$;
+	sleep2 2000;
+	npctalk "瑪藍: 他們都是值得信賴的人，不用這麼警戒。", .@maram8$;
+	sleep2 2000;
+	npctalk "伊姆利: 我聽說你太容易相信別人了。", .@imril6$;
+	sleep2 2000;
+	npctalk "蜜莉安: 沒錯。", .@miriam5$;
+	sleep2 2000;
+	npctalk "瑪藍: 總之，趁更多怪物出現前趕快離開這裡吧。", .@maram8$;
+	sleep2 2000;
+	npctalk "瑪藍: 剩下沒多少路了。", .@maram8$;
+	sleep2 2000;
+	npctalk "瑪藍: 雖然視線很差，但你可以沿著上面的路繼續前進！", .@maram8$;
+	sleep2 2000;
+	npctalk "塔馬林: 我想應該是走這邊！", .@tamarin6$;
+	cloakonnpcself( .@maggi6$ );
+	cloakonnpcself( .@mark6$ );
+	cloakonnpcself( .@tamarin6$ );
+	cloakonnpcself( .@maram8$ );
+	enablenpc instance_npcname("#oz_way");
+	setpcblock PCBLOCK_NPC, false;
+	end;
+}
+
+1@oz,68,165,3	duplicate(dummy_cloaked_npc)	瑪藍#ozmd8	4_EP18_MARAM
+1@oz,61,168,3	duplicate(dummy_cloaked_npc)	瑪姬#ozmd6	4_4JOB_MAGGI
+1@oz,65,167,3	duplicate(dummy_cloaked_npc)	馬克#ozmd6	4_EP18_MARK
+1@oz,59,171,3	duplicate(dummy_cloaked_npc)	塔馬林#ozmd6	4_EP18_TAMARIN
+
+
+
+// Step 9
+1@oz,58,256,5	script(DISABLED)	#oz_way	1_SHADOW_NPC,3,3,{
+	end;
+OnTouch:
+	if ('event_oz != 8)
+		end;
+	'event_oz = 9;
+	enablenpc instance_npcname("瑪藍#ozmd6");
+	end;
+}
+
+// Step 10 (maybe not required ?)
+1@oz,44,255,5	script(DISABLED)	瑪藍#ozmd6	4_EP18_MARAM,{
+	if ('event_oz != 9)
+		end;
+	'event_oz = 10;
+	npctalk "瑪藍: 沿著這條路走下去。";
+	initnpctimer;
+	end;
+OnTimer2000:
+	disablenpc instance_npcname("瑪藍#ozmd6");
+	enablenpc instance_npcname("瑪藍#ozmd9");
+	enablenpc instance_npcname("繩索#outoz2");
+	end;
+}
+
+// Step 11
+// (Step 29 on the main quest).
+1@oz,21,189,5	script(DISABLED)	瑪藍#ozmd9	4_EP18_MARAM,{
+	if ('event_oz != 10)
+		end;
+	'event_oz = 11;
+
+	.@maram9$ = instance_npcname("瑪藍#ozmd9");
+	.@miriam7$ = instance_npcname("蜜莉安#ozmd7");
+	.@imril7$ = instance_npcname("伊姆利#ozmd7");
+
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "瑪藍: 爬上前面的繩索，就可以到外面了。", .@maram9$;
+	cloakoffnpcself( .@miriam7$ );
+	cloakoffnpcself( .@imril7$ );
+	sleep2 2000;
+	npctalk "伊姆利: 我要在這裡拿些藏起來的物品，你們先上去吧。", .@imril7$;
+	sleep2 2000;
+	npctalk "蜜莉安: 大家都很累了。我們快上去吧。", .@miriam7$;
+	if (ep18_main == 30) {
+		erasequest 11719;
+		setquest 11720;
+		ep18_main = 31;
+	}
+	cloakonnpcself( .@miriam7$ );
+	cloakonnpcself( .@imril7$ );
+	setpcblock PCBLOCK_NPC, false;
+	end;
+OnInstanceInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(11719) == 1" );
+	end;
+}
+
+1@oz,22,187,5	duplicate(dummy_cloaked_npc)	蜜莉安#ozmd7	4_EP18_MIRIAM
+1@oz,16,185,3	duplicate(dummy_cloaked_npc)	伊姆利#ozmd7	4_EP18_IMRIL
+
+
+// Step 12
+1@oz,28,190,3	script(DISABLED)	繩索#outoz2	4_ROPEPILE,{
+	if ('event_oz != 11) {
+		mes "現在還不能使用。先去跟瑪藍談談吧。";
+		close;
+	}
+	mes "我想我可以用這根繩索爬上去。";
+	next;
+	if (select( "用繩索爬上去。", "不要使用。" ) == 2)
+		end;
+	warp "gw_fild01",275,337;
+	end;
+OnInstanceInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(11720) == 1" );
+	end;
+}
+
+
+// Spawn monsters
+1@oz,22,207,5	script	#oz01	1_SHADOW_NPC,4,4,{
+	end;
+OnTouch_:
+	getmapxy .@map$,.@x,.@y, BL_NPC;
+	monster 'map_name$,.@x-1,.@y,"灰燼蟾蜍",21295,1;
+	// EP18_ASH_TOAD
+	monster 'map_name$,.@x+1,.@y,"耙手",21296,1;	// EP18_RAKEHAND
+	cloakonnpcself();
+	end;
+}
+
+1@oz,30,237,5	duplicate(#oz01)	#oz02	1_SHADOW_NPC,4,4
+1@oz,44,264,5	duplicate(#oz01)	#oz03	1_SHADOW_NPC,4,4
+1@oz,62,247,5	duplicate(#oz01)	#oz04	1_SHADOW_NPC,4,4
+1@oz,72,222,5	duplicate(#oz01)	#oz05	1_SHADOW_NPC,4,4
+1@oz,79,203,5	duplicate(#oz01)	#oz06	1_SHADOW_NPC,4,4
+1@oz,124,261,5	duplicate(#oz01)	#oz07	1_SHADOW_NPC,4,4
+1@oz,139,279,5	duplicate(#oz01)	#oz08	1_SHADOW_NPC,4,4

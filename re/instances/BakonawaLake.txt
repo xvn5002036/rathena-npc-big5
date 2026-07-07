@@ -1,0 +1,548 @@
+//===== rAthena Script ======================================= 
+//= Bakonawa Lake
+//===== By: ================================================== 
+//= Euphy
+//===== Current Version: ===================================== 
+//= 1.2
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Defeat Bakonawa before he eats the moon.
+//= Part of the "Bakonawa Extermination" quest.
+//===== Additional Comments: ================================= 
+//= 1.0 First version.
+//= 1.1 Added GM management NPC. [Euphy]
+//= 1.2 Added VIP features. [Euphy]
+//============================================================ 
+
+// Instance Creation :: ma_baku
+//============================================================
+ma_scene01,174,179,4	script	塔浩	541,{
+	disable_items;
+	if (checkweight(1201,1) == 0) {
+		mes "你攜帶太多物品了。請整理一下再來吧。";
+		close;
+	}
+	if (MaxWeight - Weight < 10000) {
+		mes "你攜帶的重量太重了。請減輕重量後再來吧。";
+		close;
+	}
+	if (BaseLevel < 140) {
+		mes "[塔浩]";
+		mes "嘿。這個地方對你來說太危險了。你無法保護自己。快點離開這裡，回到村莊去吧！";
+		close;
+	}
+	if (malaya_bakona1 < 7 && malaya_bakona2 < 15) {
+		mes "[塔浩]";
+		mes "我們都會被那隻巴庫暴龍殺死的。啊，我們必須消滅牠，但可惜我們還沒準備好。";
+		close;
+	}
+
+	set .@party_id,getcharid(1);
+	set .@md_name$, "巴庫暴龍之湖";
+
+	set .@baku_time, checkquest(12278,PLAYTIME);
+	if (.@baku_time == -1) {
+		if (checkquest(12279) == -1) setquest 12279;
+	}
+	if (!.@party_id) {
+		mes "[塔浩]";
+		mes "沒有同伴可以和你一起去嗎？即使你想單獨前往，也請先組建隊伍再來。";
+		close;
+	}
+	if (.@baku_time == -1) {
+		if (is_party_leader() == true) {
+			mes "[塔浩]";
+			mes "你是討伐巴庫暴龍的隊長嗎？路況不好，所以我們必須用繩子爬下懸崖，這樣可以嗎？";
+			next;
+			set .@i, select("請編織一條繩子。:我現在要下去了。:取消。");
+		} else {
+			mes "[塔浩]";
+			mes "你是來討伐巴庫暴龍的。你們的隊長必須幫我編織下去用的繩子。";
+			next;
+			set .@i, select(":我現在要下去了。:取消。");
+		}
+		switch(.@i) {
+		case 1:
+			if (instance_create(.@md_name$) < 0) {
+				mes "[塔浩]";
+				mes "噢，繩子掉下去了。我必須重新做一條。";
+				close;
+			}
+			mes "[塔浩]";
+			mes "我現在正在編織，等我完成了你就可以下去了。";
+			close;
+		case 2:
+			switch(instance_enter(.@md_name$)) {
+			case IE_OTHER:
+				mes "[塔浩]";
+				mes "發生了未知的錯誤。";
+				close;
+			case IE_NOINSTANCE:
+				mes "[塔浩]";
+				mes "繩子還沒編織好。請稍等一下。";
+				close;
+			case IE_NOMEMBER:
+				mes "[塔浩]";
+				mes "平民無法進入。";
+				close;
+			case IE_OK:
+				mapannounce "ma_scene01","隊伍 "+getpartyname(.@party_id)+" 的成員 "+strcharinfo(0)+" 正在進入副本 "+.@md_name$+"。",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+				setquest 12278; //warp "1@ma_b",64,51;
+				close;
+			}
+		case 3:
+			close;
+		}
+	} else if (.@baku_time == 0 || .@baku_time == 1) {
+		mes "[塔浩]";
+		mes "用來前往湖泊的繩子已經斷了。我們現在正在清理周圍環境，請過一段時間再來。";
+		close;
+	} else if (.@baku_time == 2) {
+		mes "[塔浩]";
+		mes "這裡已經清理完畢。現在取得繩子後，你可以再次下去了。";
+		erasequest 12278;
+		close;
+	}
+}
+
+sec_in02,26,26,4	script	巴庫暴龍的憤怒	541,{
+	callfunc "F_GM_NPC";
+	mes "[塔浩]";
+	mes "我的名字是敏奇。";
+	if (callfunc("F_GM_NPC",1854,0) == 1) {
+		erasequest 12278;
+		erasequest 12279;
+		set malaya_bakona1,7;
+		set malaya_bakona2,15;
+	}
+	close;
+}
+
+// Instance Scripts :: in_baku01
+//============================================================
+1@ma_b,62,52,4	script	塔浩#nf	541,{
+	mes "[塔浩]";
+	mes "嘻嘻，我本來可以加入討伐巴庫暴龍的行列，但我寧願躲在那塊岩石後面為你們加油。";
+	next;
+	mes "[塔浩]";
+	mes "巴庫暴龍在某些時候會變得無敵。到了那個時候，請仔細聽我的指示。只要相信我，一切都會沒事的。";
+	next;
+	if (is_party_leader() == true) {
+		mes "[塔浩]";
+		mes "現在我要讓巴庫暴龍從湖裡跳出來。";
+		next;
+		switch(select("等一下！我還沒準備好！:我們開始吧！")) {
+		case 1:
+			mes "[塔浩]";
+			mes "哦...好吧...準備好再告訴我。";
+			close;
+		case 2:
+			mes "[塔浩]";
+			mes "那我要滴一滴亞魯波帕到這個湖裡。";
+			next;
+			mes "[塔浩]";
+			mes "一旦巴庫暴龍嚐到這個，牠就會浮出水面...";
+			donpcevent instance_npcname("#Bakonawan1")+"::OnStart";
+			disablenpc instance_npcname("塔浩#nf");
+			close;
+		}
+	} else {
+		mes "[塔浩]";
+		mes "我正在滴下亞魯波帕來激怒巴庫暴龍。一旦我們抓到牠，巴庫暴龍會是很好的蛋白質來源。";
+		close;
+	}
+}
+
+1@ma_b,36,111,4	script	#Bakonawan1	844,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#Bakonawan1");
+	end;
+OnStart:
+	enablenpc instance_npcname("#Bakonawan1");
+	set .@map$, instance_mapname("1@ma_b");
+	mapannounce .@map$,"塔浩：我看到牠在水面上了！攻擊！！！",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	monster .@map$,78,83,"巴庫暴龍",2320,1,instance_npcname("#Bakonawan1")+"::OnMyMobDead";
+	initnpctimer;
+	end;
+OnFail:
+	killmonster instance_mapname("1@ma_b"),instance_npcname("#Bakonawan1")+"::OnMyMobDead";
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@ma_b");
+	if (mobcount(.@map$,instance_npcname("#Bakonawan1")+"::OnMyMobDead") < 1) {
+		donpcevent instance_npcname("#BakonawaDeadn1")+"::OnStart";
+		killmonster .@map$,instance_npcname("#Bakonawan1")+"::OnMyMobDead";
+		stopnpctimer;
+		disablenpc instance_npcname("#Bakonawan1");
+	}
+	end;
+OnTimer1000:	callsub OnAnnounce,"10 分鐘";
+OnTimer60000:	callsub OnAnnounce,"9 分鐘";
+OnTimer120000:	callsub OnAnnounce,"8 分鐘";
+OnTimer180000:	callsub OnAnnounce,"7 分鐘";
+OnTimer240000:	callsub OnAnnounce,"6 分鐘";
+OnTimer300000:	callsub OnAnnounce,"5 分鐘";
+OnTimer360000:	callsub OnAnnounce,"4 分鐘";
+OnTimer420000:	callsub OnAnnounce,"3 分鐘";
+OnTimer480000:	callsub OnAnnounce,"2 分鐘";
+OnTimer540000:	callsub OnAnnounce,"1 分鐘";
+OnTimer570000:
+	mapannounce instance_mapname("1@ma_b"),"時間限制：30 秒",bc_map,"0xff4400"; //FW_NORMAL 18 0 0
+	donpcevent instance_npcname("#SummonPuppetsn1")+"::OnStart";
+	end;
+OnTimer600000:
+	set .@map$, instance_mapname("1@ma_b");
+	mapannounce .@map$,"巴庫暴龍已經逃到湖泊深處了。",bc_map,"0xffff00"; //FW_NORMAL 20 0 0
+	donpcevent instance_npcname("塔浩#Fail")+"::OnStart";
+	donpcevent instance_npcname("#Bakonawan1")+"::OnFail";
+	killmonster .@map$,instance_npcname("#Bakonawan1")+"::OnMyMobDead";
+	stopnpctimer;
+	disablenpc instance_npcname("#Bakonawan1");
+	end;
+OnAnnounce:
+	mapannounce instance_mapname("1@ma_b"),"時間限制："+getarg(0),bc_map,"0xff4400"; //FW_NORMAL 15 0 0
+	donpcevent instance_npcname("#SummonPuppetsn1")+"::OnStart";
+	end;
+}
+
+1@ma_b,78,81,0	script	#SummonPuppetsn1	139,4,5,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#SummonPuppetsn1");
+	end;
+OnStart:
+	stopnpctimer;
+	enablenpc instance_npcname("#SummonPuppetsn1");
+	initnpctimer;
+	end;
+OnTouch:
+	stopnpctimer;
+	disablenpc instance_npcname("#SummonPuppetsn1");
+	end;
+OnTimer5000:
+	setarray .@x[0],79,71,60,61,57,89,95,96,99;
+	setarray .@y[0],71,72,80,90,99,73,82,90,99;
+	set .@map$, instance_mapname("1@ma_b");
+	for(set .@i,0; .@i<9; set .@i,.@i+1) {
+		set .@rand, rand(1,10);
+		if (.@rand > 7)
+			monster .@map$,.@x[.@i],.@y[.@i],"巴庫暴龍的意志",2337,1,instance_npcname("#SummonPuppetsn1")+"::OnMyMobDead";
+		else if (.@rand < 4)
+			monster .@map$,.@x[.@i],.@y[.@i],"巴庫暴龍的意志",2343,1,instance_npcname("#SummonPuppetsn1")+"::OnMyMobDead";
+	}
+	end;
+OnTimer50000:
+	killmonster instance_mapname("1@ma_b"),instance_npcname("#SummonPuppetsn1")+"::OnMyMobDead";
+	stopnpctimer;
+	disablenpc instance_npcname("#SummonPuppetsn1");
+	end;
+OnMyMobDead:
+	end;
+}
+
+1@ma_b,1,5,4	script	#BakonawaDeadn1	844,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#BakonawaDeadn1");
+	end;
+OnStart:
+	enablenpc instance_npcname("#BakonawaDeadn1");
+	initnpctimer;
+	end;
+OnTimer100:
+	mapannounce instance_mapname("1@ma_b"),"塔浩：很好！巴庫暴龍躲到水底了。牠現在會試圖吞噬月亮。",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	end;
+OnTimer5000:
+	mapannounce instance_mapname("1@ma_b"),"塔浩：我們必須敲擊鼎和銅鑼製造巨大的噪音，讓牠無法專心吞噬月亮！",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	end;
+OnTimer10000:
+	mapannounce instance_mapname("1@ma_b"),"塔浩：即使牠浮出水面也不要攻擊牠。只要製造巨大的噪音就好！",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	end;
+OnTimer15000:
+	mapannounce instance_mapname("1@ma_b"),"任務 - 摧毀湖泊左右兩側的 2 個鼎和 2 面銅鑼。",bc_map,"0xff3300"; //FW_NORMAL 15 0 0
+	donpcevent instance_npcname("#Bakonawan2")+"::OnStart";
+	stopnpctimer;
+	disablenpc instance_npcname("#BakonawaDeadn1");
+	end;
+}
+
+1@ma_b,36,111,4	script	#Bakonawan2	844,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#Bakonawan2");
+	end;
+OnStart:
+	enablenpc instance_npcname("#Bakonawan2");
+	set .@label$, instance_npcname("#Bakonawan2")+"::OnMyMobDead";
+	set .@map$, instance_mapname("1@ma_b");
+	monster .@map$,95,98,"鼎",2328,1,.@label$;
+	monster .@map$,60,98,"鼎",2328,1,.@label$;
+	monster .@map$,97,104,"銅鑼",2328,1,.@label$;
+	monster .@map$,58,104,"銅鑼",2328,1,.@label$;
+	donpcevent instance_npcname("#Bakonawan2-1")+"::OnStart";
+	initnpctimer;
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@ma_b");
+	set .@mob_dead_num, mobcount(.@map$,instance_npcname("#Bakonawan2")+"::OnMyMobDead");
+	if (.@mob_dead_num < 1) {
+		donpcevent instance_npcname("#Bakonawan2-1")+"::OnEnd";
+		stopnpctimer;
+		disablenpc instance_npcname("#Bakonawan2");
+	} else
+		mapannounce .@map$,"塔浩：很好！還剩下 "+.@mob_dead_num+" 個！",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	 end;
+OnTimer1000:	callsub OnAnnounce,"5 分鐘",15,1;
+OnTimer60000:	callsub OnAnnounce,"4 分鐘",15,1;
+OnTimer120000:	callsub OnAnnounce,"3 分鐘",15,1;
+OnTimer180000:	callsub OnAnnounce,"2 分鐘",15,1;
+OnTimer240000:	callsub OnAnnounce,"1 分鐘",15,1;
+OnTimer270000:	callsub OnAnnounce,"30 秒",15,0;
+OnTimer280000:	callsub OnAnnounce,"20 秒",15,0;
+OnTimer290000:	callsub OnAnnounce,"10 秒",15,0;
+OnTimer295000:	callsub OnAnnounce,"5 秒",16,0;
+OnTimer296000:	callsub OnAnnounce,"4 秒",17,0;
+OnTimer297000:	callsub OnAnnounce,"3 秒",18,0;
+OnTimer298000:	callsub OnAnnounce,"2 秒",19,0;
+OnTimer299000:	callsub OnAnnounce,"1 秒",20,0;
+OnTimer300000:
+	set .@map$, instance_mapname("1@ma_b");
+	mapannounce .@map$,"巴庫暴龍已經逃到湖泊深處了。",bc_map,"0xffff00"; //FW_NORMAL 20 0 0
+	donpcevent instance_npcname("塔浩#Fail")+"::OnStart";
+	donpcevent instance_npcname("#Bakonawan2-1")+"::OnFail";
+	killmonster .@map$,instance_npcname("#Bakonawan2")+"::OnMyMobDead";
+	stopnpctimer;
+	disablenpc instance_npcname("#Bakonawan2");
+	end;
+OnAnnounce:
+	mapannounce instance_mapname("1@ma_b"),"時間限制："+getarg(0),bc_map,"0xff4400"; //FW_NORMAL getarg(1) 0 0
+	if (getarg(2)) donpcevent instance_npcname("#SummonPuppetsn1")+"::OnStart";
+	end;
+}
+
+1@ma_b,36,111,4	script	#Bakonawan2-1	844,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#Bakonawan2-1");
+	end;
+OnStart:
+	enablenpc instance_npcname("#Bakonawan2-1");
+	monster instance_mapname("1@ma_b"),78,93,"暴怒的巴庫暴龍",2321,1,instance_npcname("#Bakonawan2-1")+"::OnMyMobDead";
+	end;
+OnFail:
+	killmonster instance_mapname("1@ma_b"),instance_npcname("#Bakonawan2-1")+"::OnMyMobDead";
+	end;
+OnEnd:
+	enablenpc instance_npcname("#Bakonawan2-1");
+	killmonster instance_mapname("1@ma_b"),instance_npcname("#Bakonawan2-1")+"::OnMyMobDead";
+	initnpctimer;
+	end;
+OnTimer1000:
+	mapannounce instance_mapname("1@ma_b"),"塔浩：牠又回到湖裡了。結束了嗎？",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	end;
+OnTimer5000:
+	mapannounce instance_mapname("1@ma_b"),"塔浩：呃！水下有東西正在快速上升！巴...巴庫暴龍來了！！",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	end;
+OnTimer10000:
+	mapannounce instance_mapname("1@ma_b"),"任務 - 消滅變得更加兇猛的巴庫暴龍。",bc_map,"0xff3300"; //FW_NORMAL 15 0 0
+	donpcevent instance_npcname("#Bakonawan3")+"::OnStart";
+	stopnpctimer;
+	disablenpc instance_npcname("#Bakonawan2-1");
+	end;
+OnMyMobDead:
+	end;
+}
+
+1@ma_b,36,111,4	script	#Bakonawan3	844,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#Bakonawan3");
+	end;
+OnStart:
+	enablenpc instance_npcname("#Bakonawan3");
+	initnpctimer;
+	monster instance_mapname("1@ma_b"),78,83,"暴怒的巴庫暴龍",2322,1,instance_npcname("#Bakonawan3")+"::OnMyMobDead";
+	donpcevent instance_npcname("#Bakonawan3-1")+"::OnStart";
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@ma_b");
+	set .@mob_dead_num, mobcount(.@map$,instance_npcname("#Bakonawan3")+"::OnMyMobDead");
+	if (.@mob_dead_num < 1) {
+		mapannounce .@map$,"塔浩：我們打倒牠了！我看到牠吐出了一個像箱子的東西。",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+		donpcevent instance_npcname("塔浩#Completed")+"::OnStart";
+		donpcevent instance_npcname("#Bakonawan3-1")+"::OnEnd";
+		killmonster .@map$,instance_npcname("#Bakonawan3")+"::OnMyMobDead";
+		stopnpctimer;
+		disablenpc instance_npcname("#Bakonawan3");
+	}
+	end;
+OnTimer1000:
+	callsub OnAnnounce,"10 分鐘",15,1;
+	end;
+OnTimer60000:
+OnTimer120000:
+OnTimer180000:
+OnTimer240000:
+	donpcevent instance_npcname("#SummonPuppetsn1")+"::OnStart";
+	end;
+OnTimer300000:	callsub OnAnnounce,"5 分鐘",15,1;
+OnTimer360000:	callsub OnAnnounce,"4 分鐘",15,1;
+OnTimer420000:	callsub OnAnnounce,"3 分鐘",15,1;
+OnTimer480000:	callsub OnAnnounce,"2 分鐘",15,1;
+OnTimer540000:	callsub OnAnnounce,"1 分鐘",15,1;
+OnTimer570000:	callsub OnAnnounce,"30 秒",15,0;
+OnTimer580000:	callsub OnAnnounce,"20 秒",15,0;
+OnTimer590000:	callsub OnAnnounce,"10 秒",15,0;
+OnTimer595000:	callsub OnAnnounce,"5 秒",16,0;
+OnTimer596000:	callsub OnAnnounce,"4 秒",17,0;
+OnTimer597000:	callsub OnAnnounce,"3 秒",18,0;
+OnTimer598000:	callsub OnAnnounce,"2 秒",19,0;
+OnTimer599000:	callsub OnAnnounce,"1 秒",20,0;
+OnTimer600000:
+	set .@map$, instance_mapname("1@ma_b");
+	mapannounce .@map$,"巴庫暴龍已經逃到湖泊深處了。",bc_map,"0xffff00"; //FW_NORMAL 20 0 0
+	donpcevent instance_npcname("塔浩#Fail")+"::OnStart";
+	killmonster .@map$,instance_npcname("#Bakonawan3")+"::OnMyMobDead";
+	stopnpctimer;
+	disablenpc instance_npcname("#Bakonawan3");
+	end;
+OnAnnounce:
+	mapannounce instance_mapname("1@ma_b"),"時間限制："+getarg(0),bc_map,"0xff4400"; //FW_NORMAL getarg(1) 0 0
+	if (getarg(2)) donpcevent instance_npcname("#SummonPuppetsn1")+"::OnStart";
+	end;
+}
+
+1@ma_b,36,111,4	script	#Bakonawan3-1	844,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#Bakonawan3-1");
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnEnd:
+	killmonster instance_mapname("1@ma_b"),instance_npcname("#Bakonawan3-1")+"::OnMyMobDead";
+	//showdigit 0;
+	stopnpctimer;
+	end;
+OnMyMobDead:
+	showdigit mobcount(instance_mapname("1@ma_b"),instance_npcname("#Bakonawan3-1")+"::OnMyMobDead");
+	end;
+OnTimer120000:	callsub OnMobSpawn,10;
+OnTimer180000:	callsub OnMobSpawn,15;
+OnTimer240000:	callsub OnMobSpawn,20;
+//OnTimer300000:	callsub OnMobSpawn,25;
+OnTimer300000:	callsub OnMobSpawn,30;
+OnTimer360000:	callsub OnMobSpawn,35;
+OnTimer420000:	callsub OnMobSpawn,40;
+OnTimer480000:	callsub OnMobSpawn,45;
+OnTimer540000:	callsub OnMobSpawn,50;
+OnTimer600000:
+	killmonster instance_mapname("1@ma_b"),instance_npcname("#Bakonawan3-1")+"::OnMyMobDead";
+	stopnpctimer;
+	end;
+OnMobSpawn:
+	set .@label$, instance_npcname("#Bakonawan3-1")+"::OnMyMobDead";
+	set .@map$, instance_mapname("1@ma_b");
+	killmonster .@map$,.@label$;
+	set .@mob_dead_num, mobcount(.@map$,.@label$);
+	if (.@mob_dead_num < 50) {
+		set .@mob_rg, 50 - .@mob_dead_num;
+		if (.@mob_rg > getarg(0))
+			set .@mob_rg, getarg(0);
+		while(1) {
+			areamonster .@map$,74,74,82,74,"巴庫暴龍的傀儡",2334,1,.@label$;
+			set .@mob_dead_num, mobcount(.@map$,.@label$);
+			if (.@mob_dead_num >= .@mob_rg) {
+				break;
+			}
+		}
+	}
+	end;
+}
+
+1@ma_b,62,52,4	script	塔浩#Completed	541,{
+	disable_items;
+	if (checkweight(1201,1) == 0) {
+		mes "看來你攜帶了太多不同種類的物品。請減少後再試一次。";
+		close;
+	}
+	if (MaxWeight - Weight < 10000) {
+		mes "看來你攜帶的物品重量太重了。請減輕重量後再試一次。";
+		close;
+              }
+	if (checkquest(12279,HUNTING) == 2) {
+		erasequest 12279;
+		mes "[塔浩]";
+		mes "這是在巴庫暴龍的屍體中發現的。你最好收下這個。";
+		if (!VIP_SCRIPT || vip_status(VIP_STATUS_ACTIVE))
+			getitem 6499,7; //Ancient_Grudge
+		else
+			getitem 6499,5; //Ancient_Grudge
+		getexp 0,100000;
+		next;
+	}
+	mes "[塔浩]";
+	mes "我們最好趕快離開這裡。即使沒有巴庫暴龍，這個地方仍然很危險...";
+	next;
+	mes "[塔浩]";
+	mes "那我們就用繩子爬上去吧！";
+	close2;
+	warp "ma_scene01",175,176;
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("塔浩#Completed");
+	end;
+OnStart:
+	enablenpc instance_npcname("塔浩#Completed");
+	initnpctimer;
+	end;
+OnTimer1000:
+	monster instance_mapname("1@ma_b"),78,74,"巴庫暴龍寶箱",2335,1;
+	end;
+OnTimer10000:
+	mapannounce instance_mapname("1@ma_b"),"塔浩：打開寶箱後，請到山丘頂端找我。我有東西要給你。",bc_map,"0x00ffff"; //FW_NORMAL 15 0 0
+	stopnpctimer;
+	end;
+}
+
+1@ma_b,62,52,4	script	塔浩#Fail	541,{
+	mes "[塔浩]";
+	mes "嗯。我們差點就抓到牠了，但這傢伙還真敏捷...";
+	next;
+	if (is_party_leader() == true) {
+		mes "[塔浩]";
+		mes "我們要再試一次嗎？";
+		next;
+		switch(select("等一下！:當然！我們現在不能退縮！")) {
+		case 1:
+			mes "[塔浩]";
+			mes "啊...我差點就把牠引出來了。";
+			close;
+		case 2:
+			mes "[塔浩]";
+			mes "那我要再次在湖裡使用亞魯波帕。";
+			next;
+			mes "[塔浩]";
+			mes "我們即將面對更加憤怒的巴庫暴龍...";
+			disablenpc instance_npcname("塔浩#Fail");
+			donpcevent instance_npcname("#Bakonawan1")+"::OnStart";
+			close;
+		}
+		close;
+	} else {
+		mes "[塔浩]";
+		mes "我正像剛才一樣滴下亞魯波帕。希望這能惹惱牠...";
+		close;
+	}
+
+OnInstanceInit:
+	disablenpc instance_npcname("塔浩#Fail");
+	end;
+OnStart:
+	enablenpc instance_npcname("塔浩#Fail");
+	end;
+}

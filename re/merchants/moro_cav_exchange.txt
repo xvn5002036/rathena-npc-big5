@@ -1,0 +1,285 @@
+//===== rAthena Script =======================================
+//= Enchants NPCs.
+//===== Description: =========================================
+//= [Official Conversion]
+//= Hero Ring enchants NPCs
+//===== Changelogs: ==========================================
+//= 1.0 First Version.
+//= 1.1 Slight change to match official script. [Capuche]
+//============================================================
+
+moro_cav,32,73,5	script	英雄代幣兌換商#1	4_F_SHADOWCHASER,{
+	disable_items;
+	mes "[英雄代幣兌換商]";
+	mes "如果你與夢羅克戰鬥過，";
+	mes "並且收集了";
+	mes "英雄代幣，";
+	mes "我可以幫你兌換成一枚特殊的指環。";
+	mes "你想看看我的指環嗎？";
+	while(true) {
+		next;
+		if (checkweight(2163,2) == 0) {
+			mes "[英雄代幣兌換商]";
+			mes "你的背包裡有太多物品了，";
+			mes "請整理過後再來找我！";
+			close;
+		}
+		switch( select( "指環說明", "兌換指環", "結束對話" ) ) {
+		case 1:
+			mes "[英雄代幣兌換商]";
+			mes "這枚英雄指環";
+			mes "雖然可能";
+			mes "看起來";
+			mes "不怎麼起眼，";
+			next;
+			mes "[英雄代幣兌換商]";
+			mes "但把它拿給";
+			mes "附魔專家 伯恩斯，";
+			mes "他可以為它";
+			mes "4個洞槽進行附魔，";
+			mes "並激發出";
+			mes "它潛在的能力。";
+			next;
+			mes "[英雄代幣兌換商]";
+			mes "英雄指環";
+			mes "可以協助你";
+			mes "征服";
+			mes "夢羅克。";
+			mes "還有其他問題嗎？";
+			continue;
+		case 2:
+			mes "- 英雄指環 -";
+			mes "^006400為戰士們所打造的指環^000000";
+			mes "^006400旨在擊敗夢羅克..^000000";
+			mes "^006400經過附魔後，^000000";
+			mes "^006400它將賦予持有者^000000";
+			mes "^006400對抗夢羅克的力量。^000000";
+			mes "^006400系列: 裝飾品/防禦: 0^000000";
+			mes "^006400重量: 20/要求等級: 160^000000";
+			mes "^006400洞數: 0/裝備: 所有職業^000000";
+			next;
+			mes "[英雄代幣兌換商]";
+			mes "兌換英雄指環需要";
+			mes "30個英雄代幣";
+			mes "來進行交換。";
+			mes "你要兌換嗎？";
+			next;
+			if (select( "回上一步", "用30個英雄代幣兌換" ) == 1) {
+				mes "[英雄代幣兌換商]";
+				mes "再想";
+				mes "一下吧。";
+				continue;
+			}
+			if (countitem(6684) < 30) {
+				mes "[英雄代幣兌換商]";
+				mes "^006400英雄代幣^000000";
+				mes "是給予那些";
+				mes "勇敢對抗夢羅克的人。";
+				mes "你身上沒有";
+				mes "30個^006400英雄代幣^000000，";
+				mes "所以我無法幫忙你。";
+				continue;
+			}
+			mes "[英雄代幣兌換商]";
+			mes "我將用";
+			mes "30個^006400英雄代幣^000000";
+			mes "換取1個^006400英雄指環^000000。";
+			mes "還有其他事嗎？";
+			delitem 6684,30;	// TokenOfHero
+			getitem 2981,1;		// RingOfHero
+			continue;
+		case 3:
+			mes "[英雄代幣兌換商]";
+			mes "總有一天";
+			mes "你會發現自己";
+			mes "需要英雄指環的。";
+			close;
+		}
+	}
+}
+
+moro_cav,34,65,5	script	附魔專家 伯恩斯	1_M_03,{
+	disable_items;
+	mes "[伯恩斯]";
+	mes "你聽過英雄指環嗎？只有真正的英雄才配得上那枚華麗的指環，而我一直在等待這樣的人出現。";
+	mes "請問有什麼需要我效勞的嗎？";
+	next;
+	switch( select( "英雄指環附魔", "重置英雄指環的附魔", "取消" ) ) {
+	case 1:
+		mes "[伯恩斯]";
+		mes "我只能對已裝備的指環進行附魔。你想要附魔哪一邊裝備的指環呢？";
+		next;
+		setarray .@eqi_slot[0], EQI_ACC_L, EQI_ACC_R;
+		.@s = select( "左邊", "右邊" ) - 1;
+		switch( getequipid(.@eqi_slot[.@s]) ) {
+		case -1:
+			mes "[伯恩斯]";
+			mes "請裝備你想要附魔的英雄指環。";
+			close;
+		case 2981:
+			break;
+		default:
+			mes "[伯恩斯]";
+			mes "請裝備你的英雄指環。我無法為其他物品附魔。";
+			close;
+		}
+		// custom at this point
+		setarray .@card[0],
+			getequipcardid(.@eqi_slot[.@s],0),
+			getequipcardid(.@eqi_slot[.@s],1),
+			getequipcardid(.@eqi_slot[.@s],2),
+			getequipcardid(.@eqi_slot[.@s],3);
+		if (.@card[0] > 0) {
+			mes "[伯恩斯]";
+			mes "已經完全附魔的英雄指環無法再進行附魔了。";
+			close;
+		}
+		if (.@card[3] == 0) {
+			setarray .@enchant_list$[0], "DEF", "MDEF";
+			.@slot = 4;
+		}
+		else if (.@card[2] == 0) {
+			setarray .@enchant_list$[0], "Max HP", "Max SP";
+			.@slot = 3;
+		}
+		else if (.@card[1] == 0) {
+			setarray .@enchant_list$[0], "Atk", "MAtk";
+			.@slot = 2;
+		}
+		else {
+			setarray .@enchant_list$[0], "STR", "INT", "AGI", "VIT", "DEX", "LUK";
+			.@slot = 1;
+		}
+		mes "[伯恩斯]";
+		mes "你想要在第 " + .@slot + " 個洞槽附加上什麼能力呢？";
+		next;
+		.@enchant_list_size = getarraysize(.@enchant_list$);
+		for ( .@i = 0; .@i < .@enchant_list_size; ++.@i )
+			.@menu$ += .@enchant_list$[.@i] + ":";
+		.@type = select(.@menu$) - 1;
+		switch(.@slot) {
+		case 4:
+			switch(.@type) {// enchant list index
+			case 0:	// DEF
+				setarray .@bonus[0], 4791, 4792, 4793, 4794, 4893;
+				break;
+			default:	// MDEF
+				setarray .@bonus[0], 4890, 4786, 4891, 4787, 4892;
+				break;
+			}
+			break;
+		case 3:
+			switch(.@type) {
+			case 0:	// Max HP
+				setarray .@bonus[0], 4861, 4862, 4867, 4868, 4900;
+				break;
+			default:	// Max SP
+				setarray .@bonus[0], 4800, 4870, 4871, 4801, 4802;
+				break;
+			}
+			break;
+		case 2:
+			switch(.@type) {
+			case 0:	// Atk
+				setarray .@bonus[0], 4882, 4766, 4767, 4894, 4895;
+				break;
+			default:	// Matk
+				setarray .@bonus[0], 4883, 4896, 4897, 4898, 4899;
+				break;
+			}
+			break;
+		case 1:
+			switch(.@type) {
+			case 0:	// STR
+				setarray .@bonus[0], 4700, 4701, 4702, 4703, 4704;
+				break;
+			case 1:	// INT
+				setarray .@bonus[0], 4710, 4711, 4712, 4713, 4714; 
+				break;
+			case 2:	// AGI
+				setarray .@bonus[0], 4730, 4731, 4732, 4733, 4734;
+				break;
+			case 3:	// VIT
+				setarray .@bonus[0], 4740, 4741, 4742, 4743, 4744;
+				break;
+			case 4:	// DEX
+				setarray .@bonus[0], 4720, 4721, 4722, 4723, 4724;
+				break;
+			default:	// LUK
+				setarray .@bonus[0], 4750, 4751, 4752, 4753, 4754;
+				break;
+			}
+			break;
+		}
+
+		// anti-hack
+		if (callfunc("F_IsEquipIDHack", .@eqi_slot[.@s], 2981) || callfunc("F_IsEquipCardHack", .@eqi_slot[.@s], .@card[0], .@card[1], .@card[2], .@card[3]))
+			close;
+
+		.@bonus_size = getarraysize(.@bonus);
+		.@card[.@slot-1] = .@bonus[ rand(.@bonus_size) ];
+		// unknown rates
+		specialeffect2 EF_ANGEL2;
+		mes "[伯恩斯]";
+		mes "附魔完成了！";
+		delequip .@eqi_slot[.@s];
+		getitem2 2981,1,1,0,0,.@card[0],.@card[1],.@card[2],.@card[3];
+		close;
+	case 2:
+		mes "[伯恩斯]";
+		mes "要重置你的英雄指環附魔，我需要3個英雄代幣。";
+		next;
+		if (countitem(6684) < 3) {
+			mes "[伯恩斯]";
+			mes "你的英雄代幣不足。我無法重置你的英雄指環。";
+			close;
+		}
+		mes "[伯恩斯]";
+		mes "我只能重置已裝備的指環。你想要重置哪一邊裝備的指環呢？";
+		next;
+		setarray .@eqi_slot[0], EQI_ACC_L, EQI_ACC_R;
+		.@s = select( "左邊", "右邊" ) - 1;
+		switch( getequipid(.@eqi_slot[.@s]) ) {
+		case -1:
+			mes "[伯恩斯]";
+			mes "你必須先裝備該物品，才能重置它的附魔狀態。";
+			close;
+		case 2981:
+			break;
+		default:
+			mes "[伯恩斯]";
+			mes "請裝備你的英雄指環。我無法重置其他物品。";
+			close;
+		}
+		// custom at this point
+		if (countitem(6684) < 3) {
+			mes "[伯恩斯]";
+			mes "你的英雄代幣不足。我無法重置你的英雄指環。";
+			close;
+		}
+		setarray .@card[0],
+			getequipcardid(.@eqi_slot[.@s],0),
+			getequipcardid(.@eqi_slot[.@s],1),
+			getequipcardid(.@eqi_slot[.@s],2),
+			getequipcardid(.@eqi_slot[.@s],3);
+		if (.@card[3] == 0) {
+			mes "[伯恩斯]";
+			mes "你的英雄指環目前處於沒有任何附魔的狀態。";
+			close;
+		}
+
+		// anti-hack
+		if (callfunc("F_IsEquipIDHack", .@eqi_slot[.@s], 2981) || callfunc("F_IsEquipCardHack", .@eqi_slot[.@s], .@card[0], .@card[1], .@card[2], .@card[3]))
+			close;
+
+		specialeffect2 EF_ANGEL2;
+		mes "[伯恩斯]";
+		mes "重置完成了。";
+		delitem 6684,3;
+		delequip .@eqi_slot[.@s];
+		getitem 2981,1;
+		close;
+	case 3:
+		close;
+	}
+}

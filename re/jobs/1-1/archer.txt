@@ -1,0 +1,129 @@
+//===== rAthena Script ======================================= 
+//= Renewal Archer Job Quest
+//===== By: ================================================== 
+//= Kisuka
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Job Change to Archer Class
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. [Kisuka]
+//= 1.1 Added support for Baby classes. [Euphy]
+//============================================================ 
+payon_in02,64,71,4	script	弓箭手公會關係者#archer	85,{
+	if (Upper == 1) {
+		if (Class == Job_Novice_High && (ADVJOB == Job_Sniper || ADVJOB == Job_Clown || ADVJOB == Job_Gypsy)) {
+			mes "[弓箭手公會關係者]";
+			mes "嘿，我認識你。";
+			mes "你以前參加過";
+			mes "這個測驗，不是嗎？";
+			next;
+			mes "[弓箭手公會關係者]";
+			mes "啊，你一定是去了";
+			mes "英靈殿並且獲得了重生。";
+			mes "哇，那真是太令人印象深刻了！";
+			next;
+			if (!callfunc("F_CanChangeJob")) {
+				mes "[弓箭手公會關係者]";
+				mes "呃...";
+				mes "在成為弓箭手之前，你最好先學會所有的基本技能。";
+				next;
+				mes "[弓箭手公會關係者]";
+				mes "好吧，回頭見。";
+				close;
+			}
+			mes "[弓箭手公會關係者]";
+			mes "那麼。我不需要";
+			mes "再多說什麼了。";
+			mes "我知道你會成為一名優秀的弓箭手...";
+			next;
+			skill "NV_TRICKDEAD",0,SKILL_PERM;
+			jobchange Job_Archer_high;
+			skill "AC_MAKINGARROW",1,SKILL_PERM;
+			skill "AC_CHARGEARROW",1,SKILL_PERM;
+			mes "[弓箭手公會關係者]";
+			mes "雖然這次沒有為你準備";
+			mes "特別的獎勵，希望你能理解。保重。";
+			close;
+		}else{
+			mes "[弓箭手公會關係者]";
+			mes "哦...？";
+			mes "嘿，你來這裡";
+			mes "做什麼...？";
+			next;
+			mes "[弓箭手公會關係者]";
+			mes "我看得出來你不是當弓箭手的料。感覺你注定要去做";
+			mes "其他事情...";
+			close;
+		}
+	}
+	mes "[弓箭手公會關係者]";
+	mes "很高興見到你。有什麼我可以幫忙的嗎？";
+	next;
+	switch(select("我想成為弓箭手。:請告訴我轉職的條件。:沒事，謝謝。")) {
+	case 1:
+		mes "[弓箭手公會關係者]";
+		if(BaseJob != Job_Novice) {
+			if(BaseJob == Job_Archer)
+				mes "哈哈，你在跟我開玩笑吧...";
+			else {
+				mes "我很抱歉，但只有初心者才能轉職。";
+				mes "你已經有一份不錯的職業了，不是嗎？";
+			}
+			close;
+		}else{
+			mes "你是... "+strcharinfo(0)+"，對吧？";
+			next;
+			if (!callfunc("F_CanChangeJob")) {
+				mes "[弓箭手公會關係者]";
+				mes "嗯，你的技能等級還不夠。";
+				mes "你的職業等級必須達到 ^4A4AFF10^000000 ，且基本技能等級必須達到 ^4A4AFF等級 9";
+				next;
+				mes "[弓箭手公會關係者]";
+				mes "因為弓箭手需要極高的專注力，所以我們不接受沒有耐心的人。";
+				close;
+			}
+			mes "[弓箭手公會關係者]";
+			mes "你的基本技能現在足夠了..";
+			mes "....嗯??看來你已經準備好成為一名弓箭手了。我會立刻為你辦理手續。";
+			next;
+			mes "[弓箭手公會關係者]";
+			mes "恭喜！你現在是一名弓箭手了！同時，我們希望你能積極參與許多復興弓箭手公會的計畫。";
+			mes "啊，從製作部門送來的物品到了。來，拿著這些！這些都是你的了！";
+			callfunc "Job_Change",Job_Archer;
+			getitem 1742,1; 	// N_Composite_Bow
+			getitem 12004,1;	// Arrow_Container
+			getitem 12009,1;	// Silver_Arrow_Container
+			getitem 12008,1;	// Fire_Arrow_Container
+			next;
+			mes "[弓箭手公會關係者]";
+			mes "擁有了弓和箭，現在你成為了一名真正的弓箭手。";
+			mes "打開箭矢筒後，裡面會有箭矢，然後你就可以裝備它們了。";
+			mes "好，我期待能聽到你的好消息。是時候說再見了。";
+			mes "再見。";
+			close;
+		}
+	case 2:
+		mes "[弓箭手公會關係者]";
+		mes "弓箭手擁有使用弓的技能，並且具備多種才能。";
+		mes "弓箭手最大的能力是從遠距離攻擊敵人。";
+		next;
+		mes "[弓箭手公會關係者]";
+		mes "雖然弓箭手的 HP 較低，但可以在遠距離射擊敵人，";
+		mes "因此弓箭手在實際戰鬥中比較安全。";
+		next;
+		mes "[弓箭手公會關係者]";
+		mes "雖然仙境傳說中的弓箭手 HP 較低，但具備高命中率和攻擊力，因此能在魔物靠近前將其擊殺。";
+		next;
+		mes "[弓箭手公會關係者]";
+		mes "^8C2121弓箭手可以轉職為獵人。^000000";
+		mes "^8C2121除了獵人之外，如果你是男性，可以轉職為吟遊詩人；如果你是女性，則可以轉職為舞孃。^000000";
+		close;
+	case 3:
+		mes "[弓箭手公會關係者]";
+		mes "如果你有任何問題，隨時歡迎來問我。";
+		close;
+	}
+}

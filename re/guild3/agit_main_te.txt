@@ -1,0 +1,1209 @@
+//===== rAthena Script =======================================
+//= War of Emperium TE - Template File
+//===== Description: =========================================
+//= [Official Conversion]
+//= Like agit_main, this file is required
+//= for TE castles to function.
+//= - Enables AGIT Manager.
+//= - Enables Stewards to invest.
+//= - Enables Kafra Services inside Guild.
+//= - Treasure Chest spawning.
+//= - Flag Template.
+//= - GM NPC.
+//===== Changelogs: ==========================================
+//= 1.0 First Version. [Capuche]
+//============================================================
+
+-	script	TE管理員	-1,{
+OnAgitInit3:
+	.@map$ = strnpcinfo(4);
+	if (.@map$ == "") end;
+	.@npc_name$ = strnpcinfo(0);
+	.@guild_id = getcastledata(.@map$,CD_GUILD_ID);
+	if (.@guild_id == 0) {
+		killmonster .@map$, .@npc_name$ +"::OnMyMobDead";
+		donpcevent strnpcinfo(0)+"::OnEmpSpawn";
+		if (compare(.@map$,"te_aldecas")) {
+			monster .@map$,0,0,"惡靈",1117,10,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"卡利斯格",1132,4,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"深淵騎士",1219,2,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"行刑者",1205,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"梅納海葵",1216,10,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"鐘怪",1193,18,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"時鐘怪",1269,9,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"幽靈弓箭手",1276,7,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"浪人",1208,3,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"愛麗絲女僕",1275,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"血腥騎士",1268,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"黑暗之王",1272,1,.@npc_name$ +"::OnMyMobDead";
+			if (.@map$ == "te_aldecas1") { setarray .@emproom[0],216,23; }
+			else if (.@map$ == "te_aldecas2") { setarray .@emproom[0],213,23; }
+			else if (.@map$ == "te_aldecas3") { setarray .@emproom[0],205,31; }
+			else if (.@map$ == "te_aldecas4") { setarray .@emproom[0],36,217; }
+			else if (.@map$ == "te_aldecas5") { setarray .@emproom[0],27,101; }
+			monster .@map$,.@emproom[0],.@emproom[1],"黑暗之王",1272,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"鐘塔守護者",1270,4,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"血腥騎士",1268,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"深淵騎士",1219,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"幽靈弓箭手",1276,5,.@npc_name$ +"::OnMyMobDead";
+		}
+		else if (compare(.@map$,"te_prtcas")) {
+			monster .@map$,0,0,"幽靈劍士",1163,10,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"卡利斯格",1132,10,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"深淵騎士",1219,5,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"血腥騎士",1268,5,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"暴風騎士",1251,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"卡崙",1252,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"幽靈弓箭手",1276,5,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"獅鷲獸",1259,2,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"奇美拉",1283,2,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"愛麗絲女僕",1275,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,0,0,"裘卡",1200,1,.@npc_name$ +"::OnMyMobDead";
+			if (.@map$ == "te_prtcas01") { setarray .@emproom[0],197,197; }
+			else if (.@map$ == "te_prtcas02") { setarray .@emproom[0],157,174; }
+			else if (.@map$ == "te_prtcas03") { setarray .@emproom[0],16,220; }
+			else if (.@map$ == "te_prtcas04") { setarray .@emproom[0],291,14; }
+			else if (.@map$ == "te_prtcas05") { setarray .@emproom[0],266,266; }
+			monster .@map$,.@emproom[0],.@emproom[1],"華麗金屬守護騎士",1268,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"華麗金屬守護騎士長",1251,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"卡崙",1252,1,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"華麗金屬守護騎士",1219,2,.@npc_name$ +"::OnMyMobDead";
+			monster .@map$,.@emproom[0],.@emproom[1],"幽靈弓箭手",1276,5,.@npc_name$ +"::OnMyMobDead";
+		}
+		disablenpc "卡普拉服務人員#"+ replacestr(.@map$, "cas", "");
+	}
+	else {
+		requestguildinfo .@guild_id;
+		donpcevent "::OnFlagTE" + strnpcinfo(2);// Guild emblem on flags.
+		if (getcastledata(.@map$,CD_ENABLED_KAFRA)  == 0)
+			disablenpc "卡普拉服務人員#"+ replacestr(.@map$, "cas", "");
+		// Load purchased Guardian in castles.
+		if (.@map$ == "te_aldecas1") donpcevent "克洛德::OnSpawnGuardians";
+		else if (.@map$ == "te_aldecas2") donpcevent "拉瑞斯::OnSpawnGuardians";
+		else if (.@map$ == "te_aldecas3") donpcevent "瓦勒里安::OnSpawnGuardians";
+		else if (.@map$ == "te_aldecas4") donpcevent "阿爾波雷斯::OnSpawnGuardians";
+		else if (.@map$ == "te_aldecas5") donpcevent "安培爾::OnSpawnGuardians";
+		else if (.@map$ == "te_prtcas01") donpcevent "庫爾貝::OnSpawnGuardians";
+		else if (.@map$ == "te_prtcas02") donpcevent "卡米佑::OnSpawnGuardians";
+		else if (.@map$ == "te_prtcas03") donpcevent "愛德華::OnSpawnGuardians";
+		else if (.@map$ == "te_prtcas04") donpcevent "卡薩特::OnSpawnGuardians";
+		else if (.@map$ == "te_prtcas05") donpcevent "畢沙羅::OnSpawnGuardians";
+	}
+	end;
+
+OnEmpSpawn:
+	.@map$ = strnpcinfo(4);
+	if (!mobcount( .@map$, strnpcinfo(0) +"::OnAgitBreak" )) {
+		if (.@map$ == "te_aldecas1") { setarray .@emproom[0],216,23; }
+		else if (.@map$ == "te_aldecas2") { setarray .@emproom[0],213,23; }
+		else if (.@map$ == "te_aldecas3") { setarray .@emproom[0],205,31; }
+		else if (.@map$ == "te_aldecas4") { setarray .@emproom[0],36,217; }
+		else if (.@map$ == "te_aldecas5") { setarray .@emproom[0],27,101; }
+		else if (.@map$ == "te_prtcas01") { setarray .@emproom[0],197,197; }
+		else if (.@map$ == "te_prtcas02") { setarray .@emproom[0],157,174; }
+		else if (.@map$ == "te_prtcas03") { setarray .@emproom[0],16,220; }
+		else if (.@map$ == "te_prtcas04") { setarray .@emproom[0],291,14; }
+		else if (.@map$ == "te_prtcas05") { setarray .@emproom[0],266,266; }
+		monster .@map$,.@emproom[0],.@emproom[1],"華麗金屬",1288,1, strnpcinfo(0) +"::OnAgitBreak";
+	}
+	end;
+
+OnAgitStart3:
+	.@map$ = strnpcinfo(4);
+	if (.@map$ == "") end;
+	if (agitcheck3()) {
+		maprespawnguildid .@map$, getcastledata(.@map$,CD_GUILD_ID),2;// warp all non-guild members
+		gvgon3 .@map$;
+		donpcevent strnpcinfo(0)+"::OnEmpSpawn";
+		callsub S_Message,"OnCommandOn";
+	}
+	end;
+OnAgitEnd3:
+	.@map$ = strnpcinfo(4);
+	if (.@map$ == "") end;
+	gvgoff3 .@map$;
+	if (getcastledata(.@map$,CD_GUILD_ID))
+		killmonster .@map$, strnpcinfo(0) +"::OnAgitBreak";
+	callsub S_Message,"OnReset";
+	end;
+OnAgitBreak:
+	.@guild_id = getcharid(2);
+	.@map$ = strnpcinfo(4);
+
+	.@economy = getcastledata(.@map$,CD_CURRENT_ECONOMY) - 5;// Adjust economy Invest Level for Castle
+	if (.@economy < 1)
+		setcastledata .@map$, CD_CURRENT_ECONOMY,1;
+	else
+		setcastledata .@map$, CD_CURRENT_ECONOMY,.@economy;
+	.@defense = getcastledata(.@map$,CD_CURRENT_DEFENSE) - 5;// Adjust Defense Invest Level for Castle
+	if (.@defense < 1)
+		setcastledata .@map$, CD_CURRENT_DEFENSE,1;
+	else
+		setcastledata .@map$, CD_CURRENT_DEFENSE,.@defense;
+	setcastledata .@map$,CD_GUILD_ID,.@guild_id;
+
+	// Reset Invest information and refresh castle data
+	for ( .@i = CD_INVESTED_ECONOMY; .@i < CD_ENABLED_GUARDIAN00; .@i++ )
+		setcastledata .@map$,.@i,0;
+	donpcevent strnpcinfo(0) +"::OnAgitInit3";// spawn guardians / monsters
+
+	// Erase Guardian Database information if the new owners do not have Guardian Research.
+	if (getgdskilllv(.@guild_id,10002) == 0) {
+		for ( .@i = CD_ENABLED_GUARDIAN00; .@i < CD_MAX; .@i++ )
+			setcastledata .@map$,.@i,0;
+	}
+
+	mapannounce .@map$,"華麗金屬已被破壞。",bc_map,"0x00FF00",FW_BOLD,20,0,40;
+	maprespawnguildid .@map$,.@guild_id,2;// Respawn all but new castle-occupants, don't remove monsters.
+
+	sleep 500;
+	if (agitcheck3())
+		donpcevent strnpcinfo(0) +"::OnEmpSpawn";
+	sleep 7000;
+	announce "[" + getcastlename(.@map$) + "] 城池已被 [" + getguildName(.@guild_id) + "] 公會佔領。",bc_all|bc_woe;
+	end;
+OnGuildBreak:
+	.@map$ = strnpcinfo(4);
+	if (.@map$ == "") end;
+	.@tmp$ = replacestr(.@map$, "cas", "");
+	killmonster .@map$, "卡普拉服務人員#"+ .@tmp$ +"::OnGuardianDied";
+	disablenpc "卡普拉服務人員#"+ .@tmp$;
+	setcastledata .@map$,CD_GUILD_ID,0;
+	sleep 7000;
+	announce "公會基地 [" + getcastlename(.@map$) + "] 已被放棄。",bc_all;
+	donpcevent strnpcinfo(0) +"::OnAgitInit3";
+	end;
+
+S_Message:
+	.@map$ = strnpcinfo(4);
+	.@guild_id = getcastledata(.@map$,CD_GUILD_ID);
+	if (.@guild_id)
+		announce "[" + getcastlename(.@map$) + "] 城池目前由 [" + getguildname(.@guild_id) + "] 公會佔領。",bc_all,"0xFF0000",FW_NORMAL,10;
+	else
+		announce "[" + getcastlename(.@map$) + "] 城池目前無人佔領。", bc_all,"0xFF0000",FW_NORMAL,10;
+	if (compare( .@map$,"te_alde" ))
+		.@string$ = "alde0"+ charat( .@map$,getstrlen(.@map$)-1 );
+	else
+		.@string$ = "prt0"+ charat( .@map$,getstrlen(.@map$)-1 );
+	donpcevent "#popswitch_"+ .@string$ +"::"+ getarg(0);// monsters for mission TE
+
+	if (.@map$ == "te_aldecas1") {
+		donpcevent "鐵匠 卡諾#tegod01::OnInit";// god item TE
+		$2012_tegod_kafra = 0;
+		$@2012_tegirls_alde01 = 0;
+	}
+	else if (.@map$ == "te_prtcas01") {
+    	$2012_tegod_gloria = 0;
+    	$@2012_tegirls_prt01 = 0;
+		donpcevent "鐵匠 凱#tegod01::OnInit";
+	}
+	return;
+
+OnMyMobDead:
+	end;
+}
+
+// Guild Kafras
+//============================================================
+-	script	TE卡普拉服務人員	-1,{
+	.@guild_id = getcastledata( strnpcinfo(4),CD_GUILD_ID );
+	.@guildname$ = getguildname(.@guild_id);
+
+	cutin "kafra_01",2;
+	mes "[卡普拉服務人員]";
+	if (.@guild_id == getcharid(2)) {
+		mes "歡迎您，^ff0000" + .@guildname$ + "^000000 公會的成員。";
+		mes "卡普拉公司會隨時隨地與您同在。";
+		next;
+		switch( select( "使用倉庫", "使用傳送服務", "租借手推車", "取消" ) ) {
+		case 1:
+			if (getskilllv("NV_BASIC") > 5) {
+				mes "[卡普拉服務人員]";
+				mes "來，讓我為您打開";
+				mes "倉庫。";
+				mes "感謝您使用";
+				mes "卡普拉服務。";
+				close2;
+				openstorage;
+			} else {
+				mes "[卡普拉服務人員]";
+				mes "很抱歉，您需要";
+				mes "初學者基本技能達到 6 級";
+				mes "才能使用倉庫服務。";
+				close2;
+			}
+			break;
+		case 2:
+			if (compare( strnpcinfo(4),"alde" ) == 1)
+				callsub( S_Warp, "艾爾帕蘭", "aldebaran",132,103 );
+			else
+				callsub( S_Warp, "普隆德拉", "prontera",278,211 );
+		case 3:
+			mes "[卡普拉服務人員]";
+			if (BaseClass != Job_Merchant) {
+				mes "很抱歉，";
+				mes "手推車租借服務";
+				mes "僅提供給商人、";
+				mes "鐵匠和鍊金術師。";
+				close2;
+			}
+			else if (checkcart()) {
+				mes "您已經裝備了";
+				mes "一台手推車。";
+				mes "很遺憾，我們無法";
+				mes "同時租借超過一台";
+				mes "給同一位顧客。";
+				close2;
+			}
+			else {
+				mes "手推車租借的";
+				mes "費用是 800 Zeny。請問";
+				mes "您想要租借手推車嗎？";
+				next;
+				if (select( "租借手推車","取消" ) == 1) {
+					if (Zeny < 800) {
+						mes "[卡普拉服務人員]";
+						mes "很抱歉，您的";
+						mes "Zeny 不足，";
+						mes "無法支付 800 Zeny 的";
+						mes "手推車租借費用。";
+						close2;
+					}
+					else {
+						RESRVPTS = RESRVPTS + 80;
+						Zeny = Zeny - 800;
+						setcart();
+					}
+				}
+			}
+			break;
+		case 4:
+			mes "[卡普拉服務人員]";
+			mes "我們卡普拉公司";
+			mes "一直致力於為您提供最好的服務。我們希望能滿足您的冒險需求及卓越標準。";
+			close2;
+			break;
+		}
+	}
+	else {
+		mes "我得到的指示是僅為 ^ff0000"+ .@guildname$ +"^000000 公會提供服務。請嘗試尋找附近的其它卡普拉服務人員。造成不便敬請見諒。";
+		close2;
+	}
+	cutin "",255;
+	end;
+
+S_Warp:
+	mes "[卡普拉服務人員]";
+	mes "請選擇";
+	mes "您的目的地。";
+	next;
+	switch( select( getarg(0) + " -> 200 Zeny", "取消" ) ) {
+	case 1:
+		if (Zeny < 200) {
+			mes "[卡普拉服務人員]";
+			mes "很抱歉，您的 Zeny 不足，";
+			mes "無法使用傳送服務。";
+			mes "傳送至 "+getarg(0)+" 的";
+			mes "費用為 200 Zeny。";
+			close2;
+			cutin "",255;
+			end;
+		}
+		Zeny = Zeny - 200;
+		RESRVPTS = RESRVPTS + 20;
+		warp getarg(1), getarg(2),getarg(3);
+		end;
+	case 2:
+		cutin "",255;
+		end;
+	}
+
+OnGuardianDied:
+	end;
+}
+
+// Castle Managers (Invest)
+//============================================================
+-	script	TE投資	-1,{
+function GuardianData;
+
+	.@map$ = strnpcinfo(4);
+	.@npc_name$ = "[ 管家 "+ strnpcinfo(1) +"]";
+	.@guild_id = getcastledata(.@map$,CD_GUILD_ID);
+	.@guildmaster$ = getguildmaster(.@guild_id);
+
+	mes .@npc_name$;
+	if (.@guild_id == 0) {
+		mes "我一直在等待一位主人來實現我的使命。";
+		mes "勇敢的靈魂啊……命運將引導您走向未來……";
+		close;
+	}
+	if (strcharinfo(0) != .@guildmaster$) {
+		mes "不管你怎麼糾纏我，我還是只會跟隨我的主人 ^ff0000"+.@guildmaster$+"^000000。守護者在哪裡？！馬上把這些惡棍趕走！";
+		close;
+	}
+	mes "歡迎您。我尊敬的主人，^ff0000"+strcharinfo(0)+"^000000……";
+	mes "您卑微的僕人，"+strnpcinfo(1)+"，隨時為您服務。";
+	next;
+	switch( select( "城池簡報", "投資商業發展", "投資城池防禦", "召喚守護者", "雇用 / 解雇卡普拉服務人員", "進入主人房間" ) ) {
+	case 1:
+		.@economy_today = getcastledata(.@map$,CD_INVESTED_ECONOMY);
+		.@defense_today = getcastledata(.@map$,CD_INVESTED_DEFENSE);
+		mes .@npc_name$;
+		mes "我將為您進行城池簡報，主人。";
+		mes " ";
+		mes "^0000ff現在，商業發展等級為 "+GetCastleData(.@map$,CD_CURRENT_ECONOMY)+"。";
+		if (.@economy_today > 0)
+			mes " 在過去的一天裡，您投資了 "+.@economy_today+" 次。";
+		mes " 現在，城池防禦等級為 "+GetCastleData(.@map$,CD_CURRENT_DEFENSE)+"。^000000";
+		if (.@defense_today > 0)
+			mes " ^0000ff- 在過去的一天裡，您投資了 "+.@defense_today+" 次。^000000";
+		mes " ";
+		mes "以上就是我的報告，主人。";
+		close;
+
+	case 2:
+		.@economy = getcastledata(.@map$,CD_CURRENT_ECONOMY);
+		setarray .@eco_invest[0], 5,5000, 10,10000, 15,20000, 20,35000, 25,55000, 30,80000, 35,110000, 40,145000, 45,185000, 50,230000,
+			55,280000, 60,335000, 65,395000, 70,460000, 75,530000, 80,605000, 85,685000, 90,770000, 95,860000, 100,955000;
+		for ( .@i = 0; .@i < getarraysize(.@eco_invest); .@i += 2 )
+			if (.@economy <= .@eco_invest[.@i]) break;
+		callsub( S_Invest, 4, .@eco_invest[.@i+1], getcastledata(.@map$,CD_INVESTED_ECONOMY), "商業發展", "公會製造的物品數量將會增加", "未來", "經濟學家", "財富" );
+	case 3:
+		.@defense = getcastledata(.@map$,CD_CURRENT_DEFENSE);
+		setarray .@def_invest[0], 5,10000, 10,20000, 15,40000, 20,70000, 25,110000, 30,160000, 35,220000, 40,290000, 45,370000, 50,460000,
+			55,560000, 60,670000, 65,790000, 70,920000, 75,1060000, 80,1210000, 85,1370000, 90,1540000, 95,1720000, 100,1910000;
+		for ( .@i = 0; .@i < getarraysize(.@def_invest); .@i += 2 )
+			if (.@defense <= .@def_invest[.@i]) break;
+		callsub( S_Invest, 5, .@def_invest[.@i+1], getcastledata(.@map$,CD_INVESTED_DEFENSE), "城池防禦", "守護者和華麗金屬的耐久度將會增加", "未來的戰鬥", "戰略家", "防禦" );
+	case 4:
+		mes .@npc_name$;
+		mes "您要召喚守護者嗎？它將會成為忠誠保衛我們的守護者。";
+		mes "請選擇要保衛我們的守護者。";
+		next;
+		GuardianData( .@mob_id, .@x, .@y, .@name$ );
+		for ( .@i = 0; .@i < MAX_GUARDIANS ; .@i++ ) {
+			if (guardianinfo(.@map$,.@i,0))
+				.@menu$ = .@menu$ + getmonsterinfo(.@mob_id[.@i],MOB_NAME) + " - 已配置 (" + guardianinfo(.@map$,.@i,2) + "/" + guardianinfo(.@map$,.@i,1) + "):";// hp/hpmax
+			else
+				.@menu$ = .@menu$ + getmonsterinfo(.@mob_id[.@i],MOB_NAME) + " - 未配置:";
+		}
+		.@s = select(.@menu$) -1;
+		mes .@npc_name$;
+		mes "您確定要召喚所選的守護者嗎？召喚守護者需要 10,000 Zeny。";
+		next;
+		if (select( "召喚","取消" ) == 2) {
+			mes .@npc_name$;
+			mes "我已照您的吩咐去做。但請記住，如果您有閒錢，最好還是將其配置好。";
+			close;
+		}
+		mes .@npc_name$;
+		if (getgdskilllv(.@guild_id,10002) == 0) {
+			mes "主人，我們沒有資源來召喚守護者。如果您想累積資源，您必須學習公會技能。我們無法召喚守護者。";
+		}
+		else if (getcastledata( .@map$,(.@s + CD_ENABLED_GUARDIAN00) ) == 1)
+			mes "主人，您已經召喚過該守護者了。我們無法重複召喚。";
+		else if (Zeny <  10000)
+			mes "嗯……很抱歉，但我們沒有資金來召喚守護者。我們無法召喚守護者。";
+		else {
+			Zeny = Zeny - 10000;
+			setcastledata .@map$,(.@s + CD_ENABLED_GUARDIAN00),1;
+			guardian .@map$, .@x[.@s], .@y[.@s], .@name$[.@s], .@mob_id[.@s], "卡普拉服務人員#"+ replacestr(.@map$, "cas", "") +"::OnGuardianDied", .@s;
+			mes "我們已完成守護者的召喚。有了它的配置，我們的防禦力現在提升了。";
+		}
+		close;
+	case 5:
+		mes .@npc_name$;
+		if (getcastledata(.@map$,CD_ENABLED_KAFRA) == 1) {
+			mes "我們目前有雇用卡普拉服務人員……您想要解雇她嗎？";
+			next;
+			if (select( "解雇","取消" ) == 2) {
+				mes .@npc_name$;
+				mes "在我看來她工作很努力。留下她是一個好決定。";
+				close;
+			}
+			cutin "kafra_01",2;
+			mes "[ 受雇的卡普拉服務人員 ]";
+			mes "我工作這麼努力……主人您怎麼能這麼做？……拜託……請重新考慮……再檢查一次吧，主人……拜託……";
+			next;
+			if (select( "解雇","取消" ) == 2) {
+				mes "[ 受雇的卡普拉服務人員 ]";
+				mes "我會為您努力工作的……謝謝您！";
+				close3;
+			}
+			mes "[ 受雇的卡普拉服務人員 ]";
+			mes "天啊！這太荒謬了！";
+			next;
+			cutin "",255;
+			disablenpc "卡普拉服務人員#" + replacestr(.@map$, "cas", "");
+			setcastledata .@map$,CD_ENABLED_KAFRA,0;
+			mes .@npc_name$;
+			mes "……";
+			mes "我已經解雇了卡普拉服務人員……但是……您對什麼感到不滿意嗎？";
+			close;
+		}
+		mes "您要聯繫卡普拉總部，為我們的城池雇用一名服務人員嗎？";
+		mes "^ff0000 他們的服務需要 10,000 Zeny。 ";
+		next;
+		if (select( "雇用。","取消" ) == 2) {
+			mes .@npc_name$;
+			mes "我已照您的吩咐去做，但我們的一些成員會不高興的。最好還是盡快雇用一名卡普拉服務人員。";
+			close;
+		}
+		mes .@npc_name$;
+		if (getgdskilllv(.@guild_id,10001) == 0) {
+			mes "主人，我們無法雇用卡普拉服務人員，因為我們沒有與卡普拉總部簽訂合約。如果您想獲得與卡普拉總部的合約，您需要先學習公會技能。";
+			close;
+		}
+		if (Zeny <  10000) {
+			mes "嗯……很抱歉，但我們沒有足夠的資金來雇用卡普拉服務人員。";
+			close;
+		}
+		Zeny = Zeny - 10000;
+		enablenpc "卡普拉服務人員#" + replacestr(.@map$, "cas", "");
+		setcastledata .@map$,CD_ENABLED_KAFRA,1;
+		mes "我們獲得了與卡普拉總部的合約，並雇用了一名卡普拉服務人員。";
+		next;
+		cutin "kafra_01",2;
+		mes "[ 受雇的卡普拉服務人員 ]";
+		mes "您好嗎？我是從總部派來的。";
+		mes "我會盡我所能不損害公會的名譽。";
+		next;
+		cutin "",255;
+		mes .@npc_name$;
+		mes "受雇卡普拉服務人員的合約期限為 1 個月，在此期限之後，您將需要支付額外費用。";
+		mes "這對我們的成員會很有用的。";
+		close;
+
+	case 6:
+		mes .@npc_name$;
+		mes "您想要參觀存放我們貴重物品的房間嗎？";
+		mes "那個房間是您的專屬禁區……您是唯一可以進入的人。";
+		next;
+		mes .@npc_name$;
+		mes "如果您不在時限內打開寶箱，當發生意外情況時，可能會失去它。";
+		mes "請務必永遠記住這一點，主人。";
+		mes "因此，為了我們公會的發展，您必須找時間去收集它。";
+		next;
+		switch( select( "進入主人房間。","取消" ) ) {
+		case 1:
+			mes .@npc_name$;
+			mes "我這就為您帶路前往密道。請跟我來……";
+			mes "當您想回到這裡時，請按下秘密開關。";
+			close2;
+			if (.@map$ == "te_aldecas1") warp "te_aldecas1",113,223;
+			else if (.@map$ == "te_aldecas2") warp "te_aldecas2",134,225;
+			else if (.@map$ == "te_aldecas3") warp "te_aldecas3",229,267;
+			else if (.@map$ == "te_aldecas4") warp "te_aldecas4",83,17;
+			else if (.@map$ == "te_aldecas5") warp "te_aldecas5",64,8;
+			else if (.@map$ == "te_prtcas01") warp "te_prtcas01",15,209;
+			else if (.@map$ == "te_prtcas02") warp "te_prtcas02",207,229;
+			else if (.@map$ == "te_prtcas03") warp "te_prtcas03",190,130;
+			else if (.@map$ == "te_prtcas04") warp "te_prtcas04",275,160;
+			else if (.@map$ == "te_prtcas05") warp "te_prtcas05",281,176;
+			end;
+		case 2:
+			mes .@npc_name$;
+			mes "物資每天生產一次……如果您沒有及時取走它們，它們就不會再生產了。";
+			mes "因此，您最好不時去檢查一下。";
+			close;
+		}
+	}
+
+S_Invest:
+	.@cost_invest = getarg(1);
+	.@num_invest_today = getarg(2);
+	.@npc_name$ = "[ 管家 "+ strnpcinfo(1) +"]";
+	if (.@num_invest_today)// Quadruple the cost of investing if you've already invested once.
+		.@cost_invest = .@cost_invest * 4;
+
+	mes .@npc_name$;
+	mes "如果您投資 "+ getarg(3) +"，"+ getarg(4) +"。因此，如果您考慮到我們的"+ getarg(5) +"，投資將是必要的。";
+	mes " ";
+	mes "起初，您只能投資一次，但如果您支付更多資金，您將能夠投資兩次。";
+	mes " ";
+	if (getcastledata(strnpcinfo(4),CD_CURRENT_ECONOMY) >= 100) {
+		mes "^ff0000我們城池的 "+ getarg(3) +" 等級已達到最高 100%。不需要再投資了。正如我對像您這樣偉大的"+ getarg(6) +"所期望的那樣，主人。^000000";
+		close;
+	}
+	if (.@num_invest_today >= 2) {
+		mes "^ff0000您今天已經投資兩次了。您無法再投資。^000000 我期待公會的"+ getarg(7) +"能高速增長。";
+		close;
+	}
+	if (.@num_invest_today == 0)
+		mes "目前所需的投資金額為 ^ff0000"+.@cost_invest+"^000000 Zeny。您要投資嗎？";
+	else
+		mes "您今天已經投資過一次了……如果您想再投資一次，將需要額外的 ^ff0000"+.@cost_invest+"^000000 Zeny。";
+	next;
+	switch( select( "投資 "+ getarg(3) +"。","取消" ) ) {
+	case 1:
+		mes .@npc_name$;
+		if (Zeny < .@cost_invest) {
+			mes "很抱歉，沒有足夠的 Zeny 可以投資。您必須在有資金時再試一次，主人。";
+			close;
+		}
+		Zeny = Zeny - .@cost_invest;
+		setcastledata strnpcinfo(4), getarg(0), (.@num_invest_today +1);
+		mes "我們順利完成了投資。我預計我們的 "+ getarg(3) +" 等級明天將會提升。";
+		close;
+	case 2:
+		mes .@npc_name$;
+		mes "我會遵照您的吩咐，我的主人……不著急。我們會盡力的。";
+		close;
+	}
+
+function GuardianData {
+	.@map$ = strnpcinfo(4);
+	if (.@map$ == "te_aldecas1") {
+		setarray .@data$[0],
+			1287, 17, 218, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 39, 205, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 38, 196, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 21, 194, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 218, 24, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 213, 24, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 73, 70, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1285, 45, 228, "外城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	else if (.@map$ == "te_aldecas2") {
+		setarray .@data$[0],
+			1287, 51, 183, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1286, 27, 184, "外城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 88, 43, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1285, 210, 7, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1287, 60, 203, "外城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 21, 177, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 117, 46, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1285, 36, 183, "外城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	else if (.@map$ == "te_aldecas3") {
+		setarray .@data$[0],
+			1285, 110, 217, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 90, 112, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 86, 120, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 195, 151, "內城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 116, 112, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 116, 76, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 64, 103, "外城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 212, 160, "內城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	else if (.@map$ == "te_aldecas4") {
+		setarray .@data$[0],
+			1285, 187, 100, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 192, 42, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 55, 88, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 145, 209, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 169, 53, "外城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 198, 77, "外城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 148, 88, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 48, 72, "內城騎士守護者";// KNIGHT_GUARDIAN
+	}
+	else if (.@map$ == "te_aldecas5") {
+		setarray .@data$[0],
+			1285, 51, 202, "內城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 27, 221, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 145, 78, "外城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 157, 192, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 157, 74, "外城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 188, 79, "內城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 156, 73, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 41, 112, "內城騎士守護者";// KNIGHT_GUARDIAN
+	}
+	else if (.@map$ == "te_prtcas01") {
+		setarray .@data$[0],
+			1287, 182, 68, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 182, 116, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 153, 86, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 59, 28, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 50, 36, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1286, 184, 183, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 196, 189, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 107, 179, "內城騎士守護者";// KNIGHT_GUARDIAN
+	}
+	else if (.@map$ == "te_prtcas02") {
+		setarray .@data$[0],
+			1286, 162, 161, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 153, 161, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 178, 44, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 71, 75, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 49, 28, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 64, 186, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 76, 196, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 75, 175, "外城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	else if (.@map$ == "te_prtcas03") {
+		setarray .@data$[0],
+			1286, 191, 190, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 137, 190, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 45, 99, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 50, 87, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 41, 87, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 191, 42, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 179, 43, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 191, 72, "外城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	else if (.@map$ == "te_prtcas04") {
+		setarray .@data$[0],
+			1286, 276, 14, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 274, 35, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 246, 246, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 38, 240, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 29, 240, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 33, 258, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 78, 48, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 36, 61, "外城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	else if (.@map$ == "te_prtcas05") {
+		setarray .@data$[0],
+			1286, 266, 262, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 287, 280, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1286, 245, 250, "內城騎士守護者",// KNIGHT_GUARDIAN
+			1287, 236, 63, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 251, 63, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1287, 278, 71, "內城士兵守護者",// SOLDIER_GUARDIAN
+			1285, 32, 253, "外城弓箭手守護者",// ARCHER_GUARDIAN
+			1285, 44, 248, "外城弓箭手守護者";// ARCHER_GUARDIAN
+	}
+	for ( .@i = 0; .@i < getarraysize(.@data$); .@i += 4 ) {
+		set getelementofarray( getarg(0),.@index ), .@data$[.@i];
+		set getelementofarray( getarg(1),.@index ), .@data$[.@i+1];
+		set getelementofarray( getarg(2),.@index ), .@data$[.@i+2];
+		set getelementofarray( getarg(3),.@index ), .@data$[.@i+3];
+		.@index++;
+	}
+}
+
+OnSpawnGuardians:
+	GuardianData( .@mob_id, .@x, .@y, .@name$ );
+	.@map$ = strnpcinfo(4);
+	.@tmp$ = replacestr(.@map$, "cas", "");
+	killmonster .@map$, "卡普拉服務人員#"+ .@tmp$ +"::OnGuardianDied";
+	for ( .@i = 0; .@i < MAX_GUARDIANS; .@i++ ) {
+		if (getcastledata( .@map$,(.@i + CD_ENABLED_GUARDIAN00) ))
+			guardian .@map$, .@x[.@i], .@y[.@i], .@name$[.@i], .@mob_id[.@i], "卡普拉服務人員#"+ .@tmp$ +"::OnGuardianDied",.@i;
+	}
+}
+
+// Guild Dungeon Entrances
+//============================================================
+-	script	拉桿2_TE	-1,{
+	.@guild_id = getcastledata( strnpcinfo(4),CD_GUILD_ID );
+	if (.@guild_id == 0) {
+		mes "[響亮的聲音]";
+		mes "『克服考驗的人展現了極大的勇氣……並將找到通往另一個考驗的道路。』";
+		close;
+	}
+	mes "[響亮的聲音]";
+	mes "『只有真正的勇者才能接受考驗。』";
+	next;
+	mes " ";
+	mes "這裡有一個小拉桿。你要拉下它嗎？";
+	next;
+	if (select( "拉下。","不要拉。" ) == 1) {
+		if (.@guild_id == getcharid(2)) {
+			.@npc_map$ = strnpcinfo(4);
+			if (compare( .@npc_map$,"te_alde" )) {
+				.@map$ = "teg_dun02";
+				if (.@npc_map$ == "te_aldecas1") setarray .@coord[0],32,122;
+				else if (.@npc_map$ == "te_aldecas2") setarray .@coord[0],79,30;
+				else if (.@npc_map$ == "te_aldecas3") setarray .@coord[0],165,38;
+				else if (.@npc_map$ == "te_aldecas4") setarray .@coord[0],160,148;
+				else if (.@npc_map$ == "te_aldecas5") setarray .@coord[0],103,169;
+			}
+			else {
+				.@map$ = "teg_dun01";
+				if (.@npc_map$ == "te_prtcas01") setarray .@coord[0],28,251;
+				else if (.@npc_map$ == "te_prtcas02") setarray .@coord[0],164,268;
+				else if (.@npc_map$ == "te_prtcas03") setarray .@coord[0],164,179;
+				else if (.@npc_map$ == "te_prtcas04") setarray .@coord[0],268,203;
+				else if (.@npc_map$ == "te_prtcas05") setarray .@coord[0],199,28;
+			}
+			warp .@map$,.@coord[0],.@coord[1];
+		}
+		else {
+			mes " ";
+			mes "什麼事也沒發生。";
+			close;
+		}
+	}
+	end;
+}
+
+// Treasure Room Exit
+//============================================================
+-	script	拉桿1_TE	-1,{
+	mes " ";
+	mes "這裡有一個小拉桿。你要拉下它嗎？";
+	next;
+	if ( select( "拉下。","不要。" ) == 1 ) {
+		.@map$ = strnpcinfo(4);
+		if (.@map$ == "te_aldecas1") setarray .@coord[0],218,176;
+		else if (.@map$ == "te_aldecas2") setarray .@coord[0],51,179;
+		else if (.@map$ == "te_aldecas3") setarray .@coord[0],110,119;
+		else if (.@map$ == "te_aldecas4") setarray .@coord[0],67,117;
+		else if (.@map$ == "te_aldecas5") setarray .@coord[0],51,179;
+		else if (.@map$ == "te_prtcas01") setarray .@coord[0],112,183;
+		else if (.@map$ == "te_prtcas02") setarray .@coord[0],94,62;
+		else if (.@map$ == "te_prtcas03") setarray .@coord[0],51,101;
+		else if (.@map$ == "te_prtcas04") setarray .@coord[0],259,265;
+		else if (.@map$ == "te_prtcas05") setarray .@coord[0],36,38;
+		warp .@map$,.@coord[0],.@coord[1];
+	}
+	end;
+}
+
+// Treasure Room Spawn Template
+//============================================================
+-	script	TE寶箱	-1,{
+OnClock0001:// Spawn Treasure Chests based on castle economy.
+	.@map$ = strnpcinfo(4);
+	if (.@map$ == "") end;
+	.@guild_id = getcastledata(.@map$,CD_GUILD_ID);
+	if (.@guild_id == 0) end;
+
+	.@economy = getcastledata(.@map$,CD_CURRENT_ECONOMY);
+	.@defense = getcastledata(.@map$,CD_CURRENT_DEFENSE);
+	.@economy_today = getcastledata(.@map$,CD_INVESTED_ECONOMY);
+	.@defense_today = getcastledata(.@map$,CD_INVESTED_DEFENSE);
+	killmonster .@map$, strnpcinfo(0)+"::OnTreasureDied";
+	if (.@economy_today) {
+		.@economy = .@economy + .@economy_today + (rand(2) && getgdskilllv(.@guild_id,10014));
+		.@economy = ( .@economy > 100 ) ? 100 : .@economy;
+		setcastledata .@map$,CD_CURRENT_ECONOMY,.@economy;
+		setcastledata .@map$,CD_INVESTED_ECONOMY,0;
+	}
+	if (.@defense_today) {
+		.@defense = .@defense + .@defense_today;
+		.@defense = ( .@defense > 100 ) ? 100 : .@defense;
+		setcastledata .@map$,CD_CURRENT_DEFENSE,.@defense;
+		setcastledata .@map$,CD_INVESTED_DEFENSE,0;
+	}
+
+	if (.@map$ == "te_aldecas1") {
+		setarray .@data[0],// <mob_id>, <x>,<y>
+			2452, 115,226,// TREASURE_BOX_TE
+			2458, 122,226,// TREASURE_BOX_TE_6
+			2452, 115,219,
+			2458, 122,219,
+			2452, 116,225,
+			2458, 117,225,
+			2452, 118,225,
+			2458, 119,225,
+			2452, 120,225,
+			2458, 121,225,
+			2452, 121,224,
+			2458, 121,223,
+			2452, 121,222,
+			2458, 121,221,
+			2452, 121,220,
+			2458, 120,220,
+			2452, 119,220,
+			2458, 118,220,
+			2452, 117,220,
+			2458, 116,220,
+			2452, 116,221,
+			2458, 116,222,
+			2452, 116,223,
+			2458, 116,224;
+	}
+	else if (.@map$ == "te_aldecas2") {
+		setarray .@data[0],
+			2452, 134,231,// TREASURE_BOX_TE
+			2459, 135,231,// TREASURE_BOX_TE_7
+			2452, 135,230,
+			2459, 134,230,
+			2452, 132,233,
+			2459, 133,233,
+			2452, 134,233,
+			2459, 135,233,
+			2452, 136,233,
+			2459, 137,233,
+			2452, 137,232,
+			2459, 137,231,
+			2452, 137,230,
+			2459, 137,229,
+			2452, 137,228,
+			2459, 136,228,
+			2452, 135,228,
+			2459, 134,228,
+			2452, 133,228,
+			2459, 132,228,
+			2452, 132,229,
+			2459, 132,230,
+			2452, 132,231,
+			2459, 132,232;
+	}
+	else if (.@map$ == "te_aldecas3") {
+		setarray .@data[0],
+			2452, 224,269,// TREASURE_BOX_TE
+			2460, 225,269,// TREASURE_BOX_TE_8
+			2452, 225,268,
+			2460, 224,268,
+			2452, 222,271,
+			2460, 223,271,
+			2452, 224,271,
+			2460, 225,271,
+			2452, 226,271,
+			2460, 227,271,
+			2452, 227,270,
+			2460, 227,269,
+			2452, 227,268,
+			2460, 227,267,
+			2452, 227,266,
+			2460, 226,266,
+			2452, 225,266,
+			2460, 224,266,
+			2452, 223,266,
+			2460, 222,266,
+			2452, 222,267,
+			2460, 222,268,
+			2452, 222,269,
+			2460, 222,270;
+	}
+	else if (.@map$ == "te_aldecas4") {
+		setarray .@data[0],
+			2452, 84,13,// TREASURE_BOX_TE
+			2461, 85,13,// TREASURE_BOX_TE_9
+			2452, 85,12,
+			2461, 84,12,
+			2452, 82,15,
+			2461, 83,15,
+			2452, 84,15,
+			2461, 85,15,
+			2452, 86,15,
+			2461, 87,15,
+			2452, 87,14,
+			2461, 87,13,
+			2452, 87,12,
+			2461, 87,11,
+			2452, 87,10,
+			2461, 86,10,
+			2452, 85,10,
+			2461, 84,10,
+			2452, 83,10,
+			2461, 82,10,
+			2452, 82,11,
+			2461, 82,12,
+			2452, 82,13,
+			2461, 82,14;
+	}
+	else if (.@map$ == "te_aldecas5") {
+		setarray .@data[0],
+			2452, 62,12,// TREASURE_BOX_TE
+			2462, 62,11,// TREASURE_BOX_TE_10
+			2452, 61,11,
+			2462, 59,14,
+			2452, 60,14,
+			2462, 61,14,
+			2452, 62,14,
+			2462, 63,14,
+			2452, 64,14,
+			2462, 64,13,
+			2452, 64,12,
+			2462, 64,11,
+			2452, 64,10,
+			2462, 64,9,
+			2452, 63,9,
+			2462, 62,9,
+			2452, 61,9,
+			2462, 60,9,
+			2452, 59,9,
+			2462, 59,10,
+			2452, 59,11,
+			2462, 59,12,
+			2452, 59,13;
+	}
+	else if (.@map$ == "te_prtcas01") {
+		setarray .@data[0],
+			2452, 8,211,// TREASURE_BOX_TE
+			2453, 9,211,// TREASURE_BOX_TE_1
+			2452, 10,211,
+			2453, 11,211,
+			2452, 12,211,
+			2453, 13,211,
+			2452, 13,209,
+			2453, 12,209,
+			2452, 11,209,
+			2453, 10,209,
+			2452, 9,209,
+			2453, 8,209,
+			2452, 8,207,
+			2453, 9,207,
+			2452, 10,207,
+			2453, 11,207,
+			2452, 12,207,
+			2453, 13,207,
+			2452, 13,206,
+			2453, 12,206,
+			2452, 11,206,
+			2453, 10,206,
+			2452, 9,206,
+			2453, 8,206;
+	}
+	else if (.@map$ == "te_prtcas02") {
+		setarray .@data[0],
+			2452, 201,228,// TREASURE_BOX_TE
+			2454, 202,228,// TREASURE_BOX_TE_2
+			2452, 202,227,
+			2454, 201,227,
+			2452, 199,230,
+			2454, 200,230,
+			2452, 201,230,
+			2454, 202,230,
+			2452, 203,230,
+			2454, 204,230,
+			2452, 204,229,
+			2454, 204,228,
+			2452, 204,227,
+			2454, 204,226,
+			2452, 204,225,
+			2454, 203,225,
+			2452, 202,225,
+			2454, 201,225,
+			2452, 200,225,
+			2454, 199,225,
+			2452, 199,226,
+			2454, 199,227,
+			2452, 199,228,
+			2454, 199,229;
+	}
+	else if (.@map$ == "te_prtcas03") {
+		setarray .@data[0],
+			2452, 187,132,// TREASURE_BOX_TE
+			2455, 188,132,// TREASURE_BOX_TE_3
+			2452, 188,131,
+			2455, 187,131,
+			2452, 185,134,
+			2455, 186,134,
+			2452, 187,134,
+			2455, 188,134,
+			2452, 189,134,
+			2455, 190,134,
+			2452, 190,133,
+			2455, 190,132,
+			2452, 190,131,
+			2455, 190,130,
+			2452, 190,129,
+			2455, 189,129,
+			2452, 188,129,
+			2455, 187,129,
+			2452, 186,129,
+			2455, 185,129,
+			2452, 185,130,
+			2455, 185,131,
+			2452, 185,132,
+			2455, 185,133;
+	}
+	else if (.@map$ == "te_prtcas04") {
+		setarray .@data[0],
+			2452, 269,162,// TREASURE_BOX_TE
+			2456, 270,162,// TREASURE_BOX_TE_4
+			2452, 270,161,
+			2456, 269,161,
+			2452, 267,164,
+			2456, 268,164,
+			2452, 269,164,
+			2456, 270,164,
+			2452, 271,164,
+			2456, 272,164,
+			2452, 272,163,
+			2456, 272,162,
+			2452, 272,161,
+			2456, 272,160,
+			2452, 272,159,
+			2456, 271,159,
+			2452, 270,159,
+			2456, 269,159,
+			2452, 268,159,
+			2456, 267,159,
+			2452, 267,160,
+			2456, 267,161,
+			2452, 267,162,
+			2456, 267,163;
+	}
+	else if (.@map$ == "te_prtcas05") {
+		setarray .@data[0],
+			2452, 275,178,// TREASURE_BOX_TE
+			2457, 276,178,// TREASURE_BOX_TE_5
+			2452, 276,177,
+			2457, 275,177,
+			2452, 273,180,
+			2457, 274,180,
+			2452, 275,180,
+			2457, 276,180,
+			2452, 277,180,
+			2457, 278,180,
+			2452, 278,179,
+			2457, 278,178,
+			2452, 278,177,
+			2457, 278,176,
+			2452, 278,175,
+			2457, 277,175,
+			2452, 276,175,
+			2457, 275,175,
+			2452, 274,175,
+			2457, 273,175,
+			2452, 273,176,
+			2457, 273,177,
+			2452, 273,178,
+			2457, 273,179;
+	}
+	.@treasure_num = ( 4 + ( .@economy /5 ) ) *3;// x3 <-> data[] size
+	for ( .@i = 0; .@i < getarraysize(.@data) && .@treasure_num > .@i; .@i += 3 )// nb. [4;24] chests
+		monster .@map$, .@data[.@i+1], .@data[.@i+2],"寶箱", .@data[.@i],1, strnpcinfo(0)+"::OnTreasureDied";
+
+OnTreasureDied:
+	end;
+}
+
+// Flag warp Template
+//============================================================
+function	script	F_flag_woe_TE	{
+	.@castle$ = getarg(1);
+	.@guild_id = getcastledata( .@castle$,CD_GUILD_ID );
+	if (.@guild_id == 0) {
+		mes "[ 神聖盧恩米德加茲王國詔書 ]";
+		mes " ";
+		mes "1. 遵照神聖盧恩米德加茲王國的法令，";
+		mes "我們宣布";
+		mes "這座城池目前沒有正式的主人。";
+		mes " ";
+		mes "2. 對於能夠";
+		mes "克服所有考驗";
+		mes "並破壞華麗金屬的人，";
+		mes "國王將賦予該名勇士";
+		mes "這座城池的擁有權。";
+		close;
+	}
+	if (.@guild_id == getcharid(2) && getarg(0)) {
+		mes "[ 迴盪的聲音 ]";
+		mes "勇敢的人們啊……";
+		mes "你們希望回到專屬你們的榮耀之地嗎？";
+		next;
+		if (select( "返回公會城池。","離開。" ) == 1) {
+			if (jobcanentermap(.@castle$) == 0) {
+				mes "三轉職業和擴充職業的玩家不允許參加訓練型攻城戰 (TE)。";
+				close;
+			}
+			if (getcastledata( getarg(1),CD_GUILD_ID ) == getcharid(2))
+				warp getarg(1),getarg(2),getarg(3);
+			end;
+		}
+	}
+	.@guildname$ = getguildname(.@guild_id);
+	.@guildmaster$ = getguildmaster(.@guild_id);
+	mes "[ 神聖盧恩米德加茲王國詔書 ]";
+	mes " ";
+	mes "1. 遵照神聖盧恩米德加茲王國的法令，";
+	mes "我們認可這個地方屬於";
+	mes "^ff0000"+.@guildname$+"^000000 公會的私人財產。";
+	mes " ";
+	mes "2. ^ff0000"+.@guildname$+"^000000 公會的會長是";
+	mes "^ff0000"+.@guildmaster$+"^000000";
+	mes "如果有人對此有異議，";
+	mes "請用你手中的鋼刃來證明你的力量與榮耀。";
+	close;
+}
+
+-	script	TE簡易資訊	-1,{
+	callfunc( "F_flag_woe_TE",0,strnpcinfo(4) );
+OnInit:
+	if (strnpcinfo(4) != "")
+		flagemblem getcastledata( strnpcinfo(4),CD_GUILD_ID );
+	end;
+}
+
+-	script	TE旗幟	GUILD_FLAG,{
+	end;
+OnInit:
+	if (strnpcinfo(2) != "")
+		flagemblem getcastledata( strnpcinfo(2),CD_GUILD_ID );
+	end;
+}
+
+
+// GM NPC
+//============================================================
+prt_gld,1,4,0	script	#Enterance Button prt	CLEAR_NPC,{
+	mes "密碼";
+	next;
+	if ( callfunc( "F_GM_NPC", 1854,0, 0,9000 ) < 1 ) {
+		mes "密碼錯誤";
+		close;
+	}
+	mes "您想要對通往葛羅利亞的傳送點做什麼？";
+	next;
+	switch( select( "開啟","關閉","取消","領取租借物品" ) ) {
+	case 1:
+		mes "正在開啟傳送點。";
+		enablenpc "to_gloria";
+		close;
+	case 2:
+		mes "正在關閉傳送點。";
+		disablenpc "to_gloria";
+		close;
+	case 3:
+		end;
+	case 4:
+		mes "你有 300 秒的時間。";
+		rentitem 13083,300;// TE_Woe_Knife
+		close;
+	}
+}
+
+alde_gld,1,4,0	script	#Enterance Button ald	CLEAR_NPC,{
+	mes "密碼";
+	next;
+	if ( callfunc( "F_GM_NPC", 1854,0, 0,9000 ) < 1 ) {
+		mes "密碼錯誤";
+		close;
+	}
+	mes "您想要對通往卡普拉花園的傳送點做什麼？";
+	next;
+	switch( select( "開啟","關閉","取消" ) ) {
+	case 1:
+		mes "正在開啟傳送點。";
+		enablenpc "to_kafragarten";
+		close;
+	case 2:
+		mes "正在關閉傳送點。";
+		disablenpc "to_kafragarten";
+		close;
+	case 3:
+		end;
+	}
+}
+
+// God Item Hervor & Jormungand
+sec_in02,20,20,0	script	測試導覽員	CLEAR_NPC,{
+	mes "密碼？";
+	next;
+	if (callfunc( "F_GM_NPC", 18543792,0, 0,99999999 ) < 1) {
+		mes "喔……";
+		close;
+	}
+	mes "我們提供 TE 測試所需的材料物品。";
+	next;
+	switch( select( "赫爾沃爾的材料","耶夢加得的材料" ) ) {
+	case 1:
+		getitem 6595,2;// Hammer_Of_Velund
+		getitem 6596,1;// Anvil_Of_Velund
+		getitem 6594,4;// Magic_Bronze_Bullion
+		getitem 6597,3;// Bracelet_Of_Velund
+		getitem 6602,1;// Secret_Of_Rune
+		getitem 6605,1;// Muspellium
+		getitem 6604,1;// Essence_Of_Rune
+		getitem 2115,1;// Valkyrja's_Shield
+		end;
+	case 2:
+		getitem 6603,4;// Skin_Of_Hraesvelg
+		getitem 6599,1;// Spirit_Of_Hugin
+		getitem 6598,1;// Rib_Of_Jormungand
+		getitem 6601,4;// Chisel_Of_Giant
+		getitem 6600,1;// Spirit_Of_Munin
+		getitem 6605,1;// Muspellium
+		getitem 6604,1;// Essence_Of_Rune
+		getitem 1473,1;// Wizardy_Staff
+		end;
+	}
+}

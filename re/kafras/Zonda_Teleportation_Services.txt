@@ -1,0 +1,94 @@
+//===== rAthena Script ======================================= 
+//= Zonda Teleportation Services
+//===== Changelogs: ==========================================
+//= 1.0 First Version. [JohnnyPlayy]
+//===== Description: ========================================= 
+// Texts from this script were translated according to KRO
+//============================================================
+
+-	script	ZondaTeleportationServices	HIDDEN_NPC,{
+	cutin "zonda_do01", 2;
+	mes "[准他企業員工]";
+	mes "歡迎光臨。";
+	mes "我們團隊始終致力於為您提供超乎期待的優質服務。";
+	mes "請選擇您的目的地。";
+	next;
+	switch( select( "彩虹橋北部", "埃克拉珠", "史波浪壯麗", "米德加爾特聯合營地", "瑪努克", "卡米達山麓", "取消。") ) {
+	case 1:
+		callsub( S_Zone, "彩虹橋北部", 17000,850, 7213 ); // Teleport value not confirmed
+		warp "bif_fild02",160,230; // Unverified Coordinates
+		end;
+	case 2:
+		callsub( S_Zone, "埃克拉珠", 17000,850, 11311 );
+		warp "eclage",111,39;
+		end;
+	case 3:
+		callsub( S_Zone, "史波浪壯麗", 17000,850, 10078 );
+		warp "splendide",171,115;
+		end;
+	case 4:
+		callsub( S_Zone, "米德加爾特聯合營地", 19000,950, 10078 );
+		warp "mid_camp",210,288;
+		end;
+	case 5:
+		callsub( S_Zone, "瑪努克", 22000,1100, 10078 );
+		warp "manuk",263,177;
+		end;
+	case 6:
+		callsub( S_Zone, "卡米達山麓", 24000,1200, 7184 );
+		warp "dic_fild01",188,187;
+		end;
+	case 7:
+		mes "[准他企業員工]";
+		mes "我們始終致力於為顧客提供最優質的服務。";
+		mes "感謝您使用我們的服務。";
+		close3;
+	}
+
+S_Zone:
+	.@zeny_req = getarg(1);
+	.@item_req = getarg(2);
+	.@quest_req = getarg(3);
+	
+	if (isbegin_quest(.@quest_req) == 0) {
+		mes "[准他企業員工]";
+		//mes getarg(0);
+		mes "在使用我們的傳送服務前往" + getarg(0) + "之前，您必須先完成相關的進入任務。";
+		close3;
+	}
+	mes "[准他企業員工]";
+	mes "前往" + getarg(0) + " 需要 ^ff0000" + .@zeny_req + " Zeny^000000 或 ^ff0000" + .@item_req + " 個綿綿島特產罐頭^000000。";
+	next;
+	switch( select( .@zeny_req + " Zeny", .@item_req + " 個綿綿島特產罐頭", "取消" ) ) {
+	case 1:
+		if (Zeny < .@zeny_req)
+			break;
+		Zeny -= .@zeny_req;
+		return;
+	case 2:
+		if (countitem(12636) < .@item_req)
+			break;
+		delitem 12636,.@item_req; // Malang_Sp_Can
+		return;
+	case 3:
+		mes "[准他企業員工]";
+		mes "需要我為您介紹其他地區的服務嗎？";
+		close3;
+	}
+	mes "[准他企業員工]";
+	mes "抱歉！您的餘額或物品不足。";
+	mes "請準備好後再來找我。";
+	close3;
+}
+
+alberta,35,239,3	duplicate(ZondaTeleportationServices)	准他傳送服務#alberta	4_M_DRZONDA01
+aldebaran,138,122,3	duplicate(ZondaTeleportationServices)	准他傳送服務#aldebaran	4_M_DRZONDA01
+einbroch,248,205,3	duplicate(ZondaTeleportationServices)	准他傳送服務#einbroch	4_M_DRZONDA01
+geffen,117,66,3	duplicate(ZondaTeleportationServices)	准他傳送服務#geffen	4_M_DRZONDA01
+lighthalzen,169,103,3	duplicate(ZondaTeleportationServices)	准他傳送服務#lighthalzen	4_M_DRZONDA01
+morocc,157,257,3	duplicate(ZondaTeleportationServices)	准他傳送服務#morocc	4_M_DRZONDA01
+payon,178,104,3	duplicate(ZondaTeleportationServices)	准他傳送服務#payon	4_M_DRZONDA01
+prontera,145,87,3	duplicate(ZondaTeleportationServices)	准他傳送服務#prontera	4_M_DRZONDA01
+rachel,118,139,3	duplicate(ZondaTeleportationServices)	准他傳送服務#rachel	4_M_DRZONDA01
+veins,198,133,3	duplicate(ZondaTeleportationServices)	准他傳送服務#veins	4_M_DRZONDA01
+yuno,145,184,3	duplicate(ZondaTeleportationServices)	准他傳送服務#yuno	4_M_DRZONDA01

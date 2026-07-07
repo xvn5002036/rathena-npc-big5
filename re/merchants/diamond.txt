@@ -1,0 +1,246 @@
+//===== rAthena Script =======================================
+//= Rare Diamond Merchant
+//===== By: ==================================================
+//= Z3R0
+//===== Current Version: =====================================
+//= 1.5
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Exchanges 17 Carat Diamond
+//===== Additional Comments: =================================
+//= 1.0 First / Optimized Version
+//= 1.1 Adjusted for Missing ;
+//= 1.2 Removed Comments per Request (#15426)
+//= 1.3 Changed Emotion # to Const Definition (#15427)
+//= 1.4 Removed Double Space on Line #148 (#15428)
+//= 1.5 Added This Version History (#15429)
+//============================================================
+
+// Main NPC :: diamond
+//============================================================
+-	script	RareDiamondMerchant	58,{
+
+	set .@npc$, "[稀有鑽石商人]";
+	mes .@npc$;
+	mes "各位先生女士！！！";
+	mes "你們可能聽過傳聞，但肯定沒有親眼見過";
+	mes "世界上最稀有的鑽石！";
+	mes "這顆^FF82FF'17克拉鑽石'^000000現在正以便宜的價格出售！！";
+	mes "如果對珍貴鑽石感興趣的話，請聽我說！";
+	next;
+	
+	mes .@npc$;
+	mes "你可以把這顆鑽石當作禮物送給你的愛人。";
+	mes "收到這顆^FF82FF'17克拉鑽石'^000000的人一定會非常珍惜它";
+	mes "並將你珍藏在心底。";
+	emotion ET_BLABLA;
+	next;
+	
+	mes .@npc$;
+	mes "什麼？你沒有愛人？";
+	mes "那你也可以自己留著。";
+	mes "這顆^FF82FF'17克拉鑽石'^000000迷人的光芒，很可能";
+	mes "會為你的生活帶來愛情。";
+	next;
+	
+	mes .@npc$;
+	mes "被譽為鑽石中最迷人的鑽石...";
+	mes "這就是^FF82FF'17克拉鑽石'^000000！";
+	next;
+
+	set .@menu$, "^FF82FF'17克拉鑽石'^000000？";
+	if (countitem(6024))
+		set .@menu$, .@menu$ + ":將我的17克拉鑽石兌換成 Zeny...";
+
+	switch(select(.@menu$)) {
+	case 1:
+		mes .@npc$;
+		mes "是的！";
+		mes "呵呵，你現在看到的這顆^FF82FF'17克拉鑽石'^000000";
+		mes "是品質最高的 17 克拉鑽石之一。";
+		mes "把它跟你從夢羅克挖出來的";
+		mes "那些豆子般大小、無色的石頭相比，簡直無法相提並論！";
+		emotion ET_HUK;
+		next;
+		
+		mes .@npc$;
+		mes "有人說這就是";
+		mes "卡翠亞在克魔島看到的那顆鑽石！";
+		next;
+		
+		if (select("結束對話:這個要多少錢？") == 1) {
+			mes .@npc$;
+			mes "它相當便宜！";
+			mes "如果你有興趣，隨時來找我！";
+			close;
+		}
+		
+		mes .@npc$;
+		mes "當然！最重要的是價格！";
+		mes "就像我剛才說的，這顆^FF82FF'17克拉鑽石'^000000已經被";
+		mes "鑑定為 17 克拉鑽石。";
+		mes "世界上像它這樣的並不多。";
+		next;
+		
+		mes .@npc$;
+		mes "價格只要區區 5 億 Zeny！";
+		mes "另外還有 1,000,000 Zeny 的手續費。";
+		mes "與鑽石的品質相比";
+		mes "這只是一小筆代價。";
+		next;
+
+		if (select("^828282太貴了。^000000:我要買。") == 1) {
+			mes .@npc$;
+			mes "竟然說像";
+			mes "^FF82FF'17克拉鑽石'^000000這樣的鑽石太貴了，";
+			mes "真讓我無話可說。";
+			close;
+		}
+		
+		mes .@npc$;
+		mes "喔喔！從看到你的那一刻起，我就知道你是這顆";
+		mes "完美鑽石的真正主人。";
+		mes "很高興我沒看錯！";
+		mes "我相信這顆鑽石會非常適合你。";
+		mes "現在我只需要你完成這份合約。";
+		next;
+
+		while(1) {
+			if (select("^B9062F我會簽署合約。^000000:^828282算了，我改變心意了。^000000") == 2) {
+				mes .@npc$;
+				mes "我明白了，那真是太可惜了..";
+				close;
+			}
+			
+			mes .@npc$;
+			mes "你的名字是？";
+			next;
+
+			mes "[" + strcharinfo(0) + "]";
+			mes "我的名字是 " + strcharinfo(0) + "。";
+			next;
+
+			mes .@npc$;
+			mes "好的，請在這裡簽名。";
+			next;
+			
+			input .@charname$;
+			if (.@charname$ == strcharinfo(0)) {
+				mes .@npc$;
+				mes "好的，很好。";
+				mes "現在剩下的就是付款了。";
+				next;
+				
+				if (Zeny >= 501000000) {
+					mes .@npc$;
+					mes ". . . . . .";
+					next;
+					
+					mes .@npc$;
+					mes "計算價格和手續費..";
+					mes "501,000,000 Zeny。";
+					mes "金額已確認。";
+					emotion ET_BLABLA;
+					set Zeny, Zeny - 501000000;
+					getitem 6024, 1;
+					next;
+
+					mes .@npc$;
+					mes "你可以隨時將鑽石兌換回 Zeny。";
+					mes "不過，會收取 1,000,000 Zeny 的手續費。";
+					mes "感謝你的惠顧。";
+					emotion ET_THANKS;
+					close;
+				}
+				else {
+					mes .@npc$;
+					mes "嗯？";
+					mes "很抱歉，你的資金不足。";
+					mes "包含手續費在內，總共需要 501,000,000 Zeny。";
+					mes "請檢查你的 Zeny 餘額後再試一次。";
+					emotion ET_SCRATCH;
+					close;
+				}
+			}
+			else {
+				mes .@npc$;
+				mes "這真的是你的簽名嗎？";
+				mes "要再次簽名確認嗎？";
+				next;
+			}
+		}
+	case 2:
+		mes .@npc$;
+		mes "啊哈。你想將你的^FF82FF'17克拉鑽石'^000000兌換成 Zeny 嗎？";
+		emotion ET_SURPRISE;
+		next;
+
+		if (select("是:否") == 2) {
+			mes .@npc$;
+			mes "那麼，你想要什麼呢？..";
+			mes ". . . . . ....";
+			emotion ET_THINK;
+			close;
+		}
+
+		mes .@npc$;
+		mes "我明白了。在我收到你的簽名後，";
+		mes "你必須交出你的^FF82FF'17克拉鑽石'^000000。";
+		mes "也別忘了還有 1,000,000 Zeny 的手續費！";
+		next;
+
+		mes .@npc$;
+		mes "你的名字是？";
+		next;
+		
+		mes "[" + strcharinfo(0) + "]";
+		mes "我的名字是 " + strcharinfo(0) + "。";
+		next;
+		
+		mes .@npc$;
+		mes "好的，請在這裡簽名。";
+		next;
+
+		while (1) {
+			if (select("簽名:不簽名") == 2) {
+				mes .@npc$;
+				mes "沒有你的簽名，交易無法完成。";
+				close;
+			}
+			
+			input .@charname$;
+			if (.@charname$ == strcharinfo(0)) {
+				mes .@npc$;
+				mes "已收到你的簽名。";
+				mes "我現在將收下你的^FF82FF'17克拉鑽石'^000000..";
+				mes "之後你將獲得 ^0000FF499,000,000 Zeny^000000。";
+				next;
+				
+				mes .@npc$;
+				mes "感謝你的惠顧。";
+				mes "只要你需要^FF82FF'17克拉鑽石'^000000，";
+				mes "隨時帶上 5 億 Zeny 回來找我吧。";
+				emotion ET_THANKS;
+				delitem 6024, 1;
+				set Zeny, Zeny + 499000000;
+				close;
+			}
+			else {
+				mes .@npc$;
+				mes "這真的是你的簽名嗎？";
+				mes "要再次簽名確認嗎？";
+				next;
+			}
+		}
+	}
+}
+
+prontera,165,89,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#1	58
+geffen,106,63,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#2	58
+morocc,146,100,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#3	58
+alberta,129,60,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#4	58
+lighthalzen,163,65,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#5	58
+rachel,106,142,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#6	58
+payon,180,130,6	duplicate(RareDiamondMerchant)	稀有鑽石商人#7	58

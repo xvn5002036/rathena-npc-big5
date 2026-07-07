@@ -1,0 +1,95 @@
+//===== rAthena Script =======================================
+//= Einbech Mine Dungeon Monster Spawn Script
+//===== By: ==================================================
+//= Athena (1.0)
+//===== Current Version: =====================================
+//= 1.5
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Additional Comments: =================================
+//= 1.0 spawn N and spawn delays aren't yet correct, so I set
+//=     respawn delays quite big for now [Lupus]
+//= 1.1 Fixed monsters spawn places
+//= 1.2 Update monster spawn numbers according to info on emperium.org [MasterOfMuppets]
+//= 1.3 Official kRO 10.1 spawns [Playtester]
+//= 1.4 More accurate spawns [Playtester]
+//= 1.5 Corrected MVP spawn variance. [L0ne_W0lf]
+//= 1.6 Added Illusion of Teddy Bear. [Atemo]
+//============================================================
+
+//==================================================
+// ein_dun01 - Mine Dungeon
+//==================================================
+ein_dun01,0,0	monster	Äq¤uÅ]	1616,70,5000
+ein_dun01,0,0	monster	¬rÃú	1620,30,5000
+ein_dun01,0,0	monster	±²¥ÒÂÎ	1619,30,5000
+ein_dun01,0,0	monster	¬rÅ]	1621,10,5000
+ein_dun01,0,0	monster	¼o®ðÅ]	1617,1,5000
+ein_dun01,0,0	monster	©ù®æ¤O¦w	1618,1,3600000,3000000
+
+//==================================================
+// ein_dun02 - Mine Dungeon
+//==================================================
+ein_dun02,0,0	monster	Äq¥ÛÅ]	1614,50,5000
+ein_dun02,0,0	monster	¶ÂÂ`¥Û	1615,40,5000
+ein_dun02,0,0	monster	¼o®ðÅ]	1617,30,5000
+ein_dun02,0,0	monster	®õ­}ºµ	1622,30,5000
+ein_dun02,0,0,0,0	boss_monster	RSX-0806	1623,1,7500000,600000,0
+
+//==================================================
+// ein_dun03 - Mine Dungeon
+//==================================================
+ein_dun03	monster	¼@¬rÅ]	20592,35
+ein_dun03	monster	¼@¬rÃú	20593,35
+ein_dun03	monster	ºñ¦âÄq¥ÛÅ]	20594,40
+ein_dun03	monster	¬õ¦âÄq¥ÛÅ]	20595,40
+ein_dun03	monster	¥Õ¦âÄq¥ÛÅ]	20596,40
+ein_dun03	monster	µµ¦âÄq¥ÛÅ]	20597,40
+ein_dun03	monster	«Õ·tÄq¤uÅ]	20603,20
+ein_dun03	monster	¥Õ¦â±²¥ÒÂÎ	20602,22
+ein_dun03	monster	Ä_¥Û©ù®æ¤O¦w	20598,20
+ein_dun03	monster	Ä_¥ÛÅ]	20600,3
+ein_dun03	boss_monster	¨g¼É©ù®æ¤O¦w	20601,1,7200000,600000,0
+
+//==================================================
+// Illusion of Teddy Bear
+//==================================================
+ein_d02_i	monster	¬õ¦â®õ­}ºµ	 20255,25,5000,0,"ein_d02_i_boss::OnMobDead"
+ein_d02_i	monster	¶À¦â®õ­}ºµ	 20256,25,5000,0,"ein_d02_i_boss::OnMobDead"
+ein_d02_i	monster	ºñ¦â®õ­}ºµ	 20257,25,5000,0,"ein_d02_i_boss::OnMobDead"
+ein_d02_i	monster	¥Õ¦â®õ­}ºµ	 20258,20,5000,0,"ein_d02_i_boss::OnMobDead"
+ein_d02_i	monster	ÂÅ¦â®õ­}ºµ	 20259,20,5000,0,"ein_d02_i_boss::OnMobDead"
+ein_d02_i	monster	³Ò°Ê«¬Äq¤uÅ]	 20261,20
+ein_d02_i	monster	ÆF»î¸H¤ù	 20262,15
+ein_d02_i	monster	±H±JÆF»îªº¶ÂÂ`¥Û	 20263,15
+
+-	script	ein_d02_i_boss	-1,{
+	end;
+OnMobDead:
+	if (playerattached()) {
+		if (.count < 2500)
+			.count++;
+		if (!.boss_spawn && !.cooldown && .count == 2500) {
+			.boss_spawn = true;
+			.count = 0;
+			killmonster "ein_d02_i", "ein_d02_i_boss::OnBossDeath";
+			// mapannounce "ein_d02_i", "", bc_map;	// Unknown text
+			getunitdata( killedgid, .@data );
+			monster "ein_d02_i", .@data[UMOB_X], .@data[UMOB_Y], "--ja--", 20260,1, "ein_d02_i_boss::OnBossDeath";	// ILL_TEDDY_BEAR_S
+			end;
+		}
+	}
+	end;
+OnBossDeath:
+	// (no announce)
+	killmonster "ein_d02_i", "ein_d02_i_boss::OnBossDeath";
+	.boss_spawn = false;
+	.cooldown = true;
+	initnpctimer;
+	end;
+
+OnTimer7200000:
+	.cooldown = false;
+	stopnpctimer;
+	end;
+}

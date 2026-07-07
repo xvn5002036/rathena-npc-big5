@@ -1,0 +1,132 @@
+//===== rAthena Script =======================================
+//= War of Emperium (Geffen) - Eeyorbriggar
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= NPCs that relate to Geffen Guild Castle 2
+//===== Additional Comments: =================================
+//= 1.0 First Version.
+//= 1.1 Removed dialog from interior flags. No longer uses functions. [L0ne_W0lf]
+//= 1.2 Partially rewrote Script. [Masao]
+//============================================================
+
+// Guild Flag (Outside Castle)
+//============================================================
+-	script	艾歐布里加#1::OutsideFlagsG2	722,{
+
+	set .@GID, GetCastleData("gefg_cas02",1);
+
+	if (.@GID == 0) {
+		mes "[ 盧恩米德加茲王國 神聖的公告 ]";
+		mes " ";
+		mes "1. 遵從神聖的盧恩米德加茲王國的法令，";
+		mes "我們在此宣布";
+		mes "這座城池目前沒有正式的主人。";
+		mes " ";
+		mes "2. 對於那些能夠";
+		mes "克服所有試煉";
+		mes "並摧毀華麗金屬的人，";
+		mes "國王將賦予其";
+		mes "這座城池的所有權。";
+		close;
+	}
+	if (getcharid(2) == .@GID) {
+		mes "[ 迴盪的聲音 ]";
+		mes "勇敢的人們...";
+		mes "你們希望回到那充滿榮耀的地方嗎？";
+		next;
+		if(select("回到公會城池。:離開。") == 1) {
+			close2;
+			if (getcharid(2) == GetCastleData("gefg_cas02",1)) {
+				warp "gefg_cas02",178,43;
+				end;
+			}
+			end;
+		}
+		close;
+	}
+	mes "[ 盧恩米德加茲王國 神聖的公告 ]";
+	mes " ";
+	mes "1. 遵從神聖的盧恩米德加茲王國的法令，";
+	mes "我們承認這個地方是";
+	mes "^ff0000"+GetGuildName(.@GID)+"^000000 公會的私人領地。";
+	mes " ";
+	mes "2. ^ff0000"+GetGuildName(.@GID)+"^000000 公會的會長是";
+	mes "^ff0000"+GetGuildMaster(.@GID)+"^000000";
+	mes "如果有人對此有異議，";
+	mes "請用你手中的鋼刃來證明你的力量與榮耀。";
+	close;
+
+OnRecvCastleG02:
+	FlagEmblem GetCastleData("gefg_cas02",1);
+	end;
+}
+
+gef_fild13,303,243,4	duplicate(OutsideFlagsG2)	艾歐布里加#1-2	722
+gef_fild13,312,243,4	duplicate(OutsideFlagsG2)	艾歐布里加#2	722
+gef_fild13,290,243,4	duplicate(OutsideFlagsG2)	艾歐布里加#3	722
+gef_fild13,324,243,4	duplicate(OutsideFlagsG2)	艾歐布里加#4	722
+
+// Guild Flag (Inside Castle)
+//============================================================
+-	script	艾歐布里加#5::InsideFlagsG2	722,{
+	end;
+
+OnRecvCastleG02:
+	FlagEmblem GetCastleData("gefg_cas02",1);
+	end;
+}
+
+gefg_cas02,65,130,5	duplicate(InsideFlagsG2)	艾歐布里加#5-2	722
+gefg_cas02,30,123,5	duplicate(InsideFlagsG2)	艾歐布里加#6	722
+gefg_cas02,65,139,6	duplicate(InsideFlagsG2)	艾歐布里加#7	722
+gefg_cas02,37,177,6	duplicate(InsideFlagsG2)	艾歐布里加#8	722
+gefg_cas02,37,168,6	duplicate(InsideFlagsG2)	艾歐布里加#9	722
+gefg_cas02,68,47,2	duplicate(InsideFlagsG2)	艾歐布里加#10	722
+gefg_cas02,68,36,2	duplicate(InsideFlagsG2)	艾歐布里加#11	722
+
+// Guild Flag (Town)
+//============================================================
+geffen,112,129,1	duplicate(InsideFlagsG2)	艾歐布里加#12	722
+
+// Kafra Employee
+//============================================================
+gefg_cas02,23,66,3	duplicate(guildkafra)	卡普拉服務人員#gefg_cas02	117
+
+// Steward
+//============================================================
+gefg_cas02,12,66,5	duplicate(cm)	艾斯瑪雷克#gefg_cas02	55
+
+// Treasure Room Exit
+//============================================================
+gefg_cas02,145,114,0	script	#lever_G02	111,{
+	mes " ";
+	mes "這裡有一個小拉桿。你要拉動它嗎？";
+	next;
+	if(select("拉動。:不要。") == 1) {
+		close2;
+		warp "gefg_cas02",12,67;
+		end;
+	}
+	close;
+}
+
+// Guild Dungeon Switch
+//============================================================
+gefg_cas02,167,40,0	duplicate(gdlever)	#gefg_cas02	111
+
+// Guild Treasure Spawns
+//============================================================
+gefg_cas02,140,116,0	duplicate(Gld_Trea_Spawn)	寶箱#gefg_cas02	-1
+
+// AGIT Manager
+//============================================================
+gefg_cas02,176,178,0	duplicate(Gld_Agit_Manager)	城池#gefg_cas02	-1
+
+// Guardians
+//============================================================
+gefg_cas02,12,66,5	duplicate(Gld_Guard_Template)	守護者#gefg_cas02	-1

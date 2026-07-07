@@ -1,0 +1,962 @@
+//===== rAthena Script =======================================
+//= Izlude Arena Level 70
+//===== By: ==================================================
+//= SinSloth
+//===== Current Version: =====================================
+//= 1.3
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Izlude Battle Arena Level 70
+//===== Additional Comments: =================================
+//= 1.0 First version.
+//= 1.1 Replaced effect numerics with constants. [Samuray22]
+//= 1.2 Label standardization. [Euphy]
+//= 1.3 Script updates. [Euphy]
+//============================================================
+
+arena_room,52,42,7	script	Lv70等候室	124,{
+	end;
+OnInit:
+	waitingroom "個人賽；等級 70 到 89",50,"Lv70等候室::OnStartArena",1,1000,70,89;
+	enablewaitingroomevent;
+	end;
+
+OnStartArena:
+	warpwaitingpc "force_3-1",99,12;
+	donpcevent "競技場#70::OnStart";
+	disablewaitingroomevent;
+	end;
+
+OnStart:
+	enablewaitingroomevent;
+	end;
+}
+
+force_3-1,99,20,4	script	凱迪拉克#arena	124,{
+	end;
+
+OnStart:
+	initnpctimer;
+	set $arena_min70st,gettime(DT_MINUTE);
+	set $arena_sec70st,gettime(DT_SECOND);
+	end;
+
+OnTimer3000:
+	mapannounce "force_3-1","你好，我的名字是凱迪拉克，Lv70 限時挑戰的嚮導！",0;
+	end;
+
+OnTimer4000:
+	mapannounce "force_3-1","記住，正確的決定會為你節省很多時間！",0;
+	end;
+OnTimer7000:
+	mapannounce "force_3-1","為了完成這項戰鬥挑戰，你必須從這個房間的最左側開始，以順時針方向前進。請移動到最左側。你現在有 7 分鐘的時間。",0;
+	end;
+
+OnTimer60000:
+	if (getmapusers("force_3-1") == 0) {
+		donpcevent "凱迪拉克#arena::OnFailClearStage";
+	}
+	mapannounce "force_3-1","剩餘時間：6 分鐘 ",0;
+	end;
+OnTimer120000:
+	if (getmapusers("force_3-1") == 0) {
+		donpcevent "凱迪拉克#arena::OnFailClearStage";
+	}
+	mapannounce "force_3-1","剩餘時間：5 分鐘 ",0;
+	end;
+
+OnTimer180000:
+	if (getmapusers("force_3-1") == 0) {
+		donpcevent "凱迪拉克#arena::OnFailClearStage";
+	}
+	mapannounce "force_3-1","剩餘時間：4 分鐘 ",0;
+	end;
+
+OnTimer240000:
+	if (getmapusers("force_3-1") == 0) {
+		donpcevent "凱迪拉克#arena::OnFailClearStage";
+	}
+	mapannounce "force_3-1","剩餘時間：3 分鐘 ",0;
+	end;
+
+OnTimer300000:
+	if (getmapusers("force_3-1") == 0) {
+		donpcevent "凱迪拉克#arena::OnFailClearStage";
+	}
+	mapannounce "force_3-1","剩餘時間：2 分鐘 ",0;
+	end;
+
+OnTimer360000:
+	if (getmapusers("force_3-1") == 0) {
+		donpcevent "凱迪拉克#arena::OnFailClearStage";
+	}
+	mapannounce "force_3-1","剩餘時間：1 分鐘 ",0;
+	end;
+
+OnTimer420000:
+	mapannounce "force_3-1","時間到。希望你玩得開心?",0;
+	end;
+
+OnTimer425000:
+OnTimer426000:
+OnTimer427000:
+OnTimer428000:
+OnTimer429000:
+OnTimer430000:
+OnTimer431000:
+OnTimer432000:
+OnTimer433000:
+OnTimer434000:
+	mapwarp "force_3-1","prt_are_in",126,87,0,0;
+	end;
+
+OnTimer435000:
+	mapwarp "force_3-1","prt_are_in",126,87,0,0;
+	donpcevent "凱迪拉克#arena::OnFailClearStage";
+	end;
+
+OnTimerOff:
+	stopnpctimer;
+	end;
+
+OnFailClearStage:
+	donpcevent "廣播#70::OnTimeOver1";
+	mapwarp "force_3-1","prt_are_in",126,87,0,0;
+	donpcevent "凱迪拉克#arena::OnTimerOff";
+	donpcevent "競技場#70::OnReset_All";
+	donpcevent "全滅#70::OnEnable";
+	donpcevent "Lv70等候室::OnStart";
+	end;
+
+On01_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺所有的犬妖！",0;
+	end;
+On01_End:
+	mapannounce "force_3-1","通往北側房間的門已開啟！",0;
+	end;
+On02_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺所有的鬼火並逃生！",0;
+	end;
+On02_End:
+	mapannounce "force_3-1","通往北側房間的門已開啟！",0;
+	end;
+On03_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺除了妖仙女之外的所有魔物！",0;
+	end;
+On03_End:
+	mapannounce "force_3-1","過關！通往東側房間的門已開啟！",0;
+	end;
+On04_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須在躲避巫婆的同時，擊殺所有的刺尾蟲！",0;
+	end;
+On04_End:
+	mapannounce "force_3-1","通往東側房間的門已開啟！",0;
+	end;
+On05_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺所有的蜈蚣！",0;
+	end;
+On05_End:
+	mapannounce "force_3-1","過關！通往南側房間的門已開啟！",0;
+	end;
+On06_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺所有的哥布靈(鐵鎚)！",0;
+	end;
+On06_End:
+	mapannounce "force_3-1","通往南側房間的門已開啟！",0;
+	end;
+On07_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺中央的愛麗絲女僕！",0;
+	end;
+On07_End:
+	mapannounce "force_3-1","過關！通往西側房間的門已開啟！",0;
+	end;
+
+On08_Start:
+	mapannounce "force_3-1","請向北側出口逃生！",0;
+	end;
+On09_Start:
+	mapannounce "force_3-1","為了通過此關卡，你必須擊殺犬妖首領以及所有的犬妖！",0;
+	end;
+On09_End:
+	mapannounce "force_3-1","首領已清除！- 北側的門已開啟。謝謝。 ",0;
+	end;
+}
+
+-	script	競技場#70	-1,{
+OnReset_01:
+	//donpcevent "關卡_01ex#70::OnReset";
+	donpcevent "關卡_02起點#70::OnEnable";
+	enablenpc "關卡_01_02#70";
+	end;
+
+OnReset_02:
+	donpcevent "關卡_02ex#70::OnReset";
+	donpcevent "關卡_03起點#70::OnEnable";
+	enablenpc "關卡_02_03#70";
+	end;
+
+OnReset_03:
+	enablenpc "關卡_03_04#70";
+	donpcevent "關卡_04起點#70::OnEnable";
+	donpcevent "關卡_03ex#70::OnReset";
+	end;
+
+OnReset_04:
+	enablenpc "關卡_04_05#70";
+	donpcevent "關卡_05起點#70::OnEnable";
+	donpcevent "關卡_04ex#70::OnReset";
+	end;
+
+OnReset_05:
+	enablenpc "關卡_05_06#70";
+	donpcevent "關卡_06起點#70::OnEnable";
+	donpcevent "關卡_05ex#70::OnReset";
+	end;
+
+OnReset_06:
+	enablenpc "關卡_06_07#70";
+	donpcevent "關卡_07起點#70::OnEnable";
+	donpcevent "關卡_06ex#70::OnReset";
+	end;
+OnReset_07:
+	enablenpc "關卡_07_08#70";
+	donpcevent "關卡_07ex#70::OnReset";
+	donpcevent "關卡_08起點#70::OnEnable";
+	end;
+
+OnReset_08:
+	donpcevent "關卡_09起點#70::OnEnable";
+	enablenpc "關卡_08_09#70";
+	end;
+
+OnReset_09:
+	enablenpc "關卡_出口#70";
+	end;
+
+OnStart:
+	disablenpc "關卡_01_02#70";
+	disablenpc "關卡_02_03#70";
+	disablenpc "關卡_03_04#70";
+	disablenpc "關卡_04_05#70";
+	disablenpc "關卡_05_06#70";
+	disablenpc "關卡_06_07#70";
+	disablenpc "關卡_07_08#70";
+	disablenpc "關卡_08_09#70";
+	disablenpc "關卡_出口#70";
+	donpcevent "凱迪拉克#arena::OnTimerOff";
+	//donpcevent "關卡_09怪物#70::OnTimerOff";
+	donpcevent "關卡_01怪物#70::OnReset";
+	donpcevent "關卡_02怪物#70::OnReset";
+	donpcevent "關卡_03怪物#70::OnReset";
+	donpcevent "關卡_04怪物#70::OnReset";
+	donpcevent "關卡_05怪物#70::OnReset";
+	donpcevent "關卡_06怪物#70::OnReset";
+	donpcevent "關卡_07怪物#70::OnReset";
+	//donpcevent "關卡_08怪物#70::OnReset";
+	donpcevent "關卡_09怪物#70::OnReset";
+	//donpcevent "關卡_01ex#70::OnReset";
+	donpcevent "關卡_02ex#70::OnReset";
+	donpcevent "關卡_03ex#70::OnReset";
+	donpcevent "關卡_04ex#70::OnReset";
+	donpcevent "關卡_05ex#70::OnReset";
+	donpcevent "關卡_06ex#70::OnReset";
+	donpcevent "關卡_07ex#70::OnReset";
+	//donpcevent "關卡_08ex#70::OnReset";
+	donpcevent "關卡_09ex#70::OnReset";
+	enablenpc "關卡_08_01#70";
+	donpcevent "關卡_01起點#70::OnEnable";
+	donpcevent "凱迪拉克#arena::OnStart";
+end;
+
+OnReset_All:
+	donpcevent "關卡_01怪物#70::OnReset";
+	donpcevent "關卡_02怪物#70::OnReset";
+	donpcevent "關卡_03怪物#70::OnReset";
+	donpcevent "關卡_04怪物#70::OnReset";
+	donpcevent "關卡_05怪物#70::OnReset";
+	donpcevent "關卡_06怪物#70::OnReset";
+	donpcevent "關卡_07怪物#70::OnReset";
+	donpcevent "關卡_09怪物#70::OnReset";
+	//donpcevent "關卡_01ex#70::OnReset";
+	donpcevent "關卡_02ex#70::OnReset";
+	donpcevent "關卡_03ex#70::OnReset";
+	donpcevent "關卡_04ex#70::OnReset";
+	donpcevent "關卡_05ex#70::OnReset";
+	donpcevent "關卡_06ex#70::OnReset";
+	donpcevent "關卡_07ex#70::OnReset";
+	//donpcevent "關卡_08ex#70::OnReset";
+	donpcevent "關卡_09ex#70::OnReset";
+	end;
+}
+
+force_3-1,62,26,1	script	關卡_08_01#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On01_Start";
+	warp "force_3-1",40,26;
+	end;
+}
+
+force_3-1,25,44,1	script	關卡_01_02#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On02_Start";
+	warp "force_3-1",25,69;
+	end;
+}
+
+force_3-1,25,134,1	script	關卡_02_03#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On03_Start";
+	warp "force_3-1",25,159;
+	end;
+}
+
+force_3-1,44,174,1	script	關卡_03_04#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On04_Start";
+	warp "force_3-1",69,174;
+	end;
+}
+
+force_3-1,134,174,1	script	關卡_04_05#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On05_Start";
+	warp "force_3-1",159,174;
+	end;
+}
+
+force_3-1,174,155,1	script	關卡_05_06#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On06_Start";
+	warp "force_3-1",174,130;
+	end;
+}
+
+force_3-1,174,65,1	script	關卡_06_07#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On07_Start";
+	warp "force_3-1",174,40;
+	end;
+}
+
+force_3-1,155,26,1	script	關卡_07_08#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On08_Start";
+	warp "force_3-1",132,26;
+	enablenpc "關卡_08_09#70";
+	end;
+}
+
+force_3-1,99,54,1	script	關卡_08_09#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::On09_Start";
+	warp "force_3-1",99,82;
+	end;
+}
+
+force_3-1,99,124,1	script	關卡_出口#70	45,1,1,{
+OnTouch_:
+	donpcevent "凱迪拉克#arena::OnTimerOff";
+	donpcevent "#arn_timer_70::OnEnable";
+	mapwarp "force_3-1","prt_are_in",22,87,0,0;
+	end;
+}
+
+-	script	關卡_01起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_01怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_01怪物#70	-1,{
+OnEnable:
+	monster "force_3-1",25,36,"犬妖",1545,1,"關卡_01怪物#70::OnMyMobDead";
+	monster "force_3-1",20,36,"犬妖",1545,1,"關卡_01怪物#70::OnMyMobDead";
+	monster "force_3-1",25,20,"犬妖",1546,1,"關卡_01怪物#70::OnMyMobDead";
+	monster "force_3-1",30,36,"犬妖",1547,1,"關卡_01怪物#70::OnMyMobDead";
+	monster "force_3-1",28,15,"犬妖",1547,1,"關卡_01怪物#70::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_3-1","關卡_01怪物#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_01怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On01_End";
+		donpcevent "競技場#70::OnReset_01";
+	}
+	end;
+}
+
+-	script	關卡_02起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_02怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_02ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_02ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob2:
+	monster "force_3-1",21,78,"邪骸弓箭手",1420,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",22,93,"邪骸弓箭手",1420,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",29,93,"邪骸弓箭手",1420,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",25,101,"木乃伊",1393,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",26,101,"木乃伊",1393,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",27,101,"木乃伊",1393,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",28,101,"木乃伊",1393,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",24,104,"食屍鬼",1423,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",24,113,"食屍鬼",1423,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",29,120,"食屍鬼",1423,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",29,126,"食屍鬼",1423,1,"關卡_02ex#70::OnMyMobDead";
+	monster "force_3-1",30,110,"食屍鬼",1423,1,"關卡_02ex#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_02怪物#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_02怪物#70::OnMyMobDead";
+	end;
+OnEnable:
+	monster "force_3-1",25,79,"鬼火",1578,1,"關卡_02怪物#70::OnMyMobDead";
+	monster "force_3-1",29,114,"鬼火",1578,1,"關卡_02怪物#70::OnMyMobDead";
+	donpcevent "關卡_02ex#70::OnSummonMob2";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_02怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On02_End";
+		donpcevent "競技場#70::OnReset_02";
+	}
+	end;
+}
+
+-	script	關卡_03起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_03怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_03ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_03ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob_03:
+	monster "force_3-1",10,170,"妖仙女",1550,1,"關卡_03ex#70::OnMyMobDead";
+	monster "force_3-1",26,180,"妖仙女",1550,1,"關卡_03ex#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_03怪物#70	-1,{
+OnEnable:
+	donpcevent "關卡_03ex#70::OnSummonMob_03";
+	monster "force_3-1",23,174,"寄生泥人",1555,1,"關卡_03怪物#70::OnMyMobDead";
+	monster "force_3-1",33,173,"寄生泥人",1555,1,"關卡_03怪物#70::OnMyMobDead";
+	monster "force_3-1",26,166,"血蝴蝶",1526,1,"關卡_03怪物#70::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_3-1","關卡_03怪物#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	donpcevent "關卡_03ex#70::OnSummonMob_03";
+	if (mobcount("force_3-1","關卡_03怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On03_End";
+		donpcevent "競技場#70::OnReset_03";
+	}
+	end;
+}
+
+-	script	關卡_04起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_04怪物#70::OnEnable";
+end;
+}
+
+-	script	關卡_04ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_04ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob_04:
+	monster "force_3-1",94,179,"巫婆",1525,1,"關卡_04ex#70::OnMyMobDead";
+	monster "force_3-1",110,179,"巫婆",1525,1,"關卡_04ex#70::OnMyMobDead";
+	monster "force_3-1",90,170,"巫婆",1525,1,"關卡_04ex#70::OnMyMobDead";
+	monster "force_3-1",100,170,"巫婆",1525,1,"關卡_04ex#70::OnMyMobDead";
+	monster "force_3-1",125,178,"巫婆",1525,1,"關卡_04ex#70::OnMyMobDead";
+	monster "force_3-1",125,169,"巫婆",1525,1,"關卡_04ex#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_04怪物#70	-1,{
+OnEnable:
+	donpcevent "關卡_04ex#70::OnSummonMob_04";
+	monster "force_3-1",87,174,"刺尾蟲",1440,1,"關卡_04怪物#70::OnMyMobDead";
+	monster "force_3-1",103,174,"刺尾蟲",1440,1,"關卡_04怪物#70::OnMyMobDead";
+	monster "force_3-1",96,170,"刺尾蟲",1440,1,"關卡_04怪物#70::OnMyMobDead";
+	end;
+OnReset:
+	killmonster "force_3-1","關卡_04怪物#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_04怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On04_End";
+		donpcevent "競技場#70::OnReset_04";
+	}
+	end;
+}
+
+-	script	關卡_05起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_05怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_05ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_05ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob_05:
+	switch(rand(1,2)) {
+	case 1:
+		monster "force_3-1",174,174,"飛行魔書",1478,1,"關卡_05ex#70::OnMyMobDead";
+		break;
+	case 2:
+		monster "force_3-1",173,173,"螳螂",1457,1,"關卡_05ex#70::OnMyMobDead";
+		break;
+	}
+	end;
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_05怪物#70	-1,{
+OnEnable:
+	monster "force_3-1",164,183,"蜈蚣",1429,1,"關卡_05怪物#70::OnMyMobDead";
+	monster "force_3-1",168,158,"蜈蚣",1429,1,"關卡_05怪物#70::OnMyMobDead";
+	monster "force_3-1",175,174,"蜈蚣",1429,1,"關卡_05怪物#70::OnMyMobDead";
+	monster "force_3-1",176,179,"蜈蚣",1429,1,"關卡_05怪物#70::OnMyMobDead";
+	monster "force_3-1",183,160,"蜈蚣",1429,1,"關卡_05怪物#70::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_3-1","關卡_05怪物#70::OnMyMobDead";
+	end;
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_05怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On05_End";
+		donpcevent "競技場#70::OnReset_05";
+	}
+	else donpcevent "關卡_05ex#70::OnSummonMob_05";
+	end;
+}
+
+-	script	關卡_06起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_06怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_06ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_06ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob_06:
+	monster "force_3-1",176,99,"哥布靈",1534,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",170,86,"哥布靈",1535,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",176,97,"哥布靈",1535,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",170,108,"哥布靈",1535,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",176,112,"哥布靈",1536,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",173,120,"哥布靈",1536,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",177,74,"哥布靈",1536,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",173,118,"哥布靈",1538,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",171,101,"哥布靈",1538,1,"關卡_06ex#70::OnMyMobDead";
+	monster "force_3-1",174,118,"哥布靈",1538,1,"關卡_06ex#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_06怪物#70	-1,{
+OnEnable:
+	donpcevent "關卡_06ex#70::OnSummonMob_06";
+	monster "force_3-1",173,90,"哥布靈",1537,1,"關卡_06怪物#70::OnMyMobDead";
+	monster "force_3-1",173,79,"哥布靈",1537,1,"關卡_06怪物#70::OnMyMobDead";
+	monster "force_3-1",172,70,"哥布靈",1537,1,"關卡_06怪物#70::OnMyMobDead";
+	monster "force_3-1",175,70,"哥布靈",1537,1,"關卡_06怪物#70::OnMyMobDead";
+	monster "force_3-1",171,118,"哥布靈",1537,1,"關卡_06怪物#70::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_3-1","關卡_06怪物#70::OnMyMobDead";
+	end;
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_06怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On06_End";
+		donpcevent "競技場#70::OnReset_06";
+	}
+	end;
+}
+
+-	script	關卡_07起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_07怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_07ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_07ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob_07:
+	monster "force_3-1",168,26,"夢魘",1427,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",186,23,"夢魘",1427,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",160,23,"夢魘",1427,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",188,33,"夢魘",1427,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",174,13,"幽靈劍士",1453,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",163,15,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",164,15,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",163,16,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",164,16,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",187,13,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",187,14,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",186,14,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	monster "force_3-1",186,14,"吸血蝙蝠",1419,1,"關卡_07ex#70::OnMyMobDead";
+	end;
+
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_07怪物#70	-1,{
+OnEnable:
+	donpcevent "關卡_07ex#70::OnSummonMob_07";
+	monster "force_3-1",174,25,"愛麗絲女僕",1521,1,"關卡_07怪物#70::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_3-1","關卡_07怪物#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_07怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On07_End";
+		donpcevent "競技場#70::OnReset_07";
+	}
+	end;
+}
+
+-	script	關卡_08起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_08ex#70::OnEnable";
+	end;
+}
+
+-	script	關卡_08ex#70	-1,{
+OnEnable:
+	donpcevent "競技場#70::OnReset_08";
+	end;
+}
+
+-	script	關卡_09起點#70	-1,{
+OnEnable:
+	donpcevent "關卡_09怪物#70::OnEnable";
+	end;
+}
+
+-	script	關卡_09ex#70	-1,{
+OnReset:
+	killmonster "force_3-1","關卡_09ex#70::OnMyMobDead";
+	end;
+
+OnSummonMob_09:
+	monster "force_3-1",93,100,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",94,100,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",93,99,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",85,114,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",87,114,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",89,114,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",91,114,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",93,114,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",95,114,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",85,112,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",85,110,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",85,108,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",85,106,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	monster "force_3-1",85,104,"吸血蝙蝠",1419,1,"關卡_09ex#70::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_09怪物#70	-1,{
+OnEnable:
+	monster "force_3-1",99,99,"犬妖首領",1548,1,"關卡_09怪物#70::OnMyMobDead";
+	monster "force_3-1",98,99,"犬妖",1545,1,"關卡_09怪物#70::OnMyMobDead";
+	monster "force_3-1",100,99,"犬妖",1546,1,"關卡_09怪物#70::OnMyMobDead";
+	monster "force_3-1",99,98,"犬妖",1547,1,"關卡_09怪物#70::OnMyMobDead";
+	donpcevent "關卡_09ex#70::OnSummonMob_09";
+	end;
+
+OnReset:
+	killmonster "force_3-1","關卡_09怪物#70::OnMyMobDead";
+	end;
+OnMyMobDead:
+	if (mobcount("force_3-1","關卡_09怪物#70::OnMyMobDead") < 1) {
+		donpcevent "凱迪拉克#arena::On09_End";
+		donpcevent "競技場#70::OnReset_09";
+		donpcevent "競技場#70::OnReset_All";
+		set $arena_min70end,gettime(DT_MINUTE);
+		set $arena_sec70end,gettime(DT_SECOND);
+	}
+	end;
+}
+
+prt_are_in,129,83,3	script	員工#70-1	67,{
+	mes "[員工]";
+	mes "幹得好。";
+	mes "即使你未能在限時挑戰中通關，我還是會給你少量的競技場點數作為獎勵。";
+	next;
+	if (arena_point == 30000) {
+		mes "[員工]";
+		mes "嗯哼！";
+		mes "你已經有足夠的競技場點數了。";
+		mes "請先花費一些競技場點數。下次見面時，我一定會給你一些獎勵。";
+		next;
+	}
+	else set arena_point, arena_point + 1;
+	mes "[員工]";
+	mes "讓我引導你出去吧。希望你玩得開心。";
+	close2;
+	specialeffect2 EF_EXIT;
+	warp "arena_room",100,75;
+	end;
+}
+
+prt_are_in,25,84,3	script	員工#70-2	67,{
+	if($arena_min70end < $arena_min70st) {
+		if($arena_sec70end < $arena_sec70st) {
+			set @record_min70,60 - $arena_min70st + $arena_min70end -1;
+			set @record_sec70,60 - $arena_sec70st + $arena_sec70end;
+		} else {
+			set @record_min70,60 - $arena_min70st + $arena_min70end;
+			set @record_sec70,$arena_sec70end - $arena_sec70st;
+		}
+	} else {
+		if($arena_sec70end < $arena_sec70st) {
+			set @record_min70,$arena_min70end - $arena_min70st -1;
+			set @record_sec70,60 - $arena_sec70st + $arena_sec70end;
+		} else {
+			set @record_min70,$arena_min70end - $arena_min70st;
+			set @record_sec70,$arena_sec70end - $arena_sec70st;
+		}
+	}
+	set @gap70,(60 * $top_70min + $top_70sec) - (60 * @record_min70 + @record_sec70);
+	mes "[員工]";
+	mes "哇，你做得太棒了? ";
+	mes "你的名字是……^3131FF" + strcharinfo(0) +"^000000，對吧？";
+	mes "^3131FF"+ strcharinfo(0) +"^000000，你通過戰鬥所花費的總時間是……";
+	next;
+	mes "[員工]";
+	mes "是 "+@record_min70+" 分 "+@record_sec70+" 秒。";
+	mes "恭喜你！";
+	next;
+	mes "[員工]";
+	mes "在 Lv70 競技場限時挑戰中，最快通關的玩家是 ^3131FF"+$arena_70topn$+"^000000。";
+	next;
+	mes "[員工]";
+	mes "^3131FF"+$arena_70topn$+"^000000 的通關時間為 ^3131FF"+$top_70min+"^000000 分 ^3131FF"+$top_70sec+"^000000 秒。";
+	next;
+	if (@gap70 < 0) {
+		mes "[員工]";
+		mes "雖然你沒能創下新紀錄，但我希望你下次能成功。";
+		next;
+		if (arena_point > 29980) {
+			mes "[員工]";
+			mes "那麼讓我用一些競技場點數來獎勵你……咦？";
+			mes "你的競技場點數已經超過上限了。在你花費一些點數之前，我無法再給你更多點數。";
+			next;
+			mes "[員工]";
+			mes "你可以在競技場等候室確認你擁有的競技場點數。";
+			next;
+			mes "[員工]";
+			mes "希望你玩得開心，讓我引導你到競技場的入口吧。";
+			mes "謝謝你。";
+			close2;
+		} else {
+			set arena_point, arena_point + 20;
+			mes "[員工]";
+			mes "讓我獎勵你一些競技場點數吧。";
+			mes "如果你想確認你擁有的競技場點數，請去競技場入口與 ^3131FF凡迪戈斯^000000 對話。";
+			next;
+			mes "[員工]";
+			mes "讓我引導你到競技場的入口吧。";
+			mes "下次見?";
+			close2;
+		}
+		specialeffect2 EF_EXIT;
+		donpcevent "廣播#70::OnNomal1";
+		warp "arena_room",100,75;
+		donpcevent "#arn_timer_70::OnStop";
+		donpcevent "全滅#70::OnEnable";
+		donpcevent "Lv70等候室::OnStart";
+		end;
+	} else {
+		emotion ET_HUK;
+		mes "[員工]";
+		mes "哇！你刷新紀錄了！";
+		mes "幹得太漂亮了！";
+		next;
+		mes "[員工]";
+		mes "你已經被記錄為通過 ^FF0000競技場限時挑戰 Lv70^000000 的最快玩家了，^3131FF"+strcharinfo(0)+"^000000。";
+		set $top_70min, @record_min70;
+		set $top_70sec, @record_sec70;
+		set $arena_70topn$,strcharinfo(0);
+		donpcevent "凡迪戈斯::OnLineRec_70";
+		next;
+		if (arena_point > 29970) {
+			mes "[員工]";
+			mes "那麼讓我用一些競技場點數來獎勵你……咦？";
+			mes "你的競技場點數已經超過上限了。在你花費一些點數之前，我無法再給你更多點數。";
+			next;
+			mes "[員工]";
+			mes "你可以在競技場等候室確認你擁有的競技場點數。";
+			next;
+			mes "[員工]";
+			mes "希望你玩得開心，讓我引導你到競技場的入口吧。";
+			mes "謝謝你。";
+			close2;
+		} else {
+			mes "[員工]";
+			mes "讓我用一些競技場點數來獎勵你。";
+			mes "同時，由於你刷新了紀錄，這次你將獲得額外的點數。";
+			next;
+			set arena_point, arena_point + 50;
+			mes "[員工]";
+			mes "讓我獎勵你一些競技場點數吧。";
+			mes "如果你想確認你擁有的競技場點數，請去競技場入口與 ^3131FF凡迪戈斯^000000 對話。";
+			next;
+			mes "[員工]";
+			mes "讓我引導你到競技場的入口吧。";
+			mes "下次見?";
+			close2;
+		}
+		specialeffect2 EF_HIT5;
+		donpcevent "廣播#70::OnNomal2";
+		warp "arena_room",100,75;
+		donpcevent "#arn_timer_70::OnStop";
+		donpcevent "全滅#70::OnEnable";
+		donpcevent "Lv70等候室::OnStart";
+		end;
+	}
+}
+
+-	script	#arn_timer_70	-1,{
+OnEnable:
+	initnpctimer;
+	end;
+OnTimer2000:
+	mapannounce "prt_are_in","此廣播旨在為您提供有關 Lv70 競技場的限制資訊。",0,0xFFCE00;
+	end;
+OnTimer3000:
+	mapannounce "prt_are_in","為了讓遊戲進行更順暢，出口傳送陣將在 1 分鐘後啟動。",0,0xFFCE00;
+	end;
+OnTimer4000:
+	mapannounce "prt_are_in","請盡快進行戰鬥以免處於劣勢。感謝您的配合。",0,0xFFCE00;
+	end;
+OnTimer60000:
+ 	donpcevent "廣播#70::OnTimeOver2";
+	donpcevent "競技場_傳送_70::OnOut";
+	donpcevent "#arn_timer_70::OnStop";
+	donpcevent "全滅#70::OnEnable";
+	donpcevent "Lv70等候室::OnStart";
+	end;
+
+OnStop:
+	stopnpctimer;
+	end;
+}
+
+-	script	競技場_傳送_70	-1,{
+OnOut:
+	areawarp "prt_are_in",14,91,29,74,"arena_room",100,75;
+	end;
+}
+
+-	script	廣播#70	-1,{
+OnTimeOver1:
+	mapannounce "force_3-1","由於戰鬥中發生錯誤，競技場將重新啟動。",0,0xFFCE00;
+	end;
+OnTimeOver2:
+	mapannounce "force_3-1","由於等候室發生錯誤，競技場將重新啟動。",0,0xFFCE00;
+	end;
+OnNomal1:
+	mapannounce "force_3-1","競技場將重新啟動。",0,0xFFCE00;
+	end;
+OnNomal2:
+	mapannounce "force_3-1","競技場將重新啟動。",0,0xFFCE00;
+	end;
+}
+
+-	script	全滅#70	-1,{
+OnEnable:
+	mapwarp "force_3-1","prt_are_in",126,190,0,0;
+	donpcevent "關卡_01怪物#70::OnReset";
+	donpcevent "關卡_02怪物#70::OnReset";
+	donpcevent "關卡_03怪物#70::OnReset";
+	donpcevent "關卡_04怪物#70::OnReset";
+	donpcevent "關卡_05怪物#70::OnReset";
+	donpcevent "關卡_06怪物#70::OnReset";
+	donpcevent "關卡_07怪物#70::OnReset";
+	//donpcevent "關卡_08怪物#70::OnReset";
+	donpcevent "關卡_09怪物#70::OnReset";
+	//donpcevent "關卡_01ex#70::OnReset";
+	donpcevent "關卡_02ex#70::OnReset";
+	donpcevent "關卡_03ex#70::OnReset";
+	donpcevent "關卡_04ex#70::OnReset";
+	donpcevent "關卡_05ex#70::OnReset";
+	donpcevent "關卡_06ex#70::OnReset";
+	donpcevent "關卡_07ex#70::OnReset";
+	//donpcevent "關卡_08ex#70::OnReset";
+	donpcevent "關卡_09ex#70::OnReset";
+	donpcevent "凱迪拉克#arena::OnTimerOff";
+	disablenpc "凱迪拉克#arena";
+	disablenpc "關卡_01_02#70";
+	disablenpc "關卡_02_03#70";
+	disablenpc "關卡_03_04#70";
+	disablenpc "關卡_04_05#70";
+	disablenpc "關卡_05_06#70";
+	disablenpc "關卡_06_07#70";
+	disablenpc "關卡_07_08#70";
+	disablenpc "關卡_08_09#70";
+	disablenpc "關卡_出口#70";
+	disablenpc "競技場#70";
+	donpcevent "#arn_timer_70::OnStop";
+	enablenpc "凱迪拉克#arena";
+	enablenpc "競技場#70";
+	end;
+OnInit:
+	if(!$top_70min && !$top_70sec) set $top_70min,7;
+	end;
+}

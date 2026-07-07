@@ -1,0 +1,4320 @@
+//===== rAthena Script ======================================= 
+//= Ep 10+ Novice Training Grounds
+//===== By: ================================================== 
+//= Dr.Evil & MasterOfMuppets
+//===== Current Version: ===================================== 
+//= 2.4
+//===== Compatible With: ===================================== 
+//= rAthena Project; SVN 3422+
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Novice Training Grounds
+//===== Additional Comments: ================================= 
+//= 1.7D Added confirm character name thing on receptionist. [Kisuka]
+//= 1.8 Rescripted to Aegis 10.3 standards. [L0ne_W0lf]
+//=     NPCs are not backwards compatable, and will remove
+//=     old variables used in the previous novice grounds.
+//= 1.9 Fixed problem with Hanson's dialog. (bugreport:1703) [L0ne_W0lf]
+//=     Fixed Entrance Guard clearing vars. (bugreport:1695)
+//=     Added duplicate NPCs to combat training maps.
+//= 2.0 Fixed savepoint not being changed sometimes. [L0ne_W0lf]
+//= 2.1 Corrected spacing issue in welcome message. [L0ne_W0lf]
+//= 2.2 Corrected Leo's endless dialog. [L0ne_W0lf]
+//= 2.3 Added fix to Hanson from GM-windsor- and Saithis. [L0ne_W0lf]
+//= 2.3a Correct a wrong variable name. (bugreport:2293) [Samuray22]
+//= 2.4 Corrected an error in Hanson. (bugreport:2374) [L0ne_W0lf]
+//============================================================ 
+
+// Bulletin Board
+new_1-1,66,114,4	script	佈告欄#nv	111,{
+	mes "^FF0000=================================^000000";
+	mes "^FF0000 ^000000 ^E40CAA[歡迎]^CC0000 來到 ^FF9000初心者^7FFF00 修練場 ^00FF00 ^E40CAA[歡迎]^FF0000^000000";
+	mes "^FF0000=================================^000000";
+	close;
+}
+
+new_2-1,66,114,4	duplicate(佈告欄#nv)	佈告欄#nv2	111
+new_3-1,66,114,4	duplicate(佈告欄#nv)	佈告欄#nv3	111
+new_4-1,66,114,4	duplicate(佈告欄#nv)	佈告欄#nv4	111
+new_5-1,66,114,4	duplicate(佈告欄#nv)	佈告欄#nv5	111
+
+new_1-1,144,116,2	script	守衛#nv1	105,{
+	mes "[修練場守衛]";
+	mes "歡迎來到修練場。";
+	mes "你現在在外部庭院。請進入城堡內開始你的修練。";
+	close;
+}
+
+new_2-1,144,116,2	duplicate(守衛#nv1)	守衛#nv2-1	105
+new_3-1,144,116,2	duplicate(守衛#nv1)	守衛#nv3-1	105
+new_4-1,144,116,2	duplicate(守衛#nv1)	守衛#nv4-1	105
+new_5-1,144,116,2	duplicate(守衛#nv1)	守衛#nv5-1	105
+
+new_1-1,144,107,2	script	守衛#nv2	105,{
+	mes "[修練場守衛]";
+	if(rand(2)) {
+		mes "進來吧！";
+		mes "我想要";
+		mes "歡迎你來到";
+		mes "修練場！";
+		next;
+		mes "[修練場守衛]";
+		mes "在這裡，你可以為了";
+		mes "未來的冒險";
+		mes "做好準備，";
+		mes "去探索仙境傳說的世界！";
+	}
+	else {
+		mes "去吧，初心者，去吧！";
+		mes "戰鬥並變得更強！朝著光明的未來邁進！";
+	}
+	close;
+}
+
+new_2-1,144,107,2	duplicate(守衛#nv2)	守衛#nv2-2	105
+new_3-1,144,107,2	duplicate(守衛#nv2)	守衛#nv3-2	105
+new_4-1,144,107,2	duplicate(守衛#nv2)	守衛#nv4-2	105
+new_5-1,144,107,2	duplicate(守衛#nv2)	守衛#nv5-2	105
+
+
+// Receptionist
+new_1-2,100,29,4	script	接待員#nv1	86,{
+	mes "[修練場接待員]";
+	mes "你好，你看起來是新來的。";
+	mes "你叫什麼名字？";
+	next;
+	input .@charname$;
+	if (.@charname$!=strcharinfo(0)) {
+		mes "[修練場接待員]";
+		mes "抱歉，我想我沒聽清楚";
+		mes "你說的話";
+		close;
+	}
+	mes "[修練場接待員]";
+	mes "歡迎！";
+	mes "你現在位於";
+	mes "^3355FF初心者修練場^000000的入口。";
+	next;
+	mes "[修練場接待員]";
+	mes "如果你是剛來到";
+	mes "仙境傳說世界的新手，";
+	mes "請選擇";
+	mes "^3355FF修練場介紹^000000";
+	mes "選單來獲取更多資訊。";
+	next;
+	while (1) {
+		switch(select("申請修練。:直接進入仙境傳說的世界。:^3355FF修練場介紹。^000000:我需要一點時間想想。")) {
+		case 1:
+			mes "[修練場接待員]";
+			mes "感謝你申請初心者修練。關於各個修練課程的詳細資訊，請向指導員詢問以尋求協助。";
+			next;
+			mes "[修練場接待員]";
+			mes "當你對修練課程進度有任何問題時，請隨時詢問任何一位導師。";
+			next;
+			mes "[修練場接待員]";
+			mes "現在將把你傳送";
+			mes "到修練場。";
+			close2;
+			warp "new_1-2",100,70;
+			end;
+		case 2:
+			mes "[修練場接待員]";
+			mes "我明白了。";
+			mes "請盡你";
+			mes "最大的努力，祝你";
+			mes "好運！";
+			close2;
+			set nov_1st_cos,0;
+			set nov_2nd_cos,0;
+			set nov_3_swordman,0;
+			set nov_3_archer,0;
+			set nov_3_thief,0;
+			set nov_3_magician,0;
+			set nov_3_acolyte,0;
+			set nov_3_merchant,0;
+			switch(rand(6)) {
+			case 0:
+				savepoint "prontera",273,354,1,1;
+				warp "prontera",273,354;
+				break;
+			case 1:
+				savepoint "morocc",160,94,1,1;
+				warp "morocc",160,94;
+				break;
+			case 2:
+				savepoint "geffen",120,100,1,1;
+				warp "geffen",120,100;
+				break;
+			case 3:
+				savepoint "payon",70,100,1,1;
+				warp "payon",70,100;
+				break;
+			case 4:
+				savepoint "alberta",116,57,1,1;
+				warp "alberta",116,57;
+				break;
+			case 5:
+				savepoint "izlude",94,103,1,1;
+				warp "izlude",94,103;
+			}
+			end;
+		case 3:
+			mes "[修練場接待員]";
+			mes "這個修練場是由神聖盧恩米德加茲王國教育局所設立，旨在為仙境傳說的新玩家提供有用的資訊。";
+			next;
+			mes "[修練場接待員]";
+			mes "修練課程分為兩個部分：基礎知識課程和野外戰鬥修練。";
+			next;
+			mes "[修練場接待員]";
+			mes "透過第一個課程，玩家將學習必要的知識，以便有更順暢的遊戲體驗。";
+			next;
+			mes "[修練場接待員]";
+			mes "在野外戰鬥修練中，";
+			mes "玩家將與較弱的魔物進行實際戰鬥，學習基本的戰鬥技巧。";
+			next;
+			mes "[修練場接待員]";
+			mes "藉由這些戰鬥練習，";
+			mes "玩家在進入真實世界之前，將能夠獲得更多經驗。";
+			next;
+			mes "[修練場接待員]";
+			mes "在修練結束時，我們將介紹一轉職業。這將有助於玩家決定最適合自己的職業。";
+			next;
+			mes "[修練場接待員]";
+			mes "如果你想參加修練場，請在選單中選擇「^3355FF申請修練^000000」。";
+			next;
+			mes "[修練場接待員]";
+			mes "否則，如果你想跳過基本修練，直接進入仙境傳說的世界，請選擇「^3355FF直接進入仙境傳說的世界^000000」。";
+			next;
+			break;
+		case 4:
+			mes "[修練場接待員]";
+			mes "我明白了。";
+			mes "請慢慢考慮。";
+			close;
+		}
+	}
+}	
+new_2-2,100,29,4	duplicate(接待員#nv1)	接待員#nv2	86
+new_3-2,100,29,4	duplicate(接待員#nv1)	接待員#nv3	86
+new_4-2,100,29,4	duplicate(接待員#nv1)	接待員#nv4	86
+new_5-2,100,29,4	duplicate(接待員#nv1)	接待員#nv5	86
+
+new_1-1,53,114,4	script	希恩#nv1	727,{
+	if (nov_get_item04 > 9 || nov_get_item05 > 9) {
+		mes "[希恩]";
+		mes "嗯...？";
+		mes "你怎麼";
+		mes "還在這裡？";
+		mes "哦，你使用了^3355FF蝴蝶翅膀^000000，對吧？";
+		next;
+		mes "[希恩]";
+		mes "不，不，不?";
+		mes "你應該在完成這裡的修練^666666之後^000000，想要回到城鎮時才使用蝴蝶翅膀，懂嗎？";
+		next;
+		mes "[希恩]";
+		mes "現在，讓我把";
+		mes "你送回";
+		mes "修練場。";
+		close2;
+		warp "new_1-2",99,99;
+		end;
+	}
+	else if (nov_1st_cos > 2) {
+		mes "[希恩]";
+		mes "修練場";
+		mes "就位於右邊的";
+		mes "橋";
+		mes "過去一點。";
+		next;
+		mes "[希恩]";
+		mes "雖然你將會";
+		mes "參加";
+		mes "一些課程，但你";
+		mes "不會後悔的。";
+		mes "現在，去吧！";
+		close;
+	}
+	else if (nov_1st_cos == 2) {
+		mes "[希恩]";
+		mes "嘿...";
+		mes "你這個小淘氣！";
+		next;
+		mes "[希恩]";
+		mes "等等...";
+		mes "冷靜點，希恩。";
+		mes "你是一個專業的";
+		mes "教官！不要對一個";
+		mes "初心者發脾氣！";
+		next;
+		mes "[希恩]";
+		mes "現在立刻去走過右邊的橋！^666666*咳咳*^000000 你會看到一座城堡，裡面有各種導師可以見面。";
+		next;
+		mes "[希恩]";
+		mes "如果你看不到入口，只要按住^3355FF滑鼠右鍵^000000並拖曳滑鼠，就可以改變遊戲中的視角。很簡單，對吧？";
+		next;
+		mes "[希恩]";
+		mes "要重置你的視角，";
+		mes "只要雙擊滑鼠右鍵即可。那麼，保重囉！";
+		next;
+		mes "[希恩]";
+		mes "哦，在你離開之前，";
+		mes "學習如何好好對待一位淑女，好嗎？這樣她們或許會給你這樣的禮物喔！";
+		set nov_1st_cos,3;
+		getexp 9,0;
+		close;
+	}
+	else if (nov_1st_cos == 1) {
+		mes "[希恩]";
+		mes "咦...？";
+		mes "你怎麼";
+		mes "還在這裡？";
+		mes "^666666*嘆氣...*^000000";
+		next;
+		mes "[希恩]";
+		mes "嘿，當你進入修練場時，你會學到各種有助於你進行遊戲的東西。你甚至有機會獲得 Zeny 和其他獎勵。";
+		next;
+		mes "[希恩]";
+		mes "你甚至可以像這樣";
+		mes "獲得經驗值！";
+		set nov_1st_cos,3;
+		getexp 9,0;
+		next;
+		mes "[希恩]";
+		mes "你在修練場所學到的一切都將對你的遊戲過程有益。所以往好處想，好嗎？";
+		close;
+	}
+	else {
+		mes "[希恩]";
+		mes "你好呀?";
+		mes "歡迎來到";
+		mes "初心者修練場！";
+		next;
+		mes "[希恩]";
+		mes "讓我看看。";
+		mes "你的名字是...";
+		mes "" + strcharinfo(0) + "。";
+		next;
+		mes "[希恩]";
+		mes "我的名字是希恩。";
+		mes "沒錯，這當然是我們第一次見面。哈哈哈哈?！";
+		next;
+		mes "[希恩]";
+		mes "既然我們認識了，有什麼我可以幫忙的嗎？";
+		mes "我隨時準備回答你的問題?";
+		next;
+		switch(select("我該去哪裡？:關於基本介面。:你到底是誰？")) {
+		case 1:
+			mes "[希恩]";
+			mes "你有看到你右邊的";
+			mes "橋嗎？只要過了那座橋，你就會到達一座城堡。你只要走進去就行了！";
+			next;
+			mes "[希恩]";
+			mes "城堡的入口";
+			mes "是一個^4D4DFF旋轉的白光^000000。這些傳送陣能讓你從一個區域移動到另一個區域。";
+			next;
+			mes "[希恩]";
+			mes "你知道怎麼移動嗎？";
+			mes "在地上點擊滑鼠左鍵，你就會走到那個位置。很簡單吧？";
+			next;
+			mes "[希恩]";
+			mes "所以出發吧！";
+			mes "基本上，你必須進入城堡才能開始你的冒險。";
+			next;
+			mes "[希恩]";
+			mes "入口處有";
+			mes "守衛，所以不用";
+			mes "擔心會迷路。";
+			mes "保重囉?！";
+			set nov_1st_cos,1;
+			close;
+		case 2:
+			mes "[希恩]";
+			mes "基本介面...";
+			mes "你知道點擊、雙擊和拖曳是什麼意思嗎？";
+			next;
+			mes "[希恩]";
+			mes "當你按一下";
+			mes "滑鼠左鍵時，";
+			mes "那就是點擊。當你連續按兩下鼠標按鈕時，那就是雙擊。";
+			next;
+			mes "[希恩]";
+			mes "拖曳是指當你點擊某物後，按住滑鼠按鍵";
+			mes "並移動滑鼠的動作。";
+			next;
+			mes "[希恩]";
+			mes "在我們開始討論";
+			mes "基本介面之前，你應該記住這些術語，因為我們會經常使用它們。";
+			next;
+			mes "[希恩]";
+			mes "在城堡裡，有一位基本介面導師可以更清楚地教你這些基礎知識。進入城堡開始你的修練吧。";
+			next;
+			mes "[希恩]";
+			mes "城堡的入口";
+			mes "是一個";
+			mes "^4D4DFF旋轉的白光^000000。";
+			next;
+			mes "[希恩]";
+			mes "入口處有";
+			mes "守衛，所以不用";
+			mes "擔心會迷路。";
+			mes "保重囉?！";
+			set nov_1st_cos,1;
+			close;
+		case 3:
+			mes "[希恩]";
+			mes "我？我是希恩！";
+			mes "但你這樣問太沒禮貌了！我是在這裡貢獻我的時間和精力，所以你至少該對我放尊重點！";
+			set nov_1st_cos,2;
+			close;
+		}
+	}
+}
+
+new_2-1,53,114,4	duplicate(希恩#nv1)	希恩#nv2	727
+new_3-1,53,114,4	duplicate(希恩#nv1)	希恩#nv3	727
+new_4-1,53,114,4	duplicate(希恩#nv1)	希恩#nv4	727
+new_5-1,53,114,4	duplicate(希恩#nv1)	希恩#nv5	727
+
+
+// Interfaces Tutor
+new_1-2,99,105,3	script	介面導師#nv1	751,{
+	if (nov_get_item02 > 9 && nov_get_item03 > 9 && nov_get_item04 > 9) {
+		mes "[克里斯]";
+		mes "你已經完成了所有必修課程。你跟助理導師們談過了嗎？野外戰鬥修練將是你的下一個課程。你想繼續嗎？";
+		next;
+		switch(select("好啊！:不，我稍後再來。:把我傳送到城鎮！")) {
+		case 1:
+			mes "[克里斯]";
+			mes "你的下一個課程是野外戰鬥修練。請仔細聽你的下一位教官的指導，我希望你能通過課程。祝你好運。";
+			close2;
+			warp "new_1-2",28,178;
+			end;
+		case 2:
+			mes "[克里斯]";
+			mes "那好吧。同時，你可能會想去跟助理導師們談談，因為必修課程中教授的基礎資訊對於新的冒險者來說可能還不夠。";
+			next;
+			mes "[克里斯]";
+			mes "當你需要我的協助時，隨時歡迎回來。";
+			close;
+		case 3:
+			mes "[克里斯]";
+			mes "所以，你想被傳送到城鎮嗎？如果你有自信已經學夠了，就去右邊跟^3355FF卡普拉服務人員^000000談談吧。";
+			next;
+			mes "[克里斯]";
+			mes "卡普拉服務在你進入真實世界後會非常方便。他們的空間移動服務可以用來在城鎮之間旅行，而且你可以把物品安全地存放在卡普拉倉庫中。";
+			next;
+			mes "[克里斯]";
+			mes "我們可能不會再見面了，但我希望你能變得更強，成為一位偉大的冒險者。祝你好運。";
+			close;
+		}
+	}
+	else if (nov_get_item02 < 10) {
+		mes "[克里斯]";
+		mes "你好，我可以看看你的";
+		mes "註冊證明嗎？";
+		next;
+		if (NEW_MES_FLAG0) {
+			mes "[克里斯]";
+			mes "啊，" + strcharinfo(0) + "，你申請了一個我們不再提供給學員的舊修練課程。讓我為你發放一份新的註冊證明。";
+			set NEW_MES_FLAG0,0;
+			set NEW_MES_FLAG1,0;
+			set NEW_MES_FLAG2,0;
+			set NEW_MES_FLAG3,0;
+			set NEW_MES_FLAG4,0;
+			set NEW_MES_FLAG5,0;
+			set NEW_LVUP0,0;
+			set NEW_LVUP1,0;
+			set NEW_JOBLVUP,0;
+			next;
+		}
+		mes "[克里斯]";
+		mes "好了，現在";
+		mes "你準備好了。";
+		mes "在我的課程中，我教授";
+		mes "最基本介面的";
+		mes "使用方法。";
+		next;
+		mes "[克里斯]";
+		mes strcharinfo(0)+"。";
+		mes "你想了解";
+		mes "更多關於介面";
+		mes "的基礎知識嗎？";
+		next;
+		switch(select("是的。:不用了，我是專家?:取消。")) {
+		case 1:
+			mes "[克里斯]";
+			mes "首先，你可以透過拖曳視窗來移動螢幕上的每一個介面視窗。只要點擊視窗，按住滑鼠左鍵並移動滑鼠即可。";
+			next;
+			mes "[克里斯]";
+			mes "現在，讓我根據它們在螢幕上的預設位置來解釋每一個介面視窗。";
+			next;
+			mes "[克里斯]";
+			mes "在你螢幕的左上方，你會看到一個顯示你角色名稱和等級的視窗。這就是^3355FF基本資訊視窗^000000。";
+			next;
+			mes "[克里斯]";
+			if (BaseLevel < 8) {
+				mes "讓我給你";
+				mes "一些經驗值。";
+				mes "留意你的基本資訊視窗，觀察你的 Base Level（基本等級）經驗值條的變化。";
+				next;
+				mes "[克里斯]";
+				mes "你看到了嗎...？";
+				mes "當你獲得經驗值時，";
+				mes "經驗值條就會填滿。";
+				mes "一旦達到 100% 滿，你的等級就會提升，經驗值條也會重置為 0。";
+				set nov_get_item02,10;
+				switch (BaseLevel) {
+				case 1: getexp 10,0; break;
+				case 2: getexp 17,0; break;
+				case 3: getexp 26,0; break;
+				case 4: getexp 37,0; break;
+				case 5: getexp 78,0; break;
+				case 6: getexp 115,0; break;
+				case 7: getexp 155,0; break;
+				}
+			}
+			else {
+				mes "但是...";
+				mes "我猜你已經對 Base Level 經驗值條很熟悉了。";
+			}
+			next;
+			mes "[克里斯]";
+			mes "在基本資訊視窗的底部，你會看到兩個不同的經驗值條。上面的是你當前的 Base Level（基本等級），下面的是你當前 Job Level（職業等級）的經驗值。";
+			next;
+			mes "[克里斯]";
+			mes "當職業等級";
+			mes "經驗值條填滿時，你的職業等級將會提升，並獲得一點^3355FF技能點數^000000。技能點數用於學習你角色的技能。";
+			next;
+			mes "[克里斯]";
+			mes "在基本資訊視窗";
+			mes "的右側，";
+			mes "你會看到各種";
+			mes "選單按鈕。";
+			next;
+			mes "[克里斯]";
+			mes "點擊這些選單按鈕將會打開其他介面視窗，例如物品欄視窗";
+			mes "或隊伍視窗。";
+			next;
+			mes "[克里斯]";
+			mes "現在...";
+			mes "^3355FF對話視窗^000000";
+			mes "位於你螢幕的";
+			mes "底部。";
+			next;
+			mes "[克里斯]";
+			mes "在對話視窗的右下角，你應該會看到兩個藍色按鈕。左邊的按鈕允許你更改聊天選項。";
+			next;
+			mes "[克里斯]";
+			mes "「^3355FF公開發言^000000」選項";
+			mes "允許你和螢幕上";
+			mes "的每個人聊天。";
+			next;
+			mes "[克里斯]";
+			mes "「^3355FF隊伍發言^000000」和「^3355FF公會發言^000000」選項讓你只向隊伍或公會成員發送訊息，不管他們離你有多遠。";
+			next;
+			mes "[克里斯]";
+			mes "你可以拖曳對話視窗";
+			mes "右側的捲動條來回顧對話。由於對話視窗始終處於活動狀態，你與其他玩家交流時不會遇到任何問題。";
+			next;
+			mes "[克里斯]";
+			mes "現在，最重要的介面之一是^3355FF小地圖^000000，它位於你螢幕的右上角。";
+			next;
+			mes "[克里斯]";
+			mes "小地圖上的紅點標示著連接不同區域的^3355FF傳送陣^000000位置。";
+			next;
+			mes "[克里斯]";
+			mes "如果你加入了隊伍或公會，只要你的隊伍或公會成員在同一張地圖上，小地圖也會顯示他們的位置。";
+			next;
+			mes "[克里斯]";
+			mes "請點擊你基本資訊視窗";
+			mes "右側的選單按鈕，熟悉一下其他介面。";
+			next;
+			mes "[克里斯]";
+			mes "好了，這就是我對遊戲介面的簡要概述。現在看起來資訊量可能很大，但很快就會變成你的直覺反應了。";
+			if (JobLevel < 7) {
+				next;
+				mes "[克里斯]";
+				mes "讓我給你一點職業經驗值。打開你的技能視窗，將你的技能點數分配到^3355FF基本技能^000000上。";
+				set nov_get_item02,11;
+				switch (JobLevel) {
+				case 1: getexp 0,10; break;
+				case 2: getexp 0,18; break;
+				case 3: getexp 0,28; break;
+				case 4: getexp 0,40; break;
+				case 5: getexp 0,91; break;
+				case 6: getexp 0,151; break;
+				}
+			}
+			else {
+				mes "[克里斯]";
+				mes "你的職業等級比我預期的要高得多。你現在一定已經知道基本資訊了。";
+			}
+			next;
+			mes "[克里斯]";
+			mes "現在，你為什麼不去找艾德溫談談呢？他會教你更多關於技能基本使用的知識。啊，讓我給你一個小禮物：破舊的初心者忍者服！";
+			set nov_get_item02,12;
+			getitem 2352,1; //Novice_Plate
+			close;
+		case 2:
+			mes "[克里斯]";
+			mes "讓我引導你";
+			mes "到野外戰鬥";
+			mes "修練課程。";
+			mes "如果你覺得需要複習，隨時可以回來。";
+			close2;
+			warp "new_1-2",28,178;
+			end;
+		case 3:
+			emotion ET_PROFUSELY_SWEAT;
+			close;
+		}
+	}
+	else if (nov_get_item03 < 10) {
+		mes "[克里斯]";
+		mes "有什麼我可以幫忙的嗎？";
+		mes "我可以看看你的註冊證明嗎？";
+		next;
+		mes "[克里斯]";
+		mes "看來你還沒參加過技能資訊課程。請跟這個房間最左邊的導師談談並參加他的課程。";
+		next;
+		switch(select("謝謝！:我厭倦上課了?:取消")) {
+		case 1:
+			mes "[克里斯]";
+			mes "當你參加技能資訊課程時，你會對技能的使用有更好的了解。";
+			next;
+			mes "[克里斯]";
+			mes "既然技能的使用是米德加茲生存不可或缺的一部分，我強烈建議你參加這個課程。來，讓我引導你過去。";
+			close2;
+			warp "new_1-2",84,107;
+			end;
+		case 2:
+			mes "[克里斯]";
+			mes "我明白了。在這種情況下，你一定準備好進行野外戰鬥修練課程了。需要我馬上送你過去嗎？";
+			next;
+			if (select("不！等、等等！:請送我過去?！") == 1) {
+				mes "[克里斯]";
+				mes "...？！";
+				mes "好...好吧。";
+				mes "請在準備好時";
+				mes "再回來。";
+				close;
+			}
+			else {
+				mes "[克里斯]";
+				mes "祝你好運，";
+				mes "年輕的初心者。";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			}
+		case 3:
+			emotion ET_PROFUSELY_SWEAT;
+			close;
+		}
+	}
+	else if (nov_get_item04 < 10) {
+		mes "[克里斯]";
+		mes "有什麼我可以幫忙的嗎？";
+		mes "我可以看看你的註冊證明嗎？";
+		next;
+		mes "[克里斯]";
+		mes "看起來你還沒參加過物品資訊課程。請跟這個房間最右邊的導師談談並參加她的課程。";
+		next;
+		switch(select("謝謝！:我厭倦上課了?:取消")) {
+		case 1:
+			mes "[克里斯]";
+			mes "物品資訊課程對於你學習如何使用快捷鍵和快捷鍵列非常有用。來，讓我引導你過去。";
+			close2;
+			warp "new_1-2",115,107;
+			end;
+		case 2:
+			mes "[克里斯]";
+			mes "我明白了。在這種情況下，你一定準備好進行野外戰鬥修練課程了。需要我馬上送你過去嗎？";
+			next;
+			if (select("不！等、等等！:請送我過去?！") == 1) {
+				mes "[克里斯]";
+				mes "...？！";
+				mes "好...好吧。";
+				mes "請在準備好時";
+				mes "再回來。";
+				close;
+			}
+			else {
+				mes "[克里斯]";
+				mes "祝你好運，";
+				mes "年輕的初心者。";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			}
+		case 3:
+			emotion ET_PROFUSELY_SWEAT;
+			close;
+		}
+	}
+}
+
+new_1-2,83,111,3	script	技能導師#nv	753,{
+	if (nov_get_item02 > 9 && nov_get_item03 > 9 && nov_get_item04 > 9) {
+		mes "[塞西爾]";
+		mes "咦...？";
+		mes "你需要更多幫助嗎？";
+		mes "我看到你已經完成了所有必修課程。你也跟助理導師們談過了嗎？";
+		next;
+		switch(select("送我到下一個課程！:助理導師？:帶我到城鎮！")) {
+		case 1:
+			mes "[塞西爾]";
+			mes "啊！對了，對了。";
+			mes "我想你總得參加野外戰鬥修練課程的。";
+			next;
+			mes "[塞西爾]";
+			mes "天啊，我真嫉妒野外戰鬥修練課程的教官。教導基本資訊實在不如揍怪來得酷。";
+			next;
+			mes "[塞西爾]";
+			mes "啊，對了。";
+			mes "野外戰鬥。";
+			mes "我現在就送你過去。";
+			mes "祝你好運，孩子！";
+			close2;
+			warp "new_1-2",28,178;
+			end;
+		case 2:
+			mes "[塞西爾]";
+			mes "你知道關於";
+			mes "助理導師的事，對吧？";
+			next;
+			mes "[塞西爾]";
+			mes "聽著。這個房間裡的三位導師只教最基本的資訊。我們教授的課程是為了讓你們快速通過。";
+			next;
+			mes "[塞西爾]";
+			mes "但如果能學習更詳細的資訊，有些人可能會獲益更多。";
+			next;
+			mes "[塞西爾]";
+			mes "如果你是仙境傳說的全新玩家，至少去參加一次助理導師的課程絕對沒有壞處。";
+			next;
+			mes "[塞西爾]";
+			mes "一個叫雷歐·韓德森的傢伙似乎對技能非常了解，所以我認為他的知識對你會有幫助。";
+			close;
+		case 3:
+			mes "[塞西爾]";
+			mes "一個城鎮...？";
+			mes "我看起來像什麼，你專屬的大嘴鳥嗎？";
+			next;
+			mes "[塞西爾]";
+			mes "沒錯，你可能太年輕了還不知道這個。聽著，如果你想移動到城鎮，去跟右邊的卡普拉小姐說話，好嗎？";
+			close;
+		}
+	}
+	if (nov_get_item03 < 10) {
+		mes "[塞西爾]";
+		mes ""+strcharinfo(0)+"";
+		mes "嘿，我喜歡你的名字！";
+		if (NEW_MES_FLAG0) {
+			mes "順帶一提，你的註冊證明已經過期了，所以我給你一份新的。";
+			mes "所以我給你一份新的。";
+			set NEW_MES_FLAG0,0;
+			set NEW_MES_FLAG1,0;
+			set NEW_MES_FLAG2,0;
+			set NEW_MES_FLAG3,0;
+			set NEW_MES_FLAG4,0;
+			set NEW_MES_FLAG5,0;
+			set NEW_LVUP0,0;
+			set NEW_LVUP1,0;
+			set NEW_JOBLVUP,0;
+		}
+		mes "那麼，我們開始上課好嗎？";
+		next;
+		switch(select("你教什麼？:我現在就要野外戰鬥修練！:取消")) {
+		case 1:
+			mes "[塞西爾]";
+			mes "我為力量而生，";
+			mes "也為力量而死！";
+			mes "我將教你";
+			mes "我著名的致命一擊！";
+			next;
+			mes "[塞西爾]";
+			mes "我只是在逗你玩啦！";
+			mes "我實際上只是教你如何使用技能。不過，我還是為力量而生。";
+			next;
+			mes "[塞西爾]";
+			mes "在你的基本資訊視窗中，點擊^3355FF技能^000000按鈕來打開技能視窗。你也可以同時按下「^3355FFAlt^000000」和「^3355FFS^000000」鍵。";
+			next;
+			mes "[塞西爾]";
+			mes "當你的";
+			mes "技能視窗打開時，";
+			mes "你會看到一個標有";
+			mes "「^3355FF基本技能^000000」的圖示。";
+			if (JobLevel < 7) {
+				next;
+				mes "[塞西爾]";
+				mes "現在，在技能視窗的底部，會顯示你剩餘的技能點數。";
+				next;
+				mes "[塞西爾]";
+				mes "打開你的技能視窗（'Alt' + 'S'）並點擊基本技能圖示旁邊的「^3355FFLv Up^000000」按鈕，將技能點數分配到你的基本技能上。";
+				set nov_get_item03,10;
+				switch (JobLevel) {
+				case 1: getexp 0,10; break;
+				case 2: getexp 0,18; break;
+				case 3: getexp 0,28; break;
+				case 4: getexp 0,40; break;
+				case 5: getexp 0,91; break;
+				case 6: getexp 0,151; break;
+				}
+			}
+			else {
+				next;
+				mes "[塞西爾]";
+				mes "咦。其實，你的職業等級比我想像的要高。我猜你應該已經知道技能的基礎知識了。";
+			}
+			next;
+			mes "[塞西爾]";
+			mes "所以你把技能點數分配到基本技能上了嗎？你最終還是需要精通基本技能的，所以這是個好主意。";
+			next;
+			mes "[塞西爾]";
+			mes "有關技能的更詳細資訊，去跟助理導師之一的雷歐·韓德森談談吧。";
+			next;
+			mes "[塞西爾]";
+			mes "喔，我差點忘了！";
+			mes "讓我教你^3355FF急救^000000技能。這個技能在你遇到危險時會幫上大忙的。";
+			next;
+			mes "^3355FF你學會了";
+			mes "^4A708B急救^3355FF技能。^000000";
+			skill "NV_FIRSTAID",1,SKILL_PERM;
+			set NOV_SK,3;
+			set nov_get_item03,11;
+			next;
+			if (JobLevel < 7) {
+				mes "^3355FF你獲得了少量的";
+				mes "職業經驗值。^000000";
+				set nov_get_item03,12;
+				switch (JobLevel) {
+				case 1: getexp 0,10; break;
+				case 2: getexp 0,18; break;
+				case 3: getexp 0,28; break;
+				case 4: getexp 0,40; break;
+				case 5: getexp 0,91; break;
+				case 6: getexp 0,151; break;
+				}
+			}
+			next;
+			mes "[塞西爾]";
+			mes "現在，打開你的技能視窗";
+			mes "檢查你是否有了^3355FF急救^000000的技能圖示。要使用它，你需要雙擊那個技能圖示。";
+			mes "現在，試試看！";
+			percentheal -50,0;
+			next;
+			mes "[塞西爾]";
+			mes "主動技能，像是急救，需要消耗一定數量的 SP 才能使用。急救技能對初心者很有用，因為它可以恢復少量的 HP。";
+			next;
+			mes "[塞西爾]";
+			mes "你一直是個";
+			mes "好學生，";
+			mes "所以讓我獎勵你吧！";
+			if (BaseLevel < 8) {
+				mes "看吧：額外的經驗值！";
+				set nov_get_item03,13;
+				switch (BaseLevel) {
+				case 1: getexp 10,0; break;
+				case 2: getexp 17,0; break;
+				case 3: getexp 26,0; break;
+				case 4: getexp 37,0; break;
+				case 5: getexp 78,0; break;
+				case 6: getexp 115,0; break;
+				case 7: getexp 155,0; break;
+				}
+			}
+			else {
+				next;
+				mes "[塞西爾]";
+				mes "喔等等。你的等級比我想像的高多了。不過，我還是為你感到驕傲！";
+			}
+			next;
+			mes "[塞西爾]";
+			mes "好了，這就是必要的基礎知識。如果你想要更全面的課程，你得去跟助理導師們談談。";
+			next;
+			switch(select("好的。:現在就送我去野外戰鬥修練！:取消")) {
+			case 1:
+				mes "[塞西爾]";
+				mes "在修練場的";
+				mes "每個人都";
+				mes "非常樂意";
+				mes "幫助你。祝你好運！";
+				close;
+			case 2:
+				mes "[塞西爾]";
+				mes "嘿嘿?！";
+				mes "好吧，熟能生巧！讓我把你送到野外戰鬥修練那裡。保重！";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 3:
+				emotion ET_HUK;
+				close;
+			}
+		case 2:
+			mes "[塞西爾]";
+			mes "嘿嘿?！";
+			mes "好吧，熟能生巧！讓我把你送到野外戰鬥修練那裡。保重！";
+			close2;
+			warp "new_1-2",28,178;
+			end;
+		case 3:
+			emotion ET_HUK;
+			close;
+		}
+	}
+	else if (nov_get_item02 < 10) {
+		mes "[塞西爾]";
+		mes "有什麼我可以幫忙的嗎？";
+		mes "哇，你還沒參加過基本介面課程嗎？喔好吧，我知道那個課是有點無聊啦?";
+		next;
+		switch(select("喔，我最好去上那門課。:送我去野外戰鬥修練。:取消")) {
+		case 1:
+			mes "[塞西爾]";
+			mes "對，這是個好主意。畢竟，上那門課可以獲得經驗值和物品。那好吧，介面導師就在這個房間的中央。去吧?";
+			close;
+		case 2:
+			mes "[塞西爾]";
+			mes "嘿嘿?！";
+			mes "好吧，熟能生巧！讓我把你送到野外戰鬥修練那裡。保重！";
+			close2;
+			warp "new_1-2",28,178;
+			end;
+		case 3:
+			emotion ET_HUK;
+			close;
+		}
+	}
+	else if (nov_get_item04 < 10) {
+		mes "[塞西爾]";
+		mes "有什麼我可以幫忙的嗎？";
+		mes "哇，你還沒參加過物品資訊課程嗎？喔好吧，我知道那個課是有點無聊啦?";
+		next;
+		switch(select("喔，我最好去上那門課。:送我去野外戰鬥修練。:取消")) {
+		case 1:
+			mes "[塞西爾]";
+			mes "對，這是個好主意。畢竟，上那門課可以獲得經驗值和物品。那好吧，物品導師就在這個房間的最右邊。去吧?";
+			close;
+		case 2:
+			mes "[塞西爾]";
+			mes "嘿嘿?！";
+			mes "好吧，熟能生巧！讓我把你送到野外戰鬥修練那裡。保重！";
+			close2;
+			warp "new_1-2",28,178;
+			end;
+		case 3:
+			emotion ET_HUK;
+			close;
+		}
+	}
+}
+
+new_1-2,115,111,3	script	物品導師#nv	726,{
+	if (nov_get_item02 > 9 && nov_get_item03 > 9 && nov_get_item04 > 9) {
+		mes "[愛麗絲]";
+		mes "咦...？";
+		mes "你需要幫忙找人嗎？你似乎已經完成了所有必修課程。你需要去哪裡呢？";
+		next;
+		switch(select("我不確定?！:帶我去城鎮。:取消")) {
+		case 1:
+			mes "[愛麗絲]";
+			mes "嗯...";
+			mes "你已經學會了所有其他東西，";
+			mes "所以我想剩下的就只有野外戰鬥修練了。你想現在去上那門課嗎？";
+			next;
+			switch(select("是的。:喔，等、等等。")) {
+			case 1:
+				mes "[愛麗絲]";
+				mes "確保我給你的物品放在隨手可得的地方，並穿上你所有的防具，知道嗎？現在，保重囉。";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 2:
+				mes "[愛麗絲]";
+				mes "好的，沒問題。";
+				mes "當你";
+				mes "需要幫助時隨時來找我。";
+				close;
+			}
+		case 2:
+			mes "[愛麗絲]";
+			mes "啊，我明白了。";
+			mes "如果你想移動到城鎮，我右邊的卡普拉小姐會幫你傳送。保重囉?";
+			close;
+		case 3:
+			mes "[愛麗絲]";
+			mes "哼...！";
+			close;
+		}
+	}
+	else if (nov_get_item04 < 10) {
+		mes "[愛麗絲]";
+		mes "^666666*打哈欠?*^000000";
+		mes "真是太無聊了。";
+		mes "喔！你好，你是新來的。";
+		if (NEW_MES_FLAG0) {
+			mes "哦，你的註冊證明過期了。不過沒關係，我就給你一張新的！拿去吧。";
+			set NEW_MES_FLAG0,0;
+			set NEW_MES_FLAG1,0;
+			set NEW_MES_FLAG2,0;
+			set NEW_MES_FLAG3,0;
+			set NEW_MES_FLAG4,0;
+			set NEW_MES_FLAG5,0;
+			set NEW_LVUP0,0;
+			set NEW_LVUP1,0;
+			set NEW_JOBLVUP,0;
+		}
+		mes "所以，你是來參加";
+		mes "我的物品資訊課程的嗎？";
+		next;
+		switch(select("是的！:不，謝謝。:我該如何去城鎮？")) {
+		case 1:
+			mes "[愛麗絲]";
+			mes "別擔心，這會很短的。";
+			mes "開啟你的物品欄視窗，";
+			mes "可以透過基本資訊視窗裡的「^3355FFItem^000000」按鈕，或是同時按下「^3355FFAlt^000000」和「^3355FFE^000000」鍵。";
+			next;
+			mes "[愛麗絲]";
+			mes "在物品欄視窗裡，你會看到三個分頁，標示著 ^3355FFItem(消耗品)^000000、^3355FFEquip(裝備)^000000 和 ^3355FFEtc(收集品)^000000。可消耗的物品位於 ^4A708BItem^000000 分頁下。";
+			next;
+			mes "[愛麗絲]";
+			mes "現在，請你點擊物品欄視窗裡的 ^4A708BItem^000000 分頁好嗎？我剛給了你一瓶初心者紅色藥水。你可以雙擊它來喝下。去吧，試試看！";
+			set nov_get_item04,10;
+			getitem 569,1; //Novice_Potion
+			percentheal -50,0;
+			next;
+			mes "[愛麗絲]";
+			if (countitem(569) < 1) {
+				if (BaseLevel < 8) {
+					mes "太棒了?！";
+					mes "這裡有";
+					mes "一點小獎勵";
+					mes "送給乖乖聽課的你。";
+					set nov_get_item04,11;
+					switch (BaseLevel) {
+					case 1: getexp 10,0; break;
+					case 2: getexp 17,0; break;
+					case 3: getexp 26,0; break;
+					case 4: getexp 37,0; break;
+					case 5: getexp 78,0; break;
+					case 6: getexp 115,0; break;
+					case 7: getexp 155,0; break;
+					}
+				}
+				else {
+					mes "做得好！如果你的等級沒那麼高，我會再給你一些經驗值當作獎勵的。";
+				}
+			}
+			else {
+				mes "嗯...";
+				mes "好吧，你可以";
+				mes "等一下再喝。";
+			}
+			next;
+			mes "[愛麗絲]";
+			mes "讓我來解釋";
+			mes "在 ^4A708BEquip^000000 分頁裡的";
+			mes "裝備物品。";
+			next;
+			mes "[愛麗絲]";
+			mes "當你點擊 ^4A708BEquip^000000 分頁時，你可以檢視你物品欄中所有可以裝備的物品。讓我給你一些裝備，好讓你試穿看看。";
+			next;
+			mes "[愛麗絲]";
+			mes "拿到了嗎？很好。";
+			mes "現在，雙擊";
+			mes "我剛給你的";
+			mes "初心者便鞋";
+			mes "把它穿上。";
+			set nov_get_item04,12;
+			getitem 2510,1; //Novice_Hood
+			getitem 2414,1; //Novice_Boots
+			getitem 5055,1; //Novice_Egg_Cap
+			next;
+			mes "[愛麗絲]";
+			if (isequipped(2414)) {
+				if (BaseLevel < 8) {
+					mes "萬歲?！";
+					mes "你做到了！";
+					mes "你值得一份獎勵！";
+					set nov_get_item04,13;
+					switch (BaseLevel) {
+					case 1: getexp 10,0; break;
+					case 2: getexp 17,0; break;
+					case 3: getexp 26,0; break;
+					case 4: getexp 37,0; break;
+					case 5: getexp 78,0; break;
+					case 6: getexp 115,0; break;
+					case 7: getexp 155,0; break;
+					}
+				}
+				else {
+					mes "做得好！如果你的等級沒那麼高，我會再給你一些經驗值當作獎勵的。";
+				}
+			}
+			else {
+				mes "呃...";
+				mes "你必須";
+				mes "雙擊";
+				mes "裝備才能";
+				mes "穿上它。請";
+				mes "記住這點，好嗎？";
+			}
+			disable_items;
+			next;
+			mes "[愛麗絲]";
+			mes "請你";
+			mes "按下「^3355FFF12^000000」鍵好嗎？";
+			mes "這會叫出你";
+			mes "螢幕上的快捷鍵列。";
+			next;
+			mes "[愛麗絲]";
+			mes "你可以使用快捷鍵列為你的物品、技能和裝備設定快捷鍵。只要從技能視窗拖曳技能圖示，或從物品欄視窗拖曳物品到快捷鍵列裡即可。";
+			next;
+			mes "[愛麗絲]";
+			mes "快捷鍵是「^3355FFF1^000000」到「^3355FFF9^000000」。";
+			mes "如果你參加過技能課程，你一定已經獲得急救技能了。將急救技能圖示拖曳並放到快捷鍵列中。";
+			next;
+			mes "[愛麗絲]";
+			mes "供你參考，只有";
+			mes "主動技能才能設定為快捷鍵並拖曳到快捷鍵列中。主動技能有彩色的正方形圖示，可以雙擊使用。";
+			next;
+			mes "[愛麗絲]";
+			mes "被動技能（就像「基本技能」這個名字一樣）不能拖曳到快捷鍵列中，因為被動技能總是處於生效狀態，不需要被啟動。";
+			set nov_get_item04,14;
+			if (JobLevel < 7) {
+				switch (JobLevel) {
+				case 1: getexp 0,10; break;
+				case 2: getexp 0,18; break;
+				case 3: getexp 0,28; break;
+				case 4: getexp 0,40; break;
+				case 5: getexp 0,91; break;
+				case 6: getexp 0,151; break;
+				}
+			}
+			next;
+			mes "[愛麗絲]";
+			mes "好了，就是這樣！";
+			mes "讓我為你提供一些物品，";
+			mes "這將在你的野外戰鬥修練中提供幫助。";
+			next;
+			mes "[愛麗絲]";
+			mes "但是，^FF0000不要在這個修練場使用蒼蠅翅膀或蝴蝶翅膀^000000，否則你可能會永遠困在這裡。那些物品是等你畢業後再用的，懂嗎？";
+			set nov_get_item04,15;
+			getitem 601,10; //Wing_Of_Fly
+			getitem 602,2; //Wing_Of_Butterfly
+			getitem 569,50; //Novice_Potion
+			next;
+			mes "[愛麗絲]";
+			mes "最後...";
+			if (JobLevel < 7) {
+				mes "我會給";
+				mes "你一些職業經驗值！";
+				set nov_get_item04,16;
+				switch (JobLevel) {
+				case 1: getexp 0,10; break;
+				case 2: getexp 0,18; break;
+				case 3: getexp 0,28; break;
+				case 4: getexp 0,40; break;
+				case 5: getexp 0,91; break;
+				case 6: getexp 0,151; break;
+				}
+			}
+			else {
+				mes "我本來想給你一些職業經驗值的，但我想你現在的職業經驗已經足夠了。";
+			}
+			next;
+			switch(select("現在該做什麼？:送我去實際的戰鬥課程！:取消")) {
+			case 1:
+				mes "[愛麗絲]";
+				mes "如果你還沒跟其他導師談過，";
+				mes "為什麼不到處走走，跟他們聊聊呢？";
+				next;
+				mes "[愛麗絲]";
+				mes "這個修練場的每個人都非常樂意幫助你。";
+				mes "如果你覺得無聊，";
+				mes "或許可以在這個區域探險一下。";
+				next;
+				mes "[愛麗絲]";
+				mes "右邊房間的助理導師擁有很有用的知識。這個區域還隱藏著幾個有趣的地方。祝你好運！";
+				close;
+			case 2:
+				mes "[愛麗絲]";
+				mes "你真是個熱情的初心者！好吧，我把你送到負責野外戰鬥修練的傢伙那裡。請確保你仔細聽教官的指示。";
+				next;
+				mes "[愛麗絲]";
+				mes "畢竟...";
+				mes "當你與魔物戰鬥時，那可是攸關生死的大事！那麼，保重囉?";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 3:
+				mes "[愛麗絲]";
+				mes "哼...！";
+				close;
+			}
+		case 2:
+			mes "[愛麗絲]";
+			mes "你確定真的想去野外戰鬥修練嗎？你跟每個導師都談過了嗎？你最好先去談談。";
+			next;
+			switch(select("不，不！送我去實際的戰鬥課程！:喔，等等！")) {
+			case 1:
+				mes "[愛麗絲]";
+				mes "你真是個熱情的初心者！好吧，我把你送到負責野外戰鬥修練的傢伙那裡。請確保你仔細聽教官的指示。";
+				next;
+				mes "[愛麗絲]";
+				mes "畢竟...";
+				mes "當你與魔物戰鬥時，那可是攸關生死的大事！那麼，保重囉?";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 2:
+				mes "[愛麗絲]";
+				mes "這才是個明智的決定。你以後不會有太多機會獲得免費的物品和經驗值。你最好趁現在好好把握這個機會！";
+				close;
+			}
+		case 3:
+			mes "[愛麗絲]";
+			mes "如果你想移動到城鎮，我右邊的卡普拉小姐會幫你傳送。保重囉?";
+			close;
+		}
+	}
+	else if (nov_get_item02 < 10) {
+		mes "[愛麗絲]";
+		mes "有什麼我可以幫忙的嗎？";
+		mes "嗯，看來你還沒參加過基本介面課程。你想先參加那門課嗎？";
+		next;
+		switch(select("我要去參加那門課。:送我去野外戰鬥修練。:取消")) {
+		case 1:
+			mes "[塞西爾]";
+			mes "太棒了?";
+			mes "對，這是個好主意。畢竟，上那門課可以獲得經驗值和物品。那好吧，介面導師就在這個房間的中央。去吧?";
+			close;
+		case 2:
+			mes "[愛麗絲]";
+			mes "你確定真的想去野外戰鬥修練嗎？你跟每個導師都談過了嗎？你最好先去談談。";
+			next;
+			switch(select("我現在就要野外戰鬥修練?！:喔，等等！")) {
+			case 1:
+				mes "[愛麗絲]";
+				mes "你真是個熱情的初心者！好吧，我把你送到負責野外戰鬥修練的傢伙那裡。請確保你仔細聽教官的指示。";
+				next;
+				mes "[愛麗絲]";
+				mes "畢竟...";
+				mes "當你與魔物戰鬥時，那可是攸關生死的大事！那麼，保重囉?";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 2:
+				mes "[愛麗絲]";
+				mes "這才是個明智的決定。你以後不會有太多機會獲得免費的物品和經驗值。你最好趁現在好好把握這個機會！";
+				close;
+			}
+		case 3:
+			mes "[愛麗絲]";
+			mes "如果你想移動到城鎮，我右邊的卡普拉小姐會幫你傳送。保重囉?";
+			close;
+		}
+	}
+	else if (nov_get_item03 < 10) {
+		mes "[愛麗絲]";
+		mes "有什麼我可以幫忙的嗎？";
+		mes "看起來你還沒參加過 ^4D4DFF技能資訊課程^000000。你想先參加那門課嗎？";
+		next;
+		switch(select("我會參加那門課。:送我去野外戰鬥修練。:取消")) {
+		case 1:
+			mes "[愛麗絲]";
+			mes "這才是個好主意。請跟這個房間最左邊的導師塞西爾談談，好嗎？";
+			close2;
+			warp "new_1-2",84,107;
+			end;
+		case 2:
+			mes "[愛麗絲]";
+			mes "你確定真的想去野外戰鬥修練嗎？你跟每個導師都談過了嗎？你最好先去談談。";
+			next;
+			switch(select("我現在就要野外戰鬥修練?！:喔，等等！")) {
+			case 1:
+				mes "[愛麗絲]";
+				mes "你真是個熱情的初心者！好吧，我把你送到負責野外戰鬥修練的傢伙那裡。請確保你仔細聽教官的指示。";
+				next;
+				mes "[愛麗絲]";
+				mes "畢竟...";
+				mes "當你與魔物戰鬥時，那可是攸關生死的大事！那麼，保重囉?";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 2:
+				mes "[愛麗絲]";
+				mes "這才是個明智的決定。你以後不會有太多機會獲得免費的物品和經驗值。你最好趁現在好好把握這個機會！";
+				close;
+			}
+		case 3:
+			mes "[愛麗絲]";
+			mes "如果你想移動到城鎮，我右邊的卡普拉小姐會幫你傳送。保重囉?";
+			close;
+		}
+	}
+}
+
+new_1-2,118,108,3	script	卡普拉服務人員#nv1	117,{
+	mes "[卡普拉服務人員]";
+	mes "歡迎來到";
+	mes "卡普拉公司。";
+	mes "卡普拉服務";
+	mes "永遠在您身邊。";
+	if (NEW_MES_FLAG0) {
+		set NEW_MES_FLAG0,0;
+		set NEW_MES_FLAG1,0;
+		set NEW_MES_FLAG2,0;
+		set NEW_MES_FLAG3,0;
+		set NEW_MES_FLAG4,0;
+		set NEW_MES_FLAG5,0;
+		set NEW_LVUP0,0;
+		set NEW_LVUP1,0;
+		set NEW_JOBLVUP,0;
+	}
+	next;
+	mes "[卡普拉服務人員]";
+	mes "我被卡普拉公司總部派來協助像您這樣的新玩家。";
+	next;
+	mes "[卡普拉服務人員]";
+	mes "請注意！";
+	mes "如果你移動到城鎮，";
+	mes "^4D4DFF您將永遠無法再次回到修練場^000000。";
+	next;
+	if ( select("空間移動服務","關於卡普拉服務") == 1 ) {
+		if (nov_get_item02 < 10 && nov_get_item03 < 10 && nov_get_item04 < 10) {
+			mes "[卡普拉服務人員]";
+			mes "我明白了，您一定想立刻傳送到盧恩米德加茲的城鎮。首先，讓我為您簡要介紹仙境傳說中不同的城鎮和城市。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "普隆德拉是神聖盧恩米德加茲王國的首都，它的衛星都市伊斯魯得島就在附近。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "^996633夢羅克^000000位於沙漠中。您可以在這個城鎮轉職為盜賊和刺客。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "^006600斐揚^000000位於群山之中，以弓箭手村聞名，初心者可以在那裡轉職為弓箭手。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "魔法之都 ^993300吉芬^000000 是人們前往成為魔法師和巫師的地方。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "^003399艾爾貝塔^000000，這個港口城市，是商人公會的所在地。如果您想透過海路旅行，您也必須前往艾爾貝塔。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "請選擇";
+			mes "您的目的地。";
+			next;
+			switch(select("普隆德拉:夢羅克:斐揚:艾爾貝塔:吉芬")) {
+			case 1:
+				set .@dest$,"Prontera";
+				set .@mapn$,"prontera";
+				set .@saveX,117;
+				set .@saveY,72;
+				set .@warpX,150; set .@warpY,50;
+				break;
+			case 2:
+				set .@dest$,"Morocc";
+				set .@mapn$,"morocc";
+				set .@saveX,150; set .@saveY,99;
+				set .@warpX,155; set .@warpY,110;
+				break;
+			case 3:
+				set .@dest$,"Payon";
+				set .@mapn$,"payon";
+				set .@saveX,70; set .@saveY,100;
+				set .@warpX,166; set .@warpY,67;
+				break;
+			case 4:
+				set .@dest$,"Alberta";
+				set .@mapn$,"alberta";
+				set .@saveX,30; set .@saveY,232;
+				set .@warpX,114; set .@warpY,58;
+				break;
+			case 5:
+				set .@dest$,"Geffen";
+				set .@mapn$,"geffen";
+				set .@saveX,119; set .@saveY,37;
+				set .@warpX,122;
+				set .@warpY,65;
+				break;
+			}
+			mes "[卡普拉服務人員]";
+			mes "您已決定";
+			mes "前往 "+.@dest$+"。";
+			mes "願神與您同在。";
+			close2;
+			if (nov_get_item05 < 11) {
+				set nov_get_item05,11;
+				getitem 569,100; //Novice_Potion
+				getitem 1243,1; //Novice_Knife
+				getitem 2414,1;
+				//Novice_Boots
+				getitem 2510,1; //Novice_Hood
+				getitem 2352,1; //Novice_Plate
+				getitem 2112,1; //Novice_Guard
+				getitem 601,10; //Wing_Of_Fly
+				getitem 602,2; //Wing_Of_Butterfly
+				getitem 7059,5; //Cargo_Free_Ticket
+				getitem 7060,5; //Warp_Free_Ticket
+			}
+			set nov_1st_cos,0;
+			set nov_2nd_cos,0;
+			set nov_3_swordman,0;
+			set nov_3_archer,0;
+			set nov_3_thief,0;
+			set nov_3_magician,0;
+			set nov_3_acolyte,0;
+			set nov_3_merchant,0;
+			savepoint .@mapn$,.@saveX,.@saveY,1,1;
+			warp .@mapn$,.@warpX,.@warpY;
+			end;
+		}
+		else {
+			switch(select("野外戰鬥課程:普隆德拉:夢羅克:斐揚:艾爾貝塔:吉芬")) {
+			case 1:
+				mes "[卡普拉服務人員]";
+				mes "謝謝您，讓";
+				mes "我將您傳送到";
+				mes "野外戰鬥修練課程。";
+				close2;
+				warp "new_1-2",28,178;
+				end;
+			case 2:
+				set .@dest$,"Prontera";
+				set .@mapn$,"prontera";
+				set .@saveX,117; set .@saveY,72;
+				set .@warpX,150;
+				set .@warpY,50;
+				break;
+			case 3:
+				set .@dest$,"Morocc";
+				set .@mapn$,"morocc";
+				set .@saveX,150; set .@saveY,99;
+				set .@warpX,155; set .@warpY,110;
+				break;
+			case 4:
+				set .@dest$,"Payon";
+				set .@mapn$,"payon";
+				set .@saveX,70; set .@saveY,100;
+				set .@warpX,166; set .@warpY,67;
+				break;
+			case 5:
+				set .@dest$,"Alberta";
+				set .@mapn$,"alberta";
+				set .@saveX,30; set .@saveY,232;
+				set .@warpX,114; set .@warpY,58;
+				break;
+			case 6:
+				set .@dest$,"Geffen";
+				set .@mapn$,"geffen";
+				set .@saveX,119; set .@saveY,37;
+				set .@warpX,122; set .@warpY,65;
+				break;
+			}
+			mes "[卡普拉服務人員]";
+			mes "您已決定";
+			mes "前往 "+.@dest$+"。";
+			mes "願神與您同在。";
+			close2;
+			if (nov_get_item05 < 11) {
+				set nov_get_item05,11;
+				getitem 7059,5; //Cargo_Free_Ticket
+				getitem 7060,5; //Warp_Free_Ticket
+			}
+			set nov_1st_cos,0;
+			set nov_2nd_cos,0;
+			set nov_3_swordman,0;
+			set nov_3_archer,0;
+			set nov_3_thief,0;
+			set nov_3_magician,0;
+			set nov_3_acolyte,0;
+			set nov_3_merchant,0;
+			savepoint .@mapn$,.@saveX,.@saveY,1,1;
+			warp .@mapn$,.@warpX,.@warpY;
+			end;
+		}
+	}
+	else {
+		mes "[卡普拉服務人員]";
+		mes "讓我為您介紹";
+		mes "卡普拉服務。";
+		mes "在選單中，請選擇";
+		mes "您想了解更多的";
+		mes "服務項目。";
+		next;
+		while(1) {
+			switch(select("位置儲存服務:倉庫服務:空間移動服務:手推車租賃服務:取消")) {
+			case 1:
+				mes "[卡普拉服務人員]";
+				mes "當您與卡普拉服務人員對話並要求位置儲存服務時，您在戰鬥中陣亡後的復活地點將會被更改。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "您的重生點永遠是您最後儲存的位置。使用蝴蝶翅膀會將您送回";
+				mes "最後儲存的地點。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "位置儲存服務";
+				mes "同樣由";
+				mes "卡普拉公司";
+				mes "免費提供?！";
+				if (nov_1st_cos < 20) {
+					set nov_1st_cos,20;
+					switch (BaseLevel) {
+					case 1: getexp 10,0; break;
+					case 2: getexp 17,0; break;
+					case 3: getexp 26,0; break;
+					case 4: getexp 37,0; break;
+					case 5: getexp 78,0; break;
+					case 6: getexp 115,0; break;
+					case 7: getexp 155,0; break;
+					}
+				}
+				next;
+				break;
+			case 2:
+				mes "[卡普拉服務人員]";
+				mes "卡普拉公司是米德加茲大陸上歷史最悠久、規模最大的企業。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "您可以在任何城鎮方便地";
+				mes "存取您的物品。這個倉庫是由同一個帳號上的所有角色共享的。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "當您不馬上需要某些物品時，把所有東西都帶在身上是不太合理的。請使用我們的倉庫服務，讓您的物品安全又有保障。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "我們便利的倉庫服務";
+				mes "只向顧客收取少量費用，該費用會因城鎮而異。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "然而，您必須至少達到";
+				mes "^3355FF基本技能等級 6^000000";
+				mes "才能使用倉庫服務。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "倉庫裡有三個不同的物品區塊來進行分類：消耗品、裝備和收集品。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "卡普拉倉庫最多有 300 個儲存格，這意味著您的倉庫裡最多可以存放 300 種不同的物品。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "不過請記住，若是裝備，每件物品都會佔據一個儲存格。卡普拉倉庫中最多可放置的物品數量為 30,000 個。";
+				if (nov_3_archer < 20) {
+					if (JobLevel < 7) {
+						set nov_3_archer,20;
+						switch (JobLevel) {
+						case 1: getexp 0,10; break;
+						case 2: getexp 0,18; break;
+						case 3: getexp 0,28; break;
+						case 4: getexp 0,40; break;
+						case 5: getexp 0,91; break;
+						case 6: getexp 0,151; break;
+						}
+					}
+				}
+				next;
+				break;
+			case 3:
+				mes "[卡普拉服務人員]";
+				mes "卡普拉公司";
+				mes "為我們尊貴的顧客提供便利的空間移動服務，這將大大縮短您的";
+				mes "旅行時間。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "我們的空間移動服務既安全又舒適，將讓您能夠充分探索米德加茲大陸的各個地方。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "我們感謝尊貴顧客的大力支持，並將繼續為大家提供最好的";
+				mes "服務。";
+				next;
+				break;
+			case 4:
+				mes "[卡普拉服務人員]";
+				mes "卡普拉公司";
+				mes "為商人，以及鐵匠和鍊金術師提供手推車租賃服務。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "華麗而神秘的";
+				mes "^CE6300超級初心者^000000也可以使用手推車，但官方並未與該職業簽訂合約。不過，不知怎麼地...";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "總而言之，商人、鐵匠和鍊金術師也必須學習^3355FF手推車使用^000000技能才能租用手推車。";
+				next;
+				mes "[卡普拉服務人員]";
+				mes "手推車租賃服務的";
+				mes "費用會因";
+				mes "城鎮而異。";
+				next;
+				break;
+			case 5:
+				mes "[卡普拉服務人員]";
+				mes "謝謝您。";
+				close;
+			}
+
+		}
+	}
+}
+
+//Interface Assistant
+new_1-2,161,182,5	script	指導員#nv	92,{
+	mes "[艾德溫]";
+	mes "歡迎來到我的課堂。";
+	mes "選擇你想要";
+	mes "了解更多的科目。";
+	next;
+	while(1) {
+		switch(select("基本資訊視窗:隊伍視窗:物品視窗:選項視窗:裝備視窗:取消")) {
+		case 1:
+			mes "[艾德溫]";
+			mes "讓我們來看看";
+			mes "基本資訊視窗，";
+			mes "好嗎？";
+			next;
+			mes "[艾德溫]";
+			mes "你的名稱、職業、Base Level，";
+			mes "和你的 Job Level 都顯示在這個視窗中。^800FFFBase Level^000000 是你角色的基本等級。";
+			next;
+			mes "[艾德溫]";
+			mes "顯示在下的 ^800FFFJob Level^000000";
+			mes "是顯示你角色的職業等級。當你剛開始一個職業時，你將會是";
+			mes "Job Level 1。";
+			next;
+			mes "[艾德溫]";
+			mes "在基本資訊視窗中，你當前的經驗值會顯示在 Base Level 經驗值條上。";
+			next;
+			mes "[艾德溫]";
+			mes "仙境傳說中的經驗值是以百分比表示。Base 和 Job 的經驗值是分開計算的。";
+			next;
+			mes "[艾德溫]";
+			mes "當 Base Level 或";
+			mes "Job Level 經驗值條達到 100% 時，等級將提升一級，隨後經驗值條會重置為 0 以進入下一級。";
+			next;
+			mes "[艾德溫]";
+			mes "HP 代表「生命值」。";
+			mes "當你的 HP 降至 0 時，你會倒下並無法戰鬥。你可以選擇回到你的重生點，或等待其他人來復活你。";
+			next;
+			mes "[艾德溫]";
+			mes "如果你在野外或地牢中死亡，你將受到";
+			mes "^FF0000損失 1% 經驗值的懲罰^000000，所以要小心。";
+			next;
+			mes "[艾德溫]";
+			mes "SP 代表「技能點數」。";
+			mes "當你成為一轉職業時，你將學習該職業獨特的技能，這些技能需要消耗 SP 才能使用。你的技能導師可以教你更多關於技能的知識。";
+			next;
+			mes "[艾德溫]";
+			mes "如果你想查看你能夠攜帶的物品重量限制，請查看";
+			mes "基本資訊視窗的左下角。";
+			next;
+			mes "[艾德溫]";
+			mes "你當前攜帶的物品重量將顯示在你的最大重量限制旁邊。";
+			next;
+			mes "[艾德溫]";
+			mes "如果你攜帶的重量超過最大重量限制的 50%，你的 HP 和 SP 將不會透過休息恢復，所以要小心。";
+			next;
+			mes "[艾德溫]";
+			mes "重量限制旁邊的數值顯示你當前擁有的 Zeny 數量，這是米德加茲的貨幣。";
+			next;
+			mes "[艾德溫]";
+			mes "在基本資訊視窗";
+			mes "的右側有一系列按鈕，可以打開其他介面視窗。逐一點擊它們，看看你能用它們做什麼。";
+			next;
+			mes "[艾德溫]";
+			mes "縮小和放大基本資訊視窗的快捷鍵";
+			mes "是「^3355FFAlt^000000 + ^3355FFV^000000」。";
+			next;
+			break;
+		case 2:
+			mes "[艾德溫]";
+			mes "你可以透過點擊基本資訊視窗中的";
+			mes "^3355FF好友^000000按鈕來打開隊伍視窗。隊伍視窗的快捷鍵是「^3355FFAlt^000000 + ^3355FFZ^000000」。
+你可以使用這個視窗來查看你的隊伍成員。";
+			next;
+			mes "[艾德溫]";
+			mes "隊長可以決定";
+			mes "隊伍的經驗值和物品分配方式。你也可以在小地圖上查看隊伍成員的位置。";
+			next;
+			mes "[艾德溫]";
+			mes "在隊伍視窗中，你可以點擊 ^3355FF好友^000000 按鈕來查看你的好友名單。你可以使用";
+			mes "好友名單來向你的好友";
+			mes "發送悄悄話。";
+			next;
+			mes "[艾德溫]";
+			mes "你可以向你的技能導師請教以了解更多關於組織隊伍的資訊。但我猜你也可以自己摸索看看。";
+			next;
+			break;
+		case 3:
+			mes "[艾德溫]";
+			mes "物品視窗分為";
+			mes "三個部分：消耗品、裝備和其他物品（收集品）。";
+			next;
+			mes "[艾德溫]";
+			mes "你的重量限制會限制你隨身攜帶的物品數量。當你帶太多東西時，請把多餘的物品放在卡普拉倉庫中。";
+			next;
+			mes "[艾德溫]";
+			mes "此外，裝備和消耗品也可以透過快捷鍵列設定為快捷鍵。";
+			next;
+			mes "[艾德溫]";
+			mes "按下 ^3355FFF12^000000 鍵可以打開快捷鍵視窗。F1 到 F9 鍵是指定的快捷鍵。";
+			next;
+			mes "[艾德溫]";
+			mes "總共有三組";
+			mes "快捷鍵。你可以";
+			mes "透過按下 F12 鍵來";
+			mes "切換快捷鍵組。";
+			next;
+			break;
+		case 4:
+			mes "[艾德溫]";
+			mes "你可以點擊基本資訊視窗中的";
+			mes "^3355FF選項^000000按鈕來打開選項視窗。你也可以按下「^3355FFAlt^000000 + ^3355FFO^000000」鍵。";
+			next;
+			mes "[艾德溫]";
+			mes "在選項視窗中，你可以調整聲音、介面面板以及面板的透明度。";
+			next;
+			mes "[艾德溫]";
+			mes "使用聲音按鈕，你可以打開或關閉背景音樂，也可以調整音量。音效也可以進行同樣的設定。";
+			next;
+			mes "[艾德溫]";
+			mes "使用面板選項，你可以更改遊戲內視窗的介面面板。捲動你的面板清單並選擇";
+			mes "一個面板。";
+			next;
+			mes "[艾德溫]";
+			mes "你也可以從我們的官方網站下載官方的面板：";
+			mes "^0000FFhttp://iro.ragnarokonline.com^000000";
+			next;
+			mes "[艾德溫]";
+			mes "「自動瞄準」選項允許當你的游標在目標附近徘徊時，會自動鎖定在目標上。";
+			next;
+			mes "[艾德溫]";
+			mes "當你點擊攻擊時，你的游標會自動變成劍的形狀。技能和物品鎖定也可以與自動瞄準功能一起使用。";
+			next;
+			mes "[艾德溫]";
+			mes "如果你不習慣的話，它可能會有用，也可能很尷尬。但一旦你熟悉了自動瞄準功能，你就可以調整你自己的瞄準選項。";
+			next;
+			mes "[艾德溫]";
+			mes "嗯，這全取決於你的經驗。選項視窗的介紹就到此為止。";
+			next;
+			break;
+		case 5:
+			mes "[艾德溫]";
+			mes "點擊基本資訊視窗中的";
+			mes "^3355FF裝備^000000按鈕，";
+			mes "或者直接按下「^3355FFAlt^000000 + ^3355FFQ^000000」鍵。";
+			next;
+			mes "[艾德溫]";
+			mes "在裝備視窗中，";
+			mes "你會看到你角色目前裝備的物品。在一開始，每個角色都會裝備一把短劍和";
+			mes "一件棉衫。";
+			next;
+			mes "[艾德溫]";
+			mes "有兩種方法可以更換你的裝備。在物品視窗中雙擊裝備，或是點擊並將物品拖曳到";
+			mes "裝備視窗中。";
+			next;
+			mes "[艾德溫]";
+			mes "你也可以將裝備設定到快捷鍵上。這可以在你將裝備從物品欄拖曳到快捷鍵視窗時完成。";
+			mes "（「^3355FFF12^000000」鍵）。";
+			next;
+			break;
+		case 6:
+			mes "[艾德溫]";
+			mes "如果你有";
+			mes "任何問題，";
+			mes "隨時可以問我?";
+			close;
+		}
+	}
+}
+
+new_1-2,182,182,3	script	體能指導員	754,{
+	mes "[傑爾·瑞奧特]";
+	mes "歡迎，新來的冒險者。";
+	mes "我，傑爾·瑞奧特將幫助你了解關於你";
+	mes "角色素質的基本規則。";
+	next;
+	mes "[傑爾·瑞奧特]";
+	mes "也就是所謂的『素質（Stats）』，";
+	mes "你的素質是你角色的基本構成要素。";
+	next;
+	mes "[傑爾·瑞奧特]";
+	mes "我非常樂意幫助你了解關於素質的知識，所以隨時可以向我詢問你想知道的角色";
+	mes "素質問題。";
+	next;
+	mes "[傑爾·瑞奧特]";
+	mes "在仙境傳說中，";
+	mes "角色素質包括力量 (STR)、敏捷 (AGI)、體力 (VIT)、智力 (INT)、靈巧 (DEX) 和幸運 (LUK)。";
+	next;
+	mes "[傑爾·瑞奧特]";
+	mes "我希望我的課程能";
+	mes "根據你的個人需求進行，所以請問你想更深入了解的素質。首先，使用「^3355FFAlt^000000 + ^3355FFA^000000」鍵打開你的素質視窗。";
+	next;
+	while(1) {
+		switch(select("力量與敏捷:體力與智力:靈巧與幸運:我不想繼續了。")) {
+		case 1:
+			mes "[傑爾·瑞奧特]";
+			mes "讓我先解釋力量。";
+			mes "^4D4DFF力量 (STR)^000000 可以增加";
+			mes "^4D4DFF物理攻擊力 (ATK)^000000";
+			mes "以及你的 ^4D4DFF最大負重限制^000000。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "1 點 STR 可以增加 1 點物理攻擊力。當 STR 提升至 10 的倍數時，會給予一定數量的額外攻擊力加成。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "攻擊力加成的計算方式是取總力量值，去掉最後一位數，並將剩下的數字平方。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "假設你的攻擊力顯示為「48 + 1」。
+總共有 49 點力量。當你去掉最後一個數字「9」時，我們剩下數字「4」。
+4 乘以自己等於 16。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "所以物理攻擊力加成是 16。現在，如果你總共有 50 STR，攻擊力加成就會是 25。如果你有 100 STR，攻擊加成就會是 100。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "好的，現在讓我們來看看";
+			mes "敏捷 (AGI)。";
+			mes "敏捷會影響你的迴避率 (Flee) 和攻擊速度。你的迴避率越高，避開敵人攻擊的機會就越大。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "你的迴避率";
+			mes "等於你的 Base Level 數值";
+			mes "加上你的 AGI";
+			mes "的總和。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "所以如果你有 40 AGI，且你的 Base Level 是 30，你的迴避率就會是 70。這很簡單！根據迴避率公式，你的總迴避率就是 70。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "不過，AGI 只與一般的迴避率有關。完全迴避是決定成功躲避攻擊的另一個因素，但我們在討論";
+			mes "LUK 素質時會再談到這個。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "增加 AGI 的另一個好處是你的攻擊速度 (ASPD) 也會增加，這意味著你近戰攻擊之間的間隔時間會縮短。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "然而，攻擊速度 (ASPD)";
+			mes "會因職業不同而有差異，";
+			mes "請記住這一點。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "^666666*呼！*^000000";
+			mes "這對一天來說";
+			mes "幾乎是有點";
+			mes "太刺激了。我們要進行";
+			mes "下一個主題嗎？";
+			next;
+			break;
+		case 2:
+			mes "[傑爾·瑞奧特]";
+			mes "我們下一個主題";
+			mes "將會是體力 (VIT)";
+			mes "和智力 (INT)。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "^4D4DFF體力 (VIT)^000000 會影響 ^4D4DFF最大 HP、HP 恢復量和防禦力^000000。VIT 增加的 HP 數量會因你的職業而異。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "在所有的職業中，劍士系從";
+			mes "VIT 的增加中獲益最多。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "我們來看看防禦力。";
+			mes "在你的素質視窗上，防禦力顯示為 DEF。這會顯示兩個數值，第二個數字代表你的 VIT 對你防禦力的加成。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "第一組數字";
+			mes "代表由你的裝備和防具計算出的防禦力。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "你穿戴的裝備是依照總傷害的百分比來減少來自敵人的傷害，而 VIT 是減少固定的傷害數值。這就是為什麼防禦力會顯示為兩個數字的原因。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "下一個主題";
+			mes "是智力 (INT)。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "INT 會影響你的 ^4D4DFF最大 SP^000000、^4D4DFFSP 恢復量^000000、^4D4DFF魔法攻擊傷害 (MATK)^000000 以及你的 ^4D4DFF魔法防禦力 (MDEF)^000000。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "和 VIT 一樣，";
+			mes "1 點 INT 增加的 SP 量和 MATK 會因職業而異。這意味著某些職業天生就會比其他職業從高 INT 中獲益更多。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "就像一般的 DEF 一樣，你的魔法防禦力 (MDEF) 也顯示為兩個不同的數值。INT 所提供的 MDEF 是顯示的第二個 MDEF 數值。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "為了學習控制自然元素，你應該優先提升智力。因此，賢者和巫師";
+			mes "會專注於 INT 素質。";
+			next;
+			break;
+		case 3:
+			mes "[傑爾·瑞奧特]";
+			mes "我們最後一個主題";
+			mes "是靈巧 (DEX)";
+			mes "和幸運 (LUK)。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "靈巧主要會影響你的命中率、攻擊速度 (ASPD)";
+			mes "以及你的平均攻擊力。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "讓我來解釋一下...";
+			mes "如果你的 DEX 很低，你所能造成的最小傷害和";
+			mes "最大傷害之間的差距會變得很大。你攻擊的傷害會變得不穩定。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "如果你使用 ^4D4DFF弓^000000 作為你的";
+			mes "主要武器，你的攻擊力將會基於 ^4D4DFFDEX^000000。所以弓箭手應該專注於增加他們的 DEX。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "你所擁有的";
+			mes "DEX 數量也會影響你的攻擊命中率。攻擊命中率是由你的 Base Level 加上 DEX 來計算的。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "例如，如果你的";
+			mes "Base Level 是 40，且有 20 DEX，";
+			mes "你的攻擊命中率就會是 60。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "最後，DEX 也會減少魔法和技能的詠唱時間。因此，擁有一定的 DEX 對";
+			mes "魔法師和巫師來說是很方便的。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "現在，讓我告訴你";
+			mes "關於 LUK 素質。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "幸運 (LUK) 會影響";
+			mes "爆擊的機率、迴避率以及對魔物造成的微量傷害。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "對於爆擊，每個人的起始值都是 1，且每 ^4D4DFF3 點 LUK^000000 就會增加 ^4D4DFF1^000000 點。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "擁有越多的 LUK，你對敵人造成 ^3355FF爆擊^000000 的機率就越大。爆擊對你很有用，因為它們能無視敵人的防禦力。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "當你的攻擊對敵人造成比平常更多的傷害，而且傷害數字以爆炸性的紅色視覺效果顯示時，你就知道你打出了爆擊。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "每 10 點 LUK 會為你的完全迴避率增加 1 點。完全迴避有點像你的迴避率。當你成功發動完全迴避時，你的頭頂會出現「^FF7F00Lucky^000000」字樣。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "完全迴避雖然類似於迴避率，但在閃避攻擊方面它是一個獨立的因素，計算方式也不同。";
+			next;
+			mes "[傑爾·瑞奧特]";
+			mes "嗯，我必須說，";
+			mes "幸運是件好事，但這並不意味著你需要將它置於其他一切之上。";
+			next;
+			break;
+		case 4:
+			mes "[傑爾·瑞奧特]";
+			mes "你還有任何";
+			mes "其他問題嗎？";
+			mes "希望我的課程";
+			mes "對你有幫助。";
+			close;
+		}
+	}
+}
+
+new_1-2,184,172,1	script	技能理解	47,{
+	mes "[雷歐·韓德森]";
+	mes "歡迎?";
+	mes "喔看看這個";
+	mes "可愛的小初心者?！";
+	next;
+	mes "[雷歐·韓德森]";
+	mes "我，雷歐·韓德森，";
+	mes "對你的表現感到責無旁貸，並將盡我所能教導你。現在，請選擇你希望學習的科目。";
+	emotion ET_CHUP;
+	next;
+	while(1) {
+		switch(select("被動與主動技能:基本技能:表情符號的使用:取消。")) {
+		case 1:
+			mes "[雷歐·韓德森]";
+			mes "首先，讓我來解釋";
+			mes "關於被動技能。";
+			mes "請你打開";
+			mes "你的技能視窗好嗎？";
+			mes "（「^3355FFAlt^000000」+「^3355FFS^000000」）";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "現在，你知道每當";
+			mes "你的 Job Level 提升時，你就會獲得";
+			mes "一點 ^3355FF技能點數^000000，對吧？技能點數是用來學習你的技能的?";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你有看到你的基本技能圖示嗎？它在技能視窗的最頂端。點擊基本技能圖示旁邊的「Lv Up」按鈕，將技能點數用在基本技能上。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你會在基本技能圖示";
+			mes "的右邊看到「被動（Passive）」這個詞。這意味著這個技能是被動的，不需要消耗任何 SP。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "現在，請右鍵點擊基本技能圖示。你就能夠閱讀基本技能的簡短描述。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "主動技能不同於不消耗任何 SP 的被動技能，它們每次被使用時都";
+			mes "需要消耗 SP。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你可以透過在技能視窗中雙擊主動技能的圖示來使用它。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你也可以從技能視窗拖曳技能圖示，將它放到快捷鍵列（「^3355FFF12^000000」鍵）中，為該技能設定快捷鍵。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "使用一個主動技能";
+			mes "所需的 SP 量會顯示在該技能圖示的右側。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "一般來說，被動技能是與心理或身體鍛鍊和調節相關的技能。特殊能力或攻擊的使用則是主動技能。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "如果你對我的課程";
+			mes "還是不太確定，";
+			mes "我願意";
+			mes "再講一遍。";
+			next;
+			break;
+		case 2:
+			mes "[雷歐·韓德森]";
+			mes "基本技能是";
+			mes "純粹的被動技能，";
+			mes "是你進行仙境傳說遊戲";
+			mes "所需要的。";
+			mes "別擔心，";
+			mes "它們很容易學。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "當你在技能視窗中按滑鼠右鍵時";
+			mes "（「^3355FFAlt^000000」+「^3355FFS^000000」），你可以查看技能的描述，但我為你準備了這門課程，";
+			mes "以便你更好地理解。";
+			next;
+			while(1) {
+				switch(select("交易與交換:組織和加入隊伍:開設聊天室:倉庫使用:不用了謝謝，我已經知道了。")) {
+				case 1:
+					mes "[雷歐·韓德森]";
+					mes "當你訪問我們的官方網站 ^0000FFiro.ragnarokonline.com^000000 時，你可以找到關於交易的完整解釋，並附有圖片說明。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "為了與其他人";
+					mes "交易物品或 Zeny，";
+					mes "你必須至少學習 ^3355FF基本技能等級 1^000000。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "當你進行交易時，你必須";
+					mes "靠近你想要交換物品或 Zeny 的人。否則，如果那個人距離超過 2 格，交易將無法進行。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "在該角色身上點擊右鍵一次，";
+					mes "會出現一個小選單。";
+					mes "從這個選單中，選擇：";
+					mes "「^800FFF請求交易^000000」。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "之後，那個人將";
+					mes "選擇是否接受你的請求。如果你的交易請求被接受，將會出現交易視窗。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "要交易物品，請從你的物品欄視窗（「^3355FFAlt^000000」+「^3355FFE^000000」）中拖曳物品並將它們放入交易視窗的左側。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "其他人給予的物品將顯示在交易視窗的右側。請務必檢查";
+					mes "對方是否交易了你們同意交換的物品。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "要交易 Zeny，你可以輸入你想交易的 Zeny 數量。將物品或 Zeny 放入交易視窗後，按下視窗底部的「確定」按鈕以確認交易。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "一旦交易確認後，";
+					mes "按下「交易」按鈕以完成交易。如果其中任何一方沒有按下「確定」按鈕，交易將無法完成。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "如果其中任何一方按下視窗右側的「取消」按鈕，交易將被取消。";
+					next;
+					break;
+				case 2:
+					mes "[雷歐·韓德森]";
+					mes "現在，讓我來解釋";
+					mes "關於隊伍系統。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "隊伍系統允許";
+					mes "你與其他人組織一個小團隊，以便合作狩獵魔物，或只是一起玩樂。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "你可以";
+					mes "透過在你的對話視窗中輸入命令：";
+					mes " ";
+					mes "^4F4FFF//organize ''隊伍名稱''^000000";
+					mes "來組織一個隊伍。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "當然，你";
+					mes "必須至少達到";
+					mes "^4D4DFF基本技能等級 7^000000";
+					mes "或以上才能使用隊伍系統。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "我可以解釋更多關於";
+					mes "隊伍成員共同獲得的物品分配或經驗值分配，但這還是留待你以後自己去嘗試吧。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "這就是關於";
+					mes "隊伍系統的全部內容?";
+					mes "像你這樣";
+					mes "可愛的初心者";
+					mes "應該能很快上手?";
+					emotion ET_CHUP;
+					next;
+					break;
+				case 3:
+					mes "[雷歐·韓德森]";
+					mes "當你有";
+					mes "^4D4DFF基本技能等級 4^000000";
+					mes "或以上時，你可以開啟你自己的聊天室。你可以點擊基本資訊視窗中的";
+					mes "^3355FF聊天^000000按鈕，或者直接按下「^3355FFAlt^000000」+「^3355FFC^000000」。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "一旦你開啟了聊天室，";
+					mes "你可以透過在角色名稱上點擊右鍵來查看聊天室成員的資訊。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "你也可以用同樣的方式將該角色登錄為你的好友。如果你是聊天室的室長，";
+					mes "你可以更改";
+					mes "房間的設定。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "當你在聊天室裡時，";
+					mes "你無法聽到聊天室外面的任何對話。請記住這一點，好嗎？";
+					next;
+					break;
+				case 4:
+					mes "[雷歐·韓德森]";
+					mes "卡普拉公司的";
+					mes "卡普拉服務人員遍布世界各地，提供他們便利的服務和倉庫。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "事實上，這個房間外面就有一位卡普拉服務人員。去跟她談談，她會非常樂意為你詳細解釋卡普拉的服務。";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "總之，你";
+					mes "可以在";
+					mes "或以上時被允許使用你^4D4DFF個人的卡普拉倉庫^000000。";
+					mes "^4D4DFF基本技能等級 6^000000";
+					next;
+					mes "[雷歐·韓德森]";
+					mes "當你身上帶太多物品時，你的負重會過重，你將無法透過休息恢復 HP 或 SP，甚至無法與魔物戰鬥！所以把不需要的東西存放到卡普拉倉庫中吧。";
+					next;
+					break;
+				case 5:
+					mes "[雷歐·韓德森]";
+					mes "喔，你知道嗎？";
+					mes "就像我預料的一樣，";
+					mes "你跟";
+					mes "你長得一樣聰明又可愛?！";
+					mes "我，雷歐，感到非常印象深刻。";
+					next;
+					set .@end,1;
+				}
+				if (.@end) break;
+			}
+			mes "[雷歐·韓德森]";
+			mes "你希望";
+			mes "學習更多關於";
+			mes "其他不同的科目嗎？";
+			next;
+			break;
+		case 3:
+			mes "[雷歐·韓德森]";
+			mes "^4D4DFF表情符號^000000 是網路上";
+			mes "常用來 ^4D4DFF表達你感受^000000 的方式。這是一種很有趣的溝通方式！";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你必須首先達到";
+			mes "^4D4DFF基本技能等級 2^000000";
+			mes "或以上才能使用表情符號。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你可以查看";
+			mes "表情圖示清單";
+			mes "（「^3355FFAlt^000000」+「^3355FFL^000000」），然後點擊每個圖示來查看顯示";
+			mes "該表情符號的指令。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你也可以將";
+			mes "表情符號登錄到你的捷徑清單中（「^3355FFAlt^000000」+「^3355FFM^000000」），這樣你就可以直接使用捷徑來使用表情符號。我們的官方網站上也有詳細的說明。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "啊?我必須說，";
+			mes "誠實地表達";
+			mes "自己的感受對於人際關係";
+			mes "是至關重要的。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "你可以";
+			mes "透過按下「^4D4DFFCtrl^000000」和";
+			mes "「^4D4DFF - ^000000」、「^4D4DFF = ^000000」或「^4D4DFF \\ ^000000」鍵來玩剪刀石頭布。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "當然，你也可以在對話視窗中輸入 ^4D4DFF//bawi^000000、^4D4DFF//bo^000000 和 ^4D4DFF//gawi^000000（在韓文中代表石頭、布、剪刀）。";
+			next;
+			mes "[雷歐·韓德森]";
+			mes "要查看更多表情符號的指令，請在你的對話視窗中輸入指令 ^4D4DFF//emotion^000000 來查看清單?";
+			emotion ET_THROB;
+			next;
+			break;
+		case 4:
+			mes "[雷歐·韓德森]";
+			mes "我明白了...";
+			mes "你不再";
+			mes "需要我了！喔！現在的年輕人";
+			mes "長大得";
+			mes "真快！";
+			close;
+		}
+	}
+}
+
+new_1-2,121,101,2	script	指導士兵#nv1	105,{
+	mes "[指導士兵]";
+	mes "我們指導士兵會在每個城鎮的入口提供位置資訊。你可以很容易地透過我們特殊的制服找到我們。";
+	next;
+	mes "[指導士兵]";
+	mes "每當你第一次";
+	mes "造訪一個城鎮時，我們建議你向我們查詢鎮上著名地點的位置。";
+	next;
+	mes "[指導士兵]";
+	mes "如果你想參加資訊課程，請到處走走，並與這個修練場裡的各個導師交談。祝你有個美好的一天。";
+	close;
+}
+
+new_1-2,17,182,5	script	助手#nv	84,{
+	if (nov_2nd_cos < 11) {
+		mes "[愛爾敏]";
+		mes "恭喜你！";
+		mes "你已經通過了第一個修練課程！哇?我想你現在對仙境傳說有了更多的了解。";
+		next;
+		mes "[愛爾敏]";
+		mes "你將透過這門課程學習實際戰鬥的基礎知識。如果你在資訊課程中盡了最大的努力，你應該已經獲得了一些初始裝備。";
+		next;
+		mes "[愛爾敏]";
+		mes "在開始戰鬥之前，";
+		mes "請檢查你的裝備。你確定已經裝備了所有的防具和武器嗎？";
+		next;
+		switch(select("是的:沒有")) {
+		case 1:
+			mes "[愛爾敏]";
+			mes "首先，將游標放在魔物身上。當你點擊滑鼠左鍵時，你就會攻擊魔物一次。";
+			next;
+			mes "[愛爾敏]";
+			mes "如果你懶得一直點擊左鍵，可以在按住「^4D4DFFCtrl^000000」鍵的同時左鍵點擊魔物。這樣你就會持續攻擊該魔物，直到其中一方倒下，或者你逃跑為止。";
+			next;
+			mes "[愛爾敏]";
+			mes "你也可以在游標指著魔物時，一直按住滑鼠左鍵。不過，還是有些人連每次攻擊魔物時要按「^4D4DFFCtrl^000000」鍵都嫌麻煩。";
+			next;
+			mes "[愛爾敏]";
+			mes "如果你是其中之一，可以在對話視窗中輸入 ^E79E29//nc^000000 指令。這樣一來，當你左鍵點擊";
+			mes "一隻魔物時，你就會自動持續攻擊牠！";
+			next;
+			mes "[愛爾敏]";
+			mes "如果你碰巧遇到不死屬性的魔物，而你剛好有「治癒術」，你可以使用它來進行攻擊。";
+			next;
+			mes "[愛爾敏]";
+			mes "當你在按住「^4D4DFFShift^000000」鍵的同時使用治癒術，你就能將治癒術的目標鎖定在魔物身上並造成傷害。";
+			next;
+			mes "[愛爾敏]";
+			mes "當然，對於這個技能，我們也為懶人提供了一個非常方便的選項。在你的對話視窗中輸入 ^E79E29//ns^000000 指令。";
+			next;
+			mes "[愛爾敏]";
+			mes "這將允許你在不按住 Shift 鍵的情況下，直接對魔物使用治癒術進行攻擊。很方便，對吧？";
+			next;
+			mes "[愛爾敏]";
+			mes "你了解這些戰鬥指令了嗎？現在，我將教你關於魔物的習性和屬性、戰鬥中獲得的經驗值，以及可以從死掉的魔物身上獲得的物品。";
+			next;
+			mes "[愛爾敏]";
+			mes "野外戰鬥修練對新的冒險者來說其實可能相當危險。讓我透過我的魔法力量，";
+			mes "給你多一點力量。";
+			next;
+			mes "[愛爾敏]";
+			mes "哈啊啊啊啊啊?！";
+			if (nov_2nd_cos < 1) {
+				if (BaseLevel == 1) {
+					set nov_2nd_cos,12;
+					getexp 9,0;
+				}
+				else if (BaseLevel == 2) {
+					set nov_2nd_cos,13;
+					getexp 16,0;
+				}
+				else if (BaseLevel == 3) {
+					set nov_2nd_cos,14;
+					getexp 25,0;
+				}
+				else if (BaseLevel == 4) {
+					set nov_2nd_cos,15;
+					getexp 36,0;
+				}
+				else if (BaseLevel == 5) {
+					set nov_2nd_cos,16;
+					getexp 77,0;
+				}
+				else if (BaseLevel == 6) {
+					set nov_2nd_cos,17;
+					getexp 112,0;
+				}
+				else if (BaseLevel >= 7) {
+					set nov_2nd_cos,18;
+					getexp 153,0;
+				}
+			}
+			next;
+			mes "[愛爾敏]";
+			mes "你想讓我";
+			mes "先為你";
+			mes "講解哪個主題？";
+			next;
+			while(1) {
+				switch(select("魔物:經驗值:物品:退出。")) {
+				case 1:
+					mes "[愛爾敏]";
+					mes "有很多主動攻擊的魔物，甚至在你靠近牠們之前就會先攻擊你。";
+					next;
+					mes "[愛爾敏]";
+					mes "也有一些魔物會與同類合作。攻擊牠們其中一隻，整群魔物就會蜂擁而至，找你報仇。";
+					next;
+					mes "[愛爾敏]";
+					mes "每一種魔物都可以根據其種族、體型和屬性來分類。例如，外面有著人形、動物、聖屬性與惡魔屬性的魔物。";
+					next;
+					mes "[愛爾敏]";
+					mes "當你知道魔物的屬性時，你可以利用這些知識來幫助你戰鬥。";
+					next;
+					mes "[愛爾敏]";
+					mes "如果你能獲得增加對特定魔物屬性傷害，或是減少特定魔物屬性傷害的卡片，你在戰鬥中會輕鬆得多。";
+					next;
+					mes "[愛爾敏]";
+					mes "魔物依體型分為：小型、中型和大型。有一些卡片可以讓你在對付";
+					mes "特定體型的魔物時造成更多傷害。";
+					next;
+					mes "[愛爾敏]";
+					mes "此外，每種武器都有其優點和缺點。武器的大小將影響它對魔物造成的傷害。";
+					next;
+					mes "[愛爾敏]";
+					mes "例如，短劍類武器對小型魔物造成 100% 的傷害，但對大型魔物只能造成 50% 的傷害。";
+					next;
+					mes "[愛爾敏]";
+					mes "常見的魔物屬性包括水、風、地、火、暗、念和聖。如果你用相剋的屬性攻擊魔物，你可以造成額外的傷害?";
+					next;
+					mes "[愛爾敏]";
+					mes "但如果你用與魔物相同屬性的技能或武器";
+					mes "攻擊魔物，傷害將會大幅降低，甚至完全無效。你甚至可能會治癒該魔物！";
+					next;
+					mes "[愛爾敏]";
+					mes "在對付念屬性魔物的情況下，普通武器無法造成任何傷害。然而，帶有任何其他屬性的武器將能夠造成一些傷害。";
+					next;
+					break;
+				case 2:
+					mes "[愛爾敏]";
+					mes "基本上，對魔物造成最多傷害的角色，會從該魔物身上獲得最多的經驗值。";
+					next;
+					mes "[愛爾敏]";
+					mes "因此，你會根據你對魔物造成的傷害占其總 HP 的比例，獲得一定百分比的經驗值。";
+					next;
+					mes "[愛爾敏]";
+					mes "舉例來說，有一個名叫『Z』的角色。
+Z 對一隻總 HP 為 100 且死後會給予 1000 點經驗值的魔物造成了 65 點傷害。那麼，Z 將會獲得 650 點經驗值。";
+					next;
+					mes "[愛爾敏]";
+					mes "然而，這個規則在某些情況下會有不同的應用。";
+					next;
+					mes "[愛爾敏]";
+					mes "如果有兩個人都對同一隻魔物造成了 65 點傷害，他們各自獲得的經驗值會因為魔物剩餘的 HP 而有所不同。";
+					next;
+					mes "[愛爾敏]";
+					mes "例如，當你正在打一隻魔物時，有人也對牠造成了傷害，而且他造成的傷害量和你一樣。";
+					next;
+					mes "[愛爾敏]";
+					mes "在這種情況下，你將會獲得該魔物所能給予的總經驗值的 2//3，而另一個人將獲得 1//3。";
+					next;
+					mes "[愛爾敏]";
+					mes "然而，在仙境傳說中，我們不建議去攻擊別人已經在打的魔物。這種行為被視為沒有禮貌的。";
+					next;
+					mes "[愛爾敏]";
+					mes "在隊伍遊玩時，隊長可以將經驗值分配設定為均分選項。";
+					next;
+					mes "[愛爾敏]";
+					mes "透過這種方式，隊伍成員可以根據他們的角色等級以及隊伍中的成員數量來分享經驗值。";
+					next;
+					mes "[愛爾敏]";
+					mes "此外，組隊遊玩有經驗值加成，可以讓你獲得比單練更多的經驗值。你可以利用這個系統來更快速地升級。";
+					next;
+					break;
+				case 3:
+					mes "[愛爾敏]";
+					mes "當你殺死魔物時，";
+					mes "你有機會獲得物品。此外，某些角色可以使用「偷竊」技能來從魔物身上竊取物品。";
+					next;
+					mes "[愛爾敏]";
+					mes "不用擔心使用了偷竊技能會導致你殺死牠們後找不到任何物品。使用偷竊技能完全不會影響魔物死後的物品掉落率。";
+					next;
+					mes "[愛爾敏]";
+					mes "當一群人殺死一隻魔物時，造成最多傷害的人擁有拾取掉落物品的優先權。";
+					next;
+					break;
+				case 4:
+					mes "[愛爾敏]";
+					mes "如果你有";
+					mes "任何問題，";
+					mes "隨時可以問我。";
+					close;
+				}
+			}
+		case 2:
+			mes "[愛爾敏]";
+			mes "請好好保管你透過修練課程獲得的裝備。一旦你弄丟了這些裝備，就永遠拿不回來了。";
+			close;
+		}
+	}
+	else {
+		mes "[愛爾敏]";
+		mes "我應該為你";
+		mes "講解";
+		mes "哪個主題？";
+		next;
+		while(1) {
+			switch(select("魔物:經驗值:物品:退出。")) {
+			case 1:
+				mes "[愛爾敏]";
+				mes "有很多主動攻擊的魔物，甚至在你靠近牠們之前就會先攻擊你。";
+				next;
+				mes "[愛爾敏]";
+				mes "也有一些魔物會與同類合作。攻擊牠們其中一隻，整群魔物就會蜂擁而至，找你報仇。";
+				next;
+				mes "[愛爾敏]";
+				mes "每一種魔物都可以根據其種族、體型和屬性來分類。例如，外面有著人形、動物、聖屬性與惡魔屬性的魔物。";
+				next;
+				mes "[愛爾敏]";
+				mes "當你知道魔物的屬性時，你可以利用這些知識來幫助你戰鬥。";
+				next;
+				mes "[愛爾敏]";
+				mes "如果你能獲得增加對特定魔物屬性傷害，或是減少特定魔物屬性傷害的卡片，你在戰鬥中會輕鬆得多。";
+				next;
+				mes "[愛爾敏]";
+				mes "魔物依體型分為：小型、中型和大型。有一些卡片可以讓你在對付特定體型的魔物時造成更多傷害。";
+				next;
+				mes "[愛爾敏]";
+				mes "此外，每種武器都有其優點和缺點。武器的大小將影響它對魔物造成的傷害。";
+				next;
+				mes "[愛爾敏]";
+				mes "例如，短劍類武器對小型魔物造成 100% 的傷害，但對大型魔物只能造成 50% 的傷害。";
+				next;
+				mes "[愛爾敏]";
+				mes "常見的魔物屬性包括水、風、地、火、暗、念和聖。如果你用相剋的屬性攻擊魔物，你可以造成額外的傷害?";
+				next;
+				mes "[愛爾敏]";
+				mes "但如果你用與魔物相同屬性的技能或武器";
+				mes "攻擊魔物，傷害將會大幅降低，甚至完全無效。你甚至可能會治癒該魔物！";
+				next;
+				mes "[愛爾敏]";
+				mes "在對付念屬性魔物的情況下，普通武器無法造成任何傷害。然而，帶有任何其他屬性的武器將能夠造成一些傷害。";
+				next;
+				break;
+			case 2:
+				mes "[愛爾敏]";
+				mes "基本上，對魔物造成最多傷害的角色，會從該魔物身上獲得最多的經驗值。";
+				next;
+				mes "[愛爾敏]";
+				mes "因此，你會根據你對魔物造成的傷害占其總 HP 的比例，獲得一定百分比的經驗值。";
+				next;
+				mes "[愛爾敏]";
+				mes "舉例來說，有一個名叫『Z』的角色。
+Z 對一隻總 HP 為 100 且死後會給予 1000 點經驗值的魔物造成了 65 點傷害。那麼，Z 將會獲得 650 點經驗值。";
+				next;
+				mes "[愛爾敏]";
+				mes "然而，這個規則在某些情況下會有不同的應用。";
+				next;
+				mes "[愛爾敏]";
+				mes "如果有兩個人都對同一隻魔物造成了 65 點傷害，他們各自獲得的經驗值會因為魔物剩餘的 HP 而有所不同。";
+				next;
+				mes "[愛爾敏]";
+				mes "例如，當你正在打一隻魔物時，有人也對牠造成了傷害，而且他造成的傷害量和你一樣。";
+				next;
+				mes "[愛爾敏]";
+				mes "在這種情況下，你將會獲得該魔物所能給予的總經驗值的 2//3，而另一個人將獲得 1//3。";
+				next;
+				mes "[愛爾敏]";
+				mes "然而，在仙境傳說中，我們不建議去攻擊別人已經在打的魔物。這種行為被視為沒有禮貌的。";
+				next;
+				mes "[愛爾敏]";
+				mes "在隊伍遊玩時，隊長可以將經驗值分配設定為均分選項。";
+				next;
+				mes "[愛爾敏]";
+				mes "透過這種方式，隊伍成員可以根據他們的角色等級以及隊伍中的成員數量來分享經驗值。";
+				next;
+				mes "[愛爾敏]";
+				mes "此外，組隊遊玩有經驗值加成，可以讓你獲得比單練更多的經驗值。你可以利用這個系統來更快速地升級。";
+				next;
+				break;
+			case 3:
+				mes "[愛爾敏]";
+				mes "當你殺死魔物時，";
+				mes "你有機會獲得物品。此外，某些角色可以使用「偷竊」技能來從魔物身上竊取物品。";
+				next;
+				mes "[愛爾敏]";
+				mes "不用擔心使用了偷竊技能會導致你殺死牠們後找不到任何物品。使用偷竊技能完全不會影響魔物死後的物品掉落率。";
+				next;
+				mes "[愛爾敏]";
+				mes "當一群人殺死一隻魔物時，造成最多傷害的人擁有拾取掉落物品的優先權。";
+				next;
+				break;
+			case 4:
+				mes "[愛爾敏]";
+				mes "如果你有";
+				mes "任何問題，";
+				mes "隨時可以問我。";
+				close;
+			}
+		}
+	}
+}
+
+new_1-2,38,182,3	script	入口守衛#nv	92,{
+	if (nov_2nd_cos == 0) {
+		mes "[穆里爾]";
+		mes "很抱歉，我不能讓任何沒有受過戰鬥指導的人進入野外戰鬥修練場。";
+		next;
+		mes "[穆里爾]";
+		mes "你為什麼不先跟這個房間左邊的助手談談，這樣你就可以接受一些戰鬥指導了？";
+		close;
+	}
+	else if (nov_2nd_cos > 0 && nov_2nd_cos < 21) {
+		mes "[穆里爾]";
+		mes "野外戰鬥修練是一門真實的戰鬥課程，你可以獲得基本的戰鬥技能，用來在米德加茲保護自己。";
+		next;
+		mes "[穆里爾]";
+		mes "請盡可能多殺一些魔物，將你的基本等級提升至少 2 級。";
+		next;
+		mes "[穆里爾]";
+		mes "提升 2 級基本等級是完成你野外戰鬥修練的必要條件。雖然魔物都很弱且容易殺死，但我希望你還是要小心。";
+		next;
+		mes "[穆里爾]";
+		mes "你想";
+		mes "馬上接受";
+		mes "測驗嗎？";
+		next;
+		switch(select("是的:我需要更多時間。")) {
+		case 1:
+			mes "[穆里爾]";
+			mes "請確保你在";
+			mes "透過戰鬥提升了 2 級基本等級後，去跟北邊的工作人員談談。";
+			next;
+			mes "[穆里爾]";
+			mes "我會給你一些實用的補給品，請在緊急情況下使用它們。";
+			if (nov_2nd_cos == 12) {
+				set nov_2nd_cos,22;
+			}
+			else if (nov_2nd_cos == 13) {
+				set nov_2nd_cos,23;
+			}
+			else if (nov_2nd_cos == 14) {
+				set nov_2nd_cos,24;
+			}
+			else if (nov_2nd_cos == 15) {
+				set nov_2nd_cos,25;
+			}
+			else if (nov_2nd_cos == 16) {
+				set nov_2nd_cos,26;
+			}
+			else if (nov_2nd_cos == 17) {
+				set nov_2nd_cos,27;
+			}
+			else if (nov_2nd_cos == 18) {
+				set nov_2nd_cos,28;
+			}
+			else {
+				set nov_2nd_cos,29;
+			}
+			getitem 602,1;
+			//Wing_Of_Butterfly
+			getitem 601,9; //Wing_Of_Fly
+			getitem 1243,1; //Novice_Knife
+			getitem 2112,1; //Novice_Guard
+			getitem 611,2; //Spectacles
+			getitem 569,300; //Novice_Potion
+			close2;
+			savepoint "new_1-2",23,188,1,1;
+			warp "new_1-3",96,21;
+			end;
+		case 2:
+			mes "[穆里爾]";
+			mes "沒問題。";
+			mes "如果你不確定自己是否能通過測驗，為什麼不再去跟左邊的助手談一次呢？請在";
+			mes "你準備好時再來。";
+			close;
+		}
+		close;
+	}
+	else if ((nov_2nd_cos > 20) && (nov_2nd_cos < 31)) {
+		mes "[穆里爾]";
+		mes "喔好吧，我告訴過你要小心的。振作起來！這沒什麼大不了的。";
+		mes " ";
+		mes "失敗為成功之母。";
+		mes "你還有很多機會";
+		mes "可以重新測驗。";
+		next;
+		mes "[穆里爾]";
+		mes "你想";
+		mes "再試一次嗎？";
+		next;
+		switch(select("是的。:能給我多一點時間嗎？")) {
+		case 1:
+			mes "[穆里爾]";
+			mes "我會再次";
+			mes "給你一些補給品。";
+			mes "請務必小心！";
+			if (nov_2nd_cos == 22) {
+				set nov_2nd_cos,33;
+				getexp 16,0;
+			}
+			else if (nov_2nd_cos == 23) {
+				set nov_2nd_cos,34;
+				getexp 25,0;
+			}
+			else if (nov_2nd_cos == 24) {
+				set nov_2nd_cos,35;
+				getexp 36,0;
+			}
+			else if (nov_2nd_cos == 25) {
+				set nov_2nd_cos,36;
+				getexp 77,0;
+			}
+			else if (nov_2nd_cos == 26) {
+				set nov_2nd_cos,37;
+				getexp 112,0;
+			}
+			else if (nov_2nd_cos == 27) {
+				set nov_2nd_cos,38;
+				getexp 153,0;
+			}
+			else if (nov_2nd_cos == 28) {
+				set nov_2nd_cos,39;
+				getexp 200,0;
+			}
+			else if (nov_2nd_cos == 29) {
+				set nov_2nd_cos,40;
+				getexp 200,0;
+			}
+			percentheal 100,0;
+			getitem 569,50; //Novice_Potion
+			close2;
+			warp "new_1-3",96,21;
+			end;
+		case 2:
+			mes "[穆里爾]";
+			mes "沒問題。";
+			mes "如果你不確定自己是否能通過測驗，為什麼不再去跟左邊的助手談一次呢？請在";
+			mes "你準備好時再來。";
+			close;
+		}
+	}
+	else if (nov_2nd_cos > 30) {
+		mes "[穆里爾]";
+		mes "喔好吧，我告訴過你要小心的。振作起來！這沒什麼大不了的。";
+		mes " ";
+		mes "失敗為成功之母。";
+		mes "你還有很多機會可以重新測驗。";
+		next;
+		mes "[穆里爾]";
+		mes "你想再試一次嗎？";
+		next;
+		switch(select("是的:能給我多一點時間嗎？")) {
+		case 1:
+			mes "[穆里爾]";
+			mes "我會恢復";
+			mes "你的 HP。請";
+			mes "務必小心！";
+			percentheal 100,0;
+			close2;
+			warp "new_1-3",96,21;
+			end;
+		case 2:
+			mes "[穆里爾]";
+			mes "沒問題。";
+			mes "如果你不確定自己是否能通過測驗，為什麼不再去跟左邊的助手談一次呢？請在準備好時再來。";
+			close;
+		}
+	}
+}
+
+//Teleport NPC
+new_1-3,95,30,4	script	訓練員#nv1::NovHoffman	84,{
+	mes "[霍夫曼]";
+	mes "嘿，你好?";
+	mes "我是來為你";
+	mes "提供一些指導的。";
+	next;
+	mes "[霍夫曼]";
+	mes "這些魔物都很弱";
+	mes "也很容易殺死。但小心點，";
+	mes "牠們很多都有攻擊性，";
+	mes "而且渴望鮮血！";
+	next;
+	mes "[霍夫曼]";
+	mes "如果你覺得這裡的魔物對你來說太弱了，我可以把你送到另一個修練場，那裡的魔物比這邊的更強。";
+	next;
+	mes "[霍夫曼]";
+	mes "不過別太擔心，";
+	mes "對初心者來說牠們並不是";
+	mes "無法戰勝的。所以你";
+	mes "想試試看嗎？";
+	next;
+	switch(select("我確實想要更多挑戰?:我想打強一點的魔物！:取消")) {
+	case 1:
+		mes "[霍夫曼]";
+		mes "我明白了，那就讓我引導";
+		mes "你到一個有更強魔物的修練場吧。願神與你同在...";
+		next;
+		if (strnpcinfo(2) == "nv1") {
+			if (rand(2)) {
+				warp "new_2-3",96,21;
+			}
+			else {
+				warp "new_3-3",96,21;
+			}
+		}
+		else {
+			warp "new_1-3",96,21;
+		}	
+		end;
+	case 2:
+		mes "[霍夫曼]";
+		mes "你一定很喜歡";
+		mes "艱難的挑戰，";
+		mes "對吧？請";
+		mes "小心，這可能會變得";
+		mes "相當困難...";
+		next;
+		if (strnpcinfo(2) == "nv1" || strnpcinfo(2) == "nv2" || strnpcinfo(2) == "nv3") {
+			if (rand(2)) {
+				warp "new_4-3",96,21;
+			}
+			else {
+				warp "new_5-3",96,21;
+			}
+		}
+		else {
+			if (rand(2)) {
+				warp "new_2-3",96,21;
+			}
+			else {
+				warp "new_3-3",96,21;
+			}
+		}
+		end;
+	case 3:
+		mes "[霍夫曼]";
+		mes "嗯...？";
+		mes "你擔心去";
+		mes "更有挑戰性的地方嗎？這是可以理解的，畢竟你還是一個新冒險者。祝你好運?";
+		close;
+	}
+}
+
+new_2-3,95,30,4	duplicate(NovHoffman)	訓練員#nv2	84
+new_3-3,95,30,4	duplicate(NovHoffman)	訓練員#nv3	84
+new_4-3,95,30,4	duplicate(NovHoffman)	訓練員#nv4	84
+new_5-3,95,30,4	duplicate(NovHoffman)	訓練員#nv5	84
+
+new_1-3,96,174,3	script	測驗官#nv1::NovKeyman	85,{
+	mes "[奇曼]";
+	mes "很好！！";
+	mes "現在你知道如何與";
+	mes "魔物戰鬥了，對吧？";
+	mes "你想前往";
+	mes "下一個課程嗎？";
+	next;
+	switch(select("是的:沒有")) {
+	case 1:
+		mes "[奇曼]";
+		mes "我希望你未來能";
+		mes "成為一名優秀的戰士。";
+		mes "旅途愉快。";
+		close2;
+		warp "new_1-4",99,10;
+		return
+		end;
+	case 2:
+		mes "[奇曼]";
+		mes "我明白了...";
+		mes "多加練習直到你對戰鬥基礎更加熟悉，這絕對沒有壞處。";
+		close;
+	}
+}
+
+new_2-3,96,174,3	duplicate(NovKeyman)	測驗官#nv2	85
+new_3-3,96,174,3	duplicate(NovKeyman)	測驗官#nv3	85
+new_4-3,96,174,3	duplicate(NovKeyman)	測驗官#nv4	85
+new_5-3,96,174,3	duplicate(NovKeyman)	測驗官#nv5	85
+
+//Potato Merchant
+new_1-2,28,185,4	shop	馬鈴薯商人	90,516:15
+
+new_1-4,100,29,1	script	漢森#nv	46,{
+	if (checkweight(909,400) == 0) {
+		mes "[漢森]";
+		mes "你帶的所有物品一定成了很大的負擔。你從哪裡弄來這麼多東西？請丟棄你不需要的東西來減輕你的負重。";
+		close;
+	}
+	if (nov_3_swordman == 20) {
+		mes "[漢森]";
+		mes "你好，";
+		mes "^A62A2A" + strcharinfo(0) + "』^000000。";
+		mes "你真是費了";
+		mes "一番心血才來到這裡。";
+		next;
+		mes "[漢森]";
+		mes "修練場的最後一項測驗是性向測驗，";
+		mes "但這並不是必修課程。";
+		next;
+		mes "[漢森]";
+		mes "然而，參加這項測驗會有一些好處。";
+		mes "當你參加這項測驗時，你將會收到許多能幫助你加入仙境傳說社群的恢復道具。";
+		next;
+		mes "[漢森]";
+		mes "其次，在你完成課程後，我們將建議最適合你個性的職業，並把你傳送到可以轉職為我們建議職業的城鎮。";
+		next;
+		mes "[漢森]";
+		mes "現在...";
+		mes "你想";
+		mes "做什麼呢？";
+		next;
+		mes "[漢森]";
+		mes "你是想立刻開始仙境傳說，還是先參加這個性向測驗課程？";
+		next;
+		switch(select("我要參加這個課程。:請讓我開始仙境傳說吧。")) {
+		case 1:
+			mes "[漢森]";
+			mes "極佳的選擇！";
+			mes "如果你真的想成為一名準備充分的玩家，你本來就應該參加每一個修練課程！";
+			next;
+			mes "[漢森]";
+			mes "好的，讓我開始第一個測驗。請放輕鬆";
+			mes "並順其自然。";
+			next;
+			mes "[漢森]";
+			mes "記住，這項測驗只是為了了解你的個性，並沒有標準的對錯。現在！讓我們開始測驗吧！";
+			next;
+			mes "[漢森]";
+			mes "請從以下選項中，";
+			mes "選擇最符合你";
+			mes "的詞語。";
+			next;
+			switch(select("讀書:運動:服務大眾:暴力")) {
+			case 1:
+				set .@magician_p,.@magician_p+1;
+				break;
+			case 2:
+				set .@thief_p,.@thief_p+1;
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			case 3:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			case 4:
+				set .@thief_p,.@thief_p+1;
+				break;
+			}
+			switch(select("改變:保守")) {
+			case 1:
+				set .@magician_p,.@magician_p+1;
+				break;
+			case 2:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			}
+			switch(select("消費者:銷售者:生產者")) {
+			case 1:
+				set .@swordman_p,.@swordman_p+1;
+				set .@thief_p,.@thief_p+1;
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			case 2:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 3:
+				set .@magician_p,.@magician_p+1;
+				break;
+			}
+			switch(select("名人:謹慎")) {
+			case 1:
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 2:
+				set .@archer_p,.@archer_p+1;
+				break;
+			}
+			switch(select("理論:經驗")) {
+			case 1:
+				set .@magician_p,.@magician_p+1;
+				break;
+			case 2:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			}
+			switch(select("過去:現實:未來")) {
+			case 1:
+				set .@archer_p,.@archer_p+1;
+				break;
+			case 2:
+				set .@merchant_p,.@merchant_p+1;
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 3:
+				set .@magician_p,.@magician_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "請對以下問題";
+			mes "回答『是的』或『不是』。";
+			next;
+			mes "[漢森]";
+			mes "我寧可死";
+			mes "也不願屈服地活著。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			case 2:
+				set .@thief_p,.@thief_p+1;
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "看到別人比你好，";
+			mes "你經常會感到不滿。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 2:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你不介意";
+			mes "探索危險的";
+			mes "地方。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			case 2:
+				set .@magician_p,.@magician_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你是一個";
+			mes "具有領導者特質";
+			mes "的人。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			case 2:
+				set .@archer_p,.@archer_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "在探索";
+			mes "地穴時，你遇到了一條死路。";
+			next;
+			mes "[漢森]";
+			mes "然而，你旁邊的牆上有一個看起來很像按鈕的石頭，旁邊還有個牌子寫著『請勿按壓』。";
+			next;
+			mes "[漢森]";
+			mes "你會忍不住";
+			mes "想去按";
+			mes "這個按鈕嗎？";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 2:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你經常看到";
+			mes "不存在的東西。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			case 2:
+				set .@magician_p,.@magician_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "如果你掉下";
+			mes "懸崖，你會覺得";
+			mes "自己像在飛。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			case 2:
+				set .@magician_p,.@magician_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "金錢萬能。";
+			next;
+			switch(select("是的。:不是。")) {
+			case 1:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 2:
+				set .@archer_p,.@archer_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "現在，讓我問你一些不同的問題。請放輕鬆並順其自然，選擇最適合你的答案。";
+			next;
+			mes "[漢森]";
+			mes "當你查看";
+			mes "你緊湊的行程表時......";
+			next;
+			switch(select("你覺得自己像個機器人。:你感到驕傲和滿足。:行程表？什麼行程表？")) {
+			case 1:
+				set .@swordman_p,.@swordman_p+1;
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 2:
+				set .@acolyte_p,.@acolyte_p+1;
+				set .@magician_p,.@magician_p+1;
+				break;
+			case 3:
+				set .@archer_p,.@archer_p+1;
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "當你在逛街時，";
+			mes "在店裡發現了一件非常有趣的物品，並猶豫是否要買下它。在購買之前，";
+			mes "你做的第一件事是......";
+			next;
+			switch(select("考慮是否需要它。:確認價格。:毫不猶豫，直接買了！")) {
+			case 1:
+				set .@archer_p,.@archer_p+1;
+				break;
+			case 2:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 3:
+				set .@thief_p,.@thief_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "填空題：";
+			mes "你^3355FF＿＿＿＿^000000";
+			mes "與別人競爭......";
+			next;
+			switch(select("不介意......:不喜歡......:不在乎......")) {
+			case 1:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 2:
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 3:
+				set .@acolyte_p,.@acolyte_p+1;
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你負責一項需要與許多人合作的任務。如果你獨自處理，將會花費大量的精力和時間。";
+			next;
+			mes "[漢森]";
+			mes "但如果你與其他人合作，這將會是一件簡單又愉快的任務。你會...... ";
+			next;
+			switch(select("自己處理，即使這很困難。:請朋友幫忙。")) {
+			case 1:
+				set .@magician_p,.@magician_p+1;
+				break;
+			case 2:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你碰巧";
+			mes "在街上發現一個暈倒的女孩。";
+			mes "你會怎麼做？";
+			next;
+			switch(select("帶她去醫院。:在採取行動前先評估情況。:直接忽視。")) {
+			case 1:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			case 2:
+				set .@swordman_p,.@swordman_p+1;
+				set .@archer_p,.@archer_p+1;
+				break;
+			case 3:
+				set .@magician_p,.@magician_p+1;
+				set .@thief_p,.@thief_p+1;
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你碰巧";
+			mes "撿到了『衣服』。";
+			mes "你會怎麼做？";
+			next;
+			switch(select("檢查品牌。:想知道是誰弄丟的。:誰撿到就是誰的！:把它留在原地。")) {
+			case 1:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 2:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			case 3:
+				set .@merchant_p,.@merchant_p+1;
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 4:
+				set .@magician_p,.@magician_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "在談話中你不小心說錯話了。你該如何處理這個情況？";
+			next;
+			switch(select("假裝這是一個玩笑。:轉移話題。:分析它。:誠實地道歉。")) {
+			case 1:
+				set .@thief_p,.@thief_p+1;
+				break;
+			case 2:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			case 3:
+				set .@magician_p,.@magician_p+1;
+				break;
+			case 4:
+				set .@acolyte_p,.@acolyte_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "你正和心愛的人一起旅行。你的另一半要求你買一個不是特別好的紀念品。你會怎麼做？";
+			next;
+			switch(select("買給她/他。:說『不』。:承諾下次再買。")) {
+			case 1:
+				set .@swordman_p,.@swordman_p+1;
+				break;
+			case 2:
+				set .@merchant_p,.@merchant_p+1;
+				break;
+			case 3:
+				set .@thief_p,.@thief_p+1;
+				break;
+			}
+			mes "[漢森]";
+			mes "好了?！測驗到此結束。你已經完成了所有的修練場課程。恭喜你！";
+			next;
+			mes "[漢森]";
+			mes "既然你通過了性向測驗，我為你準備了一些物品。請收下吧，這是你應得的。";
+			next;
+			//---------------------------------------------------------------------------------------------------------------------------------------------------
+			set nov_3_swordman,40;
+			getitem 501,4; //Red_Potion
+			getitem 503,2; //Yellow_Potion
+			getitem 506,2; //Green_Potion
+			//-------------------------------------------------------------------------------------------------------------------------------------------------
+			next;
+			mes "[漢森]";
+			mes "現在，我們將在分析你的性向測驗結果後，為你推薦一個適合的職業。請稍等。";
+			next;
+			mes "[漢森]";
+			mes "...";
+			next;
+			mes "[漢森]";
+			mes "...";
+			mes "......";
+			next;
+			mes "[漢森]";
+			mes "這是你測驗的";
+			mes "最終結果。";
+			next;
+			if (.@swordman_p > .@magician_p) {
+				if (.@swordman_p > .@merchant_p) {
+					if (.@swordman_p > .@thief_p) {
+						if (.@swordman_p > .@archer_p) {
+							if (.@swordman_p > .@acolyte_p) {
+								set .@job_c,1;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+					else {
+						if (.@thief_p > .@archer_p) {
+							if (.@thief_p > .@acolyte_p) {
+								set .@job_c,4;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+				}
+				else {
+					if (.@merchant_p > .@thief_p) {
+						if (.@merchant_p > .@archer_p) {
+							if (.@merchant_p > .@acolyte_p) {
+								set .@job_c,3;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+					else {
+						if (.@thief_p > .@archer_p) {
+							if (.@thief_p > .@acolyte_p) {
+								set .@job_c,4;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+				}
+			}
+			else {
+				if (.@magician_p > .@merchant_p) {
+					if (.@magician_p > .@thief_p) {
+						if (.@magician_p > .@archer_p) {
+							if (.@magician_p > .@acolyte_p) {
+								set .@job_c,2;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+					else {
+						if (.@thief_p > .@archer_p) {
+							if (.@thief_p > .@acolyte_p) {
+								set .@job_c,4;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+				}
+				else {
+					if (.@merchant_p > .@thief_p) {
+						if (.@merchant_p > .@archer_p) {
+							if (.@merchant_p > .@acolyte_p) {
+								set .@job_c,3;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+					else {
+						if (.@thief_p > .@archer_p) {
+							if (.@thief_p > .@acolyte_p) {
+								set .@job_c,4;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+						else {
+							if (.@archer_p > .@acolyte_p) {
+								set .@job_c,5;
+							}
+							else {
+								set .@job_c,6;
+							}
+						}
+					}
+				}
+			}
+			if (.@job_c == 1) {
+				mes "[漢森]";
+				mes "雖然你很直接且想法單純，但你";
+				mes "有著堅強的意志，並且想成為這個世界上舉足輕重的人物。";
+				next;
+				mes "[漢森]";
+				mes "你也總是";
+				mes "試圖保護弱者。";
+				next;
+				mes "[漢森]";
+				mes "對於擁有自己意志的你來說，^696969劍士^000000 是最適合的職業。";
+				next;
+				mes "[漢森]";
+				mes "所以，你想接受我們的建議，還是想自己選擇職業呢？";
+				next;
+				switch(select("劍士！:我自己選！")) {
+				case 1:
+					mes "[漢森]";
+					mes "極佳的選擇！";
+					mes "在你領取所有補給品後，我會把你傳送到劍士公會。";
+					next;
+					mes "^660000補給品清單^000000";
+					mes "^0000335張 卡普拉倉庫免費使用券^000000";
+					mes "^0000335張 卡普拉空間移動免費使用券^000000";
+					////mes "^000099100 zeny^000000";
+					mes "^0000331把 彎刀^000000";
+					mes "^0000337個 強化武器金屬-級數一^000000";
+					next;
+					set nov_3_swordman,40;
+					getitem 7059,5; //Cargo_Free_Ticket
+					getitem 7060,5; //Warp_Free_Ticket
+					getitem 1104,1; //Falchion
+					getitem 1010,7; //Phracon
+					////getgold 100
+					mes "[漢森]";
+					mes "請檢查你的物品欄，看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+					next;
+					mes "[漢森]";
+					mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+					next;
+					mes "[漢森]";
+					mes "『Zeny』是米德加茲的貨幣。『彎刀』是一把在你成為劍士後會非常有用的武器。";
+					next;
+					mes "[漢森]";
+					mes "『強化武器金屬-級數一』是一種可用來升級 1 級武器的礦石。要用這個金屬來強化你的彎刀，請前往其中一個城鎮的冶煉爐。";
+					next;
+					mes "[漢森]";
+					mes "你將被送往的城鎮叫做伊斯魯得島，它是普隆德拉的衛星都市。劍士公會位於城鎮的西邊。請記住這一點。";
+					next;
+					mes "[漢森]";
+					mes "你現在";
+					mes "將被傳送。";
+					mes "祝你好運，";
+					mes "^A62A2A" + strcharinfo(0) + "^000000";
+					mes "再見了。";
+					close2;
+					set nov_1st_cos,0;
+					set nov_2nd_cos,0;
+					set nov_3_swordman,0;
+					set nov_3_archer,0;
+					set nov_3_thief,0;
+					set nov_3_magician,0;
+					set nov_3_acolyte,0;
+					set nov_3_merchant,0;
+					savepoint "izlude",93,104,1,1;
+					warp "izlude_in",74,167;
+					end;
+				case 2:
+					callsub S_UserJobchoice,"Swordsman";
+					end;
+				}
+			}
+			else if (.@job_c == 2) {
+				mes "[漢森]";
+				mes "你喜歡分析周遭的事物，而且你非常獨立。你擁有敏銳的判斷力，同時也可能非常害羞且有邏輯。";
+				next;
+				mes "[漢森]";
+				mes "對於身為觀察型知識份子的你來說，^696969魔法師^000000 是最適合的職業。";
+				next;
+				mes "[漢森]";
+				mes "所以，你想接受我們的建議，還是想自己選擇職業呢？";
+				next;
+				switch(select("魔法師！:我自己選！")) {
+				case 1:
+					mes "[漢森]";
+					mes "極佳的選擇！";
+					mes "在你領取所有補給品後，我會把你傳送到魔法師的城鎮。";
+					next;
+					mes "^660000補給品清單^000000";
+					mes "^0000335張 卡普拉倉庫免費使用券^000000";
+					mes "^0000335張 卡普拉空間移動免費使用券^000000";
+					////mes "^000099100 zeny^000000";
+					mes "^0000331把 手杖^000000";
+					mes "^0000331把 短劍^000000";
+					mes "^0000337個 強化武器金屬-級數一^000000";
+					next;
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					set nov_3_swordman,40;
+					getitem 7059,5; //Cargo_Free_Ticket
+					getitem 7060,5; //Warp_Free_Ticket
+					getitem 1601,1; //Rod
+					getitem 1204,1; //Cutter
+					getitem 1010,7;
+					//Phracon
+					////getgold 100
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					mes "[漢森]";
+					mes "請檢查你的物品欄，看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+					next;
+					mes "[漢森]";
+					mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+					next;
+					mes "[漢森]";
+					mes "『Zeny』是米德加茲的貨幣。這把『短劍』是給你的，讓你在成為魔法師之前可以用來打怪。";
+					next;
+					mes "[漢森]";
+					mes "一旦你成為魔法師，你就可以使用給你的『手杖』。它會在你作為魔法師的初期非常有用。";
+					next;
+					mes "[漢森]";
+					mes "『強化武器金屬-級數一』是一種可用來升級 1 級武器的礦石。要用這個金屬來強化你的 1 級武器，請前往其中一個城鎮的冶煉爐。";
+					next;
+					mes "[漢森]";
+					mes "你即將抵達的城鎮叫做『吉芬』。";
+					mes "魔法師公會位於城鎮的西北方。請記住這一點。";
+					next;
+					mes "[漢森]";
+					mes "你現在將被傳送。";
+					mes "祝你好運，^A62A2A" + strcharinfo(0) + "^000000，再見了。";
+					close2;
+					set nov_1st_cos,0;
+					set nov_2nd_cos,0;
+					set nov_3_swordman,0;
+					set nov_3_archer,0;
+					set nov_3_thief,0;
+					set nov_3_magician,0;
+					set nov_3_acolyte,0;
+					set nov_3_merchant,0;
+					savepoint "geffen",119,37,1,1;
+					warp "geffen_in",163,98;
+					end;
+				case 2:
+					callsub S_UserJobchoice,"Mage";
+					end;
+				}
+			}
+			else if (.@job_c == 3) {
+				mes "[漢森]";
+				mes "你非常有主見，且很有條理。你已經在生活中設定了目標，並對自己的行為非常負責。";
+				next;
+				mes "[漢森]";
+				mes "因為你的幹勁和渴望成功的決心，^696969商人^000000 是最適合你的職業。";
+				next;
+				mes "[漢森]";
+				mes "所以，你想接受我們的建議，還是想自己選擇職業呢？";
+				next;
+				switch(select("商人！:我自己選！")) {
+				case 1:
+					mes "[漢森]";
+					mes "極佳的選擇！";
+					mes "在你領取所有補給品後，我會把你傳送到商人的城鎮。";
+					next;
+					mes "^660000補給品清單^000000";
+					mes "^0000334張 卡普拉倉庫免費使用券^000000";
+					mes "^0000334張 卡普拉空間移動免費使用券^000000";
+					mes "^0000334張 手推車免費使用券^000000";
+					////mes "^000099100 zeny^000000";
+					mes "^0000331把 戰斧^000000";
+					mes "^0000337個 強化武器金屬-級數一^000000";
+					next;
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					set nov_3_swordman,40;
+					getitem 7059,4; //Cargo_Free_Ticket
+					getitem 7060,4; //Warp_Free_Ticket
+					getitem 7061,4; //Cart_Free_Ticket
+					getitem 1351,1; //Battle_Axe
+					getitem 1010,7; //Phracon
+					////getgold 100
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					mes "[漢森]";
+					mes "請檢查你的物品欄，看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+					next;
+					mes "[漢森]";
+					mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+					next;
+					mes "[漢森]";
+					mes "『Zeny』是米德加茲的貨幣。『戰斧』在你成為商人後會派上用場。";
+					next;
+					mes "[漢森]";
+					mes "『強化武器金屬-級數一』是一種可用來升級 1 級武器的礦石。要用這個金屬來強化你的戰斧，請前往其中一個城鎮的冶煉爐。";
+					next;
+					mes "[漢森]";
+					mes "你將被送往的城鎮叫做艾爾貝塔。商人公會位於艾爾貝塔的西南方。請記住這一點。";
+					next;
+					mes "[漢森]";
+					mes "你現在";
+					mes "將被傳送。";
+					mes "祝你好運，";
+					mes "^A62A2A" + strcharinfo(0) + "^000000";
+					mes "再見了。";
+					close2;
+					set nov_1st_cos,0;
+					set nov_2nd_cos,0;
+					set nov_3_swordman,0;
+					set nov_3_archer,0;
+					set nov_3_thief,0;
+					set nov_3_magician,0;
+					set nov_3_acolyte,0;
+					set nov_3_merchant,0;
+					savepoint "alberta",30,232,1,1;
+					warp "alberta_in",62,44;
+					end;
+				case 2:
+					callsub S_UserJobchoice,"Merchant";
+					end;
+				}
+			}
+			else if (.@job_c == 4) {
+				mes "[漢森]";
+				mes "及時行樂：";
+				mes "把握今天。";
+				mes "這就是你的生活方式。";
+				next;
+				mes "[漢森]";
+				mes "從你天生的好奇心";
+				mes "衍生出了樂天派的冒險精神，以及探索的渴望。";
+				next;
+				mes "[漢森]";
+				mes "對像你這樣的人來說，";
+				mes "^696969盜賊^000000 是最適合的職業。";
+				next;
+				mes "[漢森]";
+				mes "所以，你想接受我們的建議，還是想自己選擇職業呢？";
+				next;
+				switch(select("盜賊！:我自己選！")) {
+				case 1:
+					mes "[漢森]";
+					mes "極佳的選擇！";
+					mes "在你領取所有補給品後，我會把你傳送到盜賊的城鎮。";
+					next;
+					mes "^660000補給品清單^000000";
+					mes "^0000335張 卡普拉倉庫免費使用券^000000";
+					mes "^0000335張 卡普拉空間移動免費使用券^000000";
+					////mes "^000099100 Zeny^000000";
+					mes "^0000331把 笨拙短劍^000000";
+					mes "^0000337個 強化武器金屬-級數一^000000";
+					next;
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					set nov_3_swordman,40;
+					getitem 7059,5; //Cargo_Free_Ticket
+					getitem 7060,5; //Warp_Free_Ticket
+					getitem 1207,1; //Main_Gauche
+					getitem 1010,7;
+					//Phracon
+					////getgold 100
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					mes "[漢森]";
+					mes "請檢查你的物品欄，看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+					next;
+					mes "[漢森]";
+					mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+					next;
+					mes "[漢森]";
+					mes "『Zeny』是米德加茲的貨幣。『笨拙短劍』是一把在你成為盜賊後會非常有用的武器。";
+					next;
+					mes "[漢森]";
+					mes "『強化武器金屬-級數一』是一種可用來升級 1 級武器的礦石。要用這個金屬來強化你的笨拙短劍，請前往其中一個城鎮的冶煉爐。";
+					next;
+					mes "[漢森]";
+					mes "你將被送往的城鎮叫做夢羅克。盜賊公會位於夢羅克西北方金字塔的地下 1 樓。記住這一點。";
+					next;
+					mes "[漢森]";
+					mes "你現在";
+					mes "將被傳送。";
+					mes "祝你好運，";
+					mes "^A62A2A" + strcharinfo(0) + "^000000";
+					mes "再見了。";
+					close2;
+					savepoint "morocc",150,99,1,1;
+					warp "moc_ruins",155,44;
+					end;
+				case 2:
+					callsub S_UserJobchoice,"Thief";
+					end;
+				}
+			}
+			else if (.@job_c == 5) {
+				mes "[漢森]";
+				mes "你總是試著去理解別人，即使他們很奇怪。你也期望別人能試著理解你。";
+				next;
+				mes "[漢森]";
+				mes "你在追求夢想時拒絕成為一個平凡人。作為一個對大自然敏感的人，^696969弓箭手^000000 是最適合你的職業。";
+				next;
+				mes "[漢森]";
+				mes "所以，你想接受我們的建議，還是想自己選擇職業呢？";
+				next;
+				switch(select("弓箭手！:我自己選！")) {
+				case 1:
+					mes "[漢森]";
+					mes "極佳的選擇！";
+					mes "在你領取所有補給品後，我會把你傳送到弓箭手的城鎮。";
+					next;
+					mes "^660000補給品清單^000000";
+					mes "^0000335張 卡普拉倉庫免費使用券^000000";
+					mes "^0000335張 卡普拉空間移動免費使用券^000000";
+					////mes "^000099100 Zeny^000000";
+					mes "^0000331把 十字弓^000000";
+					mes "^0000337個 強化武器金屬-級數一^000000";
+					next;
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					set nov_3_swordman,40;
+					getitem 7059,5; //Cargo_Free_Ticket
+					getitem 7060,5; //Warp_Free_Ticket
+					getitem 1704,1; //Composite_Bow
+					getitem 1010,7;
+					//Phracon
+					////getgold 100
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					mes "[漢森]";
+					mes "請檢查你的物品欄，看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+					next;
+					mes "[漢森]";
+					mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+					next;
+					mes "[漢森]";
+					mes "『Zeny』是米德加茲的貨幣。『十字弓』是一把在你成為弓箭手後會非常有用的武器。";
+					next;
+					mes "[漢森]";
+					mes "『強化武器金屬-級數一』是一種可用來升級 1 級武器的礦石。要用這個金屬來強化你的十字弓，請前往其中一個城鎮的冶煉爐。";
+					next;
+					mes "[漢森]";
+					mes "你將被送往的城鎮叫做斐揚。弓箭手公會位於城鎮的西北方。請記住這一點。";
+					next;
+					mes "[漢森]";
+					mes "你現在";
+					mes "將被傳送。";
+					mes "祝你好運，";
+					mes "^A62A2A" + strcharinfo(0) + "^000000";
+					mes "再見了。";
+					close2;
+					set nov_1st_cos,0;
+					set nov_2nd_cos,0;
+					set nov_3_swordman,0;
+					set nov_3_archer,0;
+					set nov_3_thief,0;
+					set nov_3_magician,0;
+					set nov_3_acolyte,0;
+					set nov_3_merchant,0;
+					savepoint "payon",70,100,1,1;
+					warp "payon_in02",64,65;
+					end;
+				case 2:
+					callsub S_UserJobchoice,"Archer";
+					end;
+				}
+			}
+			else if (.@job_c == 6) {
+				mes "[漢森]";
+				mes "你非常熱心且體貼，而且你願意為了他人的利益犧牲自己的福祉。";
+				next;
+				mes "[漢森]";
+				mes "你總是樂於助人，這就是為什麼你這麼受人喜愛。";
+				next;
+				mes "[漢森]";
+				mes "對於心地善良的你來說，^696969服事^000000 是最適合的職業。";
+				next;
+				mes "[漢森]";
+				mes "所以，你想接受我們的建議，還是想自己選擇職業呢？";
+				next;
+				switch(select("服事！:我自己選！")) {
+				case 1:
+					mes "[漢森]";
+					mes "極佳的選擇！";
+					mes "在你領取所有補給品後，我會把你傳送到大教堂後面。";
+					next;
+					mes "^660000補給品清單^000000";
+					mes "^0000335張 卡普拉倉庫免費使用券^000000";
+					mes "^0000335張 卡普拉空間移動免費使用券^000000";
+					////mes "^000099100 Zeny^000000";
+					mes "^0000331把 鐵鎚^000000";
+					mes "^0000337個 強化武器金屬-級數一^000000";
+					next;
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					set nov_3_swordman,40;
+					getitem 7059,5; //Cargo_Free_Ticket
+					getitem 7060,5; //Warp_Free_Ticket
+					getitem 1504,1; //Mace
+					getitem 1010,7; //Phracon
+					////getgold 100
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					mes "[漢森]";
+					mes "請檢查你的物品欄，看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+					next;
+					mes "[漢森]";
+					mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+					next;
+					mes "[漢森]";
+					mes "『Zeny』是米德加茲的貨幣。『鐵鎚』是一把在你成為服事後會非常有用的武器。";
+					next;
+					mes "[漢森]";
+					mes "『強化武器金屬-級數一』是一種可用來升級 1 級武器的礦石。要用這個金屬來強化你的鐵鎚，請前往其中一個城鎮的冶煉爐。";
+					next;
+					mes "[漢森]";
+					mes "你選擇了成為一名服事。你將被送往的城鎮叫做普隆德拉。大教堂位於普隆德拉的東北方。請記住這一點。";
+					next;
+					mes "[漢森]";
+					mes "你現在";
+					mes "將被傳送。";
+					mes "祝你好運，";
+					mes "^A62A2A" + strcharinfo(0) + "^000000";
+					mes "再見了。";
+					close2;
+					set nov_1st_cos,0;
+					set nov_2nd_cos,0;
+					set nov_3_swordman,0;
+					set nov_3_archer,0;
+					set nov_3_thief,0;
+					set nov_3_magician,0;
+					set nov_3_acolyte,0;
+					set nov_3_merchant,0;
+					savepoint "prontera",117,72,1,1;
+					warp "prt_church",172,19;
+					end;
+				case 2:
+					callsub S_UserJobchoice,"Acolyte";
+					end;
+				}
+			}
+		case 2:
+			mes "[漢森]";
+			mes "我明白了。";
+			mes "讓我立刻";
+			mes "將你傳送到";
+			mes "仙境傳說的";
+			mes "世界吧。";
+			next;
+			mes "[漢森]";
+			mes "為了獲得更多資訊和知識，我希望你能自己在米德加茲獲得經驗。";
+			next;
+			mes "[漢森]";
+			mes "最後......";
+			mes "我希望你能";
+			mes "成為一名優秀的玩家，";
+			mes ""+ strcharinfo(0) +"。";
+			mes "再會。";
+			next;
+			set nov_3_swordman,40;
+			set nov_1st_cos,0;
+			set nov_2nd_cos,0;
+			set nov_3_swordman,0;
+			set nov_3_archer,0;
+			set nov_3_thief,0;
+			set nov_3_magician,0;
+			set nov_3_acolyte,0;
+			set nov_3_merchant,0;
+			set .@startmap,rand(1,6);
+			if ((.@startmap > 0) && (.@startmap < 2)) {
+				savepoint "prontera",117,72,1,1;
+				warp "prt_fild08",170,371;
+			}
+			else if ((.@startmap > 1) && (.@startmap < 3)) {
+				savepoint "geffen",119,37,1,1;
+				warp "gef_fild07",327,188;
+			}
+			else if ((.@startmap > 2) && (.@startmap < 4)) {
+				savepoint "alberta",30,232,1,1;
+				warp "pay_fild03",388,70;
+			}
+			else if ((.@startmap > 3) && (.@startmap < 5)) {
+				savepoint "morocc",150,99,1,1;
+				warp "moc_fild07",198,39;
+			}
+			else if ((.@startmap > 4) && (.@startmap < 6)) {
+				savepoint "payon",256,242,1,1;
+				warp "pay_fild01",334,354;
+			}
+			else if ((.@startmap > 5) && (.@startmap < 7)) {
+				savepoint "izlude",93,104,1,1;
+				warp "prt_fild08",357,212;
+			}
+			end;
+		}
+	}
+	else if (nov_3_swordman == 40) {
+		mes "[漢森]";
+		mes "嗯...？";
+		mes "你怎麼";
+		mes "還在這裡？";
+		next;
+		mes "[漢森]";
+		mes "你什麼都沒說，所以";
+		mes "我以為你已經離開了。既然你已經完成了最終測驗，而我也給了你所有補給品...";
+		next;
+		mes "[漢森]";
+		mes "剩下唯一";
+		mes "要做的事就是引導";
+		mes "你前往米德加茲了?";
+		next;
+		set nov_1st_cos,0;
+		set nov_2nd_cos,0;
+		set nov_3_swordman,0;
+		set nov_3_archer,0;
+		set nov_3_thief,0;
+		set nov_3_magician,0;
+		set nov_3_acolyte,0;
+		set nov_3_merchant,0;
+		set .@startmap,rand(1,6);
+		if ((.@startmap > 0) && (.@startmap < 2)) {
+			savepoint "prontera",117,72,1,1;
+			warp "prt_fild08",170,371;
+		}
+		else if ((.@startmap > 1) && (.@startmap < 3)) {
+			savepoint "geffen",119,37,1,1;
+			warp "gef_fild07",327,188;
+		}
+		else if ((.@startmap > 2) && (.@startmap < 4)) {
+			savepoint "alberta",30,232,1,1;
+			warp "pay_fild03",388,70;
+		}
+		else if ((.@startmap > 3) && (.@startmap < 5)) {
+			savepoint "morocc",150,99,1,1;
+			warp "moc_fild07",198,39;
+		}
+		else if ((.@startmap > 4) && (.@startmap < 6)) {
+			savepoint "payon",70,100,1,1;
+			warp "pay_fild01",334,354;
+		}
+		else if ((.@startmap > 5) && (.@startmap < 7)) {
+			savepoint "izlude",93,104,1,1;
+			warp "prt_fild08",357,212;
+		}
+		end;
+	}
+	else {
+		mes "[漢森]";
+		mes "你好，你";
+		mes "一定是 "+ strcharinfo(0) +"。";
+		next;
+		mes "[漢森]";
+		mes "我是漢森，";
+		mes "負責";
+		mes "性向測驗的";
+		mes "人。";
+		next;
+		mes "[漢森]";
+		mes "在我們開始你的";
+		mes "測驗之前，請先去找布魯斯";
+		mes "聽聽『職業說明』。";
+		mes "謝謝。";
+		close;
+	}
+
+S_UserJobchoice:
+	mes "[漢森]";
+	mes "我明白了。這是你的選擇。";
+	mes "你並沒有義務一定要轉成我們推薦的職業。請選擇你想要成為的職業。";
+	next;
+	select( "劍士:魔法師:商人:盜賊:弓箭手:服事" );
+	// @menu is already set by Core.
+	setarray .@Jobs$[1],"劍士","魔法師","商人","盜賊","弓箭手","服事";
+
+	mes "[漢森]";
+	mes "你選擇了";
+	if (@menu == 1) {
+		mes "成為一名劍士。";
+		mes "你將被送往";
+		mes "伊斯魯得島。";
+		next;
+		mes "[漢森]";
+		mes "劍士公會位於伊斯魯得島的西北方。請記住這一點。";
+	}
+	else if (@menu == 2) {
+		mes "成為一名魔法師。";
+		mes "你將被送往";
+		mes "吉芬。";
+		next;
+		mes "[漢森]";
+		mes "魔法師公會位於城鎮的西北方。請記住這一點。";
+	}
+	else if (@menu == 3) {					
+		mes "成為一名商人。";
+		mes "你將被送往";
+		mes "艾爾貝塔。";
+	}
+	else if (@menu == 4) {
+		mes "成為一名盜賊。";
+		mes "你將被送往";
+		mes "夢羅克。";
+		next;
+		mes "[漢森]";
+		mes "盜賊公會位於城鎮西北方金字塔的地下 1 樓。請記住這一點。";
+	}
+	else if (@menu == 5) {
+		mes "成為一名弓箭手。";
+		mes "你將被送往";
+		mes "斐揚。";
+		next;
+		mes "[漢森]";
+		mes "弓箭手公會位於斐揚的西北方。請記住這一點。";
+	}
+	else {
+		mes "成為一名服事。";
+		mes "你將被送往";
+		mes "普隆德拉。";
+		next;
+		mes "[漢森]";
+		mes "普隆德拉大教堂位於普隆德拉的東北方。請記住這一點。";
+	}
+	next;
+	mes "[漢森]";
+	mes "讓我給你";
+	mes "一些補給品。然後";
+	mes "你將被傳送到";
+	mes "所選擇的城鎮。";
+	next;
+	mes "^660000補給品清單^000000";
+	mes "^0000335張 卡普拉倉庫免費使用券^000000";
+	mes "^0000335張 卡普拉空間移動免費使用券^000000";
+	mes "^0000331件 冒險衣^000000";
+	////mes "^000099100 Zeny^000000";
+	next;
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	set nov_3_swordman,40;
+	getitem 7059,5; //Cargo_Free_Ticket
+	getitem 7060,5; //Warp_Free_Ticket
+	getitem 2305,1; //Adventure_Suit
+	////getgold 100
+	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	mes "[漢森]";
+	mes "請檢查你的物品欄";
+	mes "看看你是否收到了所有列出的補給品。讓我簡短地為你介紹你收到的物品。";
+	next;
+	mes "[漢森]";
+	mes "卡普拉倉庫和空間移動免費使用券可用於卡普拉倉庫和傳送服務。";
+	next;
+	mes "[漢森]";
+	mes "『Zeny』是米德加茲的貨幣。一旦你成為 " + .@Jobs$[@menu] + "，這件『冒險衣』會派上用場的。";
+	next;
+	mes "[漢森]";
+	mes "你現在";
+	mes "將被傳送。";
+	mes "祝你好運，";
+	mes "^A62A2A" + strcharinfo(0) + "^000000";
+	mes "再見了。";
+	next;
+	set nov_1st_cos,0;
+	set nov_2nd_cos,0;
+	set nov_3_swordman,0;
+	set nov_3_archer,0;
+	set nov_3_thief,0;
+	set nov_3_magician,0;
+	set nov_3_acolyte,0;
+	set nov_3_merchant,0;
+	if(@menu == 1) {
+		savepoint "izlude",93,104,1,1;
+		warp "izlude_in",74,167;
+	}
+	else if (@menu == 2) {
+		savepoint "geffen",119,37,1,1;
+		warp "geffen_in",163,98;
+	}
+	else if (@menu == 3) {
+		savepoint "alberta",30,232,1,1;
+		warp "alberta_in",62,44;
+	}
+	else if (@menu == 4) {
+		savepoint "morocc",150,99,1,1;
+		warp "moc_ruins",155,44;
+	}
+	else if (@menu == 5) {
+		savepoint "payon",70,100,1,1;
+		warp "payon_in02",64,65;
+	}
+	else {
+		savepoint "prontera",117,72,1,1;
+		warp "prt_church",172,19;
+	}
+	return;
+}
+
+//Novice Instructor
+new_1-4,91,22,4	script	布魯斯#nv	57,{
+	if (Class == Job_Novice) {
+		if (nov_3_swordman == 20) {
+			mes "[布魯斯]";
+			mes "讓我為你";
+			mes "再說明一次";
+			mes "一轉職業。";
+			mes "你心裡想好要選";
+			mes "哪個職業了嗎？";
+			next;
+			while(1) {
+				switch(select("劍士:魔法師:弓箭手:商人:盜賊:服事:結束對話。")) {
+				case 1:
+					mes "[布魯斯]";
+					mes "顧名思義，";
+					mes "劍士是揮舞劍的專家。他們也可以使用長矛類武器，但通常你不會太常看到使用長矛的劍士。";
+					next;
+					mes "[布魯斯]";
+					mes "劍士擁有強大的體力，使他們能夠裝備重型防具和武器。除了弓和手杖之外，大多數的武器種類都可以被劍士裝備。";
+					next;
+					mes "[布魯斯]";
+					mes "劍士唯一的弱點是無法使用魔法技能。然而，這可以透過使用具有屬性的武器來彌補。";
+					next;
+					mes "[布魯斯]";
+					mes "成為劍士最大的好處之一就是擁有巨大的 HP 量，這意味著他們能更輕易地承受來自敵人的傷害。";
+					next;
+					mes "[布魯斯]";
+					mes "在學習了一些強大的攻擊技能後，劍士在近戰中幾乎是無敵的。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，劍士通常擔任坦克的角色，保護其他職業的角色免受攻擊或傷害。";
+					next;
+					mes "[布魯斯]";
+					mes "劍士是擔任隊長的理想角色。當晉升為二轉職業時，劍士可以轉職為 ^8E2323騎士^000000 或 ^8E2323十字軍^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 2:
+					mes "[布魯斯]";
+					mes "魔法師專精於使用火、水、地和閃電的力量來攻擊敵人。";
+					next;
+					mes "[布魯斯]";
+					mes "然而，由於他們體力較弱，因此只能裝備手杖和短劍作為武器，並穿著輕型防具進行防禦。";
+					next;
+					mes "[布魯斯]";
+					mes "儘管他們身體較弱，但能夠透過強大的法術造成巨大的傷害。單憑這一點就吸引了許多人加入這個職業。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，魔法師在隊伍中扮演著重砲攻擊的角色，並被寄予厚望對敵人造成巨大傷害。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，魔法師可以轉職為 ^8E2323巫師^000000 或 ^8E2323賢者^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 3:
+					mes "[布魯斯]";
+					mes "弓箭手是使用弓類武器的專家，並因其遠距離攻擊而在隊伍中發揮著重要作用。";
+					next;
+					mes "[布魯斯]";
+					mes "儘管體力較弱，但弓箭手在使用強大的長弓時擁有極高的命中率。這讓他們能夠從安全的距離攻擊並殺死魔物。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，弓箭手的 HP 相對較少，但他們的遠程攻擊讓他們能夠在敵人靠近到足以傷害他們之前，輕易地解決掉敵人。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，每位弓箭手都可以轉職為 ^8E2323獵人^000000。或者，男性的弓箭手可以轉職為 ^8E2323吟遊詩人^000000，而女性的弓箭手可以轉職為 ^8E2323舞孃^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 4:
+					mes "[布魯斯]";
+					mes "商人專精於商業活動。由於商人公會的強大影響力，商人這個職業對那些希望專注於賺取 Zeny 的人來說非常有吸引力。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，商人擁有多種經濟能力。商人可以學習以更高的價格將物品賣給 NPC，以及從 NPC 那裡獲得折扣。";
+					next;
+					mes "[布魯斯]";
+					mes "此外，商人可以租用";
+					mes "手推車，大幅擴展他們的攜帶量，並允許他們開設露天商店，自行定價販售物品。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，商人可以轉職為 ^8E2323鐵匠^000000 或 ^8E2323鍊金術師^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 5:
+					mes "[布魯斯]";
+					mes "盜賊是使用短劍類武器的專家。他們攻擊迅速，並能輕易閃避敵人的攻擊。";
+					next;
+					mes "[布魯斯]";
+					mes "盜賊可以學習讓他們對敵人隱身的技能，或是從魔物身上偷取物品。他們也因使用毒藥而令人畏懼，這會慢慢削弱";
+					mes "他們敵人的力量。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，盜賊可以轉職為 ^8E2323刺客^000000 或 ^8E2323流氓^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 6:
+					mes "[布魯斯]";
+					mes "在仙境傳說中，服事在盧恩米德加茲扮演著神之使者的角色。他們擁有支援盟友的技能，以及能拯救生命的治癒能力。";
+					next;
+					mes "[布魯斯]";
+					mes "服事的支援能力讓他們成為任何隊伍中受歡迎的一員。在困難的情況下，服事的技能將確保隊伍的生存，讓其他成員專注於攻擊。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，服事可以轉職為 ^8E2323牧師^000000 或 ^8E2323武僧^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 7:
+					mes "[布魯斯]";
+					mes "如需更多資訊，";
+					mes "請訪問官方的";
+					mes "仙境傳說網站：";
+					mes " ";
+					mes "^0000FFiro.ragnarokonline.com^000000。";
+					next;
+					mes "[布魯斯]";
+					mes "漢森現在正在";
+					mes "等你。祝你在外面的世界";
+					mes "好運，年輕的初心者。";
+					close;
+				}
+			}
+		}
+		else if (nov_3_swordman == 40) {
+			mes "[布魯斯]";
+			mes "很抱歉，但是";
+			mes "沒有什麼";
+			mes "我可以教你的了。";
+			next;
+			mes "[布魯斯]";
+			mes "漢森現在正在";
+			mes "等你。祝你在外面的世界";
+			mes "好運，年輕的初心者。";
+			close;
+		}
+		else {
+			mes "[布魯斯]";
+			mes "你歷經了";
+			mes "相當多的考驗";
+			mes "才完成了所有的";
+			mes "修練課程。";
+			next;
+			mes "[布魯斯]";
+			mes "你好啊，";
+			mes "^A62A2A" + strcharinfo(0) + "』^000000，";
+			mes "很高興認識你。";
+			mes "我是盧恩米德加茲王國的";
+			mes "布魯斯。";
+			next;
+			mes "[布魯斯]";
+			mes "我的職責是教導你各個一轉職業的資訊來協助你，讓你能夠決定你想成為什麼職業。";
+			next;
+			mes "[布魯斯]";
+			mes "一轉職業包含";
+			mes "^0000FF劍士、魔法師、弓箭手、商人、盜賊和服事^000000。";
+			next;
+			mes "[布魯斯]";
+			mes "所以......";
+			mes "你心裡想好";
+			mes "要選哪個職業了嗎？";
+			next;
+			while(1) {
+				switch(select("劍士:魔法師:弓箭手:商人:盜賊:服事:結束對話。")) {
+				case 1:
+					mes "[布魯斯]";
+					mes "顧名思義，";
+					mes "劍士是揮舞劍的專家。他們也可以使用長矛類武器，但通常你不會太常看到使用長矛的劍士。";
+					next;
+					mes "[布魯斯]";
+					mes "劍士擁有強大的體力，使他們能夠裝備重型防具和武器。除了弓和手杖之外，大多數的武器種類都可以被劍士裝備。";
+					next;
+					mes "[布魯斯]";
+					mes "劍士唯一的弱點是無法使用魔法技能。然而，這可以透過使用具有屬性的武器來彌補。";
+					next;
+					mes "[布魯斯]";
+					mes "成為劍士最大的好處之一就是擁有巨大的 HP 量，這意味著他們能更輕易地承受來自敵人的傷害。";
+					next;
+					mes "[布魯斯]";
+					mes "在學習了一些強大的攻擊技能後，劍士在近戰中幾乎是無敵的。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，劍士通常擔任坦克的角色，保護其他職業的角色免受攻擊或傷害。";
+					next;
+					mes "[布魯斯]";
+					mes "劍士是擔任隊長的理想角色。當晉升為二轉職業時，劍士可以轉職為 ^8E2323騎士^000000 或 ^8E2323十字軍^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 2:
+					mes "[布魯斯]";
+					mes "魔法師專精於使用火、水、地和閃電的力量來攻擊敵人。";
+					next;
+					mes "[布魯斯]";
+					mes "然而，由於他們體力較弱，因此只能裝備手杖和短劍作為武器，並穿著輕型防具進行防禦。";
+					next;
+					mes "[布魯斯]";
+					mes "儘管他們身體較弱，但能夠透過強大的法術造成巨大的傷害。單憑這一點就吸引了許多人加入這個職業。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，魔法師在隊伍中扮演著重砲攻擊的角色，並被寄予厚望對敵人造成巨大傷害。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，魔法師可以轉職為 ^8E2323巫師^000000 或 ^8E2323賢者^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 3:
+					mes "[布魯斯]";
+					mes "弓箭手是使用弓類武器的專家，並因其遠距離攻擊而在隊伍中發揮著重要作用。";
+					next;
+					mes "[布魯斯]";
+					mes "儘管體力較弱，但弓箭手在使用強大的長弓時擁有極高的命中率。這讓他們能夠從安全的距離攻擊並殺死魔物。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，弓箭手的 HP 相對較少，但他們的遠程攻擊讓他們能夠在敵人靠近到足以傷害他們之前，輕易地解決掉敵人。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，每位弓箭手都可以轉職為 ^8E2323獵人^000000。或者，男性的弓箭手可以轉職為 ^8E2323吟遊詩人^000000，而女性的弓箭手可以轉職為 ^8E2323舞孃^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 4:
+					mes "[布魯斯]";
+					mes "商人專精於商業活動。由於商人公會的強大影響力，商人這個職業對那些希望專注於賺取 Zeny 的人來說非常有吸引力。";
+					next;
+					mes "[布魯斯]";
+					mes "在仙境傳說中，商人擁有多種經濟能力。商人可以學習以更高的價格將物品賣給 NPC，以及從 NPC 那裡獲得折扣。";
+					next;
+					mes "[布魯斯]";
+					mes "此外，商人可以租用";
+					mes "手推車，大幅擴展他們的攜帶量，並允許他們開設露天商店，自行定價販售物品。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，商人可以轉職為 ^8E2323鐵匠^000000 或 ^8E2323鍊金術師^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 5:
+					mes "[布魯斯]";
+					mes "盜賊是使用短劍類武器的專家。他們攻擊迅速，並能輕易閃避敵人的攻擊。";
+					next;
+					mes "[布魯斯]";
+					mes "盜賊可以學習讓他們對敵人隱身的技能，或是從魔物身上偷取物品。他們也因使用毒藥而令人畏懼，這會慢慢削弱";
+					mes "他們敵人的力量。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，盜賊可以轉職為 ^8E2323刺客^000000 或 ^8E2323流氓^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 6:
+					mes "[布魯斯]";
+					mes "在仙境傳說中，服事在盧恩米德加茲扮演著神之使者的角色。他們擁有支援盟友的技能，以及能拯救生命的治癒能力。";
+					next;
+					mes "[布魯斯]";
+					mes "服事的支援能力讓他們成為任何隊伍中受歡迎的一員。在困難的情況下，服事的技能將確保隊伍的生存，讓其他成員專注於攻擊。";
+					next;
+					mes "[布魯斯]";
+					mes "當晉升為二轉職業時，服事可以轉職為 ^8E2323牧師^000000 或 ^8E2323武僧^000000。";
+					set nov_3_swordman,20;
+					next;
+					break;
+				case 7:
+					mes "[布魯斯]";
+					mes "如需更多資訊，";
+					mes "請訪問官方的";
+					mes "仙境傳說網站：";
+					mes " ";
+					mes "^0000FFiro.ragnarokonline.com^000000。";
+					next;
+					mes "[布魯斯]";
+					mes "漢森現在正在";
+					mes "等你。祝你在外面的世界";
+					mes "好運，年輕的初心者。";
+					close;
+				}
+			}
+
+		}
+	}
+}
+
+// Training Ground Mobs
+new_1-3,0,0	monster	波利	1002,10
+new_1-3,0,0	monster	土波利	1113,10
+new_1-3,0,0	monster	瘋兔	1063,10
+new_1-3,0,0	monster	蒼蠅	1011,10
+new_2-3,0,0	monster	禿鷹	1009,10
+new_2-3,0,0	monster	小雞	1050,10
+new_2-3,0,0	monster	樹精	1010,10
+new_2-3,0,0	monster	羅達蛙	1012,10
+new_3-3,0,0	monster	禿鷹	1009,10
+new_3-3,0,0	monster	小雞	1050,10
+new_3-3,0,0	monster	樹精	1010,10
+new_3-3,0,0	monster	羅達蛙	1012,10
+new_4-3,0,0	monster	蝗蟲	1052,10
+new_4-3,0,0	monster	盜蟲	1051,10
+new_4-3,0,0	monster	盜蟲	1053,10
+new_4-3,0,0	monster	蘑菇	1014,10
+new_5-3,0,0	monster	蝗蟲	1052,10
+new_5-3,0,0	monster	盜蟲	1051,1
+new_5-3,0,0	monster	盜蟲	1053,1
+new_5-3,0,0	monster	蘑菇	1014,1
+new_1-3,0,0	monster	蟲蛹	1184,5
+new_2-3,0,0	monster	蟲蛹	1184,5
+new_3-3,0,0	monster	蟲蛹	1184,5
+new_4-3,0,0	monster	蟲蛹	1184,5
+new_5-3,0,0	monster	蟲蛹	1184,5
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= 1.0 Added the New Novice Training Grounds, a big thanks [MasterOfMuppets]
+//=     to Dr.Evil who did 90% of the work =)
+//= 1.0b Temp measure to stop exploits.
+//= 1.2 Removed Duplicates [Silent]
+//= 1.3 Removed Duplicates [Toms]
+//= 1.4 Added Kafra Free Cart Tickets, as in official one [Lupus]
+//= 1.5 Fixed warps, removed map duplicates, typos [Lupus]
+//= 1.6 Changed clone maps new_1-?
+//= 1.7 Now Kafra Tickets are given at correct NPC/Actions [Lupus]
+//= 1.7a a bit of optimization [Lupus]
+//= 1.7b Corrected a little Typo Error.
+//= 1.7C Corrected another Typo Error. (bugreport:740) [Samuray22]
+//============================================================

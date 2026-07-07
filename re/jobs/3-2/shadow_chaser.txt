@@ -1,0 +1,2511 @@
+//===== rAthena Script ======================================= 
+//= Shadow Chaser Job Quest
+//===== By: ================================================== 
+//= Muad_Dib
+//===== Current Version: ===================================== 
+//= 1.4
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job change Quest from Rogue / Stalker -> Shadow Chaser.
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. [ultragunner, Oshinoke]
+//= 1.1 Standardized. [Euphy]
+//= 1.2 Updated dialogue. [Joseph]
+//= 1.3 Updated to official script. [Euphy]
+//= 1.4 Added VIP features. [Euphy]
+//============================================================
+
+morocc,156,70,3	script	女孩#sc00	93,3,3,{
+	mes "[女孩]";
+	if (BaseJob == Job_Rogue) {
+		if (job_sha == 0) {
+			if (BaseLevel < 99 || JobLevel < 50) {
+				mes "你還沒準備好。";
+				close;
+			}
+			mes "嘿？停下來！";
+			mes "你不想聽一個有趣的故事嗎？";
+			next;
+			select("什麼故事？");
+			mes "[女孩]";
+			mes "你最近有去過公會嗎？";
+			mes "最近發生了一些有趣的事情。";
+			mes "也許有新客人...";
+			next;
+			mes "[女孩]";
+			mes "我聽說這和一種叫做魅影追蹤者的東西有關。";
+			mes "你應該去看看。";
+			next;
+			mes "[女孩]";
+			mes "每次他們來拜訪我們，都在執行新的任務。";
+			mes "我想知道他們在做什麼任務？";
+			set job_sha,1;
+			close;
+		} else if (job_sha == 1) {
+			mes "如果你有興趣...就去吧！";
+			mes "你知道公會在哪裡嗎？";
+			next;
+			mes "[女孩]";
+			mes "它在法羅斯燈塔下方的堡壘裡。";
+			mes "唉....";
+			mes "你一定要去那裡看看！";
+			close;
+		} else {
+			mes "哇，你看起來很忙。";
+			mes "你聽說有訪客來了嗎？";
+			mes "他們在尋找寶藏！";
+			next;
+			mes "[女孩]";
+			mes "一定很好玩。";
+			mes "我也想試試！";
+			close;
+		}
+	}
+	mes "咦？";
+	mes "我沒有什麼東西可以給你...";
+	close;
+OnTouch_:
+	if (BaseJob == Job_Rogue && BaseLevel > 98 && JobLevel > 49 && job_sha == 0) {
+		mes "[女孩]";
+		mes "嘿？停下來！";
+		mes "你不想聽一個有趣的故事嗎？";
+		close;
+	}
+	end;
+}
+
+in_rogue,376,100,5	script	公會成員#sc01	828,{
+	if (BaseJob == Job_Rogue) {
+		if (job_sha < 2) {
+			set @job_sha,0;
+		OnDialogue:
+			mes "[文]";
+			mes "啊？這是什麼？";
+			mes "洛特，你知道這是什麼意思嗎？";
+			next;
+			mes "[洛特]";
+			mes "嗯 '3847147298' 這是唯一我用過的...";
+			mes "那麼，他們為什麼用數字來命名村莊呢？";
+			next;
+			mes "[洛特]";
+			mes "文！這簡直是廢話！";
+			next;
+			mes "[文]";
+			mes "什麼？";
+			next;
+			if (BaseLevel > 98) {
+				mes "[可怕的男人]";
+				mes "嘿，那邊的？";
+				next;
+				switch(select("我？:抱歉，我很忙...")) {
+				case 1:
+					mes "[可怕的男人]";
+					mes "對！就是你！";
+					mes "讓我向你自我介紹一下。";
+					mes "我的名字是烏魯帕。";
+					mes "如果你有興趣，可以過來這裡嗎？";
+					if (@job_sha == 1) {
+						set job_sha,1;
+						set @job_sha,0;
+					}
+					close;
+				case 2:
+					mes "[可怕的男人]";
+					mes "什麼？你就要這樣放棄了嗎？";
+					mes "真令人失望...";
+					close;
+				}
+			}
+			mes "[可怕的男人]";
+			mes "你應該要解開這個的！";
+			mes "但你還是這麼...弱。";
+			close;
+		} else {
+			mes "[文]";
+			mes "是的...";
+			mes "如果我敢去拿地圖...遲早我會自己解開的！";
+			close;
+		}
+	} else if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "[文]";
+		mes "哼！這就是魅影追蹤者！";
+		mes "真令人難以置信！";
+		mes "但這看起來很眼熟，不是嗎？";
+		next;
+		mes "[文]";
+		mes "嗯......";
+		mes "..........";
+		mes "天啊！我想不起來...！";
+		close;
+	}
+	mes "[文]";
+	mes "啊？是誰？";
+	mes "我們今天客人爆滿...";
+	close;
+}
+
+in_rogue,379,99,1	script	公會成員#sc02	747,{
+	if (BaseJob == Job_Rogue) {
+		if (job_sha < 2) {
+			set @job_sha,1;
+			doevent "公會成員#sc01::OnDialogue";
+			end;
+		}
+		mes "[洛特]";
+		mes "什麼？";
+		mes "可惡...";
+		next;
+		mes "[洛特]";
+		mes "我就是討厭數字！";
+		close;
+	} else if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "[洛特]";
+		mes "哇！";
+		mes "你就是那個人！";
+		mes "真是異常聰明且情感豐富...";
+		next;
+		mes "[洛特]";
+		mes "魅影追蹤者！";
+		mes "哇，我什麼時候才能成為其中一員。";
+		close;
+	}
+	mes "[洛特]";
+	mes "我什麼都不需要。";
+	close;
+}
+
+in_rogue,379,101,3	script	可怕的男人#sc03	810,{
+	if (job_sha == 0) {
+		if (BaseJob == Job_Rogue && BaseLevel > 98 && JobLevel > 49) {
+			mes "[可怕的男人]";
+			mes "喔，你這麼有天賦嗎？";
+			mes "現在我有一個有趣的問題！你想解開它嗎？";
+			next;
+			mes "[烏魯帕]";
+			mes "我的名字是烏魯帕。";
+			mes "如果你有什麼有趣的想法，就來挑戰吧。";
+			set job_sha,1;
+			close;
+		}
+		mes "[可怕的男人]";
+		mes "你有什麼事？";
+		mes "我跟你沒什麼好談的。";
+		mes "我不關心像你這樣的人。我只和不平凡的人打交道。";
+		close;
+	} else if (job_sha == 1) {
+		if (VIP_SCRIPT) {
+			callfunc "VIP_Third_Class";
+			set job_sha,2;
+			setquest 7160;
+			next;
+		}
+		mes "[烏魯帕]";
+		mes "我們出了一個謎題，但至今還沒有人解開。";
+		mes "你想解開它嗎？";
+		mes "這是一個密碼。";
+		mes "看看這個。";
+		next;
+		mes "- 訊息是 -";
+		mes "- 用密碼寫成的。 -";
+		mes "任務似乎是破解密碼...";
+		next;
+		mes "[烏魯帕]";
+		mes "這就是密碼。";
+		mes "這只是將密碼編號，讓訊息變得有意義。";
+		mes "舉例來說...";
+		next;
+		callsub L_Code,1;
+		mes "[烏魯帕]";
+		mes "現在這就是需要解開的。";
+		mes "解開密碼，然後去它告訴你的地方...";
+		next;
+		callsub L_Code,2;
+		next;
+		mes "[烏魯帕]";
+		mes "所以把這個記下來！";
+		mes "我就知道你會接受這場冒險！";
+		set job_sha,2;
+		setquest 7160;
+		close;
+	} else if (job_sha == 2) {
+		mes "[烏魯帕]";
+		mes "你還需要再解釋一次嗎？";
+		mes "還是你只要密碼就好？";
+		next;
+		switch(select("需要更多解釋。:給我密碼。")) {
+		case 1:
+			callsub L_Code,1;
+			mes "[烏魯帕]";
+			mes "現在就看你的了！";
+			mes "所以去吧！去吧！";
+			close;
+		case 2:
+			mes "[烏魯帕]";
+			mes "讓我再給你看一次密碼...";
+			next;
+			callsub L_Code,2;
+			close;
+		}
+	} else if (job_sha > 2 && job_sha < 31) {
+		mes "[烏魯帕]";
+		mes "好，你解開了嗎？";
+		mes "祝你好運！";
+		close;
+	} else if (job_sha == 31) {
+		mes "[烏魯帕]";
+		mes "你剛成為了一名魅影追蹤者。";
+		mes "這些謎題是為了招募合適的人才...";
+		close;
+	}
+	mes "[烏魯帕]";
+	mes "沒什麼特別的嗎？";
+	mes "如你所見...我在這裡很好！";
+	close;
+L_Code:
+	if (getarg(0) == 1) {
+		mes "[烏魯帕]";
+		mes "3511543433";
+		mes "這意思是 PAYON (斐揚)。";
+		next;
+		mes "[烏魯帕]";
+		mes "這些數字必須成對。";
+		mes "3511543433";
+		mes "35 11 54 34 33 分成 5 對！";
+		next;
+		mes "[烏魯帕]";
+		mes "所以這些配對的意思是：";
+		mes "35 - P, 11 - A,";
+		mes "54 - Y, 34 - O, 33 - N.";
+		next;
+		mes "[烏魯帕]";
+		mes "這裡是一排數字。";
+		mes "33, 34, 35!";
+		mes "N , O , P ?";
+		next;
+	} else {
+		mes "開始吧！";
+		next;
+		mes "^4d4dff";
+		mes "43231114345243";
+		mes "11441531241542";
+		mes "2433";
+		mes "3542343344154211";
+		mes "^000000";
+		next;
+		mes "[烏魯帕]";
+		mes "你做得到嗎？";
+		mes "如果你去那裡，你可能會感到驚訝...";
+	}
+	return;
+}
+
+s_atelier,65,123,5	script	經理#sc04_prt	903,{
+	if (job_sha == 2) {
+		mes "[經理]";
+		mes "麥克斯在哪裡！？";
+		mes "可惡，周圍怎麼這麼多陌生人。";
+		mes "嘿...";
+		next;
+		switch(select("出示解開的密碼！:...")) {
+		case 1:
+			mes "[經理]";
+			mes "哇，你解開了？";
+			mes "那麼，正確答案是什麼？";
+			next;
+			input .@inputstr$;
+			if (.@inputstr$ == "shadows atelier in prontera" || .@inputstr$ == "SHADOWS ATELIER IN PRONTERA") {
+				mes "[經理]";
+				mes "很好。";
+				mes "你答對了。";
+				mes "那你為什麼來這裡？";
+				next;
+				select("密碼顯示就是這裡...");
+				mes "[經理]";
+				mes "原來你就是那個人。";
+				mes "請你等一下好嗎？";
+				set job_sha,3;
+				close;
+			}
+			mes "[經理]";
+			mes "記住要完全按照解密的內容輸入。";
+			mes "也許你應該再試一次...";
+			close;
+		case 2:
+			mes "[經理]";
+			mes "只允許相關人員進入....";
+			mes "你可以去問店裡的店員嗎？";
+			close;
+		}
+	} else if (job_sha == 3) {
+		mes "[經理]";
+		mes "現在讓我向你自我介紹！";
+		mes "我是葛拉漢，這家魅影畫廊的經理...";
+		next;
+		mes "[葛拉漢]";
+		mes "你可能已經猜到了。";
+		mes "這是流氓的附屬設施。";
+		mes "我們會經手一些像是藝術品和其他歷史文物之類的東西。";
+		next;
+		mes "[葛拉漢]";
+		mes "這些東西是非法的。";
+		mes "像是你們從歷史古蹟帶來的那些東西...";
+		mes "好。";
+		next;
+		mes "[葛拉漢]";
+		mes "所以我們必須知道一些事情，像是...";
+		mes "特殊的密碼以及寶藏所在位置的資訊。";
+		next;
+		mes "[葛拉漢]";
+		mes "我們需要你們...";
+		mes "所以我們向流氓公會尋求了協助。";
+		next;
+		select("你們還有在其他地方運作嗎？");
+		mes "[葛拉漢]";
+		mes "啊，是的...";
+		mes "我們在普隆德拉、朱諾、拉赫以及里希塔樂鎮都有據點。";
+		mes "了解嗎？";
+		next;
+		mes "[葛拉漢]";
+		mes "總之....";
+		mes "我們都非常想知道寶藏在哪裡。";
+		mes "所以這密碼就是用來潛入那些地方的。";
+		next;
+		mes "[葛拉漢]";
+		mes "你看起來是個合適的人選。";
+		mes "所以我會把密碼交給你。";
+		mes "請找出寶藏吧！";
+		next;
+		switch(select("不可能！:我試試看！")) {
+		case 1:
+			mes "[葛拉漢]";
+			mes "搞什麼鬼？";
+			mes "如果你不打算幫忙，那我就去找別人。";
+			set job_sha,4;
+			close;
+		case 2:
+			mes "[葛拉漢]";
+			mes "你真的很厲害！";
+			mes "那麼，拿去...";
+			next;
+			callsub L_Code,0;
+			close;
+		}
+	} else if (job_sha == 4) {
+		mes "[葛拉漢]";
+		mes "你現在有興趣了嗎？";
+		next;
+		switch(select("一點也不。:嗯，我接下這任務。")) {
+		case 1:
+			mes "[葛拉漢]";
+			mes "可惡。";
+			close;
+		case 2:
+			mes "[葛拉漢]";
+			mes "你還真挑剔...";
+			mes "拿去...";
+			next;
+			callsub L_Code,0;
+			close;
+		}
+	} else if (job_sha == 5) {
+		mes "[葛拉漢]";
+		mes "你發現了什麼嗎？";
+		next;
+		switch(select("我需要解釋。:密碼是什麼來著？")) {
+		case 1:
+			mes "[葛拉漢]";
+			mes "你真的很厲害！";
+			next;
+			callsub L_Code,1;
+			mes "[葛拉漢]";
+			mes "明白了嗎？";
+			close;
+		case 2:
+			mes "[葛拉漢]";
+			mes "我已經把密碼給你了。";
+			mes "太扯了...";
+			mes "你沒有把它記下來嗎？";
+			close;
+		}
+	} else if (job_sha == 6 || job_sha == 7) {
+		mes "[葛拉漢]";
+		mes "沒什麼特別的嗎...？";
+		mes "你去過那些地方了...？";
+		mes "那裡絕對有什麼東西。";
+		next;
+		mes "葛拉漢似乎知道些什麼。";
+		mes "我最好再去那裡一次。";
+		close;
+	} else if (job_sha == 8) {
+		mes "[葛拉漢]";
+		mes "那麼，有什麼進展嗎？";
+		next;
+		select("給他看鑰匙。");
+		mes "[葛拉漢]";
+		mes "欺騙！";
+		mes "你在騙我！";
+		next;
+		mes "[葛拉漢]";
+		mes "就只有這些？";
+		mes "只有一把鑰匙。";
+		mes "太欺負人了！";
+		mes "就像我想的，這是一種寶藏。";
+		next;
+		mes "[葛拉漢]";
+		mes "你剛才嚇到我了。";
+		mes "好...";
+		mes "密碼保存在各個畫廊裡。";
+		next;
+		mes "[葛拉漢]";
+		mes "好吧，除了這間還有其他畫廊...";
+		mes "朱諾和拉赫有密碼...";
+		next;
+		mes "[葛拉漢]";
+		mes "這只是我的猜測。";
+		mes "其他畫廊保管的密碼根本就不是寶藏...";
+		next;
+		mes "[葛拉漢]";
+		mes "去拉赫...";
+		next;
+		mes "[葛拉漢]";
+		mes "找到在拉赫的畫廊...";
+		mes "告訴他們你是葛拉漢介紹來的，並向他們索取密碼。";
+		next;
+		mes "[葛拉漢]";
+		mes "了解嗎？";
+		mes "那就出發吧！";
+		set job_sha,9;
+		changequest 7165,7166;
+		close;
+	} else if (job_sha == 9) {
+		mes "[葛拉漢]";
+		mes "總共有四間畫廊...";
+		mes "普隆德拉、拉赫、朱諾，以及里希塔樂鎮。";
+		next;
+		mes "[葛拉漢]";
+		mes "其中一個畫廊保存的密碼已經被解開了。";
+		mes "就只是一把鑰匙....";
+		next;
+		mes "[葛拉漢]";
+		mes "但這只是我的猜測。";
+		mes "這些密碼彼此之間互有關聯。";
+		mes "而且每個密碼的用途都不一樣。";
+		next;
+		mes "[葛拉漢]";
+		mes "舉例來說...";
+		mes "如果其中一個只是鑰匙，那其他的東西就需要這把鑰匙才能打開。";
+		next;
+		mes "[葛拉漢]";
+		mes "這把鑰匙一定是用來開箱子的。";
+		mes "你能猜到裡面有什麼嗎？";
+		next;
+		select("嗯，寶藏？");
+		mes "[葛拉漢]";
+		mes "沒錯。";
+		mes "這就是為什麼我們在這裡！";
+		next;
+		mes "[葛拉漢]";
+		mes "人們以為我們只是在交易物品...";
+		mes "但我們是為了非常特別的東西而存在的。";
+		next;
+		mes "[葛拉漢]";
+		mes "前往 ^4d4dff拉赫畫廊^000000 並取得密碼...";
+		mes "如果你向他們解釋清楚，他們會協助你的。";
+		mes "了解嗎？";
+		close;
+	} else if (job_sha > 9 && job_sha < 30) {
+		mes "[葛拉漢]";
+		mes "一切進行得怎麼樣了？";
+		mes "我們非常想知道關於那把鑰匙的事。";
+		mes "看來你得到了其他畫廊的支持。";
+		close;
+	} else if (job_sha > 29) {
+		mes "[葛拉漢]";
+		mes "魅影追蹤者！！";
+		mes "啊！";
+		next;
+		mes "[葛拉漢]";
+		mes "這不是故意要騙你的...";
+		mes "哈哈哈！！";
+		next;
+		mes "[葛拉漢]";
+		mes "這不是很有趣嗎？";
+		mes "這不僅僅是考試而已。";
+		mes "我們透過這樣來了解你，並弄清楚你是什麼樣的人。";
+		next;
+		mes "[葛拉漢]";
+		mes "我的演技怎麼樣？";
+		mes "奏效了吧？";
+		next;
+		mes "[葛拉漢]";
+		mes "如果你需要什麼，只要告訴他們你想要什麼就行了。";
+		close;
+	}
+	mes "[經理]";
+	mes "只允許相關人員進入...";
+	mes "你可以去問店裡的店員嗎？";
+	close;
+L_Code:
+	mes "-筆記。";
+	mes "^4d4dff 13 15 18 15 3 3 18 21 9 14^000000";
+	mes "key : 0 -";
+	next;
+	select("這些只是一堆數字...");
+	mes "[葛拉漢]";
+	mes "和流氓公會那個唯一的差別是，你不需要把它們湊成對。";
+	next;
+	mes "[葛拉漢]";
+	mes "另外，這裡有提示字...";
+	mes "這個狀況的 key 是 0。";
+	next;
+	mes "[葛拉漢]";
+	mes "讓我們看看。舉例來說。";
+	mes "13 15 18 15 3 3 18 21 9 14 =";
+	mes "M O R O C C R U I N";
+	next;
+	mes "[葛拉漢]";
+	mes "看看這個... C = 3。";
+	mes "C 是第三個字母，對吧？";
+	next;
+	mes "[葛拉漢]";
+	mes "你明白了嗎？";
+	mes "但這不會和 key 0 一起給你。當我給你關鍵數字時，你就可以自己解開了。";
+	next;
+	if (getarg(0)) return;
+	mes "[葛拉漢]";
+	mes "現在讓我們繼續進行任務。";
+	mes "這是密碼...";
+	next;
+	set .@key01, rand(3,5);
+	set .@a, 1 + .@key01;
+	set .@b, 2 + .@key01;
+	set .@d, 4 + .@key01;
+	set .@e, 5 + .@key01;
+	set .@f, 6 + .@key01;
+	set .@h, 8 + .@key01;
+	set .@i, 9 + .@key01;
+	set .@l, 12 + .@key01;
+	set .@n, 14 + .@key01;
+	set .@o, 15 + .@key01;
+	set .@r, 18 + .@key01;
+	set .@s, 19 + .@key01;
+	set .@t, 20 + .@key01;
+	set .@u, 21 + .@key01;
+	mes "^4d4dff" + .@b + " " + .@l + " " + .@u + " " + .@e + " ";
+	mes "" + .@f + " " + .@i + " " + .@r + " " + .@e + " ";
+	mes "" + .@i + " " + .@n + " ";
+	mes "" + .@t + " " + .@u + " " + .@r + " " + .@t + " " + .@l + " " + .@e + " ";
+	mes "" + .@i + " " + .@s + " " + .@l + " " + .@a + " " + .@n + " " + .@d + " ";
+	mes "" + .@t + " " + .@h + " " + .@i + " " + .@r + " " + .@d + " ";
+	mes "" + .@f + " " + .@l + " " + .@o + " " + .@o + " " + .@r + " ";
+	mes "key : " + .@key01 + "。";
+	set job_sha,5;
+	erasequest 7160;
+	if (.@key01 == 3) setquest 7161;
+	else if (.@key01 == 4) setquest 7162;
+	else if (.@key01 == 5) setquest 7163;
+	next;
+	mes "[葛拉漢]";
+	mes "拿著吧。";
+	mes "我的記性很差。";
+	mes "你已經有了所有的資訊，所以現在得靠你自己了。";
+	next;
+	mes "[葛拉漢]";
+	mes "一旦你發現了什麼，就來這裡找我。";
+	next;
+	mes "- 你從葛拉漢那裡拿到了備忘錄。";
+	mes "別忘了！ -";
+	close;
+}
+
+s_atelier,168,65,5	script	經理#sc08_ra	923,{
+	if (job_sha < 10) {
+		mes "[經理]";
+		mes "你是誰？";
+		mes "這裡不歡迎你。";
+		next;
+		if (job_sha < 9) {
+			mes "[經理]";
+			mes "他們在上面做什麼？";
+			mes "呸...";
+			close;
+		}
+		switch(select("給我你的密碼！:我是葛拉漢派來的。")) {
+		case 1:
+			mes "[經理]";
+			mes "你需要我的密碼？";
+			mes "你能付我多少錢？";
+			next;
+			mes "[經理]";
+			mes "一千萬 Zeny？";
+			mes "好，那我收下了！";
+			next;
+			mes "[經理]";
+			mes "想得美！";
+			mes "你到底是誰？";
+			mes "你怎麼敢直接向我要密碼？";
+			close;
+		case 2:
+			mes "[經理]";
+			mes "葛拉漢？";
+			mes "為什麼？";
+			next;
+			if (countitem(6266) == 0) {
+				mes "你似乎沒有把它帶來這裡。";
+				next;
+				mes "[經理]";
+				mes "你是啞巴嗎？";
+				mes "我不知道葛拉漢為什麼派你來這裡。";
+				mes "如果你沒事的話就快滾！";
+				close;
+			}
+			mes "[經理]";
+			mes "所以這把鑰匙是他送來的。";
+			next;
+			select("不，我是循著線索找到它的。");
+			mes "[經理]";
+			mes "啊？";
+			mes "所以這不就意味著一組密碼可以換取一個寶藏...？";
+			next;
+			select("也許吧。");
+			mes "[經理]";
+			mes "..........";
+			mes "嗯....";
+			next;
+			mes "[經理]";
+			mes "嗯...";
+			next;
+			mes "- 經理似乎 -";
+			mes "- 正在思考 -";
+			mes "- 某些事情。然後他 -";
+			mes "- 遞過來一張紙。 -";
+			next;
+			mes "[經理]";
+			mes "不可能。";
+			mes "這是線索。";
+			mes "試著去找吧。";
+			next;
+			mes "[經理]";
+			mes "總之我的名字是保羅。";
+			mes "...........";
+			next;
+			mes "[保羅]";
+			mes "理所當然地...";
+			mes "我已經解開這個線索了。";
+			next;
+			mes "- 這是保羅 -";
+			mes "- 遞過來的那張紙。 -";
+			next;
+			mes "R-E-N-N-N-D";
+			mes "L-N-N-W-W-N-D";
+			next;
+			mes "[保羅]";
+			mes "這不是很簡單嗎？";
+			mes "你覺得呢？";
+			mes "RENNND / LNNWWND 代表一件事。";
+			next;
+			switch(select("我想我懂了。:我毫無頭緒。")) {
+			case 1:
+				callsub L_Code,7166;
+				close;
+			case 2:
+				mes "[保羅]";
+				mes "什麼？你不知道？";
+				mes "那你最好再多想想。";
+				mes "這太簡單了。";
+				set job_sha,10;
+				changequest 7166,7167;
+				close;
+			}
+		}
+	} else if (job_sha == 10) {
+		mes "[保羅]";
+		mes "所以你明白它的意思了嗎？";
+		next;
+		switch(select("是的！:不，我不這麼認為。")) {
+		case 1:
+			callsub L_Code,7167;
+			close;
+		case 2:
+			mes "[保羅]";
+			mes "有那麼難嗎？";
+			next;
+			select("我做不到...");
+			mes "[保羅]";
+			mes "不可能。";
+			mes "我可以給你個提示嗎？";
+			mes "指南針！";
+			close;
+		}
+	} else if (job_sha > 10 && job_sha < 14) {
+		mes "[保羅]";
+		mes "我已經把你需要的所有資訊都給你了。";
+		next;
+		mes "[保羅]";
+		mes "我還多給了你一個線索。";
+		mes "這樣還不夠嗎？";
+		next;
+		mes "[保羅]";
+		mes "就像你和葛拉漢提到的。";
+		mes "去把它找出來吧。";
+		next;
+		mes "[保羅]";
+		mes "如果你找到了像寶藏這樣的真品，";
+		mes "就回到這裡來。";
+		close;
+	} else if (job_sha > 13 && job_sha < 17) {
+		mes "[保羅]";
+		mes "你必須找到正確的地方。";
+		mes "這個字是 RENNND";
+		mes "它是指這個拉赫 東 - 北 - 北 - 北 方位的洞穴。";
+		next;
+		mes "[保羅]";
+		mes "L-N-N-W-W-N-D 也是一樣的道理。";
+		mes "L 代表里希塔樂鎮。";
+		mes "里希塔樂鎮 - 北 - 北 - 西 - 西。";
+		mes "那就是冰洞。";
+		next;
+		mes "[保羅]";
+		mes "有什麼進展嗎！？";
+		next;
+		select("你需要再多調查一下嗎？");
+		mes "[保羅]";
+		mes "真的嗎？好吧...";
+		mes "不可能....";
+		mes "我們期待有好結果。";
+		close;
+	} else if (job_sha == 17) {
+		mes "[保羅]";
+		mes "我等得快急死了。";
+		mes "那麼你發現了什麼？";
+		next;
+		select("我找到了鑰匙。:嗯...");
+		mes "- 你交出了在冰洞找到的『幻覺鑰匙』。 -";
+		next;
+		mes "[保羅]";
+		mes "幻覺！哈哈！";
+		mes "在欺騙之後是幻覺！";
+		mes "所以你在騙我嗎？";
+		next;
+		mes "[保羅]";
+		mes "我能體會葛拉漢當時的感受了...";
+		mes "我們可不敢拿那把小鑰匙...";
+		next;
+		mes "[保羅]";
+		mes "在里希塔樂鎮的那個年輕人很難應付...";
+		mes "所以我們最好請求哈列德的協助...";
+		next;
+		mes "[保羅]";
+		mes "嘿...";
+		mes "如果你去朱諾...";
+		mes "那裡有一間畫廊...";
+		next;
+		mes "[保羅]";
+		mes "所以你能去向他詢問密碼嗎？";
+		mes "嗯...";
+		next;
+		mes "[保羅]";
+		mes "我覺得總畫廊的那個紅髮傢伙在耍我...";
+		mes "總之...";
+		mes "所以我真的很想知道密碼以及鑰匙的真面目...";
+		next;
+		mes "[保羅]";
+		mes "如果哈列德不願意幫忙...";
+		mes "告訴他 ^4d4dffI know what you did last summer!^000000";
+		mes "你應該不會弄錯吧...！？";
+		set job_sha,18;
+		changequest 7172,7173;
+		close;
+	} else if (job_sha == 18) {
+		mes "[保羅]";
+		mes "你可以去問他拿鑰匙...";
+		mes "如果你告訴他那句話，他會幫你的...";
+		next;
+		mes "[保羅]";
+		mes "如果哈列德不願意幫忙...";
+		mes "告訴他 ^4d4dffI know what you did last summer!^000000";
+		close;
+	} else if (job_sha > 18 && job_sha < 30) {
+		mes "[保羅]";
+		mes "所以你還在尋找寶藏...對吧？";
+		mes "我也會去找的...";
+		close;
+	} else if (job_sha == 30) {
+		mes "[保羅]";
+		mes "現在我幾乎猜到之後會發生什麼事了...";
+		mes "這不可能發生的！";
+		next;
+		mes "[保羅]";
+		mes "你震驚了嗎？";
+		mes "別往壞處想。";
+		mes "你可能會遇到個好人。";
+		mes "哈哈哈...";
+		close;
+	}
+	mes "[保羅]";
+	mes "你需要繪畫工具嗎？";
+	mes "那你可以向助手申請。";
+	mes "我們總是備著以防萬一。";
+	close;
+L_Code:
+	mes "[保羅]";
+	mes "真的嗎？那我就不需要給你答案了。";
+	mes "你能解釋每個字母的意思嗎。";
+	next;
+	select("這有點像是地點的組合。");
+	mes "[保羅]";
+	mes "所以呢？";
+	next;
+	select("E-N 代表 東 - 北");
+	mes "[保羅]";
+	mes "好，這樣就夠了。";
+	mes "去把它找出來吧。";
+	next;
+	mes "[保羅]";
+	mes "把這個記下來。";
+	mes "你可能會需要它。這可能是給你的一個線索。";
+	next;
+	mes "[保羅]";
+	switch(rand(3)) {
+	case 0:
+		mes "[ S E E D ]";
+		mes "S E E D?";
+		set job_sha,11;
+		changequest getarg(0),7168;
+		break;
+	case 1:
+		mes "[ F O O T ]";
+		mes "F O O T?";
+		set job_sha,12;
+		changequest getarg(0),7169;
+		break;
+	case 2:
+		mes "[ C O L D ]";
+		mes "C O L D?";
+		set job_sha,13;
+		changequest getarg(0),7170;
+		break;
+	}
+	mes "我不知道它真正的意思，但解開它會對你有幫助的。";
+	close;
+}
+
+s_atelier,167,129,3	script	經理#sc06_yuno	806,{
+	if (job_sha < 19) {
+		mes "[經理]";
+		mes "什麼事？";
+		mes "如果你是來這裡討錢的，那你就大錯特錯了。";
+		mes "這裡不是當鋪。";
+		if (job_sha < 18) close;
+		next;
+		select("你是...哈列德？");
+		mes "[哈列德]";
+		mes "嗯？我是朱諾這間辦公室的經理。有什麼事嗎？";
+		next;
+		mes "[哈列德]";
+		mes "嗯。你是葛拉漢和保羅派來的？";
+		mes "我還以為你是拿著化石碎片來這裡乞討的。";
+		next;
+		mes "[哈列德]";
+		mes "這是窮學者們常用的老套招式。";
+		mes "有時候我會買些好東西，所以有些人就知道這是一間當鋪。";
+		next;
+		mes "[哈列德]";
+		mes "讓我聽聽你的故事吧。";
+		next;
+		mes "- 你解釋了目前為止的所有事情，並出示了傲慢鑰匙。 -";
+		next;
+		mes "[哈列德]";
+		mes "所以...";
+		mes "我完全明白了。";
+		mes "就是這個鑰匙的位置";
+		mes "分享了資訊！";
+		next;
+		mes "[哈列德]";
+		mes "總之。有兩把鑰匙，以及我必須用這鑰匙打開的寶藏，我該怎麼辦？";
+		next;
+		mes "[哈列德]";
+		mes "我們將會調查朱諾的辦公室，所以把它交給我吧？";
+		next;
+		mes "- 哈列德不想與你合作。";
+		mes "記住保羅說過的話。 -";
+		next;
+		callsub L_Code;
+		mes "[哈列德]";
+		mes "那又怎樣？";
+		mes "他是個眼神狂野的傢伙。";
+		mes "你剛才是用威脅的語氣跟我說話嗎？";
+		set job_sha,19;
+		close;
+	} else if (job_sha == 19) {
+		mes "[哈列德]";
+		mes "你想和我談談？";
+		mes "不如你直接把那把鑰匙交給我？";
+		next;
+		callsub L_Code;
+		mes "[哈列德]";
+		mes "你怎麼了？";
+		mes "你還好嗎？";
+		mes "保羅？你想說什麼？";
+		set job_sha,19;
+		close;
+	} else if (job_sha == 20) {
+		mes "[哈列德]";
+		mes "了解。";
+		mes "好。";
+		mes "你需要知道藏有密碼的地方在哪裡嗎？";
+		next;
+		mes "[哈列德]";
+		mes "我別無選擇。";
+		mes "仔細聽好這首詩。";
+		next;
+		mes "[哈列德]";
+		mes "^4d4dff賦予生命之水的纖細根源盡頭。";
+		mes "那裡全是活著的人們的眼淚與痕跡。";
+		mes "他們是我們，卻也不是我們。";
+		mes "被遺忘之夜的居民";
+		mes "彈奏著絕望的圓舞曲^000000。";
+		next;
+		mes "[哈列德]";
+		mes "你知道那是在哪裡嗎？";
+		mes "你知道在哪裡，對吧？";
+		mes "這只是我的看法，但是...";
+		mes "這不可能...";
+		next;
+		mes "[哈列德]";
+		mes "總之，如果你想去，就去吧。";
+		mes "如果你知道這首詩的意思。";
+		next;
+		mes "[哈列德]";
+		mes "當然，如果你發現了什麼，你必須回來。";
+		mes "了解嗎？";
+		mes "我會把它寫下來，這樣你就不會忘記了。";
+		set job_sha,21;
+		changequest 7173,7174;
+		close;
+	} else if (job_sha == 21) {
+		mes "[哈列德]";
+		mes "無論你找到什麼，我都不會感到驚訝。";
+		mes "你必須找到這首詩所說的地方。";
+		next;
+		mes "[哈列德]";
+		mes "^4d4dff賦予生命之水的纖細根源盡頭。";
+		mes "那裡全是活著的人們的眼淚與痕跡。";
+		mes "他們是我們，卻也不是我們。";
+		mes "被遺忘之夜的居民";
+		mes "彈奏著絕望的圓舞曲^000000。";
+		next;
+		mes "[哈列德]";
+		mes "當然，如果你發現了什麼，你必須回來。";
+		mes "了解嗎？";
+		close;
+	} else if (job_sha > 21 && job_sha < 25) {
+		mes "[哈列德]";
+		mes "進展如何？";
+		mes "如果你發現了什麼，你必須回來。";
+		mes "別去找葛拉漢或保羅。";
+		close;
+	} else if (job_sha == 25) {
+		mes "[哈列德]";
+		mes "你找到了什麼嗎？";
+		next;
+		select("出示歡愉鑰匙。");
+		if (countitem(6268)) {
+			mes "[哈列德]";
+			mes "哈..........啊。";
+			mes "又是一把鑰匙？";
+			mes "這是唯一的鑰匙嗎？！";
+			next;
+			mes "[哈列德]";
+			mes "那麼...我必須向里希塔樂鎮的那個年輕人尋求幫助嗎？";
+			mes "...........";
+			mes "啊...";
+			next;
+			mes "[哈列德]";
+			mes "我別無選擇。";
+			mes "帶著這三把鑰匙去里希塔樂鎮。";
+			mes "去見里希塔樂鎮商店的主人維森特，把一切都告訴他。";
+			next;
+			mes "[哈列德]";
+			mes "我告訴過你，那個老頭子很固執，他把一切都搞砸了。";
+			next;
+			mes "[哈列德]";
+			mes "你必須弄清楚所有的事實，才能將情報傳送給公會。";
+			mes "首先你們必須齊心協力。";
+			next;
+			mes "[哈列德]";
+			mes "你找到的東西可以屬於這個辦公室。";
+			mes "它是可以共享的。";
+			next;
+			mes "[哈列德]";
+			mes "我還以為這是一件非常簡單的事情。";
+			mes "我們無法一起分享那東西。";
+			next;
+			mes "[哈列德]";
+			mes "我從辦公室得到的所有資訊都是鑰匙。";
+			mes "一定有什麼東西是需要用到這三把鑰匙的。";
+			next;
+			mes "[哈列德]";
+			mes "總之，這跟欺騙和歡愉有關...";
+			mes "這是在耍我嗎...";
+			next;
+			mes "[哈列德]";
+			mes "好。讓我把話說完。";
+			mes "去找里希塔樂鎮的維森特。";
+			set job_sha,26;
+			changequest 7176,7177;
+			close;
+		}
+		mes "["+strcharinfo(0)+"]";
+		mes "很抱歉。";
+		mes "我找到了另一把鑰匙，但我沒帶在身上。";
+		mes "我很快會把它帶來。";
+		close;
+	} else if (job_sha == 26) {
+		mes "[哈列德]";
+		mes "里希塔樂鎮的魅影辦公室。";
+		mes "經理的名字是維森特。";
+		mes "把一切都告訴他，並取得最後的情報。";
+		close;
+	} else if (job_sha > 26 && job_sha < 30) {
+		mes "[哈列德]";
+		mes "嘿，你！";
+		mes "維森特對你有幫助嗎？";
+		mes "你身上有重要的東西...";
+		mes "所以你必須找出那是什麼。";
+		next;
+		mes "[哈列德]";
+		mes "繼續努力。";
+		close;
+	} else if (job_sha == 30) {
+		mes "[哈列德]";
+		mes "嘿，你！";
+		mes "發生了什麼事？";
+		mes "什麼？魅影追蹤者？";
+		next;
+		mes "[哈列德]";
+		mes "我早就知道了嗎？";
+		mes "當然。我之前聽到了一點風聲。";
+		mes "我以前也做過類似的工作。";
+		next;
+		mes "[哈列德]";
+		mes "能挑選出屬於我們的一份子，是我的榮幸。";
+		mes "接受吧。你會成為一名優秀的魅影追蹤者的。";
+		close;
+	}
+	mes "[哈列德]";
+	mes "我喜歡你的長相。";
+	mes "我們這裡沒有什麼特別的東西。";
+	mes "助手有在賣一些顏料和工具。";
+	close;
+L_Code:
+	mes "["+strcharinfo(0)+"]";
+	mes "保羅說...";
+	next;
+	input .@inputstr$;
+	mes "["+strcharinfo(0)+"]";
+	mes "保羅說...";
+	mes "'"+.@inputstr$+"' 。";
+	next;
+	if (.@inputstr$ == "I know what you did last summer!") {
+		mes "[哈列德]";
+		mes "呃...他...";
+		mes "什麼都知道了...";
+		mes "嗯...";
+		mes "我可以幫忙。";
+		mes "我會配合的。";
+		next;
+		mes "[哈列德]";
+		mes "我需要一些時間來整理思緒。";
+		mes "等我一下。";
+		set job_sha,20;
+		close;
+	}
+	return;
+}
+
+s_atelier,25,75,3	script	經理#sc10_lgt	899,{
+	if (job_sha < 26) {
+		mes "[經理]";
+		mes "你是？";
+		mes "抱歉，但我們不交易舊藝術品。";
+		mes "如果你需要什麼，就去問助手吧。";
+		close;
+	} else if (job_sha == 26) {
+		mes "[維森特]";
+		mes "歡迎。";
+		mes "我一直在等你。";
+		next;
+		select("等我？");
+		mes "[維森特]";
+		mes "我還在想你什麼時候會來。";
+		mes "我已經等你很久了。";
+		mes "呵呵...";
+		next;
+		mes "[維森特]";
+		mes "葛拉漢、保羅和哈列德他們怎麼樣了？";
+		mes "他們可不是好應付的人，對吧？";
+		next;
+		select("你全都知道？");
+		mes "[維森特]";
+		mes "當然。";
+		mes "他們無視我，因為他們覺得我太年輕了。";
+		mes "搞得好像他們都很完美似的。哈哈哈哈...";
+		next;
+		mes "[維森特]";
+		mes "你把所有的鑰匙都帶來了嗎？";
+		mes "應該要有三把。";
+		mes "我猜你是來這裡找尋如何使用它們的方法，對吧？";
+		next;
+		select("對，你說的沒錯！");
+		mes "[維森特]";
+		mes "你不用感到驚訝。";
+		mes "我不知道那三個人之前花了多少時間去調查。";
+		mes "我早就完成了我的工作。";
+		next;
+		mes "[維森特]";
+		mes "當我前往最終地點時，我發現了一尊石像。";
+		mes "但它需要有鑰匙。";
+		next;
+		mes "[維森特]";
+		mes "而且要三把。";
+		mes " ";
+		mes "(維森特微笑了)";
+		next;
+		mes "[維森特]";
+		mes "起初，從公會傳來的情報只代表一件事。";
+		mes "因為他們口口聲聲說尊重我們財產的權利，";
+		mes "我們分享了我們的情報。";
+		next;
+		mes "[維森特]";
+		mes "所以我們只能等待。";
+		mes "我還以為最後那個人永遠都不會交給我...";
+		next;
+		mes "[維森特]";
+		mes "他們以為我想獨吞寶藏。";
+		mes "這就是為什麼我一直在等你。";
+		next;
+		mes "[維森特]";
+		mes "那我們就切入正題吧！";
+		mes "你知道達納托斯之塔嗎？";
+		next;
+		switch(select("知道。:死亡之塔？")) {
+		case 1:
+			mes "[維森特]";
+			mes "你知道就好。";
+			mes "這樣你就能輕易理解了。";
+			next;
+			break;
+		case 2:
+			mes "[維森特]";
+			mes "是的，就在朱諾北邊的那座塔。";
+			mes "那裡有巨大的魔物。";
+			next;
+			break;
+		}
+		mes "[維森特]";
+		mes "你說你帶著情報去了最終地點？";
+		mes "那就是達納托斯之塔。";
+		next;
+		mes "[維森特]";
+		mes "幸運的是，地點就在那座塔的 1 樓。";
+		mes "所以我現在要告訴你該怎麼做。";
+		next;
+		mes "[維森特]";
+		mes "在達納托斯之塔 1 樓，有雷根貝爾企業的成員。";
+		mes "從他們的桌子往北走...";
+		next;
+		mes "[維森特]";
+		mes "然後你會找到樓梯，以及一個有光線透出來的地方。";
+		mes "那就是我情報上顯示的地點。";
+		next;
+		mes "[維森特]";
+		mes "現在你知道必須帶著那三把鑰匙去哪裡了。";
+		mes "找出那尊石像的秘密。";
+		next;
+		mes "[維森特]";
+		mes "你無法想像你可能會找到什麼樣的東西。";
+		mes "那就是所有鑰匙的最終目的地。";
+		set job_sha,27;
+		changequest 7177,7178;
+		next;
+		mes "[維森特]";
+		mes "祝你好運。";
+		close;
+	} else if (job_sha == 27) {
+		mes "[維森特]";
+		mes "仔細聽好。";
+		mes "你需要尋找的地點是";
+		mes "達納托斯之塔 1 樓中間往北。";
+		mes "你會找到樓梯，以及一個有光線透出來的地方。";
+		next;
+		mes "[維森特]";
+		mes "如果你發現了什麼，就回到這裡來。";
+		mes "其實，我想從你那裡拿到鑰匙，但是...";
+		next;
+		mes "[維森特]";
+		mes "我尊重你的意願。";
+		mes "如果你發現了什麼，就回到這裡來。了解嗎？";
+		close;
+	} else if (job_sha == 28) {
+		mes "[維森特]";
+		mes "你回來了？";
+		mes "找到了什麼嗎？";
+		next;
+		switch(select("丟出畫筆。:抓住他的衣領。:放下畫筆。")) {
+		case 1:
+			mes "[維森特]";
+			mes "嘿，你在做什麼？";
+			mes "這支畫筆...";
+			mes "這就是隱藏在達納托斯之塔的寶藏？";
+			next;
+			mes "維森特看了一眼後，露出了驚訝的表情。";
+			next;
+			break;
+		case 2:
+			mes "[維森特]";
+			mes "怎麼了？";
+			mes "你能告訴我更多細節嗎？";
+			next;
+			mes "維森特看了一眼後，露出了驚訝的表情。";
+			next;
+			mes "[維森特]";
+			mes "這就是隱藏在達納托斯之塔的寶藏？";
+			next;
+			break;
+		case 3:
+			mes "[維森特]";
+			mes "怎麼了？";
+			mes "你還好嗎？";
+			next;
+			mes "維森特用驚訝的表情看著我。";
+			next;
+			select("指著畫筆。");
+			mes "[維森特]";
+			mes "這就是隱藏在達納托斯之塔的寶藏？";
+			next;
+			mes "維森特看了一眼後，露出了驚訝的表情。";
+			next;
+			break;
+		}
+		mes "[維森特]";
+		mes "哈哈！！";
+		mes "啊哈哈哈哈！！！！";
+		mes "我現在明白了！";
+		mes "恭喜。";
+		next;
+		mes "[維森特]";
+		mes "這就是寶藏。";
+		mes "你找到了一個大寶藏！";
+		mes "陪我聊聊好嗎？";
+		next;
+		mes "[維森特]";
+		mes "有個人一直在等你。";
+		mes "他一直在等有人把這支畫筆帶回來。";
+		mes "我們進去吧。";
+		set job_sha,29;
+		erasequest 7179;
+		close;
+	} else if (job_sha == 29 || job_sha == 30) {
+		mes "[維森特]";
+		mes "我想聽聽你的故事。";
+		close;
+	}
+	mes "[維森特]";
+	mes "我期待你今後的表現。";
+	mes "你一定會成為一名優秀的魅影追蹤者的。";
+	mes "我對此深信不疑。";
+	close;
+}
+
+s_atelier,73,65,3	script	維森特#sc12_lgt	899,{
+	mes "[維森特]";
+	if (job_sha < 29) {
+		mes "如果你在這裡沒有什麼特別的事，你最好離開。";
+		mes "禁止擅自闖入。";
+		close;
+	} else if (job_sha == 29) {
+		mes "這邊請。";
+		mes "他已經等你一陣子了。";
+		mes "不是我，是杜姆克。";
+		close;
+	} else if (job_sha == 30) {
+		mes "杜姆克想讓你成為魅影追蹤者。";
+		mes "這可是個大新聞，對吧？";
+		close;
+	} else if (job_sha == 31) {
+		mes "我期待你今後的表現。";
+		mes "你一定會成為一名優秀的魅影追蹤者的。";
+		mes "我對此深信不疑。";
+		close;
+	}
+	mes "我沒有什麼特別的理由來這裡。";
+	mes "助手有在賣工具和顏料。";
+	close;
+}
+
+s_atelier,70,66,4	script	杜姆克#sc13_lgh	481,{
+	if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "[杜姆克]";
+		mes "怎麼了？";
+		mes "你還喜歡你的新技能嗎？";
+		next;
+		mes "[杜姆克]";
+		mes "如果你想精進你的技能，你必須去尋找顏料的新用途。";
+		next;
+		mes "[杜姆克]";
+		mes "別忘了。";
+		mes "我們是魅影追蹤者。";
+		mes "呵呵...";
+		mes "呵呵呵呵...";
+		close;
+	}
+	if (checkweight(1201,4) == 0) {
+		mes "- 由於你的負重過高，無法繼續進行此任務。 -";
+		close;
+	}
+	if (ismounting()) {
+		mes "[杜姆克]";
+		mes "這傢伙是誰？他為什麼要騎著東西高高在上地坐在我面前？";
+		mes "雖然我不知道你為什麼騎著牠，但這裡可是室內，";
+		mes "這裡沒有需要靠動物逃跑的危險，所以請你下來！";
+		close;
+	}
+	if (BaseJob == Job_Rogue) {
+		if (job_sha < 29) {
+			mes "[杜姆克]";
+			mes "維森特。謝絕推銷。";
+			next;
+			mes "[維森特]";
+			mes "推銷員？";
+			mes "我不這麼認為。他是我們的同僚。";
+			next;
+			mes "[杜姆克]";
+			mes "...啊？";
+			close;
+		}
+		if (BaseLevel < 99 || JobLevel < 50 || SkillPoint != 0) {
+			mes "[杜姆克]";
+			mes "你還太嫩了！";
+			mes "你以為憑你的能力就能學習暗黑藝術嗎？";
+			mes "你錯了！";
+			next;
+			mes "[維森特]";
+			mes "哈哈...";
+			mes "請見諒。杜姆克非常不擅長溝通。";
+			mes "他甚至不跟等級不夠高的人說話。";
+			next;
+			mes "[維森特]";
+			mes "身為一個還沒準備好的人。";
+			mes "^4d4dff你可能還沒有資格面對他^000000。";
+			next;
+			mes "[杜姆克]";
+			mes "你話太多了。";
+			mes "哼。";
+			next;
+			mes "[維森特]";
+			mes "- 他很高興。 -";
+			mes "嘿。";
+			mes "他可能會感到羞愧。";
+			close;
+		}
+		if (job_sha == 29) {
+			mes "[杜姆克]";
+			mes "是你？就是你找到了那支畫筆嗎？";
+			next;
+			select("把畫筆拿給他看。");
+			if (countitem(6269)) {
+				mes "[杜姆克]";
+				mes "就是這個。";
+				mes "是你自己找到的嗎？";
+				next;
+				switch(select("是的。:和我的朋友們一起")) {
+				case 1:
+					mes "[杜姆克]";
+					mes "嗯...";
+					mes "你的能力很強。";
+					mes "破解這些密碼應該很困難。";
+					mes "但對你來說似乎不算什麼。";
+					next;
+					break;
+				case 2:
+					mes "[杜姆克]";
+					mes "嗯...";
+					mes "這是你的另一項技能。";
+					mes "沒有朋友的人一定很孤獨。";
+					next;
+					mes "[杜姆克]";
+					mes "對我們來說，人際關係非常重要。";
+					mes "你認識越多的人，就能得到越多的幫助。";
+					next;
+					break;
+				}
+				mes "[杜姆克]";
+				mes "是時候自我介紹了。";
+				mes "我是杜姆克。";
+				next;
+				select("你是...");
+				mes "[維森特]";
+				mes "雞肉！今晚的晚餐吃雞肉怎麼樣？";
+				next;
+				mes "[杜姆克]";
+				mes "為什麼是雞肉？";
+				mes "你為什麼要插嘴？";
+				mes "你想被解雇嗎？";
+				next;
+				mes "[維森特]";
+				mes "抱歉...";
+				mes " ";
+				mes "(他轉向你並說談論雞肉是個禁忌。)";
+				next;
+				mes "[杜姆克]";
+				mes "總之，我們切入正題吧。";
+				mes "你。";
+				mes "你願意屈服於這支畫筆的意志嗎？";
+				next;
+				select("屈服於？什麼？");
+				mes "[杜姆克]";
+				mes "這支畫筆曾被大師使用過。";
+				mes "他畫出的作品擁有神秘的力量。";
+				next;
+				mes "[杜姆克]";
+				mes "我無法告訴你這力量的根源。";
+				mes "總有一天你會發現的。";
+				mes "他透過畫作這個媒介昇華了力量。";
+				next;
+				select("我聽不懂...？");
+				mes "[杜姆克]";
+				mes "我們在沒有月光的黑暗中行走。";
+				mes "並發現我們光輝的日子已經結束。";
+				next;
+				mes "[杜姆克]";
+				mes "我們跟隨其他的影子";
+				mes "我們才能成為真正的";
+				mes "魅影追蹤者！";
+				next;
+				select("你在說什麼？");
+				mes "[維森特]";
+				mes "他的意思是建議你成為一名魅影追蹤者。";
+				next;
+				mes "[維森特]";
+				mes "在我們的公會裡，有一個擁有獨特技能的特別群體。";
+				mes "他們就是魅影追蹤者。";
+				mes "他們通常隱藏自己的身形，並且認為自己與眾不同。";
+				next;
+				mes "[杜姆克]";
+				mes "別這麼愛挖苦人，維森特！";
+				mes "我告訴過你了。";
+				mes "你有資格成為一名魅影追蹤者！";
+				next;
+				mes "[杜姆克]";
+				mes "把那支畫筆給我。";
+				mes "我再次需要它了。";
+				mes "我好渴。";
+				mes "等我一下。";
+				delitem 6269,1; //Master_Brush
+				set job_sha,30;
+				close;
+			}
+			mes "[杜姆克]";
+			mes "讓我看看...";
+			mes "你帶畫筆來了嗎？";
+			next;
+			mes "[杜姆克]";
+			mes "你在做什麼？";
+			mes "畫筆給我看啊？";
+			mes "你沒帶在身上？";
+			mes "你也太不小心了...";
+			close;
+		} else if (job_sha == 30) {
+			mes "[杜姆克]";
+			mes "那麼，你想讓我繼續說關於魅影追蹤者的事嗎？";
+			next;
+			switch(select("什麼是魅影追蹤者？:讓我轉職成魅影追蹤者。:我晚點再來。")) {
+			case 1:
+				mes "[杜姆克]";
+				mes "大多數的魔法都是巫師和他們同類專屬的。";
+				mes "但從那時起，騎士也能夠使用一種被稱為盧恩的魔法了。";
+				next;
+				mes "[杜姆克]";
+				mes "所以我們試圖尋找一種適合我們特性的魔法媒介。";
+				next;
+				mes "[杜姆克]";
+				mes "所以最後...";
+				mes "我們找到了顏料！";
+				next;
+				mes "[杜姆克]";
+				mes "顏料能帶給我們豐富的感受。";
+				mes "我們能感受到平靜和快樂，或者它也能帶給我們悲傷和恐懼的感覺。";
+				next;
+				mes "[杜姆克]";
+				mes "我們利用這一點來駕馭人們不同的情緒，並在他們最脆弱的時候利用他們。";
+				next;
+				mes "[杜姆克]";
+				mes "對敵人產生的效果與魔法法術相似。";
+				next;
+				mes "[杜姆克]";
+				mes "舉例來說，這種力量可以用來創造黑洞，讓你的敵人消失。";
+				next;
+				mes "[杜姆克]";
+				mes "所以如果你想擁有那種力量，你就必須具備藝術氣息。";
+				next;
+				mes "[杜姆克]";
+				mes "當談到時尚時，你必須成為潮流引領者！";
+				mes "具備理解藝術的能力！";
+				mes "你必須擁有一切。";
+				next;
+				select("那麼匠人畫筆是什麼？");
+				mes "[杜姆克]";
+				mes "啊？";
+				mes "那是一支屬於一位暗黑藝術大師的畫筆。";
+				mes "現在我們正在尋找能夠成為魅影追蹤者的人。";
+				next;
+				mes "[杜姆克]";
+				mes "這是一種遊戲。";
+				mes "如果有人想成為魅影追蹤者，";
+				mes "我們就會啟動尋找這支畫筆的程序。";
+				next;
+				mes "[杜姆克]";
+				mes "我們設置這些密碼，是為了確保你能跳出框架思考。";
+				mes "你玩得開心嗎？";
+				close;
+			case 2:
+				mes "[杜姆克]";
+				mes "你決定了！";
+				mes "就你的情況而言，你可以利用顏料精通心理戰的藝術！";
+				mes "創造出來的藝術是美麗卻又危險的。";
+				next;
+				mes "[杜姆克]";
+				mes "我們使用顏料作為法術的媒介。";
+				mes "我們利用這一點來駕馭人們不同的情緒，並在他們最脆弱的時候利用他們。";
+				next;
+				mes "[杜姆克]";
+				mes "舉例來說，這種力量可以用來創造黑洞，讓你的敵人消失。";
+				next;
+				mes "[杜姆克]";
+				mes "所以如果你想擁有那種力量，你就必須具備藝術氣息。";
+				next;
+				mes "[杜姆克]";
+				mes "當談到時尚時，你必須成為潮流引領者！";
+				mes "具備理解藝術的能力！";
+				mes "你必須擁有一切。";
+				next;
+				mes "[杜姆克]";
+				mes "你勤奮地履行了你的職責並找到了畫筆。";
+				mes "所以你有資格成為一名魅影追蹤者。";
+				next;
+				mes "[杜姆克]";
+				mes "恭喜。";
+				mes "歡迎來到你的新生活。";
+				jobchange roclass(eaclass()|EAJL_THIRD);
+				getitem 6121,1; //Makeover_Brush
+				getitem 6122,1; //Paint_Brush
+				set job_sha,32;
+				getitem 2795,1; //Green_Apple_Ring
+				getitem 5750,1; //Shadow_Handicraft
+				next;
+				mes "[杜姆克]";
+				mes "這是一套時尚的制服。";
+				mes "它使用了豹紋和羽毛的圖案";
+				mes "時尚界將會為之震驚。";
+				next;
+				mes "[杜姆克]";
+				mes "這隻影子孔雀是我親自設計的。";
+				mes "要創造出能吸收我藝術品味的東西太難了。";
+				mes "關於這個部分...";
+				next;
+				mes "杜姆克一直在談論時尚、藝術品味、顏料和感覺。";
+				mes "他顯然沉浸在自己的世界裡了。";
+				next;
+				select("關於這支畫筆...");
+				mes "[維森特]";
+				mes "啊，我來解釋。";
+				mes "我們需要繪畫用的工具。";
+				next;
+				mes "[維森特]";
+				mes "面部彩繪筆是用來做臉部彩繪的。";
+				mes "你可以從辦公室取得顏料。";
+				next;
+				mes "[維森特]";
+				mes "水彩筆是用來在大空間繪畫的。";
+				mes "你也可以從辦公室取得顏料。";
+				next;
+				mes "[維森特]";
+				mes "你不記得辦公室的位置了嗎？";
+				mes "朱諾、普隆德拉、拉赫和里希塔樂鎮。";
+				next;
+				mes "[維森特]";
+				mes "如果你需要顏料，去找助手。";
+				mes "^4d4dff如果你沒有任何工具，你可以使用技能所需的顏料。^000000";
+				next;
+				mes "[維森特]";
+				mes "恭喜你成為我們的一員。";
+				close;
+			case 3:
+				mes "[杜姆克]";
+				mes "什麼？";
+				mes "為什麼不？";
+				mes "你不想成為魅影追蹤者嗎？";
+				mes "我可以教你很多關於繪畫的知識。";
+				next;
+				mes "[杜姆克]";
+				mes "在你真正成為其中一員之前，你是不會了解的。";
+				next;
+				mes "[杜姆克]";
+				mes "你不想學習如何駕馭一種比你所知還要強大的力量嗎？";
+				mes "....";
+				next;
+				mes "杜姆克似乎因為我沒有回答他而感到失望。";
+				close;
+			}
+		}
+	}
+	mes "[杜姆克]";
+	mes "..........";
+	mes "哼。";
+	next;
+	mes "[維森特]";
+	mes "我很抱歉。";
+	mes "他對其他人不感興趣。";
+	mes "但你不能進入這個空間。";
+	mes "你可以在商店取得工具。";
+	close;
+}
+
+// Flames
+//============================================================
+tur_dun03,38,209,1	script	藍色火焰#sc_f01	802,{
+	if (job_sha == 5) {
+		mes "一團藍色火焰正在燃燒著。";
+		mes "解開的密碼意思是...";
+		next;
+		input .@inputstr$;
+		set .@dap01$, "blue fire in turtle island third floor";
+		set .@dap02$, "BLUE FIRE IN TURTLE ISLAND THIRD FLOOR";
+		if (.@inputstr$ != .@dap01$ && .@inputstr$ != .@dap02$) {
+			mes "["+strcharinfo(0)+"]";
+			mes "是什麼來著？";
+			mes "我想我必須確保不使用任何大寫字母。(或者全大寫)";
+			close;
+		}
+		mes "["+strcharinfo(0)+"]";
+		mes "^4d4dff"+.@inputstr$+"^000000";
+		mes "這很明顯是指向這裡。";
+		next;
+		mes "當火焰開始變大時，你喃喃唸出這個句子。";
+		next;
+		mes "[未知的聲音]";
+		mes "嗯？有人來了？";
+		mes "你就是那個想要得到我寶藏的人嗎？";
+		mes "但你的極限已經到了。";
+		next;
+		mes "火焰正在說話。";
+		mes "那聲音聽起來像蛇一樣。";
+		mes "在藍色火焰的中央，有兩顆像大理石一樣的眼睛。";
+		next;
+		select("撿起它。");
+		mes "[未知的聲音]";
+		mes "你還真急啊。";
+		mes "哈哈哈，人類通常都會做這種事。";
+		mes "他們看不見真相。";
+		next;
+		mes "[未知的聲音]";
+		mes "那你呢？";
+		mes "我不認為你會對這團藍色火焰造成傷害。";
+		mes "這是唯一擁有兩個...";
+		next;
+		select("你是誰？");
+		mes "[欺騙的影子]";
+		mes "我？我是欺騙。";
+		mes "我嘲笑那些愚蠢的人。";
+		mes "我在他們背後大笑。";
+		mes "哈哈哈哈...";
+		next;
+		mes "藍色火焰不斷地增長翻滾著。";
+		mes "它們似乎互有關聯。";
+		set job_sha,6;
+		setquest 7164;
+		if (checkquest(7161) >= 0) erasequest 7161;
+		if (checkquest(7162) >= 0) erasequest 7162;
+		if (checkquest(7163) >= 0) erasequest 7163;
+		close;
+	} else if (job_sha == 6) {
+		if (checkquest(7164,HUNTING) == 2) {
+			mes "看起來藍色火焰受到了限制。";
+			mes "你再也感受不到之前那種法術翻滾的效果了。";
+			next;
+			select("撿起大理石。");
+			mes "當你撿起它們時，你能感覺到你的重量變輕了。";
+			set job_sha,7;
+			erasequest 7164;
+			close2;
+			warp "job3_sha01",22,82;
+			end;
+		}
+		mes "火焰仍在強大的法術下翻滾著。";
+		mes "你必須切斷與它的關聯。";
+		close;
+	} else if (job_sha == 7) {
+		mes "看起來藍色火焰受到了限制。";
+		mes "你再也感受不到之前那種法術翻滾的效果了。";
+		next;
+		select("撿起大理石。");
+		mes "當你撿起它時，你能感覺到你的重量變輕了。";
+		close2;
+		warp "job3_sha01",22,82;
+		end;
+	}
+	mes "火焰正在翻滾著。";
+	close;
+}
+
+ice_dun02,206,223,1	script	紅色火焰#sc_f02	802,{
+	if (job_sha < 11) {
+		mes "一團未知的紅色火焰正在燃燒著。";
+		close;
+	} else if (job_sha > 10 && job_sha < 14) {
+		mes "紅色火焰正在燃燒著。";
+		mes "它變成了一位黑衣女子。";
+		next;
+		mes "[黑衣女子]";
+		mes "你聽得見我說話嗎？";
+		mes "呵呵。";
+		mes "你看得見我嗎？";
+		next;
+		mes "[黑衣女子]";
+		mes "你是被選中的人？";
+		mes "你可以知道那件事。";
+		mes "有一個和我一樣的靈魂。";
+		next;
+		mes "[黑衣女子]";
+		mes "我是一個影子。";
+		mes "一個徘徊的影子。";
+		mes "悲傷的靈魂。";
+		mes "一個沒有真實的幻覺影子。";
+		next;
+		mes "[幻覺的影子]";
+		mes "你想要什麼？";
+		mes "你想要寶藏嗎？";
+		mes "那就撿起來吧。";
+		mes "撕裂我的靈魂並";
+		mes "展現出真相。";
+		set job_sha, job_sha+3;
+		setquest 7171;
+		close;
+	} else if (job_sha == 14 || job_sha == 15 || job_sha == 16) {
+		if (checkquest(7171,HUNTING) == 2) {
+			mes "你感覺不到火焰中的靈魂了。";
+			mes "當你靠近時，因為黑暗你什麼也看不清楚。";
+			close2;
+			warp "job3_sha01",22,33;
+			end;
+		}
+		mes "[幻覺的影子]";
+		mes "呵呵。";
+		mes "怎麼了？";
+		mes "你找不到我靈魂的另一半嗎？";
+		mes "呵呵...";
+		next;
+		mes "[幻覺的影子]";
+		mes "啊，快點讓我安息吧。";
+		mes "我想平靜地死去。";
+		mes "我想放棄這虛假的生活。";
+		next;
+		mes "[幻覺的影子]";
+		mes "呵呵...";
+		mes "當虛假的影子消失時，你就能看見真相。";
+		mes "求求你，撕裂這虛假去迷惑那些盲目的人吧...";
+		mes "不留任何痕跡...";
+		close;
+	}
+	mes "火焰正在翻滾著。";
+	mes "因為冰的反射光，你看不清楚。";
+	close;
+}
+
+niflheim,230,276,1	script	紅色火焰#sc_f03	802,{
+	if (job_sha < 21) {
+		mes "那是一團神秘的火焰。";
+		mes "它看起來像是在詛咒。";
+		mes "離它遠一點。";
+		close;
+	}
+	else if (job_sha == 21) {
+		mes "["+strcharinfo(0)+"]";
+		mes "哈列德告訴我的那首詩是指向尼芙菲姆。";
+		mes "這裡有一團看起來像是在龜島和冰洞見過的火焰。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "活著的樹根的盡頭。";
+		mes "所有活著的人的眼淚。";
+		mes "所有死者的痕跡。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "他們是我們，卻也不是我們。";
+		next;
+		mes "[某人的聲音]";
+		mes "他們是我們，卻也不是我們。";
+		next;
+		mes "[某人的聲音]";
+		mes "被遺忘之夜的居民...";
+		next;
+		select("是誰在彈奏那個？");
+		mes "[某人的聲音]";
+		mes "是誰在彈奏絕望的圓舞曲？";
+		mes ".....";
+		next;
+		mes "[某人的聲音]";
+		mes "哈...";
+		mes "你來這裡挖掘死亡的秘密。";
+		mes "你能為我彈奏死亡的圓舞曲嗎？";
+		next;
+		mes "[某人的聲音]";
+		mes "我不想受到束縛";
+		mes "並與死者的痕跡為伴。";
+		next;
+		mes "[歡愉的影子]";
+		mes "我是個影子。";
+		mes "我展現出這個世界上最美好的歡愉。";
+		mes "那是一種讓你不想從夢中醒來的幻覺。";
+		next;
+		mes "[歡愉的影子]";
+		mes "靈魂被冰冷的鎖鏈纏繞";
+		mes "我看不見夢境";
+		mes "而影子也失去了那將會永恆持續的歡愉。";
+		next;
+		mes "[歡愉的影子]";
+		mes "求求你，幫幫我。";
+		mes "借我一雙手";
+		mes "讓我從這裡逃脫！";
+		next;
+		mes "[歡愉的影子]";
+		mes "你能用雙手讓我窒息嗎？";
+		mes "我感官的另一面";
+		mes "正在喘息著。";
+		next;
+		mes "[歡愉的影子]";
+		mes "那是我活著的證據。";
+		mes "那是我越界的證據。";
+		mes "伴隨著生命的開始";
+		mes "最後的歡愉。";
+		next;
+		mes "[歡愉的影子]";
+		mes "讓我看看";
+		mes "甜美的死亡。";
+		next;
+		mes "火焰正在熄滅。";
+		mes "你應該要處理這歡愉的影子了。";
+		set job_sha,22;
+		erasequest 7174;
+		setquest 7175;
+		close;
+	} else if (job_sha == 22) {
+		if (checkquest(7175,HUNTING) == 2) {
+			mes "你感覺不到火焰中的靈魂了。";
+			mes "當你靠近時，因為黑暗你什麼也看不清楚。";
+			set job_sha,23;
+			erasequest 7175;
+			close2;
+			warp "job3_sha01",73,87;
+			end;
+		}
+		mes "你能感覺到火焰中強大的靈魂。";
+		mes "你應該要處理這歡愉的影子了。";
+		close;
+	} else if (job_sha == 23 || job_sha == 24) {
+		mes "你感覺不到火焰中的靈魂了。";
+		mes "當你靠近時，因為黑暗你什麼也看不清楚。";
+		close2;
+		warp "job3_sha01",73,87;
+		end;
+	}
+	mes "這裡有一團火焰。";
+	mes "你從它身上感覺不到任何東西。";
+	close;
+}
+
+// Boxes
+//============================================================
+job3_sha01,22,78,0	script	????#keybox01	844,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 由於你的負重過高，無法繼續進行此任務。 -";
+		close;
+	}
+	if (job_sha == 7) {
+		mes "這是一個用堅硬龜殼做成的小盒子。";
+		mes "它的中間...";
+		next;
+		select("觸摸中間。:按壓中間。");
+		mes "當你觸摸它時，有什麼東西跑出來了！";
+		next;
+		setarray .@Codes1$[1],"EFDFJWF","FGEGKXG","GHFHLYH","HIGIMZI","IJHJNAJ","JKIKOBK","KLJLPCL","LMKMQDM";
+		setarray .@Codes2$[1],"IPOFTUZ","JQPGUVA","KRQHVWB","LSRIWXC","MTSJXYD","NUTKYZE","OVULZAF","PWVMABG";
+		set .@i, rand(1,8);
+		mes " ";
+		mes " ";
+		mes " DECEIVE";
+		next;
+		mes " ";
+		mes " ";
+		mes " "+.@i;
+		next;
+		mes " "+.@Codes1$[.@i];
+		next;
+		mes "上面顯示了一些字母和數字。";
+		mes " ";
+		mes "Deceive (欺騙)。";
+		mes "然後是 "+.@i+"。";
+		mes "還有 "+.@Codes1$[.@i]+"。";
+		next;
+		select("那是什麼意思？");
+		mes "["+strcharinfo(0)+"]";
+		mes "這也是密碼嗎。";
+		mes "一定是！";
+		mes "啊，又有什麼東西出現了...？";
+		next;
+		mes "- 你可以看到龜殼上有一些字母。 -";
+		next;
+		mes " ";
+		mes "HONESTY";
+		mes " ";
+		mes "還有字母。它們閃爍著，似乎在等待輸入密碼。";
+		next;
+		input .@inputstr$;
+		if (.@inputstr$ == .@Codes2$[.@i] || .@inputstr$ == strtolower(.@Codes2$[.@i])) {
+			mes "當你輸入正確的答案時，";
+			mes "盒子打開了。";
+			mes "裡面有一把精美的小鑰匙。";
+			next;
+			mes "- 你獲得了欺騙鑰匙。 -";
+			set job_sha,8;
+			getitem 6266,1; //Cheat_Key
+			setquest 7165;
+			close;
+		}
+		mes "- 你輸入了答案 -";
+		mes "- 但它沒有任何反應。 -";
+		mes "- 你失敗了。 -";
+		close;
+	}
+	mes "你不需要留在這裡。";
+	next;
+	if(select("走到外面。:留在這裡。") == 1)
+		warp "tur_dun03",40,201;
+	close;
+}
+
+job3_sha01,25,28,0	script	????#keybox02	844,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 由於你的負重過高，無法繼續進行此任務。 -";
+		close;
+	}
+	setarray .@Words$[0],"SEED","FOOT","COLD";
+	setarray .@Numbers[0],24,25,20;
+	set .@i,job_sha-14;
+	if (job_sha > 13 && job_sha < 17) {
+		mes "這裡有很多盒子。";
+		mes "上面有各種數字。";
+		next;
+		mes " 1 2 3 4 5";
+		mes " 6 7 8 9 0";
+		mes " ";
+		mes " [ ][ ] ";
+		next;
+		mes "當你觸摸那個數字時，它移動了。";
+		mes "你發現了空格。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我想我必須把數字填入空格中...";
+		mes "我有兩個方格可以填入兩個數字。";
+		mes "這有什麼用處呢？";
+		next;
+		select("我想這跟保羅給的單字有關。");
+		mes "["+strcharinfo(0)+"]";
+		mes "我得到的是 "+.@Words$[.@i]+"。";
+		mes "現在我必須把它轉換成數字...";
+		next;
+		switch(select("輸入答案。:我猜不到。")) {
+		case 1:
+			input .@input;
+			if (.@input == .@Numbers[.@i]) {
+				mes "你輸入了 2 和 "+(.@Numbers[.@i]-20)+"。";
+				mes "盒子打開了，你得到了一把鑰匙。";
+				next;
+				mes "你獲得了幻覺鑰匙。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "這不是寶藏。";
+				mes "幻覺鑰匙？這和幻覺的影子有關嗎？";
+				mes "我在處理完欺騙之後得到了欺騙鑰匙...";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "總之，保羅會很失望的。";
+				mes "又是鑰匙...";
+				mes "我該怎麼從這裡逃出去...？";
+				set job_sha,17;
+				getitem 6267,1; //Virtual_Key
+				erasequest 7171;
+				changequest 7168+.@i,7172;
+				next;
+				mes "當我推開盒子時，它露出了通往外面的門。";
+				close2;
+				warp "ice_dun02",209,219;
+				end;
+			}
+			mes "當你輸入數字時，它又回到了最初的狀態。";
+			close;
+		case 2:
+			mes "["+strcharinfo(0)+"]";
+			mes "嗯。";
+			mes "我猜不到...";
+			mes "這和普隆德拉辦公室的密碼一樣嗎...？";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "根據那個方法...";
+			mes "A 代表 11，B 代表 12。";
+			close;
+		}
+	}
+	mes "這是一個神秘的盒子。";
+	mes "當我推開盒子時，它露出了通往外面的門。";
+	close2;
+	warp "ice_dun02",209,219;
+	end;
+}
+
+job3_sha01,73,80,0	script	????#keybox03	844,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 由於你的負重過高，無法繼續進行此任務。 -";
+		close;
+	}
+	if (job_sha == 23 || job_sha == 24) {
+		if (job_sha == 23) {
+			mes "這裡有一個看起來像房子的盒子。";
+			mes "煙囪裡有一張小紙條。";
+			next;
+			mes "上面寫著...";
+			mes "-----------------";
+			mes " 20 21 18 14";
+			mes " 1 14 4";
+			mes " 19 8 1 11 5";
+			mes "-----------------";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "我想這是另一個密碼。";
+		} else {
+			mes "["+strcharinfo(0)+"]";
+			mes "讓我想想...";
+			mes "20 21 18 14";
+			mes "1 14 4 ";
+			mes "19 8 1 11 5";
+			mes "...";
+		}
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "和之前一樣。";
+		mes "沒有密碼，所以 1 應該是 A。";
+		mes "那麼答案就是...";
+		next;
+		input .@inputstr$;
+		if (.@inputstr$ == "turn and shake" || .@inputstr$ == "TURN AND SHAKE") {
+			mes "["+strcharinfo(0)+"]";
+			mes "轉動... 轉動... 然後";
+			mes "搖晃？ 搖晃？";
+			mes "為了什麼？";
+			next;
+			while(1) {
+				switch(select("轉動屋頂。:轉動房子。:轉動把手。")) {
+				case 1:
+					mes "你轉動了屋頂。";
+					next;
+					switch(select("搖晃屋頂。:搖晃房子。")) {
+					case 1:
+						mes "即使你搖晃了屋頂，但";
+						mes "什麼也沒發生。";
+						next;
+						mes "["+strcharinfo(0)+"]";
+						mes "不是這個。";
+						mes "嗯...";
+						next;
+						break;
+					case 2:
+						mes "你試著搖晃了房子，但";
+						mes "沒有任何反應。";
+						next;
+						mes "["+strcharinfo(0)+"]";
+						mes "不對。";
+						mes "把它放回去";
+						mes "再試一次。";
+						next;
+						break;
+					}
+					break;
+				case 2:
+					mes "你抓住整棟房子並轉動它。";
+					next;
+					switch(select("上下搖晃。:前後搖晃。:轉來轉去並搖晃。:把它上下顛倒。")) {
+					case 1:
+					case 2:
+						mes "什麼也沒發生。";
+						mes "你覺得裡面有東西，但它就是出不來。";
+						next;
+						mes "["+strcharinfo(0)+"]";
+						mes "不是這個。";
+						mes "嗯...";
+						next;
+						break;
+					case 3:
+						mes "你慢慢地搖晃它。";
+						mes "你可以聽到一些聲音，";
+						mes "但沒有東西跑出來。";
+						next;
+						mes "["+strcharinfo(0)+"]";
+						mes "不是這個。";
+						mes "嗯...";
+						next;
+						break;
+					case 4:
+						mes "把它上下顛倒會讓裡面的東西移動。";
+						next;
+						mes "你慢慢地搖晃它。";
+						mes "你可以聽到一些聲音。";
+						mes "有東西要出來了。";
+						next;
+						mes "- 你獲得了歡愉鑰匙。 -";
+						next;
+						mes "["+strcharinfo(0)+"]";
+						mes "什麼？又是一把鑰匙！";
+						mes "哈列德會很失望的。";
+						mes "我最好還是回去。";
+						set job_sha,25;
+						setquest 7176;
+						getitem 6268,1; //Mirth_Key
+						close;
+					}
+					break;
+				case 3:
+					mes "你試圖轉動小把手";
+					mes "但它沒有反應。";
+					next;
+					mes "["+strcharinfo(0)+"]";
+					mes "我現在該怎麼辦？";
+					next;
+					break;
+				}
+			}
+		}
+		mes "["+strcharinfo(0)+"]";
+		mes "..."+.@inputstr$+"...？";
+		if (job_sha == 23) {
+			mes "那是什麼意思？";
+			set job_sha,24;
+		} else
+			mes "又來了？我還是不懂。";
+		close;
+	}
+	mes "你不需要留在這裡。";
+	mes "你放下盒子，看到那裡有一扇通往外面的門。";
+	close2;
+	warp "niflheim",230,270;
+	end;
+}
+
+job3_sha01,71,27,0	script	????#keybox04	844,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 由於你的負重過高，無法繼續進行此任務。 -";
+		close;
+	}
+	if (job_sha == 27) {
+		mes "這裡有一尊石像，看起來";
+		mes "像是一個刻有華麗圖案的小盒子。";
+		next;
+		mes "但你從它身上感覺不到任何力量。";
+		mes "你在上面發現了三個孔。";
+		next;
+		mes "孔洞的旁邊刻著";
+		mes "欺騙、幻覺和歡愉。";
+		next;
+		select("將鑰匙放入孔中。");
+		if (countitem(6266) && countitem(6267) && countitem(6268)) {
+			mes "["+strcharinfo(0)+"]";
+			mes "首先是，欺騙...";
+			mes "然後是幻覺...";
+			mes "以及歡愉...";
+			mes "讓我看看。";
+			next;
+			mes "當你把鑰匙放進去時";
+			mes "有東西跑出來了。";
+			next;
+			mes "- 你獲得了一支刻有華麗圖案的畫筆。 -";
+			delitem 6266,1; //Cheat_Key
+			delitem 6267,1; //Virtual_Key
+			delitem 6268,1;
+			//Mirth_Key
+			set job_sha,28;
+			getitem 6269,1; //Master_Brush
+			changequest 7178,7179;
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "什麼？？？";
+			mes "一支畫筆！！！！";
+			mes "這不是寶藏！！！";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "啊哈哈！！！！";
+			mes "*吸鼻子*";
+			mes "這根本不是寶藏！";
+			next;
+			select("我現在火大了。");
+			mes "["+strcharinfo(0)+"]";
+			mes "*嘆氣*";
+			mes "我想我應該把這個帶去給 ^4d4dff維森特^000000！";
+			close;
+		}
+		mes "["+strcharinfo(0)+"]";
+		mes "我沒有把所有的鑰匙都帶來。";
+		mes "我怎麼會這麼蠢？";
+		close;
+	}
+	mes "這是一尊空石像。";
+	close;
+}
+
+// Brush Shops
+//============================================================
+s_atelier,29,119,3	script	麥克斯#sc05_prt	97,{
+	mes "[麥克斯]";
+	mes "歡迎光臨~";
+	if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "你是流氓公會的成員！";
+		mes "有什麼我可以幫忙的嗎？";
+		next;
+		set .@i, select("我需要一支面部彩繪筆。:我需要一支水彩筆。:沒事。");
+		mes "[麥克斯]";
+		if (.@i == 1) setarray .@i[1],6121,1,10,100000;
+		else if (.@i == 2) setarray .@i[1],6122,2,30,200000;
+		else {
+			mes "如果你還需要什麼";
+			mes "隨時來找我！";
+			close;
+		}
+		if (countitem(.@i[1])) {
+			mes "你在跟我開玩笑嗎？";
+			mes "你已經有了？";
+			mes "你不需要別的東西了。";
+			next;
+			mes "[麥克斯]";
+			mes "下次再來吧，先用你手上的！";
+			close;
+		}
+		if (countitem(7150) >= .@i[2] && countitem(949) >= .@i[3] && Zeny >= .@i[4]) {
+			mes "喔，你把需要的東西都帶來了。";
+			mes "稍等一下。";
+			next;
+			mes "[麥克斯]";
+			mes "這就是你需要的。";
+			next;
+			mes "[麥克斯]";
+			mes "拿去吧。";
+			mes "祝你好運！";
+			delitem 7150,.@i[2]; //Bamboo_Cut
+			delitem 949,.@i[3]; //Feather
+			set Zeny, Zeny - .@i[4];
+			getitem .@i[1],1; //Makeover_Brush,Paint_Brush
+			close;
+		}
+		mes "這是你獲得面部彩繪筆所需準備的東西。";
+		mes .@i[2]+" 個碎竹節，";
+		mes .@i[3]+" 根鳥毛，";
+		mes "以及 "+.@i[0]+"00,000 Zeny。";
+		close;
+	}
+	mes "我們這裡有賣所有跟藝術相關的東西喔~";
+	next;
+	switch(select("顏料！？:經理在哪裡？")) {
+	case 1:
+		mes "[麥克斯]";
+		mes "你在找顏料嗎？";
+		mes "你可以請他們幫你拿顏料嗎？~";
+		close;
+	case 2:
+		mes "[麥克斯]";
+		mes "那是我們的經理。";
+		mes "就在那邊。";
+		mes "**指著**";
+		mes "你瞎了嗎？";
+		close;
+	}
+}
+
+s_atelier,136,70,3	script	提提卡#sc09_ra	914,{
+	mes "[提提卡]";
+	mes "歡迎光臨。";
+	if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "你是公會的成員。";
+		mes "有什麼我可以幫忙的嗎？";
+		next;
+		set .@i, select("製作一支新的面部彩繪筆。:製作一支新的水彩筆。:沒事。");
+		mes "[提提卡]";
+		if (.@i == 1) setarray .@i[1],6121,1,10,100000;
+		else if (.@i == 2) setarray .@i[1],6122,2,30,200000;
+		else {
+			mes "歡迎再次光臨。";
+			close;
+		}
+		if (countitem(.@i[1])) {
+			mes "你已經有一支水彩筆了？";
+			mes "我想這就足夠了...";
+			close;
+		}
+		if (countitem(7150) >= .@i[2] && countitem(949) >= .@i[3] && Zeny >= .@i[4]) {
+			mes "你把材料都帶來了。";
+			mes "我會用我做的東西跟你交換。";
+			delitem 7150,.@i[2]; //Bamboo_Cut
+			delitem 949,.@i[3]; //Feather
+			set Zeny, Zeny - .@i[4];
+			getitem .@i[1],1; //Makeover_Brush,Paint_Brush
+			close;
+		}
+		mes "要製作水彩筆，";
+		mes "你需要 "+.@i[2]+" 個碎竹節，";
+		mes .@i[3]+" 根鳥毛，";
+		mes "以及 "+.@i[0]+"00,000 Zeny。";
+		close;
+	}
+	mes "這裡是魅影追蹤者辦公室~";
+	next;
+	switch(select("顏料在哪裡？:經理在哪裡？")) {
+	case 1:
+		mes "[提提卡]";
+		mes "你是說顏料嗎？";
+		mes "跟助手談談，詢問顏料工具的事吧。";
+		close;
+	case 2:
+		mes "[提提卡]";
+		mes "我的經理在辦公室裡面。";
+		mes "如果你沒有特別的理由去拜訪他，他會無視你的。";
+		close;
+	}
+}
+
+s_atelier,124,128,3	script	莉米GX#sc07_yuno	862,{
+	mes "[莉米GX]";
+	mes "歡迎光臨。";
+	if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "你在找什麼？";
+		next;
+		set .@i, select("製作一支新的面部彩繪筆。:製作一支新的水彩筆。:沒事。");
+		mes "[莉米GX]";
+		if (.@i == 1) setarray .@i[1],6121,1,10,100000;
+		else if (.@i == 2) setarray .@i[1],6122,2,30,200000;
+		else {
+			mes "歡迎再次光臨。";
+			close;
+		}
+		if (countitem(.@i[1])) {
+			mes "我無法提供多餘的東西。";
+			mes "當你弄丟東西時再來這裡吧。";
+			close;
+		}
+		if (countitem(7150) >= .@i[2] && countitem(949) >= .@i[3] && Zeny >= .@i[4]) {
+			mes "你帶來了你需要的東西。";
+			mes "我直接拿做好的東西跟你交換會比較快？";
+			delitem 7150,.@i[2]; //Bamboo_Cut
+			delitem 949,.@i[3]; //Feather
+			set Zeny, Zeny - .@i[4];
+			getitem .@i[1],1; //Makeover_Brush,Paint_Brush
+			close;
+		}
+		mes "對於"+((.@i[0] == 1)?"化妝":"繪畫")+"用的筆";
+		mes "你需要 "+.@i[2]+" 個碎竹節，";
+		mes .@i[3]+" 根鳥毛，以及 "+.@i[0]+"00,000 Zeny。";
+		close;
+	}
+	mes "這裡是魅影辦公室~";
+	next;
+	switch(select("顏料在哪裡？:經理在哪裡？")) {
+	case 1:
+		mes "[莉米GX]";
+		mes "顏料？";
+		mes "去問在那邊工作的助手吧。";
+		close;
+	case 2:
+		mes "[莉米GX]";
+		mes "經理？他在辦公室裡面。";
+		mes "但當你去拜訪他時，你最好有事要跟他說....";
+		close;
+	}
+}
+
+s_atelier,26,68,3	script	維托#sc11_lgt	904,{
+	mes "[維托]";
+	mes "歡迎光臨。";
+	if (Class == Job_Shadow_Chaser || Class == Job_Shadow_Chaser_T || Class == Job_Baby_Shadow_Chaser) {
+		mes "你在找什麼？";
+		next;
+		set .@i, select("製作一支新的面部彩繪筆。:製作一支新的水彩筆。:沒事。");
+		mes "[維托]";
+		if (.@i == 1) setarray .@i[1],6121,1,10,100000;
+		else if (.@i == 2) setarray .@i[1],6122,2,30,200000;
+		else {
+			mes "只要你需要筆，就來找我吧。";
+			mes "再見！";
+			close;
+		}
+		if (countitem(.@i[1])) {
+			mes "我們每個人只提供一支筆。";
+			mes "我們無法提供多餘的筆。";
+			close;
+		}
+		if (countitem(7150) >= .@i[2] && countitem(949) >= .@i[3] && Zeny >= .@i[4]) {
+			mes "你帶來了所有你需要的東西。";
+			mes "我要用我之前做好的筆跟你交換。";
+			delitem 7150,.@i[2]; //Bamboo_Cut
+			delitem 949,.@i[3]; //Feather
+			set Zeny, Zeny - .@i[4];
+			getitem .@i[1],1; //Makeover_Brush,Paint_Brush
+			close;
+		}
+		mes "對於"+((.@i[0] == 1)?"化妝":"繪畫")+"用的筆";
+		mes "你需要 "+.@i[2]+" 個碎竹節，";
+		mes .@i[3]+" 根鳥毛，以及 "+.@i[0]+"00,000 Zeny。";
+		close;
+	}
+	mes "這裡是魅影辦公室。";
+	next;
+	switch(select("顏料在哪裡？:經理在哪裡？")) {
+	case 1:
+		mes "[維托]";
+		mes "顏料？";
+		mes "去問站在那邊的助手吧。";
+		close;
+	case 2:
+		mes "[維托]";
+		mes "站在櫃檯前面的那個男人就是經理。";
+		close;
+	}
+}
+
+// Warp Portal
+//============================================================
+tha_t01,149,228,0	script	#shadowc02	45,2,2,{
+	end;
+OnTouch:
+	mes "你能感覺到一股奇怪的力量。";
+	if (BaseJob == Job_Rogue && job_sha == 27) {
+		mes "你感到一陣暈眩。";
+		close2;
+		warp "job3_sha01",71,36;
+		end;
+	}
+	mes "你不知道那是什麼。";
+	close;
+}
+
+// Quest Mob Spawn
+//============================================================
+tur_dun03,0,0	monster	欺騙的影子	2076,1,1000
+ice_dun02,0,0	monster	幻覺的影子	2077,1,1000
+niflheim,0,0	monster	歡愉的影子	2078,1,1000

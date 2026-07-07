@@ -1,0 +1,1407 @@
+//===== rAthena Script =======================================
+//= 2006 Halloween Event
+//===== By: ==================================================
+//= Brainstorm
+//===== Current Version: =====================================
+//= 1.4
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Event 1: Redeem "Pumpkin Mojo" for pumpkin headgear.
+//= Event 2: Create "Pumpkin Pie" item.
+//===== Additional Comments: =================================
+//= 1.0 First semi-working conversion. [Brainstorm]
+//= 1.1 Refined Brainstorm's conversion. [L0ne_W0lf]
+//= 1.1a Minor fixes. (Screwed up weight checks somehow) [L0ne_W0lf]
+//= 1.2 Added missing checkweights. [L0ne_W0lf]
+//= 1.3 Replaced effect numerics with constants. [L0ne_W0lf]
+//= 1.3a Replaced effect numerics with constants (1 was missed). [Samuray22]
+//= 1.4 Effects are now played by proper NPC. [L0ne_W0lf]
+//============================================================
+
+// Pumpkin Mojo quest (Event 1)
+//============================================================
+prontera,162,69,5	script	憂鬱的傑克#06_hw	1130,2,2,{
+	end;
+
+OnTouch:
+	mes "[酷惡魔]";
+	mes "如果你有話想對他說，";
+	mes "直接跟我說吧。";
+	mes "你根本不會懂這個笨南瓜頭傑克在說什麼。";
+	close;
+
+OnEffect:
+	specialeffect EF_LEVEL99;
+	end;
+
+OnEffect2:
+	specialeffect EF_HIT2;
+	end;
+}
+
+prontera,164,69,3	script	酷惡魔#06_hw	738,{
+	if (MaxWeight - Weight < 2000 || checkweight(1201,1) == 0) {
+		mes "^3355FF等一下！";
+		mes "現在，你身上帶了";
+		mes "太多東西了。";
+		mes "請在";
+		mes "使用卡普拉服務";
+		mes "存放一些物品後再來。^000000";
+		close;
+	}
+	if (countitem(7609) > 0) {
+		mes "[憂鬱的傑克]";
+		mes "喔等等，你身上帶的是南瓜魔咒（Pumpkin Mojo）嗎？";
+		mes " ";
+		mes "[酷惡魔]";
+		mes "他說。";
+		next;
+		mes "[憂鬱的傑克]";
+		mes "把它給我。我會報答你的。";
+		mes " ";
+		mes "[酷惡魔]";
+		mes "他說...";
+		mes "我能猜到他接下來會說什麼。那麼你覺得呢？";
+		next;
+		if (select("他會說什麼？:我也知道。") == 1) {
+			mes "[" + strcharinfo(0) + "]";
+			mes "他會說什麼？";
+			next;
+			mes "[酷惡魔]";
+			mes "傑克跟其他人不一樣。他是萬聖節傑克。";
+			mes "但有一天，他弄丟了他的南瓜魔咒，變成了憂鬱的傑克。";
+			mes "南瓜魔咒就是他的一切。";
+			next;
+			mes "[酷惡魔]";
+			mes "其實，這就是傑克來鎮上的主要原因。";
+			mes "為了尋找他的南瓜魔咒。最可疑的嫌犯是^4d4dff愉快的假面鬼^000000，也就是眾所皆知的萬聖節魔物。";
+			next;
+			mes "[酷惡魔]";
+			mes "你何不把『南瓜魔咒』還給他呢？";
+			mes "別擔心，他會補償你的。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "補償？用什麼補償？";
+			next;
+			mes "[酷惡魔]";
+			mes "如果你帶 ^4d4dff1個南瓜魔咒^000000 和我們去年發給你的南瓜頭，";
+			mes "他會把它變成 ^00ff00最棒的南瓜帽^000000。";
+			mes "或者如果你沒有南瓜頭，你可以只帶 ^3d3dff一個南瓜魔咒、一個南瓜和一頂圓帽^000000。";
+			next;
+			mes "[酷惡魔]";
+			mes "嗯，如果你只是帶在身上，那個南瓜魔咒也沒什麼用。 ";
+			mes "把它給傑克吧。難道你不覺得他很可憐嗎？";
+			close;
+		}
+		mes "[酷惡魔]";
+		mes "喔?太好了。";
+		mes "那麼，讓我看看你帶了什麼。";
+		next;
+		if ((countitem(7609) > 0) && (countitem(5134) > 0)) {
+			mes "[憂鬱的傑克]";
+			mes "喔，你帶了南瓜頭！";
+			mes "我會幫你做一個更好的。";
+			mes " ";
+			mes "[酷惡魔]";
+			mes "他說。";
+			next;
+			if (select( "不了，我晚點再來。:喔，太好了。現在就做！") == 1) {
+				mes "[憂鬱的傑克]";
+				mes "咦？";
+				mes " ";
+				mes "[酷惡魔]";
+				mes "什麼？看看傑克。他看起來好失望。";
+				mes "答應我，改天再把南瓜魔咒還給傑克，好嗎？";
+				close;
+			}
+			mes "[憂鬱的傑克]";
+			mes "謝謝你把我的東西還給我，我會讓你的帽子變漂亮。";
+			mes " ";
+			mes "[酷惡魔]";
+			mes "他說。";
+			next;
+			donpcevent "憂鬱的傑克#06_hw::OnEffect";
+			mes "[興奮的傑克]";
+			mes "啦啦啦?啦啦啦?";
+			mes " ";
+			mes "(他開始唱歌。突然間，傑克的靈氣出現了。)";
+			delitem 7609,1; //Pumpkin_Mojo
+			delitem 5134,1; //Pumpkin_Hat
+			getitem 5202,1; //Pumpkin_Hat_
+			next;
+			donpcevent "憂鬱的傑克#06_hw::OnEffect2";
+			mes "[憂鬱的傑克]";
+			mes "我的靈氣不像以前那樣了。也許我需要更多的南瓜魔咒。";
+			mes " ";
+			mes "[酷惡魔]";
+			mes "他說...";
+			next;
+			mes "[酷惡魔]";
+			mes "喔?可憐的傑克。";
+			mes "嗯，總有一天他會拿回所有的南瓜魔咒的。";
+			close;
+		}
+		else if ((countitem(7609) > 0) && (countitem(535) > 0) && (countitem(2226) > 0)) {
+			mes "[憂鬱的傑克]";
+			mes "哇！";
+			mes "我會把你的帽子變成很酷的一頂。";
+			mes " ";
+			mes "[酷惡魔]";
+			mes "他說...";
+			next;
+			if (select( "不了，我晚點再來。:喔，太好了。現在就做！") == 1) {
+				mes "[憂鬱的傑克]";
+				mes "咦？";
+				mes " ";
+				mes "[酷惡魔]";
+				mes "什麼？看看傑克。他看起來好失望。";
+				mes "答應我，改天再把南瓜魔咒還給傑克，好嗎？";
+				close;
+			}
+			mes "[憂鬱的傑克]";
+			mes "謝謝你把我的東西還給我，我會讓你的帽子變漂亮。";
+			mes " ";
+			mes "[酷惡魔]";
+			mes "他說。";
+			next;
+			donpcevent "憂鬱的傑克#06_hw::OnEffect";
+			mes "[興奮的傑克]";
+			mes "啦啦啦?啦啦啦?";
+			mes " ";
+			mes "(他開始唱歌。突然間，傑克的靈氣出現了。)";
+			delitem 7609, 1;//Pumpkin_Mojo
+			delitem 535, 1;//Pumpkin
+			delitem 2226, 1;//Cap
+			getitem 5202, 1;//Pumpkin_Hat_
+			next;
+			donpcevent "憂鬱的傑克#06_hw::OnEffect2";
+			mes "[憂鬱的傑克]";
+			mes "我的靈氣不像以前那樣了。也許我需要更多的南瓜魔咒。";
+			mes " ";
+			mes "[酷惡魔]";
+			mes "他說...";
+			next;
+			mes "[酷惡魔]";
+			mes "喔?可憐的傑克。";
+			mes "嗯，總有一天他會拿回所有的南瓜魔咒的。";
+			close;
+		}
+		else {
+			mes "[酷惡魔]";
+			mes "嘿，你。你看起來好像沒有這頂夢幻帽子的所有材料。 ";
+			close;
+		}
+	}
+	else {
+		mes "[憂鬱的傑克]";
+		mes "嘿，你。你何不過來聽聽我的故事。";
+		mes " ";
+		mes "[酷惡魔]";
+		mes "他說。";
+		next;
+		mes "[憂鬱的傑克]";
+		mes "我以前非常有名。但現在.....";
+		mes " ";
+		mes "[酷惡魔]";
+		mes "他說...";
+		mes "嗯，我就不翻譯直接告訴你了。";
+		next;
+		mes "[酷惡魔]";
+		mes "傑克跟其他人不一樣。他是萬聖節傑克。";
+		mes "但有一天，他弄丟了他的南瓜魔咒，變成了憂鬱的傑克。";
+		mes "南瓜魔咒就是他的一切。";
+		next;
+		mes "[酷惡魔]";
+		mes "其實，這就是傑克來鎮上的主要原因。";
+		mes "為了尋找他的南瓜魔咒。最可疑的嫌犯是^4d4dff愉快的假面鬼^000000，也就是眾所皆知的萬聖節魔物。";
+		next;
+		mes "[酷惡魔]";
+		mes "你何不把『南瓜魔咒』還給他呢？";
+		mes "別擔心，他會補償你的。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "補償？用什麼補償？";
+		next;
+		mes "[酷惡魔]";
+		mes "如果你帶 ^4d4dff1個南瓜魔咒^000000 和我們去年發給你的南瓜頭，";
+		mes "他會把它變成 ^00ff00最棒的南瓜帽^000000。";
+		mes "或者如果你沒有南瓜頭，你可以只帶 ^3d3dff一個南瓜魔咒、一個南瓜和一頂圓帽^000000。";
+		next;
+		mes "[酷惡魔]";
+		mes "嗯，如果你只是帶在身上，那個南瓜魔咒也沒什麼用。 ";
+		mes "把它給傑克吧。難道你不覺得他很可憐嗎？";
+		close;
+	}
+}
+
+
+geffen,145,132,3	script	哈琳#06_hw	729,{
+	if (MaxWeight - Weight < 2000 || checkweight(1201,1) == 0) {
+		mes "^3355FF等一下！";
+		mes "現在，你身上帶了";
+		mes "太多東西了。";
+		mes "請在";
+		mes "使用卡普拉服務";
+		mes "存放一些物品後再來。^000000";
+		close;
+	}
+	if (halloween < 100) {
+		mes "[哈琳]";
+		mes "南瓜是神賜給我們的禮物。";
+		mes "它提供豐富的營養，並幫助你保持健康！";
+		mes "太棒了?太棒了?！";
+		next;
+		mes "[哈琳]";
+		mes "我，哈琳，一直在思考一個";
+		mes "讓南瓜變得更好吃的方法。";
+		mes "但突然間，我明白了。";
+		next;
+		mes "[哈琳]";
+		mes "如果我有那個東西！我就能做出最棒的南瓜派！！！！！";
+		next;
+		if (select( "那是什麼？:無視。") == 1) {
+			mes "[哈琳]";
+			mes "當你想到南瓜時，腦海中浮現的第一個畫面是什麼？";
+			mes "我想到傑克！我認為傑克是南瓜最進化的型態！";
+			mes "我想知道傑克有什麼特別的東西？你能想像嗎？";
+			next;
+			mes "[哈琳]";
+			mes "我總是偏好獨特的南瓜料理！最近，我發現世界上有很多種傑克";
+			mes "而極致等級的傑克身體周圍會有藍色的靈氣！";
+			next;
+			mes "[哈琳]";
+			mes "你猜怎麼著？！那就是萬聖節傑克！";
+			mes "萬聖節傑克身上有一種濃縮了南瓜精華的東西。";
+			mes "它叫做^4d4dff南瓜魔咒^000000。只有得到它，我才能完成我的特製派。";
+			next;
+			mes "[哈琳]";
+			mes "把材料帶來給我！";
+			mes "我馬上為你做一個非常特別的派！";
+			mes "你會上癮的。";
+			mes "吃了之後可別太驚訝。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "......................";
+			mes "你似乎是個非常有熱情的人。";
+			mes "那麼，到底需要什麼材料呢？";
+			next;
+			mes "[哈琳]";
+			mes "好問題！";
+			mes "為了製作我的特製南瓜派，我需要";
+			mes "^4d4dff 1個南瓜魔咒";
+			mes "2個南瓜";
+			mes "2個雞蛋^000000";
+			next;
+			mes "[哈琳]";
+			mes "只要帶來南瓜魔咒、南瓜和雞蛋。";
+			mes "剩下的交給我..你將會嘗到最棒的南瓜派！";
+			set halloween, 100;
+			close;
+		}
+		mes "[哈琳]";
+		mes "哼..你會後悔的！";
+		mes "哈琳的南瓜派可是非常美味的。";
+		close;
+	}
+	else {
+		mes "[哈琳]";
+		mes "那麼，你帶齊所有材料了嗎？";
+		mes "有什麼難找的東西嗎？";
+		next;
+		switch(select( "我帶來所有材料了。:我要怎麼得到雞蛋？:沒有，我只是路過。")) {
+		case 1:
+			if ((countitem(7609) > 0) && (countitem(535) > 1) && (countitem(574) > 1)) {
+				mes "[哈琳]";
+				mes "你說得對！";
+				mes "你把所有東西都帶來了。給我！！";
+				specialeffect2 EF_HIT1;
+				next;
+				specialeffect EF_PIERCESELF;
+				mes "[哈琳]";
+				mes "阿布拉卡達布拉~~";
+				mes "阿布拉卡達布拉~~！";
+				next;
+				mes "[哈琳]";
+				mes "搭啦！";
+				mes "這就完成了?請慢用。";
+				mes "這對你的健康有益。我多加了些營養成分。";
+				delitem 7609,1; //Pumpkin_Mojo
+				delitem 535,2; //Pumpkin
+				delitem 574,2;
+				//Egg
+				getitem 12192,1; //Pumpkin_Pie
+				close;
+			}
+			else {
+				mes "[哈琳]";
+				mes "不！！這樣不夠。我需要";
+				mes "^4d4dff 1個南瓜魔咒";
+				mes "2個南瓜";
+				mes "2個雞蛋^000000";
+				mes " 至少。";
+				close;
+			}
+		case 2:
+			if (halloween == 100) {
+				mes "[哈琳]";
+				mes "雞蛋？";
+				mes "嗯，其實我認識一個人可以幫你。";
+				mes "有個人養了很多雞。";
+				next;
+				mes "[哈琳]";
+				mes "如果你想去，我可以送你到他那裡。";
+				mes "^4d4dff但只有一次機會^000000。";
+				next;
+				if (select("送我過去。:沒關係。") == 1) {
+					mes "[哈琳]";
+					mes "好，去拿雞蛋吧。";
+					set halloween, 101;
+					close2;
+					warp "nif_fild01", 162, 113;
+					end;
+				}
+				mes "[哈琳]";
+				mes "你以為沒有我的幫忙你能去嗎？！";
+				mes "好！去吧。";
+				mes "你知道那在哪裡嗎？";
+				close;
+			}
+			else {
+				mes "[哈琳]";
+				mes "如果你去^4d4dff尼福爾海姆的斯凱領頓鎮農場^000000，你會見到養雞大師（Chicken Masta）。他養了一些雞。";
+				close;
+			}
+		case 3:
+			mes "[哈琳]";
+			mes "下次，別忘了帶";
+			mes "做南瓜派的所有材料！";
+			close;
+		}
+	}
+}
+
+nif_in,18,34,5	script	蘿莉大師#06_hw	1505,2,2,{
+	end;
+
+OnTouch:
+	mes "[小惡魔]";
+	mes "嘿，如果你有話想對蘿莉大師說，請跟我說。";
+	mes "她不習慣人類的語言。";
+	close;
+}
+
+nif_in,19,32,3	script	小惡魔#06_hw	738,{
+	if (MaxWeight - Weight < 2000 || checkweight(1201,1) == 0) {
+		mes "^3355FF等一下！";
+		mes "現在，你身上帶了";
+		mes "太多東西了。";
+		mes "請在";
+		mes "使用卡普拉服務";
+		mes "存放一些物品後再來。^000000";
+		close;
+	}
+	mes "[蘿莉大師]";
+	mes "小惡魔?南瓜派在哪裡？";
+	mes "是人類做的，不是嗎？";
+	mes "那你身上有嗎？";
+	mes " ";
+	mes "[小惡魔]";
+	mes "她說。";
+	next;
+	mes "[小惡魔]";
+	mes "如果你有南瓜派，可以給我一個嗎？";
+	mes "因為如果蘿莉大師生氣了，我們就是受害者。";
+	next;
+	mes "[小惡魔]";
+	mes "嗯，我也不是說我要白拿。";
+	mes "別擔心，我不會讓你失望的。";
+	next;
+	switch(select( "給他南瓜派。:不給他南瓜派。:咦？什麼南瓜派？")) {
+	case 1:
+		if (countitem(12192) > 0) {
+			mes "[蘿莉大師]";
+			mes "謝謝你的南瓜派！";
+			mes "來，拿著這個。";
+			mes " ";
+			mes "[小惡魔]";
+			mes "她說。";
+			next;
+			mes "[小惡魔]";
+			mes "就如我答應的，我會給你等值於這個派的東西。";
+			mes "等一下....";
+			next;
+			mes "[小惡魔]";
+			mes "嗯...這個應該不錯。";
+			mes "拿著這個，再次感謝你?";
+			delitem 12192, 1;//Pumpkin_Pie
+			set @hw_temp,rand(1,3);
+			if (@hw_temp == 2) getitem 12130,1; //Cookie_Bag
+			else getitem 7460,3; //Nifl_Express_Ticket
+			close;
+		}
+		else {
+			mes "[蘿莉大師]";
+			mes "你在開玩笑嗎？";
+			mes "南瓜派在哪裡！別想騙我！";
+			mes " ";
+			mes "[小惡魔]";
+			mes "她說..看來她非常生氣...你有麻煩了。";
+			next;
+			mes "[蘿莉大師]";
+			mes "小惡魔！！！！！是你跟我說只要站在這裡等就能拿到南瓜派的。";
+			mes "走著瞧！";
+			mes " ";
+			mes "[小惡魔]";
+			mes "她說..咦？！！我？！！";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "可憐的小惡魔?";
+			mes "你不該撒謊的?";
+			mes "祝你好運。";
+			close;
+		}
+	case 2:
+		mes "[蘿莉大師]";
+		mes "我想吃南瓜派。可以給我一個嗎？拜託~~~~";
+		mes " ";
+		mes "[小惡魔]";
+		mes "她說.....如果你有的話就給我。";
+		close;
+	case 3:
+		mes "[小惡魔]";
+		mes "有個人會做非常特別的南瓜派。";
+		mes "沒有人能忘記它的味道。";
+		next;
+		mes "[小惡魔]";
+		mes "蘿莉大師正在這裡等著有人為她帶來那個派。";
+		mes "你能幫她拿一個嗎？";
+		mes "我會回報你的。";
+		close;
+	}
+}
+
+// Creation of Pumpkin Pie (Event 2)
+//============================================================
+nif_fild01,165,115,3	script	養雞大師#06_hw	794,{
+	if (MaxWeight - Weight < 2000 || checkweight(1201,1) == 0) {
+		mes "^3355FF等一下！";
+		mes "現在，你身上帶了";
+		mes "太多東西了。";
+		mes "請在";
+		mes "使用卡普拉服務";
+		mes "存放一些物品後再來。^000000";
+		close;
+	}
+	if (halloween == 101) {
+		mes "[養雞大師]";
+		mes "雞都跑到哪去了？！";
+		mes "喔，嘿，陌生人。我能幫你什麼忙嗎？";
+		next;
+		mes "[養雞大師]";
+		mes "這個鎮對你來說太危險了，不適合閒逛。";
+		mes "你最好從哪裡來就回哪裡去....";
+		next;
+		mes "[養雞大師]";
+		mes "...你在找雞蛋嗎？";
+		mes "最近，大家都在找我要雞蛋去做某種派....你也是其中之一嗎？";
+		next;
+		if (select( "其實是的。我來這裡拿些雞蛋。:不是。") == 1) {
+			mes "[養雞大師]";
+			mes "好。但是我的一些雞跑掉了，";
+			mes "所以我沒剩多少雞蛋了。";
+			mes "2顆雞蛋只要 1000 zeny！你覺得如何？";
+			next;
+			switch(select( "好，我買。:我只買一顆。:呼?太貴了。")) {
+			case 1:
+				if (Zeny > 1999) {
+					mes "[養雞大師]";
+					mes "謝謝。";
+					mes "這是雞蛋。";
+					set Zeny,Zeny-2000;
+					set halloween, 102;
+					getitem 574,2; //Egg
+					close;
+				}
+				else {
+					mes "[養雞大師]";
+					mes "嘿，這些錢不夠喔?";
+					mes "每顆雞蛋 1000 zeny，所以如果你買兩顆，就是 2000 zeny。";
+					close;
+				}
+			case 2:
+				if (Zeny > 999) {
+					mes "[養雞大師]";
+					mes "謝謝。";
+					mes "這是雞蛋。";
+					set Zeny,Zeny-1000;
+					set halloween, 102;
+					getitem 574,1; //Egg
+					close;
+				}
+				else {
+					mes "[養雞大師]";
+					mes "你似乎沒有足夠的錢...";
+					mes "每顆是 1000 zeny。";
+					close;
+				}
+			case 3:
+				mes "[養雞大師]";
+				mes "嗯...我知道是有點貴，但就像我說的，我的雞跑掉了。";
+				mes "你必須諒解。";
+				close;
+			}
+		}
+		mes "[養雞大師]";
+		mes "讓我告訴你一件事！";
+		mes "如果你不想死，";
+		mes "你最好逃跑。這裡太危險了。";
+		close;
+	}
+	else if (halloween == 102) {
+		mes "[養雞大師]";
+		mes "你需要雞蛋嗎？...";
+		mes "那麼，先幫我個忙。";
+		mes "我有8隻雞跑掉了。";
+		mes "我就是不知道牠們在哪裡。";
+		next;
+		mes "[養雞大師]";
+		mes "我不奢望所有的雞都會回家。";
+		mes "只要你幫我找到其中一隻，我就賣你三顆雞蛋。";
+		next;
+		mes "[養雞大師]";
+		mes "這交易很划算吧？";
+		mes "雞一定就在這附近。";
+		next;
+		mes "[養雞大師]";
+		mes "如果你找到了，不用把雞帶回來給我，";
+		mes "只要輸入^4d4dff『Return』^000000這個詞。";
+		mes ".........";
+		next;
+		mes "[養雞大師]";
+		mes "這是讓雞回家的咒語。";
+		mes ".........";
+		mes "別忘了『Return』這個詞！";
+		next;
+		mes "[養雞大師]";
+		mes "希望你能找到我的雞。";
+		close;
+	}
+	else if (halloween == 103) {
+		mes "[養雞大師]";
+		mes "喔，你回來了。我一直在等你。";
+		mes "感謝你送回來的雞。";
+		mes "牠們被安全地關在雞舍裡，以免再次跑掉。";
+		next;
+		mes "[養雞大師]";
+		mes "我沒忘記我們的約定。";
+		mes "告訴我你想要幾顆雞蛋。";
+		mes "每顆 1000 zeny。";
+		mes "你最多只能買3顆。";
+		next;
+		while(1) {
+			input .@input;
+			if (.@input == 0) {
+				mes "[養雞大師]";
+				mes "如果你不需要，也不用勉強買。";
+				close;
+			}
+			else if (@input > 3) {
+				mes "[養雞大師]";
+				mes "我跟你說過什麼了。";
+				mes "我最多只賣三顆雞蛋。";
+				next;
+			}
+			else
+				break;
+		}
+		set .@hw_egg, .@input * 1000;
+		if (Zeny < @hw_egg) {
+			mes "[養雞大師]";
+			mes "你似乎沒有足夠的 Zeny。";
+			close;
+		}
+		mes "[養雞大師]";
+		mes "給你。";
+		mes "但沒有更多了。";
+		mes "如果你想要更多雞蛋，就幫我找更多的雞。";
+		set Zeny,Zeny-@hw_egg;
+		getitem 574, @input;//Egg
+		set halloween, 102;
+		close;
+	}
+	else {
+		mes "[養雞大師]";
+		mes "雞都跑到哪去了？！";
+		mes "喔，嘿，陌生人。我能幫你什麼忙嗎？";
+		next;
+		mes "[養雞大師]";
+		mes "這個鎮對你來說太危險了，不適合閒逛。";
+		mes "你最好從哪裡來就回哪裡去....";
+		close;
+	}
+}
+
+nif_fild01,167,113,3	script	大師的養雞#06_hw01	800,{
+	mes "打瞌睡的雞。";
+	close;
+}
+
+-	script	HwChicken::HwChicken	-1,{
+	if ((halloween == 102) || (halloween == 103)) {
+		mes "喔，這一定是養雞大師的雞。";
+		mes "我應該輸入那句咒語。";
+		next;
+		input .@inputstr$;
+		if( .@inputstr$ == "Return" ) {
+			emotion ET_HUK;
+			specialeffect EF_TELEPORTATION;
+			mes "咒語已經施放了。";
+			set halloween, 103;
+			disablenpc "大師的養雞#"+strnpcinfo(1);
+			close2;
+			sleep 180000;
+			enablenpc "大師的養雞#"+strnpcinfo(1);
+			end;
+		}
+		else {
+			mes "[" + strcharinfo(0) + "]";
+			mes "嗯...我一定是拼錯了。";
+			close;
+		}
+	}
+	else {
+		mes "打瞌睡的雞。";
+		close;
+	}
+}
+
+-	script	HwChicken2::HwChicken2	-1,{
+	set @egg_temp,rand(1,4);
+	if( @egg_temp == 3) {
+		mes "當你靠近這隻雞並碰觸牠時，牠就完全消失了。";
+		mes "你在雞消失的地方得到了一顆『雞蛋』。";
+		disablenpc "雞#"+strnpcinfo(1);
+		getitem 574,1; //Egg
+		close;
+	}
+	else {
+		mes "當你靠近這隻雞並碰觸牠時，牠就完全消失了。";
+		disablenpc "雞#"+strnpcinfo(1);
+		close;
+	}
+}
+
+-	script	HwChicken3::HwChicken3	-1,{
+	set @egg_temp,rand(1,4);
+	if( @egg_temp == 3) {
+		mes "當你靠近這隻雞並碰觸牠時，牠就完全消失了。";
+		mes "你在雞消失的地方得到了一顆『雞蛋』。";
+		disablenpc "雞#"+strnpcinfo(1);
+		getitem 574,1; //Egg
+		close;
+	}
+	else {
+		mes "當你靠近這隻雞並碰觸牠時，牠就完全消失了。";
+		disablenpc "雞#"+strnpcinfo(1);
+		close;
+	}
+
+OnInit:
+	while(1) {
+		sleep 180000;
+		specialeffect EF_BAT2;
+		end;
+	}
+}
+
+
+nif_fild01,270,145,3	duplicate(HwChicken)	大師的養雞#06_hw02	800
+nif_fild01,219,267,4	duplicate(HwChicken)	大師的養雞#06_hw03	800
+nif_fild01,199,240,5	duplicate(HwChicken)	大師的養雞#06_hw04	800
+nif_fild01,316,97,6	duplicate(HwChicken)	大師的養雞#06_hw05	800
+nif_fild01,147,343,7	duplicate(HwChicken)	大師的養雞#06_hw06	800
+nif_fild01,185,325,8	duplicate(HwChicken)	大師的養雞#06_hw07	800
+nif_fild01,133,105,1	duplicate(HwChicken)	大師的養雞#06_hw08	800
+nif_fild01,331,329,2	duplicate(HwChicken)	大師的養雞#06_hw09	800
+
+pay_dun03,1,1,0	script	#06_hw_timer01	-1,{
+OnInit:
+	disablenpc "雞#06_hw_p01";
+	disablenpc "雞#06_hw_p02";
+	disablenpc "雞#06_hw_p03";
+	disablenpc "雞#06_hw_p04";
+	disablenpc "雞#06_hw_p05";
+	disablenpc "雞#06_hw_p06";
+	disablenpc "雞#06_hw_p07";
+	disablenpc "雞#06_hw_p08";
+	disablenpc "雞#06_hw_p09";
+	disablenpc "雞#06_hw_p10";
+	disablenpc "雞#06_hw_p11";
+	disablenpc "雞#06_hw_p12";
+	disablenpc "雞#06_hw_p13";
+	disablenpc "雞#06_hw_p14";
+	disablenpc "雞#06_hw_p15";
+	disablenpc "雞#06_hw_p16";
+	disablenpc "雞#06_hw_p17";
+	disablenpc "雞#06_hw_p18";
+	disablenpc "雞#06_hw_p19";
+	disablenpc "雞#06_hw_p20";
+	disablenpc "雞#06_hw_p21";
+	disablenpc "雞#06_hw_p22";
+	disablenpc "雞#06_hw_p23";
+	disablenpc "雞#06_hw_p24";
+	disablenpc "雞#06_hw_p25";
+	disablenpc "雞#06_hw_p26";
+	disablenpc "雞#06_hw_p27";
+	disablenpc "雞#06_hw_p28";
+	disablenpc "雞#06_hw_p29";
+	disablenpc "雞#06_hw_p30";
+	disablenpc "雞#06_hw_p31";
+	disablenpc "雞#06_hw_p32";
+	disablenpc "雞#06_hw_p33";
+	disablenpc "雞#06_hw_p34";
+	disablenpc "雞#06_hw_p35";
+	disablenpc "雞#06_hw_p36";
+	disablenpc "雞#06_hw_p37";
+	disablenpc "雞#06_hw_p38";
+	disablenpc "雞#06_hw_p39";
+	disablenpc "雞#06_hw_p40";
+	disablenpc "雞#06_hw_p41";
+	initnpctimer;
+	end;
+
+OnTimer3600000:
+	enablenpc "雞#06_hw_p01";
+	enablenpc "雞#06_hw_p02";
+	enablenpc "雞#06_hw_p03";
+	enablenpc "雞#06_hw_p04";
+	enablenpc "雞#06_hw_p05";
+	enablenpc "雞#06_hw_p06";
+	enablenpc "雞#06_hw_p07";
+	enablenpc "雞#06_hw_p08";
+	enablenpc "雞#06_hw_p09";
+	enablenpc "雞#06_hw_p10";
+	enablenpc "雞#06_hw_p11";
+	enablenpc "雞#06_hw_p12";
+	enablenpc "雞#06_hw_p13";
+	enablenpc "雞#06_hw_p14";
+	enablenpc "雞#06_hw_p15";
+	enablenpc "雞#06_hw_p16";
+	enablenpc "雞#06_hw_p17";
+	enablenpc "雞#06_hw_p18";
+	enablenpc "雞#06_hw_p19";
+	enablenpc "雞#06_hw_p20";
+	enablenpc "雞#06_hw_p21";
+	enablenpc "雞#06_hw_p22";
+	enablenpc "雞#06_hw_p23";
+	enablenpc "雞#06_hw_p24";
+	enablenpc "雞#06_hw_p25";
+	enablenpc "雞#06_hw_p26";
+	enablenpc "雞#06_hw_p27";
+	enablenpc "雞#06_hw_p28";
+	enablenpc "雞#06_hw_p29";
+	enablenpc "雞#06_hw_p30";
+	enablenpc "雞#06_hw_p31";
+	enablenpc "雞#06_hw_p32";
+	enablenpc "雞#06_hw_p33";
+	enablenpc "雞#06_hw_p34";
+	enablenpc "雞#06_hw_p35";
+	enablenpc "雞#06_hw_p36";
+	enablenpc "雞#06_hw_p37";
+	enablenpc "雞#06_hw_p38";
+	enablenpc "雞#06_hw_p39";
+	enablenpc "雞#06_hw_p40";
+	enablenpc "雞#06_hw_p41";
+	end;
+
+OnTimer4200000:
+	disablenpc "雞#06_hw_p01";
+	disablenpc "雞#06_hw_p02";
+	disablenpc "雞#06_hw_p03";
+	disablenpc "雞#06_hw_p04";
+	disablenpc "雞#06_hw_p05";
+	disablenpc "雞#06_hw_p06";
+	disablenpc "雞#06_hw_p07";
+	disablenpc "雞#06_hw_p08";
+	disablenpc "雞#06_hw_p09";
+	disablenpc "雞#06_hw_p10";
+	disablenpc "雞#06_hw_p11";
+	disablenpc "雞#06_hw_p12";
+	disablenpc "雞#06_hw_p13";
+	disablenpc "雞#06_hw_p14";
+	disablenpc "雞#06_hw_p15";
+	disablenpc "雞#06_hw_p16";
+	disablenpc "雞#06_hw_p17";
+	disablenpc "雞#06_hw_p18";
+	disablenpc "雞#06_hw_p19";
+	disablenpc "雞#06_hw_p20";
+	disablenpc "雞#06_hw_p21";
+	disablenpc "雞#06_hw_p22";
+	disablenpc "雞#06_hw_p23";
+	disablenpc "雞#06_hw_p24";
+	disablenpc "雞#06_hw_p25";
+	disablenpc "雞#06_hw_p26";
+	disablenpc "雞#06_hw_p27";
+	disablenpc "雞#06_hw_p28";
+	disablenpc "雞#06_hw_p29";
+	disablenpc "雞#06_hw_p30";
+	disablenpc "雞#06_hw_p31";
+	disablenpc "雞#06_hw_p32";
+	disablenpc "雞#06_hw_p33";
+	disablenpc "雞#06_hw_p34";
+	disablenpc "雞#06_hw_p35";
+	disablenpc "雞#06_hw_p36";
+	disablenpc "雞#06_hw_p37";
+	disablenpc "雞#06_hw_p38";
+	disablenpc "雞#06_hw_p39";
+	disablenpc "雞#06_hw_p40";
+	disablenpc "雞#06_hw_p41";
+	stopnpctimer;
+	initnpctimer;
+	end;
+}
+
+
+pay_dun03,151,138,3	duplicate(HwChicken3)	雞#06_hw_p01	800
+pay_dun03,151,138,3	duplicate(HwChicken2)	雞#06_hw_p02	800
+pay_dun03,152,138,3	duplicate(HwChicken2)	雞#06_hw_p03	800
+pay_dun03,154,138,3	duplicate(HwChicken2)	雞#06_hw_p04	800
+pay_dun03,155,138,3	duplicate(HwChicken2)	雞#06_hw_p05	800
+pay_dun03,157,138,3	duplicate(HwChicken2)	雞#06_hw_p06	800
+pay_dun03,158,138,3	duplicate(HwChicken3)	雞#06_hw_p07	800
+pay_dun03,150,137,3	duplicate(HwChicken2)	雞#06_hw_p08	800
+pay_dun03,153,137,3	duplicate(HwChicken2)	雞#06_hw_p09	800
+pay_dun03,156,137,3	duplicate(HwChicken3)	雞#06_hw_p10	800
+pay_dun03,159,137,3	duplicate(HwChicken2)	雞#06_hw_p11	800
+pay_dun03,149,136,3	duplicate(HwChicken2)	雞#06_hw_p12	800
+pay_dun03,152,136,3	duplicate(HwChicken3)	雞#06_hw_p13	800
+pay_dun03,157,136,3	duplicate(HwChicken2)	雞#06_hw_p14	800
+pay_dun03,160,136,3	duplicate(HwChicken2)	雞#06_hw_p15	800
+pay_dun03,149,135,3	duplicate(HwChicken3)	雞#06_hw_p16	800
+pay_dun03,151,135,3	duplicate(HwChicken2)	雞#06_hw_p17	800
+pay_dun03,152,135,3	duplicate(HwChicken2)	雞#06_hw_p18	800
+pay_dun03,153,135,3	duplicate(HwChicken3)	雞#06_hw_p19	800
+pay_dun03,156,135,3	duplicate(HwChicken2)	雞#06_hw_p20	800
+pay_dun03,157,135,3	duplicate(HwChicken2)	雞#06_hw_p21	800
+pay_dun03,158,135,3	duplicate(HwChicken3)	雞#06_hw_p22	800
+pay_dun03,160,135,3	duplicate(HwChicken2)	雞#06_hw_p23	800
+pay_dun03,149,134,3	duplicate(HwChicken2)	雞#06_hw_p24	800
+pay_dun03,152,134,3	duplicate(HwChicken3)	雞#06_hw_p25	800
+pay_dun03,157,134,3	duplicate(HwChicken2)	雞#06_hw_p26	800
+pay_dun03,160,134,3	duplicate(HwChicken2)	雞#06_hw_p27	800
+pay_dun03,149,133,3	duplicate(HwChicken3)	雞#06_hw_p28	800
+pay_dun03,160,133,3	duplicate(HwChicken2)	雞#06_hw_p29	800
+pay_dun03,150,132,3	duplicate(HwChicken2)	雞#06_hw_p30	800
+pay_dun03,153,132,3	duplicate(HwChicken3)	雞#06_hw_p31	800
+pay_dun03,156,132,3	duplicate(HwChicken2)	雞#06_hw_p32	800
+pay_dun03,159,132,3	duplicate(HwChicken2)	雞#06_hw_p33	800
+pay_dun03,151,131,3	duplicate(HwChicken2)	雞#06_hw_p34	800
+pay_dun03,152,131,3	duplicate(HwChicken2)	雞#06_hw_p35	800
+pay_dun03,153,131,3	duplicate(HwChicken3)	雞#06_hw_p36	800
+pay_dun03,154,131,3	duplicate(HwChicken2)	雞#06_hw_p37	800
+pay_dun03,155,131,3	duplicate(HwChicken2)	雞#06_hw_p38	800
+pay_dun03,156,131,3	duplicate(HwChicken3)	雞#06_hw_p39	800
+pay_dun03,157,131,3	duplicate(HwChicken2)	雞#06_hw_p40	800
+pay_dun03,158,131,3	duplicate(HwChicken3)	雞#06_hw_p41	800
+
+// Payon Field chickens
+//============================================================
+pay_fild08,1,1,0	script	#06_hw_timer02	-1,{
+OnInit:
+	disablenpc "雞#06_hw_pf01";
+	disablenpc "雞#06_hw_pf02";
+	disablenpc "雞#06_hw_pf03";
+	disablenpc "雞#06_hw_pf04";
+	disablenpc "雞#06_hw_pf05";
+	disablenpc "雞#06_hw_pf06";
+	disablenpc "雞#06_hw_pf07";
+	disablenpc "雞#06_hw_pf08";
+	disablenpc "雞#06_hw_pf09";
+	disablenpc "雞#06_hw_pf10";
+	disablenpc "雞#06_hw_pf11";
+	disablenpc "雞#06_hw_pf12";
+	disablenpc "雞#06_hw_pf13";
+	disablenpc "雞#06_hw_pf14";
+	disablenpc "雞#06_hw_pf15";
+	disablenpc "雞#06_hw_pf16";
+	disablenpc "雞#06_hw_pf17";
+	disablenpc "雞#06_hw_pf18";
+	disablenpc "雞#06_hw_pf19";
+	disablenpc "雞#06_hw_pf20";
+	disablenpc "雞#06_hw_pf21";
+	disablenpc "雞#06_hw_pf22";
+	disablenpc "雞#06_hw_pf23";
+	disablenpc "雞#06_hw_pf24";
+	disablenpc "雞#06_hw_pf25";
+	disablenpc "雞#06_hw_pf26";
+	disablenpc "雞#06_hw_pf27";
+	initnpctimer;
+	end;
+
+OnTimer5400000:
+	enablenpc "雞#06_hw_pf01";
+	enablenpc "雞#06_hw_pf02";
+	enablenpc "雞#06_hw_pf03";
+	enablenpc "雞#06_hw_pf04";
+	enablenpc "雞#06_hw_pf05";
+	enablenpc "雞#06_hw_pf06";
+	enablenpc "雞#06_hw_pf07";
+	enablenpc "雞#06_hw_pf08";
+	enablenpc "雞#06_hw_pf09";
+	enablenpc "雞#06_hw_pf10";
+	enablenpc "雞#06_hw_pf11";
+	enablenpc "雞#06_hw_pf12";
+	enablenpc "雞#06_hw_pf13";
+	enablenpc "雞#06_hw_pf14";
+	enablenpc "雞#06_hw_pf15";
+	enablenpc "雞#06_hw_pf16";
+	enablenpc "雞#06_hw_pf17";
+	enablenpc "雞#06_hw_pf18";
+	enablenpc "雞#06_hw_pf19";
+	enablenpc "雞#06_hw_pf20";
+	enablenpc "雞#06_hw_pf21";
+	enablenpc "雞#06_hw_pf22";
+	enablenpc "雞#06_hw_pf23";
+	enablenpc "雞#06_hw_pf24";
+	enablenpc "雞#06_hw_pf25";
+	enablenpc "雞#06_hw_pf26";
+	enablenpc "雞#06_hw_pf27";
+	end;
+
+OnTimer6000000:
+	disablenpc "雞#06_hw_pf01";
+	disablenpc "雞#06_hw_pf02";
+	disablenpc "雞#06_hw_pf03";
+	disablenpc "雞#06_hw_pf04";
+	disablenpc "雞#06_hw_pf05";
+	disablenpc "雞#06_hw_pf06";
+	disablenpc "雞#06_hw_pf07";
+	disablenpc "雞#06_hw_pf08";
+	disablenpc "雞#06_hw_pf09";
+	disablenpc "雞#06_hw_pf10";
+	disablenpc "雞#06_hw_pf11";
+	disablenpc "雞#06_hw_pf12";
+	disablenpc "雞#06_hw_pf13";
+	disablenpc "雞#06_hw_pf14";
+	disablenpc "雞#06_hw_pf15";
+	disablenpc "雞#06_hw_pf16";
+	disablenpc "雞#06_hw_pf17";
+	disablenpc "雞#06_hw_pf18";
+	disablenpc "雞#06_hw_pf19";
+	disablenpc "雞#06_hw_pf20";
+	disablenpc "雞#06_hw_pf21";
+	disablenpc "雞#06_hw_pf22";
+	disablenpc "雞#06_hw_pf23";
+	disablenpc "雞#06_hw_pf24";
+	disablenpc "雞#06_hw_pf25";
+	disablenpc "雞#06_hw_pf26";
+	disablenpc "雞#06_hw_pf27";
+	stopnpctimer;
+	initnpctimer;
+	end;
+}
+
+pay_fild08,147,353,3	duplicate(HwChicken3)	雞#06_hw_pf01	800
+pay_fild08,147,354,3	duplicate(HwChicken2)	雞#06_hw_pf02	800
+pay_fild08,147,355,3	duplicate(HwChicken2)	雞#06_hw_pf03	800
+pay_fild08,148,352,3	duplicate(HwChicken3)	雞#06_hw_pf04	800
+pay_fild08,148,356,3	duplicate(HwChicken2)	雞#06_hw_pf05	800
+pay_fild08,149,351,3	duplicate(HwChicken2)	雞#06_hw_pf06	800
+pay_fild08,149,354,3	duplicate(HwChicken3)	雞#06_hw_pf07	800
+pay_fild08,149,357,3	duplicate(HwChicken2)	雞#06_hw_pf08	800
+pay_fild08,150,351,3	duplicate(HwChicken2)	雞#06_hw_pf09	800
+pay_fild08,150,357,3	duplicate(HwChicken3)	雞#06_hw_pf10	800
+pay_fild08,151,351,3	duplicate(HwChicken2)	雞#06_hw_pf11	800
+pay_fild08,151,353,3	duplicate(HwChicken2)	雞#06_hw_pf12	800
+pay_fild08,151,355,3	duplicate(HwChicken3)	雞#06_hw_pf13	800
+pay_fild08,151,357,3	duplicate(HwChicken2)	雞#06_hw_pf14	800
+pay_fild08,152,351,3	duplicate(HwChicken2)	雞#06_hw_pf15	800
+pay_fild08,152,357,3	duplicate(HwChicken3)	雞#06_hw_pf16	800
+pay_fild08,153,351,3	duplicate(HwChicken2)	雞#06_hw_pf17	800
+pay_fild08,153,357,3	duplicate(HwChicken2)	雞#06_hw_pf18	800
+pay_fild08,154,351,3	duplicate(HwChicken3)	雞#06_hw_pf19	800
+pay_fild08,154,353,3	duplicate(HwChicken2)	雞#06_hw_pf20	800
+pay_fild08,154,355,3	duplicate(HwChicken2)	雞#06_hw_pf21	800
+pay_fild08,154,357,3	duplicate(HwChicken3)	雞#06_hw_pf22	800
+pay_fild08,155,350,3	duplicate(HwChicken2)	雞#06_hw_pf23	800
+pay_fild08,155,352,3	duplicate(HwChicken2)	雞#06_hw_pf24	800
+pay_fild08,155,354,3	duplicate(HwChicken3)	雞#06_hw_pf25	800
+pay_fild08,155,356,3	duplicate(HwChicken2)	雞#06_hw_pf26	800
+pay_fild08,155,358,3	duplicate(HwChicken3)	雞#06_hw_pf27	800
+
+prontera,155,285,3	script	邪惡使者#06_hw01::HWFamiDup	799,{
+	mes "[小惡魔]";
+	mes "哈囉。";
+	mes "我是蘿莉大師忠實又可愛的小惡魔。";
+	mes "你有蘿莉大師的邀請函嗎？";
+	mes "那是一種^4d4dff前往尼福爾海姆的特別車票^000000..";
+	next;
+	if (select( "是的，我有。:不，我沒有。") == 1) {
+		mes "[小惡魔]";
+		mes "你想去尼福爾海姆嗎？";
+		mes "在萬聖節期間開放。";
+		next;
+		if (select( "是的，我想去:不，我不想去。") == 1) {
+			if (countitem(7460) > 0) {
+				mes "[小惡魔]";
+				mes "我檢查過你的車票了。";
+				mes "你現在可以去了";
+				delitem 7460,1; //Nifl_Express_Ticket
+				close2;
+				warp "nif_in", 18, 20;
+				end;
+			}
+			else {
+				mes "[小惡魔]";
+				mes "你是個騙子。";
+				mes "你根本沒有車票！";
+				mes "我要吸乾你的血，你這個騙子！";
+				percentheal -20,0;
+				emotion ET_HUK, playerattached();
+				close;
+			}
+		}
+		mes "[小惡魔]";
+		mes "好。";
+		mes "其實，有前往尼福爾海姆的特別車票也沒什麼用。";
+		close;
+	}
+	mes "[小惡魔]";
+	mes "好。";
+	mes "如果你有什麼問題想問，給蘿莉大師一塊南瓜派吧。";
+	mes "她喜歡那個。";
+	close;
+}
+payon,156,231,3	duplicate(HWFamiDup)	邪惡使者#06_hw02	799
+morocc,159,143,3	duplicate(HWFamiDup)	邪惡使者#06_hw03	799
+geffen,120,188,3	duplicate(HWFamiDup)	邪惡使者#06_hw04	799
+alberta,80,171,3	duplicate(HWFamiDup)	邪惡使者#06_hw05	799
+
+// Event Lude Monster Spawns
+//============================================================
+ra_fild01,0,0	monster	假面鬼	1812,3
+ra_fild02,0,0	monster	假面鬼	1812,3
+ra_fild03,0,0	monster	假面鬼	1812,3
+ra_fild04,0,0	monster	假面鬼	1812,3
+ra_fild05,0,0	monster	假面鬼	1812,3
+ra_fild06,0,0	monster	假面鬼	1812,3
+ra_fild07,0,0	monster	假面鬼	1812,3
+ra_fild08,0,0	monster	假面鬼	1812,3
+ra_fild09,0,0	monster	假面鬼	1812,3
+ra_fild10,0,0	monster	假面鬼	1812,3
+ra_fild11,0,0	monster	假面鬼	1812,3
+ra_fild12,0,0	monster	假面鬼	1812,3
+ra_fild13,0,0	monster	假面鬼	1812,3
+
+ra_san01,0,0	monster	假面鬼	1812,3
+ra_san02,0,0	monster	假面鬼	1812,3
+ra_san03,0,0	monster	假面鬼	1812,3
+ra_san04,0,0	monster	假面鬼	1812,3
+ra_san05,0,0	monster	假面鬼	1812,3
+
+ice_dun01,0,0	monster	假面鬼	1812,3
+ice_dun02,0,0	monster	假面鬼	1812,3
+ice_dun03,0,0	monster	假面鬼	1812,3
+
+odin_tem01,0,0	monster	假面鬼	1812,3
+odin_tem02,0,0	monster	假面鬼	1812,3
+odin_tem03,0,0	monster	假面鬼	1812,3
+
+kh_kiehl01,0,0	monster	假面鬼	1812,3
+
+kh_dun01,0,0	monster	假面鬼	1812,3
+kh_dun02,0,0	monster	假面鬼	1812,3
+
+yuno_fild06,0,0	monster	假面鬼	1812,3
+yuno_fild10,0,0	monster	假面鬼	1812,3
+
+ein_fild01,0,0	monster	假面鬼	1812,3
+ein_fild02,0,0	monster	假面鬼	1812,3
+ein_fild05,0,0	monster	假面鬼	1812,3
+
+hu_fild01,0,0	monster	假面鬼	1812,3
+hu_fild02,0,0	monster	假面鬼	1812,3
+hu_fild03,0,0	monster	假面鬼	1812,3
+hu_fild04,0,0	monster	假面鬼	1812,3
+hu_fild05,0,0	monster	假面鬼	1812,3
+hu_fild06,0,0	monster	假面鬼	1812,3
+hu_fild07,0,0	monster	假面鬼	1812,3
+
+tha_t01,0,0	monster	假面鬼	1812,3
+tha_t02,0,0	monster	假面鬼	1812,3
+tha_t03,0,0	monster	假面鬼	1812,3
+tha_t04,0,0	monster	假面鬼	1812,3
+tha_t05,0,0	monster	假面鬼	1812,3
+tha_t06,0,0	monster	假面鬼	1812,3
+tha_t07,0,0	monster	假面鬼	1812,3
+tha_t08,0,0	monster	假面鬼	1812,3
+tha_t09,0,0	monster	假面鬼	1812,3
+tha_t10,0,0	monster	假面鬼	1812,3
+tha_t11,0,0	monster	假面鬼	1812,3
+tha_t12,0,0	monster	假面鬼	1812,3
+
+abyss_01,0,0	monster	假面鬼	1812,3
+abyss_02,0,0	monster	假面鬼	1812,3
+abyss_03,0,0	monster	假面鬼	1812,3
+
+juperos_01,0,0	monster	假面鬼	1812,3
+juperos_02,0,0	monster	假面鬼	1812,3
+jupe_core,0,0	monster	假面鬼	1812,3
+
+lhz_dun01,0,0	monster	假面鬼	1812,3
+lhz_dun02,0,0	monster	假面鬼	1812,3
+lhz_dun03,0,0	monster	假面鬼	1812,3
+lhz_fild01,0,0	monster	假面鬼	1812,3
+
+lhz_fild02,0,0	monster	假面鬼	1812,3
+lhz_fild03,0,0	monster	假面鬼	1812,3
+ein_fild03,0,0	monster	假面鬼	1812,3
+ein_fild04,0,0	monster	假面鬼	1812,3
+
+ein_fild06,0,0	monster	假面鬼	1812,3
+ein_fild07,0,0	monster	假面鬼	1812,3
+ein_fild08,0,0	monster	假面鬼	1812,3
+ein_fild09,0,0	monster	假面鬼	1812,3
+ein_fild10,0,0	monster	假面鬼	1812,3
+ein_dun01,0,0	monster	假面鬼	1812,3
+ein_dun02,0,0	monster	假面鬼	1812,3
+
+gefenia01,0,0	monster	假面鬼	1812,3
+gefenia02,0,0	monster	假面鬼	1812,3
+gefenia03,0,0	monster	假面鬼	1812,3
+gefenia04,0,0	monster	假面鬼	1812,3
+
+yuno_fild05,0,0	monster	假面鬼	1812,3
+yuno_fild07,0,0	monster	假面鬼	1812,3
+yuno_fild08,0,0	monster	假面鬼	1812,3
+yuno_fild09,0,0	monster	假面鬼	1812,3
+yuno_fild11,0,0	monster	假面鬼	1812,3
+yuno_fild12,0,0	monster	假面鬼	1812,3
+
+ayo_fild01,0,0	monster	假面鬼	1812,3
+ayo_fild02,0,0	monster	假面鬼	1812,3
+ayo_dun01,0,0	monster	假面鬼	1812,3
+ayo_dun02,0,0	monster	假面鬼	1812,3
+
+gon_dun01,0,0	monster	假面鬼	1812,3
+gon_dun02,0,0	monster	假面鬼	1812,3
+gon_dun03,0,0	monster	假面鬼	1812,3
+
+ama_dun01,0,0	monster	假面鬼	1812,3
+ama_dun02,0,0	monster	假面鬼	1812,3
+ama_dun03,0,0	monster	假面鬼	1812,3
+
+lou_fild01,0,0	monster	假面鬼	1812,3
+lou_dun01,0,0	monster	假面鬼	1812,3
+lou_dun02,0,0	monster	假面鬼	1812,3
+lou_dun03,0,0	monster	假面鬼	1812,3
+
+um_fild01,0,0	monster	假面鬼	1812,3
+um_fild02,0,0	monster	假面鬼	1812,3
+um_fild03,0,0	monster	假面鬼	1812,3
+um_fild04,0,0	monster	假面鬼	1812,3
+um_dun01,0,0	monster	假面鬼	1812,3
+um_dun02,0,0	monster	假面鬼	1812,3
+yggdrasil01,0,0	monster	假面鬼	1812,3
+
+mag_dun01,0,0	monster	假面鬼	1812,3
+mag_dun02,0,0	monster	假面鬼	1812,3
+
+beach_dun,0,0	monster	假面鬼	1812,3
+beach_dun2,0,0	monster	假面鬼	1812,3
+beach_dun3,0,0	monster	假面鬼	1812,3
+
+gon_fild01,0,0	monster	假面鬼	1812,3
+ama_fild01,0,0	monster	假面鬼	1812,3
+yuno_fild01,0,0	monster	假面鬼	1812,3
+yuno_fild02,0,0	monster	假面鬼	1812,3
+yuno_fild03,0,0	monster	假面鬼	1812,3
+yuno_fild04,0,0	monster	假面鬼	1812,3
+
+prt_fild00,0,0	monster	假面鬼	1812,3
+prt_fild01,0,0	monster	假面鬼	1812,3
+prt_fild02,0,0	monster	假面鬼	1812,3
+prt_fild03,0,0	monster	假面鬼	1812,3
+prt_fild04,0,0	monster	假面鬼	1812,3
+prt_fild05,0,0	monster	假面鬼	1812,3
+prt_fild06,0,0	monster	假面鬼	1812,3
+prt_fild07,0,0	monster	假面鬼	1812,3
+prt_fild08,0,0	monster	假面鬼	1812,3
+prt_fild09,0,0	monster	假面鬼	1812,3
+prt_fild10,0,0	monster	假面鬼	1812,3
+prt_fild11,0,0	monster	假面鬼	1812,3
+
+moc_fild01,0,0	monster	假面鬼	1812,3
+moc_fild02,0,0	monster	假面鬼	1812,3
+moc_fild03,0,0	monster	假面鬼	1812,3
+moc_fild04,0,0	monster	假面鬼	1812,3
+moc_fild05,0,0	monster	假面鬼	1812,3
+moc_fild06,0,0	monster	假面鬼	1812,3
+moc_fild07,0,0	monster	假面鬼	1812,3
+moc_fild08,0,0	monster	假面鬼	1812,3
+moc_fild09,0,0	monster	假面鬼	1812,3
+moc_fild10,0,0	monster	假面鬼	1812,3
+moc_fild11,0,0	monster	假面鬼	1812,3
+moc_fild12,0,0	monster	假面鬼	1812,3
+moc_fild13,0,0	monster	假面鬼	1812,3
+moc_fild14,0,0	monster	假面鬼	1812,3
+moc_fild15,0,0	monster	假面鬼	1812,3
+moc_fild16,0,0	monster	假面鬼	1812,3
+moc_fild17,0,0	monster	假面鬼	1812,3
+moc_fild18,0,0	monster	假面鬼	1812,3
+
+pay_fild01,0,0	monster	假面鬼	1812,3
+pay_fild02,0,0	monster	假面鬼	1812,3
+pay_fild03,0,0	monster	假面鬼	1812,3
+pay_fild04,0,0	monster	假面鬼	1812,3
+pay_fild05,0,0	monster	假面鬼	1812,3
+pay_fild06,0,0	monster	假面鬼	1812,3
+pay_fild07,0,0	monster	假面鬼	1812,3
+pay_fild08,0,0	monster	假面鬼	1812,3
+pay_fild09,0,0	monster	假面鬼	1812,3
+pay_fild10,0,0	monster	假面鬼	1812,3
+pay_fild11,0,0	monster	假面鬼	1812,3
+
+gef_fild00,0,0	monster	假面鬼	1812,3
+gef_fild01,0,0	monster	假面鬼	1812,3
+gef_fild02,0,0	monster	假面鬼	1812,3
+gef_fild03,0,0	monster	假面鬼	1812,3
+gef_fild04,0,0	monster	假面鬼	1812,3
+gef_fild05,0,0	monster	假面鬼	1812,3
+gef_fild06,0,0	monster	假面鬼	1812,3
+gef_fild07,0,0	monster	假面鬼	1812,3
+gef_fild08,0,0	monster	假面鬼	1812,3
+gef_fild09,0,0	monster	假面鬼	1812,3
+gef_fild10,0,0	monster	假面鬼	1812,3
+gef_fild11,0,0	monster	假面鬼	1812,3
+gef_fild12,0,0	monster	假面鬼	1812,3
+gef_fild13,0,0	monster	假面鬼	1812,3
+gef_fild14,0,0	monster	假面鬼	1812,3
+
+cmd_fild01,0,0	monster	假面鬼	1812,3
+cmd_fild02,0,0	monster	假面鬼	1812,3
+cmd_fild03,0,0	monster	假面鬼	1812,3
+cmd_fild04,0,0	monster	假面鬼	1812,3
+cmd_fild05,0,0	monster	假面鬼	1812,3
+cmd_fild06,0,0	monster	假面鬼	1812,3
+cmd_fild07,0,0	monster	假面鬼	1812,3
+cmd_fild08,0,0	monster	假面鬼	1812,3
+cmd_fild09,0,0	monster	假面鬼	1812,3
+
+mjolnir_01,0,0	monster	假面鬼	1812,3
+mjolnir_02,0,0	monster	假面鬼	1812,3
+mjolnir_03,0,0	monster	假面鬼	1812,3
+mjolnir_04,0,0	monster	假面鬼	1812,3
+mjolnir_05,0,0	monster	假面鬼	1812,3
+mjolnir_06,0,0	monster	假面鬼	1812,3
+mjolnir_07,0,0	monster	假面鬼	1812,3
+mjolnir_08,0,0	monster	假面鬼	1812,3
+mjolnir_09,0,0	monster	假面鬼	1812,3
+mjolnir_10,0,0	monster	假面鬼	1812,3
+mjolnir_11,0,0	monster	假面鬼	1812,3
+mjolnir_12,0,0	monster	假面鬼	1812,3
+
+xmas_fild01,0,0	monster	假面鬼	1812,3
+
+sec_in02,0,0	monster	假面鬼	1812,3
+
+gl_dun02,0,0	monster	假面鬼	1812,3
+gl_dun01,0,0	monster	假面鬼	1812,3
+
+gl_knt02,0,0	monster	假面鬼	1812,3
+gl_knt01,0,0	monster	假面鬼	1812,3
+
+gl_step,0,0	monster	假面鬼	1812,3
+
+gl_sew04,0,0	monster	假面鬼	1812,3
+gl_sew03,0,0	monster	假面鬼	1812,3
+gl_sew02,0,0	monster	假面鬼	1812,3
+gl_sew01,0,0	monster	假面鬼	1812,3
+
+gl_chyard,0,0	monster	假面鬼	1812,3
+gl_church,0,0	monster	假面鬼	1812,3
+
+glast_01,0,0	monster	假面鬼	1812,3
+
+gl_prison1,0,0	monster	假面鬼	1812,3
+gl_prison,0,0	monster	假面鬼	1812,3
+
+gl_in01,0,0	monster	假面鬼	1812,3
+
+gl_cas02,0,0	monster	假面鬼	1812,3
+gl_cas01,0,0	monster	假面鬼	1812,3
+
+tur_dun04,0,0	monster	假面鬼	1812,3
+tur_dun03,0,0	monster	假面鬼	1812,3
+tur_dun02,0,0	monster	假面鬼	1812,3
+tur_dun01,0,0	monster	假面鬼	1812,3
+
+alde_dun04,0,0	monster	假面鬼	1812,3
+alde_dun03,0,0	monster	假面鬼	1812,3
+alde_dun02,0,0	monster	假面鬼	1812,3
+alde_dun01,0,0	monster	假面鬼	1812,3
+
+c_tower1,0,0	monster	假面鬼	1812,3
+c_tower2,0,0	monster	假面鬼	1812,3
+c_tower3,0,0	monster	假面鬼	1812,3
+c_tower4,0,0	monster	假面鬼	1812,3
+
+in_sphinx5,0,0	monster	假面鬼	1812,3
+in_sphinx4,0,0	monster	假面鬼	1812,3
+in_sphinx3,0,0	monster	假面鬼	1812,3
+in_sphinx2,0,0	monster	假面鬼	1812,3
+in_sphinx1,0,0	monster	假面鬼	1812,3
+
+prt_maze03,0,0	monster	假面鬼	1812,3
+prt_maze02,0,0	monster	假面鬼	1812,3
+prt_maze01,0,0	monster	假面鬼	1812,3
+
+treasure02,0,0	monster	假面鬼	1812,3
+treasure01,0,0	monster	假面鬼	1812,3
+
+moc_pryd06,0,0	monster	假面鬼	1812,3
+moc_pryd05,0,0	monster	假面鬼	1812,3
+moc_pryd04,0,0	monster	假面鬼	1812,3
+moc_pryd03,0,0	monster	假面鬼	1812,3
+moc_pryd02,0,0	monster	假面鬼	1812,3
+moc_pryd01,0,0	monster	假面鬼	1812,3
+
+gef_dun02,0,0	monster	假面鬼	1812,3
+gef_dun01,0,0	monster	假面鬼	1812,3
+gef_dun00,0,0	monster	假面鬼	1812,3
+
+iz_dun00,0,0	monster	假面鬼	1812,3
+iz_dun01,0,0	monster	假面鬼	1812,3
+iz_dun02,0,0	monster	假面鬼	1812,3
+iz_dun03,0,0	monster	假面鬼	1812,3
+iz_dun04,0,0	monster	假面鬼	1812,3
+
+pay_dun00,0,0	monster	假面鬼	1812,3
+pay_dun01,0,0	monster	假面鬼	1812,3
+pay_dun02,0,0	monster	假面鬼	1812,3
+pay_dun03,0,0	monster	假面鬼	1812,3
+pay_dun04,0,0	monster	假面鬼	1812,3
+
+xmas_dun02,0,0	monster	假面鬼	1812,3
+xmas_dun01,0,0	monster	假面鬼	1812,3
+
+anthell02,0,0	monster	假面鬼	1812,3
+anthell01,0,0	monster	假面鬼	1812,3
+
+orcsdun02,0,0	monster	假面鬼	1812,3
+orcsdun01,0,0	monster	假面鬼	1812,3
+
+mjo_dun03,0,0	monster	假面鬼	1812,3
+mjo_dun02,0,0	monster	假面鬼	1812,3
+mjo_dun01,0,0	monster	假面鬼	1812,3
+
+prt_sewb4,0,0	monster	假面鬼	1812,3
+prt_sewb3,0,0	monster	假面鬼	1812,3
+prt_sewb2,0,0	monster	假面鬼	1812,3
+prt_sewb1,0,0	monster	假面鬼	1812,3
+
+nif_fild01,0,0	monster	假面鬼	1812,3
+
+nif_fild02,0,0	monster	假面鬼	1812,3

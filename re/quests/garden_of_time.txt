@@ -1,0 +1,1582 @@
+//===== rAthena Script =======================================
+//= Hall of Life
+//===== Description: =========================================
+//= [Walkthrough Conversion]
+//= Quest NPCs - Hall of Life
+//===== Changelog: ===========================================
+//= 1.0 Initial release [Atemo]
+//============================================================
+
+function	script	F_mesnavi	{
+	return "<NAVI>[" + getarg(0) + "]<INFO>" + getarg(1) + "," + getarg(2) + "," + getarg(3) + ",0,101,0</INFO></NAVI>";
+}
+
+// Warps
+xmas_fild01,158,246,2	script	次元結界#got1	GATE_SKYBLUE,2,2,{
+	// Fallthrough
+OnTouch:
+	warp "t_garden",116,47;
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 250 && isbegin_quest(12592) == 0" );
+	end;
+}
+
+t_garden,111,36,2	script	次元結界#got2	GATE_SKYBLUE,2,2,{
+	// Fallthrough
+OnTouch:
+	warp "xmas_fild01",150,240;
+	end;
+}
+
+// t_garden,118,66,0	script	#wp01	HIDDEN_WARP_NPC,3,1,{	// (NPC name is not unique)
+t_garden,118,66,0	script	#wp01_t_garden	HIDDEN_WARP_NPC,3,1,{
+	end;
+OnTouch:
+	specialeffect2 EF_FLOWERCAST;
+	setpcblock PCBLOCK_NPC, true;
+	sleep2 500;
+	setpcblock PCBLOCK_NPC, false;
+	if (BaseLevel < 250)
+		warp "xmas_fild01",150,240;
+	else
+		warp "t_garden",118,79;
+	end;
+}
+
+// t_garden,118,72,0	script	#wp02	HIDDEN_WARP_NPC,3,1,{	// (NPC name is not unique)
+t_garden,118,72,0	script	#wp02_t_garden	HIDDEN_WARP_NPC,3,1,{
+	end;
+OnTouch:
+	specialeffect2 EF_FLOWERCAST;
+	setpcblock PCBLOCK_NPC, true;
+	sleep2 500;
+	setpcblock PCBLOCK_NPC, false;
+	if (BaseLevel < 250)
+		warp "xmas_fild01",150,240;
+	else
+		warp "t_garden",118,61;
+	end;
+}
+
+
+// Quest starter
+t_garden,116,47,0	script	#life_wp11	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if (BaseLevel < 250)
+		end;
+	if (isbegin_quest(12592) == 0) {
+		removespecialeffect 1145, AREA, "奧斯卡#life";
+		cloakoffnpcself( "奧斯卡#life" );
+		cloakoffnpcself( "蕾緹希雅#life" );
+		cloakoffnpcself( "參宿七#life" );
+		specialeffect 1145, AREA, "奧斯卡#life";
+		end;
+	}
+	end;
+}
+	
+t_garden,114,49,6	script(CLOAKED)	蕾緹希雅#life	4_4JOB_LETICIA,{
+	mes "^0000ff她正在對奧斯卡說明事情，完全沒有注意到你。^000007";
+	close;
+}
+
+t_garden,118,49,3	script(CLOAKED)	參宿七#life	4_CS_RIGEL,{
+	mes "^0000ff他們似乎正專注於奧斯卡和蕾緹希雅的對話。^000007";
+	close;
+}
+
+t_garden,119,46,2	script(CLOAKED)	奧斯卡#life	4_ED_OSCAR,{
+	if (BaseLevel < 250)
+		end;
+	if (isbegin_quest(12592) == 0) {
+		emotion ET_THROB;
+		mes "^0000ff奧斯卡似乎正在和某人說話。^000000";
+		next;
+		if (select( "放棄並離開", "在旁邊偷聽" ) == 1) {
+			mes "^0000ff說的也是，偷聽確實不太好。^000000";
+			close;
+		}
+		cutin "OSCAR03.bmp",2;
+		mes "[奧斯卡]";
+		mes "所以，妳的意思是，妳偶然在路迪附近發現了一道裂縫，進來後就發現了這座花園？";
+		next;
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "沒錯！";
+		next;
+		cutin "OSCAR03.bmp",2;
+		mes "[奧斯卡]";
+		mes "妳為什麼要這麼做，蕾緹希雅？";
+		next;
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "什麼為什麼！這地方看起來不是很實用嗎？漂亮的花園和一棟來歷不明的宅邸！這簡直太完美了，奧斯卡！";
+		next;
+		cutin "OSCAR03.bmp",2;
+		mes "[奧斯卡]";
+		mes "妳沒搞懂我的意思，蕾緹希雅。妳發現了裂縫，但我問的是，妳為什麼不把它消除，反而把我叫來這裡？";
+		next;
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "嗯... 那是因為，把它破壞掉太可惜了。";
+		next;
+		cutin "OSCAR03.bmp",2;
+		mes "[奧斯卡]";
+		mes "妳沒有破壞它因為覺得可惜?然後呢？";
+		next;
+		cutin "4job_leticia_02.png",2;
+		mes "[蕾緹希雅]";
+		mes "奧斯卡，你一直四處流浪，連個像樣的住處都沒有。就算你人再好，也不能一直這樣當義工啊！";
+		next;
+		cutin "OSCAR09.bmp",2;
+		mes "[奧斯卡]";
+		mes "咦？";
+		next;
+		cutin "rigel_halfeyes02.png",2;
+		mes "[參宿七]";
+		mes "蕾緹希雅是在求你別再像個流浪漢一樣了，買棟像樣的房子，像個星座一樣生活吧。一直無視別人的勸告可不好。";
+		next;
+		cutin "OSCAR07.bmp",2;
+		mes "[奧斯卡]";
+		mes "流浪漢...，我有那麼慘嗎？妳真的是這樣看我的嗎，蕾緹希雅？";
+		next;
+		cutin "4job_leticia_02.png",2;
+		mes "[蕾緹希雅]";
+		mes "就連很久以前來到這片大陸的參宿四，都已經有自己的像樣住處了！我覺得奧斯卡這樣無家可歸地四處流浪太不合理了！";
+		next;
+		cutin "OSCAR04.bmp",2;
+		mes "[奧斯卡]";
+		mes "好吧，我明白妳的用意了。但我還是得想想怎麼妥善處理這件事...";
+		next;
+		cutin "rigel05.png",2;
+		mes "[參宿七]";
+		mes "據我觀察，這裡有幾個不穩定的次元通道，但似乎沒什麼危險。蕾緹希雅說得有道理。";
+		next;
+		cutin "rigel_halfeyes02.png",2;
+		mes "[參宿七]";
+		mes "我想我和蕾緹希雅應該能為這些不穩定的次元通道找到合適的用途。妳覺得呢，蕾緹希雅？";
+		next;
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "我同意，參宿七！我覺得可以把花園中心附近不穩定的區域，以副本的形式施加限制來穩定下來。這件事就交給我吧！";
+		next;
+		cutin "rigel_halfeyes02.png",2;
+		mes "[參宿七]";
+		mes "花園北邊的花圃不太穩定，而且連接著另一個次元。我會去那邊處理一下。";
+		next;
+		cutin "OSCAR05.bmp",2;
+		mes "[奧斯卡]";
+		mes "哇，我都不知道這兩個人感情這麼好。該不會是事先串通好的吧？";
+		next;
+		cutin "rigel_halfeyes01.png",2;
+		mes "[參宿七]";
+		mes "那不重要，奧斯卡。你對中央的那棟宅邸有什麼感覺嗎？";
+		next;
+		cutin "OSCAR01.bmp",2;
+		mes "[奧斯卡]";
+		mes "哦，你是指『那個』？我感覺非常強烈。";
+		next;
+		cutin "rigel_halfeyes02.png",2;
+		mes "[參宿七]";
+		mes "看來這牽涉到^0000ff時間^000000的問題，所以我想蕾緹希雅和我應該無能為力。奧斯卡，你能搞定吧？";
+		next;
+		cutin "OSCAR07.bmp",2;
+		mes "[奧斯卡]";
+		mes "呃... 那是我的責任，所以不管行不行，我都該去。";
+		next;
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "那麼，我們就先去進行花園的維護吧。剛好附近有個偷聽的冒險者，我們一起去就太完美了！";
+		next;
+		select( "咦？我也要？" );
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "這不是明擺著的嗎。既然你都聽到這裡了，應該也知道發生了什麼事。別廢話了，跟著我進花園吧。";
+		setquest 12592;
+		completequest 12592;
+		setquest 12593;
+		setquest 12594;
+		setquest 12618;
+		close2;
+		cutin "",255;
+		cloakonnpcself( "奧斯卡#life" );
+		cloakonnpcself( "蕾緹希雅#life" );
+		cloakonnpcself( "參宿七#life" );
+		end;
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 250 && isbegin_quest(12592) == 0" );
+	end;
+}
+
+
+// A. Quests to access dungeons
+// t_garden,118,91,0	script	#wp01	HIDDEN_WARP_NPC,2,2,{	// (NPC name is not unique)
+t_garden,118,91,0	script	#wp01_t_garden_1	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if (isbegin_quest(12592) == 2) {
+		cloakoffnpcself( "蕾緹希雅#life2" );
+		// note: always uncloaked at this point
+		end;
+	}
+	end;
+}
+
+t_garden,118,91,6	script(CLOAKED)	蕾緹希雅#life2	4_4JOB_LETICIA,{
+	if (isbegin_quest(12593) == 1) {
+		cutin "4job_leticia_02.png",2;
+		mes "[蕾緹希雅]";
+		mes "那棟宅邸內的時間流動和我們現在的時間不同。所以，我們不知道奧斯卡什麼時候才能完全修復那棟宅邸。";
+		next;
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "但我們也不能光是在這裡發呆。而且，根據來到這裡的精靈們所說，似乎還有其他事情需要我們處理。";
+		next;
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "我聽說原本守護這個空間的精靈，被不知為何變得狂暴的同伴們給趕了出來。";
+		next;
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "或許是因為不穩定的能量流動，導致自然屬性被扭曲變異，精靈們才變得狂暴。我們已經讓他們先在花園的西北方休息一下了。";
+		next;
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "根據他們的說法，原因似乎是來自與這裡相連的次元的異界精靈，所以我們最好去減少那些異界生物的數量。";
+		next;
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "我需要你的幫忙。我需要聚集東西兩方的能量流來開啟傳送門，我們走吧。";
+		completequest 12593;
+		setquest 12595;
+		setquest 12596;
+		close3;
+	}
+	if (isbegin_quest(12595) == 1 || isbegin_quest(12596) == 1) {
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "出口還沒有全部啟動。去把東邊和西邊的出口都啟動後再來找我。";
+		close3;
+	}
+	if (isbegin_quest(12620) == 0) {
+		cutin "4job_leticia_01.png",2;
+		setpcblock PCBLOCK_NPC, true;
+		sleep2 500;
+		setpcblock PCBLOCK_NPC, false;
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "我們把附近求救的精靈都聚集在中央廣場的西北方了。他們還真是吵鬧啊。";
+		next;
+		cutin "4job_leticia_03.png",2;
+		mes "[蕾緹希雅]";
+		mes "他們大概就是在等你來吧。要不要幫他們隨便你，不過幫助精靈對你也沒有壞處。我建議你至少去看看一次。";
+		setquest 12620;
+		close3;
+	}
+	cutin "4job_leticia_01.png",2;
+	mes "[蕾緹希雅]";
+	mes "你跟那些精靈談過了嗎？跟他們交個朋友也不會有損失的。";
+	close3;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12593) == 1" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12620) == 0 && isbegin_quest(12595) == 2 && isbegin_quest(12596) == 2" );
+	end;
+}
+
+t_garden,82,92,0	script	#life_wp2	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch:
+	switch( isbegin_quest(12595) ) {
+	case 0:
+		end;
+	case 1:
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "很好，這樣就夠了。這將會開啟一條通道，通往那邊的時間封印上散發著不祥能量的地方。";
+		next;
+		cutin "4job_leticia_02.png",2;
+		mes "[蕾緹希雅]";
+		mes "準備好了嗎？那就伸出手，注視著封印，就像把我要給你的力量集中在封印上一樣。";
+		// close2;
+		next;
+		select( "伸出手並注視封印" );
+		setpcblock PCBLOCK_NPC, true;
+		cutin "",255;
+		specialeffect2 EF_BEGINSPELL_N3;
+		sleep2 2500;
+		specialeffect EF_LORD, AREA, "時間通道#1";
+		sleep2 1500;
+		specialeffect EF_BAKU, AREA, "時間通道#1";
+		sleep2 1000;
+		specialeffect EF_THUNDERSTORM2, AREA, "時間通道#1";
+		cloakoffnpcself( "時間通道#1" );
+		sleep2 1000;
+		setpcblock PCBLOCK_NPC, false;
+		if (isbegin_quest(12596) == 1) {
+			cutin "4job_leticia_04.png",2;
+			mes "[蕾緹希雅]";
+			mes "那麼，我們去把另一個也打開吧。移動到這扇門對面的位置。";
+			completequest 12595;
+			close3;
+		}
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "比你想像的還要簡單吧？這樣一來，在奧斯卡修復完宅邸之前，我們就能阻止那些奇怪的傢伙湧入花園了，真是鬆了一口氣。";
+		next;
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "既然你已經幫了我，從現在開始你每天都得跟我一起工作了。這沒什麼大不了的，就是去減少這條通道底下副本裡的那些不祥之物數量而已。";
+		next;
+		select( "我好像在哪聽過這句話" );
+		cutin "4job_leticia_03.png",2;
+		mes "[蕾緹希雅]";
+		mes "你嘀咕什麼呢？有什麼不滿嗎？";
+		next;
+		select( "沒有。" );
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "看來大功告成了。我們回中央廣場一下，談談接下來的事吧。";
+		completequest 12595;
+		close3;
+	case 2:
+		cloakoffnpcself( "時間通道#1" );
+		end;
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12595) == 1" );
+	end;
+}
+
+// t_garden,78,92,2	script(CLOAKED)	Passage of Time#1	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect (NPC unreachable)
+t_garden,78,92,2	script(CLOAKED)	時間通道#1	GATE_SKYBLUE,{
+	if (isbegin_quest(12595) != 2)
+		end;
+	if (isbegin_quest(12596) != 2) {
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "出口還沒有全部啟動。去把東邊和西邊的出口都啟動後再來找我。";
+		close3;
+	}
+	switch( select( "被遺忘的記憶 第1區 6點鐘方向", "被遺忘的記憶 第1區 中央", "被遺忘的記憶 第1區 10點鐘方向" ) ) {
+	case 1:
+		warp "for_dun01",159,35;
+		break;
+	case 2:
+		warp "for_dun01",101,136;
+		break;
+	case 3:
+		warp "for_dun01",62,266;
+		break;
+	}
+	end;
+}
+
+t_garden,151,92,0	script	#life_wp3	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch:
+	switch( isbegin_quest(12596) ) {
+	case 0:
+		end;
+	case 1:
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "很好，這樣就夠了。這將會開啟一條通道，通往那邊的時間封印上散發著不祥能量的地方。";
+		next;
+		cutin "4job_leticia_02.png",2;
+		mes "[蕾緹希雅]";
+		mes "準備好了嗎？那就伸出手，注視著封印，就像把我要給你的力量集中在封印上一樣。";
+		// close2;
+		next;
+		select( "伸出手並注視封印" );
+		setpcblock PCBLOCK_NPC, true;
+		cutin "",255;
+		specialeffect2 EF_BEGINSPELL_N3;
+		sleep2 2000;
+		specialeffect EF_LORD, AREA, "時間通道#2";
+		sleep2 2000;
+		specialeffect EF_BAKU, AREA, "時間通道#2";
+		sleep2 1000;
+		specialeffect EF_THUNDERSTORM2, AREA, "時間通道#2";
+		cloakoffnpcself( "時間通道#2" );
+		sleep2 1000;
+		setpcblock PCBLOCK_NPC, false;
+		if (isbegin_quest(12595) == 1) {
+			cutin "4job_leticia_04.png",2;
+			mes "[蕾緹希雅]";
+			mes "那麼，我們去把另一個也打開吧。移動到這扇門對面的位置。";
+			completequest 12596;
+			close3;
+		}
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "比你想像的還要簡單吧？這樣一來，在奧斯卡修復完宅邸之前，我們就能阻止那些奇怪的傢伙湧入花園了，真是鬆了一口氣。";
+		next;
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "既然你已經幫了我，從現在開始你每天都得跟我一起工作了。這沒什麼大不了的，就是去減少這條通道底下副本裡的那些不祥之物數量而已。";
+		next;
+		select( "我好像在哪聽過這句話" );
+		cutin "4job_leticia_03.png",2;
+		mes "[蕾緹希雅]";
+		mes "你嘀咕什麼呢？有什麼不滿嗎？";
+		next;
+		select( "沒有。" );
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "看來大功告成了。我們回中央廣場一下，談談接下來的事吧。";
+		completequest 12596;
+		close3;
+	case 2:
+		cloakoffnpcself( "時間通道#2" );
+		end;
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12596) == 1" );
+	end;
+}
+
+// t_garden,157,92,2	script(CLOAKED)	Passage of Time#2	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect (NPC unreachable)
+t_garden,157,92,2	script(CLOAKED)	時間通道#2	GATE_SKYBLUE,{
+	if (isbegin_quest(12596) != 2)
+		end;
+	if (isbegin_quest(12595) != 2) {
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "出口還沒有全部啟動。去把東邊和西邊的出口都啟動後再來找我。";
+		close3;
+	}
+	switch( select( "被遺忘的記憶 第2區 7點鐘方向", "被遺忘的記憶 第2區 1點鐘方向", "被遺忘的記憶 第2區 5點鐘方向" ) ) {
+	case 1:
+		warp "for_dun02",33,55;
+		break;
+	case 2:
+		warp "for_dun02",211,269;
+		break;
+	case 3:
+		warp "for_dun02",271,38;
+		break;
+	}
+	end;
+}
+
+
+for_dun01,100,146,2	script	空間座標探測器#1	4_SYSTEM_BOX,{
+	mes "你要返回時間庭院嗎？";
+	next;
+	if (select( "取消", "返回" ) == 1)
+		end;
+	warp "t_garden",83,92;
+	end;
+
+OnInit:
+	questinfo( QTYPE_CLICKME, QMARK_YELLOW, "isbegin_quest(12595) == 2" );
+	end;
+}
+for_dun01,128,282,2	duplicate(空間座標探測器#1)	空間座標探測器#2	4_SYSTEM_BOX
+for_dun01,55,142,2	duplicate(空間座標探測器#1)	空間座標探測器#3	4_SYSTEM_BOX
+for_dun01,262,167,2	duplicate(空間座標探測器#1)	空間座標探測器#4	4_SYSTEM_BOX
+for_dun01,204,67,2	duplicate(空間座標探測器#1)	空間座標探測器#5	4_SYSTEM_BOX
+for_dun01,57,270,2	duplicate(空間座標探測器#1)	空間座標探測器#6	4_SYSTEM_BOX
+for_dun01,65,34,2	duplicate(空間座標探測器#1)	空間座標探測器#7	4_SYSTEM_BOX
+for_dun01,146,27,2	duplicate(空間座標探測器#1)	空間座標探測器#8	4_SYSTEM_BOX
+for_dun01,154,139,2	duplicate(空間座標探測器#1)	空間座標探測器#9	4_SYSTEM_BOX
+for_dun01,124,203,2	duplicate(空間座標探測器#1)	空間座標探測器#10	4_SYSTEM_BOX
+for_dun01,267,265,2	duplicate(空間座標探測器#1)	空間座標探測器#11	4_SYSTEM_BOX
+
+
+for_dun02,190,147,2	script	空間座標探測器#12	4_SYSTEM_BOX,{
+	mes "你要返回時間庭院嗎？";
+	next;
+	if (select( "取消", "返回" ) == 1)
+		end;
+	warp "t_garden",152,92;
+	end;
+
+OnInit:
+	questinfo( QTYPE_CLICKME, QMARK_YELLOW, "isbegin_quest(12596) == 2" );
+	end;
+}
+for_dun02,143,149,2	duplicate(空間座標探測器#12)	空間座標探測器#13	4_SYSTEM_BOX
+for_dun02,276,29,2	duplicate(空間座標探測器#12)	空間座標探測器#14	4_SYSTEM_BOX
+for_dun02,106,34,2	duplicate(空間座標探測器#12)	空間座標探測器#15	4_SYSTEM_BOX
+for_dun02,216,271,2	duplicate(空間座標探測器#12)	空間座標探測器#16	4_SYSTEM_BOX
+for_dun02,64,268,2	duplicate(空間座標探測器#12)	空間座標探測器#17	4_SYSTEM_BOX
+for_dun02,18,170,2	duplicate(空間座標探測器#12)	空間座標探測器#18	4_SYSTEM_BOX
+for_dun02,16,92,2	duplicate(空間座標探測器#12)	空間座標探測器#19	4_SYSTEM_BOX
+for_dun02,29,52,2	duplicate(空間座標探測器#12)	空間座標探測器#20	4_SYSTEM_BOX
+for_dun02,276,255,2	duplicate(空間座標探測器#12)	空間座標探測器#21	4_SYSTEM_BOX
+for_dun02,283,197,2	duplicate(空間座標探測器#12)	空間座標探測器#22	4_SYSTEM_BOX
+
+
+// B. Event with Oscar
+t_garden,118,141,0	script	#life_wp4	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch:
+	if (isbegin_quest(12618) == 1) {
+		cloakoffnpcself( "奧斯卡#life2" );
+		end;
+	}
+	end;
+}
+
+// t_garden,118,142,3	script(CLOAKED)	Oscar#life2	4_ED_OSCAR,2,2,{	// unknown OnTouch effect
+t_garden,118,142,3	script(CLOAKED)	奧斯卡#life2	4_ED_OSCAR,{
+	if (isbegin_quest(12618) == 1) {
+		cutin "OSCAR01.bmp",2;
+		mes "[奧斯卡]";
+		mes "啊 " + strcharinfo(0) + "。";
+		next;
+		cutin "OSCAR09.bmp",2;
+		mes "[奧斯卡]";
+		mes "這倒是真的。很抱歉不小心把你捲進來幫忙。";
+		next;
+		select( "你要進去那棟宅邸嗎？" );
+		cutin "OSCAR01.bmp",2;
+		mes "[奧斯卡]";
+		mes "應該就是這樣了。這棟宅邸是一個多重時間線錯綜複雜交織的空間，我想除了我以外，沒有人能碰觸它。";
+		next;
+		select( "我在宅邸裡有什麼能幫忙的嗎？" );
+		cutin "OSCAR05.bmp",2;
+		mes "[奧斯卡]";
+		mes "" + strcharinfo(0) + " 我和你合作過很多次，所以我本來想請你跟我一起去，但這次恐怕不行了。";
+		next;
+		cutin "OSCAR09.bmp",2;
+		mes "[奧斯卡]";
+		mes "這棟宅邸裡的時間流逝速度似乎和外面世界截然不同。我猜大概是... 千分之一？或許更懸殊。";
+		next;
+		select( "也就是說..." );
+		cutin "OSCAR07.bmp",2;
+		mes "[奧斯卡]";
+		mes "這意味著，即使你只在宅邸裡待上幾天，外面的世界可能已經過去了幾年甚至幾十年。像 " + strcharinfo(0) + " 這樣的人類恐怕很難承受得住。";
+		next;
+		cutin "OSCAR01.bmp",2;
+		mes "[奧斯卡]";
+		mes "等到宅邸內部清理完畢，很有可能已經過了一段相當長的時間。必須盡快結束這一切才行...";
+		next;
+		cloakoffnpcself( "蕾緹希雅#life3" );
+		cutin "4job_leticia_01.png",2;
+		mes "[蕾緹希雅]";
+		mes "喔，你現在就要進去了嗎？";
+		next;
+		cutin "OSCAR01.bmp",2;
+		mes "[奧斯卡]";
+		mes "是的，我必須進去。蕾緹希雅，我希望在我清理完宅邸出來之前，妳不要惹出任何麻煩，好好照顧這座花園。";
+		next;
+		cutin "4job_leticia_05.png",2;
+		mes "[蕾緹希雅]";
+		mes "哎呀，別擔心那個。我會確保你與現實世界完全隔離的。";
+		next;
+		cutin "OSCAR01.bmp",2;
+		mes "[奧斯卡]";
+		mes "好吧。那就拜託妳了。喔，對了，" + strcharinfo(0) + "，如果你有時間的話，能幫幫蕾緹希雅我會很感激的。她太懶散了...";
+		next;
+		cutin "4job_leticia_04.png",2;
+		mes "[蕾緹希雅]";
+		mes "這位冒險者交給我來照顧，廢話少說，快進去吧。";
+		next;
+		cutin "OSCAR03.bmp",2;
+		mes "[奧斯卡]";
+		mes "好吧，我會盡快完成工作出來的。到時候見。";
+		close2;
+		cutin "",255;
+		specialeffect EF_BEGINSPELL_N4;
+		setpcblock PCBLOCK_NPC, true;
+		sleep2 2000;
+		cloakonnpcself( "奧斯卡#life2" );
+		setpcblock PCBLOCK_NPC, false;
+		cutin "4job_leticia_02.png",2;
+		mes "[蕾緹希雅]";
+		mes "嗯，我相信奧斯卡會處理好的... 你也別傻站在那裡，快來幫忙我和參宿七的工作。";
+		close2;
+		cutin "",255;
+		cloakonnpcself( "蕾緹希雅#life3" );
+		completequest 12618;
+		end;
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12618) == 1" );
+	end;
+}
+
+t_garden,115,139,7	duplicate(dummy_cloaked_npc)	蕾緹希雅#life3	4_4JOB_LETICIA
+
+
+// C. Instances
+// t_garden,166,217,0	script	#wp11	HIDDEN_WARP_NPC,2,2,{	// (NPC name is not unique)
+t_garden,166,217,0	script	#wp11_t_garden	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if (isbegin_quest(12594) == 1) {
+		cloakoffnpcself( "參宿七#life2" );
+		end;
+	}
+	end;
+}
+
+t_garden,166,217,3	script(CLOAKED)	參宿七#life2	4_CS_RIGEL,{
+	if (isbegin_quest(12594) == 1) {
+		cutin "rigel01.png",2;
+		mes "[參宿七]";
+		mes "你來了 " + strcharinfo(0) + "。";
+		mes "離宅邸這麼遠，應該不會打擾到奧斯卡，這樣非常合適吧？";
+		next;
+		select( "你們打算在這裡做什麼？" );
+		cutin "rigel02.png",2;
+		mes "[參宿七]";
+		mes "從現在起，我們要建造一座監獄。一座用來關押極度危險且不穩定的囚犯的監獄。";
+		next;
+		select( "你要在花圃裡建造監獄？" );
+		cutin "rigel01.png",2;
+		mes "[參宿七]";
+		mes "總之，這裡只會作為一個通道，監獄本身是連接到另一個次元的。我會把他們留在那裡。我可沒有破壞花圃的打算。";
+		next;
+		mes "[參宿七]";
+		mes "我們在北邊一點的地方建立了一個監獄訪問名單。只有登錄在名單上的人才能進入監獄，所以我們去登記一下吧。";
+		close2;
+		completequest 12594;
+		setquest 12597;
+		cutin "",255;
+		end;
+	}
+	cutin "rigel01.png",2;
+	mes "[參宿七]";
+	mes "我們從尋找我安裝在北邊的封印精靈石開始吧。";
+	close3;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12594) == 1" );
+	end;
+}
+
+
+// t_garden,162,222,5	script	#lank_board	4_4JOB_PHANTOMBOOK1,{
+	// mes "--- Strategy ranking ---";
+// mes "1st place - none";
+	// mes "2nd place - none";
+	// mes "3rd place - none";
+// mes "4th place - none";
+	// mes "5th place - none";
+	// mes "-----------------";
+// mes " The strategy record is updated every 5 minutes.";
+// mes "If recording does not occur immediately, please wait for a while and check.";
+	// close;
+// }
+
+// t_garden,166,235,0	script	#wp12	HIDDEN_WARP_NPC,3,3,{	// (NPC name is not unique)
+t_garden,166,235,0	script	#wp12_t_garden	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch:
+	switch( isbegin_quest(12597) ) {
+	case 0:
+		end;
+	case 1:
+		cloakoffnpcself( "封印精靈石#life2" );
+		end;
+	case 2:
+		cloakoffnpcself( "封印精靈石#life2" );
+		cloakoffnpcself( "次元監獄#1" );
+		cloakoffnpcself( "次元監獄#2" );
+		end;
+	}
+	end;
+}
+
+t_garden,166,235,3	script(CLOAKED)	封印精靈石#life2	HEROS_OUT_ORB,{
+	switch( isbegin_quest(12597) ) {
+	case 0:
+		end;
+	case 1:
+		mes "[封印精靈石]";
+		mes "^ff0000未經認證的使用者。^000000";
+		next;
+		cutin "rigel_halfeyes01.png",2;
+		mes "[參宿七]";
+		mes "別只是發呆，把手伸出來。";
+		mes "把拇指放在展開的精靈石右下方，其餘手指放在上方，集中精神。";
+		next;
+		select( "按照指示放上手" );
+		setpcblock PCBLOCK_NPC, true;
+		cutin "",255;
+		specialeffect2 EF_BEGINSPELL_N5;
+		sleep2 2000;
+		specialeffect EF_LORD, AREA, "次元監獄#1";
+		sleep2 500;
+		specialeffect EF_LORD, AREA, "次元監獄#2";
+		sleep2 1500;
+		specialeffect EF_BAKU, AREA, "次元監獄#1";
+		sleep2 500;
+		specialeffect EF_BAKU, AREA, "次元監獄#2";
+		sleep2 500;
+		specialeffect EF_THUNDERSTORM2, AREA, "次元監獄#1";
+		sleep2 500;
+		setpcblock PCBLOCK_NPC, false;
+		specialeffect EF_THUNDERSTORM2, AREA, "次元監獄#2";
+		cloakoffnpcself( "次元監獄#1" );
+		cloakoffnpcself( "次元監獄#2" );
+		sleep2 1500;
+		cutin "rigel_halfeyes01.png",2;
+		mes "[參宿七]";
+		mes "看來登錄得很順利。現在你已經完成了識別監獄和進出的基本準備。如果還有任何疑問，請參考這份指南。";
+		next;
+		select( "你們打算把誰關進那座監獄？" );
+		cutin "rigel_annoying01.png",2;
+		mes "[參宿七]";
+		mes "^bb0000分身（Doppelganger）。^000000";
+		next;
+		cutin "rigel_halfeyes01.png",2;
+		mes "[參宿七]";
+		mes "嗯，你可能以為不過是個會變身的分身，大驚小怪什麼，但你要關押在這裡的傢伙，跟你想像中的那種分身完全不在同一個層次。";
+		next;
+		mes "[參宿七]";
+		mes "那是最惡劣的一種存在，牠不僅僅是模仿能力或外貌，而是吞噬目標對象的靈魂，並完全變成那個存在本身。";
+		next;
+		select( "牠現在變成了誰的模樣？" );
+		cutin "rigel_annoying01.png",2;
+		mes "[參宿七]";
+		mes "是我。";
+		next;
+		select( "那是什麼意思？" );
+		cutin "rigel_halfeyes01.png",2;
+		mes "[參宿七]";
+		mes "這個囚犯吞噬了來自第326次元的我——參宿七，並成為了一個自稱為生命星座的存在。";
+		next;
+		mes "[參宿七]";
+		mes "當我趕到那裡想去拯救他時，已經太遲了。我一看到那個長得跟我一模一樣、失去意識的人，我就知道了。那根本不是我。";
+		next;
+		cutin "rigel_annoying01.png",2;
+		mes "[參宿七]";
+		mes "雖然我們成功封印了那個還無法熟練使用這股力量的傢伙。但牠總有一天可能會成功打破封印。";
+		next;
+		select( "你為什麼不親手解決這個罪犯？" );
+		cutin "rigel01.png",2;
+		mes "[參宿七]";
+		mes "我不知道發生了什麼錯誤，但這個世界承認牠是另一個生命星座。如果一個星座攻擊同一個星座，就會違反次元的規則，並立刻失去其力量。";
+		next;
+		mes "[參宿七]";
+		mes "而且，萬一牠奪走了我的存在，那情況就會變得無可挽回。";
+		next;
+		select( "那個囚犯有可能會奪走我們的身體嗎？" );
+		cutin "rigel_close02.png",2;
+		mes "[參宿七]";
+		mes "這真是我這幾百年來聽過最有趣的笑話了。";
+		next;
+		cutin "rigel_halfeyes02.png",2;
+		mes "[參宿七]";
+		mes "你會放棄你好不容易才佔據的不朽之軀，然後回到你們這種凡人的身體裡嗎？";
+		next;
+		select( "如果生命受到威脅，也許會吧。" );
+		cutin "rigel_halfeyes01.png",2;
+		mes "[參宿七]";
+		mes "嗯，我完全不同意這個觀點，但我還是打消你的顧慮吧。牠已經被我佈下的層層封印給包圍了。";
+		next;
+		mes "[參宿七]";
+		mes "就算牠想奪走你和你朋友們的身體，牠也無法施展出那種力量。";
+		next;
+		cutin "rigel_close01.png",2;
+		mes "[參宿七]";
+		mes "說來話長。監獄的相關資訊會另外公佈在監獄入口處，請定期查看。";
+		next;
+		mes "[參宿七]";
+		mes "我很期待看到你和你的夥伴們在這裡大展身手。";
+		close2;
+		cutin "",255;
+		completequest 12597;
+		cloakonnpcself( "參宿七#life2" );
+		end;
+	case 2:
+		break;
+	}
+	mes "[封印精靈石]";
+	mes "正確的監獄管理指南。您想查看什麼？";
+	next;
+	while(1) {
+		switch( select( "停止查看", "重新發放星座的庇護", "關於囚禁犯人的資訊", "關於監獄進入的資訊", "關於結界的資訊", "關於陷阱的資訊", "關於聖域的資訊 ", "關於異界的資訊", "關於危險預兆的資訊", "關於犯人恢復力的資訊" ) ) {
+		case 1:
+			end;
+		case 2:
+			if (countitem(420231) - isequippedcnt(420231) < 1) {
+				mes "[封印精靈石]";
+				mes "請再次確認它是否登錄在^ff0000裝備套裝設定^000000中，以及是否已經裝備。";
+				mes " ";
+				mes "即使您擁有兩個以上的庇護，也會以刻在冒險者^ff0000靈魂中的紀錄為優先^000000，因此我們建議您將多餘的庇護在商店處理掉。";
+				next;
+				if (select( "取消", "重新發放" ) == 1)
+					continue;
+				mes "[封印精靈石]";
+				mes "根據刻在冒險者靈魂中的紀錄";
+				mes "我們已經重新發放了刻有結界^0000ff等級 1^000000 的庇護。";
+				getitem2 420231,1,1,0,0,0,0,0,312453;	// MD_Hol_Protection
+				close;
+			}
+			mes "[封印精靈石]";
+			mes "您的物品欄中已有發放的庇護。只有在您的物品欄中沒有星座的庇護時，才能重新發放。";
+			close;
+		case 3:
+			mes "[囚犯資訊指南]";
+			mes "根據本指南，左邊是關押管理次元罪犯的守衛的熔岩湖。右邊則是關押次元管理者的生命殿堂。";
+			mes " ";
+			mes "這些守衛原本是為了監視次元罪犯而存在的，但在某個時候，他們卻表現出了保護次元罪犯的意圖。";
+			next;
+			mes "[囚犯資訊指南]";
+			mes "因此，生命星座將身為守衛的四神獸囚犯，關押在一個與次元罪犯完全隔離的次元中。";
+			mes " ";
+			mes "主要囚犯，也就是次元罪犯，是一個分身型魔物，牠竊取了第326次元生命星座的外貌和能力。目前，牠的危險程度尚未被測量，因此沒有記錄。";
+			next;
+			mes "[囚犯資訊指南]";
+			mes "有一點是肯定的：次元罪犯劫持了次元生命星座的身體和力量。";
+			mes " ";
+			mes "由於這一連串事件，第326次元不僅生命星座，連四神獸也處於空缺狀態。因此，使用者必須以兩個主要目標來管理這座監獄。";
+			next;
+			mes "-第一-";
+			mes "你必須定期攻擊次元罪犯，以防止他們囤積力量。";
+			mes " ";
+			mes "即使是現在，牠也在累積龐大的生命能量，這可能會對次元世界造成嚴重的危險。";
+			next;
+			mes "-第二-";
+			mes "必須測量並記錄次元罪犯所施展的力量等級。";
+			mes " ";
+			mes "與此相關的是，當進入監獄時，您可以裝備受到星座觸碰的庇護，並根據其附帶的結界等級來測量和記錄風險等級。";
+			next;
+			mes "-第三-";
+			mes "這或許不是最重要的，但有必要定期探訪獄卒們的監獄，以削弱他們的力量。";
+			mes " ";
+			mes "目前被囚禁的守衛是一股危險的力量，他們可能同情並協助次元罪犯逃跑。請定期以武力鎮壓他們，並沒收他們所管理/製造的監獄鑰匙。";
+			next;
+			mes "[囚犯資訊指南]";
+			mes "以上是關於監獄中囚犯的資訊。您還需要任何額外的資訊嗎？";
+			break;
+		case 4:
+			mes "[進入資訊指南]";
+			mes "監獄分為關押守衛的區域和關押次元罪犯的區域。";
+			mes " ";
+			mes "首先，您可以每天進入一次關押守衛的熔岩湖。沒有額外的封印，所以只要遵守一天一次的規定，就不會有特別的進入限制。";
+			next;
+			mes "[進入資訊指南]";
+			mes "關押次元罪犯的生命殿堂";
+			mes "必須持有 " + mesitemlink(1001415) + " 才能進入。";
+			mes " ";
+			mes "請記住，除了副本的一小時時間限制外，只要您有鑰匙，想進入多少次都可以。";
+			next;
+			mes "[進入資訊指南]";
+			mes "然而，一旦您領取過獎勵，您在^ff0000一週^000000內將無法在生命殿堂再次獲得獎勵。當然，即使在這種情況下，依然可以自由進入。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		case 5:
+			mes "[結界資訊指南]";
+			mes "次元罪犯的力量被生命星座參宿七所設下的結界緊緊封印著。";
+			mes " ";
+			mes "因此，當您進入管理監獄時，遇到的第一個次元罪犯的結界已被調整過，只能發揮出最低等級的力量。";
+			next;
+			mes "[結界資訊指南]";
+			mes "不過，如果您對次元罪犯施加適當的制裁並讓其屈服，您可以選擇獲得相應的^ff0000獎勵^000000，或者延遲領取獎勵，以獲得解鎖下一個^ff0000結界^000000等級的機會。";
+			next;
+			mes "[結界資訊指南]";
+			mes "如果您想獲得更高等級的獎勵，請記住，比起直接選擇獎勵，快速清除結界來提升等級會更有利。";
+			next;
+			mes "[結界資訊指南]";
+			mes "但是，單純提高結界等級並不一定有利。";
+			mes " ";
+			mes "如果您未能成功制裁次元罪犯，下次進入監獄時，您所能挑戰的結界等級將下降1級。^000000";
+			next;
+			mes "[結界資訊指南]";
+			mes "我建議您不要過度執著於無法應付的結界，而是努力穩定地進行制裁。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		case 6:
+			mes "[陷阱資訊指南]";
+			mes "次元罪犯利用其力量，在自己的空間內製造出干擾時間流動的陷阱，以阻止外來入侵者。";
+			mes " ";
+			mes "這個陷阱的危險性取決於結界的等級，且離監獄中心越遠，其破壞力就越強。";
+			next;
+			mes "[陷阱資訊指南]";
+			mes "此外，^ff0000每當您或隊友受到陷阱傷害時，次元罪犯的攻擊力就會變得更加強大。^000000";
+			next;
+			mes "[陷阱資訊指南]";
+			mes "如果監獄裡佈滿了陷阱，您可以利用異界來重置這些陷阱。這部分請參考關於異界的資訊。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		case 7:
+			mes "[聖域資訊指南]";
+			mes "次元罪犯會定期在自己周圍建立一個聖域，使他們對物理和魔法攻擊免疫。";
+			mes " ";
+			mes "這似乎是複製了高階星座所擁有的能力，並且無法用任何方法解除。";
+			next;
+			mes "[聖域資訊指南]";
+			mes "不過，如果您將展開了聖域的次元罪犯拉出聖域之外，聖域就會被取消。如果次元罪犯利用聖域肆虐，就盡量把牠拉出聖域吧。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		case 8:
+			mes "[異界資訊指南]";
+			mes "當監獄內的陷阱數量超過一定數量時，監獄北邊就會開啟一扇通往異界的傳送門。";
+			mes " ";
+			mes "在異界中，存在著次元罪犯不完美的幻象，而這些幻象與次元罪犯本體有著不完美的連結。";
+			next;
+			mes "[異界資訊指南]";
+			mes "當異界的所有幻象都被擊敗的瞬間，原本世界的次元罪犯將會受到重創，並在一段時間內陷入虛弱狀態。";
+			mes " ";
+			mes "這時，監獄內的陷阱會被重置，次元罪犯累積的所有攻擊力也會恢復原狀，並且在短暫的時間內，次元罪犯的所有防禦力會大幅下降。";
+			next;
+			mes "[異界資訊指南]";
+			mes "但是，不應該有太多人使用通往異界的傳送門。";
+			mes " ";
+			mes "因為每當有人穿過傳送門，次元罪犯每秒的恢復量就會增加一定程度。如果這個數值疊加起來，牠就能在瞬間恢復大量生命值。";
+			next;
+			mes "[異界資訊指南]";
+			mes "請記住，為了消滅異界的幻象，最好由少數具備強大攻擊力和機動性的隊伍成員前往。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		case 9:
+			mes "[危險預兆指南]";
+			mes "如果您在制裁次元罪犯時，看到地面上有任何不尋常的特效，請迅速離開該區域。";
+			mes " ";
+			mes "這個特效是次元罪犯即將施展大範圍強力攻擊的預兆。";
+			next;
+			mes "[危險預兆指南]";
+			mes "次元罪犯的攻擊可能會導致禁錮效果、嚴重的撕裂傷和凍傷，有時甚至會直接致命。";
+			mes " ";
+			mes "視線一刻也不要離開地面，並隨時保持對四面八方的警戒。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		case 10:
+			mes "[恢復力資訊指南]";
+			mes "次元罪犯擁有即時再生生命值的能力。因此，除非您的攻擊能超過這種恢復能力，否則可能無法進行正常的制裁。";
+			mes " ";
+			mes "在淨化異界的瞬間，當次元罪犯處於虛弱狀態時，其恢復率將會急劇下降。";
+			next;
+			mes "[恢復力資訊指南]";
+			mes "然而，請不要忘記，^ff0000恢復力也會根據使用傳送門前往淨化異界的人數成正比增加^000000。";
+			mes "如果有過多的人使用傳送門，可能會導致牠的恢復力激增，進而使正常的制裁失敗。";
+			mes " ";
+			mes "您還需要任何額外的資訊嗎？";
+			break;
+		}
+		next;
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(12597) == 1" );
+	end;
+}
+
+// t_garden,158,235,2	script(CLOAKED)	Dimension Prison#1	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect
+t_garden,158,235,2	script(CLOAKED)	次元監獄#1	GATE_SKYBLUE,{
+	if (isbegin_quest(12597) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "^ff0000物品種類和重量似乎太多了。請整理您的物品欄。^000000";
+		close;
+	}
+	if (getcharid(1) < 1) {
+		mes "^0000ff請組成至少一人的隊伍後再繼續。^000000";
+		close;
+	}
+	// ...
+			end;
+}
+
+// t_garden,173,235,2	script(CLOAKED)	Dimension Prison#2	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect
+t_garden,173,235,2	script(CLOAKED)	次元監獄#2	GATE_SKYBLUE,{
+	if (isbegin_quest(12597) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "^ff0000物品種類和重量似乎太多了。請整理您的物品欄。^000000";
+		close;
+	}
+	// ...
+	end;
+}
+
+
+
+// Daily Quests
+// t_garden,105,118,0	script	#wp01	HIDDEN_WARP_NPC,6,5,{	// (NPC name is not unique)
+t_garden,105,118,0	script	#wp01_t_garden_2	HIDDEN_WARP_NPC,6,5,{
+	end;
+OnTouch:
+	.@state = isbegin_quest(12620);
+	if (.@state == 0)
+		end;
+	cloakoffnpcself( "亞爾多#life2" );
+	cloakoffnpcself( "迪盧維奧#life2" );
+	cloakoffnpcself( "普羅塞拉#life2" );
+	cloakoffnpcself( "泰雷莫圖斯#life2" );
+	cloakoffnpcself( "塞爾彭斯#life2" );
+	if (.@state == 1) {
+		mes "[泰雷莫圖斯]";
+		mes "^777700喔，蕾緹希雅派來的冒險者終於到了。";
+		next;
+		mes "[亞爾多]";
+		mes "^aa0000冒險者！你準備好戰鬥了嗎？我們可不需要弱者！";
+		next;
+		mes "[迪盧維奧]";
+		mes "^0000ff亞爾多！你忘了蕾緹希雅說過至少要保持禮貌嗎？";
+		next;
+		mes "[普羅塞拉]";
+		mes "^00cc00迪盧維奧說得對。對來幫助我們的人類展現一點禮貌是件好事。";
+		next;
+		select( "我沒事，請告訴我該做什麼" );
+		mes "[塞爾彭斯]";
+		mes "^aa00aa我們是來自與這座花園相連的世界的遠古精靈。幫助各種自然元素保持和諧，是刻在我們靈體上的本能。";
+		next;
+		mes "[塞爾彭斯]";
+		mes "^aa00aa然而，在被一場奇怪的次元風暴捲入後，與這座花園相連的世界元素開始失控，最終開始精靈化。";
+		next;
+		mes "[泰雷莫圖斯]";
+		mes "^777700如果元素繼續精靈化，最終構成這個世界的物質世界將會崩潰。必須阻止這一切。";
+		next;
+		mes "[迪盧維奧]";
+		mes "^0000ff冒險者，絕不能再讓元素精靈化了。用你的力量將它們送回自然吧。";
+		next;
+		mes "[泰雷莫圖斯]";
+		mes "^777700這並不是破壞自然的行為。這是為了讓正在消失、已經精靈化的元素回歸到它們原來的位置。你願意聽聽我們的請求嗎？";
+		next;
+		select( "我願意。" );
+		mes "[亞爾多]";
+		mes "^aa0000你很好溝通嘛！好吧，那我會告訴你每天該做些什麼！^000000";
+		next;
+		mes "[亞爾多]";
+		mes "^aa0000我們把星座們準備的神聖物品放在我們對面。用人類的話來說，那就叫做自動販賣機。^000000";
+		next;
+		mes "[亞爾多]";
+		mes "^aa0000幫助我們以及星座們在這裡工作的獎勵，都可以透過那個神聖物品來領取。^000000";
+		next;
+		completequest 12620;
+		navigateto("t_garden",126,117);
+		end;
+	}
+	end;
+}
+
+t_garden,97,114,5	script(CLOAKED)	迪盧維奧#life2	4_EM_DILUVIO,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {	// Useless check ?
+		mes "物品種類或重量太多，無法與精靈對話。";
+		close;
+	}
+	switch( checkquest(12598,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000今天的委託已經接取過了。無法再接取更多。^000000";
+		close;
+	case 2:
+		erasequest 12598;
+		break;
+	}
+	if (F_queststatus( HAVEQUEST,12633,12634,12635,12636 ) == -1) {
+		mes "^0000ff還有未完成的任務。在 " + F_mesnavi("精靈自動販賣機", "t_garden",128,122) + " 完成所有委託之前，無法接取額外的委託或重置。^000000";
+		close;
+	}
+	mes "[迪盧維奧]";
+	mes "我的目標是將在被遺忘的記憶中逐漸實體化的水精靈還原為元素。希望能得到你的幫助。";
+	next;
+	if (select( "下次再幫你。", "我會幫你的" ) == 1)
+		end;
+	mes "[迪盧維奧]";
+	mes "這是給你的委託清單。非常感謝。";
+	close2;
+	.@quest_id[0] = rand(12633,12634);
+	.@quest_id[1] = rand(12635,12636);
+	setquest .@quest_id[0];
+	setquest .@quest_id[1];
+	setquest 12598;
+	open_quest_ui(.@quest_id[0]);
+	end;
+
+OnInit:
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "isbegin_quest(12620) == 2 && (checkquest(12598,PLAYTIME) == -1 || checkquest(12598,PLAYTIME) == 2) && F_queststatus( HAVEQUEST,12633,12634,12635,12636 ) == 0" );
+	end;
+}
+
+t_garden,100,117,5	script(CLOAKED)	泰雷莫圖斯#life2	4_EM_TERREMOTUS,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與精靈對話。";
+		close;
+	}
+	switch( checkquest(12599,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000今天的委託已經接取過了。無法再接取更多。^000000";
+		close;
+	case 2:
+		erasequest 12599;
+		break;
+	}
+	if (F_queststatus( HAVEQUEST,12621,12622,12623,12624 ) == -1) {
+		mes "^0000ff還有未完成的任務。在 " + F_mesnavi("精靈自動販賣機", "t_garden",128,122) + " 完成所有委託之前，無法接取額外的委託或重置。^000000";
+		close;
+	}
+	mes "[泰雷莫圖斯]";
+	mes "大地的元素必須保持其元素狀態。如果繼續精靈化，最終連一寸泥土都不會剩下。你能幫幫我嗎？";
+	next;
+	if (select( "下次再幫你。", "我會幫你的" ) == 1)
+		end;
+	mes "[泰雷莫圖斯]";
+	mes "這就是我今天對你的全部請求。慢慢來，看一看吧。";
+	close2;
+	.@quest_id[0] = rand(12621,12622);
+	.@quest_id[1] = rand(12623,12624);
+	setquest .@quest_id[0];
+	setquest .@quest_id[1];
+	setquest 12599;
+	open_quest_ui(.@quest_id[0]);
+	end;
+OnInit:
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "isbegin_quest(12620) == 2 && (checkquest(12599,PLAYTIME) == -1 || checkquest(12599,PLAYTIME) == 2) && F_queststatus( HAVEQUEST,12621,12622,12623,12624 ) == 0" );
+	end;
+}
+
+t_garden,103,120,5	script(CLOAKED)	塞爾彭斯#life2	4_EM_SERPENS,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與精靈對話。";
+		close;
+	}
+	switch( checkquest(12600,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000今天的委託已經接取過了。無法再接取更多。^000000";
+		close;
+	case 2:
+		erasequest 12600;
+		break;
+	}
+	if (F_queststatus( HAVEQUEST,12637,12638,12639,12640,12641,12642,12643 ) == -1) {
+		mes "^0000ff還有未完成的任務。在 " + F_mesnavi("精靈自動販賣機", "t_garden",128,122) + " 完成所有委託之前，無法接取額外的委託或重置。^000000";
+		close;
+	}
+	mes "[塞爾彭斯]";
+	mes "我無法忍受看到健康的元素因為無法精靈化而腐化。我需要你的力量來防止它們陷入憤怒並受到污染。";
+	next;
+	if (select( "下次再幫你。", "我會幫你的" ) == 1)
+		end;
+	mes "[塞爾彭斯]";
+	mes "很抱歉今天又要拜託你這種事。非常感謝。";
+	close2;
+	.@quest_id[0] = rand(12637,12638);
+	.@quest_id[1] = rand(12639,12643);
+	setquest .@quest_id[0];
+	setquest .@quest_id[1];
+	setquest 12600;
+	open_quest_ui(.@quest_id[0]);
+	end;
+OnInit:
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "isbegin_quest(12620) == 2 && (checkquest(12600,PLAYTIME) == -1 || checkquest(12600,PLAYTIME) == 2) && F_queststatus( HAVEQUEST,12637,12638,12639,12640,12641,12642,12643 ) == 0" );
+	end;
+}
+
+t_garden,106,123,5	script(CLOAKED)	普羅塞拉#life2	4_EM_PROCELLA,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與精靈對話。";
+		close;
+	}
+	switch( checkquest(12601,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000今天的委託已經接取過了。無法再接取更多。^000000";
+		close;
+	case 2:
+		erasequest 12601;
+		break;
+	}
+	if (F_queststatus( HAVEQUEST,12629,12630,12631,12632 ) == -1) {
+		mes "^0000ff還有未完成的任務。在 " + F_mesnavi("精靈自動販賣機", "t_garden",128,122) + " 完成所有委託之前，無法接取額外的委託或重置。^000000";
+		close;
+	}
+	mes "[普羅塞拉]";
+	mes "風意味著生命之源，也就是大氣。如果風的元素繼續精靈化，這個次元的所有生物最終都會死亡。我需要有人幫忙。";
+	next;
+	if (select( "下次再幫你。", "我會幫你的" ) == 1)
+		end;
+	mes "[普羅塞拉]";
+	mes "很高興有人能解決這個問題。請好好完成我的委託。";
+	close2;
+	.@quest_id[0] = rand(12629,12630);
+	.@quest_id[1] = rand(12631,12632);
+	setquest .@quest_id[0];
+	setquest .@quest_id[1];
+	setquest 12601;
+	open_quest_ui(.@quest_id[0]);
+	end;
+OnInit:
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "isbegin_quest(12620) == 2 && (checkquest(12601,PLAYTIME) == -1 || checkquest(12601,PLAYTIME) == 2) && F_queststatus( HAVEQUEST,12629,12630,12631,12632 ) == 0" );
+	end;
+}
+
+t_garden,109,126,5	script(CLOAKED)	亞爾多#life2	4_EM_ARDOR,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與精靈對話。";
+		close;
+	}
+	switch( checkquest(12602,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000今天的委託已經接取過了。無法再接取更多。^000000";
+		close;
+	case 2:
+		erasequest 12602;
+		break;
+	}
+	if (F_queststatus( HAVEQUEST,12625,12626,12627,12628 ) == -1) {
+		mes "^0000ff還有未完成的任務。在 " + F_mesnavi("精靈自動販賣機", "t_garden",128,122) + " 完成所有委託之前，無法接取額外的委託或重置。^000000";
+		close;
+	}
+	mes "[亞爾多]";
+	mes "精靈化後能自行移動和思考的火焰本身就很危險。你不覺得就這樣坐視不管太危險了嗎？我不需要你的幫忙，照我的指示去做。";
+	next;
+	if (select( "下次再幫你。", "我會幫你的" ) == 1)
+		end;
+	mes "[亞爾多]";
+	mes "這是你必須做的事。你最好盡快完成。";
+	close2;
+	.@quest_id[0] = rand(12625,12626);
+	.@quest_id[1] = rand(12627,12628);
+	setquest .@quest_id[0];
+	setquest .@quest_id[1];
+	setquest 12602;
+	open_quest_ui(.@quest_id[0]);
+	end;
+OnInit:
+	questinfo( QTYPE_DAILYQUEST, QMARK_YELLOW, "isbegin_quest(12620) == 2 && (checkquest(12602,PLAYTIME) == -1 || checkquest(12602,PLAYTIME) == 2) && F_queststatus( HAVEQUEST,12625,12626,12627,12628 ) == 0" );
+	end;
+}
+
+
+// Uncloak quest NPC rewards and exchange/enchants NPCs
+t_garden,126,123,0	script	#v_wp01	HIDDEN_WARP_NPC,3,3,{
+	end;
+OnTouch:
+	if (isbegin_quest(12620) != 2)
+		end;
+	cloakoffnpcself( "亞空間自動販賣機#1" );
+	cloakoffnpcself( "亞空間自動販賣機#2" );
+	cloakoffnpcself( "亞空間自動販賣機#3" );
+	cloakoffnpcself( "精靈客訴終端機#1" );
+	end;
+}
+t_garden,130,119,0	duplicate(#v_wp01)	#v_wp02	HIDDEN_WARP_NPC,3,3
+t_garden,134,115,0	duplicate(#v_wp01)	#v_wp03	HIDDEN_WARP_NPC,4,4
+
+
+// Quest rewards
+t_garden,126,126,2	script(CLOAKED)	精靈客訴終端機#1	4_VENDING_MACHINE2,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與結界進行通訊。";
+		close;
+	}
+	mes "[精靈客訴終端機]";
+	mes "精靈與人類的對話。無縫的溝通。我們將傾聽客戶的聲音。這裡是 Kiosk 5000，一台同時處理精靈客訴和賠償的綜合資訊終端機。需要幫忙嗎？";
+	next;
+	if (select( "退出選單", "精靈客訴處理" ) == 1) {
+		mes "[精靈客訴終端機]";
+		mes "再見。";
+		close;
+	}
+	mes "[精靈客訴終端機]";
+	mes "我們將自動處理您所有已完成的精靈委託。";
+	next;
+	mes "[精靈客訴終端機]";
+
+	.@count += callsub( S_Hunt,
+		12621,				// Quest ID
+		"泰雷莫圖斯的委託 1",	// Quest name
+		1001464,			// Reward item ID
+		13890900,			// Base exp
+		0					// Job exp (unknown)
+	);
+	.@count += callsub( S_Hunt, 12622, "泰雷莫圖斯的委託 2", 1001464, 13890900,0 );
+// Energy_Of_Ground
+	.@count += callsub( S_Hunt, 12623, "泰雷莫圖斯的委託 3", 1001464, 13890900,0 );
+	.@count += callsub( S_Hunt, 12624, "泰雷莫圖斯的委託 4", 1001464, 13890900,0 );
+	.@count += callsub( S_Hunt, 12625, "亞爾多的委託 1", 1001461, 13890900,0 );
+// Energy_Of_Flame
+	.@count += callsub( S_Hunt, 12626, "亞爾多的委託 2", 1001461, 13890900,0 );
+	.@count += callsub( S_Hunt, 12627, "亞爾多的委託 3", 1001461, 13890900,0 );
+	.@count += callsub( S_Hunt, 12628, "亞爾多的委託 4", 1001461, 13890900,0 );
+	.@count += callsub( S_Hunt, 12629, "普羅塞拉的委託 1", 1001463, 13890900,0 );
+// Energy_Of_Wind
+	.@count += callsub( S_Hunt, 12630, "普羅塞拉的委託 2", 1001463, 13890900,0 );
+	.@count += callsub( S_Hunt, 12631, "普羅塞拉的委託 3", 1001463, 13890900,0 );
+	.@count += callsub( S_Hunt, 12632, "普羅塞拉的委託 4", 1001463, 13890900,0 );
+	.@count += callsub( S_Hunt, 12633, "迪盧維奧的委託 1", 1001462, 13890900,0 );
+// Energy_Of_Water
+	.@count += callsub( S_Hunt, 12634, "迪盧維奧的委託 2", 1001462, 13890900,0 );
+	.@count += callsub( S_Hunt, 12635, "迪盧維奧的委託 3", 1001462, 13890900,0 );
+	.@count += callsub( S_Hunt, 12636, "迪盧維奧的委託 4", 1001462, 13890900,0 );
+	.@count += callsub( S_Hunt, 12637, "塞爾彭斯的委託 1", 1001465, 27176580,0 );
+// Grace_Of_Spirit
+	.@count += callsub( S_Hunt, 12638, "塞爾彭斯的委託 2", 1001465, 27176580,0 );
+	.@count += callsub( S_Gathering,
+		12639,				// Quest ID
+		"塞爾彭斯的委託 3",	// Quest name
+		1001433,			// Required item ID
+		10,					// Required amount
+		1001461,			// Reward item ID
+		27176580,			// Base exp
+		0					// Job exp (unknown)
+	);
+	.@count += callsub( S_Gathering, 12640, "塞爾彭斯的委託 4", 1001434,10, 1001462, 27176580,0 );
+	.@count += callsub( S_Gathering, 12641, "塞爾彭斯的委託 5", 1001435,10, 1001463, 27176580,0 );
+	.@count += callsub( S_Gathering, 12642, "塞爾彭斯的委託 6", 1001436,10, 1001464, 27176580,0 );
+	.@count += callsub( S_Gathering, 12643, "塞爾彭斯的委託 7", 1001432,20, 1001465, 27176580,0 );
+	if (.@count == 0) {
+		mes "看來目前沒有處理任何特殊客訴。如果您處理了與精靈相關的客訴，請隨時回來。謝謝。";
+		close;
+	}
+	mes "------------";
+	mes "以上的 " + .@count + " 件客訴已處理完畢。";
+	close;
+S_Hunt:
+	if (checkquest(getarg(0),HUNTING) == 2) {
+		mes "^0000ff" + getarg(1) + " 已完成^000000 - 報酬已發放。";
+		erasequest getarg(0);
+		getitem getarg(2),1;
+		for ( .@i = 0; .@i < 10; ++.@i )
+			getexp getarg(3), getarg(4);
+		return 1;
+	}
+	return 0;
+S_Gathering:
+	if (countitem(getarg(2)) >= getarg(3)) {
+		mes "^0000ff" + getarg(1) + " 已完成^000000 - 報酬已發放。";
+		erasequest getarg(0);
+		delitem getarg(2),getarg(3);
+		getitem getarg(4),1;
+		for ( .@i = 0; .@i < 10; ++.@i )
+			getexp getarg(5), getarg(6);
+		return 1;
+	}
+	return 0;
+OnInit:
+	setunittitle( getnpcid(0), "<元素最新型號>" );
+
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12621,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12622,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12623,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12624,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12625,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12626,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12627,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12628,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12629,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12630,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12631,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12632,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12633,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12634,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12635,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12636,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12637,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "checkquest(12638,HUNTING) == 2" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(12639) == 1 && countitem(1001433) >= 10" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(12640) == 1 && countitem(1001434) >= 10" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(12641) == 1 && countitem(1001435) >= 10" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(12642) == 1 && countitem(1001436) >= 10" );
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(12643) == 1 && countitem(1001432) >= 20" );
+	end;
+}
+
+
+// Exchange and enchants
+t_garden,129,123,2	script(CLOAKED)	亞空間自動販賣機#1	HEROS_IN_ORB_1,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與結界進行通訊。";
+		close;
+	}
+	npctalk "你想要的一切都在這裡。你想進行什麼交易？", "", bc_self;
+	switch( select( "取消", "依屬性交易能量", "依季節交易能量", "各種消耗品交易" ) ) {
+	case 1:
+		end;
+	case 2:
+		callshop( "barter_t_garden_1" );
+		break;
+	case 3:
+		callshop( "barter_t_garden_2" );
+		break;
+	case 4:
+		callshop( "barter_t_garden_3" );
+		break;
+	}
+	end;
+OnInit:
+	setunittitle( getnpcid(0), "<歡迎進行各種雜貨交易>" );
+	end;
+}
+
+t_garden,132,120,2	script(CLOAKED)	亞空間自動販賣機#2	HEROS_IN_ORB_2,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與結界進行通訊。";
+		close;
+	}
+	npctalk "這裡專營裝備。你想進行什麼交易？", "", bc_self;
+	switch( select( "取消", "購買生命循環飾品", "購買神獸披風", "升級神獸披風" ) ) {
+	case 1:
+		end;
+	case 2:
+		callshop( "barter_t_garden_4" );
+		end;
+	case 3:
+		callshop( "barter_t_garden_5" );
+		end;
+	case 4:
+		item_reform("Season_H_Upgrade");
+		end;
+	}
+	end;
+
+OnInit:
+	setunittitle( getnpcid(0), "<服飾升級專家>" );
+end;
+}
+
+t_garden,135,117,2	script(CLOAKED)	亞空間自動販賣機#3	HEROS_IN_ORB_3,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與結界進行通訊。";
+		close;
+	}
+	npctalk "我們為從火之湖取得的裝備進行精心附魔。有您想要的選單嗎？", "", bc_self;
+	switch( select( "神獸披風 - 春", "神獸披風 - 夏", "神獸披風 - 秋", "神獸披風 - 冬" ) ) {
+	case 1:
+		item_enchant(117);
+		break;
+	case 2:
+		item_enchant(119);
+		break;
+	case 3:
+		item_enchant(121);
+		break;
+	case 4:
+		item_enchant(123);
+		break;
+	}
+	end;
+
+OnInit:
+	setunittitle( getnpcid(0), "<神獸披風附魔>" );
+	end;
+}
+
+t_garden,138,114,2	script(CLOAKED)	亞空間自動販賣機#4	HEROS_IN_ORB_4,{
+	if (isbegin_quest(12620) != 2)
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "物品種類或重量太多，無法與結界進行通訊。";
+		close;
+	}
+	npctalk "我們傾盡全力為循環裝備進行附魔。有您想要的選單嗎？", "", bc_self;
+	switch( select( "生命循環飾品", "生命循環 - 春", "生命循環 - 夏", "生命循環 - 秋", "生命循環 - 冬" ) ) {
+	case 1:
+		item_enchant(142);
+		break;
+	case 2:
+		item_enchant(118);
+		break;
+	case 3:
+		item_enchant(120);
+		break;
+	case 4:
+		item_enchant(122);
+		break;
+	case 5:
+		item_enchant(124);
+		break;
+	}
+	end;
+OnInit:
+	setunittitle( getnpcid(0), "<生命循環附魔>" );
+	end;
+}
+
+
+// Storages
+-	shop	t_garden_shop	-1,501:-1
+
+t_garden,156,222,2	script	多功能自動販賣機#1	4_VENDING_MACHINE2,{
+	// switch( select( "道具商人", "倉庫 1 (100z)", "倉庫 2 (100z)", "倉庫 3 (100z)", "使用儲存點服務" ) ) {
+	switch( select( "道具商人", "倉庫 1 (100z)", "", "", "使用儲存點服務" ) ) {
+	case 1:
+		callshop( "t_garden_shop", 2 );
+		end;
+	case 2:
+		.@storage_num = 1;
+		break;
+	case 3:
+		.@storage_num = 2;
+		break;
+	case 4:
+		.@storage_num = 3;
+		break;
+	case 5:
+		npctalk "" + strcharinfo(0) + " 您的位置已安全儲存。", "", bc_self;
+
+		.@num = atoi( strnpcinfo(2) );
+		if (.@num == 1)
+			savepoint "t_garden",156,220;
+		else if (.@num == 2)
+			savepoint "t_garden",97,135;
+		else if (.@num == 3)
+			savepoint "t_garden",90,115;
+		else if (.@num == 4)
+			savepoint "t_garden",137,106;
+		break;
+	}
+	if (Zeny < 100) {
+		npctalk "要使用倉庫，請投入 100 zeny。", "", bc_self;
+		end;
+	}
+	Zeny -= 100;
+	npctalk "為您開啟 " + .@storage_num + " 號倉庫。感謝您的使用。", "", bc_self;
+	openstorage;
+	end;
+
+OnInit:
+	questinfo( QTYPE_CLICKME, QMARK_YELLOW, "isbegin_quest(12592) == 2" );
+	end;
+}
+t_garden,97,138,6	duplicate(多功能自動販賣機#1)	多功能自動販賣機#2	4_VENDING_MACHINE2
+t_garden,91,116,2	duplicate(多功能自動販賣機#1)	多功能自動販賣機#3	4_VENDING_MACHINE2
+t_garden,144,116,2	duplicate(多功能自動販賣機#1)	多功能自動販賣機#4	4_VENDING_MACHINE2

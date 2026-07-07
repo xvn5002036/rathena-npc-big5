@@ -1,0 +1,1012 @@
+//===== rAthena Script =======================================
+//= Izlude Arena Room
+//===== By: ==================================================
+//= SinSloth
+//===== Current Version: =====================================
+//= 1.4
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Izlude Battle Arena Main Room
+//===== Additional Comments: =================================
+//= 1.0 First version.
+//= 1.1 Fixed a small reward typo (was giving potato.) [L0ne_W0lf]
+//= 1.2 Label standardization, disabled GM NPCs. [Euphy]
+//= 1.2a Added Renewal level checksk. [Euphy]
+//= 1.3 Script updates. [Euphy]
+//= 1.4 Added GM management function. [Euphy]
+//============================================================
+
+arena_room,94,93,5	script	凡迪戈斯	97,{
+	mes "[凡迪戈斯]";
+	mes "歡迎來到競技場的世界，這是一場與時間賽跑的戰鬥。";
+	mes "我的名字是凡迪戈斯，我來這裡是為了幫助你的。";
+	next;
+	mes "[凡迪戈斯]";
+	mes "如果你有任何問題，隨時可以問我。";
+	next;
+	while(1) {
+		switch(select("如何挑戰:關於競技場點數:我目前的競技場點數:取消")) {
+		case 1:
+			mes "[凡迪戈斯]";
+			mes "競技場有兩種不同的模式，分別是 ^3131FF個人模式^000000 和 ^3131FF隊伍模式^000000。";
+			next;
+			mes "[凡迪戈斯]";
+			mes "^3131FF個人模式^000000 根據角色等級分為 50 到 80 級的 4 個不同階段。";
+			mes "擁有 5 名成員的隊伍，可以參加 ^3131FF隊伍模式^000000。";
+			next;
+			mes "[凡迪戈斯]";
+			mes "對於 ^3131FF每個個人模式階段^000000，等級高於該階段要求 20 級以上的角色將無法進入。這是為了防止高等角色霸佔低等級的階段。";
+			next;
+			mes "[凡迪戈斯]";
+			mes "個人模式階段的 NPC 分布在從 12 點鐘方向逆時針排列的位置。";
+			mes "當你在聊天室等待時，系統會依照等待順序自動引導你進入競技場房間。";
+			break;
+		case 2:
+			mes "[凡迪戈斯]";
+			mes "讓我來說明一下 ^3131FF競技場點數^000000。";
+			mes "這是給予 ^3131FF成功通關競技場階段^000000 玩家的獎勵點數，一名玩家最多可持有 30,000 點。";
+			next;
+			mes "[凡迪戈斯]";
+			mes "即使你因為超時或其他錯誤未能通關，還是會獲得非常少量的競技場點數。";
+			next;
+			mes "[凡迪戈斯]";
+			mes "關於競技場點數的用途，";
+			mes "我們透過名為紀芙的 NPC 提供各種服務，例如紀念照拍攝服務。";
+			break;
+		case 3:
+			mes "[凡迪戈斯]";
+			mes "讓我檢查一下 "+strcharinfo(0)+" 目前的競技場點數。";
+			next;
+			mes "[凡迪戈斯]";
+			mes ""+strcharinfo(0)+" 總共有 ^3131FF"+arena_point+"^000000 點。";
+			next;
+			mes "[凡迪戈斯]";
+			mes "如果你想知道如何使用競技場點數，請參考第二個選項 ^3131FF'關於競技場點數'^000000。";
+			break;
+		case 4:
+			mes "[凡迪戈斯]";
+			mes "那麼，";
+			mes "祝你";
+			mes "玩得愉快。";
+			close;
+		}
+		next;
+		mes "[凡迪戈斯]";
+		mes "還有什麼";
+		mes "我可以幫忙的嗎？";
+		next;
+	}
+	close;
+OnLineRec_50:
+	mapannounce "arena_room",""+$arena_50topn$+" 刷新了競技場計時戰 50 級的最高紀錄。恭喜！",0;
+	end;
+OnLineRec_60:
+	mapannounce "arena_room",""+$arena_60topn$+" 刷新了競技場計時戰 60 級的最高紀錄。恭喜！",0;
+	end;
+OnLineRec_70:
+	mapannounce "arena_room",""+$arena_70topn$+" 刷新了競技場計時戰 70 級的最高紀錄。恭喜！",0;
+	end;
+OnLineRec_80:
+	mapannounce "arena_room",""+$arena_80topn$+" 刷新了競技場計時戰 80 級的最高紀錄。恭喜！",0;
+	end;
+OnLineRec_pt:
+	mapannounce "arena_room","隊伍 "+$arena_pttopn$+" 刷新了競技場計時戰的最高紀錄。恭喜！",0;
+	end;
+//OnLineRec_vs:
+//	mapannounce "arena_room","Party "+$040611_arn_vstopn$+" has renewed the top record in the Arena Time Force Battle. Congratulations!",0;
+//	end;
+}
+
+arena_room,105,82,5	script	競技場紀錄專員	57,{
+	mes "[歐文·庫夫]";
+	mes "你好，我的名字是歐文·庫夫，";
+	mes "負責玩家每個競技場階段的紀錄。";
+	next;
+	mes "[歐文·庫夫]";
+	mes "你想查看各階段的最高紀錄玩家嗎？";
+	mes "如果是的話，請選擇下方的選單。";
+	next;
+	switch(select("Lv 50 階段:Lv 60 階段:Lv 70 階段:Lv 80 階段:隊伍階段")) {
+	case 1:
+		mes "[歐文·庫夫]";
+		mes "目前競技場 Lv 50 階段的最高紀錄玩家是 ^3131FF "+$arena_50topn$+"^000000，最高紀錄為 ^3131FF"+$top_50min+"^000000 分 ^3131FF"+$top_50sec+"^000000 秒。";
+		close;
+	case 2:
+		mes "[歐文·庫夫]";
+		mes "目前競技場 Lv 60 階段的最高紀錄玩家是 ^3131FF"+$arena_60topn$+"^000000，最高紀錄為 ^3131FF"+$top_60min+"^000000 分 ^3131FF"+$top_60sec+"^000000 秒。";
+		close;
+	case 3:
+		mes "[歐文·庫夫]";
+		mes "目前競技場 Lv 70 階段的最高紀錄玩家是 ^3131FF"+$arena_70topn$+"^000000，最高紀錄為 ^3131FF"+$top_70min+"^000000 分 ^3131FF"+$top_70sec+"^000000 秒。";
+		close;
+	case 4:
+		mes "[歐文·庫夫]";
+		mes "目前競技場 Lv 80 階段的最高紀錄玩家是 ^3131FF"+$arena_80topn$+"^000000，最高紀錄為 ^3131FF"+$top_80min+"^000000 分 ^3131FF"+$top_80sec+"^000000 秒。";
+		close;
+	case 5:
+		mes "[歐文·庫夫]";
+		mes "目前最高紀錄的隊伍是 ^3131FF"+$arena_pttopn$+"^000000，最高紀錄為 ^3131FF"+$top_ptmin+"^000000 分 ^3131FF"+$top_ptsec+"^000000 秒。";
+		close;
+	}
+}
+
+arena_room,68,135,3	script	助手 派特	726,{
+	mes "[派特]";
+	mes "歡迎，歡迎。";
+	mes "我是 Lv 50 競技場階段的助手。";
+	next;
+	mes "[派特]";
+	mes "這個 ^3131FFLv 50 競技場階段^000000";
+	mes "僅開放給 ^FF000050 級^000000 到 ^FF000069 級^000000 的角色進入。";
+	next;
+	mes "[派特]";
+	mes "這個等級限制是為了防止高等角色濫用低等級的競技場階段。希望你能理解。";
+	mes "此外，我們收取 1,000 Zeny 的入場費。";
+	next;
+	mes "[派特]";
+	mes "讓我為你介紹競技場的遊玩規則。";
+	next;
+	mes "[派特]";
+	mes "^3131FF在聊天室中等待輪到你。^000000";
+	mes "輪到你時，你將被自動傳送到競技場地圖。";
+	next;
+	mes "[派特]";
+	mes "一進入競技場，計算遊玩時間的計時器就會啟動。";
+	mes "請遵從 ^3131FF希爾安多^000000 的指示。 ";
+	next;
+	mes "[派特]";
+	mes "你有 ^3131FF5 分鐘^000000 的戰鬥時間。";
+	next;
+	mes "[派特]";
+	mes "在你清除包含首領房間在內的所有房間後，你將再次被傳送到 ^3131FF結束等待室^000000。";
+	mes "你只能在等待室停留 ^3131FF1 分鐘^000000，請盡快領取競技場點數並離開。";
+	next;
+	mes "[派特]";
+	mes "如果你在結束等待室停留超過 1 分鐘，你將被強制傳出，且無法獲得任何競技場點數。請記住這點。";
+	next;
+	mes "[派特]";
+	mes "希望你能玩得愉快。";
+	close;
+}
+
+arena_room,41,93,5	script	助手 班	750,{
+	mes "[班]";
+	mes "歡迎，歡迎。";
+	mes "我是 Lv 60 競技場階段的助手。";
+	next;
+	mes "[班]";
+	mes "這個 ^3131FFLv 60 競技場階段^000000";
+	mes "僅開放給 ^FF000060 級^000000 到 ^FF000079 級^000000 的角色進入。";
+	next;
+	mes "[班]";
+	mes "這個等級限制是為了防止高等角色濫用低等級的競技場階段。希望你能理解。";
+	mes "此外，我們收取 1,000 Zeny 的入場費。";
+	next;
+	mes "[班]";
+	mes "讓我為你介紹競技場的遊玩規則。";
+	next;
+	mes "[班]";
+	mes "^3131FF在聊天室中等待輪到你。^000000";
+	mes "輪到你時，你將被自動傳送到競技場地圖。";
+	next;
+	mes "[班]";
+	mes "一進入競技場，計算遊玩時間的計時器就會啟動。";
+	mes "請遵從 ^3131FF米尼羅佛^000000 的指示。 ";
+	next;
+	mes "[班]";
+	mes "你有 ^3131FF6 分鐘^000000 的戰鬥時間。";
+	next;
+	mes "[班]";
+	mes "在你清除包含首領房間在內的所有房間後，你將再次被傳送到 ^3131FF結束等待室^000000。";
+	mes "你只能在等待室停留 ^3131FF1 分鐘^000000，請盡快領取競技場點數並離開。";
+	next;
+	mes "[班]";
+	mes "如果你在結束等待室停留超過 1 分鐘，你將被強制傳出，且無法獲得任何競技場點數。請記住這點。";
+	next;
+	mes "[班]";
+	mes "希望你能玩得愉快。";
+	close;
+}
+
+arena_room,53,49,5	script	助手 維休斯	730,{
+	mes "[維休斯]";
+	mes "你好啊。";
+	mes "我的名字是維休斯，我是 Lv 70 競技場階段的助手。";
+	mes "(...我完全不知道我到底是怎麼接到這個屎缺的...咕噥咕噥...抱怨抱怨..)";
+	next;
+	mes "[維休斯]";
+	mes "這個 ^3131FFLv 70 競技場階段^000000";
+	mes "僅開放給 ^FF000070 級^000000 到 ^FF000089 級^000000 的角色進入。";
+	next;
+	mes "[維休斯]";
+	mes "這個等級限制是為了防止高等角色濫用低等級的競技場階段。希望你能理解。";
+	mes "此外，我們收取 1,000 Zeny 的入場費。";
+	next;
+	mes "[維休斯]";
+	mes "讓我為你介紹競技場的遊玩規則。";
+	next;
+	mes "[維休斯]";
+	mes "^3131FF在聊天室中等待輪到你。^000000";
+	mes "輪到你時，你將被自動傳送到競技場地圖。";
+	next;
+	mes "[維休斯]";
+	mes "一進入競技場，計算遊玩時間的計時器就會啟動。";
+	mes "請遵從 ^3131FF卡迪拉克^000000 的指示。 ";
+	next;
+	mes "[維休斯]";
+	mes "你有 ^3131FF7 分鐘^000000 的戰鬥時間。";
+	next;
+	mes "[維休斯]";
+	mes "在你清除包含首領房間在內的所有房間後，你將再次被傳送到 ^3131FF結束等待室^000000。";
+	mes "你只能在等待室停留 ^3131FF1 分鐘^000000，請盡快領取競技場點數並離開。";
+	next;
+	mes "[維休斯]";
+	mes "如果你在結束等待室停留超過 1 分鐘，你將被強制傳出，且無法獲得任何競技場點數。請記住這點。";
+	next;
+	mes "[維休斯]";
+	mes "好了，保重。";
+	close;
+}
+
+arena_room,147,49,3	script	助手 艾平	727,{
+	mes "[艾平]";
+	mes "你好，";
+	mes "我是 Lv 80 競技場階段的助手，我的名字是艾平。";
+	mes "我喜歡閱讀，今年 19 歲...咦...？你不想聽我的事嗎...？";
+	next;
+	emotion ET_CRY;
+	mes "[艾平]";
+	mes "好吧...";
+	next;
+	mes "[艾平]";
+	mes "這個 ^3131FFLv 80 競技場階段^000000";
+	mes "僅開放給 ^FF000080 級^000000 到 ^FF0000"+(checkre(0)?"160":"99")+"級^000000 的角色進入。";
+	next;
+	mes "[艾平]";
+	mes "這個等級限制是為了防止高等角色濫用低等級的競技場階段。希望你能理解。";
+	mes "此外，我們收取 1,000 Zeny 的入場費。";
+	next;
+	mes "[艾平]";
+	mes "讓我為你介紹競技場的遊玩規則。";
+	next;
+	mes "[艾平]";
+	mes "^3131FF在聊天室中等待輪到你。^000000";
+	mes "輪到你時，你將被自動傳送到競技場地圖。";
+	next;
+	mes "[艾平]";
+	mes "一進入競技場，計算遊玩時間的計時器就會啟動。";
+	mes "請遵從 ^3131FF阿克圖斯^000000 的指示。 ";
+	next;
+	mes "[艾平]";
+	mes "你有 ^3131FF8 分鐘^000000 的戰鬥時間。";
+	next;
+	mes "[艾平]";
+	mes "在你清除包含首領房間在內的所有房間後，你將再次被傳送到 ^3131FF結束等待室^000000。";
+	mes "你只能在等待室停留 ^3131FF1 分鐘^000000，請盡快領取競技場點數並離開。";
+	next;
+	mes "[艾平]";
+	mes "如果你在結束等待室停留超過 1 分鐘，你將被強制傳出，且無法獲得任何競技場點數。請記住這點。";
+	next;
+	mes "[艾平]";
+	mes "希望你能玩得愉快。";
+	close;
+}
+
+arena_room,158,93,5	script	助手 露妮克	828,{
+	mes "[露妮克]";
+	mes "歡迎來到隊伍競技場階段。";
+	mes "我希望你能仔細聆聽我的介紹，";
+	mes "因為隊伍競技場階段和個人模式階段有些不同。";
+	next;
+	mes "[露妮克]";
+	mes "^3131FF隊伍競技場階段^000000";
+	mes "僅開放給 ^FF000010 級^000000 到 ^FF0000"+(checkre(0)?"160":"99")+"級^000000 的玩家進入。";
+	next;
+	mes "[露妮克]";
+	mes "此外，直到 5 名隊伍成員都進入房間後，競技場才會開始。我們收取 1,000 Zeny 的入場費。";
+	next;
+	mes "[露妮克]";
+	mes "讓我為你介紹競技場的遊玩規則。";
+	next;
+	mes "[露妮克]";
+	mes "^3131FF和你的朋友組成隊伍並在聊天室中等待^000000。";
+	mes "你必須事先組建隊伍。如果你沒有這麼做，你仍然可以遊玩，但會有很多不便。";
+	next;
+	mes "[露妮克]";
+	mes "同時請記住，自動傳送到競技場房間的 5 名玩家將會依照 ^FF0000進入聊天室^000000 的順序，而不是依照 ^FF0000隊伍^000000 順序。請記住這一點。";
+	next;
+	mes "[露妮克]";
+	mes "在進入聊天室之前，請先組成 ^3131FF5 人^000000 隊伍。";
+	next;
+	mes "[露妮克]";
+	mes "輪到你們時，你們將被傳送進入一個小地圖，裡面有傳送點與助手 NPC。";
+	mes "如果你和不同隊伍的成員一起進入，請使用傳送點離開地圖。然後你將會回到等待室。";
+	next;
+	mes "[露妮克]";
+	mes "如果你和你的隊伍成員一起進入，請與小地圖內的助手 NPC 對話。";
+	mes "助手 NPC 一次只能與 ^FF0000 1 名玩家 ^000000對話。";
+	next;
+	mes "[露妮克]";
+	mes "NPC 會將你與你的隊員引導至實際的競技場房間。";
+	mes "不過，如果隊伍中任何人 ^3131FF沒有足夠的錢支付入場費，他將被傳送出去^000000。";
+	next;
+	mes "[露妮克]";
+	mes "請注意，你們只能在地圖內停留 ^FF0000 1 分鐘^000000。";
+	next;
+	mes "[露妮克]";
+	mes "一進入競技場，計算戰鬥時間的計時器就會啟動。";
+	mes "請遵從 ^3131FF斯利普斯羅朗^000000 的指示。 ";
+	next;
+	mes "[露妮克]";
+	mes "你們將有 ^3131FF10 分鐘^000000 的時間來通關，但這並不容易。建議你們明智地利用時間。";
+	next;
+	mes "[露妮克]";
+	mes "在你們清除包含首領房間在內的所有房間後，你們將再次被傳送到 ^3131FF結束等待室^000000。";
+	mes "你們只能在等待室停留 ^3131FF1 分鐘^000000，請盡快領取競技場點數並離開。";
+	next;
+	mes "[露妮克]";
+	mes "如果你們在結束等待室停留超過 1 分鐘，將被強制傳出，且無法獲得任何競技場點數。請記住這點。";
+	next;
+	mes "[露妮克]";
+	mes "另外，如果隊伍刷新了通關時間的紀錄，";
+	mes "^3131FF隊長^000000 可以記錄 ^3131FF隊伍名稱^000000。";
+	next;
+	mes "[露妮克]";
+	mes "在這種情況下，如果隊伍有一個以上的隊長或沒有隊長，就無法記錄 ^FF0000最高隊伍紀錄^000000。";
+	mes "因此，強烈建議在進入競技場地圖之前就組好單一隊伍。";
+	next;
+	mes "[露妮克]";
+	mes "感謝你的聆聽，";
+	mes "希望你們玩得愉快。";
+	close;
+}
+
+arena_room,158,82,1	script	助手 羅尼克	828,{
+	emotion ET_BEST;
+	mes "[羅尼克]";
+	mes "搭啦！我來了！";
+	next;
+	mes "[羅尼克]";
+	mes "你很好奇裡面有沒有人，對吧？";
+	next;
+	mes "[羅尼克]";
+	mes "我的答案是...";
+	mes ".............";
+	if (getmapusers("force_1-2")) {
+		emotion ET_O;
+		mes "是的！";
+		mes "裡面有人。";
+		next;
+		mes "[羅尼克]";
+		mes "你最好再等一下！";
+	} else {
+		emotion ET_X;
+		mes "沒有！";
+		mes "放手去吧，祝你好運！";
+	}
+	close;
+}
+
+sec_in02,72,180,3	script	競技場管理員#arena	802,{
+	set .@i, callfunc("F_GM_NPC",1357,0);
+	if (.@i == -1) {
+		mes "[競技場管理員]";
+		mes "指令已取消。";
+		close;
+	} else if (.@i == 0) {
+		mes "密碼錯誤。";
+		close;
+	} else {
+		mes "[競技場管理員]";
+		mes "選擇一個選項。";
+		next;
+		switch(select("重啟競技場:重新排列排名時間")) {
+		case 1:
+			switch(select("Lv 50:Lv 60:Lv 70:Lv 80:隊伍模式")) {
+			case 1:
+				set .@arena,50;
+				break;
+			case 2:
+				set .@arena,60;
+				break;
+			case 3:
+				set .@arena,70;
+				break;
+			case 4:
+				set .@arena,80;
+				break;
+			case 5:
+				mes "[競技場管理員]";
+				mes "== 警告 ==";
+				mes "你選擇了重啟隊伍競技場階段。";
+				mes "你想繼續嗎？";
+				next;
+				switch(select("是:否")) {
+				case 1:
+					donpcevent "波諾克斯::OnStart";
+					mes "[競技場管理員]";
+					mes "競技場階段已成功重新啟動。";
+					close;
+
+				case 2:
+					mes "[競技場管理員]";
+					mes "指令已取消。";
+					close;
+				}
+			}
+			mes "[競技場管理員]";
+			mes "== 警告 ==";
+			mes "你選擇了重啟 Lv "+.@arena+" 競技場階段。";
+			mes "你想繼續嗎？";
+			next;
+			switch(select("是:否")) {
+			case 1:
+				donpcevent "Lv"+.@arena+"等候室::OnStart";
+				mes "[競技場管理員]";
+				mes "競技場階段已成功重新啟動。";
+				close;
+			case 2:
+				mes "[競技場管理員]";
+				mes "指令已取消。";
+				close;
+			}
+		case 2:
+			mes "[競技場管理員]";
+			mes "== 警告 ==";
+			mes "^CE0000你選擇了重新排列排名時間。除非發生嚴重錯誤，否則請確定這不是一個輕率的決定！^000000";
+			next;
+			mes "[競技場管理員]";
+			mes "你確定要重新排列排名時間嗎？";
+			next;
+			switch(select("否:是")) {
+			case 1:
+				mes "[競技場管理員]";
+				mes "呼~ :)";
+				close;
+			case 2:
+				switch(select("Lv 50:Lv 60:Lv 70:Lv 80:隊伍模式")) {
+				case 1:
+					set .@min$,"$top50min";
+					set .@sec$,"$top50sec";
+					set .@mode$,"Lv 50";
+					break;
+				case 2:
+					set .@min$,"$top60min";
+					set .@sec$,"$top60sec";
+					set .@mode$,"Lv 60";
+					break;
+				case 3:
+					set .@min$,"$top70min";
+					set .@sec$,"$top70sec";
+					set .@mode$,"Lv 70";
+					break;
+				case 4:
+					set .@min$,"$top80min";
+					set .@sec$,"$top80sec";
+					set .@mode$,"Lv 80";
+					break;
+				case 5:
+					set .@min$,"$top_ptmin";
+					set .@sec$,"$top_ptsec";
+					set .@mode$,"party";
+					break;
+				}
+				mes "[競技場管理員]";
+				// Doesn't work with Athena's implementation.
+				//mes "Please enter 0 to cancel.";
+				//mes "If not, please enter a value for minutes first and then seconds.";
+				mes "請先輸入分鐘的數值，然後再輸入秒數。";
+				next;
+				input .@arenamin;
+				setd .@min$,.@arenamin;
+				input .@arenasec;
+				setd .@sec$,.@arenasec;
+				mes "[競技場管理員]";
+				mes "目前 "+.@mode$+" 排行榜玩家的遊玩時間已重新排列為 ^FF0000"+getd(.@min$)+"^000000 分和 ^FF0000"+getd(.@sec$)+"^000000 秒。";
+				close;
+			}
+		}
+	}
+}
+
+sec_in02,79,171,3	script	獎勵管理員#arena	802,{
+	set .@i, callfunc("F_GM_NPC",1357,0);
+	if (.@i == -1) {
+		mes "[獎勵管理員]";
+		mes "指令已取消。";
+		close;
+	} else if (.@i == 0) {
+		mes "[獎勵管理員]";
+		mes "密碼錯誤。";
+		close;
+	} else {
+		mes "[獎勵管理員]";
+		mes "你選擇了隱藏傳送人員 NPC。";
+		next;
+		switch(select("取消:是:開啟")) {
+		case 1:
+			mes "[獎勵管理員]";
+			mes "指令已取消。";
+			close;
+		case 2:
+			mes "[獎勵管理員]";
+			mes "NPC 已被隱藏。";
+			disablenpc "傳送人員#arena";
+			close;
+		case 3:
+			mes "[獎勵管理員]";
+			mes "NPC 已啟用。";
+			enablenpc "傳送人員#arena";
+			close;
+		}
+	}
+}
+
+arena_room,105,93,5	script	傳送人員#arena	55,{
+	mes "[傳送人員]";
+	mes "我可以將你傳送到獎勵競技場！";
+	mes "你想去那裡嗎？";
+	next;
+	switch(select("是:否。")) {
+	case 1:
+		mes "[傳送人員]";
+		mes "讓我為你帶路。";
+		close2;
+		warp "prt_are_in",60,14;
+		end;
+	case 2:
+		mes "[傳送人員]";
+		mes "沒問題，歡迎隨時回來。";
+		close;
+	}
+}
+
+prt_are_in,98,14,3	script	紀芙#arena	728,{
+	if (checkweight(526,5) == 0) {
+		mes "- 等等！ -";
+		mes "- 目前你攜帶了 -";
+		mes "- 太多物品。 -";
+		mes "- 請減輕你的負重 -";
+		mes "- 然後再試一次。 -";
+		close;
+	}
+	mes "[紀芙]";
+	mes "你好。歡迎來到競技場的世界。";
+	mes "我的名字是紀芙，負責競技場點數的兌換服務。";
+	next;
+	mes "[紀芙]";
+	mes "你可以用競技場點數兌換各種物品。";
+	mes "請選擇下方的選單。";
+	next;
+	switch(select("兌換消耗品:兌換經驗值:拍攝紀念照:查詢目前競技場點數")) {
+	case 1:
+		mes "[紀芙]";
+		mes "你想兌換什麼消耗品？";
+		next;
+		switch(select("蜂蜜:蜂膠:瑪絲黛拉果實:纖白藥水:護身符:天地樹種子:天地樹果實:老舊的藍色箱子:老舊的紫色箱子:老舊收集冊")) {
+			case 1: callfunc "Func_Are_Rew",518,5,20;
+			case 2: callfunc "Func_Are_Rew",526,5,30;
+			case 3: callfunc "Func_Are_Rew",522,5,30;
+			case 4: callfunc "Func_Are_Rew",547,8,30;
+			case 5: callfunc "Func_Are_Rew",605,3,20;
+			case 6: callfunc "Func_Are_Rew",608,1,20;
+			case 7: callfunc "Func_Are_Rew",607,1,40;
+			case 8: callfunc "Func_Are_Rew",603,1,100;
+			case 9: callfunc "Func_Are_Rew",617,1,300;
+			case 10: callfunc "Func_Are_Rew",616,1,1000;
+		}
+	case 2:
+		mes "[紀芙]";
+		mes "你想用競技場點數兌換經驗值嗎？";
+		mes "這需要 40 點競技場點數。";
+		next;
+		switch(select("取消:是")) {
+		case 1:
+			mes "[紀芙]";
+			mes "你已取消請求。";
+			close;
+		case 2:
+			if (arena_point < 40) {
+				mes "[紀芙]";
+				mes "你的競技場點數不足。";
+				mes "請檢查你擁有的競技場點數總額。";
+				close;
+			}
+			set arena_point, arena_point-40;
+			if (checkre(3)) {
+				if (BaseLevel < 70) getexp 300,0;
+				else if (BaseLevel < 80) getexp 900,0;
+				else if (BaseLevel < 90) getexp 1000,0;
+				else getexp 3000,0;
+			} else {
+				if (BaseLevel < 70) getexp 3000,0;
+				else if (BaseLevel < 80) getexp 9000,0;
+				else if (BaseLevel < 90) getexp 10000,0;
+				else getexp 30000,0;
+			}
+			mes "[紀芙]";
+			mes "你獲得了經驗值。謝謝。";
+			close;
+		}
+	case 3:
+		mes "[紀芙]";
+		mes "你選擇了拍攝紀念照服務。";
+		next;
+		switch(select("關於紀念照拍攝服務:拍攝照片")) {
+		case 1:
+			mes "[紀芙]";
+			mes "你有看到我右邊的樓梯嗎？";
+			next;
+			mes "[紀芙]";
+			mes "在樓梯那裡，你可以和 NPC 或魔物拍照。";
+			next;
+			mes "[紀芙]";
+			mes "當你選擇了 NPC 或魔物後，它會顯示一些表情符號，^FF0000持續 1 分鐘^000000。";
+			next;
+			mes "[紀芙]";
+			mes "別錯過和你最喜歡的 NPC 拍照的機會！";
+			close;
+		case 2:
+			if ($@arena_picture) {
+				mes "[紀芙]";
+				mes "紀念照服務正在進行中。請稍候。";
+				close;
+			}
+			mes "[紀芙]";
+			mes "請選擇下方的 NPC。";
+			mes "NPC 將出現 1 分鐘，這項服務需要 10 點競技場點數。";
+			next;
+			switch(select("巴風特:黑暗之王:死靈:虎王:德古拉男爵:怨靈武士:暴風騎士:皮里恩:女孩:女武神")) {
+				case 1: set $@arena_picture_id,1039; break;
+				case 2: set $@arena_picture_id,1272; break;
+				case 3: set $@arena_picture_id,1046; break;
+				case 4: set $@arena_picture_id,1115; break;
+				case 5: set $@arena_picture_id,1389; break;
+				case 6: set $@arena_picture_id,1492; break;
+				case 7: set $@arena_picture_id,1251; break;
+				case 8: set $@arena_picture_id,1159; break;
+				case 9: set $@arena_picture_id,6969; break;
+				case 10: set $@arena_picture_id,7777; break;
+			}
+			if (arena_point < 10) {
+				mes "[紀芙]";
+				mes "你的競技場點數不足。";
+				mes "請檢查你擁有的競技場點數總額。";
+				close;
+			}
+			mes "[紀芙]";
+			if ($@arena_picture_id == 6969)
+				mes "你想和漂亮的女孩們拍照嗎？";
+			else if ($@arena_picture_id == 7777)
+				mes "你想和女武神拍照嗎？";
+			else
+				mes "你想和 "+getmonsterinfo($@arena_picture_id, MOB_NAME)+" 拍照嗎？";
+			next;
+			switch(select("是:否")) {
+			case 1:
+				set arena_point, arena_point-10;
+				set $@arena_picture,1;
+				enablenpc "#arena_"+$@arena_picture_id+"";
+				movenpc "#arena_"+$@arena_picture_id+"",96,28;
+				if ($@arena_picture_id == 6969) {
+					enablenpc "#arena_ss_2";
+					enablenpc "#arena_ss_3";
+					enablenpc "#arena_ss_4";
+				}
+				donpcevent "npctime#arena::OnStart";
+				mes "[紀芙]";
+				mes "謝謝。";
+				close;
+			case 2:
+				mes "[紀芙]";
+				mes "你想再考慮一下嗎？";
+				close;
+			}
+		}
+	case 4:
+		mes "[紀芙]";
+		mes "讓我檢查一下 "+strcharinfo(0)+" 目前的競技場點數。";
+		next;
+		mes "[紀芙]";
+		mes ""+strcharinfo(0)+" 總共有 ^3131FF"+arena_point+"^000000 點。";
+		close;
+	}
+}
+
+prt_are_in,1,1,5	script	#arena_1039	1039,{
+	end;
+OnInit:
+	disablenpc "#arena_6969";
+	disablenpc "#arena_ss_2";
+	disablenpc "#arena_ss_3";
+	disablenpc "#arena_ss_4";
+	disablenpc "#arena_1272";
+	disablenpc "#arena_1046";
+	disablenpc "#arena_1115";
+	disablenpc "#arena_1389";
+	disablenpc "#arena_1492";
+	disablenpc "#arena_1251";
+	disablenpc "#arena_1159";
+	disablenpc "#arena_7777";
+	disablenpc "#arena_1039";
+	end;
+
+OnHeart:
+	emotion ET_THROB;
+	end;
+OnSci:
+	emotion ET_SCISSOR;
+	end;
+OnBest:
+	emotion ET_BEST;
+	end;
+OnOmg:
+	emotion ET_HUK;
+	end;
+OnKik:
+	emotion ET_KIK;
+	end;
+OnKis:
+	emotion ET_CHUP;
+	end;
+}
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_6969	714
+prt_are_in,94,26,5	duplicate(#arena_1039)	#arena_ss_2	714
+prt_are_in,100,28,3	duplicate(#arena_1039)	#arena_ss_3	714
+prt_are_in,102,26,3	duplicate(#arena_1039)	#arena_ss_4	714
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1272	1272
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1046	1046
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1115	1115
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1389	1389
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1492	1492
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1251	1251
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_1159	1159
+prt_are_in,1,1,5	duplicate(#arena_1039)	#arena_7777	811
+
+-	script	npctime#arena	-1,{
+OnStop:
+	stopnpctimer;
+	end;
+
+OnStart:
+	initnpctimer;
+	end;
+OnTimer2000:
+	mapannounce "prt_are_in","紀芙 : 你應該跟隨表情符號的出現掌握時間?",1,0xFFCE00;
+	end;
+
+OnTimer5000:
+	mapannounce "prt_are_in","表情符號 : /lv",1,0xFFCE00;
+	end;
+OnTimer7000:
+	mapannounce "prt_are_in"," 3 ",1,0xFFCE00;
+	end;
+
+OnTimer8000:
+	mapannounce "prt_are_in"," 2 ",1,0xFFCE00;
+	end;
+
+OnTimer9000:
+	mapannounce "prt_are_in"," 1 ",1,0xFFCE00;
+	end;
+
+OnTimer10000:
+	mapannounce "prt_are_in"," ",1,0xFFCE00;
+	donpcevent "#arena_"+$@arena_picture_id+"::OnHeart";
+	if ($@arena_picture_id == 6969) {
+		donpcevent "#arena_ss_2::OnHeart";
+		donpcevent "#arena_ss_3::OnHeart";
+		donpcevent "#arena_ss_4::OnHeart";
+	}
+	end;
+
+OnTimer15000:
+	mapannounce "prt_are_in","表情符號 : /gawi",1,0xFFCE00;
+	end;
+
+OnTimer17000:
+	mapannounce "prt_are_in"," 3 ",1,0xFFCE00;
+	end;
+
+OnTimer18000:
+	mapannounce "prt_are_in"," 2 ",1,0xFFCE00;
+	end;
+
+OnTimer19000:
+	mapannounce "prt_are_in"," 1 ",1,0xFFCE00;
+	end;
+
+OnTimer20000:
+	mapannounce "prt_are_in"," ",1,0xFFCE00;
+	donpcevent "#arena_"+$@arena_picture_id+"::OnSci";
+	if ($@arena_picture_id == 6969) {
+		donpcevent "#arena_ss_2::OnSci";
+		donpcevent "#arena_ss_3::OnSci";
+		donpcevent "#arena_ss_4::OnSci";
+	}
+	end;
+
+OnTimer25000:
+	mapannounce "prt_are_in","表情符號 : /no1",1,0xFFCE00;
+	end;
+
+OnTimer27000:
+	mapannounce "prt_are_in"," 3 ",1,0xFFCE00;
+	end;
+
+OnTimer28000:
+	mapannounce "prt_are_in"," 2 ",1,0xFFCE00;
+	end;
+
+OnTimer29000:
+	mapannounce "prt_are_in"," 1 ",1,0xFFCE00;
+	end;
+
+OnTimer30000:
+	mapannounce "prt_are_in"," ",1,0xFFCE00;
+	donpcevent "#arena_"+$@arena_picture_id+"::OnBest";
+	if ($@arena_picture_id == 6969) {
+		donpcevent "#arena_ss_2::OnBest";
+		donpcevent "#arena_ss_3::OnBest";
+		donpcevent "#arena_ss_4::OnBest";
+	}
+	end;
+
+OnTimer35000:
+	mapannounce "prt_are_in","表情符號 : /huk",1,0xFFCE00;
+	end;
+
+OnTimer37000:
+	mapannounce "prt_are_in"," 3 ",1,0xFFCE00;
+	end;
+
+OnTimer38000:
+	mapannounce "prt_are_in"," 2 ",1,0xFFCE00;
+	end;
+
+OnTimer39000:
+	mapannounce "prt_are_in"," 1 ",1,0xFFCE00;
+	end;
+
+OnTimer40000:
+	mapannounce "prt_are_in"," ",1,0xFFCE00;
+	donpcevent "#arena_"+$@arena_picture_id+"::OnOmg";
+	if ($@arena_picture_id == 6969) {
+		donpcevent "#arena_ss_2::OnOmg";
+		donpcevent "#arena_ss_3::OnOmg";
+		donpcevent "#arena_ss_4::OnOmg";
+	}
+	end;
+
+OnTimer45000:
+	mapannounce "prt_are_in","表情符號 : /gg",1,0xFFCE00;
+	end;
+
+OnTimer47000:
+	mapannounce "prt_are_in"," 3 ",1,0xFFCE00;
+	end;
+
+OnTimer48000:
+	mapannounce "prt_are_in"," 2 ",1,0xFFCE00;
+	end;
+
+OnTimer49000:
+	mapannounce "prt_are_in"," 1 ",1,0xFFCE00;
+	end;
+
+OnTimer50000:
+	mapannounce "prt_are_in"," ",1,0xFFCE00;
+	donpcevent "#arena_"+$@arena_picture_id+"::OnKik";
+	if ($@arena_picture_id == 6969) {
+		donpcevent "#arena_ss_2::OnKik";
+		donpcevent "#arena_ss_3::OnKik";
+		donpcevent "#arena_ss_4::OnKik";
+	}
+	end;
+
+OnTimer55000:
+	mapannounce "prt_are_in","表情符號 : /kis",1,0xFFCE00;
+	end;
+
+OnTimer57000:
+	mapannounce "prt_are_in"," 3 ",1,0xFFCE00;
+	end;
+
+OnTimer58000:
+	mapannounce "prt_are_in"," 2 ",1,0xFFCE00;
+	end;
+
+OnTimer59000:
+	mapannounce "prt_are_in"," 1 ",1,0xFFCE00;
+	end;
+
+OnTimer60000:
+	mapannounce "prt_are_in"," ",1,0xFFCE00;
+	donpcevent "#arena_"+$@arena_picture_id+"::OnKis";
+	if ($@arena_picture_id == 6969) {
+		donpcevent "#arena_ss_2::OnKis";
+		donpcevent "#arena_ss_3::OnKis";
+		donpcevent "#arena_ss_4::OnKis";
+	}
+	end;
+OnTimer62000:
+	mapannounce "prt_are_in","時間到。感謝使用我的服務。",1,0xFFCE00;
+	movenpc "#arena_"+$@arena_picture_id+"",1,1;
+	donpcevent "#arena_1039::OnInit";
+	set $@arena_picture,0;
+	stopnpctimer;
+	end;
+}
+
+sec_in02,72,171,3	script	照片管理員#arena	802,{
+	set .@i, callfunc("F_GM_NPC",1357,0);
+	if (.@i == -1) {
+		mes "[照片管理員]";
+		mes "指令已取消。";
+		close;
+	} else if (.@i == 0) {
+		mes "[照片管理員]";
+		mes "密碼錯誤。";
+		close;
+	} else {
+		mes "[照片管理員]";
+		mes "你要將照片獎勵變數重置為 0 嗎？";
+		next;
+		switch(select("取消:是")) {
+		case 1:
+			mes "[照片管理員]";
+			mes "你已取消請求。";
+			close;
+		case 2:
+			mes "[照片管理員]";
+			mes "照片獎勵已重置。";
+			set $@arena_picture,0;
+			close;
+		}
+	}
+}
+
+sec_in02,76,176,5	script	實況廣播#arena	802,{
+	callfunc "F_GM_NPC";
+	mes "[實況廣播]";
+	mes "目前有 "+getmapusers("force_1-1")+" 人在 Lv 50 地圖。";
+	mes "目前有 "+getmapusers("force_2-1")+" 人在 Lv 60 地圖。";
+	mes "目前有 "+getmapusers("force_3-1")+" 人在 Lv 70 地圖。";
+	mes "目前有 "+getmapusers("force_4-1")+" 人在 Lv 80 地圖。";
+	mes "目前有 "+getmapusers("force_1-2")+" 人在隊伍地圖。";
+	mes "目前有 "+getmapusers("arena_room")+" 人在等待室。";
+	close;
+}
+
+function	script	Func_Are_Rew	{
+	.@item_id = getarg(0);
+	.@amount = getarg(1);
+	.@arena_point = getarg(2);
+	mes "[紀芙]";
+	mes "你想用競技場點數兌換 "+ getitemname(.@item_id) +" 嗎？";
+	mes "你可以用 ^3131FF"+ .@arena_point +" 點競技場點數兌換 "+ .@amount +" 個 "+ getitemname(.@item_id) +"^000000。";
+	mes "如果想取消，請輸入 0。否則，請輸入你想花費競技場點數的 ^3131FF次數^000000。";
+	next;
+	input .@reward;
+	if (.@reward <= 0) {
+		mes "[紀芙]";
+		mes "你已取消請求。";
+		close;
+	} else if (.@reward > 1500) {
+		mes "[紀芙]";
+		mes "你已超出最大容量。";
+		close;
+	}
+	if (arena_point < (.@reward * .@arena_point)) {
+		mes "[紀芙]";
+		mes "你的競技場點數不足。";
+		mes "請檢查你擁有的競技場點數總額。";
+		close;
+	}
+	arena_point = arena_point - (.@reward * .@arena_point);
+	getitem .@item_id,.@reward * .@amount;
+	mes "[紀芙]";
+	mes "謝謝，請再次光臨。";
+	close;
+}

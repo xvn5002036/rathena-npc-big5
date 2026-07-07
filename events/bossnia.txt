@@ -1,0 +1,316 @@
+//===== rAthena Script ======================================= 
+//= Bossnia Warp NPCs
+//===== By: ================================================== 
+//= Masao
+//===== Current Version: ===================================== 
+//= 1.3
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Bossnia MVP event.
+//===== Additional Comments: ================================= 
+//= 1.0 Converted from the official script.
+//= 1.1 Optimized.
+//= 1.2 Moved spawns and warps (by Masao) to this file. [Euphy]
+//= 1.3 Added VIP features.
+//============================================================ 
+
+// Entrance NPCs
+//============================================================
+prontera,132,125,4	script	波斯尼亞員工#1	908,{
+	mes "[里斯]"; // [cite: 93]
+	mes "你好？"; // [cite: 93]
+	mes "我發現了一些美麗的地方"; // [cite: 93]
+	mes "當我在世界各地旅行的時候。"; // [cite: 94]
+	mes "我是個冒險家。"; // [cite: 94]
+	mes "哈哈?"; // [cite: 94]
+	next;
+	mes "[里斯]"; // [cite: 94]
+	mes "什麼？我的名字是..."; // [cite: 95]
+	mes "『波斯尼亞員工』？？不不..."; // [cite: 95]
+	mes "嗯，我的名字並不那麼重要。"; // [cite: 95]
+	mes "有時候你應該大方一點。"; // [cite: 96]
+	mes "沒有時間考慮那種小事"; // [cite: 96]
+	mes "當你必須專注在更重要的事情上時。"; // [cite: 97]
+	next;
+	mes "[里斯]"; // [cite: 97]
+	mes "嗯...總之我想說...一些事情.."; // [cite: 98]
+	mes "當我經過一些地方旅行時，"; // [cite: 98]
+	mes "我發現了一個非常可怕的地方。"; // [cite: 99]
+	next;
+	mes "[里斯]"; // [cite: 99]
+	mes "大多數時候當你來到一個地方，"; // [cite: 100]
+	mes "會有一隻強大而可怕的魔物。"; // [cite: 100]
+	mes "不是嗎？"; // [cite: 101]
+	next;
+	mes "[里斯]"; // [cite: 101]
+	mes "但是...但是...在那裡..."; // [cite: 101]
+	mes "那裡有很多可怕且強大的魔物..."; // [cite: 102]
+	mes "那真是太可怕了。"; // [cite: 102]
+	next;
+	mes "[里斯]"; // [cite: 102]
+	mes "如果我反應再慢一點...哪怕幾秒鐘..."; // [cite: 103]
+	mes "我可能就被殺了。"; // [cite: 103]
+	next;
+	mes "[里斯]"; // [cite: 103]
+	mes "什麼？"; // [cite: 104]
+	mes "你想進去那裡？"; // [cite: 104]
+	mes "噢?孩子?你沒聽懂我的意思。"; // [cite: 104]
+	mes "在那裡面......."; // [cite: 104]
+	next;
+	mes "[里斯]"; // [cite: 105]
+	mes "呃...你已經知道了？"; // [cite: 105]
+	mes "即使你知道那是什麼地方，你還是想進去..."; // [cite: 105]
+	mes "很好，我會送你過去。"; // [cite: 106]
+	mes "但你進去之後，可別對我"; // [cite: 106]
+// If the VIP system is enabled, players pay a Reset Stone for 5 entrances (with a choice of warps).
+// If it's disabled, players pay 5,000z per entrance.
+	if (VIP_SCRIPT) {
+		mes "懷恨在心。你需要支付 1 顆重置石以獲得 5 次進入權限。"; // [cite: 108]
+		next;
+		mes "[里斯]"; // [cite: 109]
+		if (bossnia_event > 0) {
+			set .@type,1;
+			mes "剩餘進入次數："+bossnia_event; // [cite: 109]
+		} else if (countitem(6320)) {
+			set .@type,2;
+			mes "你想去嗎？"; // [cite: 110]
+		} else {
+			mes "你現在沒有票券....."; // [cite: 110]
+			mes "所以等你有重置石之後再來找我吧。"; // [cite: 111]
+			close;
+		}
+		next;
+		if(select("進入:離開") == 2) // [cite: 111]
+			close;
+		set .@i, select("第一:第二:第三:第四"); // [cite: 111]
+		switch(select("傳送點 1:傳送點 2:傳送點 3:傳送點 4")) { // [cite: 112]
+			case 1: set .@x,31; set .@y,208; break;
+			case 2: set .@x,31; set .@y,31; break;
+			case 3: set .@x,208; set .@y,31; break; // [cite: 113]
+			case 4: set .@x,208; set .@y,208; break;
+		}
+		if (.@type == 1)
+			set bossnia_event, bossnia_event-1;
+		else { // [cite: 114]
+			delitem 6320,1; //Premium_Reset_Stone
+			set bossnia_event,4;
+		}
+		specialeffect2 EF_MAXPOWER;
+		warp "bossnia_0"+.@i,.@x,.@y;
+		close;
+	} else { // [cite: 115]
+		mes "懷恨在心。另外這需要花費 5,000 Zeny。"; // [cite: 115]
+		next;
+		if (Zeny > 4999) {
+			mes "[里斯]"; // [cite: 115]
+			mes "你真的想接受挑戰嗎？"; // [cite: 116]
+			mes "好的，選擇你的路線吧。"; // [cite: 116]
+			next;
+			set .@i, select("第一:第二:第三:第四"); // [cite: 116]
+			mes "[里斯]"; // [cite: 117]
+			mes "保重啦，孩子?"; // [cite: 117]
+			mes "別對我懷恨在心喔。"; // [cite: 117]
+			close2;
+			set Zeny, Zeny - 5000;
+			warp "bossnia_0"+.@i,rand(202,204),rand(202,204); // [cite: 118]
+			end;
+		} else {
+			mes "[里斯]"; // [cite: 118]
+			mes "你的錢不夠..."; // [cite: 118]
+			mes "等你至少有 5,000 Zeny 時再來吧。"; // [cite: 119]
+			close;
+		} // [cite: 120]
+	}
+}
+geffen,124,169,4	duplicate(波斯尼亞員工#1)	波斯尼亞員工#2	908
+payon,165,150,4	duplicate(波斯尼亞員工#1)	波斯尼亞員工#3	908
+morocc,142,100,4	duplicate(波斯尼亞員工#1)	波斯尼亞員工#4	908
+lighthalzen,203,140,4	duplicate(波斯尼亞員工#1)	波斯尼亞員工#5	908
+rachel,132,144,4	duplicate(波斯尼亞員工#1)	波斯尼亞員工#6	908
+
+// Warp Portals
+//============================================================
+bossnia_01,204,204,0	warp	bossnia01	1,1,prontera,155,180
+bossnia_02,204,204,0	warp	bossnia02	1,1,prontera,155,180
+bossnia_03,204,204,0	warp	bossnia03	1,1,prontera,155,180
+bossnia_04,204,204,0	warp	bossnia04	1,1,prontera,155,180
+
+// Monster Spawns
+//============================================================
+
+//----------------------------------------------------------------------------
+// bossnia_01 - Bossnia
+//----------------------------------------------------------------------------
+bossnia_01,0,0	monster	卡崙	1252,5,7200000
+bossnia_01,0,0	monster	幽暗夢魘	1768,2,7200000
+bossnia_01,0,0	monster	黑暗之王	1272,3,7200000
+bossnia_01,0,0	monster	死靈	1046,10,7200000
+bossnia_01,0,0	monster	德古拉男爵	1389,5,1800000
+bossnia_01,0,0	monster	海盜之王	1112,10,1800000
+bossnia_01,0,0	monster	迪塔勒泰林	1719,2,7200000
+bossnia_01,0,0	monster	瑪雅	1147,10,1800000
+bossnia_01,0,0	monster	蜂后	1059,1,1800000
+bossnia_01,0,0	monster	巴風特	1039,10,1800000
+bossnia_01,0,0	monster	闇●劍士 賽尼亞	1658,10,1800000
+bossnia_01,0,0	monster	亞蒙拉	1511,1,1800000
+bossnia_01,0,0	monster	阿特羅斯	1785,10,1800000
+bossnia_01,0,0	monster	貝斯波	1685,2,7200000
+bossnia_01,0,0	monster	虎王	1115,1,1800000
+bossnia_01,0,0	monster	俄塞里斯	1038,10,7200000
+bossnia_01,0,0	monster	獸人大酋長	1190,10,7200000
+bossnia_01,0,0	monster	獸人英雄	1087,2,1800000
+bossnia_01,0,0	monster	怨靈武士	1492,1,3600000
+bossnia_01,0,0	monster	月夜貓	1150,1,3600000
+bossnia_01,0,0	monster	死靈騎士	1373,1,3600000
+bossnia_01,0,0	monster	庫特蘭努斯	1779,2,7200000
+bossnia_01,0,0	monster	基爾-D-01	1734,2,7200000
+bossnia_01,0,0	monster	達納托斯的記憶	1708,2,7200000
+bossnia_01,0,0	monster	塔妮小姐	1688,1,3600000
+bossnia_01,0,0	monster	塔奧群卡	1583,1,3600000
+bossnia_01,0,0	monster	烏龜將軍	1312,10,7200000
+bossnia_01,0,0	monster	法老王	1157,2,3600000
+bossnia_01,0,0	monster	冰暴騎士	1251,2,3600000
+bossnia_01,0,0	monster	墮落主教	1871,5,7200000
+bossnia_01,0,0	monster	皮里恩	1159,10,7200000
+bossnia_01,0,0	monster	黃金盜蟲	1086,10,3600000
+bossnia_01,0,0	monster	墨蛇君	1418,10,7200000
+bossnia_01,0,0	monster	RSX-0806	1623,5,7200000
+bossnia_01,0,0	monster	闇●十字刺客 艾勒梅斯	1647,1
+bossnia_01,137,118,1,1	monster	闇●神工匠 哈沃得	1648,1
+bossnia_01,122,195,1,1	monster	貝爾澤布	1873,1
+bossnia_01,45,118,1,1	monster	貝爾澤布	1873,1
+bossnia_01,196,122,1,1	monster	蘭特克力斯	1751,1
+bossnia_01,142,61,1,1	monster	伊弗利特	1832,1
+
+//----------------------------------------------------------------------------
+// bossnia_02 - Bossnia
+//----------------------------------------------------------------------------
+bossnia_02,0,0	monster	卡崙	1252,5,7200000
+bossnia_02,0,0	monster	幽暗夢魘	1768,2,7200000
+bossnia_02,0,0	monster	黑暗之王	1272,3,7200000
+bossnia_02,0,0	monster	死靈	1046,10,7200000
+bossnia_02,0,0	monster	德古拉男爵	1389,5,1800000
+bossnia_02,0,0	monster	海盜之王	1112,10,1800000
+bossnia_02,0,0	monster	迪塔勒泰林	1719,2,7200000
+bossnia_02,0,0	monster	瑪雅	1147,10,1800000
+bossnia_02,0,0	monster	蜂后	1059,1,1800000
+bossnia_02,0,0	monster	巴風特	1039,10,1800000
+bossnia_02,0,0	monster	闇●劍士 賽尼亞	1658,10,1800000
+bossnia_02,0,0	monster	亞蒙拉	1511,1,1800000
+bossnia_02,0,0	monster	阿特羅斯	1785,10,1800000
+bossnia_02,0,0	monster	貝斯波	1685,2,7200000
+bossnia_02,0,0	monster	虎王	1115,1,1800000
+bossnia_02,0,0	monster	俄塞里斯	1038,10,7200000
+bossnia_02,0,0	monster	獸人大酋長	1190,10,7200000
+bossnia_02,0,0	monster	獸人英雄	1087,2,1800000
+bossnia_02,0,0	monster	怨靈武士	1492,1,3600000
+bossnia_02,0,0	monster	月夜貓	1150,1,3600000
+bossnia_02,0,0	monster	死靈騎士	1373,1,3600000
+bossnia_02,0,0	monster	庫特蘭努斯	1779,2,7200000
+bossnia_02,0,0	monster	基爾-D-01	1734,2,7200000
+bossnia_02,0,0	monster	達納托斯的記憶	1708,2,7200000
+bossnia_02,0,0	monster	塔妮小姐	1688,1,3600000
+bossnia_02,0,0	monster	塔奧群卡	1583,1,3600000
+bossnia_02,0,0	monster	烏龜將軍	1312,10,7200000
+bossnia_02,0,0	monster	法老王	1157,2,3600000
+bossnia_02,0,0	monster	冰暴騎士	1251,2,3600000
+bossnia_02,0,0	monster	墮落主教	1871,5,7200000
+bossnia_02,0,0	monster	皮里恩	1159,10,7200000
+bossnia_02,0,0	monster	黃金盜蟲	1086,10,3600000
+bossnia_02,0,0	monster	墨蛇君	1418,10,7200000
+bossnia_02,0,0	monster	RSX-0806	1623,5,7200000
+bossnia_02,0,0	monster	闇●十字刺客 艾勒梅斯	1647,1
+bossnia_02,137,118,1,1	monster	闇●神工匠 哈沃得	1648,1
+bossnia_02,122,195,1,1	monster	貝爾澤布	1873,1
+bossnia_02,45,118,1,1	monster	貝爾澤布	1873,1
+bossnia_02,196,122,1,1	monster	蘭特克力斯	1751,1
+bossnia_02,142,61,1,1	monster	伊弗利特	1832,1
+
+//----------------------------------------------------------------------------
+// bossnia_03 - Bossnia
+//----------------------------------------------------------------------------
+bossnia_03,0,0	monster	卡崙	1252,5,7200000
+bossnia_03,0,0	monster	幽暗夢魘	1768,2,7200000
+bossnia_03,0,0	monster	黑暗之王	1272,3,7200000
+bossnia_03,0,0	monster	死靈	1046,10,7200000
+bossnia_03,0,0	monster	德古拉男爵	1389,5,1800000
+bossnia_03,0,0	monster	海盜之王	1112,10,1800000
+bossnia_03,0,0	monster	迪塔勒泰林	1719,2,7200000
+bossnia_03,0,0	monster	瑪雅	1147,10,1800000
+bossnia_03,0,0	monster	蜂后	1059,1,1800000
+bossnia_03,0,0	monster	巴風特	1039,10,1800000
+bossnia_03,0,0	monster	闇●劍士 賽尼亞	1658,10,1800000
+bossnia_03,0,0	monster	亞蒙拉	1511,1,1800000
+bossnia_03,0,0	monster	阿特羅斯	1785,10,1800000
+bossnia_03,0,0	monster	貝斯波	1685,2,7200000
+bossnia_03,0,0	monster	虎王	1115,1,1800000
+bossnia_03,0,0	monster	俄塞里斯	1038,10,7200000
+bossnia_03,0,0	monster	獸人大酋長	1190,10,7200000
+bossnia_03,0,0	monster	獸人英雄	1087,2,1800000
+bossnia_03,0,0	monster	怨靈武士	1492,1,3600000
+bossnia_03,0,0	monster	月夜貓	1150,1,3600000
+bossnia_03,0,0	monster	死靈騎士	1373,1,3600000
+bossnia_03,0,0	monster	庫特蘭努斯	1779,2,7200000
+bossnia_03,0,0	monster	基爾-D-01	1734,2,7200000
+bossnia_03,0,0	monster	達納托斯的記憶	1708,2,7200000
+bossnia_03,0,0	monster	塔妮小姐	1688,1,3600000
+bossnia_03,0,0	monster	塔奧群卡	1583,1,3600000
+bossnia_03,0,0	monster	烏龜將軍	1312,10,7200000
+bossnia_03,0,0	monster	法老王	1157,2,3600000
+bossnia_03,0,0	monster	冰暴騎士	1251,2,3600000
+bossnia_03,0,0	monster	墮落主教	1871,5,7200000
+bossnia_03,0,0	monster	皮里恩	1159,10,7200000
+bossnia_03,0,0	monster	黃金盜蟲	1086,10,3600000
+bossnia_03,0,0	monster	墨蛇君	1418,10,7200000
+bossnia_03,0,0	monster	RSX-0806	1623,5,7200000
+bossnia_03,0,0	monster	闇●十字刺客 艾勒梅斯	1647,1
+bossnia_03,137,118,1,1	monster	闇●神工匠 哈沃得	1648,1
+bossnia_03,122,195,1,1	monster	貝爾澤布	1873,1
+bossnia_03,45,118,1,1	monster	貝爾澤布	1873,1
+bossnia_03,196,122,1,1	monster	蘭特克力斯	1751,1
+bossnia_03,142,61,1,1	monster	伊弗利特	1832,1
+
+//----------------------------------------------------------------------------
+// bossnia_04 - Bossnia
+//----------------------------------------------------------------------------
+bossnia_04,0,0	monster	卡崙	1252,5,7200000
+bossnia_04,0,0	monster	幽暗夢魘	1768,2,7200000
+bossnia_04,0,0	monster	黑暗之王	1272,3,7200000
+bossnia_04,0,0	monster	死靈	1046,10,7200000
+bossnia_04,0,0	monster	德古拉男爵	1389,5,1800000
+bossnia_04,0,0	monster	海盜之王	1112,10,1800000
+bossnia_04,0,0	monster	迪塔勒泰林	1719,2,7200000
+bossnia_04,0,0	monster	瑪雅	1147,10,1800000
+bossnia_04,0,0	monster	蜂后	1059,1,1800000
+bossnia_04,0,0	monster	巴風特	1039,10,1800000
+bossnia_04,0,0	monster	闇●劍士 賽尼亞	1658,10,1800000
+bossnia_04,0,0	monster	亞蒙拉	1511,1,1800000
+bossnia_04,0,0	monster	阿特羅斯	1785,10,1800000
+bossnia_04,0,0	monster	貝斯波	1685,2,7200000
+bossnia_04,0,0	monster	虎王	1115,1,1800000
+bossnia_04,0,0	monster	俄塞里斯	1038,10,7200000
+bossnia_04,0,0	monster	獸人大酋長	1190,10,7200000
+bossnia_04,0,0	monster	獸人英雄	1087,2,1800000
+bossnia_04,0,0	monster	怨靈武士	1492,1,3600000
+bossnia_04,0,0	monster	月夜貓	1150,1,3600000
+bossnia_04,0,0	monster	死靈騎士	1373,1,3600000
+bossnia_04,0,0	monster	庫特蘭努斯	1779,2,7200000
+bossnia_04,0,0	monster	基爾-D-01	1734,2,7200000
+bossnia_04,0,0	monster	達納托斯的記憶	1708,2,7200000
+bossnia_04,0,0	monster	塔妮小姐	1688,1,3600000
+bossnia_04,0,0	monster	塔奧群卡	1583,1,3600000
+bossnia_04,0,0	monster	烏龜將軍	1312,10,7200000
+bossnia_04,0,0	monster	法老王	1157,2,3600000
+bossnia_04,0,0	monster	冰暴騎士	1251,2,3600000
+bossnia_04,0,0	monster	墮落主教	1871,5,7200000
+bossnia_04,0,0	monster	皮里恩	1159,10,7200000
+bossnia_04,0,0	monster	黃金盜蟲	1086,10,3600000
+bossnia_04,0,0	monster	墨蛇君	1418,10,7200000
+bossnia_04,0,0	monster	RSX-0806	1623,5,7200000
+bossnia_04,0,0	monster	闇●十字刺客 艾勒梅斯	1647,1
+bossnia_04,137,118,1,1	monster	闇●神工匠 哈沃得	1648,1
+bossnia_04,122,195,1,1	monster	貝爾澤布	1873,1
+bossnia_04,45,118,1,1	monster	貝爾澤布	1873,1
+bossnia_04,196,122,1,1	monster	蘭特克力斯	1751,1
+bossnia_04,142,61,1,1	monster	伊弗利特	1832,1

@@ -1,0 +1,174 @@
+//===== rAthena Script =======================================
+//= War of Emperium Managers for N Guild Castles
+//===== By: ==================================================
+//= kobra_k88
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project; RO Episode 4+
+//===== Description: =========================================
+//=
+//==============================================
+//= Break down of arguments used in the function:
+//=   arg(0): name of Castle Manager
+//=   arg(1): name of guild castle.
+//=   arg(2): x1 coordinate for warp to treasure room
+//=   arg(3): y1 coordinate for warp to treasure room
+//=   arg(4): guild script suffix for kafra, etc.
+//===== Additional Comments: =================================
+//= 1.0 Based off existing guild scripts. Do not know if it is accurate.[kobra_k88]
+//= 1.1 Added modified guild manager function. [L0ne_W0lf]
+//= 	Removed guardian summoning.
+//= 1.2 Corrected function name. (bugreport:1728) [L0ne_W0lf]
+//============================================================
+
+//==============================================
+function	script	F_GldManager	{
+	.@npc_name$ = getarg(0);
+	.@map_name$ = getarg(1);
+	.@gid = getcastledata(.@map_name$,1);
+	.@gm_name$ = getguildmaster(.@gid);
+	mes "[ "+ .@npc_name$ +" ]";
+	if (.@gid == 0){
+		mes "我正在等待我的主人。勇敢的冒險者啊，去追尋你的命運吧！";
+		return;
+	}
+	if (getcharid(2) != .@gid){
+		mes "我只聽從 ^5533FF" + getguildmaster(.@gid) + "^000000 的命令！喂！你根本不是這個公會的成員！！";
+		mes "守護者在哪裡？快消滅這些入侵者！";
+		return;
+	}
+	if (is_guild_leader() == false){
+		mes "你不是 ^5533FF" + getguildmaster(.@gid) + "^000000！我只聽從 ^5533FF" + getguildmaster(.@gid) + "^000000 的命令。";
+		return 0;
+	}
+
+	mes "歡迎您，會長 ^5533FF" + getguildmaster(.@gid) + "^000000 ！我會竭盡所能協助您！";
+	next;
+
+	menu "僱傭∕解僱卡普拉",M_Kaf, "進入寶藏房",M_Treas, "取消",M_End;
+
+	//===========================
+	M_Kaf:
+	//======
+		mes "[ "+ .@npc_name$ +" ]";
+		if (GetCastleData(.@map_name$,9) == 1) goto L_Dismiss;
+		if (getgdskilllv(.@gid,10001) == 0){
+			mes "會長，您尚未與卡普拉公司簽訂合約。";
+			mes "為了僱傭卡普拉，您必須先學會公會技能 ^5533FF卡普拉僱傭合約^000000。";
+			return;
+		}
+
+		L_Hire:
+			mes "您想要僱傭卡普拉為您服務嗎？這需要花費 ^5533FF10,000 Zeny^000000 ... ";
+			next;
+			menu "僱傭卡普拉。",-,"取消",sM_KafEnd;
+
+				mes "[ "+ .@npc_name$ +" ]";
+				if (Zeny < 10000){
+					mes "會長，您沒有足夠的 Zeny 來僱傭卡普拉。僱傭手續已取消。";
+					return;
+				}
+				set Zeny,Zeny-10000;
+				enablenpc "卡普拉服務人員#"+getarg(4);
+				SetCastleData .@map_name$,9,1;
+				mes "您已與卡普拉公司簽訂合約。";
+				next;
+				cutin "kafra_01",2;
+				mes "[ 卡普拉服務人員 ]";
+				mes "您好！我是來為您提供服務的！我會竭盡所能為您服務。";
+				next;
+				cutin "kafra_01",255;
+				mes "[ "+ .@npc_name$ +" ]";
+				//mes "Your employment contract lasts ^5533FF1 month^000000.  After this term is over you will have to create a new contract.";
+				mes "我認為卡普拉服務人員能為我們的公會成員帶來許多便利。";
+				return;
+
+			sM_KafEnd:
+				mes "[ "+ .@npc_name$ +" ]";
+				mes "如您所願，會長。但我建議我們盡快僱傭一名卡普拉！";
+				return;
+		L_Dismiss:
+			mes "您想要解僱目前的卡普拉嗎？";
+			next;
+			menu "解僱",-,"取消",sM_KafEnd2;
+
+				cutin "kafra_01",2;
+				mes "[ 卡普拉服務人員 ]";
+				mes "我做錯了什麼嗎？如果有的話，請您原諒我好嗎？";
+				next;
+				menu "解僱",-,"取消",ssM_KafEnd2;
+					mes "[ 卡普拉服務人員 ]";
+					mes "很遺憾我無法再為您的公會服務了……";
+					next;
+					disablenpc "卡普拉服務人員#"+getarg(4);
+					SetCastleData .@map_name$,9,0;
+					cutin "kafra_01",255;
+					mes "[ "+ .@npc_name$ +" ]";
+					mes "卡普拉已經被解僱了。但是……我們真的應該盡快再僱傭一名卡普拉！";
+					return;
+				ssM_KafEnd2:
+					mes "[ 卡普拉服務人員 ]";
+					mes "謝謝會長，我會繼續努力的！^^";
+					cutin "kafra_01",255;
+					return;
+			sM_KafEnd2:
+				mes "[ "+ .@npc_name$ +" ]";
+				mes "會長，我想您應該留下目前的卡普拉服務人員，因為她已經非常努力在為我們服務了。";
+				return;
+
+	//=========================
+	M_Treas:
+	//========
+		mes "[ "+ .@npc_name$ +" ]";
+		mes "您要去我們的寶藏房嗎？只有身為會長的您才被允許進入這個房間。";
+		next;
+		menu "進入寶藏房。",-,"取消",sM_TresEnd;
+
+			mes "[ "+ .@npc_name$ +" ]";
+			mes "請跟我走這條秘密通道。";
+			mes "您必須拉下秘密開關才能出來。";
+			next;
+			warp .@map_name$,getarg(2),getarg(3);
+			return;
+		sM_TresEnd:
+			mes "[ "+ .@npc_name$ +" ]";
+			mes "寶物每天都會生產出來。";
+			mes "您應該把握時間去領取，因為如果您錯過了時間，它們可能會消失。";
+			return;
+
+
+	//==========================
+	M_End:
+	//=======
+		mes "[ "+ .@npc_name$ +" ]";
+		mes "如您所願，會長。";
+		return;
+}
+
+// Castle 1 ==================================================================================
+nguild_alde,218,175,0	script	弗羅洛	55,{
+	callfunc "F_GldManager","弗羅洛","nguild_alde",119,223,"N01";
+	close;
+}
+
+
+// Castle 2 ==================================================================================
+nguild_gef,40,48,5	script	萊伯	55,{
+	callfunc "F_GldManager","萊伯","nguild_gef",155,112,"N02";
+	close;
+}
+
+
+// Castle 3 ==================================================================================
+nguild_pay,120,58,4	script	登達	55,{
+	callfunc "F_GldManager","登達","nguild_pay",290,7,"N03";
+	close;
+}
+
+
+// Castle 4 ==================================================================================
+nguild_prt,112,181,0	script	賽夫頓	55,{
+	callfunc "F_GldManager","賽夫頓","nguild_prt",15,209,"N04";
+	close;
+}

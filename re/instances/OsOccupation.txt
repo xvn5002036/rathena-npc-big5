@@ -1,0 +1,703 @@
+//===== rAthena Script =======================================
+//= OS Occupation Operation
+//===== Description: =========================================
+//= [Walkthrough Conversion]
+//= Episode 17.1 - OS Occupation Operation
+//= 2nd OS Search
+//===== Changelog: ===========================================
+//= 1.0 Initial release [crazyarashi]
+//= 1.1 Optimizations and cleanup [Everade]
+//============================================================
+
+1@os_a,1,1,0	script	#os_occupation_control	HIDDEN_WARP_NPC,{
+	end;
+OnInstanceInit:
+	'map$ = instance_mapname("1@os_a");
+	for (.@i = 1; .@i < 26; .@i++)
+		disablenpc instance_npcname("#ocp_rebel_" + .@i);
+	hideonnpc instance_npcname("埃絲特#171_ocp_0");
+	disablenpc instance_npcname("#171_ocp_dev_0");
+	disablenpc instance_npcname("#171_ocp_dev_1");
+	disablenpc instance_npcname("#171_ocp_wrp_0");
+	disablenpc instance_npcname("#171_ocp_wrp_1");
+	disablenpc instance_npcname("#171_ocp_wrp_2");
+	disablenpc instance_npcname("#171_ocp_miguel");
+	disablenpc instance_npcname("埃絲特#171_ocp_1");
+	disablenpc instance_npcname("作戰軍官#171_osd");
+	end;
+
+OnStory01:
+	donpcevent instance_npcname("#171_ocp_mob") + "::OnPoisonStory";
+	for (.@i = 1; .@i < 26; .@i++)
+		enablenpc instance_npcname("#ocp_rebel_" + .@i);
+	enablenpc instance_npcname("#171_ocp_dev_0");
+	sleep2 1000;
+	hideoffnpc instance_npcname("埃絲特#171_ocp_0");
+	doevent instance_npcname("埃絲特#171_ocp_0") + "::OnEvent";
+	end;
+
+OnStory02:
+	for (.@i = 1; .@i < 26; .@i++)
+		hideonnpc instance_npcname("#ocp_rebel_" + .@i);
+	disablenpc instance_npcname("埃絲特#171_ocp_0");
+	sleep2 3000;
+	donpcevent instance_npcname("#171_ocp_mob") + "::OnSummonStory01";
+	doevent instance_npcname("#171_ocp_dev_0") + "::OnEvent01";
+	end;
+
+OnStory03:
+	enablenpc instance_npcname("#171_ocp_dev_1");
+	for (.@i = 1; .@i < 26; .@i++)
+		disablenpc instance_npcname("#ocp_rebel_" + .@i);
+	end;
+
+OnDaily01:
+	'osd = 1;
+	donpcevent instance_npcname("#171_ocp_mob") + "::OnSummon";
+	donpcevent instance_npcname("#171_ocp_mob") + "::OnPoisonDaily";
+	end;
+}
+
+1@os_a,30,352,0	script	#os_occupation_ev_0	HIDDEN_WARP_NPC,4,4,{
+	end;
+
+OnTouch:
+	if (!is_party_leader())
+		end;
+	disablenpc();
+	disablenpc instance_npcname("#os_occupation_ev_1");
+	doevent instance_npcname("#os_occupation_control") + "::OnStory01";
+	end;
+}
+
+1@os_a,335,34,0	script	#os_occupation_ev_1	HIDDEN_WARP_NPC,4,4,{
+	end;
+
+OnTouch:
+	if (!is_party_leader())
+		end;
+	disablenpc();
+	disablenpc instance_npcname("#os_occupation_ev_0");
+	doevent instance_npcname("#os_occupation_control") + "::OnDaily01";
+	disablenpc instance_npcname("埃絲特#171_ocp_0");
+	end;
+}
+
+1@os_a,30,360,3	script	埃絲特#171_ocp_0	4_F_ESTLOVELOY,{
+	cutin "ep162_est01",2;
+	mes "[埃絲特]";
+	mes "專心聽取簡報。";
+	close3;
+OnEvent:
+	sleep2 3000;
+	npctalk "埃絲特 : 前方確認有毒氣蔓延，目前正在進行處理作業。", 'npc_himelmez2$;
+	sleep2 5000;
+	npctalk "埃絲特 : 如果靠得太近會立刻死亡，所以在處理完成前請不要移動...";
+	sleep2 5000;
+	npctalk "埃絲特 : 首先，我們必須在這裡建立據點。我們不知道這附近潛伏著多少個體。";
+	sleep2 5000;
+	npctalk "埃絲特 : 情報並不多，所以收集情報就是我們的職責。從現在開始，我們將分成3組來壓制這個地方。";
+	sleep2 5000;
+	npctalk "埃絲特 : Alpha隊，開始搜索南部下水道。";
+	sleep2 5000;
+	npctalk "埃絲特 : Bravo隊，跟我一起去掃蕩東部邊界。";
+	sleep2 5000;
+	npctalk "埃絲特 : Echo隊在" + strcharinfo(0) + "的指揮下負責後援。你們要封鎖這裡，防止任何個體逃到外面。";
+	sleep2 5000;
+	npctalk "埃絲特 : 理論上不會有需要請求支援的情況，但如果發生了，就會呼叫Echo隊。";
+	sleep2 5000;
+	mapannounce 'map$,"化學處理部隊 : 毒氣設施的封鎖已完成。殘留的毒氣在接下來幾分鐘內仍會持續。",bc_map,0xFFCC00;
+	sleep2 5000;
+	npctalk "埃絲特 : 時間到了。我們出發。" + strcharinfo(0) + "的部隊是支援小隊，在這裡待命並隨時回應通訊。";
+	sleep2 5000;
+	doevent instance_npcname("#os_occupation_control") + "::OnStory02";
+	end;
+}
+
+1@os_a,29,360,3	script	#171_ocp_dev_0	4_SCR_MT_ROBOTS,{
+	if ('ocp >= 5) {
+		mes "## 收到訊息 ##";
+		mes "## Alpha隊的最後一次通訊位置在 Oscar Sierra 52 177 ##";
+		navigateto("1@os_a",52,177);
+		close;
+	}
+	switch ('ocp) {
+	case 1:
+		mes "## 輸入訊息 ##";
+		next;
+		setarray .@input$,
+		"正在與北方的變異體交戰。","正在與小型變異體交戰。","啊?！我想回家！";
+		.@menu$ = implode(.@input$,":");
+		.@s = select(.@menu$) - 1;
+		'ocp = 2;
+		mapannounce 'map$,strcharinfo(0) + " : " + .@input$[.@s],bc_map,0xEE66EE;
+		doevent instance_npcname(strnpcinfo(0)) + "::OnEvent02";
+		close;
+	case 3:
+		mes "## 輸入訊息 ##";
+		next;
+		setarray .@input$,
+		"Echo隊也正在交戰。請求支援。","剛剛發生了交戰，但已經結束了。","救救我！";
+		.@menu$ = implode(.@input$,":");
+		.@s = select(.@menu$) - 1;
+		'ocp = 4;
+		mapannounce 'map$,strcharinfo(0) + " : " + .@input$[.@s],bc_map,0xEE66EE;
+		doevent instance_npcname(strnpcinfo(0)) + "::OnEvent03";
+		close;
+	default:
+		mes "## 無通訊狀態 ##";
+		close;
+	}
+	end;
+OnEvent01:
+	mapannounce 'map$,"Alpha隊 : 這裡是Alpha隊，正在向南推進。我們發現大量變異體正朝北方Echo隊的方向前進。",bc_map,0xCCCC00;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : 通訊接收良好，Echo隊準備迎擊，發生任何情況立即回報。",bc_map,0x00EEEE;
+	sleep2 6000;
+	mapannounce 'map$,"Alpha隊 : Alpha隊在南部排水道發現大量變異體。我們準備交戰。",bc_map,0xCCCC00;
+	sleep2 9000;
+	mapannounce 'map$,"埃絲特 : ---收到。",bc_map,0x00EEEE;
+	sleep2 3000;
+	mapannounce 'map$,"埃絲特 : Alpha隊，交戰結束後發送通訊。",bc_map,0x00EEEE;
+	sleep2 6000;
+	mapannounce 'map$,"Alpha隊 : 排水道的變異體已清除。確認有殘留的生物實驗體。我們正在準備第二波交戰。",bc_map,0xCCCC00;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : Alpha隊，收到。Echo隊，報告狀況。",bc_map,0x00EEEE;
+	sleep2 3000;
+	mapannounce 'map$,"埃絲特 : " + strcharinfo(0) + "！！請回報你們目前的狀況！！",bc_map,0x00EEEE;
+	'ocp = 1;
+	specialeffect EF_BIG_PORTAL;
+	end;
+
+OnEvent02:
+	sleep2 3000;
+	mapannounce 'map$,"埃絲特 : Echo隊的通訊接收不佳。請重新發送訊息。",bc_map,0x00EEEE;
+	sleep2 10000;
+	mapannounce 'map$,"Alpha隊 : 遭到埋伏！目前座標在 Oscar Sierra 9...＠＄％＊＊！",bc_map,0xCCCC00;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : Alpha隊請重新發送座標。Alpha隊！！！請回答！！",bc_map,0x00EEEE;
+	sleep2 6000;
+	mapannounce 'map$,"Alpha隊 : ---- 滋滋滋滋 ----",bc_map,0xCCCC00;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : 該死！... Echo隊，確認你們是否能前往Alpha隊的座標進行支援。",bc_map,0xCCCC00;
+	sleep2 3000;
+	mapannounce 'map$,"埃絲特 : " + strcharinfo(0) + "！去確認Alpha隊的座標狀態！",bc_map,0x00EEEE;
+	'ocp = 3;
+	specialeffect EF_BIG_PORTAL;
+	end;
+OnEvent03:
+	sleep2 6000;
+	mapannounce 'map$,"?????? : 這裡是Foxtrot隊。地面火砲支援已準備就緒。請發送需要支援的座標。",bc_map,0x00FF44;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : Alpha隊無回應。" + strcharinfo(0) + "，請去支援他們。座標是 Oscar Sierra 32 356",bc_map,0x00EEEE;
+	sleep2 6000;
+	specialeffect EF_CLOUD4,AREA,instance_npcname("#ocp_rebel_5");
+	mapannounce 'map$,"?????? : Foxtrot隊報告，座標已收到。請小心，確保只轟炸變異體。",bc_map,0x00FF44;
+	sleep2 6000;
+	mapannounce 'map$,"?????? : 3秒後，將在Echo隊的一側發射針對變異體的地面火砲。",bc_map,0x00FF44;
+	sleep2 3000;
+	for (.@i = 1; .@i < 26; .@i++) {
+		specialeffect EF_METEORSTORM,AREA,instance_npcname("#ocp_rebel_" + .@i);
+		killmonster 'map$,instance_npcname("#171_ocp_mob")+"::OnStoryKill";
+		sleep2 300;
+	}
+	killmonster 'map$,instance_npcname("#171_ocp_mob")+"::OnPoisonKill";
+	sleep2 1000;
+	mapannounce 'map$,"?????? : Echo隊座標的變異體火砲支援已完成。",bc_map,0x00FF44;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : 我們的交戰已結束。",bc_map,0x00EEEE;
+	sleep2 6000;
+	mapannounce 'map$,"埃絲特 : 我將使用無線電發送他們最後聯絡點的預估座標。請在收到無線電情報後前往支援。",bc_map,0x00EEEE;
+	sleep2 3000;
+	'ocp = 5;
+	specialeffect EF_BIG_PORTAL;
+	donpcevent instance_npcname("#os_occupation_control") + "::OnStory03";
+	end;
+}
+
+1@os_a,52,177,3	script	#171_ocp_dev_1	4_SCR_MT_ROBOTS,3,3,{
+	if ('ocp == 5) {
+		mes "## 發送訊息 ##";
+		next;
+		select("沒有Alpha隊的蹤跡。只剩這台無線電。");
+		'ocp = 6;
+		mapannounce 'map$,strcharinfo(0) + " : 沒有Alpha隊的蹤跡。這裡只有這台無線電。",bc_map,0xEE66EE;
+		sleep2 4000;
+		mapannounce 'map$,"埃絲特 : " + strcharinfo(0) + "。請四處看看是否還有留下任何痕跡。",bc_map,0x00EEEE;
+		sleep2 3000;
+		select("沒有什麼特別的。");
+		mapannounce 'map$,strcharinfo(0) + " : 沒有什麼特別的。",bc_map,0xEE66EE;
+		sleep2 3000;
+		mapannounce 'map$,"埃絲特 : Bravo隊已完成東側的搜索。",bc_map,0x00EEEE;
+		sleep2 4000;
+		mapannounce 'map$,"埃絲特 : 我們準備向南移動。我會傳送新座標。請做好交戰準備。",bc_map,0x00EEEE;
+		mes "## 座標已接收 ##";
+		enablenpc instance_npcname("#171_ocp_wrp_0");
+		hideonnpc instance_npcname("#171_ocp_wrp_0");
+		donpcevent instance_npcname("#171_ocp_wrp_0") + "::OnMobSpawn";
+		initnpctimer instance_npcname("#171_ocp_wrp_0");
+	}
+	navigateto("1@os_a",84,256);
+	end;
+OnTouch:
+	if ('ocp == 5)
+		npctalk "埃絲特 : " + strcharinfo(0) + " 聽得到嗎？如果聽得到，請回答。";
+	end;
+}
+
+1@os_a,84,256,5	script	#171_ocp_wrp_0	4_ENERGY_BLUE,4,4,{
+	end;
+
+OnTouch:
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnMobKill";
+	if (getd("'" + strnpcinfo(2)) && !mobcount('map$,.@event$)) {
+		disablenpc();
+		.@id = atoi(replacestr(strnpcinfo(2),"171_ocp_wrp_",""));
+		if (.@id < 2) {
+			enablenpc instance_npcname("#171_ocp_wrp_" + (.@id + 1));
+			hideonnpc instance_npcname("#171_ocp_wrp_" + (.@id + 1));
+			donpcevent instance_npcname("#171_ocp_wrp_" + (.@id + 1)) + "::OnSummon";
+		}else
+			donpcevent instance_npcname("#171_ocp_wrp_2") + "::OnBossSummon";
+		switch (.@id) {
+		case 0:
+			monster 'map$,144,275,"",2536,1,instance_npcname("#171_ocp_mob") + "::OnPoisonKill";
+			navigateto("1@os_a",163,266);
+			mapannounce 'map$,"埃絲特 : " + strcharinfo(0) + "，聽得到嗎？",bc_map,0x00EEEE;
+			sleep2 3000;
+			mapannounce 'map$,"埃絲特 : 我發送了第二個搜索座標。小心不要遺失你的紀錄。",bc_map,0x00EEEE;
+			sleep2 6000;
+			mapannounce 'map$,"埃絲特 : " + strcharinfo(0) + "，確認那附近有沒有什麼痕跡。",bc_map,0x00EEEE;
+			initnpctimer instance_npcname("#171_ocp_wrp_1");
+			sleep2 3000;
+			mapannounce 'map$,strcharinfo(0) + " : 我在沿途發現了一群變異體。",bc_map,0xEE66EE;
+			sleep2 3000;
+			mapannounce 'map$,"埃絲特 : 如果發現可以溝通的變異體，立刻將其活捉。除此之外...全部格殺勿論。",bc_map,0x00EEEE;
+			break;
+		case 1:
+			navigateto("1@os_a",138,174);
+			initnpctimer instance_npcname("#171_ocp_wrp_2");
+			mapannounce 'map$,"埃絲特 : " + strcharinfo(0) + "，你還活著嗎？",bc_map,0x00EEEE;
+			sleep2 3000;
+			mapannounce 'map$,strcharinfo(0) + " : Echo隊還活著。我們正在向南邊的據點移動。",bc_map,0xEE66EE;
+			sleep2 3000;
+			mapannounce 'map$,"埃絲特 : Bravo隊也正朝那裡移動，我們略過了東邊的據點。",bc_map,0x00EEEE;
+			sleep2 3000;
+			mapannounce 'map$,strcharinfo(0) + " : 希望Bravo隊能安全抵達。",bc_map,0xEE66EE;
+			sleep2 3000;
+			mapannounce 'map$,"埃絲特 : 我也祝Echo隊一切平安。",bc_map,0x00EEEE;
+			break;
+		case 2:
+			navigateto("1@os_a",161,178);
+			mapannounce 'map$,"???? : 咕嚕嚕...",bc_map,0xFF9999;
+		}
+	}
+	end;
+OnMobSpawn:
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnMobKill";
+	setarray .@xy,63,214,20349,63,230,20349,63,218,20350,63,222,20350,63,226,20350,63,234,20350,63,238,20350,63,242,20350;
+	for (.@i = 0; .@i < getarraysize(.@xy); .@i += 3)
+		monster 'map$,.@xy[.@i],.@xy[.@i+1],"不完整的 " + getmonsterinfo(.@xy[.@i+2],MOB_NAME),.@xy[.@i+2],1,.@event$;
+	end;
+
+OnSummon:
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnMobKill";
+	.@id = atoi(replacestr(strnpcinfo(2),"171_ocp_wrp_",""));
+	switch (.@id) {
+		case 1: setarray .@xy,146,266,20349,166,266,20349,170,266,20349,154,266,20349,126,266,20350,130,266,20350,134,266,20350,138,266,20350,142,266,20350,150,266,20350,158,266,20350,162,266,20350,174,266,20350; break;
+		case 2: setarray .@xy,151,243,20348,144,216,20349,141,213,20349,137,210,20349,132,207,20349,139,200,20349,146,199,20349,139,196,20349,146,216,20350,141,213,20350,135,213,20350,137,212,20350,143,203,20350,139,209,20350,134,199,20350;
+	}
+	for (.@i = 0; .@i < getarraysize(.@xy); .@i += 3)
+		monster 'map$,.@xy[.@i],.@xy[.@i+1],"不完整的 " + getmonsterinfo(.@xy[.@i+2],MOB_NAME),.@xy[.@i+2],1,.@event$;
+	end;
+
+OnMobKill:
+	end;
+
+OnBossSummon:
+	setarray .@xy,161,178,20347;
+	.@event$ = instance_npcname("#171_ocp_mob") + "::OnBossKillStory";
+	monster 'map$,.@xy[.@i],.@xy[.@i+1],"????",.@xy[.@i+2],1,.@event$;
+	getunitdata $@mobid[0],.@boss_data;
+	.@DAMAGE = (.@boss_data[UMOB_MAXHP]/10) * 9;
+	.@HP = (.@boss_data[UMOB_MAXHP] - .@DAMAGE)/2;
+	setunitdata $@mobid[0],UMOB_HP,.@HP;
+	end;
+
+OnTimer10000:
+	stopnpctimer;
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnMobKill";
+	.@id = atoi(replacestr(strnpcinfo(2),"171_ocp_wrp_",""));
+	.@count = mobcount('map$,.@event$);
+	if (.@count) {
+		mapannounce 'map$,"殘留的變異體 - " + .@count,bc_map,0xFFFF00;
+		initnpctimer;
+	} else {
+		mapannounce 'map$,"中繼點已確保。",bc_map,0xFFFF00;
+		setd("'" + strnpcinfo(2),1);
+		hideoffnpc();
+	}
+	end;
+}
+
+1@os_a,163,266,5	duplicate(#171_ocp_wrp_0)	#171_ocp_wrp_1	4_ENERGY_BLUE,4,4
+1@os_a,138,174,5	duplicate(#171_ocp_wrp_0)	#171_ocp_wrp_2	4_ENERGY_BLUE,4,4
+
+1@os_a,162,176,5	script	#171_ocp_miguel	4_EP17_MIGUEL_D,{
+	if (isbegin_quest(12452) == 1) {
+		mes "^0000FF看來他已經停止呼吸了。^000000";
+		close;
+	}
+	cutin "ep171_miguel01",0;
+	mes "[???]";
+	mes "咕嚕...看來你不是雷根休曼的人。能請你讓開嗎，我有些話想對那個人說。";
+	next;
+	cutin "",255;
+	mes "^0000FF生命即將消逝的變異體似乎想說些什麼。^000000";
+	close;
+}
+
+1@os_a,165,176,3	script	埃絲特#171_ocp_1	4_F_ESTLOVELOY,{
+	if (isbegin_quest(12452) == 1) {
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes strcharinfo(0) + "，沒想到我還能活著再見到你。你表現得很不錯。";
+		next;
+		select("詢問關於倒下的變異體。");
+		mes "[埃絲特]";
+		mes "這個嘛，就算你問我...這也是我第一次跟變異體說話。";
+		emotion ET_SCRATCH;
+		next;
+		cutin "ep171_miguel03",0;
+		mes "[???]";
+		mes "... 埃絲特？";
+		next;
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "你怎麼知道我的名字？你到底是誰！老實交代，我會給你一個痛快。";
+		emotion ET_SURPRISE;
+		next;
+		cutin "ep171_miguel03",0;
+		mes "[???]";
+		mes "埃絲特...叛亂者幽靈隊...妳還記得米格爾叔叔嗎？";
+		next;
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "你怎麼會知道那個名字...";
+		next;
+		cutin "ep171_miguel03",0;
+		mes "[???]";
+		mes "哈...哈哈...妳還記得啊。";
+		next;
+		mes "^0000FF變異體脖子上的識別牌非常顯眼。^000000";
+		next;
+		select("取下識別牌並交給埃絲特。");
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "米...格爾...？";
+		next;
+		cutin "ep171_miguel03",0;
+		mes "[米格爾]";
+		mes "...埃絲特，我最後能看到的...是妳的臉...那我就放心了。";
+		next;
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "米格爾叔叔！？怎麼會變成這樣！";
+		next;
+		cutin "ep171_miguel03",0;
+		mes "[米格爾]";
+		mes "在我死之前...我一直想再見見以前的同伴...妳實現了我的願望。";
+		next;
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "叔叔！這是怎麼回事！你到底發生了什麼事？";
+		next;
+		cutin "ep171_miguel01",0;
+		mes "[米格爾]";
+		mes "呃...我剩下的時間不多了...仔細聽好，埃絲特。";
+		next;
+		mes "[米格爾]";
+		mes "在這裡的某個地方...雷根休曼瘋狂的實驗成果...可以在這裡找到。";
+		next;
+		mes "[米格爾]";
+		mes "找出所有真相...妳就會知道我發生了什麼事...妳會看到這裡無法解釋的一切。";
+		next;
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "叔叔！醒醒！！我們出去吧。只要離開這裡，我們就能救你！";
+		next;
+		cutin "ep171_miguel02",0;
+		mes "[米格爾]";
+		mes "埃絲特...妳還是那麼善良...那種感情...在戰場上...我教過妳的...";
+		next;
+		cutin "ep162_est01",2;
+		mes "[埃絲特]";
+		mes "叔叔！叔叔！！";
+		next;
+		cutin "",255;
+		mes "[米格爾]";
+		mes "...";
+		if (isbegin_quest(12452) == 1)
+			completequest 12452;
+		getitem 25668,1;
+		getitem 25723,5;
+		getexp 300000,300000;
+		close;
+	}
+	select("詢問關於米格爾的事");
+	cutin "ep162_est01",2;
+	mes "[埃絲特]";
+	mes strcharinfo(0) + "，抱歉，但我現在不想談論他的事。";
+	next;
+	select("詢問關於紀錄的事。");
+	mes "[埃絲特]";
+	mes "我調查了東北區域，在鐵路上方看到了一個似乎是研究設施的地方。";
+	next;
+	mes "[埃絲特]";
+	mes "也許米格爾說的那個研究...就在那裡的某處。我必須立刻展開下一波行動了。";
+	next;
+	mes "[埃絲特]";
+	mes "我想這裡應該沒有其他事情可做了。";
+	next;
+	select("我想回去了。");
+	warp "sp_cor",162,63;
+	end;
+}
+
+1@os_a,187,195,5	script	作戰軍官#171_osd	4_M_ILYA,{
+	if (isbegin_quest(12454) == 1) {
+		mes "[作戰軍官]";
+		mes "你居然獨自解決了CP7的變異體...戰鬥還順利嗎？";
+		next;
+		mes "[作戰軍官]";
+		mes "這是給參與作戰部隊的補給品和經驗值。收下吧。";
+		erasequest 12454;
+		getexp 150000,150000;
+		getitem 25669,5;
+		getitem 25723,1;
+		next;
+		mes "[作戰軍官]";
+		mes "即使對手是CP7等級，抱歉我無法給你更多的經驗值。";
+		close;
+	}
+	mes "[作戰軍官]";
+	mes "我們現在出去吧。我們必須盡快準備修復工作。";
+	next;
+	if (select("再四處看看。:出去") == 1) {
+		mes "[作戰軍官]";
+		mes "是嗎？別耽擱太久。";
+		close;
+	}
+	warp "sp_cor",162,63;
+	end;
+}
+
+1@os_a,1,1,0	script	#171_ocp_mob	HIDDEN_WARP_NPC,{
+	end;
+
+OnSummonStory01:
+	setarray .@mob,20348,20349,20350;
+	for (.@i = 0; .@i < 12; .@i++) { //Summons max 12 mobs randomly
+		.@id = .@mob[rand(3)];
+		areamonster 'map$,26,349,37,357,"不完整的 " + getmonsterinfo(.@id,MOB_NAME),.@id,1,instance_npcname(strnpcinfo(0))+"::OnStoryKill";
+		sleep 10000;
+	}
+	end;
+
+OnStoryKill:
+	end;
+
+OnSummon:
+	.@id = 'osd;
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnMobKill";
+	switch (.@id) {
+		case 1: setarray .@xy,334,66,20348,291,95,20348,287,97,20348,280,95,20348,272,91,20348,265,89,20349,265,93,20349,263,95,20349,267,92,20350; break;
+		case 2: setarray .@xy,252,82,20348,257,72,20348,260,70,20348,254,64,20348,263,83,20350,254,70,20350,259,66,20350; break;
+		case 3: setarray .@xy,205,90,20348,201,90,20348,208,79,20348,204,71,20348,203,81,20348,200,81,20348,211,80,20349,202,75,20349,210,88,20349,207,93,20349,200,77,20349,206,79,20349,207,78,20350,208,83,20350; break;
+		case 4: setarray .@xy,209,118,20348,208,129,20348,214,136,20348,222,131,20348,215,134,20348,204,137,20348,205,127,20349,222,127,20349,225,136,20349,221,132,20349,206,132,20349,217,132,20349,208,135,20350,216,129,20350,210,136,20350; break;
+		case 5: setarray .@xy,257,153,20348,263,156,20348,261,158,20348,256,161,20348,252,161,20348,246,156,20349,240,156,20349,248,157,20349,256,158,20349,243,156,20350,249,156,20350,237,153,20350,252,161,20350,253,161,20350; break;
+		case 6: setarray .@xy,200,190,20348,213,189,20348,227,190,20348,206,191,20348,201,189,20348,198,183,20348,200,170,20348,197,187,20349,200,191,20349,215,190,20349,207,190,20349,209,183,20349,218,184,20349,212,184,20349,229,185,20349,219,184,20350,199,183,20350,207,184,20350,206,182,20350,226,188,20350,203,187,20350,197,183,20350; break;
+		case 7: donpcevent instance_npcname(strnpcinfo(0)) + "::OnSummonBoss"; end;
+	}
+	if (.@id == 1) {
+		'osd = 2;
+		donpcevent instance_npcname(strnpcinfo(0)) + "::OnSummon";
+	}
+	if (.@id != 2)
+		donpcevent instance_npcname(strnpcinfo(0)) + "::OnEvent0" + .@id;
+	for (.@i = 0; .@i < getarraysize(.@xy); .@i += 3)
+		monster 'map$,.@xy[.@i],.@xy[.@i+1],"CP" + .@id + " " + getmonsterinfo(.@xy[.@i+2],MOB_NAME),.@xy[.@i+2],1,.@event$;
+	end;
+
+OnMobKill:
+	end;
+
+OnTimer10000:
+	stopnpctimer;
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnMobKill";
+	.@count = mobcount('map$,.@event$);
+	if (.@count) {
+		mapannounce 'map$,"殘留的變異體 - " + .@count,bc_map,0xFFFF00;
+		initnpctimer;
+	} else {
+		mapannounce 'map$,"區域 " + ('osd - 1) + " 已確保。",bc_map,0x00FF00;
+		.@id = 'osd + 1;
+		'osd = .@id;
+		if (.@id == 5)
+			killmonster 'map$,instance_npcname(strnpcinfo(0)) + "::OnPoisonKill";
+		donpcevent instance_npcname(strnpcinfo(0)) + "::OnSummon";
+	}
+	end;
+OnEvent01:
+	mapannounce 'map$,"作戰軍官 : Alpha隊在感覺到附近有變異體反應的瞬間，就要做好戰鬥準備。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : 主要搜索區域內沒有平民，因此你們可以放心地擊殺任何移動的生物。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : Charlie隊和Delta隊，如果發生交戰情況，不需回報，立即進入戰鬥。",bc_map,0x00EEEE;
+	initnpctimer;
+	end;
+
+OnEvent03:
+	mapannounce 'map$,"作戰軍官 : 我們收到該區域內的預防警告。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : 標記為A013的變異體是一個與其基地無關的獨立變異體。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : 據說它的戰鬥能力比一般變異體更強，除非你做好了戰鬥準備，否則請避免交戰。",bc_map,0x00EEEE;
+	initnpctimer;
+	end;
+
+OnEvent04:
+	mapannounce 'map$,"作戰軍官 : 對付CP4或更高等級的變異體時請小心。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : 它們與CP1是同一類型，但破壞力會隨著等級提升。小心不要被包圍。",bc_map,0x00EEEE;
+	initnpctimer;
+	end;
+
+OnEvent05:
+	mapannounce 'map$,"作戰軍官 : 據說第4區是機密文件儲藏室。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : 先遣部隊已經搜索過該區域，但沒有什麼特別的發現，所以請專注於戰鬥，並小心不要被包圍。",bc_map,0x00EEEE;
+	initnpctimer;
+	end;
+
+OnEvent06:
+	mapannounce 'map$,"作戰軍官 : Bravo隊。正與CP6變異體交戰。它們的攻擊非常強大。",bc_map,0x00EEEE;
+	sleep 6000;
+	mapannounce 'map$,"作戰軍官 : Alpha隊、Charlie隊、Delta隊也應當小心。別被CP6等級的變異體包圍了！",bc_map,0x00EEEE;
+	initnpctimer;
+	end;
+
+OnSummonBoss:
+	sleep 3000;
+	mapannounce 'map$,"作戰軍官 : 呼叫所有小隊。如果發現S級變異體，請立即展開戰鬥。",bc_map,0x00EEEE;
+	sleep 3000;
+	mapannounce 'map$,"???? : 咕嚕嚕...",bc_map,0xFF9999;
+	sleep 3000;
+	mapannounce 'map$,"作戰軍官 : 小心，高CP等級的變異體非常難以對付！",bc_map,0x00EEEE;
+	monster 'map$,205,188,"CP7 米格爾",20346,1,instance_npcname(strnpcinfo(0)) + "::OnBossKill";
+	'boss_gid = $@mobid[0];
+	donpcevent instance_npcname(strnpcinfo(0)) + "::OnBossSkill";
+	end;
+
+OnBossKillStory:
+	enablenpc instance_npcname("#171_ocp_miguel");
+	enablenpc instance_npcname("埃絲特#171_ocp_1");
+	end;
+OnBossKill:
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnSummonKill";
+	killmonster 'map$,.@event$;
+	mapannounce 'map$,"作戰軍官 : 看來我稍微遲到了一步！",bc_map,0x00EEEE;
+	enablenpc instance_npcname("作戰軍官#171_osd");
+	end;
+OnBossSkill:
+	.@gid = 'boss_gid;
+	freeloop(true);
+	while(unitexists(.@gid)) {
+		if (unitexists(.@gid)) {
+			getunitdata .@gid,.@data;
+			if (.@data[UMOB_HP] <= ((.@data[UMOB_MAXHP]/10) * 7)) {
+				donpcevent instance_npcname(strnpcinfo(0)) + "::OnSummonSkill";
+				break;
+			}
+		}
+		sleep 100;
+	}
+	freeloop(false);
+	end;
+
+OnSummonSkill:
+	.@gid = 'boss_gid;
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnSummonKill";
+	freeloop(true);
+	while(unitexists(.@gid)) {
+		sleep 100;
+		if(!unitexists(.@gid)) 
+			end;
+		getunitdata .@gid,.@data;
+		if (.@data[UMOB_HP] <= ((.@data[UMOB_MAXHP]/10) * 3) && 'skill == 0)
+			'skill = 1;
+		if (.@data[UMOB_X] == 'gid_x && .@data[UMOB_Y] == 'gid_y)
+			continue;
+		killmonster 'map$,.@event$;
+		if (unitexists(.@gid)) {
+			'gid_x = .@data[UMOB_X];
+			'gid_y = .@data[UMOB_Y];
+			monster 'map$,.@data[UMOB_X] - 7,.@data[UMOB_Y],"",20351,1,.@event$;
+			monster 'map$,.@data[UMOB_X] + 7,.@data[UMOB_Y],"",20351,1,.@event$;
+			monster 'map$,.@data[UMOB_X],.@data[UMOB_Y] - 7,"",20351,1,.@event$;
+			monster 'map$,.@data[UMOB_X],.@data[UMOB_Y] + 7,"",20351,1,.@event$;
+			if ('skill) {
+				monster 'map$,.@data[UMOB_X] - 5,.@data[UMOB_Y] + 5,"",20351,1,.@event$;
+				monster 'map$,.@data[UMOB_X] + 5,.@data[UMOB_Y] + 5,"",20351,1,.@event$;
+				monster 'map$,.@data[UMOB_X] - 5,.@data[UMOB_Y] - 5,"",20351,1,.@event$;
+				monster 'map$,.@data[UMOB_X] + 5,.@data[UMOB_Y] - 5,"",20351,1,.@event$;
+			}
+		} else
+			break;
+	}
+	freeloop(false);
+	end;
+
+OnSummonKill:
+	end;
+
+OnPoisonStory:
+	monster 'map$,44,340,"",2536,1,instance_npcname(strnpcinfo(0)) + "::OnPoisonKill";
+	monster 'map$,44,344,"",2536,1,instance_npcname(strnpcinfo(0)) + "::OnPoisonKill";
+	monster 'map$,43,360,"",2536,1,instance_npcname(strnpcinfo(0)) + "::OnPoisonKill";
+	end;
+
+OnPoisonDaily:
+	monster 'map$,252,107,"",2536,1,instance_npcname(strnpcinfo(0)) + "::OnPoisonKill";
+	monster 'map$,255,107,"",2536,1,instance_npcname(strnpcinfo(0)) + "::OnPoisonKill";
+	end;
+
+OnPoisonKill:
+	end;
+}
+
+1@os_a,26,345,7	duplicate(dummy_npc)	#ocp_rebel_1	4_M_GUNSLINGER3
+1@os_a,38,357,1	duplicate(dummy_npc)	#ocp_rebel_2	4_F_GUNSLINGER3
+1@os_a,29,348,7	duplicate(dummy_npc)	#ocp_rebel_3	4_M_REBELLION2
+1@os_a,29,351,7	duplicate(dummy_npc)	#ocp_rebel_4	4_M_REBELLION2
+1@os_a,32,351,7	duplicate(dummy_npc)	#ocp_rebel_5	4_M_REBELLION3
+1@os_a,29,345,7	duplicate(dummy_npc)	#ocp_rebel_6	4_M_REBELLION2
+1@os_a,26,348,7	duplicate(dummy_npc)	#ocp_rebel_7	4_M_REBELLION2
+1@os_a,29,357,7	duplicate(dummy_npc)	#ocp_rebel_8	4_M_REBELLION2
+1@os_a,38,348,1	duplicate(dummy_npc)	#ocp_rebel_9	4_F_GUNSLINGER3
+1@os_a,32,348,7	duplicate(dummy_npc)	#ocp_rebel_10	4_M_REBELLION3
+1@os_a,26,351,7	duplicate(dummy_npc)	#ocp_rebel_11	4_M_GUNSLINGER3
+1@os_a,35,345,1	duplicate(dummy_npc)	#ocp_rebel_12	4_F_GUNSLINGER2
+1@os_a,35,348,1	duplicate(dummy_npc)	#ocp_rebel_13	4_F_GUNSLINGER2
+1@os_a,26,357,7	duplicate(dummy_npc)	#ocp_rebel_14	4_M_GUNSLINGER3
+1@os_a,26,354,7	duplicate(dummy_npc)	#ocp_rebel_15	4_M_GUNSLINGER3
+1@os_a,32,354,7	duplicate(dummy_npc)	#ocp_rebel_16	4_M_REBELLION3
+1@os_a,29,354,7	duplicate(dummy_npc)	#ocp_rebel_17	4_M_REBELLION2
+1@os_a,35,351,1	duplicate(dummy_npc)	#ocp_rebel_18	4_F_GUNSLINGER2
+1@os_a,35,354,1	duplicate(dummy_npc)	#ocp_rebel_19	4_F_GUNSLINGER2
+1@os_a,32,345,7	duplicate(dummy_npc)	#ocp_rebel_20	4_M_REBELLION3
+1@os_a,38,351,1	duplicate(dummy_npc)	#ocp_rebel_21	4_F_GUNSLINGER3
+1@os_a,35,357,1	duplicate(dummy_npc)	#ocp_rebel_22	4_F_GUNSLINGER2
+1@os_a,38,354,1	duplicate(dummy_npc)	#ocp_rebel_23	4_F_GUNSLINGER3
+1@os_a,38,345,1	duplicate(dummy_npc)	#ocp_rebel_24	4_F_GUNSLINGER3
+1@os_a,32,357,7	duplicate(dummy_npc)	#ocp_rebel_25	4_M_REBELLION3

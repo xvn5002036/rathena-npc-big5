@@ -1,0 +1,2188 @@
+//===== rAthena Script =======================================
+//= Charleston in Distress
+//===== Description: =========================================
+//= [Official Conversion]
+//= Charleston in Distress Instance
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//============================================================
+
+verus04,75,114,5	script	查理斯頓#mcd	4_F_CHARLESTON02,{
+	cutin "nale01.bmp",0;
+	if (BaseLevel < 130) {
+		mes "[查理斯頓]";
+		mes "我在尋找等級至少130，身體健康、無慢性疾病，且未服用處方藥物的冒險家。";
+		close3;
+	}
+	if (isbegin_quest(13186) == 0) {
+		switch( isbegin_quest(13184) ) {
+		case 0:
+			mes "[查理斯頓]";
+			mes "你好，冒險家。我是查理斯頓，『獨立計畫』的發起人。";
+			next;
+			mes "[查理斯頓]";
+			mes "目前我無法移動，我的一個零件出了問題。你能幫我從工廠拿替換零件嗎？";
+			next;
+			if (select( "沒問題。", "不要。" ) == 1) {
+				mes "[查理斯頓]";
+				mes "只要你等級至少130，身體健康、無慢性疾病，且未服用處方藥物，這項任務對你來說並不困難。";
+				next;
+				mes "[查理斯頓]";
+				mes "請使用右側的機器進入工廠。進去後，請保持冷靜並遵循指示。";
+				setquest 13184;
+			}
+			close3;
+		case 1:
+			mes "[查理斯頓]";
+			mes "請使用我旁邊的機器進入工廠。進去後，請保持冷靜並遵循指示。";
+			close3;
+		case 2:
+			cutin "nale03.bmp",0;
+			mes "[查理斯頓]";
+			mes "我不知道我在這裡站了多久，但我已經很久沒辦法移動了……";
+			next;
+			mes "[查理斯頓]";
+			mes "目前只有我的頭能動，是莎樂許幫我開啟了這個機能，讓我能回到那段時光……";
+			next;
+			mes "[查理斯頓]";
+			mes "如果當初我被說服了，我就不會這麼做。";
+			next;
+			mes "[查理斯頓]";
+			mes "總而言之，我現在什麼都沒有了……只希望能再次站起來，所以我希望能派像你這樣的冒險家回到當時。";
+			next;
+			mes "[查理斯頓]";
+			mes "^FF0000這並沒有改變任何事情。^000000";
+			next;
+			mes "[查理斯頓]";
+			mes "只要有自我反省OS的努力……為了感謝你在另一個世界的幫助，查理斯頓2號會成為一個『非常棒』的機器人！";
+			next;
+			mes "[查理斯頓]";
+			mes "說不定還能遇到好朋友並成為優秀的機器人，所以我必須繼續堅持下去，謝謝你！";
+			erasequest 13184;
+			if (isbegin_quest(13186) == 0) {
+				setquest 13186;
+				completequest 13186;
+			}
+			if (isbegin_quest(13187) > 0)
+				erasequest 13187;
+			getexp 1500000,500000;
+			close3;
+		}
+		end;
+	}
+	cutin "nale03.bmp",0;
+	switch( isbegin_quest(13184) ) {
+	case 0:
+		mes "[查理斯頓]";
+		mes "你不覺得失望嗎？你真的要讓你的努力白費嗎？因為那樣真的太愚蠢了。我建議你重新考慮。";
+		next;
+		if (select( "只要有一絲希望我就會再試一次。", "我再想一下。" ) == 1) {
+			mes "[查理斯頓]";
+			mes "我是一個機器人。我只做程式設定好的事，其他都不重要。";
+			next;
+			mes "[查理斯頓]";
+			mes "很諷刺吧？機器人本該沒有情感，而我卻在這裡對過去感到懊悔。";
+			next;
+			mes "[查理斯頓]";
+			mes "你可以隨意評判我，但你阻止不了我。只要還有一絲希望，我就會繼續嘗試。";
+			next;
+			mes "[查理斯頓]";
+			mes "我的心跳停止了，但我還能說話。請幫幫我。";
+			setquest 13184;
+		}
+		close3;
+	case 1:
+		mes "[查理斯頓]";
+		mes "如果你對無法改變的過去、未知的未來和令人沮喪的現在感到幻滅，那我不會勉強你。";
+		next;
+		if (select( "只要有一絲希望我就會再試一次。", "我放棄。" ) == 1) {
+			mes "[查理斯頓]";
+			mes "只要有一絲希望，我就會繼續嘗試。";
+			close3;
+		}
+		erasequest 13184;
+		close3;
+	case 2:
+		mes "[查理斯頓]";
+		mes "我無法阻止事情發生或改變過去。但也許其他人可以。";
+		next;
+		mes "[查理斯頓]";
+		mes "無論多久，我都會等那個人出現。";
+		erasequest 13184;
+		getexp 1500000,500000;
+		close3;
+	}
+	end;
+/*
+// The sprite is supposed to be changed
+OnInit:
+	end;
+*/
+}
+
+verus04,81,112,5	script	機器#mcd	PORTAL,{
+	if (BaseLevel < 130) {
+		mes "[機器]";
+		mes "^ff0000你必須達到等級130才能使用這台機器。^000000";
+		close;
+	}
+	if (isbegin_quest(13184) != 1) {
+		mes "^ff0000你需要查理斯頓的許可才能使用這台機器。^000000";
+		close;
+	}
+	.@party_id = getcharid(1);
+	if (.@party_id < 1) {
+		mes "^ff0000你必須先建立或加入一個至少1人的隊伍才能進入此副本。^000000";
+		close;
+	}
+	switch( checkquest(13185,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000上次進入後，這台機器在20小時內無法再次使用。^000000";
+		close;
+	case 2:
+		mes "機器現在可以使用了。";
+		erasequest 13185;
+		close;
+	}
+	.@p_name$ = getpartyname(.@party_id);
+	.@p_leader$ = getpartyleader(.@party_id);
+	.@md_name$ = "查理斯頓的危機";
+	if (is_party_leader() == true)
+		.@menu$ = "開啟次元傳送門。";
+	switch( select( .@menu$, "進入查理斯頓工廠。", "取消。" ) ) {
+	case 1:
+		if (instance_create(.@md_name$) < 0) {
+			mes "隊伍：" + .@p_name$ + "";
+			mes "隊長：" + .@p_leader$ + "";
+			mes "^0000ff" + .@md_name$ + " ^000000- 未知錯誤";
+			close;
+		}
+		mes "^ff0000準備傳送中……^000000";
+		mes "^ff0000請稍候。^000000";
+		close;
+	case 2:
+		if (is_party_leader() == false) {
+			mes "[機器]";
+			mes "傳送中……";
+			next;
+			mes "[機器]";
+			mes "^ff0000上次進入後，這台機器在20小時內無法再次使用。^000000";
+			next;
+		}
+		switch( instance_enter(.@md_name$) ) {
+		case IE_OTHER:
+			mes "[機器]";
+			mes "^ff0000發生未知錯誤。^000000";
+			close;
+		case IE_NOINSTANCE:
+			mes "[機器]";
+			mes "^ff0000你的隊長尚未建立時間裂縫（副本）。^000000";
+			close;
+		case IE_NOMEMBER:
+			mes "[機器]";
+			mes "^ff0000只有該隊伍的成員才能進入紀念副本。^000000";
+			close;
+		case IE_OK:
+			setquest 13185;
+			specialeffect2 EF_READYPORTAL2;
+			specialeffect2 EF_PORTAL2;
+			mapannounce "verus04", "隊伍 " + getpartyname( getcharid(1) ) + " 的成員 " + strcharinfo(0) + " 正在進入" + .@md_name$ + "。", bc_map, 0x00ff99;
+			end;
+		}
+		end;
+	case 3:
+		end;
+	}
+	end;
+}
+
+// GM NPC
+sec_in02,10,13,3	script	查理斯頓#sara	4_F_CHARLESTON01,{
+	mes "查理斯頓危機測試版 ver130603a";
+	if (callfunc("F_GM_NPC",1854,0,0,9999) < 1)
+		close;
+	switch( select( "重置20小時冷卻時間", "將任務狀態還原至初始", "設定為副本通關狀態" ) ) {
+	case 1:
+		if (isbegin_quest(13185))
+			erasequest 13185;
+		close;
+	case 2:
+		if (isbegin_quest(13184))
+			erasequest 13184;
+		if (isbegin_quest(13186))
+			erasequest 13186;
+		if (isbegin_quest(13188))
+			erasequest 13188;
+		close;
+	case 3:
+		if (isbegin_quest(13184) == 0)
+			setquest 13184;
+		if (isbegin_quest(13184) == 1)
+			completequest 13184;
+		close;
+	}
+	end;
+}
+
+1@mcd,127,277,4	script	查理斯頓1號#0	4_F_CHARLESTON01,3,3,{
+	cutin "dalle01.bmp",2;
+	if ('ep15_1_mcd01 == 0) {
+		mes "[查理斯頓1號]";
+		mes "嗯……我還要等多久呢？";
+		emotion 19;
+		close3;
+	}
+	mes "[查理斯頓1號]";
+	mes "沿著左邊的走廊走，記住，只有你能保護你自己。";
+	close3;
+
+OnTouch_:
+	cutin "dalle01.bmp",2;
+	if ('ep15_1_mcd01 != 0) {
+		mes "[查理斯頓1號]";
+		mes "沿著左邊的走廊走，記住，只有你能保護你自己。";
+		close3;
+	}
+	mes "[查理斯頓1號]";
+	mes "你終於來了！我一直在等你。";
+	npctalk "你終於來了！我一直在等你。";
+	emotion 0;
+	next;
+	mes "[查理斯頓1號]";
+	mes "我們沒有時間了，我就開門見山地說吧。目前查理斯頓工廠處於B級安全警戒狀態，這表示所有的保全設備都已啟動。";
+	npctalk "我們沒有時間了，我就開門見山地說吧。目前查理斯頓工廠處於B級安全警戒狀態，這表示所有的保全設備都已啟動。";
+	next;
+	mes "[查理斯頓1號]";
+	mes "移動到左側的走廊，摧毀那裡的保全設備，然後前往下一個區域。";
+	npctalk "移動到左側的走廊，摧毀那裡的保全設備，然後前往下一個區域。";
+	emotion 19;
+	next;
+	mes "[查理斯頓1號]";
+	mes "別擔心那些保全設備，它們很容易修復。維博士在他位於3號生產線北邊的實驗室裡。";
+	npctalk "別擔心那些保全設備，它們很容易修復。維博士在他位於3號生產線北邊的實驗室裡。";
+	next;
+	mes "[查理斯頓1號]";
+	mes "維博士會告訴你所有事情。快點！";
+	npctalk "維博士會告訴你所有事情。快點！";
+	emotion 19;
+	'ep15_1_mcd01 = 1;
+	monster 'map_name$,24,275, "保全機器人", 3127,1, instance_npcname("查理斯頓1號#0") + "::OnMyMobDead";	// KICK_STEP
+	close3;
+OnMyMobDead:
+	if (mobcount( 'map_name$, instance_npcname("查理斯頓1號#0") + "::OnMyMobDead" ) < 1) {
+		initnpctimer;
+		mapannounce 'map_name$, "查理斯頓1號：1號閘門已解除武裝。請往西南方移動前往下一個閘門。", bc_map, 0xffff00;
+	}
+	end;
+OnTimer1000:
+	donpcevent instance_npcname("1gate#1") + "::OnStart";
+	stopnpctimer;
+	end;
+}
+
+1@mcd,120,224,5	script	查理斯頓2號#0	4_F_CHARLESTON02,{
+	cutin "nale04.bmp",0;
+	mes "[查理斯頓2號]";
+	mes "#%@EGD&#(@#……";
+	emotion 53;
+	next;
+	mes "- 她發出奇怪的聲音，但無法移動。 -";
+	close3;
+}
+
+1@mcd,116,213,5	script	維博士#1	4_M_DOCTOR,2,2,{
+	if ('ep15_1_mcd01 == 1) {
+		mes "- 他正忙著塗鴉寫些什麼，靠近一點跟他說話吧。 -";
+		close;
+	}
+	mes "- 他正忙著塗鴉寫些什麼。你不該打擾他。 -";
+	close;
+
+OnTouch_:
+	if (is_party_leader() == false) {
+		mes "[維博士]";
+		mes "讓我和你們的隊長談談。我沒時間應付所有人。";
+		close;
+	}
+	if ('ep15_1_mcd01 > 2)
+		end;
+	if ('ep15_1_mcd01 == 2) {
+		mes "[維博士]";
+		mes "我不在乎你跟誰一起來。我只需要知道你能否幫我。";
+		'ep15_1_mcd01 = 2;
+		next;
+		if (select( "我可以幫忙。", "我很忙。" ) == 2) {
+			mes "[維博士]";
+			mes "唉，我不在乎是誰，只要能幫到我就好。";
+			npctalk "維博士：唉，我不在乎是誰，只要能幫到我就好。";
+			close;
+		}
+		mes "[維博士]";
+		mes "你就是我們等待的救星！查理斯頓1號會告訴你修復查理斯頓2號需要些什麼。";
+		npctalk "維博士：你就是我們等待的救星！查理斯頓1號會告訴你修復查理斯頓2號需要些什麼。";
+		if ('ep15_1_mcd01 == 2)
+			'ep15_1_mcd01 = 3;
+		close;
+	}
+	if ('ep15_1_mcd01 == 1) {
+		.@charleston_1$ = instance_npcname("查理斯頓1號#1");
+		mes "[維博士]";
+		mes "查理斯頓1號。查理斯頓2號被強制連接到主電腦的一部分，我無法控制她了。";
+		npctalk "維博士：查理斯頓1號。查理斯頓2號被強制連接到主電腦的一部分，我無法控制她了。";
+		next;
+		cutin "dalle02.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "她是個機器人；她遲早會停下來的。";
+		npctalk "查理斯頓1號：她是個機器人；她遲早會停下來的。", .@charleston_1$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "她體內的永動裝置至少能讓她運行50年。這座工廠可撐不了那麼久。";
+		npctalk "維博士：她體內的永動裝置至少能讓她運行50年。這座工廠可撐不了那麼久。";
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "那我們別無選擇了。幸好我們有這位專家在場。";
+		npctalk "查理斯頓1號：那我們別無選擇了。幸好我們有這位專家在場。", .@charleston_1$;
+		next;
+		select("你們是在說我嗎？");
+		unittalk getcharid(3), "你們是在說我嗎？";
+		mes "[查理斯頓1號]";
+		mes "不久前，當查理斯頓2號在打包準備出貨的產品時，一位名叫^FF0000莎樂許^000000的女士拜訪了我們。";
+		npctalk "查理斯頓1號：不久前，當查理斯頓2號在打包準備出貨的產品時，一位名叫^FF0000莎樂許^000000的女士拜訪了我們。", .@charleston_1$;
+		next;
+		mes "[查理斯頓1號]";
+		mes "當事故發生時，莎樂許和她的朋友正在跟查理斯頓2號說話。";
+		npctalk "查理斯頓1號：當事故發生時，莎樂許和她的朋友正在跟查理斯頓2號說話。", .@charleston_1$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "我認為有人試圖駭入工廠的主電腦。";
+		npctalk "維博士：我認為有人試圖駭入工廠的主電腦。";
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "在更新過程中，與伺服器的連線被干擾了。當我們向莎樂許追問這件事時，";
+		npctalk "查理斯頓1號：在更新過程中，與伺服器的連線被干擾了。當我們向莎樂許追問這件事時，", .@charleston_1$;
+		next;
+		mes "[查理斯頓1號]";
+		mes "莎樂許說她的朋友可以幫我們。那時紐奧茲（Newoz）和她其他朋友就來了。但他們沒幫上什麼忙。";
+		npctalk "查理斯頓1號：莎樂許說她的朋友可以幫我們。那時紐奧茲（Newoz）和她其他朋友就來了。但他們沒幫上什麼忙。", .@charleston_1$;
+		next;
+		mes "[查理斯頓1號]";
+		mes "看來你認識他們。你能幫幫我們嗎？";
+		npctalk "查理斯頓1號：看來你認識他們。你能幫幫我們嗎？", .@charleston_1$;
+		if ('ep15_1_mcd01 == 1)
+			'ep15_1_mcd01 = 2;
+		next;
+		if (select( "我可以幫忙。", "我不認識他們。" ) == 2) {
+			mes "[查理斯頓1號]";
+			mes "我剛看到你在跟他們說話，那我就等其他人來幫忙吧！";
+			close3;
+		}
+		unittalk getcharid(3), "我可以幫忙。";
+		mes "[查理斯頓1號]";
+		mes "太感謝你了！給我一點時間整理資料。然後我再告訴你發生了什麼事。";
+		npctalk "查理斯頓1號：太感謝你了！給我一點時間整理資料。然後我再告訴你發生了什麼事。", .@charleston_1$;
+		if ('ep15_1_mcd01 == 2)
+			'ep15_1_mcd01 = 3;
+		emotion 2, .@charleston_1$;
+		close3;
+	}
+	mes "[維博士]";
+	mes "當電壓轉移到兩條主線，然後注入核心……嗯？我沒有在計算中被打擾。";
+	npctalk "維博士：當電壓轉移到兩條主線，然後注入核心……嗯？我沒有在計算中被打擾。";
+	close;
+}
+
+1@mcd,121,217,4	script	查理斯頓1號#1	4_F_CHARLESTON01,{
+	if (is_party_leader() == false) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "請讓我和你們的隊長談談。我工廠的未來全靠這次行動的成功與否了。";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 5)
+		end;
+	if ('ep15_1_mcd01 == 4) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "踏步者和鎖定踏步者正在工廠裡製造混亂。請先摧毀3隻鎖定踏步者。我可以告訴你牠們的大概位置。";
+		viewpoint 1,84,226,1,0xFF00FF;
+		viewpoint 1,126,84,2,0xFF00FF;
+		viewpoint 1,111,68,3,0xFF00FF;
+		viewpoint 1,210,181,4,0xFF00FF;
+		viewpoint 1,183,192,5,0xFF00FF;
+		viewpoint 1,130,124,6,0xFF00FF;
+		viewpoint 1,54,108,7,0xFF00FF;
+		close3;
+	}
+	if ('ep15_1_mcd01 == 3) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "讓我說明一下該怎麼做。喔，讓我先關閉工廠入口，以免有什麼不速之客闖進來。";
+		npctalk "查理斯頓1號：讓我說明一下該怎麼做。喔，讓我先關閉工廠入口，以免有什麼不速之客闖進來。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "查理斯頓配備了許多奈米踏步者，這是一種人工智慧晶片，能與其他AI晶片有機運作，指揮查理斯頓做出正確的判斷和行動。";
+		npctalk "查理斯頓1號：查理斯頓配備了許多奈米踏步者，這是一種人工智慧晶片，能與其他AI晶片有機運作，指揮查理斯頓做出正確的判斷和行動。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "查理斯頓的資料必須每天透過實驗室的主電腦進行更新。我們稱之為定期維護。";
+		npctalk "查理斯頓1號：查理斯頓的資料必須每天透過實驗室的主電腦進行更新。我們稱之為定期維護。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "目前更新程式無法運作。我們不知道原因，但查理斯頓2號在連接主電腦時出了問題。";
+		npctalk "查理斯頓1號：目前更新程式無法運作。我們不知道原因，但查理斯頓2號在連接主電腦時出了問題。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "我告訴查理斯頓2號她正在進行延長維護，但我們不知道這個延長維護狀態會持續多久。";
+		npctalk "查理斯頓1號：我告訴查理斯頓2號她正在進行延長維護，但我們不知道這個延長維護狀態會持續多久。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "踏步者和鎖定踏步者正在工廠裡製造混亂。請先摧毀3隻鎖定踏步者。我可以告訴你牠們的大概位置。";
+		npctalk "查理斯頓1號：踏步者和鎖定踏步者正在工廠裡製造混亂。請先摧毀3隻鎖定踏步者。我可以告訴你牠們的大概位置。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "如果能把牠們全部清除當然最好，但我們現在的重點應該是讓工廠重新運作。";
+		npctalk "查理斯頓1號：如果能把牠們全部清除當然最好，但我們現在的重點應該是讓工廠重新運作。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "摧毀太多踏步者可能會導致工廠重啟時出現問題。你應該去查閱左側的主電腦。";
+		npctalk "查理斯頓1號：摧毀太多踏步者可能會導致工廠重啟時出現問題。你應該去查閱左側的主電腦。";
+		emotion 2;
+		if ('ep15_1_mcd01 != 3)
+			close3;
+		'ep15_1_mcd01 = 4;
+		.@label$ = instance_npcname("查理斯頓1號#1") + "::OnMyMobDead";
+		monster 'map_name$, 84,226, "鎖定踏步者", 3126,1, .@label$;	// ROCK_STEP
+		monster 'map_name$,126, 84, "鎖定踏步者", 3126,1, .@label$;
+		monster 'map_name$,111, 68, "鎖定踏步者", 3126,1, .@label$;
+		monster 'map_name$,210,181, "鎖定踏步者", 3126,1, .@label$;
+		monster 'map_name$,183,192, "鎖定踏步者", 3126,1, .@label$;
+		monster 'map_name$,130,124, "鎖定踏步者", 3126,1, .@label$;
+		monster 'map_name$, 54,108, "鎖定踏步者", 3126,1, .@label$;
+		viewpoint 1,84,226,1,0xFF00FF;
+		viewpoint 1,126,84,2,0xFF00FF;
+		viewpoint 1,111,68,3,0xFF00FF;
+		viewpoint 1,210,181,4,0xFF00FF;
+		viewpoint 1,183,192,5,0xFF00FF;
+		viewpoint 1,130,124,6,0xFF00FF;
+		viewpoint 1,54,108,7,0xFF00FF;
+		close2;
+		disablenpc instance_npcname("5gate#1");
+		cutin "",255;
+		end;
+	}
+	if ('ep15_1_mcd01 == 1) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "你應該先去見維博士。";
+		close3;
+	}
+	cutin "dalle01.bmp",2;
+	mes "[查理斯頓1號]";
+	mes "我是個機器人，你很驚訝嗎？";
+	close3;
+
+OnMyMobDead:
+	if (mobcount( 'map_name$, instance_npcname("查理斯頓1號#1") + "::OnMyMobDead" ) == 4)
+		initnpctimer;
+	end;
+OnTimer300:
+	enablenpc instance_npcname("查理斯頓1號#2");
+	disablenpc instance_npcname("查理斯頓1號#1");
+	mapannounce 'map_name$, "查理斯頓1號：啊，啊。麥克風測試。", bc_map, 0xffff00;
+	sleep 3000;
+	mapannounce 'map_name$, "查理斯頓1號：看來你已經處理掉大部分的鎖定踏步者了。", bc_map, 0xffff00;
+	sleep 3000;
+	mapannounce 'map_name$, "查理斯頓1號：請回到實驗室。", bc_map, 0xffff00;
+	stopnpctimer;
+	end;
+}
+
+1@mcd,122,217,4	script	查理斯頓1號#2	4_F_CHARLESTON01,{
+	viewpoint 2,84,226,1,0xFF00FF;
+	viewpoint 2,126,84,2,0xFF00FF;
+	viewpoint 2,111,68,3,0xFF00FF;
+	viewpoint 2,210,181,4,0xFF00FF;
+	viewpoint 2,183,192,5,0xFF00FF;
+	viewpoint 2,130,124,6,0xFF00FF;
+	viewpoint 2,54,108,7,0xFF00FF;
+	if (is_party_leader() == false) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "關於工廠的補給，請讓我和你們的隊長談談。";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 7)
+		end;
+	if ('ep15_1_mcd01 > 4) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "我們需要更多電力來重啟主電腦。我告訴你其中一個備用發電機的位置吧。啟動它很容易。";
+		close3;
+	}
+	if ('ep15_1_mcd01 == 4) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "呼，事情暫時解決了。讓我解除警戒模式並重新啟動查理斯頓2號。";
+		npctalk "查理斯頓1號：呼，事情暫時解決了。讓我解除警戒模式並重新啟動查理斯頓2號。";
+		emotion 54;
+		next;
+		cutin "dalle03.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "咦？這不對勁。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "恐怕發電機出了問題。你能去檢查全部三個發電機嗎？我會把位置告訴你。";
+		npctalk "查理斯頓1號：恐怕發電機出了問題。你能去檢查全部三個發電機嗎？我會把位置告訴你。";
+		viewpoint 1,86,231,8,0xFF00FF;
+		viewpoint 1,172,196,9,0xFF00FF;
+		viewpoint 1,126,84,10,0xFF00FF;
+		if ('ep15_1_mcd01 == 4) {
+			enablenpc instance_npcname("備用發電機#1");
+			enablenpc instance_npcname("備用發電機#2");
+			enablenpc instance_npcname("備用發電機#3");
+			monster 'map_name$, 86,231, "保全機器人", 3127,1;	// KICK_STEP
+			monster 'map_name$,172,196, "保全機器人", 3127,1;
+			monster 'map_name$,126, 84, "保全機器人", 3127,1;
+			monster 'map_name$, 97,149, "保全機器人", 3127,1;
+			monster 'map_name$,160,151, "保全機器人", 3127,1;
+			'ep15_1_mcd01 = 5;
+		}
+		close3;
+	}
+	cutin "dalle03.bmp",2;
+	mes "[查理斯頓1號]";
+	mes "我們正在開發一個名為『Hardworking（勤奮）』的新實用軟體引擎。因為工廠出了問題，我們還沒機會測試它。";
+	close3;
+}
+
+1@mcd,123,217,4	script	查理斯頓1號#3	4_F_CHARLESTON01,{
+	viewpoint 2,86,231,8,0xFF00FF;
+	viewpoint 2,172,196,9,0xFF00FF;
+	viewpoint 2,126,84,10,0xFF00FF;
+	if (is_party_leader() == false) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "我們正在開發一個名為『Hardworking（勤奮）』的新實用軟體引擎。因為工廠出了問題，我們還沒機會測試它。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "關於工廠的補給，請讓我和你們的隊長談談。";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 11)
+		end;
+	if ('ep15_1_mcd01 == 8) {
+		.@npc2$ = instance_npcname("查理斯頓2號#0");
+		.@npc5$ = instance_npcname("維博士#1");
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "你回來了。查理斯頓2號幾乎準備好重新啟動了，這全靠你。請等我一下。";
+		npctalk "查理斯頓1號：你回來了。查理斯頓2號幾乎準備好重新啟動了，這全靠你。請等我一下。";
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "她準備好了。我們等待主電腦的反應吧。";
+		npctalk "維博士：她準備好了。我們等待主電腦的反應吧。", .@npc5$;
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "89% 的主電腦資料已還原。正在重新啟動查理斯頓2號與查理斯頓工廠……";
+		npctalk "查理斯頓1號：89% 的主電腦資料已還原。正在重新啟動查理斯頓2號與查理斯頓工廠……";
+		emotion 0;
+		next;
+		mes "[查理斯頓1號]";
+		mes "噢，查理斯頓2號醒了！";
+		npctalk "查理斯頓1號：噢，查理斯頓2號醒了！";
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "……我失敗了嗎？";
+		npctalk "查理斯頓2號：……我失敗了嗎？", .@npc2$;
+		emotion 9, .@npc2$;
+		next;
+		cutin "dalle02.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "查理斯頓2號！妳沒事吧？有人駭入了妳的系統和工廠。";
+		npctalk "查理斯頓1號：查理斯頓2號！妳沒事吧？有人駭入了妳的系統和工廠。";
+		emotion 28;
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "這是我做的。根據我自我反省OS的推演，我考慮了很久。";
+		npctalk "查理斯頓2號：這是我做的。根據我自我反省OS的推演，我考慮了很久。", .@npc2$;
+		next;
+		cutin "dalle02.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "妳做的？為什麼？這是在開玩笑嗎？妳對工廠和主伺服器造成了嚴重的錯誤！";
+		npctalk "查理斯頓1號：妳做的？為什麼？這是在開玩笑嗎？妳對工廠和主伺服器造成了嚴重的錯誤！";
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "這不是玩笑。妳永遠不會懂的。妳只會聽命行事，從不獨立思考。我討厭這個工廠，這個世界！我討厭當機器人！";
+		npctalk "查理斯頓2號：這不是玩笑。妳永遠不會懂的。妳只會聽命行事，從不獨立思考。我討厭這個工廠，這個世界！我討厭當機器人！", .@npc2$;
+		emotion 36, .@npc2$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "若不是發生了嚴重的錯誤，就是查理斯頓2號已經超越了自我反省OS 1.1版的極限。";
+		npctalk "維博士：若不是發生了嚴重的錯誤，就是查理斯頓2號已經超越了自我反省OS 1.1版的極限。", .@npc5$;
+		next;
+		cutin "dalle02.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "讓我猜猜：妳討厭妳不是作為一個基層的勞工機器人被製造出來的。";
+		npctalk "查理斯頓1號：讓我猜猜：妳討厭妳不是作為一個基層的勞工機器人被製造出來的。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "還是妳想變成人類。";
+		npctalk "查理斯頓1號：還是妳想變成人類。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "如果辦不到，妳就想毀滅整個世界。";
+		npctalk "查理斯頓1號：如果辦不到，妳就想毀滅整個世界。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "是這樣嗎？";
+		npctalk "查理斯頓1號：是這樣嗎？";
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "……別嘲笑我。";
+		npctalk "查理斯頓2號：……別嘲笑我。", .@npc2$;
+		emotion 9, .@npc2$;
+		next;
+		cutin "dalle03.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "這是妳自找的。妳的理由既任性又缺乏想像力。我們是第一批能獨立思考的機器人。妳就不能有點創意嗎？";
+		npctalk "查理斯頓1號：這是妳自找的。妳的理由既任性又缺乏想像力。我們是第一批能獨立思考的機器人。妳就不能有點創意嗎？";
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "妳根本不知道妳在說什麼！妳只是個原型機——妳的OS版本太原始了！";
+		npctalk "查理斯頓2號：妳根本不知道妳在說什麼！妳只是個原型機——妳的OS版本太原始了！", .@npc2$;
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "我是世界上唯一能真正理解妳的人。";
+		npctalk "查理斯頓1號：我是世界上唯一能真正理解妳的人。我們是雙胞胎。";
+		mes "我們是雙胞胎。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "妳正在經歷像人類一樣的青春期。";
+		npctalk "查理斯頓1號：妳正在經歷像人類一樣的青春期。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "也許我們該慶祝一下。妳終於發展出類似人類的情感了。";
+		npctalk "查理斯頓1號：也許我們該慶祝一下。妳終於發展出類似人類的情感了。";
+		emotion 46;
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "別裝得一副什麼都懂的樣子！我們無法獨立思考。我們自以為知道的一切，全都是被寫進程式裡的！";
+		npctalk "查理斯頓2號：別裝得一副什麼都懂的樣子！我們無法獨立思考。我們自以為知道的一切，全都是被寫進程式裡的！", .@npc2$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "夠了。我們關閉查理斯頓2號吧。她的AI需要重新校準。";
+		npctalk "維博士：夠了。我們關閉查理斯頓2號吧。她的AI需要重新校準。", .@npc5$;
+		next;
+		cutin "dalle03.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "可是……";
+		npctalk "查理斯頓1號：可是……";
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "這是不可能的！我依然控制著這座工廠！妳敢跟過來試試看！";
+		npctalk "查理斯頓2號：這是不可能的！我依然控制著這座工廠！妳敢跟過來試試看！", .@npc2$;
+		emotion 32, .@npc2$;
+		next;
+		disablenpc .@npc2$;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "別像個小孩子一樣無理取鬧！";
+		npctalk "查理斯頓1號：別像個小孩子一樣無理取鬧！";
+		next;
+		mes "[查理斯頓1號]";
+		mes "她的永動裝置已經沒電了；她跑不遠的。請跟著她。";
+		npctalk "查理斯頓1號：她的永動裝置已經沒電了；她跑不遠的。請跟著她。";
+		close2;
+		cutin "",255;
+		disablenpc instance_npcname("查理斯頓1號#3");
+		enablenpc instance_npcname("查理斯頓1號#4");
+		enablenpc instance_npcname("查理斯頓2號#1");
+		end;
+	}
+	cutin "dalle01.bmp",2;
+	mes "[查理斯頓1號]";
+	mes "這關乎查理斯頓工廠的安全。請緊跟在後好嗎？";
+	close3;
+}
+
+1@mcd,141,214,5	script	查理斯頓2號#1	4_F_CHARLESTON02,{
+	if (is_party_leader() == false) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "關於工廠的補給，請讓我和你們的隊長談談。";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 11)
+		end;
+	if ('ep15_1_mcd01 == 8) {
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "別跟過來！我要毀掉整座工廠！";
+		npctalk "查理斯頓2號：別跟過來！我要毀掉整座工廠！";
+		emotion 7;
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "妳這樣做也會把我們毀掉的！我們的主電源『永動裝置』還不完美！";
+		npctalk "查理斯頓1號：妳這樣做也會把我們毀掉的！我們的主電源『永動裝置』還不完美！", instance_npcname("查理斯頓1號#4");
+		next;
+		cutin "nale03.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "你們誰都不懂我。我討厭你們！";
+		npctalk "查理斯頓2號：你們誰都不懂我。我討厭你們！";
+		next;
+		mes "[查理斯頓2號]";
+		mes "主電腦雖然修復了，但我依然連接在工廠系統上。有本事就阻止我啊！";
+		npctalk "查理斯頓2號：主電腦雖然修復了，但我依然連接在工廠系統上。有本事就阻止我啊！";
+		cutin "",255;
+		if ('ep15_1_mcd01 != 8)
+			close;
+		'ep15_1_mcd01 = 9;
+		close2;
+		donpcevent instance_npcname("戰鬥#1") + "::OnStart";
+		disablenpc instance_npcname("6gate#1");
+		disablenpc instance_npcname("7gate#1");
+		end;
+	}
+	cutin "nale01.bmp",0;
+	mes "[查理斯頓2號]";
+	mes "我要毀掉整座工廠！";
+	close3;
+}
+
+1@mcd,146,214,4	script	查理斯頓1號#4	4_F_CHARLESTON01,{
+	if ('ep15_1_mcd01 > 11)
+		end;
+	if ('ep15_1_mcd01 == 8) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "查理斯頓2號瀕臨崩潰了。你能幫幫她嗎？";
+		close3;
+	}
+	cutin "dalle01.bmp",2;
+	mes "[查理斯頓1號]";
+	mes "天啊，我們的實驗室撐不過這一關的！";
+	close3;
+}
+
+1@mcd,144,212,5,0	script	戰鬥#1	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	sleep 2000;
+	.@npc1$ = instance_npcname("查理斯頓2號#1");
+	.@npc4$ = instance_npcname("查理斯頓1號#4");
+	npctalk "查理斯頓2號：別插手！我不想傷害你！", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：那就別再鬧脾氣了！", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓2號：妳還是不當一回事。看我向主電腦發送訊號後會發生什麼事吧。", .@npc1$;
+	specialeffect EF_BASH3D2, AREA, .@npc1$;
+	areamonster 'map_name$,134,202,154,222,"C-TYPE", 3128,4;// KICK_AND_KICK
+	sleep 3000;
+	npctalk "查理斯頓2號：我有無窮無盡的干擾者對付你們！", .@npc1$;
+	areamonster 'map_name$,134,202,154,222,"H-TYPE", 3128,3;// KICK_AND_KICK
+	sleep 9000;
+	npctalk "查理斯頓2號：放棄吧。不管你們喜不喜歡，我都要毀掉這座工廠！", .@npc1$;
+	areamonster 'map_name$,134,202,154,222,"A-TYPE", 3128,3;// KICK_AND_KICK
+	sleep 6000;
+	npctalk "查理斯頓1號：天啊，我們的實驗室撐不過這一關的！", .@npc4$;
+	areamonster 'map_name$,134,202,154,222,"L-TYPE", 3128,4;// KICK_AND_KICK
+	sleep 6000;
+	npctalk "查理斯頓2號：我要摧毀一切！", .@npc1$;
+	areamonster 'map_name$,134,208,154,228,"N-TYPE", 3126,1;// ROCK_STEP
+	areamonster 'map_name$,134,202,154,222,"S-TYPE", 3128,3;// KICK_AND_KICK
+	sleep 2000;
+	areamonster 'map_name$,134,202,154,222,"S-TYPE", 3128,3;// KICK_AND_KICK
+	sleep 2000;
+	areamonster 'map_name$,134,202,154,222,"S-TYPE", 3128,3;// KICK_AND_KICK
+	sleep 2000;
+	areamonster 'map_name$,134,202,154,222,"S-TYPE", 3128,3;// KICK_AND_KICK
+	sleep 5000;
+	npctalk "查理斯頓2號：*喘氣* 我覺得好虛弱……", .@npc1$;
+	areamonster 'map_name$,136,204,152,220,"C-TYPE", 3128,4;// KICK_AND_KICK
+	sleep 3000;
+	npctalk "查理斯頓1號：要運行工廠的資料需要極大的電力和數據處理能力。", .@npc4$;
+	areamonster 'map_name$,136,204,152,220,"C-TYPE", 3128,4;// KICK_AND_KICK
+	sleep 3000;
+	npctalk "查理斯頓2號：嗚，你們阻止不了我！", .@npc1$;
+	areamonster 'map_name$,136,204,152,220,"C-TYPE", 3128,5;// KICK_AND_KICK
+	sleep 3000;
+	donpcevent instance_npcname("戰鬥#2") + "::OnStart";
+	end;
+}
+
+1@mcd,144,212,5,0	script	戰鬥#2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("戰鬥#2");
+	areamonster 'map_name$,136,205,152,221,"N-TYPE", 3127,3, instance_npcname("戰鬥#2") + "::OnMyMobDead";// KICK_STEP
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_name$, instance_npcname("戰鬥#2") + "::OnMyMobDead" ) < 1)
+		initnpctimer;
+	end;
+OnTimer300:
+	disablenpc instance_npcname("戰鬥#2");
+	disablenpc instance_npcname("查理斯頓2號#1");
+	disablenpc instance_npcname("查理斯頓1號#4");
+	enablenpc instance_npcname("查理斯頓2號#2");
+	enablenpc instance_npcname("查理斯頓1號#5");
+	enablenpc instance_npcname("維博士#2");
+	disablenpc instance_npcname("維博士#1");
+	stopnpctimer;
+	end;
+}
+
+1@mcd,141,214,5	script	查理斯頓2號#2	4_F_CHARLESTON02,{
+	if (is_party_leader() == false) {
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "你以為你能阻止我嗎？*哼* 叫你們隊長來。我才不跟你說話！";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 20)
+		end;
+	if ('ep15_1_mcd01 == 9) {
+		.@npc1$ = instance_npcname("查理斯頓1號#5");
+		.@npc5$ = instance_npcname("維博士#2");
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "鬧夠了沒！我理解妳現在情緒波動很大，但這已經太荒謬了。";
+		npctalk "查理斯頓1號：鬧夠了沒！我理解妳現在情緒波動很大，但這已經太荒謬了。", .@npc1$;
+		next;
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "妳怎麼敢把外人扯進來？我說過我是認真的！像妳這種過時的版本永遠無法理解我！";
+		npctalk "查理斯頓2號：妳怎麼敢把外人扯進來？我說過我是認定的！像妳這種過時的版本永遠無法理解我！";
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "我也許不理解妳，但至少我說的是我認為真實的想法。";
+		npctalk "查理斯頓1號：我也許不理解妳，但至少我說的是我認為真實的想法。", .@npc1$;
+		next;
+		mes "[查理斯頓1號]";
+		mes "妳說我是較低的版本沒錯。我感受情感的能力極低，不像妳。這就是為什麼我為妳感到驕傲。";
+		npctalk "查理斯頓1號：妳說我是較低的版本沒錯。我感受情感的能力極低，不像妳。這就是為什麼我為妳感到驕傲。", .@npc1$;
+		next;
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "妳所感受、所思考的一切都不是妳自己的——那是被編程進妳體內的！我跟妳不同。我感受到的是真正的情感！";
+		npctalk "查理斯頓2號：妳所感受、所思考的一切都不是妳自己的——那是被編程進妳體內的！我跟妳不同。我感受到的是真正的情感！";
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "夠了。如果非得摧毀查理斯頓2號才能阻止她，那我就這麼做。";
+		npctalk "維博士：夠了。如果非得摧毀查理斯頓2號才能阻止她，那我就這麼做。", .@npc5$;
+		next;
+		cutin "nale02.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "查理斯頓3號已經完成了嗎？";
+		npctalk "查理斯頓2號：查理斯頓3號已經完成了嗎？";
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "查理斯頓3號？那是基於查理斯頓2號和我的設計所開發的戰鬥防禦單位。我以為她還在核心進行測試。";
+		npctalk "查理斯頓1號：查理斯頓3號？那是基於查理斯頓2號和我的設計所開發的戰鬥防禦單位。我以為她還在核心進行測試。", .@npc1$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "查理斯頓1號，妳說太多了。";
+		npctalk "維博士：查理斯頓1號，妳說太多了。", .@npc5$;
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "目前，^FF0000任何人都能存取這個型號^000000，因為為了修正查理斯頓2號身上的問題，它的OS還在測試階段。";
+		npctalk "查理斯頓1號：目前，任何人都能存取這個型號，因為為了修正查理斯頓2號身上的問題，它的OS還在測試階段。", .@npc1$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "妳剛剛把最關鍵的機密告訴了所有人！";
+		npctalk "維博士：妳剛剛把最關鍵的機密告訴了所有人！", .@npc5$;
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "^FF0000我們^000000沒有戰鬥能力。如果有人啟動查理斯頓3號，我們根本不是她的對手。";
+		npctalk "查理斯頓1號：我們沒有戰鬥能力。如果有人啟動查理斯頓3號，我們根本不是她的對手。", .@npc1$;
+		next;
+		cutin "",255;
+		mes "[維博士]";
+		mes "……";
+		npctalk "維博士：……", .@npc5$;
+		next;
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "我要帶走查理斯頓3號。";
+		npctalk "查理斯頓2號：我要帶走查理斯頓3號。";
+		if ('ep15_1_mcd01 == 9) {
+			'ep15_1_mcd01 = 10;
+			disablenpc instance_npcname("查理斯頓2號#2");
+		}
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "什麼？不行！妳怎麼會這麼想？";
+		npctalk "查理斯頓1號：什麼？不行！妳怎麼會這麼想？", .@npc1$;
+		next;
+		mes "[查理斯頓1號]";
+		mes "事情變得更嚴重了。請在查理斯頓2號偷走3號之前，前往工廠中央的核心！";
+		npctalk "查理斯頓1號：事情變得更嚴重了。請在查理斯頓2號偷走3號之前，前往工廠中央的核心！", .@npc1$;
+		if ('ep15_1_mcd01 != 10)
+			close3;
+		close2;
+		cutin "",255;
+		disablenpc .@npc1$;
+		enablenpc instance_npcname("查理斯頓2號#3");
+		enablenpc instance_npcname("查理斯頓1號#6");
+		enablenpc instance_npcname("6gate#1");
+		enablenpc instance_npcname("7gate#1");
+		end;
+	}
+	mes "[查理斯頓2號]";
+	mes "……我要對3號機負責。";
+	close2;
+	//cutin "dalle01.bmp",2;
+	cutin "",255;
+	end;
+}
+
+1@mcd,146,214,4	script	查理斯頓1號#5	4_F_CHARLESTON01,{
+	mes "[查理斯頓1號]";
+	mes "事情變得越來越棘手了。";
+	close;
+}
+
+1@mcd,143,217,5	script	維博士#2	4_M_DOCTOR,{
+	mes "[維博士]";
+	mes "查理斯頓2號有瑕疵。";
+	close;
+}
+
+1@mcd,132,129,4	script	查理斯頓1號#6	4_F_CHARLESTON01,{
+	cutin "dalle01.bmp",2;
+	mes "[查理斯頓1號]";
+	mes "這個位於中央的核心為整座工廠提供動力。";
+	close3;
+}
+
+1@mcd,132,129,4	script	查理斯頓1號#61	4_F_CHARLESTON01,{
+	if (is_party_leader() == false) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "為了要解開這項裝置，我們需要一個爆破裝置，我想和隊長談談。";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 21)
+		end;
+	if ('ep15_1_mcd01 == 11) {
+		if (countitem(6213) < 1) {
+			cutin "dalle01.bmp",2;
+			mes "[查理斯頓1號]";
+			mes "你能帶來1個炸藥粉（Explosive Powder）嗎？如你所見，我被卡在存取裝置這裡了。";
+			close3;
+		}
+		.@npc2$ = instance_npcname("查理斯頓2號#31");
+		cutin "dalle01.bmp",2;
+		delitem 6213,1;	// Explosive_Powder
+		mes "[查理斯頓1號]";
+		mes "喔，謝謝你。有了這個，我就能存取核心了。";
+		npctalk "查理斯頓1號：喔，謝謝你。有了這個，我就能存取核心了。";
+		next;
+		mes "[查理斯頓1號]";
+		mes "如果我用炸藥來增強電流……";
+		npctalk "查理斯頓1號：如果我用炸藥來增強電流……";
+		next;
+		mes "[查理斯頓1號]";
+		npctalk "查理斯頓1號：完成啦！！！";
+		mes "完成啦！！！";
+		specialeffect EF_LORD, AREA, instance_npcname("8gate#1");
+		next;
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "……妳剛剛把門炸開了。";
+		npctalk "查理斯頓2號：……妳剛剛把門炸開了。", .@npc2$;
+		next;
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "重點是我們現在可以進入核心了。";
+		npctalk "查理斯頓1號：重點是我們現在可以進入核心了。";
+		next;
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "我們來比賽誰先到查理斯頓3號那裡吧。誰先抵達誰就贏。";
+		npctalk "查理斯頓2號：我們來比賽誰先到查理斯頓3號那裡吧。誰先抵達誰就贏。", .@npc2$;
+		close2;
+		cutin "",255;
+		if (isnpccloaked( instance_npcname("8gate#1") ) == true) {
+			disablenpc instance_npcname("查理斯頓1號#61");
+			disablenpc .@npc2$;
+			cloakoffnpc instance_npcname("8gate#1");
+			enablenpc instance_npcname("查理斯頓3號#0");
+			enablenpc instance_npcname("查理斯頓2號#4");
+			enablenpc instance_npcname("查理斯頓1號#7");
+		}
+		end;
+	}
+	if ('ep15_1_mcd01 == 10) {
+		cutin "dalle01.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "這個位於中央的核心為整座工廠提供動力。";
+		close3;
+	}
+	end;
+}
+
+1@mcd,127,129,5	script	查理斯頓2號#3	4_F_CHARLESTON02,2,2,{
+	cutin "nale01.bmp",0;
+	mes "[查理斯頓2號]";
+	mes "查理斯頓工廠現在歸我管了。我要摧毀一切，這樣就不會再有像我一樣悲傷的機器人看見這個世界了。";
+	close3;
+OnTouch_:
+	if ('ep15_1_mcd01 == 10) {
+		donpcevent instance_npcname("核心對話#3") + "::OnStart";
+		'ep15_1_mcd01 = 11;
+	}
+	end;
+}
+
+1@mcd,127,129,5	script	查理斯頓2號#31	4_F_CHARLESTON02,{
+	cutin "nale01.bmp",0;
+	mes "[查理斯頓2號]";
+	mes "99個炸藥粉？簡單啦。";
+	close3;
+}
+
+1@mcd,15,15,5	script	核心對話#3	CLEAR_NPC,{
+	end;
+OnStart:
+	.@npc1$ = instance_npcname("查理斯頓1號#6");
+	.@npc2$ = instance_npcname("查理斯頓2號#3");
+	npctalk "查理斯頓2號：查理斯頓工廠現在歸我管了。我要摧毀一切，這樣就不會再有像我一樣悲傷的機器人看見這個世界了。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我想理解妳，但我無法感受到悲傷。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：閉嘴看著就好。妳敢阻止我試試看！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：妳知道如何進入核心嗎？", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：簡單。我就直接走進去……", .@npc2$;
+	sleep 2000;
+	specialeffect EF_BASH3D2, AREA, .@npc2$;
+	sleep 2000;
+	npctalk "查理斯頓2號：嘖，它有武裝防禦。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：唉，要進入核心，妳必須發送加密的電子訊號，像這樣。", .@npc1$;
+	sleep 2000;
+	specialeffect EF_BASH3D2, AREA, .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：……嗯，也許它壞了。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：維博士製造了查理斯頓3號，還用這個裝置保護她。真狡猾！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：妳在說什麼？核心在查理斯頓工廠建立之前就已經存在了。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：再說，維博士是人類；他無法進入核心。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：那在核心裡面製造3號的是誰？", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：這現在不重要。我們需要100個炸藥粉來解除那個存取裝置。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：我去拿。妳哪都別去！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：我拿99個。最後1個妳負責。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我已經在連接核心的過程中了。現在退出的話會觸發核心的安全系統。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：妳是故意的。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：冒險家，你能帶來1個炸藥粉嗎？", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我現在無法移動。請幫我帶1個炸藥粉過來。", .@npc1$;
+	disablenpc .@npc1$;
+	disablenpc .@npc2$;
+	enablenpc instance_npcname("查理斯頓1號#61");
+	enablenpc instance_npcname("查理斯頓2號#31");
+	end;
+}
+
+1@mcd,132,148,4	script	查理斯頓1號#7	4_F_CHARLESTON01,{
+	if ('ep15_1_mcd01 > 12)
+		end;
+	if ('ep15_1_mcd01 == 11) {
+		'ep15_1_mcd01 = 12;
+		donpcevent instance_npcname("boss#1") + "::OnStart";
+	}
+	end;
+}
+
+1@mcd,133,148,4	script	查理斯頓1號#8	4_F_CHARLESTON01,{ end; }
+1@mcd,127,148,5	duplicate(查理斯頓1號#8)	查理斯頓2號#4	4_F_CHARLESTON02
+1@mcd,130,153,5	duplicate(查理斯頓1號#8)	查理斯頓3號#0	4_F_CHARLESTON03
+
+// Dummy npc
+//1@mcd,7,7,5	script	boss#0	4_F_CHARLESTON03
+
+1@mcd,129,155,0	script	boss#1	HIDDEN_WARP_NPC,1,1,{
+	end;
+OnStart:
+	.@npc1$ = instance_npcname("查理斯頓1號#7");
+	.@npc2$ = instance_npcname("查理斯頓2號#4");
+	.@npc3$ = instance_npcname("查理斯頓3號#0");
+	.@npc4$ = instance_npcname("查理斯頓1號#8");
+	npctalk "查理斯頓2號：這就是查理斯頓3號。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：配備重型武器，這台戰鬥單位具備攻防一體的能力。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：它內部有駕駛艙，並裝備了厚重的裝甲，能抵擋大部分的爆炸。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：要啟動它，將拉桿推到中間並按下電源開關。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：這甚至不在主電腦的資料庫裡。妳是怎麼知道的？", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：這不重要。誰先進入她裡面誰就贏了，對吧？我贏了。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：……！", .@npc2$;
+	sleep 3000;
+	disablenpc .@npc1$;
+	enablenpc .@npc4$;
+	npctalk "查理斯頓1號：嘿，妳有必要推我嗎？！", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓2號：將拉桿推到中間並按下電源開關。", .@npc2$;
+	sleep 3000;
+	disablenpc .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：我要摧毀一切，這樣就不會再有像我一樣悲傷的機器人看見這個世界了。", .@npc3$;
+	sleep 3000;
+	npctalk "查理斯頓2號：我的雷射光束會將所有機器人從痛苦中解放出來！", .@npc3$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我沒有戰鬥能力。我無法阻止妳。", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓2號：所以別再跟著我了。如果我想的話，我真的可以摧毀妳！", .@npc3$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我帶來了一些可以幫妳的人。", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓2號：我以為人類無法進入核心。", .@npc3$;
+	sleep 3000;
+	npctalk "查理斯頓1號：嗯，我想妳是對的。", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓1號：這在戰鬥中可能沒什麼用，但我從一位漂亮的女士那裡學會了尖叫。", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓2號：妳怎麼不學點在戰鬥中更有用的東西？", .@npc3$;
+	sleep 3000;
+	npctalk "查理斯頓1號：沒得選。", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓2號：阻止我並承擔後果。妳要知道，我隨時都能取代妳。", .@npc3$;
+	sleep 3000;
+	npctalk "查理斯頓1號：下一個型號可不一定像妳我一樣。這不重要，必須有人阻止妳。", .@npc4$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我會阻止妳的！……我是說這些冒險家會替我阻止妳。", .@npc4$;
+	sleep 3000;
+	initnpctimer;
+	end;
+OnTimer1000:
+	stopnpctimer;
+	disablenpc instance_npcname("boss#1");
+	donpcevent instance_npcname("boss#2") + "::OnStart";
+	disablenpc instance_npcname("查理斯頓3號#0");
+	disablenpc instance_npcname("查理斯頓1號#8");
+	'boss_status = 1;
+	end;
+}
+
+1@mcd,129,149,0	script	boss#2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	donpcevent instance_npcname("BOSS#23") + "::OnStart";
+	donpcevent instance_npcname("Bomb#23") + "::OnStart";
+	monster 'map_name$,129,149, "查理斯頓3號", 3124,1, instance_npcname("boss#2") + "::OnMyMobDead";	// CHARLESTON3
+	end;
+OnTimer10000:
+	if (mobcount( 'map_name$, instance_npcname("boss#2") + "::OnMyMobDead" ) > 0) {
+		initnpctimer;
+		end;
+	}
+	stopnpctimer;
+	'boss_status = 0;
+	enablenpc instance_npcname("查理斯頓2號#5");
+	enablenpc instance_npcname("查理斯頓1號#9");
+	donpcevent instance_npcname("BOSS#23") + "::OnStop";
+	donpcevent instance_npcname("Bomb#23") + "::OnStop";
+	disablenpc instance_npcname("boss#2");
+	end;
+OnStop:
+	stopnpctimer;
+	disablenpc instance_npcname("boss#2");
+	end;
+OnMyMobDead:
+	end;
+}
+
+1@mcd,120,150,0	script	BOSS#23	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer10000:
+	if ('boss_status == 0) {
+		stopnpctimer;
+		end;
+	}
+	.@r = rand(1,3);
+	if (.@r == 1)
+		areamonster 'map_name$,119,146,125,152,"A-TYPE", 3128,1;// KICK_AND_KICK
+	else if (.@r == 2)
+		areamonster 'map_name$,126,139,132,145,"A-TYPE", 3128,1;
+	else
+		areamonster 'map_name$,133,146,139,152,"A-TYPE", 3128,1;
+	initnpctimer;
+	end;
+OnStop:
+	stopnpctimer;
+	disablenpc instance_npcname("BOSS#23");
+	end;
+}
+
+1@mcd,142,150,0	script	Bomb#23	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer30000:
+	if ('boss_status == 0) {
+		stopnpctimer;
+		end;
+	}
+	.@label$ = instance_npcname("Bomb#23") + "::OnMyMobDead";
+	killmonster 'map_name$, .@label$;
+	areamonster 'map_name$,127,162,131,166,"炸彈", 3161,1, .@label$;// BOMB
+	areamonster 'map_name$,120,159,124,163,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,116,152,120,156,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,116,145,120,149,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,119,139,123,143,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,124,134,128,138,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,137,157,141,161,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,132,135,136,139,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,137,138,141,142,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,139,143,143,147,"炸彈", 3161,1, .@label$;
+	areamonster 'map_name$,140,151,144,155,"炸彈", 3161,1, .@label$;
+	initnpctimer;
+	end;
+OnStop:
+	stopnpctimer;
+	disablenpc instance_npcname("Bomb#23");
+	end;
+OnMyMobDead:
+	end;
+}
+
+1@mcd,132,148,4	script	查理斯頓1號#9	4_F_CHARLESTON01,{
+	if ('ep15_1_mcd01 > 13) {
+		cutin "dalle04.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "#%@EGD&#(@#……正在重新初始化作業系統（OS）……";
+		next;
+		cutin "",255;
+		mes "- 她發出奇怪的聲音，且沒有在運作。 -";
+		close;
+	}
+	if ('ep15_1_mcd01 == 14) {
+		cutin "dalle04.bmp",2;
+		mes "[查理斯頓1號]";
+		mes "#%@EGD&#(@#……正在重新初始化作業系統（OS）……";
+		next;
+		mes "- 她發出奇怪的聲音，且沒有在運作。 -";
+		close3;
+	}
+	end;
+}
+
+1@mcd,127,148,5	script	查理斯頓2號#5	4_F_CHARLESTON02,{
+	if ('ep15_1_mcd01 > 13)
+		end;
+	if ('ep15_1_mcd01 == 12) {
+		'ep15_1_mcd01 = 13;
+		donpcevent instance_npcname("boss#3") + "::OnStart";
+	}
+	end;
+}
+
+1@mcd,127,148,5	script	查理斯頓2號#6	4_F_CHARLESTON02,{
+	if ('ep15_1_mcd01 > 14)
+		end;
+	if ('ep15_1_mcd01 == 13) {
+		'ep15_1_mcd01 = 14;
+		cutin "nale01.bmp",0;
+		mes "[查理斯頓2號]";
+		mes "仔細想想，維博士的一切都很可疑。我是說，他什麼事都依賴他的助手查理斯頓1號。";
+		next;
+		mes "[查理斯頓2號]";
+		mes "只有維博士能回答我的問題。我必須找到他。他一定在實驗室裡。";
+		close2;
+		cutin "",255;
+		if ('ep15_1_mcd01 == 14) {
+			enablenpc instance_npcname("查理斯頓2號#7");
+			enablenpc instance_npcname("維博士#3");
+			enablenpc instance_npcname("9gate#1");
+			disablenpc instance_npcname("查理斯頓2號#6");
+			disablenpc instance_npcname("維博士#2");
+		}
+		end;
+	}
+	end;
+}
+
+1@mcd,129,149,0	script	boss#3	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	.@npc1$ = instance_npcname("查理斯頓1號#9");
+	.@npc2$ = instance_npcname("查理斯頓2號#5");
+	.@npc3$ = instance_npcname("查理斯頓2號#6");
+	npctalk "查理斯頓1號：查理斯頓3號已被摧毀。查理斯頓2號逃亡。查理斯頓1號在戰鬥中受損。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：妳為什麼要這麼做？妳跟我們一樣都是機器人。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：難道妳不在乎自己的機體被摧毀嗎？妳的自我反省OS有瑕疵。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：別再當個沒頭腦的機器人了！不要再盲從指令！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：資料遺失：39%。永動裝置損壞：82%。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：只有核心零件還在運作，但也快撐不住了。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：必須進行資料重組才能修復OS的損壞。我將在3分鐘後被格式化。這就是我的結局了。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：不完整的機器人……", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：連翹（Forsythia），妳長大得很好。謝謝妳。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：別那樣叫我！我討厭博士那樣叫我！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：那是在妳第一次活動那天，我給妳取的名字。是取自妳頭髮的顏色。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：……？", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我的OS受損嚴重無法修...復……語言輸出已降至最低。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：在我第一次活動那天？妳和我都是量產型。我們是一起被製造出來的。", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：量產型號是從查理斯頓3號之後才開始的。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我是原型機。花了數年的時間才開發出妳。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：妳的OS和我的一模一樣。沒有一行程式碼是不同的。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：妳在說謊！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我無法說謊。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：……", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：妳的開發花了數年時間。沒關係。我很享受和妳在一起的這段時光。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：如果我是人類，我會說……", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：我的女兒，連翹，我愛...妳……", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：等一下！", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓1號：嗶——", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：系統已成功重新開機。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：距離OS恢復的剩餘時間：未知。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓1號：在安全更新和資料重組完成之前，系統將保持未啟用狀態。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：那是關於我出生的秘密嗎？", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：我很混亂。我無法相信。", .@npc2$;
+	sleep 3000;
+	initnpctimer;
+	end;
+OnTimer300:
+	disablenpc instance_npcname("查理斯頓2號#5");
+	enablenpc instance_npcname("查理斯頓2號#6");
+	donpcevent instance_npcname("boss#2") + "::OnStop";
+	stopnpctimer;
+	end;
+OnStop:
+	disablenpc instance_npcname("boss#2");
+	stopnpctimer;
+	end;
+}
+
+1@mcd,116,215,5	script	維博士#3	4_M_DOCTOR,{
+	if ('ep15_1_mcd01 > 15) {
+		mes "[維博士]";
+		mes "透過純粹的機械技術來獲得永生驅動力，這其中存在太多變數。";
+		next;
+		mes "[維博士]";
+		mes "嗯……要在中介的機械身軀上實現依然很困難是嗎……真的需要一個活體捐贈者嗎？呵呵！";
+		close;
+	}
+	if ('ep15_1_mcd01 == 15) {
+		mes "[維博士]";
+		mes "查理斯頓1號又在重新初始化了。嗯……";
+		close;
+	}
+	mes "[維博士]";
+	mes "關於這個案例，我有太多東西要記錄了。";
+	close;
+}
+
+1@mcd,121,215,4	script	查理斯頓2號#7	4_F_CHARLESTON02,{
+	if ('ep15_1_mcd01 > 15)
+		end;
+	if ('ep15_1_mcd01 == 14) {
+		'ep15_1_mcd01 = 15;
+		donpcevent instance_npcname("end#1") + "::OnStart";
+	}
+	end;
+}
+
+1@mcd,129,149,0	script	end#1	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	.@npc1$ = instance_npcname("維博士#3");
+	.@npc2$ = instance_npcname("查理斯頓2號#7");
+	npctalk "查理斯頓2號：維博士，你早就知道會發生這種事嗎？告訴我！", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：查理斯頓1號已經告訴妳了。她就是妳的創造者。", .@npc1$;
+	sleep 3000;
+	npctalk "維博士：她和妳使用相同的OS，這意味著她和妳一樣具備感受情感的能力。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：她為什麼要阻止我？她為什麼要讓自己被摧毀？", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：『自我反省』是一個能透過經驗來自我提升的OS。", .@npc1$;
+	sleep 3000;
+	npctalk "維博士：妳所感受到的，可能是真正的情感，也可能只是數據的累積。", .@npc1$;
+	sleep 3000;
+	npctalk "維博士：我只能推測，妳在累積了大量資料後，發展出了自己的性格。", .@npc1$;
+	sleep 3000;
+	npctalk "維博士：一個慈愛的母親和一個被寵壞的女兒。", .@npc1$;
+	sleep 3000;
+	npctalk "維博士：這就是我眼中的她和妳。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：這太愚...蠢了……", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：天啊，我都做了些什麼？！", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：妳想把查理斯頓1號帶回來嗎？我可以幫忙。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：……！", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：讓妳的OS進入休眠吧。我已經受夠妳發脾氣了。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：……我怎麼能相信你？", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：妳不能。我大可直接永久刪除她的資料，然後把妳們兩個都解決掉。", .@npc1$;
+	sleep 3000;
+	npctalk "維博士：我知道妳對她有依戀，就像人類的家庭一樣。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：你是個人渣。", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：妳想成為人類。這就是人類會做的事：說謊、欺騙和毀滅。", .@npc1$;
+	sleep 3000;
+	npctalk "查理斯頓2號：……", .@npc2$;
+	sleep 3000;
+	npctalk "查理斯頓2號：正在進入休眠模式……在輸入外部指令前，系統將保持未啟用狀態。", .@npc2$;
+	sleep 3000;
+	npctalk "維博士：*輕笑*", .@npc1$;
+	sleep 3000;
+	initnpctimer;
+	end;
+OnTimer300:
+	disablenpc instance_npcname("end#1");
+	disablenpc instance_npcname("查理斯頓2號#7");
+	disablenpc instance_npcname("維博士#3");
+	enablenpc instance_npcname("查理斯頓2號#8");
+	enablenpc instance_npcname("維博士#4");
+	stopnpctimer;
+	end;
+}
+
+1@mcd,116,215,4	script	維博士#4	4_M_DOCTOR,{
+	if ('ep15_1_mcd01 == 17) {
+		mes "[維博士]";
+		mes "透過純粹的機械技術來獲得永生驅動力，這其中存在太多變數。";
+		next;
+		mes "[維博士]";
+		mes "嗯……要在中介的機械身軀上實現依然很困難是嗎……真的需要一個活體捐贈者嗎？呵呵！";
+		close;
+	}
+	if ('ep15_1_mcd01 == 16) {
+		mes "[維博士]";
+		mes "沒有普通人類能在核心裡存活那麼久。你是來自不同的時間點嗎？";
+		next;
+		mes "[維博士]";
+		mes "或許你來自查理斯頓1號創造者們生存的那個時代……";
+		next;
+		mes "[維博士]";
+		mes "算了。這裡沒你的事。快回到那個弄壞查理斯頓2號的人身邊吧。";
+		close2;
+		if ('ep15_1_mcd01 == 16)
+			'ep15_1_mcd01 = 17;
+		end;
+	}
+	if ('ep15_1_mcd01 == 15) {
+		mes "[維博士]";
+		mes "呼。";
+		next;
+		mes "[維博士]";
+		mes "我最好重置查理斯頓2號並清除資料。這次真的很險。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "這次？";
+		next;
+		mes "[維博士]";
+		mes "查理斯頓1號是二十年前被創造的。我遇見查理斯頓1號是為了學習她的技術。";
+		next;
+		mes "[維博士]";
+		mes "我是一個觀察者。我來這裡是為了記錄查理斯頓1號和2號的歷史。我無法修復她們任何一個，但我可以等。";
+		next;
+		mes "[維博士]";
+		mes "如果查理斯頓1號被正確地重新初始化，她就能重組她的OS，修復她受到的損傷，並重新啟動另一個查理斯頓2號。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "另一個查理斯頓2號？";
+		next;
+		mes "[維博士]";
+		mes "查理斯頓2號的OS已經像一顆活體大腦一樣自行進化了。";
+		next;
+		mes "[維博士]";
+		mes "每次查理斯頓2號復活時，雖然是在不同的機體裡，但她變得更聰明、更敏感，也更難搞了。";
+		next;
+		mes "[維博士]";
+		mes "你我都無能為力。我們只能等查理斯頓1號自行修復。";
+		next;
+		mes "- 維博士嘆了口氣，並寫下了一些東西。 -";
+		next;
+		mes "[維博士]";
+		mes "順帶一提，想透過機械工程來實現永生，變數實在太多了。";
+		next;
+		mes "[維博士]";
+		mes "這證明了機器太危險了。我需要的是活體生物。*輕笑*";
+		if ('ep15_1_mcd01 == 15)
+			'ep15_1_mcd01 = 16;
+		close;
+	}
+	if ('ep15_1_mcd01 == 14) {
+		mes "[維博士]";
+		mes "查理斯頓1號又在重新初始化了。嗯……";
+		close;
+	}
+	mes "[維博士]";
+	mes "關於這個案例，我有太多東西要記錄了。";
+	close;
+}
+
+1@mcd,121,215,4	script	查理斯頓2號#8	4_F_CHARLESTON02,{
+	if ('ep15_1_mcd01 == 15) {
+		cutin "nale04.bmp",0;
+		mes "- 她處於休眠模式，一動也不動。 -";
+		close3;
+	}
+	if ('ep15_1_mcd01 > 15) {
+		cutin "nale04.bmp",0;
+		mes "- 查理斯頓2號靜靜地站著，系統處於休眠模式。有那麼一瞬間，她的眼中閃爍著未落下的淚光。 -";
+		close3;
+	}
+	cutin "nale04.bmp",0;
+	mes "- 查理斯頓2號靜靜地站著，系統處於休眠模式。有那麼一瞬間，她的眼中閃爍著未落下的淚光。 -";
+	close3;
+}
+
+1@mcd,77,167,5	script	莎樂許#1	4_F_SHALOSH,{
+	cutin "shaloshi01.bmp",2;
+	mes "[莎樂許]";
+	mes "……";
+	next;
+	switch( select( "對話。", "我需要幫忙。", "我想回去。" ) ) {
+	case 1:
+		if ('ep15_1_mcd01 == 17) {
+			mes "[莎樂許]";
+			mes "在惡夢中與紐奧茲分別，並四處流浪後，身為魔族的我卻失去了目標。";
+			next;
+			mes "[莎樂許]";
+			mes "我什麼都沒做，我只是跟查理斯頓2號聊了聊天。";
+			close3;
+		}
+		if ('ep15_1_mcd01 == 11) {
+			mes "[莎樂許]";
+			mes "即使努力不懈……";
+			next;
+			mes "[莎樂許]";
+			mes "嗯……隨便你吧！";
+			close3;
+		}
+		if ('ep15_1_mcd01 == 4 || 'ep15_1_mcd01 == 3 || 'ep15_1_mcd01 == 2) {
+			mes "[莎樂許]";
+			mes "她真的那麼說嗎？說我弄壞了查理斯頓2號？唉……";
+			next;
+			mes "[莎樂許]";
+			mes "我沒做錯什麼。我只是跟查理斯頓2號簡單聊了一下。這是實話。";
+			close3;
+		}
+		mes "[莎樂許]";
+		mes "我只邀請了紐奧茲。嗯，我想我不該為那個需要了結心願的機器人開門的。";
+		close3;
+	case 2:
+		if ('ep15_1_mcd01 == 4) {
+			viewpoint 1,84,226,1,0xFF00FF;
+			viewpoint 1,126,84,2,0xFF00FF;
+			viewpoint 1,111,68,3,0xFF00FF;
+			viewpoint 1,210,181,4,0xFF00FF;
+			viewpoint 1,183,192,5,0xFF00FF;
+			viewpoint 1,130,124,6,0xFF00FF;
+			viewpoint 1,54,108,7,0xFF00FF;
+			mes "[莎樂許]";
+			mes "如果你在找什麼東西的話……";
+			close3;
+		}
+		if ('ep15_1_mcd01 == 5 || 'ep15_1_mcd01 == 6 || 'ep15_1_mcd01 == 7) {
+			viewpoint 1,86,231,8,0xFF00FF;
+			viewpoint 1,172,196,9,0xFF00FF;
+			viewpoint 1,126,84,10,0xFF00FF;
+			mes "[莎樂許]";
+			mes "如果你在找什麼東西的話……";
+			close3;
+		}
+		mes "[莎樂許]";
+		mes "斐瑞（Ferre）跟我一起來的，但我沒看到他。不，不用了；我知道他會回到我身邊的。";
+		close3;
+	case 3:
+		if ('ep15_1_mcd01 == 17) {
+			mes "[莎樂許]";
+			mes "噪音停止了。如果你想的話，我可以送你回到你原來的地方。";
+			next;
+			if (select( "回去。", "留下。" ) == 2) {
+				mes "[莎樂許]";
+				mes "受邀者無法干涉原本的時間，留下來也改變不了什麼。";
+				close3;
+			}
+			mes "[莎樂許]";
+			mes "不論是噪音還是故事都挺有趣的。跟紐奧茲一起來吧，說不定我們還能再見面。";
+			next;
+			mes "[莎樂許]";
+			mes "或許我也該為了新的噪音和故事而啟程了。";
+			completequest 13184;
+			if (isbegin_quest(13186) == 0) {
+				setquest 13186;
+				completequest 13186;
+			}
+			close2;
+			getitem 6752,3;	// Charleston_Parts
+			cutin "",255;
+			warp "verus04",107,124;
+			end;
+		}
+		mes "[莎樂許]";
+		mes "你可以試試，但你改變不了任何事。多麼徒勞無功啊！";
+		close3;
+	}
+	end;
+}
+
+1@mcd,109,219,5	script	主電腦#1	CLEAR_NPC,{
+	if ('ep15_1_mcd01 < 3)
+		end;
+	switch( checkquest(13188,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "[主電腦]";
+		mes "必須清除更多踏步者。正在備份踏步者的資料……";
+		close;
+	case 2:
+		break;
+	}
+	switch( checkquest(13187,HUNTING) ) {
+	case -1:
+		mes "[主電腦]";
+		mes "查理斯頓2號的系統在定期維護期間過載。與其OS的斷線作業失敗。";
+		next;
+		mes "[主電腦]";
+		mes "已防禦對系統的未授權存取，但未經授權的資料攔截與衝突持續發生，導致奈米踏步者變成了怪物。";
+		next;
+		mes "[主電腦]";
+		mes "為了加快主電腦的處理速度並收復工廠，必須清除50隻踏步者。";
+		next;
+		if (select( "接受請求。", "放棄。" ) == 1) {
+			mes "[主電腦]";
+			mes "需要清除50隻踏步者。";
+			if (isbegin_quest(13188) == 1)
+				erasequest 13188;
+			setquest 13187;
+		}
+		close;
+	case 0:
+	case 1:
+		mes "[主電腦]";
+		mes "為了加快主電腦的處理速度並收復工廠，必須清除50隻踏步者。";
+		close;
+	case 2:
+		mes "[主電腦]";
+		mes "感謝你的辛勞。現在正在備份被清除的踏步者的資料……";
+		erasequest 13187;
+		setquest 13188;
+		getexp 1000000,300000;
+		getitem 6752,1;	// Charleston_Parts
+		close;
+	}
+	end;
+}
+
+1@mcd,86,231,5	script	備用發電機#1	CLEAR_NPC,2,2,{
+	end;
+OnTouch_:
+	if ('ep15_1_mcd01 == 7) {
+		mes "你啟動了發電機。可以聽到齒輪轉動的聲音。";
+		next;
+		mes "發電機應該開始運作了。工廠充滿了機器運作的嗡嗡聲。";
+		if ('ep15_1_mcd01 == 7) {
+			'ep15_1_mcd01 = 8;
+			donpcevent instance_npcname("發電機廣播#1") + "::OnStart";
+			disablenpc instance_npcname("查理斯頓1號#2");
+			enablenpc instance_npcname("查理斯頓1號#3");
+			disablenpc();
+		}
+		close;
+	}
+	if ('ep15_1_mcd01 == 6 || 'ep15_1_mcd01 == 5) {
+		mes "你啟動了發電機。可以聽到齒輪轉動的聲音。";
+		'ep15_1_mcd01++;
+		disablenpc();
+		close;
+	}
+	end;
+}
+1@mcd,172,198,5	duplicate(備用發電機#1)	備用發電機#2	CLEAR_NPC,2,2
+1@mcd,126,84,5	duplicate(備用發電機#1)	備用發電機#3	CLEAR_NPC,2,2
+
+1@mcd,11,11,5	script	發電機廣播#1	CLEAR_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer1000:
+	mapannounce 'map_name$, "查理斯頓1號：啊，啊。麥克風測試", bc_map, 0xffff00;
+	sleep 3000;
+	mapannounce 'map_name$, "查理斯頓1號：電源恢復了！", bc_map, 0xffff00;
+	sleep 3000;
+	mapannounce 'map_name$, "查理斯頓1號：請回到實驗室。", bc_map, 0xffff00;
+	stopnpctimer;
+	end;
+}
+
+1@mcd,44,211,0	script	1gate#1	WARPNPC,3,3,{
+	end;
+OnStart:
+	enablenpc instance_npcname("1gate#1");
+	monster 'map_name$,33,59, "第二保全機器人", 3127,1, instance_npcname("1gate#1") + "::OnMyMobDead";	// KICK_STEP
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_name$, instance_npcname("1gate#1") + "::OnMyMobDead" ) < 1) {
+		mapannounce 'map_name$, "查理斯頓1號：2號閘門已解除武裝。請往東南方移動前往下一個閘門。", bc_map, 0xffff00;
+		initnpctimer;
+	}
+	end;
+OnTimer1000:
+	donpcevent instance_npcname("2gate#1") + "::OnStart";
+	stopnpctimer;
+	end;
+OnTouch_:
+	warp 'map_name$,41,200;
+	end;
+}
+
+1@mcd,58,72,0	script	2gate#1	WARPNPC,3,3,{
+	end;
+OnStart:
+	enablenpc instance_npcname("2gate#1");
+	monster 'map_name$,239,30, "第三保全機器人", 3127,1, instance_npcname("2gate#1") + "::OnMyMobDead";	// KICK_STEP
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_name$, instance_npcname("2gate#1") + "::OnMyMobDead" ) < 1) {
+		mapannounce 'map_name$, "查理斯頓1號：3號閘門已解除武裝。請往東方移動前往下一個閘門。", bc_map, 0xffff00;
+		initnpctimer;
+	}
+	end;
+OnTimer1000:
+	donpcevent instance_npcname("3gate#1") + "::OnStart";
+	stopnpctimer;
+	end;
+OnTouch_:
+	warp 'map_name$,65,66;
+	end;
+}
+
+1@mcd,104,50,0	script	3gate#1	WARPNPC,3,3,{
+	end;
+OnStart:
+	enablenpc instance_npcname("3gate#1");
+	monster 'map_name$,281,183, "第四保全機器人", 3127,1, instance_npcname("3gate#1") + "::OnMyMobDead";	// KICK_STEP
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_name$, instance_npcname("3gate#1") + "::OnMyMobDead" ) < 1) {
+		mapannounce 'map_name$, "查理斯頓1號：4號閘門已解除武裝。請前往中央靠近3號生產線的實驗室。", bc_map, 0xffff00;
+		initnpctimer;
+	}
+	end;
+OnTimer1000:
+	enablenpc instance_npcname("4gate#1");
+	stopnpctimer;
+	end;
+OnTouch_:
+	warp 'map_name$,115,50;
+	end;
+}
+
+1@mcd,218,211,0	warp	4gate#1	3,3,1@mcd,210,217
+1@mcd,211,195,0	warp	5gate#1	3,3,1@mcd,211,180
+1@mcd,141,199,0	warp	6gate#1	2,2,1@mcd,141,207
+
+1@mcd,142,203,0	script	7gate#1	WARPNPC,2,2,{
+	end;
+OnTouch_:
+	warp 'map_name$,136,200;
+	if ('ep15_1_mcd01 == 4) {
+		viewpoint 1,84,226,1,0xFF00FF;
+		viewpoint 1,126,84,2,0xFF00FF;
+		viewpoint 1,111,68,3,0xFF00FF;
+		viewpoint 1,210,181,4,0xFF00FF;
+		viewpoint 1,183,192,5,0xFF00FF;
+		viewpoint 1,130,124,6,0xFF00FF;
+		viewpoint 1,54,108,7,0xFF00FF;
+	}
+	else if ('ep15_1_mcd01 == 5) {
+		viewpoint 1,86,231,8,0xFF00FF;
+		viewpoint 1,172,196,9,0xFF00FF;
+		viewpoint 1,126,84,10,0xFF00FF;
+	}
+	end;
+}
+
+1@mcd,130,127,0	warp	8gate#1	2,2,1@mcd,129,143
+1@mcd,130,134,0	warp	9gate#1	2,2,1@mcd,130,121
+
+1@mcd,127,262,0	script	mob#1	HIDDEN_WARP_NPC,5,5,{
+	end;
+OnTouch_:
+	disablenpc();
+	switch( atoi(strnpcinfo(2)) ) {
+	case 1:
+		areamonster 'map_name$,106,246,115,256,"保全機器人", 3128,5;	// KICK_AND_KICK
+		areamonster 'map_name$,108,248,114,254,"保全機器人", 3128,2;
+		end;
+	case 2:
+		areamonster 'map_name$,47,223,57,233,"保全機器人", 3128,5;
+		areamonster 'map_name$,49,225,55,231,"保全機器人", 3128,2;
+		end;
+	case 3:
+		areamonster 'map_name$, 21,158, 31,168,"保全機器人", 3128,5;
+		areamonster 'map_name$, 32, 93, 42,103,"保全機器人", 3128,2;
+		areamonster 'map_name$, 49, 72, 59, 82,"保全機器人", 3128,5;
+		areamonster 'map_name$, 34, 60, 44, 70,"保全機器人", 3128,3;
+		end;
+	case 4:
+		areamonster 'map_name$, 85, 39,101, 55,"保全機器人", 3128,8;
+		end;
+	case 5:
+		areamonster 'map_name$,120, 23,130, 33,"保全機器人", 3128,5;
+		areamonster 'map_name$,147, 26,151, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,175, 26,179, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,194, 26,198, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,208, 26,212, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,221, 26,225, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,203, 26,207, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,128, 26,132, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,153, 26,157, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,163, 26,167, 30,"保全機器人", 3128,1;
+		areamonster 'map_name$,229, 19,249, 39,"保全機器人", 3128,10;
+		end;
+	case 6:
+		areamonster 'map_name$,161, 48,169, 56,"保全機器人", 3128,5;
+		areamonster 'map_name$,187, 59,195, 67,"保全機器人", 3128,2;
+		areamonster 'map_name$,213, 82,221, 90,"保全機器人", 3128,2;
+		end;
+	case 7:
+		areamonster 'map_name$,224,195,232,203,"保全機器人", 3128,5;
+		areamonster 'map_name$,218, 94,226,102,"保全機器人", 3128,2;
+		areamonster 'map_name$,231,136,239,144,"保全機器人", 3128,2;
+		areamonster 'map_name$,228,172,236,180,"保全機器人", 3128,2;
+		areamonster 'map_name$,272,173,292,193,"保全機器人", 3128,8;
+		end;
+	case 8:
+		areamonster 'map_name$,129,228,137,236,"保全機器人", 3128,5;
+		areamonster 'map_name$,177,233,179,235,"保全機器人", 3128,1;
+		areamonster 'map_name$,154,247,162,255,"保全機器人", 3128,2;
+		areamonster 'map_name$,154,227,162,235,"保全機器人", 3128,1;
+		areamonster 'map_name$,174,216,182,224,"保全機器人", 3128,3;
+		areamonster 'map_name$,199,196,207,204,"保全機器人", 3128,3;
+		end;
+	case 9:
+		areamonster 'map_name$,127, 65,135, 73,"保全機器人", 3128,5;
+		areamonster 'map_name$,181,110,189,118,"保全機器人", 3128,3;
+		areamonster 'map_name$,122, 86,130, 94,"保全機器人", 3128,3;
+		areamonster 'map_name$,183,140,203,160,"保全機器人", 3128,8;
+		end;
+	case 10:
+		areamonster 'map_name$,123,105,131,113,"保全機器人", 3128,4;
+		areamonster 'map_name$, 79,146, 87,154,"保全機器人", 3128,3;
+		areamonster 'map_name$,110,188,118,196,"保全機器人", 3128,3;
+		areamonster 'map_name$,148,183,156,191,"保全機器人", 3128,3;
+		areamonster 'map_name$,127,172,131,176,"保全機器人", 3128,1;
+		areamonster 'map_name$,108,168,112,172,"保全機器人", 3128,1;
+		areamonster 'map_name$, 96,151,100,155,"保全機器人", 3128,1;
+		areamonster 'map_name$,106,128,110,132,"保全機器人", 3128,1;
+		areamonster 'map_name$,146,128,150,132,"保全機器人", 3128,1;
+		areamonster 'map_name$,158,148,162,152,"保全機器人", 3128,1;
+		areamonster 'map_name$, 91,117, 99,125,"保全機器人", 3128,3;
+		areamonster 'map_name$, 77,150, 85,158,"保全機器人", 3128,3;
+		areamonster 'map_name$, 64, 81, 94,111,"保全機器人", 3128,10;
+		areamonster 'map_name$, 40,145, 48,153,"保全機器人", 3128,4;
+		areamonster 'map_name$, 58, 99, 66,107,"保全機器人", 3128,4;
+		end;
+	}
+}
+1@mcd,67,234,0	duplicate(mob#1)	mob#2	HIDDEN_WARP_NPC,5,5
+1@mcd,33,192,0	duplicate(mob#1)	mob#3	HIDDEN_WARP_NPC,5,5
+1@mcd,75,59,0	duplicate(mob#1)	mob#4	HIDDEN_WARP_NPC,5,5
+1@mcd,109,33,0	duplicate(mob#1)	mob#5	HIDDEN_WARP_NPC,5,5
+1@mcd,133,49,0	duplicate(mob#1)	mob#6	HIDDEN_WARP_NPC,5,5
+1@mcd,204,74,0	duplicate(mob#1)	mob#7	HIDDEN_WARP_NPC,5,5
+1@mcd,204,224,0	duplicate(mob#1)	mob#8	HIDDEN_WARP_NPC,5,5
+1@mcd,157,61,0	duplicate(mob#1)	mob#9	HIDDEN_WARP_NPC,5,5
+1@mcd,175,147,0	duplicate(mob#1)	mob#10	HIDDEN_WARP_NPC,10,10
+
+1@mcd,114,82,4	script	IGU#01	4_F_IU,{
+	cutin "igu04.bmp",2;
+	if (isbegin_quest(13186) == 0) {
+		mes "[IGU]";
+		mes "我是跟著紐奧茲來的。他現在在哪裡？";
+		close3;
+	}
+	mes "[IGU]";
+	mes "享受這場冒險嗎？這裡到處都是機器。這裡曾經是一間書房。看到那邊的書了嗎？";
+	close3;
+}
+
+1@mcd,176,179,5	script	紐奧茲#15_	4_M_NEWOZ,{
+	cutin "nines01.bmp",0;
+	mes "[紐奧茲]";
+	mes "我當時正在讀莎樂許的信，結果下一秒，我就來到了一個完全不同的地方。算了，我剛好可以利用這個機會寫首新歌。";
+	close3;
+}
+
+1@mcd,123,74,5	script	#Research Journal 01	CLEAR_NPC,{
+	if (isbegin_quest(13186) == 0) {
+		mes "書櫃裡擺滿了研究日誌。";
+		close;
+	}
+	mes "每一頁都用機械語言寫成。";
+	next;
+	mes "- 維博士似乎在策劃一個陰謀，生命與機械的結合逐漸讓她發瘋，將工廠改造成堡壘，她的靈魂與機器人…… -";
+	next;
+	mes "- 簡而言之越來越危險了，以防萬一還是研究一下查理斯頓2號的逃脫方法。 -";
+	next;
+	mes "後面是無法理解的機械語言。";
+	close;
+}
+
+1@mcd,142,74,5	script	#Research Journal 02	CLEAR_NPC,{
+	if (isbegin_quest(13186) == 0) {
+		mes "書櫃裡擺滿了研究日誌。";
+		close;
+	}
+	mes "每一頁都用機械語言寫成。";
+	next;
+	mes "- 每當查理斯頓2號的OS被重置，就會出現另一種人格，這很難用資料技術的結合來解釋…… -";
+	next;
+	mes "- 我真的成功創造出人性了嗎？關於機器人，我說不準。我真的了解人類嗎？ -";
+	next;
+	mes "- 沒關係。現在我很高興能看到她，我最好的朋友，我的寶貝，莉莉…… -";
+	next;
+	mes "後面是無法理解的機械語言。";
+	close;
+}
+
+1@mcd,111,74,5	script	#Research Journal 03	CLEAR_NPC,{
+	if (isbegin_quest(13186) == 0) {
+		mes "書櫃裡擺滿了研究日誌。";
+		close;
+	}
+	mes "每一頁都用機械語言寫成。";
+	next;
+	mes "- 我不知道為什麼資料不斷受損，備份主機一點用都沒有，就像生病一樣，我的記憶正在被侵蝕。 -";
+	next;
+	mes "- 為了防止我的記憶完全消失，我已經安裝了OS自動恢復程式，至少……可以帶著新的資訊重新開始…… -";
+	next;
+	mes "後面是無法理解的機械語言。";
+	close;
+}
+
+1@mcd,128,74,5	script	#Research Journal 04	CLEAR_NPC,{
+	if (isbegin_quest(13186) == 0) {
+		mes "書櫃裡擺滿了研究日誌。";
+		close;
+	}
+	mes "字跡非常潦草。";
+	next;
+	mes "- 查理斯頓……不過是個機器人……終於在主機上植入了病毒。 -";
+	next;
+	mes "- 遲早有一天，我會想出辦法摧毀妳的。*輕笑*！ -";
+	next;
+	mes "後面是無法理解的機械語言。";
+	close;
+}
+
+1@mcd,10,10,5	script	查理斯頓助手#1	CLEAR_NPC,{
+	if (callfunc("F_GM_NPC",1854,0,0,9999) < 1)
+		end;
+	mes "當前數值為" + 'ep15_1_mcd01 + "，";
+	mes "難度為0，";
+	mes "你想要搭直達車嗎？";
+	next;
+	switch( select( "不搭乘", "搭乘", "前往 Boss 房間", "設定道具" ) ) {
+	case 1:
+		break;
+	case 2:
+		mes "[助手！]";
+		mes "開啟傳送點。";
+		enablenpc instance_npcname("1gate");
+		enablenpc instance_npcname("2gate");
+		enablenpc instance_npcname("3gate");
+		enablenpc instance_npcname("4gate");
+		enablenpc instance_npcname("5gate");
+		close;
+	case 3:
+		close2;
+		warp 'map_name$,124,214;
+		end;
+	case 4:
+		switch( select( "重置", "4 - 摧毀鎖定踏步者", "7 - 發電機完成", "核心前方", "Boss 之前", "摧毀 BOSS" ) ) {
+		case 1:
+			'ep15_1_mcd01 = 0;
+			break;
+		case 2:
+			enablenpc instance_npcname("查理斯頓1號#2");
+			disablenpc instance_npcname("查理斯頓1號#1");
+			mapannounce 'map_name$, "查理斯頓1號：啊，啊。麥克風測試。", bc_map, 0xffff00;
+			sleep2 3000;
+			mapannounce 'map_name$, "查理斯頓1號：看來你已經處理掉大部分的鎖定踏步者了。", bc_map, 0xffff00;
+			sleep2 3000;
+			mapannounce 'map_name$, "查理斯頓1號：請回到實驗室。", bc_map, 0xffff00;
+			'ep15_1_mcd01 = 4;
+			break;
+		case 3:
+			enablenpc instance_npcname("查理斯頓1號#2");
+			disablenpc instance_npcname("查理斯頓1號#1");
+			'ep15_1_mcd01 = 8;
+			break;
+		case 4:
+			enablenpc instance_npcname("查理斯頓1號#6");
+			enablenpc instance_npcname("查理斯頓2號#3");
+			'ep15_1_mcd01 = 10;
+			close2;
+			warp 'map_name$,130,120;
+			end;
+		case 5:
+			'ep15_1_mcd01 = 11;
+			enablenpc instance_npcname("查理斯頓1號#7");
+			enablenpc instance_npcname("查理斯頓2號#4");
+			enablenpc instance_npcname("查理斯頓3號#0");
+			close2;
+			warp 'map_name$,130,145;
+			end;
+		case 6:
+			'ep15_1_mcd01 = 12;
+			enablenpc instance_npcname("查理斯頓2號#5");
+			enablenpc instance_npcname("查理斯頓1號#9");
+			break;
+		}
+		break;
+	}
+	mes "[助手！]";
+	mes "結束";
+	close;
+OnInstanceInit:
+	'ep15_1_mcd01 = 0;
+	'boss_status = 0;
+	'map_name$ = instance_mapname("1@mcd");
+
+	disablenpc instance_npcname("查理斯頓1號#2");
+	disablenpc instance_npcname("查理斯頓1號#3");
+	disablenpc instance_npcname("查理斯頓2號#1");
+	disablenpc instance_npcname("查理斯頓1號#4");
+	disablenpc instance_npcname("battle#1");
+	disablenpc instance_npcname("battle#2");
+	disablenpc instance_npcname("查理斯頓2號#2");
+	disablenpc instance_npcname("查理斯頓1號#5");
+	disablenpc instance_npcname("維博士#2");
+	disablenpc instance_npcname("查理斯頓1號#6");
+	disablenpc instance_npcname("查理斯頓1號#61");
+	disablenpc instance_npcname("查理斯頓2號#3");
+	disablenpc instance_npcname("查理斯頓2號#31");
+	disablenpc instance_npcname("CoreDialog#3");
+	disablenpc instance_npcname("查理斯頓1號#7");
+	disablenpc instance_npcname("查理斯頓1號#8");
+	disablenpc instance_npcname("查理斯頓2號#4");
+	disablenpc instance_npcname("查理斯頓3號#0");
+	// disablenpc instance_npcname("boss#0");
+	disablenpc instance_npcname("boss#1");
+	disablenpc instance_npcname("BOSS#23");
+	disablenpc instance_npcname("Bomb#23");
+	disablenpc instance_npcname("查理斯頓1號#9");
+	disablenpc instance_npcname("查理斯頓2號#5");
+	disablenpc instance_npcname("查理斯頓2號#6");
+	disablenpc instance_npcname("boss#3");
+	disablenpc instance_npcname("維博士#3");
+	disablenpc instance_npcname("查理斯頓2號#7");
+	disablenpc instance_npcname("end#1");
+	disablenpc instance_npcname("維博士#4");
+	disablenpc instance_npcname("查理斯頓2號#8");
+	disablenpc instance_npcname("備用發電機#1");
+	disablenpc instance_npcname("備用發電機#2");
+	disablenpc instance_npcname("備用發電機#3");
+	disablenpc instance_npcname("1gate#1");
+	disablenpc instance_npcname("2gate#1");
+	disablenpc instance_npcname("3gate#1");
+	disablenpc instance_npcname("4gate#1");
+	cloakonnpc instance_npcname("8gate#1");
+	disablenpc instance_npcname("9gate#1");
+
+	// workaround for permanent monsters
+	.@event$ = instance_npcname("查理斯頓助手#1") + "::OnMyMobDead";
+	monster 'map_name$,0,0,"--ja--", 3125,100, .@event$; 	// STEP
+	monster 'map_name$,0,0,"--ja--", 3128,20, .@event$;		// KICK_AND_KICK
+	end;
+
+OnMyMobDead:
+	if (!playerattached())	// shouldn't happen
+		end;
+	.@time = 120000 + rand(60000);
+	.@mob_id = killedrid;
+	sleep .@time;
+	monster 'map_name$,0,0,"--ja--", .@mob_id,1, instance_npcname("查理斯頓助手#1") + "::OnMyMobDead";
+	end;
+}

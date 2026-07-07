@@ -1,0 +1,131 @@
+//===== rAthena Script =======================================
+//= War of Emperium (Geffen) - Mersetzdeitz
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= NPCs that relate to Geffen Guild Castle 5
+//===== Additional Comments: =================================
+//= 1.0 First Version. No longer uses functions. [L0ne_W0lf]
+//= 1.1 Removed dialog from interior flags. [L0ne_W0lf]
+//= 1.2 Partially rewrote Script. [Masao]
+//============================================================
+
+// Guild Flag (Outside Castle)
+//============================================================
+-	script	梅爾賽茲迪茲#1::OutsideFlagsG5	722,{
+
+	set .@GID, GetCastleData("gefg_cas05",1);
+
+	if (.@GID == 0) {
+		mes "[ 神聖盧恩米德加茲王國詔書 ]";
+		mes " ";
+		mes "1. 遵循神聖盧恩米德加茲王國的法令，";
+		mes "我們宣布";
+		mes "這座城池目前沒有正式的主人。";
+		mes " ";
+		mes "2. 凡是能夠";
+		mes "克服所有考驗";
+		mes "並擊碎華麗金屬的人，";
+		mes "國王將賦予他";
+		mes "這座城池的所有權。";
+		close;
+	}
+	if (getcharid(2) == .@GID) {
+		mes "[ 迴盪的聲音 ]";
+		mes "勇敢的人們...";
+		mes "你們希望回到屬於你們的榮耀之地嗎？";
+		next;
+		if(select("回到公會城池。:離開。") == 1) {
+			close2;
+			if (getcharid(2) == GetCastleData("gefg_cas05",1)) {
+				warp "gefg_cas05",168,31;
+				end;
+			}
+			end;
+		}
+		close;
+	}
+	mes "[ 神聖盧恩米德加茲王國詔書 ]";
+	mes " ";
+	mes "1. 遵循神聖盧恩米德加茲王國的法令，";
+	mes "我們承認這個地方";
+	mes "歸 ^ff0000"+GetGuildName(.@GID)+"^000000 公會私有。";
+	mes " ";
+	mes "2. ^ff0000"+GetGuildName(.@GID)+"^000000 公會的會長是";
+	mes "^ff0000"+GetGuildMaster(.@GID)+"^000000";
+	mes "如果有人對此有異議，";
+	mes "請用你手中的鋼刃來證明你的實力與榮耀。";
+	close;
+
+OnRecvCastleG05:
+	FlagEmblem GetCastleData("gefg_cas05",1);
+	end;
+}
+
+gef_fild13,302,87,7	duplicate(OutsideFlagsG5)	梅爾賽茲迪茲#1-2	722
+gef_fild13,313,83,0	duplicate(OutsideFlagsG5)	梅爾賽茲迪茲#2	722
+gef_fild13,252,51,2	duplicate(OutsideFlagsG5)	梅爾賽茲迪茲#3	722
+gef_fild13,26,147,2	duplicate(OutsideFlagsG5)	梅爾賽茲迪茲#4	722
+
+// Guild Flag (Inside Castle)
+//============================================================
+-	script	梅爾賽茲迪茲#5::InsideFlagsG5	722,{
+	end;
+
+OnRecvCastleG05:
+	FlagEmblem GetCastleData("gefg_cas05",1);
+	end;
+}
+
+gefg_cas05,77,185,7	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#5-2	722
+gefg_cas05,92,181,0	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#6	722
+gefg_cas05,83,158,1	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#7	722
+gefg_cas05,62,144,7	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#8	722
+gefg_cas05,62,66,4	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#9	722
+gefg_cas05,69,66,4	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#10	722
+
+// Guild Flag (Town)
+//============================================================
+geffen,131,123,6	duplicate(InsideFlagsG5)	梅爾賽茲迪茲#11	722
+
+// Kafra Employee
+//============================================================
+gefg_cas05,61,52,5	duplicate(guildkafra)	卡普拉服務人員#gefg_cas05	117
+
+// Steward
+//============================================================
+gefg_cas05,70,52,3	duplicate(cm)	比約赫#gefg_cas05	55
+
+// Treasure Room Exit
+//============================================================
+gefg_cas05,149,107,0	script	#lever_G05	111,{
+	mes " ";
+	mes "這裡有一個小拉桿。你要拉下它嗎？";
+	next;
+	if(select("拉下。:不要拉。") == 1) {
+		close2;
+		warp "gefg_cas05",70,53;
+		end;
+	}
+	close;
+}
+
+// Guild Dungeon Switch
+//============================================================
+gefg_cas05,65,22,0	duplicate(gdlever)	#gefg_cas05	111
+
+// Guild Treasure Spawns
+//============================================================
+gefg_cas05,144,110,0	duplicate(Gld_Trea_Spawn)	寶箱#gefg_cas05	-1
+
+// AGIT Manager
+//============================================================
+gefg_cas05,194,184,0	duplicate(Gld_Agit_Manager)	城池#gefg_cas05	-1
+
+// Guardians
+//============================================================
+gefg_cas05,70,52,3	duplicate(Gld_Guard_Template)	守護者#gefg_cas05	-1

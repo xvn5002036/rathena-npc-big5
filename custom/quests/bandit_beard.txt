@@ -1,0 +1,233 @@
+//===== rAthena Script ======================================= 
+//= Bandit Beard Quest
+//===== By: ================================================== 
+//= Mega Man Expert & Lupus
+//===== Current Version: ===================================== 
+//= 1.3
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= A harmless quest for a simply item w/o any bonuses "Bandit Beard"
+//===== Additional Comments: ================================= 
+//= Fully working.
+//= 1.0 First release
+//= 1.1 Fixed some exploits, bugs and typos.
+//  Optimized 8) [Lupus]
+//= 1.1b fixed some typos
+//= 1.2 fixed donpcevent label [Lupus]
+//= 1.3 Removed duplicates [L0ne_W0lf]
+//============================================================
+
+umbala,126,129,4	script	鬍子男#bandit	120,{
+	if(BEARD_QUEST == 4 ) goto L_MAKE;
+	if(BEARD_QUEST >= 5 ) goto L_DONE;
+	if(BEARD_QUEST >= 1 ) goto L_THREAD;
+
+	mes "[鬍子男]";
+	mes "鬍子！快來買好看的鬍子喔！";
+	mes "你想要鬍子嗎？";
+	next;
+	menu "是的，我想要一些臉部毛髮！",-,"不用了，好噁心！",M_NO;
+
+	mes "[鬍子男]";
+	mes "呵呵?所以你想要一些鬍鬚。";
+	emotion ET_SMILE;
+	mes "嗯，我可以給你我的鬍子，但它們可不便宜。";
+	mes "事實上我只剩下一個了...";
+	mes "但我不會賣掉它。";
+	mes "但別生氣！我可以幫你做一個。";
+	next;
+	set BEARD_QUEST,1;
+L_THREAD:
+	mes "[鬍子男]";
+	mes "做鬍子我需要一些^8080FF線^000000。";
+	mes "去伊斯魯得島找我的朋友拿些^8080FF線^000000。";
+	next;
+	mes "[鬍子男]";
+	mes "另外，我也需要你幫我找些做鬍子的材料。";
+	mes "它們是：";
+L_LIST:
+	mes "^8080FF橡皮筋^000000";
+	mes "^8080FF5個 動物外皮^000000";
+	mes "^8080FF黑色染料^000000";
+	mes "^8080FF老爹鬍鬚^000000";
+	mes "^8080FF100個 黏稠液體^000000";
+	mes "^8080FF中和劑^000000";
+	mes " 和一個 ^8080FF2克拉鑽石^000000";
+	close;
+
+M_NO:
+	mes "[鬍子男]";
+	mes "好吧，那就這樣吧！";
+	emotion ET_ANGER;
+	close;
+L_DONE:
+	mes "[鬍子男]";
+	mes "抱歉，我每個人只能做一個。";
+	mes "我們現在不需要太多鬍子，對吧？";
+	emotion ET_KIK;
+	close;
+
+L_MAKE:
+	mes "[鬍子男]";
+	mes "讓我們來幫你做鬍子吧！";
+	next;
+	if(countitem(7200) < 1 || countitem(919) < 1 ||	countitem(983) < 1 || countitem(2241) < 1 ||
+	countitem(938) < 100 || countitem(973) < 1 || countitem(731) < 1) goto L_NOITEMS;
+	delitem 7200, 1;
+	delitem 919, 1;
+	delitem 983, 1;
+	delitem 2241, 1;
+	delitem 938, 100;
+	delitem 973, 1;
+	delitem 731, 1;
+	mes "^8080FF~你看著他把鬍子剪裁並縫合起來~^000000";
+	next;
+	mes "^8080FF~他把完成的鬍子交給你~^000000";
+	next;
+	getitem 2237, 1;
+	set BEARD_QUEST, 5;
+	mes "[鬍子男]";
+	mes "祝你有個美好的一天！";
+	emotion ET_KIK;
+	close;
+
+L_NOITEMS:
+	mes "[鬍子男]";
+	mes "搞什麼鬼！沒有材料我怎麼做鬍子！";
+	mes "清單再給你一次：";
+	emotion ET_HUK;
+	goto L_LIST;
+}  
+
+//Master Tailor----------
+izlude_in,123,175,4	script	裁縫大師#bandit	50,{
+	mes "[裁縫大師]";
+	mes "晚安！我是裁縫大師！";
+	if(BEARD_QUEST != 1 ) close;
+
+	next;
+	mes "[裁縫大師]";
+	mes "什麼？一個鬍子男派你來的...";
+	mes "嗯，我很抱歉地說，我的^8080FF線^000000已經用完了。";
+	mes "但我有進貨地點的地址。";
+	mes "它在艾爾帕蘭卡普拉公司的倉庫區。";
+	mes "地址是：艾爾帕蘭 59, 221";
+	mes "待會見。";
+	set BEARD_QUEST, 2;
+	close;
+}
+// Kafra Thread Clerk---
+aldeba_in,70,179,5	script	卡普拉服務人員#bandit	113,{
+	mes "[卡普拉服務人員]";
+	if(BEARD_QUEST == 3 ) goto L_REPEAT;
+	if(BEARD_QUEST > 3 ) goto L_DONE;
+
+	mes "有什麼我可以幫您的嗎？";
+	next;
+	if(BEARD_QUEST == 2 ) goto L_DELIVERY;
+
+	menu "箱子裡裝了什麼？",-,"沒事。",M_NOPE;
+
+	mes "[卡普拉服務人員]";
+	mes "它們是空的。";
+M_NOPE:
+	close;
+L_DELIVERY:
+
+	mes "[卡普拉服務人員]";
+	mes "抱歉，但我們還沒有收到任何^8080FF線^000000。";
+	mes "我們的貨物已經被延後，直到安全為止。";
+	mes "您看，我們的^8080FF線^000000是從艾爾貝塔來的，但有魔物一直攻擊我們的商人。";
+	next;
+	mes "[卡普拉服務人員]";
+	mes "這些魔物以前是不會這樣做的。";
+	mes "這可能和天氣變暖有關。";
+	mes "請幫幫我們！";
+	set BEARD_QUEST,3;
+	next;
+	mes "[卡普拉服務人員]";
+L_REPEAT:
+	mes "喔對了，那位線材商人大概在艾爾貝塔 60, 100 附近...";
+L_DONE:
+	mes "謝謝您！";
+	close;
+}
+
+//Thread Merchant ------
+alberta,65,123,6	script	男人#bandit	85,{
+	if(BEARD_QUEST == 3 && $@beardMobD) goto L_KILLED;
+	if(BEARD_QUEST > 3) goto L_DONE;
+
+	mes "[線材商人]";
+	mes "啊啊！！我永遠無法把我的東西運到艾爾帕蘭！";
+	mes "我一直被一些蟲子圍攻。";
+	mes "牠們偷走我所有的補給品和^8080FF線^000000。";
+	next;
+	mes "[線材商人]";
+	if(BEARD_QUEST != 3) mes "我該怎麼辦？";
+	if(BEARD_QUEST != 3) close;
+	if($@beardmob > 0) mes "殺！快點把牠們殺了！！！";
+	if($@beardmob > 0) close;
+	mes "你是來幫我的嗎？";
+	emotion ET_QUESTION;
+	next;
+	menu "是的",-,"不是",M_NO;
+
+	mes "[線材商人]";
+	mes "喔，感謝神！";
+	mes "只要你能把這些蟲子殺掉，我就能完成送貨了。";
+	next;
+	mes "[線材商人]";
+	mes "喔不！牠們來了！！";
+	emotion ET_PROFUSELY_SWEAT;
+	donpcevent "BRDQ_MOBS::OnStart";
+	close;
+
+L_KILLED:
+	set $@beardMobD,0;
+	mes "[線材商人]";
+	mes "謝謝你殺了這些盜蟲。";
+	mes "作為感謝，這裡有一箱滿滿的^8080FF線^000000。";
+	set BEARD_QUEST,4;
+	close;
+
+L_DONE:
+	mes "[線材商人]";
+	mes "再次感謝你！";
+	emotion ET_THANKS;
+	close;
+
+M_NO:
+	mes "[線材商人]";
+	mes "該怎麼辦呢...";
+	close;
+}
+
+//mobsummons -------
+alberta,1,1,1	script	BRDQ_MOBS	-1,{
+OnStart:
+	set $@beardMob,10;
+	set $@beardMobD,0;
+	monster "alberta",65,120,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",66,120,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",67,120,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",68,120,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",66,121,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",67,121,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",68,121,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",66,122,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",67,122,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	monster "alberta",68,122,"瑪勒盜蟲",1054,1,"BRDQ_MOBS::OnDie";
+	end;
+OnDie:
+	set $@beardmob, $@beardmob - 1;
+	if($@beardmob > 0) end;
+	set $@beardMobD,1;
+	end;
+On1201:
+On0001:
+	set $@beardMob,0;
+	set $@beardMobD,0;
+	end;
+}

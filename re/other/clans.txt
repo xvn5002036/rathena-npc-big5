@@ -1,0 +1,632 @@
+//===== rAthena Script =======================================
+//= Clan masters
+//===== Description: =========================================
+//= The clan master NPCs that allow you to join and leave
+//= one of the clans.
+//===== Changelogs: ==========================================
+//= 1.0 Initial release. [Lemongrass]
+//= 1.1 iRO translation. [RagnarokNova]
+//= 1.2 Dialogue cleanup. [Aleos]
+//= 1.3 Added clan helper. [exneval]
+//============================================================
+
+prontera,138,183,7	script	陣營助手	703,{
+	mes "[陣營助手]";
+	mes "你想在不加入公會的情況下建立人脈嗎？";
+	next;
+	mes "[陣營助手]";
+	mes "找不到適合自己的公會嗎？";
+	next;
+	mes "[陣營助手]";
+	mes "你可以自由加入或退出陣營！現在就加入吧！";
+	next;
+	mes "[陣營助手]";
+	mes "現在，快來見見王國最頂尖的陣營大師們吧！";
+	close;
+}
+
+prt_in,33,114,5	script	拉法姆 奧蘭弗	10058,{
+	cutin "laperm01.bmp", 2;
+	mes "[拉法姆 奧蘭弗]";
+	mes "嗨！我是拉法姆，盧恩米德加茲王國^3131FF劍術陣營^000000的大師。";
+	next;
+	switch( select( "陣營資訊:加入陣營:退出陣營" ) ){
+		case 1:
+			switch( select( "什麼是陣營？:關於劍術陣營:取消" ) ){
+				case 1:
+					mes "[拉法姆 奧蘭弗]";
+					mes "^3131FF陣營^000000是由王國營運的一種公會體系。";
+					mes "他們不參與城戰，所以成員可以隨時自由加入或退出。";
+					next;
+					mes "[拉法姆 奧蘭弗]";
+					mes "真希望我們也能參加城戰。我好想騎著我的龍飛過去，把擋路的人全都燒光！";
+					mes "噢，我太激動了！";
+					next;
+					mes "[拉法姆 奧蘭弗]";
+					mes "如果沒有其他適合你的陣營，就加入我們吧。";
+					mes "新成員將會獲得^3131FF免費的能力值加成^000000。";
+					next;
+					mes "[拉法姆 奧蘭弗]";
+					mes "就如^3131FF劍術陣營^000000這名字一樣，我們提供近戰能力加成，但並非所有成員都是近戰職業。";
+					mes "別感到有壓力，包在我身上吧！";
+					next;
+					cutin "laperm02.bmp", 2;
+					mes "[拉法姆 奧蘭弗]";
+					mes "多樣性才能帶來樂趣。";
+					mes "組隊時，這些奇怪的傢伙從不讓我感到無聊。";
+					next;
+					mes "[拉法姆 奧蘭弗]";
+					mes "誰知道呢，說不定你還會在陣營裡遇見你的靈魂伴侶？哈哈！";
+					break;
+				case 2:
+					mes "[拉法姆 奧蘭弗]";
+					mes "^3131FF劍術陣營^000000主要支援近戰冒險者。";
+					mes "加入即可免費獲得 ^FF0000<STR+1, VIT+1, MHP+30, MSP+10>^000000！";
+					next;
+					mes "[拉法姆 奧蘭弗]";
+					mes "記住，我們不參與城戰。";
+					mes "如果你想打城戰，應該去聯絡其他公會。";
+					next;
+					mes "[拉法姆 奧蘭弗]";
+					mes "有問題嗎？";
+					mes "很期待加入我們對吧？哈哈！";
+					break;
+				case 3:
+					break;
+			}			
+			break;
+		case 2:
+			mes "[拉法姆 奧蘭弗]";
+			mes "哦，你要加入嗎？好選擇！";
+			mes "那我們先來確認一下陣營規定，然後開始辦理入會手續。";
+			next;
+			mes "[拉法姆 奧蘭弗]";
+			mes "^3131FF陣營成員^000000無法參與城戰。";
+			mes "新成員將獲得這些能力加成：^FF0000<STR+1, VIT+1, MHP+30, MSP+10>^000000。";
+			mes "到目前為止都明白嗎？";
+			next;
+			if( select( "明白:不明白" ) == 1 ){
+				mes "[拉法姆 奧蘭弗]";
+				mes "你可以隨時加入和退出陣營，但如果^FF0000超過2週^000000沒有登入，你將會被^FF0000強制踢除^000000。";
+				mes "陣營大師的存在是有原因的，就像我一樣。";
+				mes "了解嗎？";
+				next;
+				if( select( "了解:不了解" ) == 1 ){
+					mes "[拉法姆 奧蘭弗]";
+					mes "很好，在這裡簽下你的名字進行註冊。";
+					next;
+					input .@name$;
+					mes "[拉法姆 奧蘭弗]";
+					mes "所以，你是^3131FF" + strcharinfo( 0 ) + "^000000！好名字！";
+					mes "讓我為你登記。";
+					next;
+					if( getcharid( 2 ) ){
+						mes "[拉法姆 奧蘭弗]";
+						mes "請先退出你目前的公會後，再來加入我們。";
+						close3;
+					}else if( getcharid( 5 ) != 0 ){
+						cutin "laperm04.bmp", 2;
+						mes "[拉法姆 奧蘭弗]";
+						mes "咦？哦，你已經在陣營裡了。";
+						mes "別耍我了，這一點都不好笑！";
+					}else{
+						cutin "laperm02.bmp", 2;
+						if (clan_join(SWORDCLAN)) {
+							sc_start2 SC_SWORDCLAN, INFINITE_TICK, 0, SWORDCLAN;
+							mes "[拉法姆 奧蘭弗]";
+							mes "歡迎來到^3131FF劍術陣營^000000！";
+							mes "你可以使用 ^3131FFCtrl+G^000000 查看陣營資訊。";
+							mes "隨時為您服務！";
+						} else
+							mes "發生錯誤。";
+					}
+				}else{
+					mes "[拉法姆 奧蘭弗]";
+					mes "呃，好吧。那我們從頭來過。";
+				}
+			}else{
+				cutin "laperm03.bmp", 2;
+				mes "[拉法姆 奧蘭弗]";
+				mes "呃，好吧。那我們從頭來過。";
+			}
+			break;
+		case 3:
+			cutin "laperm01.bmp", 2;
+			mes "[拉法姆 奧蘭弗]";
+			mes "你想退出嗎？";
+			mes "沒問題。希望你能找到更適合的陣營。";
+			mes "準備好要退出了嗎？";
+			next;
+			if( select( "繼續:取消" ) == 1 ){
+				if( getcharid( 5 ) == 0 ){
+					cutin "laperm04.bmp", 2;
+					mes "[拉法姆 奧蘭弗]";
+					mes "等等，你根本不是我們的人！咕嚕，別逼我對你噴火！";
+				}else if( getcharid( 5 ) != SWORDCLAN ){
+					cutin "laperm04.bmp", 2;
+					mes "[拉法姆 奧蘭弗]";
+					mes "嘿，如果你想退出，請去跟你的陣營大師談。";
+				}else{
+					if (clan_leave()) {
+						sc_end SC_SWORDCLAN;
+						mes "[拉法姆 奧蘭弗]";
+						mes "好了，手續辦完了。但我們還是朋友，對吧？";
+						mes "很高興曾經有你的加入！";
+					} else
+						mes "發生錯誤。";
+				}
+			}
+			break;
+	}
+	close2;
+	cutin "", 255;
+	end;
+
+OnInit:
+	sc_start2 SC_SWORDCLAN, INFINITE_TICK, 0, SWORDCLAN, 10000, SCSTART_NOAVOID, getnpcid(0);
+	end;
+}
+
+prt_in,35,114,5	script	戴文 艾爾	10059,{
+	cutin "debon01.bmp", 2;
+	mes "[戴文 艾爾]";
+	mes "我是戴文，^3131FF魔杖陣營^000000的大師。";
+	next;
+	switch( select( "陣營資訊:加入陣營:退出陣營" ) ){
+		case 1:
+			switch( select( "什麼是陣營？:關於魔杖陣營:取消" ) ){
+				case 1:
+					mes "[戴文 艾爾]";
+					mes "^3131FF陣營^000000是由王國營運的，不像其他公會是私人建立的。";
+					mes "而我負責管理其中一個。";
+					next;
+					cutin "debon02.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "...";
+					mes "那是什麼眼神？你有意見嗎？";
+					next;
+					cutin "birman01.bmp", 2;
+					mes "[伯曼 艾爾]";
+					mes "老哥，你嚇到未來的新成員了，態度好一點。";
+					next;
+					cutin "debon02.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "...";
+					next;
+					cutin "debon01.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "如果你想找個落腳處就加入吧。我們會給予^3131FF免費的能力加成^000000。但是不能參加城戰。";
+					next;
+					mes "[戴文 艾爾]";
+					mes "就如^3131FF魔杖陣營^000000這名字一樣，多數成員是攻擊型魔法職業，但這並非強制要求。";
+					next;
+					cutin "debon02.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "...喂，夏姆 魯密。";
+					mes "別再纏著我弟弟了，快去工作。";
+					next;
+					cutin "sham03.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "隨便啦！";
+					next;
+					cutin "debon02.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "...哼！";
+					mes "聽好了，十字弓陣營的大師很邪惡的。";
+					next;
+					cutin "sham02.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "少管我，戴文！別在那邊散播謠言！";
+					next;
+					cutin "birman01.bmp", 2;
+					mes "[伯曼 艾爾]";
+					mes "哈哈。別吵了，你們兩個這樣很難看。";
+					mes "好了，大家回去工作吧。";
+					break;
+				case 2:
+					cutin "debon01.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "^3131FF魔杖陣營^000000主要支援攻擊型魔法職業。";
+					mes "我們提供新成員 ^FF0000<INT+1, DEX+1, MHP+30, MSP+10>^000000 加成。別要求更多了，這是王國的規定。";
+					next;
+					mes "[戴文 艾爾]";
+					mes "^3131FF陣營成員^000000無法參與城戰。";
+					mes "如果你喜歡打城戰，那就去加入一般的公會吧。";
+					next;
+					mes "[戴文 艾爾]";
+					mes "就這樣。不接受提問。";
+					break;
+				case 3:
+					break;
+			}
+			break;
+		case 2:
+			cutin "debon01.bmp", 2;
+			mes "[戴文 艾爾]";
+			mes "...";
+			mes "那我們先確認陣營規定，然後開始辦理入會手續。";
+			next;
+			mes "[戴文 艾爾]";
+			mes "^3131FF陣營成員^000000無法參與城戰。";
+			mes "新成員將獲得這些能力加成：^FF0000<INT+1, DEX+1, MHP+30, MSP+10>^000000。";
+			mes "有在聽嗎？";
+			next;
+			if( select( "有:沒有" ) == 1 ){
+				mes "[戴文 艾爾]";
+				mes "你可以隨時加入和退出陣營，但如果^FF0000超過2週^000000沒有登入，你將會被^FF0000強制踢除^000000。";
+				mes "你同意嗎？";
+				next;
+				if( select( "同意:不同意" ) == 1 ){
+					mes "[戴文 艾爾]";
+					mes "在這裡簽名。";
+					next;
+					input .@name$;
+					mes "[戴文 艾爾]";
+					mes "^3131FF" + strcharinfo( 0 ) + "^000000.....";
+					mes "很好，讓我邀請你加入。";
+					next;
+					if( getcharid( 2 ) ){
+						mes "[戴文 艾爾]";
+						mes "想加入我的陣營，先退出你的公會吧，廢話。";
+						close3;
+					}else if( getcharid( 5 ) != 0 ){
+						cutin "debon03.bmp", 2;
+						mes "[戴文 艾爾]";
+						mes "你已經在陣營裡了。開什麼玩笑？！";
+						mes "哦，我也很會開玩笑的——火柱！";
+					}else{
+						if (clan_join(ARCWANDCLAN)) {
+							sc_start2 SC_ARCWANDCLAN, INFINITE_TICK, 0, ARCWANDCLAN;
+							mes "[戴文 艾爾]";
+							mes "你已加入^3131FF魔杖陣營^000000。";
+							next;
+							mes "[戴文 艾爾]";
+							mes "你可以使用 ^3131FFCtrl+G^000000 查看陣營資訊。";
+							mes "所以待會別來煩我。";
+							next;
+							mes "[戴文 艾爾]";
+							mes "就這樣。常來看看，否則會被踢掉。解散。";
+						} else
+							mes "發生錯誤。";
+					}
+				}else{
+					mes "[戴文 艾爾]";
+					mes "那我也不想要你。";
+				}
+			}else{
+				mes "[戴文 艾爾]";
+				mes "天啊，再聽一次規定吧。";
+			}
+			break;
+		case 3:
+			mes "[戴文 艾爾]";
+			mes "想退出，是嗎？";
+			mes "我懂，是為了城戰吧。如果不是的話，那是為什麼..算了沒事..";
+			mes "我會處理你的退出手續。";
+			next;
+			if( select( "繼續:取消" ) == 1 ){
+				if( getcharid( 5 ) == 0 ){
+					cutin "debon03.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "調皮的孩子就該吃一記雷鳴術。";
+				}else if( getcharid( 5 ) != ARCWANDCLAN ){
+					cutin "debon02.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "你找錯人了。去找你的陣營大師。";
+				}else{
+					if (clan_leave()) {
+						sc_end SC_ARCWANDCLAN;
+						mes "[戴文 艾爾]";
+						mes "你已退出陣營。";
+						mes "現在走吧。我不想再說話了。";
+					} else
+						mes "發生錯誤。";
+				}
+			}		
+			break;
+	}
+	close2;
+	cutin "", 255;
+	end;
+
+OnInit:
+	sc_start2 SC_ARCWANDCLAN, INFINITE_TICK, 0, ARCWANDCLAN, 10000, SCSTART_NOAVOID, getnpcid(0);
+	end;
+}
+
+prt_in,37,114,5	script	伯曼 艾爾	10060,{
+	cutin "birman01.bmp", 2;
+	mes "[伯曼 艾爾]";
+	mes "很高興見到你。我是伯曼 艾爾，^3131FF黃金鎚陣營^000000的大師。";
+	mes "我也是戴文 艾爾的哥哥。戴文看起來很兇，但他心地很善良。";
+	next;
+	switch( select( "陣營資訊:加入陣營:退出陣營" ) ){
+		case 1:
+			switch( select( "什麼是陣營？:關於黃金鎚陣營:取消" ) ){
+				case 1:
+					mes "[伯曼 艾爾]";
+					mes "^3131FF陣營^000000是由王國設立的，旨在幫助冒險者互相聯繫並交流資訊。";
+					next;
+					mes "[伯曼 艾爾]";
+					mes "因為陣營是由王國營運，所以不能參加城戰，但至少成員會獲得^3131FF能力加成^000000。";
+					mes "能力加成雖然不多，但對初學者來說非常實用。";
+					next;
+					mes "[伯曼 艾爾]";
+					mes "我們被命名為^3131FF黃金鎚陣營^000000，但我們不會根據職業來歧視申請者。";
+					mes "這名字只是為了幫助你更容易選擇你的陣營。";
+					next;
+					cutin "sham02.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "伯曼，解釋得夠多了。我們去克雷斯特漢姆古城逛逛吧。";
+					next;
+					cutin "debon03.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "... 嘿。";
+					next;
+					cutin "sham03.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "噢，你嚇到我了。";
+					mes "伯曼，有空打給我！~";
+					next;
+					cutin "birman03.bmp", 2;
+					mes "[伯曼 艾爾]";
+					mes "哈哈，我為他們的鬥嘴道歉。";
+					next;
+					cutin "birman01.bmp", 2;
+					mes "[伯曼 艾爾]";
+					mes "你有什麼問題嗎？";
+					mes "如果你厭倦了獨自旅行，就加入我們吧！你可以隨時加入和退出陣營。";
+					break;
+				case 2:
+					mes "[伯曼 艾爾]";
+					mes "^3131FF黃金鎚陣營^000000主要幫助輔助職業。";
+					mes "我們為新成員提供 ^FF0000<INT+1, LUK+1, MHP+30, MSP+10>^000000 加成。";
+					next;
+					mes "[伯曼 艾爾]";
+					mes "就像我剛才說的，陣營不能參加城戰，因為它們已經屬於王國了。";
+					mes "如果你想參加城戰，那我建議你加入一般的公會。";
+					next;
+					mes "[伯曼 艾爾]";
+					mes "你現在明白陣營是做什麼的了嗎？";
+					break;
+				case 3:
+					break;
+			}
+			break;
+		case 2:
+			mes "[伯曼 艾爾]";
+			mes "太好了！";
+			mes "那我們先確認陣營規定，然後開始辦理入會手續。";
+			next;
+			mes "[伯曼 艾爾]";
+			mes "^3131FF陣營成員^000000無法參與城戰。";
+			mes "身為我們的新成員，你將獲得以下能力加成：^FF0000<INT+1, LUK+1, MHP+30, MSP+10>^000000。";
+			mes "你同意嗎？";
+			next;
+			if( select( "同意:不同意" ) == 1 ){
+				mes "[伯曼 艾爾]";
+				mes "你可以隨時加入和退出陣營，但如果^FF0000超過2週^000000沒有登入，你將會被^FF0000強制踢除^000000。";
+				mes "你同意在陣營中保持良好的活躍度嗎？";
+				next;
+				if( select( "同意:不同意" ) == 1 ){
+					mes "[伯曼 艾爾]";
+					mes "現在，請在這裡寫下你的名字。";
+					next;
+					input .@name$;
+					mes "[伯曼 艾爾]";
+					mes "^3131FF" + strcharinfo( 0 ) + "^000000！真是個好名字！";
+					mes "好的，那麼...";
+					next;
+					if( getcharid( 2 ) ){
+						mes "[伯曼 艾爾]";
+						mes "哦，糟糕。";
+						mes "為了加入我們，你必須先退出目前的公會。";
+						close3;
+					}else if( getcharid( 5 ) != 0 ){
+						mes "[伯曼 艾爾]";
+						mes "你已經加入陣營了。";
+						mes "你只是搞混了，對吧？";
+					}else{
+						if (clan_join(GOLDENMACECLAN)) {
+							sc_start2 SC_GOLDENMACECLAN, INFINITE_TICK, 0, GOLDENMACECLAN;
+							cutin "birman02.bmp", 2;
+							mes "[伯曼 艾爾]";
+							mes "歡迎來到^3131FF黃金鎚陣營^000000！";
+							next;
+							mes "[伯曼 艾爾]";
+							mes "你可以使用 ^3131FFCtrl+G^000000 查看陣營資訊。";
+							next;
+							mes "[伯曼 艾爾]";
+							mes "請記住我告訴你的幾項注意事項，好好享受你的陣營活動吧！";
+						} else
+							mes "發生錯誤。";
+					}
+				}
+			}
+			break;
+		case 3:
+			mes "[伯曼 艾爾]";
+			mes "天下沒有不散的筵席。";
+			mes "希望你在^3131FF黃金鎚陣營^000000度過了愉快的時光。";
+			mes "現在，我要為你辦理退出手續嗎？";
+			next;
+			if( select( "繼續:取消" ) == 1 ){
+				if( getcharid( 5 ) == 0 ){
+					mes "[伯曼 艾爾]";
+					mes "你必須先加入陣營才能退出它。";
+				}else if( getcharid( 5 ) != GOLDENMACECLAN ){
+					mes "[伯曼 艾爾]";
+					mes "抱歉，但我不能把你從其他陣營移除...";
+				}else{
+					if (clan_leave()) {
+						sc_end SC_GOLDENMACECLAN;
+						mes "[伯曼 艾爾]";
+						mes "手續辦妥了。";
+						mes "隨時歡迎回到^3131FF黃金鎚陣營^000000。我會在這裡。";
+					} else
+						mes "發生錯誤。";
+				}
+			}
+			break;
+	}
+	close2;
+	cutin "", 255;
+	end;
+
+OnInit:
+	sc_start2 SC_GOLDENMACECLAN, INFINITE_TICK, 0, GOLDENMACECLAN, 10000, SCSTART_NOAVOID, getnpcid(0);
+	end;
+}
+
+prt_in,39,114,5	script	夏姆 魯密	10027,{
+	cutin "sham01.bmp", 2;
+	mes "[夏姆 魯密]";
+	mes "嗨，你好！我是夏姆，^3131FF十字弓陣營^000000的大師";
+	mes "有什麼我可以幫忙的嗎？";
+	next;
+	switch( select( "陣營資訊:加入陣營:退出陣營" ) ){
+		case 1:
+			switch( select( "什麼是陣營？:關於十字弓陣營:取消" ) ){
+				case 1:
+					mes "[夏姆 魯密]";
+					mes "陣營是由盧恩米德加茲王國所設立的，目的是為了...";
+					mes "拉法姆，我們的^3131FF陣營^000000是為什麼而建立的？";
+					next;
+					cutin "laperm01.bmp", 2;
+					mes "[拉法姆 奧蘭弗]";
+					mes "你上課都在睡覺嗎？天啊。";
+					mes "陣營是為了幫助獨自旅行的冒險者互相聯繫並交流資訊。";
+					next;
+					cutin "sham01.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "啊哈，懂了！謝謝隊長！";
+					mes "你也聽到了，對吧？";
+					next;
+					mes "[夏姆 魯密]";
+					mes "由王國直接營運的陣營不被允許參與城戰，但好消息是成員們能獲得一些^3131FF能力加成^000000。";
+					next;
+					mes "[夏姆 魯密]";
+					mes "如果你好奇^3131FF十字弓陣營^000000是不是只招收弓箭手，答案是，不是的。";
+					mes "所有的陣營都接受任何職業。你可以選擇最符合你需求的陣營。";
+					next;
+					cutin "sham02.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "這應該涵蓋了所有該知道的事情。";
+					mes "伯曼，我們去克雷斯特漢姆古城逛逛吧。";
+					next;
+					cutin "debon03.bmp", 2;
+					mes "[戴文 艾爾]";
+					mes "你...";
+					next;
+					cutin "sham03.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "噢，好可怕喔！你真是個護弟狂魔。";
+					break;
+				case 2:
+					mes "[夏姆 魯密]";
+					mes "^3131FF十字弓陣營^000000非常適合遠距離職業。";
+					next;
+					mes "[夏姆 魯密]";
+					mes "欸，讓我查一下陣營手冊。啊，還有我們提供給新成員的能力加成：^FF0000<DEX+1, AGI+1, MHP+30, MSP+10>^000000。";
+					next;
+					mes "[夏姆 魯密]";
+					mes "陣營不被允許參與城戰；如果你想打城戰，應該去加入私人公會。";
+					mes "陣營是為那些討厭被束縛的冒險者準備的。";
+					next;
+					mes "[夏姆 魯密]";
+					mes "你有什麼問題嗎？";
+					break;
+				case 3:
+					break;
+			}
+			break;
+		case 2:
+			mes "[夏姆 魯密]";
+			mes "哦，是嗎？好選擇！";
+			mes "那我們先確認陣營規定，然後開始辦理入會手續。";
+			next;
+			mes "[夏姆 魯密]";
+			mes "^3131FF陣營成員^000000無法參與城戰。";
+			mes "身為我們的新成員，你將獲得以下能力加成：^FF0000<DEX+1, AGI+1, MHP+30, MSP+10>^000000。";
+			mes "你同意嗎？";
+			next;
+			if( select( "同意:不同意" ) == 1 ){
+				mes "[夏姆 魯密]";
+				mes "你可以隨時加入和退出陣營，但如果^FF0000超過2週^000000沒有登入，你將會被^FF0000強制踢除^000000。";
+				mes "你保證你會保持良好的活躍度嗎？";
+				next;
+				if( select( "保證:不保證" ) == 1 ){
+					mes "[夏姆 魯密]";
+					mes "很好，在這裡寫下你的名字。";
+					next;
+					input .@name$;
+					mes "[夏姆 魯密]";
+					mes "^3131FF" + strcharinfo( 0 ) + "^000000..！";
+					mes "呃，你的字跡真有待加強。讓我來處理你的申請吧。";
+					next;
+					if( getcharid( 2 ) ){
+						mes "[夏姆 魯密]";
+						mes "你和你的公會把事情處理完了嗎？";
+						close3;
+					}else if( getcharid( 5 ) != 0 ){
+						mes "[夏姆 魯密]";
+						mes "欸，你已經在陣營裡了。嘿，這並不好笑。";
+					}else{
+						if (clan_join(CROSSBOWCLAN)) {
+							sc_start2 SC_CROSSBOWCLAN, INFINITE_TICK, 0, CROSSBOWCLAN;
+							cutin "sham02.bmp", 2;
+							mes "[夏姆 魯密]";
+							mes "歡迎來到^3131FF十字弓陣營^000000！";
+							next;
+							cutin "sham01.bmp", 2;
+							mes "[夏姆 魯密]";
+							mes "你可以使用 ^3131FFCtrl+G^000000 查看陣營資訊。";
+							next;
+							mes "[夏姆 魯密]";
+							mes "別和其他陣營成員起衝突。要好好相處。";
+							mes "如果你需要幫忙，隨時可以密語我，好嗎？回頭見！";
+						} else
+							mes "發生錯誤。";
+					}
+				}else{
+					mes "[夏姆 魯密]";
+					mes "那好吧。我只想去好好玩一下。";
+				}
+			}else{
+				mes "[夏姆 魯密]";
+				mes "啊，你需要時間考慮一下嗎？沒問題。";
+			}
+			break;
+		case 3:
+			mes "[夏姆 魯密]";
+			mes "為什麼，你找到更好的陣營了嗎？";
+			mes "我很失望，但這是你的決定。讓我處理你的退出手續。";
+			next;
+			if( select( "繼續:取消" ) == 1 ){
+				if( getcharid( 5 ) == 0 ){
+					cutin "sham04.bmp", 2;
+					mes "[夏姆 魯密]";
+					mes "我不能讓你退出——你根本就不在我的陣營裡！";
+				}else if( getcharid( 5 ) != CROSSBOWCLAN ){
+					mes "[夏姆 魯密]";
+					mes "抱歉，但我不管其他陣營的閒事。";
+				}else{
+					if (clan_leave()) {
+						sc_end SC_CROSSBOWCLAN;
+						mes "[夏姆 魯密]";
+						mes "手續辦妥了。";
+						mes "如果你想念我們了，隨時可以回來，好嗎？";
+					} else
+						mes "發生錯誤。";
+				}
+			}
+			break;
+	}
+	close2;
+	cutin "", 255;
+	end;
+
+OnInit:
+	sc_start2 SC_CROSSBOWCLAN, INFINITE_TICK, 0, CROSSBOWCLAN, 10000, SCSTART_NOAVOID, getnpcid(0);
+	end;
+}

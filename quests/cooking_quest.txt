@@ -1,0 +1,2353 @@
+//===== rAthena Script ======================================= 
+//= Cooking Quest
+//===== By: ================================================== 
+//= Reddozen;
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.8a
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Official Cooking Quest (10.3)
+//===== Additional Comments: ================================= 
+//= 1.1 Fixed wrong item ID, added missing ";, optimized [Lupus]
+//= 1.1a minor bugfix, thx 2 Irmin [Lupus]
+//= 1.2 Fixed exploit, some typos [Lupus]
+//= 1.3 Fixed wrong label [Lupus] 1.3a updated to Reddozen's changes
+//= 1.3b Fixed wrong id, fixed Puch quest, added more Pouch Quest dialogues [Lupus]
+//= 1.4 Fixed spelling, added some dialoguesm optimized fixed bugs. Tested, fully working [Lupus]
+//= 1.5 More fixes [Lupus]
+//= 1.6 Quest is now 
+//= up to iRO 10.3 standards. [L0ne_W0lf]
+//= - Not sure what the EnableItemMove is for, as there is no command to disable being able to move items.
+//= 1.6a Corrected a bad cutin, a Typo error ";;" and a bad delitem (bugreport:911) [Samuray22]
+//= 1.6b Corrected a "donpcevent" missing a ":".
+//= (bugreport:962) [Samuray22]
+//= 1.7 Replaced effect numerics with constants. [L0ne_W0lf]
+//= 1.8 Renamed the variable cooking to cooking_q [ultramage]
+//= 1.8a Minor cleaning. [Euphy]
+//= 1.9 Renewal script update for ep16.1 [Capuche]
+//============================================================ 
+
+-	script	查理斯 奧爾良#cook_	-1,{
+	if (MaxWeight - Weight < 2000) {
+		mes "[查理斯 奧爾良]";
+		mes "稍等一下。";
+		mes "你現在身上帶了";
+		mes "太多東西，";
+		mes "最好先去卡普拉";
+		mes "把東西存進倉庫，好嗎？";
+		close2;
+		//EnableItemMove;
+		end;
+	}
+	if (BaseJob == Job_Novice) {
+		if (Sex == SEX_MALE) {
+			cutin "orleans_5",0;
+			mes "[查理斯 奧爾良]";
+			mes "不好意思，這位先生？";
+			mes "對，就是你。如果你不是";
+			mes "來廚房幫忙的傭工，";
+			mes "那麼我想請你";
+			mes "現在就離開。";
+			next;
+			emotion ET_FRET;
+			mes "[查理斯 奧爾良]";
+			mes "請不要見怪，";
+			mes "但當初學者像小孩子一樣";
+			mes "在這裡跑來跑去時，";
+			mes "我無法專心";
+			mes "做我的料理。";
+			close3;
+		}
+		cutin "orleans_1",0;
+		mes "[查理斯 奧爾良]";
+		mes "小姐，妳在城堡的";
+		mes "這個區域做什麼？";
+		mes "噢，妳一定是迷路了~";
+		next;
+		cutin "orleans_2",0;
+		mes "[查理斯 奧爾良]";
+		mes "請用右邊的樓梯";
+		mes "回到主建築裡去。";
+		mes "親愛的，爬樓梯時";
+		mes "請為我小心腳步，";
+		mes "好嗎？";
+		goto L_End;
+	}
+	else if (getequipid(EQI_HEAD_TOP) != 5026) {
+		if (Sex == SEX_MALE) {
+			cutin "orleans_5",0;
+			emotion ET_FRET;
+			mes "[查理斯 奧爾良]";
+			mes "這位先生，你為什麼";
+			mes "這樣看著我？是因為我穿的";
+			mes "夢羅克絲綢襯衫，薇若妮卡夫人";
+			mes "為我設計的髮型，還是";
+			mes "安東尼奧先生為我";
+			mes "精心製作的名牌圍巾？";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "或許你是對雷根貝爾公司";
+			mes "的藝術家們設計的";
+			mes "最新時尚眼鏡感到敬畏？";
+			mes "請告訴我吧~";
+			next;
+			cutin "orleans_2",0;
+			mes "[查理斯 奧爾良]";
+			mes "等等，稍等一下。";
+			mes "你對最新的流行趨勢";
+			mes "有什麼了解嗎？你看起來";
+			mes "似乎不怎麼時尚......";
+			next;
+			cutin "orleans_5",0;
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "唉，如果可以的話，";
+			mes "我通常不喜歡";
+			mes "和粗鄙之人打交道。";
+			mes "但我確實發現你們";
+			mes "冒險家也有";
+			mes "你們的優點......";
+			goto L_End;
+		}
+		cutin "orleans_1",0;
+		mes "[查理斯 奧爾良]";
+		mes "噢！請原諒我這簡陋";
+		mes "廚房的髒亂，小姐。";
+		mes "但即便是普隆德拉城堡的輝煌，";
+		mes "在妳迷人的美貌光芒下";
+		mes "也顯得黯然失色。";
+		next;
+		cutin "orleans_2",0;
+		mes "[查理斯 奧爾良]";
+		mes "告訴我，妳旁邊這位";
+		mes "抱著貓的可愛孩子是誰？";
+		mes "我知道這樣問很失禮，";
+		mes "但我的好奇心，該怎麼說呢，";
+		mes "讓我大著膽子問了。";
+		next;
+		switch(select("......？:她是我妹妹:其實我不認識她。")) {
+		case 1:
+			cutin "nyuang_3",2;
+			emotion ET_DELIGHT, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "喵哈哈哈，";
+			mes "喵哈哈哈~";
+			mes "喵~ 喵~";
+			next;
+			cutin "orleans_2",0;
+			emotion ET_SMILE;
+			mes "[查理斯 奧爾良]";
+			mes "多可愛的孩子。";
+			mes "要像個乖女孩一樣安靜喔。";
+			next;
+			break;
+		case 2:
+			cutin "nyuang_1",2;
+			emotion ET_QUESTION, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "......喵？";
+			mes "......喵嗚？";
+			next;
+			cutin "orleans_2",0;
+			emotion ET_BIGTHROB;
+			mes "[查理斯 奧爾良]";
+			mes "她很可愛又";
+			mes "安靜，雖然她";
+			mes "長得不像妳。";
+			mes "連她的貓看起來都很討喜。";
+			break;
+		case 3:
+			cutin "nyuang_2",2;
+			emotion ET_HNG, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "喵哈哈哈，";
+			mes "喵哈哈哈~";
+			mes "喵，喵~";
+			next;
+			cutin "orleans_4",0;
+			cutin "orleans_3",0;
+			emotion ET_PROFUSELY_SWEAT;
+			mes "[查理斯 奧爾良]";
+			mes "啊，讓我再次";
+			mes "道歉。我原本以為";
+			mes "這孩子有幸";
+			mes "能成為小姐的";
+			mes "旅伴。";
+			break;
+		}
+		next;
+		cutin "orleans_1",0;
+		mes "[查理斯 奧爾良]";
+		mes "請容我向妳";
+		mes "自我介紹，愛人。";
+		mes "我是妳永遠忠誠的";
+		mes "僕人，我的心已";
+		mes "被妳的目光所擄獲。";
+		mes "我的名字是查理斯 奧爾良。";
+		next;
+		cutin "orleans_4",0;
+		mes "[查理斯 奧爾良]";
+		mes "然而有一件事";
+		mes "讓我感到痛苦。自從國王";
+		mes "特里斯坦三世陛下";
+		mes "失蹤後，我就再也找不到";
+		mes "配得上品嚐我手藝的人了。";
+		mes "我的生活現在缺乏意義......";
+		next;
+		mes "[查理斯 奧爾良]";
+		mes "唉，最近我只能淪落到";
+		mes "教導那些在烹飪藝術上";
+		mes "只是初學者的學徒們技巧。";
+		mes "這真讓人沮喪——他們之中";
+		mes "很多人根本沒有任何天分！";
+		next;
+		cutin "orleans_3",0;
+		mes "[查理斯 奧爾良]";
+		mes "啊，請原諒我，親愛的";
+		mes "小姐。我希望妳能";
+		mes "理解我被迫承受的";
+		mes "這些困難。當我們";
+		mes "下次見面時，我非常希望能請妳吃甜點。";
+		next;
+		cutin "orleans_1",0;
+		mes "[查理斯 奧爾良]";
+		mes "是的，像妳這樣";
+		mes "美麗的女性，絕對配得上";
+		mes "只有我能提供的美味甜點。";
+		mes "在那天到來之前，我將";
+		mes "依依不捨地向妳告別。";
+		goto L_End;
+	}
+	else if (cooking_q == 0) {
+		cutin "orleans_5",0;
+		emotion ET_THINK;
+		mes "[查理斯 奧爾良]";
+		mes "喔，你是來這裡";
+		mes "學料理的嗎？^333333*嘆氣*^000000";
+		mes "我今天不想教";
+		mes "任何東西——事實上，";
+		mes "我覺得教學是在浪費";
+		mes "我的時間！^333333*嘆氣*^000000 不過......";
+		next;
+		switch(select("嗯，你是在跟我說話嗎？:等等，你不記得我了嗎？:奧爾良先生？")) {
+		case 1:
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "我還能跟誰";
+			mes "說話呢？";
+			mes "跟那邊的瑪德蓮嗎？";
+			mes "還是那個抱著一隻";
+			mes "長著疥癬的貓的小孩？";
+			mes "我的天啊！";
+			next;
+			cutin "nyuang_4",2;
+			mes "[抱貓的小孩]";
+			mes "咕嚕嚕嚕！";
+			mes "喵嗚！";
+			next;
+			cutin "orleans_4",0;
+			cutin "orleans_3",0;
+			emotion ET_HUK;
+			mes "[查理斯 奧爾良]";
+			mes "天啊，嚇死我了！";
+			mes "脾氣真壞的孩子！";
+			mes "是誰把這孩子帶進來的？";
+			break;
+		case 2:
+			mes "[查理斯 奧爾良]";
+			mes "我不可能記得每一個";
+			mes "求我指導廚藝的";
+			mes "新手。我敢發誓你";
+			mes "幾個月前來過這裡，只是";
+			mes "——你叫什麼名字來著......？";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "罷了！沒關係。";
+			mes "我想這在現在";
+			mes "並不重要。";
+			break;
+		case 3:
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "不、不好意思？我雖然是";
+			mes "你的導師，但你";
+			mes "可以直接叫我的名字。";
+			mes "我知道我可能會很嚴格，";
+			mes "但請記住：歸根結底，我們是同事，儘管我的地位較高。";
+			next;
+			cutin "orleans_1",0;
+			mes "[查理斯 奧爾良]";
+			mes "好吧，好吧......";
+			mes "如果你堅持要表達";
+			mes "那一點點的";
+			mes "敬意，那你可以";
+			mes "稱呼我『查理斯先生』。";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "啊......這聽起來";
+			mes "還挺不錯的。";
+			mes "其實這個頭銜是我親自";
+			mes "從國王那裡獲得的，即使";
+			mes "我只在頭銜和舉止上是個騎士，而不是靠實力。";
+			break;
+		}
+		next;
+		cutin "orleans_7",0;
+		mes "[查理斯 奧爾良]";
+		mes "那麼，我們今天就從";
+		mes "做一道簡單的料理開始。";
+		mes "好，^FF0000我教食譜不會教";
+		mes "第二次^000000，^FF0000所以請務必";
+		mes "寫下來^000000。那麼";
+		mes "接下來，我們要做什麼料理呢？";
+		next;
+		cutin "orleans_6",0;
+		set .@cook_m1,rand(1,6);
+		if (.@cook_m1 == 1) {
+			set cooking_q,1;
+			mes "[查理斯 奧爾良]";
+			mes "啊，我們來做";
+			mes "『炒蝗蟲後腿』？";
+			mes "對外行人來說，這可能";
+			mes "看起來是一道令人作嘔的菜，";
+			mes "但相信我，它精緻的味道絕對是味蕾的純粹享受。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "現在，請準備好";
+			mes "^4D4DFF5個 蝗蟲後腿^000000、";
+			mes "^4D4DFF1個 食用油^000000，還有";
+			mes "^4D4DFF1個 老舊平底鍋^000000。";
+			mes "然後，我們就可以開始了。";
+			goto L_End;
+		}
+		else if (.@cook_m1 == 2) {
+			set cooking_q,2;
+			mes "[查理斯 奧爾良]";
+			mes "啊，我想到了！";
+			mes "我們來做『葡萄汁";
+			mes "花草茶』吧。現在的天氣";
+			mes "非常適合來杯";
+			mes "清涼提神的飲料。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "請準備好";
+			mes "^4D4DFF3個 葡萄^000000，還有";
+			mes "^4D4DFF2個 紅色藥水^000000";
+			mes "這樣我們就可以";
+			mes "開始上課囉~";
+			goto L_End;
+		}
+		else if (.@cook_m1 == 3) {
+			set cooking_q,3;
+			mes "[查理斯 奧爾良]";
+			mes "想到了~";
+			mes "我們可以做";
+			mes "『蜂蜜葡萄汁』。";
+			mes "請幫我準備";
+			mes "以下食材，這樣";
+			mes "我們就可以開始上課了。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "^4D4DFF1個 蜂蜜^000000、";
+			mes "^4D4DFF2個 葡萄^000000，還有";
+			mes "^4D4DFF1個 紅色藥水^000000。";
+			goto L_End;
+		}
+		else if (.@cook_m1 == 4) {
+			set cooking_q,4;
+			mes "[查理斯 奧爾良]";
+			mes "嗯，我們何不來做";
+			mes "『青蛙卵";
+			mes "墨汁湯』呢？那些";
+			mes "不懂美食的人可能";
+			mes "會覺得很噁心，但它";
+			mes "實際上非常美味。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "那麼，";
+			mes "請幫我準備";
+			mes "^4D4DFF1個 穀物^000000、";
+			mes "^4D4DFF10個 青蛙卵^000000，還有";
+			mes "^4D4DFF1個 墨汁^000000。";
+			goto L_End;
+		}
+		else if (.@cook_m1 == 5) {
+			set cooking_q,5;
+			mes "[查理斯 奧爾良]";
+			mes "啊，我知道現在";
+			mes "做什麼最完美了。";
+			mes "『清蒸蟹殼』。現在，請";
+			mes "準備好這些食材，";
+			mes "我們就可以來煮這道湯了。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "我們需要";
+			mes "^4D4DFF10個 綠色藥草^000000、";
+			mes "^4D4DFF10個 蟹殼^000000，還有";
+			mes "^4D4DFF1個 黃色藥水^000000。";
+			goto L_End;
+		}
+		set cooking_q,6;
+		mes "[查理斯 奧爾良]";
+		mes "喔，你知道什麼";
+		mes "會很美味嗎？";
+		mes "『炒溜溜猴尾巴』。對，";
+		mes "這聽起來太完美了！請";
+		mes "準備好這些食材，這樣";
+		mes "我就可以教你做這道菜了。";
+		next;
+		mes "[查理斯 奧爾良]";
+		mes "我們需要";
+		mes "^4D4DFF1個 老舊平底鍋^000000、";
+		mes "^4D4DFF5個 溜溜猴尾巴^000000，還有";
+		mes "^4D4DFF1個 食用油^000000。";
+		goto L_End;
+	}
+	else if (cooking_q == 1) {
+		if (countitem(940) > 4 && countitem(7031) > 0 && countitem(7457) > 0) {
+			cutin "orleans_4",0;
+			emotion ET_FRET;
+			mes "[查理斯 奧爾良]";
+			mes "你總算來了！永遠不要";
+			mes "忘記：你的食材必須";
+			mes "盡可能保持新鮮。";
+			mes "否則，你做出來的料理品質會差很多。現在，讓我來";
+			mes "解釋如何製作這道料理。";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "盡量把蝗蟲後腿";
+			mes "清洗乾淨，然後再";
+			mes "放進平底鍋裡。";
+			mes "接著，倒入半瓶食用油，並以";
+			mes "大火炒大約20分鐘。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "現在，嚴格按照";
+			mes "我剛剛給你的指示";
+			mes "去做！嗯......很好，很好。";
+			mes "這還不錯嘛。好了，";
+			mes "你快完成了......";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "好了，完成了！";
+			mes "擺盤還可以再加強";
+			mes "一點，但至少你現在";
+			mes "學會這道食譜了。今天就";
+			mes "教到這裡，請你自己";
+			mes "回去好好練習吧。";
+			delitem 940,5; //Grasshopper's_Leg
+			delitem 7031,1; //Old_Frying_Pan
+			delitem 7457,1;
+			//Cooking_Oil
+			set cooking_q,7;
+			getitem 12041,1; //Str_Dish01
+			goto L_End;
+		}
+		cutin "orleans_6",0;
+		set .@talk_j,rand(1,2);
+		if (.@talk_j == 1) {
+			mes "[查理斯 奧爾良]";
+			mes "快點把製作";
+			mes "炒蝗蟲後腿的食材";
+			mes "拿來給我！";
+			mes "如果是餐廳裡的客人";
+			mes "點了這道菜，你已經";
+			mes "讓人家等很久了！";
+			goto L_End;
+		}
+		mes "[查理斯 奧爾良]";
+		mes "只要去埋伏那些";
+		mes "在原野上無憂無慮玩耍的";
+		mes "蝗蟲。趕快把它們砸碎，然後扯下牠們的";
+		mes "腿——但手段要人道一點！";
+		goto L_End;
+	}
+	else if (cooking_q == 2) {
+		if (countitem(514) > 2 && countitem(501) > 1) {
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "你總算來了！永遠不要";
+			mes "忘記：你的食材必須";
+			mes "盡可能保持新鮮。";
+			mes "否則，你做出來的料理品質會差很多。現在，讓我來";
+			mes "解釋如何製作這道料理。";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "你要像這樣把葡萄汁";
+			mes "給榨出來——";
+			mes "為了保持新鮮，我們不能使用現成的葡萄";
+			mes "汁。然後，你需要隔水加熱煮沸紅色";
+			mes "藥水......";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "當紅色藥水";
+			mes "達到適當的濃度時，";
+			mes "輕輕拌入你剛才從葡萄榨出的果汁。";
+			mes "現在，我想讓你試試看。嗯......還不錯......很好，很好......";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "好了，完成了！";
+			mes "擺盤還可以再加強";
+			mes "一點，但至少你現在";
+			mes "學會這道食譜了。今天就";
+			mes "教到這裡，請你自己";
+			mes "回去好好練習吧。";
+			delitem 514,3; //Grape
+			delitem 501,2; //Red_Potion
+			set cooking_q,7;
+			getitem 12046,1; //Int_Dish01
+			goto L_End;
+		}
+		cutin "orleans_6",0;
+		set .@talk_j,rand(1,2);
+		if (.@talk_j == 1) {
+			mes "[查理斯 奧爾良]";
+			mes "你在做什麼？";
+			mes "快點把葡萄汁";
+			mes "花草茶的食材拿來！";
+			mes "在真正的餐廳裡，你絕對不可能像這樣慢慢";
+			mes "磨蹭！快點！";
+			goto L_End;
+		}
+		mes "[查理斯 奧爾良]";
+		mes "找不到葡萄";
+		mes "嗎？只要去打爆";
+		mes "那些可愛的小波波利就好了......";
+		mes "當然，在你狩獵牠們的時候";
+		mes "手段還是要人道一點......";
+		goto L_End;
+	}
+	else if (cooking_q == 3) {
+		if (countitem(518) > 0 && countitem(514) > 1 && countitem(501) > 0) {
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "你總算來了！永遠不要";
+			mes "忘記：你的食材必須";
+			mes "盡可能保持新鮮。";
+			mes "否則，你做出來的料理品質會差很多。現在，讓我來";
+			mes "解釋如何製作這道料理。";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "首先，將葡萄剝皮";
+			mes "並去籽。然後，";
+			mes "將葡萄與";
+			mes "蜂蜜混合。把這個混合物";
+			mes "小心地攪拌";
+			mes "進紅色藥水裡......";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "當果肉完全";
+			mes "混入紅色藥水中時，";
+			mes "就完成了。現在，去";
+			mes "試著自己做做看。";
+			mes "對，很好。沒錯......";
+			mes "等等，等等！好，就這樣~";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "好了，完成了！";
+			mes "擺盤還可以再加強";
+			mes "一點，但至少你現在";
+			mes "學會這道食譜了。今天就";
+			mes "教到這裡，請你自己";
+			mes "回去好好練習吧。";
+			delitem 518,1; //Honey
+			delitem 514,2; //Grape
+			delitem 501,1;
+			//Red_Potion
+			set cooking_q,7;
+			getitem 12061,1; //Dex_Dish01
+			goto L_End;
+		}
+		cutin "orleans_6",0;
+		set .@talk_j,rand(1,2);
+		if (.@talk_j == 1) {
+			mes "[查理斯 奧爾良]";
+			mes "你怎麼去那麼";
+			mes "久？你早該";
+			mes "把製作蜂蜜葡萄汁";
+			mes "的食材拿來給我的。";
+			mes "快一點！";
+			goto L_End;
+		}
+		mes "[查理斯 奧爾良]";
+		mes "你找不到用來做";
+		mes "蜂蜜葡萄汁的蜂蜜，";
+		mes "對吧？";
+		mes "去狩獵一些熊吧，";
+		mes "牠們身上總是";
+		mes "會帶著一些蜂蜜。";
+		goto L_End;
+	}
+	else if (cooking_q == 4) {
+		if (countitem(577) > 0 && countitem(908) > 9 && countitem(1024) > 0) {
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "你總算來了！永遠不要";
+			mes "忘記：你的食材必須";
+			mes "盡可能保持新鮮。";
+			mes "否則，你做出來的料理品質會差很多。現在，讓我來";
+			mes "解釋如何製作這道料理。";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "將穀物研磨直到";
+			mes "變成細粉，然後";
+			mes "用中火煮沸";
+			mes "墨汁。一旦它";
+			mes "起泡，就倒入麵粉。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "繼續攪拌，慢慢";
+			mes "加入青蛙卵。當";
+			mes "它再次沸騰時，轉小";
+			mes "火慢燉大約10";
+			mes "分鐘。好，現在你試試。";
+			mes "很好，很好......沒錯~";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "好了，完成了！";
+			mes "擺盤還可以再加強";
+			mes "一點，但至少你現在";
+			mes "學會這道食譜了。今天就";
+			mes "教到這裡，請你自己";
+			mes "回去好好練習吧。";
+			delitem 577,1; //Grain
+			delitem 908,10; //Spawn
+			delitem 1024,1; //Chinese_ink
+			set cooking_q,7;
+			getitem 12056,1; //Agi_Dish01
+			goto L_End;
+		}
+		cutin "orleans_6",0;
+		set .@talk_j,rand(1,2);
+		if (.@talk_j == 1) {
+			mes "[查理斯 奧爾良]";
+			mes "你在做什麼？";
+			mes "你現在應該在";
+			mes "準備青蛙卵和";
+			mes "墨汁湯的";
+			mes "食材才對！";
+			goto L_End;
+		}
+		mes "[查理斯 奧爾良]";
+		mes "處理青蛙卵的";
+		mes "時候必須非常小心。";
+		mes "如果你把它們生餵給";
+		mes "別人，嗯，牠們的味道絕對稱不上是美味的。";
+		goto L_End;
+	}
+	else if (cooking_q == 5) {
+		if (countitem(960) > 9 && countitem(511) > 9 && countitem(503) > 0) {
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "你總算來了！永遠不要";
+			mes "忘記：你的食材必須";
+			mes "盡可能保持新鮮。";
+			mes "否則，你做出來的料理品質會差很多。現在，讓我來";
+			mes "解釋如何製作這道料理。";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "用黃色藥水小火";
+			mes "將蟹殼煮沸大約";
+			mes "30分鐘。然後，轉小火";
+			mes "慢燉，並小心地一株一株";
+			mes "將綠色藥草拌入。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "這是一個簡單的食譜，但";
+			mes "我還是希望你示範";
+			mes "給我看。好，讓我看看......";
+			mes "你做得不錯。現在，等等......";
+			mes "很好，很好，好，現在可以";
+			mes "放綠色藥草了......";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "好了，完成了！";
+			mes "擺盤還可以再加強";
+			mes "一點，但至少你現在";
+			mes "學會這道食譜了。今天就";
+			mes "教到這裡，請你自己";
+			mes "回去好好練習吧。";
+			delitem 960,10; //Nipper
+			delitem 511,10; //Green_Herb
+			delitem 503,1;
+			//Yellow_Potion
+			set cooking_q,7;
+			getitem 12051,1; //Vit_Dish01
+			goto L_End;
+		}
+		cutin "orleans_6",0;
+		set .@talk_j,rand(1,2);
+		if (.@talk_j == 1) {
+			mes "[查理斯 奧爾良]";
+			mes "你不是應該在";
+			mes "準備清蒸";
+			mes "蟹殼的";
+			mes "所有食材嗎？為了那些";
+			mes "飢餓的餐廳顧客，你需要";
+			mes "動作快一點！";
+			goto L_End;
+		}
+		mes "[查理斯 奧爾良]";
+		mes "收集蟹殼應該";
+		mes "不會太難。只要";
+		mes "找些螃蟹並把牠們";
+		mes "砸碎，確保扯下";
+		mes "牠們的蟹殼。我知道這聽起來很怪，但照做就對了。";
+		goto L_End;
+	}
+	else if (cooking_q == 6) {
+		if (countitem(942) > 4 && countitem(7031) > 0 && countitem(7457) > 0) {
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "你總算來了！永遠不要";
+			mes "忘記：你的食材必須";
+			mes "盡可能保持新鮮。";
+			mes "否則，你做出來的料理品質會差很多。現在，讓我來";
+			mes "解釋如何製作這道料理。";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "把尾巴上的毛";
+			mes "拔掉，並在冷水下";
+			mes "沖洗乾淨。倒半";
+			mes "瓶食用油到";
+			mes "預熱好的平底鍋中，然後";
+			mes "快速拌炒尾巴。";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "秘訣是快速拌炒";
+			mes "尾巴但不要把牠們";
+			mes "燒焦，所以你可能會想";
+			mes "用中大火來炒。";
+			mes "現在向我展示你學到的......好，還不錯......嗯......";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "好了，完成了！";
+			mes "擺盤還可以再加強";
+			mes "一點，但至少你現在";
+			mes "學會這道食譜了。今天就";
+			mes "教到這裡，請你自己";
+			mes "回去好好練習吧。";
+			delitem 942,5; //Yoyo_Tail
+			delitem 7031,1; //Old_Frying_Pan
+			delitem 7457,1;
+			//Cooking_Oil
+			set cooking_q,7;
+			getitem 12066,1; //Luk_Dish01
+			goto L_End;
+		}
+		cutin "orleans_6",0;
+		set .@talk_j,rand(1,2);
+		if (.@talk_j == 1) {
+			mes "[查理斯 奧爾良]";
+			mes "你最好盡快去準備";
+			mes "炒溜溜猴尾巴的";
+			mes "食材。";
+			mes "在真正的餐廳裡，";
+			mes "你絕對不可能像這樣";
+			mes "慢慢來。全速前進！";
+			goto L_End;
+		}
+		mes "[查理斯 奧爾良]";
+		mes "你需要更多尾巴？";
+		mes "只要偷偷靠近一些";
+		mes "溜溜猴，迅速殺死牠們，";
+		mes "然後切下牠們的尾巴。";
+		mes "你雖然是個初學者，但我不會";
+		mes "允許你做出不人道的行為！";
+		goto L_End;
+	}
+	else if (cooking_q == 7) {
+		cutin "orleans_7",0;
+		mes "[查理斯 奧爾良]";
+		mes "喔......我好累！";
+		mes "我有太多的智慧和";
+		mes "技巧要傳授！雖然教學不是";
+		mes "我喜歡的差事，但";
+		mes "我確實意識到，為了讓我的廚藝";
+		mes "傳承下去，這是必要的......";
+		next;
+		cutin "orleans_1",0;
+		mes "[查理斯 奧爾良]";
+		mes "權衡利弊......";
+		mes "儘管這讓我很痛苦，";
+		mes "我想我還是得繼續";
+		mes "教學，直到你們其中一個能";
+		mes "成為合格的繼承人。";
+		mes "這會需要一些時間......";
+		goto L_End;
+	}
+	else if (cooking_q == 8) {
+		cutin "orleans_5",0;
+		mes "[查理斯 奧爾良]";
+		mes "奇怪，奇怪......";
+		mes "那個小孩和";
+		mes "那隻貓在這裡做什麼？";
+		mes "廚房不是他們";
+		mes "該待的地方——至少，";
+		mes "不是給寵物待的，你知道的。";
+		next;
+		cutin "orleans_4",0;
+		mes "[查理斯 奧爾良]";
+		mes "對不起，孩子，";
+		mes "但能不能請妳帶著妳的貓";
+		mes "離開這裡？這";
+		mes "是廚房，這裡的";
+		mes "所有東西都必須保持乾淨！";
+		next;
+		cutin "nyuang_1",2;
+		mes "[抱貓的小孩]";
+		mes "......喵？";
+		mes "......喵嗚？";
+		next;
+		switch(select("妳叫什麼名字，孩子？:妳想吃點什麼嗎？:來，小貓~:滾出去！")) {
+		case 1:
+			emotion ET_OK, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "喵~";
+			mes "喵~";
+			mes "(呼嚕嚕嚕)";
+			next;
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "......誰叫你";
+			mes "問她名字的？";
+			mes "你根本聽不懂她在說什麼。";
+			goto L_End;
+		case 2:
+			cutin "nyuang_2",2;
+			emotion ET_HNG, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "喵~";
+			mes "(呼嚕嚕嚕)";
+			next;
+			cutin "orleans_5",0;
+			mes "[查理斯 奧爾良]";
+			mes "這真是個好主意......";
+			mes "提供食物讓";
+			mes "他們離開。我的天，如果";
+			mes "這孩子不願意跟我們說話......";
+			mes "無論如何，我們必須把這";
+			mes "兩個傢伙趕出廚房。";
+			goto L_End;
+		case 3:
+			cutin "nyuang_3",2;
+			emotion ET_SMILE, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "喵哈哈哈~";
+			mes "喵哈哈哈~";
+			mes "(喵，喵~)";
+			next;
+			cutin "orleans_4",0;
+			mes "[查理斯 奧爾良]";
+			mes "......你是在跟那個小孩玩嗎......？";
+			mes "......那我不需要你在這裡了。";
+			goto L_End;
+		case 4:
+			emotion ET_THINK, getnpcid(0, "抱貓的小孩#cook");
+			mes "[抱貓的小孩]";
+			mes "......";
+			mes "(喵？)";
+			next;
+			cutin "nyuang_4",2;
+			emotion ET_FRET, getnpcid(0, "抱貓的小孩#cook");
+			specialeffect2 EF_HIT2;
+			percentheal -10,0;
+			mes "[抱貓的小孩]";
+			mes "咕嚕嚕嚕！";
+			mes "(喵嗚！)";
+			next;
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "喔，小心！";
+			mes "你本來應該";
+			mes "更小心處理";
+			mes "那隻貓的......";
+			goto L_End;
+		}
+	}
+	else if (cooking_q == 9) {
+		cutin "orleans_5",0;
+		emotion ET_FRET;
+		mes "[查理斯 奧爾良]";
+		mes "好了，夠了";
+		mes "就是夠了。如果廚房裡";
+		mes "有活體動物，我們就無法";
+		mes "繼續料理。這違反了";
+		mes "我們的衛生標準！";
+		next;
+		cutin "orleans_6",0;
+		mes "[查理斯 奧爾良]";
+		mes "對不起，親愛的，";
+		mes "但妳必須離開。";
+		mes "孩子，請帶著妳的";
+		mes "貓走到門外，";
+		mes "在妳的貓碰到或把毛掉在";
+		mes "任何食物上之前！";
+		next;
+		cutin "nyuang_4",2;
+		emotion ET_FRET, getnpcid(0, "抱貓的小孩#cook");
+		mes "[抱貓的小孩]";
+		mes "咕嚕嚕嚕！";
+		mes "喵嗚！";
+		next;
+		donpcevent "薇琪嬪#cook::OnEnable";
+		emotion ET_HUK;
+		emotion ET_DELIGHT, getnpcid(0, "抱貓的小孩#cook");
+		next;
+		cutin "job_black_hucke01",1;
+		mes "[薇琪嬪]";
+		mes "喔......！";
+		mes "紐洋，妳在這裡";
+		mes "啊！妳在查理斯";
+		mes "的廚房裡";
+		mes "做什麼呢？";
+		next;
+		cutin "orleans_3",0;
+		mes "[查理斯 奧爾良]";
+		mes "薇、薇琪嬪夫人......！";
+		mes "請原諒我，妳突然從";
+		mes "不知什麼地方冒出來，嚇了";
+		mes "我一跳。妳難道";
+		mes "認識這個年幼的孩子？";
+		next;
+		cutin "job_black_hucke02",1;
+		mes "[薇琪嬪]";
+		mes "喔，紐洋是我的";
+		mes "妹妹。雖然我們可能";
+		mes "看起來不太像......";
+		mes "總之，我一直在到處";
+		mes "找她。紐洋，妳有";
+		mes "打擾到查理斯嗎？";
+		next;
+		cutin "nyuang_3",2;
+		emotion ET_SMILE, getnpcid(0, "抱貓的小孩#cook");
+		mes "[抱貓的小孩]";
+		mes "喵嗚喵嗚~";
+		mes "喵嗚喵嗚~";
+		mes "喵嗚~";
+		next;
+		cutin "orleans_3",0;
+		mes "[查理斯 奧爾良]";
+		mes "......！！！";
+		next;
+		cutin "job_black_hucke03",1;
+		mes "[薇琪嬪]";
+		mes "喔，原來妳真的";
+		mes "一直在打擾他！";
+		mes "妳覺得查理斯";
+		mes "希望妳離開嗎？";
+		next;
+		cutin "orleans_3",0;
+		emotion ET_PROFUSELY_SWEAT;
+		mes "[查理斯 奧爾良]";
+		mes "哈哈哈哈，妳在";
+		mes "說什麼呢！";
+		mes "胡說八道！這麼一個";
+		mes "可愛的小美女怎麼會";
+		mes "給我添麻煩呢？";
+		next;
+		cutin "orleans_7",0;
+		mes "[查理斯 奧爾良]";
+		mes "事實上，";
+		mes "我正打算請這個";
+		mes "寶貝小傢伙和";
+		mes "她的小貓品嚐一些";
+		mes "我的美味料理。";
+		mes "所以別擔心，夫人~";
+		next;
+		cutin "job_black_hucke01",1;
+		emotion ET_QUESTION, getnpcid(0, "薇琪嬪#cook");
+		mes "[薇琪嬪]";
+		mes "你確定嗎，查理斯？";
+		mes "我知道你對你的料理";
+		mes "有多麼認真，";
+		mes "我不希望紐洋";
+		mes "以任何方式打擾到你......";
+		next;
+		cutin "job_black_hucke02",1;
+		mes "[薇琪嬪]";
+		mes "喔，查理斯，你對";
+		mes "我真是太好了。";
+		mes "很高興你也";
+		mes "這麼照顧紐洋。";
+		mes "那麼，保重囉~";
+		next;
+		cutin "nyuang_3",2;
+		emotion ET_SMILE, getnpcid(0, "抱貓的小孩#cook");
+		mes "[抱貓的小孩]";
+		mes "喵哈哈哈~";
+		mes "喵哈哈哈~";
+		mes "(喵，喵~)";
+		next;
+		cutin "job_black_hucke02",255;
+		emotion ET_DELIGHT, getnpcid(0, "薇琪嬪#cook");
+		donpcevent "薇琪嬪#cook::OnDisable";
+		next;
+		emotion ET_THINK;
+		emotion ET_THINK, getnpcid(0, "抱貓的小孩#cook");
+		mes "[查理斯 奧爾良]";
+		mes "......";
+		next;
+		cutin "orleans_6",0;
+		mes "[查理斯 奧爾良]";
+		mes "啊......";
+		mes "真是一位名副其實的";
+		mes "淑女......薇琪嬪夫人......";
+		goto L_End;
+	}
+	else if (cooking_q == 10) {
+		cutin "orleans_5",0;
+		mes "[查理斯 奧爾良]";
+		mes "國王陛下失蹤好一陣子了，";
+		mes "這件事一直";
+		mes "困擾著我。為什麼";
+		mes "沒有人知道他在哪裡？";
+		next;
+		cutin "orleans_4",0;
+		cutin "orleans_3",0;
+		mes "[查理斯 奧爾良]";
+		mes "英明睿智的";
+		mes "特里斯坦三世國王";
+		mes "絕不會拋棄他的子民。";
+		mes "我由衷希望他沒有";
+		mes "發生什麼嚴重的事......";
+		next;
+		cutin "orleans_6",0;
+		mes "[查理斯 奧爾良]";
+		mes "難道我們敬愛的";
+		mes "國王會有敵人嗎？";
+		mes "他為盧恩米德加茲王國";
+		mes "以及整個世界";
+		mes "所做的一切都是善舉！";
+		next;
+		mes "[查理斯 奧爾良]";
+		mes "我無法想像像他這樣";
+		mes "偉大的人會遇到任何";
+		mes "麻煩。每當有人";
+		mes "暗示他藏匿在";
+		mes "秀發茲發德共和國時，";
+		mes "我就覺得好笑......";
+		next;
+		emotion ET_GO;
+		mes "[查理斯 奧爾良]";
+		mes "讚美盧恩米德加茲王國的榮耀！";
+		mes "特里斯坦三世國王萬歲！";
+		goto L_End;
+	}
+	else if (cooking_q == 11) {
+		cutin "orleans_5",0;
+		emotion ET_THINK;
+		mes "[查理斯 奧爾良]";
+		mes "喔，我現在非常需要";
+		mes "休息一下。除非你";
+		mes "有什麼非常重要的";
+		mes "事情要問我，";
+		mes "否則請讓我休息一下吧~";
+		next;
+		switch(select("我想學習更多食譜。:你是為了誰做料理的？:很抱歉打擾你了......")) {
+		case 1:
+			cutin "orleans_7",0;
+			mes "[查理斯 奧爾良]";
+			mes "你想學習更多";
+			mes "食譜嗎？我想你";
+			mes "應該去借另一本";
+			mes "料理書。在那之前，";
+			mes "請先歸還你正在學習的";
+			mes "那本料理書，好嗎？";
+			next;
+			mes "[查理斯 奧爾良]";
+			mes "現在，輸入1到5的等級，";
+			mes "選擇你想借的";
+			mes "料理書。";
+			mes "雖然有更高級的書，";
+			mes "但我不會借出那些。";
+			mes "對了，輸入0可以取消。";
+			next;
+			input .@new_book;
+			if (.@new_book < 0 || .@new_book > 5) {
+				cutin "orleans_5",0;
+				mes "[查理斯 奧爾良]";
+				mes "嗯......";
+				mes "我請你";
+				mes "輸入1到5之間的等級。";
+				mes "那是我唯一會";
+				mes "借給學生的料理書。";
+				goto L_End;
+			}
+			else if (.@new_book == 0) {
+				cutin "orleans_5",0;
+				mes "[查理斯 奧爾良]";
+				mes "所以你改變心意了？";
+				mes "在嘗試新事物之前，";
+				mes "先把你現在擁有的食譜好好研究一番，";
+				mes "我想這會是個好主意。";
+				goto L_End;
+			}
+			mes "[查理斯 奧爾良]";
+			mes "所以你想借一本";
+			mes "" + .@new_book + "級料理書，是嗎？";
+			mes "喔，能請你告訴我";
+			mes "你要還給我的料理書";
+			mes "等級是多少嗎？";
+			next;
+			input .@old_book;
+			if (.@old_book < 0 || .@old_book > 5) {
+				mes "[查理斯 奧爾良]";
+				mes "這其中一定有什麼";
+				mes "誤會——我只借出";
+				mes "等級1到5的料理書。";
+				mes "嗯，好吧，當你想起";
+				mes "你有哪本料理書時再來問我，好嗎？";
+				goto L_End;
+			}
+			else if (.@old_book == 0) {
+				cutin "orleans_5",0;
+				mes "[查理斯 奧爾良]";
+				mes "所以你改變心意了？";
+				mes "在嘗試新事物之前，";
+				mes "先把你現在擁有的食譜好好研究一番，";
+				mes "我想這會是個好主意。";
+				goto L_End;
+			}
+			else if (.@old_book == .@new_book) {
+				cutin "orleans_4",0;
+				mes "[查理斯 奧爾良]";
+				mes "等等，等等......";
+				mes "你為什麼要借一本";
+				mes "你已經擁有的";
+				mes "料理書呢？我猜你犯了";
+				mes "某種錯誤？";
+				goto L_End;
+			}
+			else {
+				if (countitem(7471+.@old_book) < 1) {
+					mes "[查理斯 奧爾良]";
+					mes "等等，等等......";
+					mes "為什麼你沒有";
+					mes "你說要還給我";
+					mes "的那本書呢？";
+					mes "先找到它，然後我才能";
+					mes "借給你另一本料理書。";
+					goto L_End;
+				}
+				cutin "orleans_2",0;
+				mes "[查理斯 奧爾良]";
+				switch(.@old_book) {
+				case 1:
+					mes "啊，所以你看完";
+					mes "1級料理書了。";
+					mes "很好，這意味著你";
+					mes "已經準備好從最基礎的";
+					mes "部分畢業了。從現在開始，";
+					mes "食譜會變得更難......";
+					break;
+				case 2:
+					mes "啊，所以你覺得";
+					mes "2級料理書裡的";
+					mes "食譜怎麼樣？";
+					mes "家常料理可能";
+					mes "很簡單，但廚師們";
+					mes "永遠不該忽略它。";
+					break;
+				case 3:
+					mes "啊，已經看完3級料理書";
+					mes "了嗎？裡面的食譜";
+					mes "在準備浪漫晚餐時非常好用。";
+					mes "總有一天會派上用場的，";
+					mes "你懂我的意思吧。";
+					break;
+				case 4:
+					mes "所以你看完";
+					mes "4級料理書了。那可";
+					mes "真不簡單！你必須";
+					mes "使用非常奇怪的食材";
+					mes "來創造出美味的料理！";
+					break;
+				case 5:
+					mes "你看完";
+					mes "5級料理書了？做得";
+					mes "好：大多數初學者甚至";
+					mes "走不到這一步。我想";
+					mes "你現在會想複習一些";
+					mes "比較簡單的食譜了吧~";
+					break;
+				}
+				next;
+			}
+			cutin "orleans_1",0;
+			mes "[查理斯 奧爾良]";
+			mes "現在，在借你";
+			mes "我心愛的料理書";
+			mes "之前，我有一個小";
+			mes "條件要你完成。";
+			next;
+			if (.@new_book == 1) {
+				cutin "orleans_7",0;
+				mes "[查理斯 奧爾良]";
+				mes "當我還是個小孩的時候，";
+				mes "我的家庭貧困到";
+				mes "我們只能靠吃剩菜剩飯";
+				mes "過活。在那個年代，甚至";
+				mes "魔物飼料都是頂級的";
+				mes "美味佳餚。";
+				next;
+				mes "[查理斯 奧爾良]";
+				mes "那時候，我父親";
+				mes "總是給我們吃南瓜。";
+				mes "我小時候吃得很膩，但";
+				mes "現在它卻喚起了我對";
+				mes "那些純真歲月的回憶。";
+				next;
+				mes "[查理斯 奧爾良]";
+				mes "我們這樣做如何？";
+				mes "如果你拿10個南瓜給我，";
+				mes "我就借你一本";
+				mes "我的1級料理書。";
+				if (countitem(535) > 9) {
+					next;
+					if (select("給10個南瓜和目前的料理書:取消") == 1) {
+						cutin "orleans_6",0;
+						mes "[查理斯 奧爾良]";
+						mes "太完美了，你給我";
+						mes "拿來了10個南瓜！我等不及想品嚐這些";
+						mes "我童年時每天都會";
+						mes "體驗到的味道了。";
+						next;
+					}
+					else {
+						mes "[查理斯 奧爾良]";
+						mes "喔，我是多麼想念";
+						mes "南瓜的味道啊！";
+						mes "啊，真是令人懷念~";
+						goto L_End;
+					}
+				}
+				else goto L_End;
+			}
+			else if (.@new_book== 2) {
+				cutin "orleans_7",0;
+				mes "[查理斯 奧爾良]";
+				mes "今天，我很想";
+				mes "喝杯茶。當然，";
+				mes "喝茶不能沒有";
+				mes "餅乾。請給我帶來";
+				mes "5個烤好的餅乾，我就借你2級料理書。";
+				if (countitem(538) > 4) {
+					next;
+					if (select("給餅乾和目前的料理書:取消") == 1) {
+						cutin "orleans_6",0;
+						mes "[查理斯 奧爾良]";
+						mes "喔，你帶餅乾來的速度";
+						mes "比我預期的";
+						mes "還要快！";
+						mes "太棒了，現在我可以泡壺";
+						mes "茶，放鬆一下，然後";
+						mes "享受美味的點心了~";
+						next;
+					}
+					else {
+						mes "[查理斯 奧爾良]";
+						mes "喔......";
+						mes "我必須盡快喝點";
+						mes "茶......但如果沒有";
+						mes "烤好的餅乾可以吃，";
+						mes "這份體驗就不完整了~";
+						goto L_End;
+					}
+				}
+				else goto L_End;
+			}
+			else if (.@new_book== 3) {
+				cutin "orleans_7",0;
+				mes "[查理斯 奧爾良]";
+				mes "你知道天津町那道";
+				mes "特色菜嗎？我最近";
+				mes "一直很想吃。";
+				mes "請給我帶來5個壽司，";
+				mes "我就借你一本";
+				mes "3級料理書，好嗎？";
+				if (countitem(551) > 4) {
+					next;
+					if (select("給壽司和目前的料理書:取消")) {
+						cutin "orleans_6",0;
+						mes "[查理斯 奧爾良]";
+						mes "喔，這些看起來好新鮮！";
+						mes "而且擺盤也";
+						mes "很棒！這些一定是";
+						mes "一位技術熟練的廚師準備的！";
+						next;
+					}
+					else {
+						mes "[查理斯 奧爾良]";
+						mes "啊，壽司......";
+						mes "這是我少數幾個";
+						mes "不知道怎麼做得非常";
+						mes "好的料理。你敢相信嗎？";
+						goto L_End;
+					}
+				}
+				else goto L_End;
+			}
+			else if (.@new_book== 4) {
+				cutin "orleans_7",0;
+				mes "[查理斯 奧爾良]";
+				mes "喔，我現在想吃點";
+				mes "崑崙的料理。";
+				mes "你能幫我帶些";
+				mes "好吃的包子嗎？5個";
+				mes "就完美了。這樣我就借你";
+				mes "4級料理書。";
+				if (countitem(553) > 4) {
+					next;
+					if (select("給包子和目前的料理書:取消") == 1) {
+						cutin "orleans_6",0;
+						mes "[查理斯 奧爾良]";
+						mes "太棒了，你真的";
+						mes "帶了！這些";
+						mes "包子看起來特別";
+						mes "美味！我等不及";
+						mes "想嚐嚐看了！";
+						next;
+					}
+					else {
+						mes "[查理斯 奧爾良]";
+						mes "喔......";
+						mes "已經很久";
+						mes "沒嚐到那麼好吃的";
+						mes "包子了。";
+						mes "我也想自己做，但是";
+						mes "我不知道秘訣！";
+						goto L_End;
+					}
+				}
+				else goto L_End;
+			}
+			else if (.@new_book== 5) {
+				cutin "orleans_7",0;
+				mes "[查理斯 奧爾良]";
+				mes "最近，我的儲藏室";
+				mes "急需一些竹筍。";
+				mes "它們是美味的食材，還有著";
+				mes "不可忽視的健康價值。給我";
+				mes "帶10個來，你就可以";
+				mes "借5級料理書了。";
+				if (countitem(711) > 9) {
+					next;
+					if (select("給竹筍和目前的料理書:離開") == 1) {
+						cutin "orleans_6",0;
+						mes "[查理斯 奧爾良]";
+						mes "天啊，這些";
+						mes "都是高品質的竹筍！";
+						mes "看起來好棒，我敢";
+						mes "肯定你甚至可以";
+						mes "生吃它們！";
+						next;
+					}
+					else {
+						mes "[查理斯 奧爾良]";
+						mes "我很快就會需要用";
+						mes "那些竹筍來做菜，";
+						mes "所以如果你能幫這個小忙，";
+						mes "我會很感激的~";
+						goto L_End;
+					}
+				}
+				else goto L_End;
+			}
+
+			if (.@old_book == 1) delitem 7472,1;
+			//Cookbook01
+			else if (.@old_book == 2) delitem 7473,1; //Cookbook02
+			else if (.@old_book == 3) delitem 7474,1;
+			//Cookbook03
+			else if (.@old_book == 4) delitem 7475,1; //Cookbook04
+			else if (.@old_book == 5) delitem 7476,1; //Cookbook05
+			if (.@new_book == 1) {
+				delitem 535,10;
+				//Pumpkin
+				getitem 7472,1; //Cookbook01
+			}
+			else if (.@new_book== 2) {
+				delitem 538,5; //Well_Baked_Cookie
+				getitem 7473,1; //Cookbook02
+			}
+			else if (.@new_book== 3) {
+				delitem 551,5; //Shusi
+				getitem 7474,1;
+				//Cookbook03
+			}
+			else if (.@new_book== 4) {
+				delitem 553,5; //Bun
+				getitem 7475,1; //Cookbook05
+			}
+			else if (.@new_book== 5) {
+				delitem 711,10; //Shoot
+				getitem 7476,1; //Cookbook05
+			}
+			mes "[查理斯 奧爾良]";
+			mes "好吧，依照約定，";
+			mes "這是你要求的";
+			mes "料理書。好好";
+			mes "保管它——不要賣掉";
+			mes "或弄丟它，還是發生諸如此類的";
+			mes "事情。祝你料理順利~";
+			goto L_End;
+
+		case 2:
+			cutin "orleans_3",0;
+			mes "[查理斯 奧爾良]";
+			mes "你這是什麼意思，";
+			mes "『你是為了誰做料理的？』";
+			mes "這個奇怪的問題有著";
+			mes "一個簡單的答案。我是";
+			mes "一個必須將更多藝術";
+			mes "帶給這個世界的藝術家。";
+			next;
+			cutin "orleans_3",0;
+			mes "[查理斯 奧爾良]";
+			mes "等等，等等......";
+			mes "你有跟";
+			mes "瑪德蓮 丘說過話嗎？她";
+			mes "沒說什麼奇怪的";
+			mes "話吧？";
+			mes "因為如果她說了，別理她！";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "不。我最近";
+			mes "重新燃起了創造";
+			mes "料理傑作的熱情，這其中";
+			mes "並沒有任何特殊的";
+			mes "原因......";
+			goto L_End;
+
+		case 3:
+			cutin "orleans_5",0;
+			mes "[查理斯 奧爾良]";
+			mes "拜託，不要為了這件事";
+			mes "煩心。就";
+			mes "讓我先休息一下吧~";
+			goto L_End;
+		}
+	}
+	else {
+		mes "[查理斯 奧爾良]";
+		mes "我的天！";
+		mes "發生了";
+		mes "錯誤！";
+		goto L_End;
+	}
+
+L_End:
+	close2;
+	cutin "",255;
+	end;
+}
+
+-	script	瑪德蓮 丘#cook_	-1,{
+	if (MaxWeight - Weight < 2000) {
+		mes "[瑪德蓮 丘]";
+		mes "抱歉，但你現在";
+		mes "身上帶了太多東西了。";
+		mes "你應該把多餘的物品";
+		mes "存進卡普拉倉庫裡，";
+		mes "然後再來跟我說話，好嗎？";
+		close2;
+		//EnableItemMove
+		end;
+	}
+	if (cooking_q == 0) {
+		mes "[瑪德蓮 丘]";
+		mes "喔，你好~";
+		mes "我是瑪德蓮 丘，";
+		mes "是查理斯先生的";
+		mes "學徒。今天有什麼";
+		mes "我可以幫忙的嗎？";
+		next;
+		switch(select("身為廚師，妳都在做些什麼？:妳會做哪些料理？:我也想學做料理！")) {
+		case 1:
+			mes "[瑪德蓮 丘]";
+			mes "身為廚師，我都在做些什麼？";
+			mes "嗯，我現在還只是個學徒，所以我還在學習如何做料理。";
+			mes "但總有一天，我想成為";
+			mes "一位偉大的主廚，讓所有人";
+			mes "都認可我的廚藝才華~";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "料理這門學問裡";
+			mes "包含了很多艱辛的工作，";
+			mes "同時也需要許多技巧。";
+			mes "我必須比消防員";
+			mes "更懂得控制火候，並且";
+			mes "像藝術家一樣精心製作料理。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "好吧，我稍微";
+			mes "誇張了一點，但要將料理";
+			mes "做到一定水準，真的比";
+			mes "表面上看起來要困難得多。";
+			close;
+		case 2:
+			mes "[瑪德蓮 丘]";
+			mes "嗯，我現在只懂";
+			mes "一些基本的食譜。查理斯先生";
+			mes "說，即使是最頂尖的主廚，";
+			mes "也懂得如何把平凡食材的";
+			mes "風味給完全發揮出來。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "他說我需要不斷";
+			mes "提升我的廚藝，直到我能";
+			mes "學習更進階的食譜為止。";
+			mes "總有一天我會進步，到那時";
+			mes "我就有足夠的知識來創造";
+			mes "屬於我自己的獨特美味料理！";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "查理斯先生對";
+			mes "學生或許很嚴厲，但他的廚藝";
+			mes "卻是無人能及的。我有次嚐了";
+			mes "他做的一道甜點，那簡直是";
+			mes "如同置身天堂般的體驗。";
+			mes "我發誓我看到長翅膀的愛心了~！";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "可悲的是，距離我學會";
+			mes "製作他的拿手絕活，也就是";
+			mes "「手工巧克力」，還有很長一段路。";
+			mes "在那之前，我必須先精通";
+			mes "他一直教我的這些奇怪食譜......";
+			close;
+		case 3:
+			mes "[瑪德蓮 丘]";
+			mes "如果你想學做料理，";
+			mes "為什麼不去請教查理斯先生呢？";
+			mes "他對學生相當嚴格，但那是出於愛之深責之切。";
+			mes "你要知道，他對完美的";
+			mes "要求可是絲毫不妥協的。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "如果你成功讓";
+			mes "查理斯先生教你";
+			mes "一道食譜，你應該要";
+			mes "反覆練習來磨練你的技術。";
+			mes "然後，你就會發現";
+			mes "自己的廚藝正在進步。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "不過，查理斯先生只會";
+			mes "教導那些真正對料理";
+			mes "全心投入的學生。你";
+			mes "或許會想用合適的服裝";
+			mes "來展現你的決心......";
+			mes "例如一頂廚師帽。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "但沒錯，查理斯先生";
+			mes "對初學者非常沒有耐心，";
+			mes "這意味著你必須";
+			mes "對他的教學方式多點耐心......";
+			close;
+		}
+	}
+	else if (cooking_q > 0 && cooking_q < 7) {
+		mes "[瑪德蓮 丘]";
+		mes "你好，今天有什麼";
+		mes "我可以幫忙的嗎？";
+		mes "喔，如果你正在跟隨查理斯先生";
+		mes "學習料理，如果你忘記了，";
+		mes "我可以提醒你需要哪些食材~";
+		next;
+		switch(select("炒蝗蟲後腿:葡萄汁花草茶:蜂蜜葡萄汁:青蛙卵墨汁湯:清蒸蟹殼:炒溜溜猴尾巴")) {
+		case 1:
+			mes "[瑪德蓮 丘]";
+			mes "喔！你需要";
+			mes "^4D4DFF5個 蝗蟲後腿^000000、";
+			mes "^4D4DFF1個 食用油^000000，還有";
+			mes "^4D4DFF1個 老舊平底鍋^000000，用來做";
+			mes "炒蝗蟲後腿。";
+			break;
+
+		case 2:
+			mes "[瑪德蓮 丘]";
+			mes "喔！你需要";
+			mes "^4D4DFF3個 葡萄^000000，還有";
+			mes "^4D4DFF2個 紅色藥水^000000，用來做";
+			mes "葡萄汁花草茶。";
+			break;
+
+		case 3:
+			mes "[瑪德蓮 丘]";
+			mes "喔！你需要";
+			mes "^4D4DFF1個 蜂蜜^000000、";
+			mes "^4D4DFF2個 葡萄^000000，還有";
+			mes "^4D4DFF1個 紅色藥水^000000。";
+			break;
+
+		case 4:
+			mes "[瑪德蓮 丘]";
+			mes "喔！你需要";
+			mes "^4D4DFF1個 穀物^000000、";
+			mes "^4D4DFF10個 青蛙卵^000000，還有";
+			mes "^4D4DFF1個 墨汁^000000，用來做青蛙";
+			mes "卵墨汁湯。";
+			break;
+
+		case 5:
+			mes "[瑪德蓮 丘]";
+			mes "喔！你需要";
+			mes "^4D4DFF10個 綠色藥草^000000、";
+			mes "^4D4DFF10個 蟹殼^000000，還有";
+			mes "^4D4DFF1個 黃色藥水^000000，用來做";
+			mes "清蒸蟹殼。";
+			break;
+
+		case 6:
+			mes "[瑪德蓮 丘]";
+			mes "喔！你需要";
+			mes "^4D4DFF1個 平底鍋^000000、";
+			mes "^4D4DFF5個 溜溜猴尾巴^000000，還有";
+			mes "^4D4DFF1個 食用油^000000，用來做";
+			mes "炒溜溜猴尾巴。";
+			break;
+		}
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "我知道查理斯先生";
+		mes "很固執，如果你忘記了，";
+		mes "他是不會再告訴你食材的。";
+		mes "總之，希望你能盡快";
+		mes "收集齊全並完成這道食譜~";
+		close;
+	}
+	else if (cooking_q == 7) {
+		mes "[瑪德蓮 丘]";
+		mes "查理斯先生教了你";
+		mes "一道食譜？太棒了！";
+		mes "希望你記住，料理的品質";
+		mes "主要取決於你的技巧，";
+		mes "所以永遠要記得持續練習。";
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "啊，你知道有什麼";
+		mes "可以幫助你提升";
+		mes "廚藝嗎？為什麼不";
+		mes "借這本料理書，";
+		mes "試做看看裡面的食譜呢？";
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "在做料理之前，請確保";
+		mes "你有足夠的食材。";
+		mes "喔，料理的時候記得把";
+		mes "料理書放在手邊。你很可能";
+		mes "需要經常參考它......";
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "你一開始嘗試時，";
+		mes "可能會做不出能吃的";
+		mes "食物，但隨著不斷練習，";
+		mes "你會進步的。";
+		mes "請收下這本";
+		mes "記載基本1級食譜的料理書。";
+		set cooking_q,8;
+		getitem 7472,1; //Cookbook01
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "當你學會了所有的食譜後，";
+		mes "隨時歡迎回來找我學更多，好嗎？另外，你會需要";
+		mes "這些料理器具來練習。";
+		mes "這些免費送給你，之後你可以再向我買更多~";
+		getitem 12125,10; //Outdoor_Cooking_Kits
+		close;
+	}
+	else if (cooking_q == 8) {
+		mes "[瑪德蓮 丘]";
+		mes "那麼，你的廚藝";
+		mes "進展得如何了？你需要";
+		mes "透過練習來提升";
+		mes "你的烹飪技巧。現在，";
+		mes "有什麼我可以幫忙的嗎？";
+		next;
+		switch(select("我需要一些料理器具。:妳願意試吃我做的料理嗎？:我做的料理看起來怎麼樣？")) {
+		case 1:
+			mes "[瑪德蓮 丘]";
+			mes "當然，你需要";
+			mes "哪一種";
+			mes "料理器具呢？";
+			next;
+			switch(Select("攜帶用料理器具 - 500z:家庭用料理器具 - 1,000z:離開")) {
+			case 1:
+				callsub S_SellSets,12125;
+				close;
+			case 2:
+				mes "[瑪德蓮 丘]";
+				mes "喔，很抱歉，但你";
+				mes "目前的技巧還不足以";
+				mes "使用家庭用料理器具。";
+				mes "請先用攜帶用料理器具";
+				mes "多練習幾次，好嗎？";
+				close;
+			case 3:
+				mes "[瑪德蓮 丘]";
+				mes "如果之後需要購買";
+				mes "任何料理器具，請回來";
+				mes "告訴我，好嗎？回頭見~";
+				close;
+			}
+
+		case 2:
+			if (countitem(12041) > 0 && countitem(12046) > 0 && countitem(12061) > 0 && countitem(12056) > 0 && countitem(12051) > 0 && countitem(12066) > 0) {
+				mes "[瑪德蓮 丘]";
+				mes "喔，那本基本料理書裡詳細記載的";
+				mes "每道食譜，你都做了";
+				mes "一份樣品出來，是嗎？";
+				mes "這對你的廚藝一定是非常好的訓練。";
+				next;
+				mes "[瑪德蓮 丘]";
+				mes "我很樂意品嚐你的";
+				mes "料理並給予意見，";
+				mes "但能請你先幫我";
+				mes "一個忙嗎？我在斐揚有";
+				mes "個朋友，他以前也在";
+				mes "普隆德拉學習料理。";
+				next;
+				mes "[瑪德蓮 丘]";
+				mes "然而，他在料理課程中";
+				mes "遭遇挫折，於是";
+				mes "搬回了斐揚。你介意";
+				mes "請他試吃看看嗎？來，我用";
+				mes "這塊方便的布把你做的食物包起來......";
+				next;
+				delitem 12041,1; //Str_Dish01
+				delitem 12046,1; //Int_Dish01
+				delitem 12061,1; //Dex_Dish01
+				delitem 12056,1; //Agi_Dish01
+				delitem 12051,1; //Vit_Dish01
+				delitem 12066,1;
+				//Luk_Dish01
+				set cooking_q,9;
+				getitem 12111,1; //Food_Package
+				mes "[瑪德蓮 丘]";
+				mes "好了，可以準備";
+				mes "送過去了。請記住，";
+				mes "在交給我的老朋友";
+				mes "哲秀之前，千萬不要打開它。";
+				mes "你可以在斐揚附近";
+				mes "找到他......";
+				next;
+				mes "[瑪德蓮 丘]";
+				mes "你應該可以在斐揚的";
+				mes "水車或酒館附近";
+				mes "找到哲秀。喔，還有，";
+				mes "別忘了告訴他";
+				mes "是我派你去的，好嗎？謝謝啦~";
+				close;
+			}
+			mes "[瑪德蓮 丘]";
+			mes "嗯......我想如果";
+			mes "你先試著把那本";
+			mes "我給你的基本料理書裡";
+			mes "的每道食譜都做過一遍會更好。";
+			mes "這樣我才能更準確地";
+			mes "評估你的技巧。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "專注於一道食譜";
+			mes "並沒有不好，但";
+			mes "作為一個初學者，你需要";
+			mes "涵蓋所有的基礎。";
+			mes "請仔細閱讀我給你的料理書，好嗎？";
+			close;
+		case 3:
+			if (countitem(12041) > 0 || countitem(12046) > 0 || countitem(12061) > 0 || countitem(12056) > 0 || countitem(12051) > 0 || countitem(12066) > 0) {
+				mes "[瑪德蓮 丘]";
+				mes "喔，我看到你已經";
+				mes "嘗試了那本我給你的";
+				mes "基本料理書裡的一些食譜。";
+				mes "你做的每樣東西看起來";
+				mes "都很美味。現在剩下的";
+				mes "就是找人來試吃了......";
+				close;
+			}
+			mes "[瑪德蓮 丘]";
+			mes "嗯......我不知道......";
+			mes "我想你真的應該先試著";
+			mes "把那本我給你的";
+			mes "基本料理書裡列出的";
+			mes "每道食譜都做一遍。然後，你";
+			mes "就可以展示你的料理了~";
+			close;
+		}
+	}
+	else if (cooking_q == 9) {
+		if (countitem(12111) > 0) {
+			mes "[瑪德蓮 丘]";
+			mes "請去斐揚找到我的朋友";
+			mes "哲秀，把這份";
+			mes "食物包裝交給他，";
+			mes "這樣他就能品嚐";
+			mes "你做的料理了。";
+			close;
+		}
+		else {
+			mes "[瑪德蓮 丘]";
+			mes "啊，你好~ 喔，能等我一下嗎？";
+			mes "我現在正在煎東西，所以我需要專心一下。";
+			mes "哈哈哈哈。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "喔，所以你見過";
+			mes "我的朋友哲秀了嗎？";
+			mes "你把食物包裝";
+			mes "交給他了吧？";
+			mes "如果你弄丟或賣掉了，";
+			mes "我會很失望的......";
+			next;
+			if (select("我給他了！:我把食物包裝弄丟了！") == 1) {
+				mes "[瑪德蓮 丘]";
+				mes "哈哈哈，我想也是。";
+				mes "但如果你還沒去的話，";
+				mes "請務必盡快";
+				mes "去辦，好嗎？再見啦~";
+				close;
+			}
+			if (countitem(7472) > 0) {
+				mes "[瑪德蓮 丘]";
+				mes "你弄丟了？喔，那可";
+				mes "不妙。你怎麼能如此";
+				mes "不尊重烹飪藝術呢？";
+				mes "我真的對你";
+				mes "感到非常羞愧......";
+				next;
+				delitem 7472,1; //Cookbook01
+				set cooking_q,0;
+				mes "[瑪德蓮 丘]";
+				mes "首先，我希望";
+				mes "你把我的料理書還來。";
+				mes "我希望你反省一下";
+				mes "你的所作所為，然後重新從頭開始";
+				mes "向查理斯先生學習廚藝。";
+				close;
+			}
+			mes "[瑪德蓮 丘]";
+			mes "喔，你一定是在開玩笑吧~";
+			mes "我相信你一定把它";
+			mes "藏在某個地方了。";
+			mes "總之，請把那份";
+			mes "食物包裝交給哲秀。";
+			close;
+		}
+	}
+	else if (cooking_q == 10) {
+		mes "[瑪德蓮 丘]";
+		mes "我剛剛收到";
+		mes "哲秀的留言，";
+		mes "感謝我派你";
+		mes "送食物給他。";
+		mes "我猜他";
+		mes "一定非常喜歡。";
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "我想你現在已經準備好使用";
+		mes "更高級的料理器具了。";
+		mes "但永遠別忘記，你自身的";
+		mes "技巧才是決定高品質料理";
+		mes "最重要的因素。";
+		next;
+		set cooking_q,11;
+		getitem 12126,10; //Indoor_Cooking_Kits
+		mes "[瑪德蓮 丘]";
+		mes "請試試這些家庭用";
+		mes "料理器具，來幫助你";
+		mes "製作出更精緻的料理。";
+		mes "用完的時候，隨時歡迎";
+		mes "再向我購買，好嗎？";
+		next;
+		mes "[瑪德蓮 丘]";
+		mes "另外，如果你想";
+		mes "學習一些新食譜，";
+		mes "為什麼不再去跟查理斯先生";
+		mes "談談呢？那就先這樣了，";
+		mes "祝你好運，回頭見~";
+		close;
+	}
+	else if (cooking_q == 11) {
+		mes "[瑪德蓮 丘]";
+		mes "你好嗎？希望";
+		mes "自從我們上次見面後，";
+		mes "你一直有在磨練";
+		mes "你的廚藝。";
+		mes "現在，有什麼";
+		mes "特別需要我幫忙的嗎？";
+		next;
+		switch(select("我需要一些料理器具。:查理斯先生最近好嗎？:嗯，那個小孩是誰？")) {
+		case 1:
+			mes "[瑪德蓮 丘]";
+			mes "當然，你需要";
+			mes "哪一種";
+			mes "料理器具呢？";
+			next;
+			switch(select("攜帶用料理器具 - 500z:家庭用料理器具 - 1,000z:給我看別的器具。:離開")) {
+			case 1:
+				callsub S_SellSets,12125;
+				close;
+
+			case 2:
+				callsub S_SellSets,12126;
+				close;
+
+			case 3:
+				mes "[瑪德蓮 丘]";
+				mes "嗯，我只有兩種";
+				mes "料理器具，";
+				mes "雖然有一種更優良的";
+				mes "高級料理器具，那是";
+				mes "像查理斯先生這樣真正的專家";
+				mes "在使用的。很驚人，對吧？";
+				next;
+				mes "[瑪德蓮 丘]";
+				mes "你還只是個初學者，所以";
+				mes "我的器具對你來說已經夠用了。";
+				mes "你知道嗎，傳聞有一種料理器具，";
+				mes "只要準備好所有食材，就能完美做出任何食譜。";
+				next;
+				mes "[瑪德蓮 丘]";
+				mes "當然，這只是個";
+				mes "傳聞，大概只是";
+				mes "某人奇怪想像力的";
+				mes "產物。我依然";
+				mes "相信技巧才是最";
+				mes "重要的要素~";
+				close;
+
+			case 4:
+				mes "[瑪德蓮 丘]";
+				mes "如果之後需要購買";
+				mes "任何料理器具，請回來";
+				mes "告訴我，好嗎？回頭見~";
+				close;
+			}
+
+		case 2:
+			mes "[瑪德蓮 丘]";
+			mes "嗯？查理斯先生";
+			mes "很好，只是最近他";
+			mes "很容易因為一點小事";
+			mes "就生氣。不過，";
+			mes "我想這是可以理解的。";
+			next;
+			set .@talk_j,rand(1,3);
+			if (.@talk_j == 1) {
+				mes "[瑪德蓮 丘]";
+				mes "你知道嗎，當我第一次";
+				mes "遇見他時，我以為他";
+				mes "只擅長做巧克力和焦糖";
+				mes "這類甜點。";
+				mes "然而，他幾乎對";
+				mes "所有料理都非常拿手！";
+				next;
+				mes "[瑪德蓮 丘]";
+				mes "我想自從我們的國王";
+				mes "失蹤後，他就一直專注於";
+				mes "甜點以外的食物。我在想，特里斯坦三世國王的";
+				mes "失蹤，會不會跟查理斯";
+				mes "先生的心情變化有關？";
+				close;
+			}
+			else if (.@talk_j == 2) {
+				mes "[瑪德蓮 丘]";
+				mes "我是說，查理斯先生似乎";
+				mes "是那種很難對別人";
+				mes "敞開心扉的類型。";
+				mes "這或許能解釋為什麼他對";
+				mes "女性比對男性好得多。";
+				mes "這不是很合理嗎？";
+				close;
+			}
+			mes "[瑪德蓮 丘]";
+			mes "也許是因為他";
+			mes "最近一直在試驗";
+			mes "新食譜。我想他";
+			mes "有提到過，他想請";
+			mes "某位女性品嚐";
+			mes "有史以來最頂級的美食。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "我從沒見過查理斯先生";
+			mes "如此興奮過。那位女性";
+			mes "一定非常幸運：只要她想，";
+			mes "她每天都有機會";
+			mes "吃到他做的料理！我簡直快";
+			mes "嫉妒死她了，你知道嗎？";
+			close;
+
+		case 3:
+			mes "[瑪德蓮 丘]";
+			mes "喔，你是指那個";
+			mes "抱著貓的小孩？";
+			mes "我不太確定，但我好像";
+			mes "無意間聽到她可能是";
+			mes "薇琪嬪夫人的";
+			mes "妹妹。";
+			next;
+			mes "[瑪德蓮 丘]";
+			mes "我很好奇為什麼查理斯先生";
+			mes "給予薇琪嬪夫人如此";
+			mes "特別的待遇。每當我";
+			mes "問他這件事，他就會變得很";
+			mes "生氣，什麼都不肯說！";
+			next;
+			cutin "orleans_6",0;
+			mes "[查理斯 奧爾良]";
+			mes "見鬼了！";
+			mes "我剛剛感到背脊";
+			mes "發涼......難道有人";
+			mes "在談論我嗎？";
+			close2;
+			cutin "",255;
+			end;
+		}
+	}
+	mes "[瑪德蓮 丘]";
+	mes "發生錯誤。";
+	close;
+
+S_SellSets:
+	.@item_id = getarg(0);
+	.@item_cost = getiteminfo(.@item_id, ITEMINFO_BUY);
+	.@item_weight = getiteminfo(.@item_id, ITEMINFO_WEIGHT);
+	mes "[瑪德蓮 丘]";
+	mes "你要買幾個 "+ (.@item_id == 12125 ? "攜帶用":"家庭用");
+	mes "料理器具？如果你";
+	mes "想要取消，請";
+	mes "輸入數字0。";
+	next;
+	while(1) {
+		input .@sell;
+		if (.@sell == 0) {
+			mes "[瑪德蓮 丘]";
+			mes "你改變主意了？";
+			mes "好吧，如果之後需要";
+			mes "買 "+ getitemname(.@item_id);
+			mes "的話，隨時都可以回來";
+			mes "找我，好嗎？";
+			close;
+		}
+		else if (.@sell > 100) {
+			mes "[瑪德蓮 丘]";
+			mes "喔，很抱歉，但為了";
+			mes "安全起見，我一次";
+			mes "不賣超過100個 "+ getitemname(.@item_id) + "。";
+			next;
+		}
+		else break;
+	}
+	set .@total_cost,.@sell * .@item_cost;
+	set .@total_weight,.@sell * .@item_weight;
+	if (Zeny < .@total_cost) {
+		mes "[瑪德蓮 丘]";
+		mes "喔，很抱歉，但你";
+		mes "身上的錢不夠買這麼多";
+		mes getitemname(.@item_id);
+		mes "請在購買我的器具前";
+		mes "確認一下你的Zeny~";
+		close;
+	}
+	if (!checkweight(.@item_id,.@sell)) {
+		mes "[瑪德蓮 丘]";
+		mes "很抱歉，但你的物品欄";
+		mes "沒有足夠的空間";
+		mes "容納這麼多";
+		mes getitemname(.@item_id) +"......";
+		close;
+	}
+	set Zeny, Zeny-.@total_cost;
+	getitem .@item_id,.@sell;
+	mes "[瑪德蓮 丘]";
+	mes "給你~";
+	mes "祝你的料理訓練";
+	mes "一切順利！";
+	return;
+}
+
+-	script	抱貓的小孩#cook_	-1,{
+	set .@nyu,rand(1,2);
+	if (.@nyu == 1) {
+		cutin "nyuang_1",2;
+		emotion ET_QUESTION;
+		mes "[抱貓的小孩]";
+		mes "......喵？";
+		mes "(......喵嗚？)";
+		close2;
+		cutin "nyuang_1",255;
+		end;
+	}
+	cutin "nyuang_3",2;
+	emotion ET_DELIGHT;
+	mes "[抱貓的小孩]";
+	mes "喵哈哈哈哈，";
+	mes "喵哈哈哈哈~";
+	mes "(喵~，喵~)";
+	close2;
+	cutin "nyuang_1",255;
+	end;
+}
+
+-	script	薇琪嬪#cook_	-1,{
+	disablenpc "薇琪嬪#cook_";
+	end;
+
+OnInit:
+	disablenpc "薇琪嬪#cook_";
+	end;
+
+OnEnable:
+	enablenpc "薇琪嬪#cook_";
+	end;
+
+OnDisable:
+	disablenpc "薇琪嬪#cook_";
+	end;
+}
+
+payon,209,127,3	script	僕人	88,{
+	if (!checkweight(555,1)) {
+		mes "[哲秀]";
+		mes "稍等一下，你身上帶了";
+		mes "太多東西了。";
+		mes "何不在回來找我之前，";
+		mes "先把一些東西存進";
+		mes "卡普拉倉庫裡呢？";
+		close2;
+		//EnableItemMove;
+		end;
+	}
+	if (cooking_q == 10) {
+		mes "[哲秀]";
+		mes "如果有機會，";
+		mes "請替我向瑪德蓮";
+		mes "道謝。我很快就會去普隆德拉";
+		mes "看她，順便向";
+		mes "查理斯先生賠罪。";
+		close;
+	}
+	else if (cooking_q == 9) {
+		mes "[哲秀]";
+		mes "你想不想";
+		mes "買塊年糕啊？";
+		mes "只要200 Zeny，不過";
+		mes "這可是非常美味的喔~";
+		next;
+		switch(select("好啊，我買一個！:不了，謝謝。:其實，是瑪德蓮派我來的......")) {
+		case 1:
+			if (Zeny < 200) {
+				mes "[哲秀]";
+				mes "喔，很抱歉，但";
+				mes "你沒有足夠的";
+				mes "錢來買年糕......";
+				mes "不過，要湊齊";
+				mes "200 Zeny應該很容易吧？";
+				close;
+			}
+			set Zeny, Zeny-200;
+			getitem 555,1; //Rice_Cake
+			mes "[哲秀]";
+			mes "非常";
+			mes "感謝你！希望你";
+			mes "會喜歡這塊年糕~";
+			close;
+
+		case 2:
+			mes "[哲秀]";
+			mes "你確定嗎？";
+			mes "你在其他地方";
+			mes "可是吃不到";
+			mes "這麼美味的年糕的。";
+			mes "算了，那我就自己多吃點囉~";
+			close;
+
+		case 3:
+			if (countitem(12111) > 0) {
+				mes "["+strcharinfo(0)+"]";
+				mes "其實，是瑪德蓮";
+				mes "派我來這裡找";
+				mes "你的。她說你會";
+				mes "願意試吃這包裝裡的食物......";
+				next;
+				mes "[哲秀]";
+				mes "瑪德蓮？你是指";
+				mes "瑪德蓮 丘嗎？喔，我已經";
+				mes "好長一段時間沒有她的消息了！";
+				mes "太棒了，讓我看看";
+				mes "她寄給我的包裝。啊，這裡面的每樣東西看起來都很誘人！";
+				next;
+				mes "[哲秀]";
+				mes "喔，等等。她甚至";
+				mes "還在包裝裡面";
+				mes "附了一張留言。";
+				mes "讓我看看......";
+				next;
+				mes "^333333親愛的哲秀，";
+				mes " 好久不見了。";
+				mes "我知道你離開普隆德拉時";
+				mes "和查理斯先生鬧得不愉快，";
+				mes "但請理解";
+				mes "他只是盡全力想";
+				mes "幫助提升你的廚藝。^000000";
+				next;
+				mes "^333333 查理斯先生一直希望";
+				mes "你能擴展你的食譜，並在未來的某一天";
+				mes "做出這些料理。為你送來";
+				mes "這些食物的人也親自參與了";
+				mes "烹調。請嚐嚐看吧......^000000";
+				next;
+				mes "^333333 希望在品嚐過";
+				mes "這些食物後，";
+				mes "你能稍微理解 ";
+				mes "查理斯先生的用心。";
+				mes " ";
+				mes " 你的朋友，瑪德蓮^000000";
+				next;
+				mes "[哲秀]";
+				mes "我明白了......";
+				mes "這些就是查理斯先生";
+				mes "當初試圖教我";
+				mes "的食譜。但我拒絕";
+				mes "學習，因為我";
+				mes "覺得它們太噁心了......";
+				next;
+				mes "[哲秀]";
+				mes "......";
+				mes ".........";
+				mes "這太好吃了......你";
+				mes "確定你只是一個";
+				mes "初學者嗎？不......這一定";
+				mes "就是我一直以來所欠缺的......";
+				next;
+				mes "[哲秀]";
+				mes "這就是我的師父";
+				mes "一直試圖教導我的，";
+				mes "但我太急躁了，以至於";
+				mes "沒有好好學習。所有食材中";
+				mes "最重要的一項......就是^D02090心^000000。過了這麼久，我終於明白了。";
+				next;
+				mes "[哲秀]";
+				mes "謝謝你把這些食物";
+				mes "帶給我。我會徹底地";
+				mes "享用它，並反省";
+				mes "我以前的老師";
+				mes "試圖告訴我的道理。作為回報，請收下我這微不足道的年糕。";
+				next;
+				delitem 12111,1; //Food_Package
+				set cooking_q,10;
+				getitem 555,1; //Rice_Cake
+				mes "[哲秀]";
+				mes "我最好盡快再回去";
+				mes "普隆德拉一趟。我已經很久";
+				mes "沒有見到瑪德蓮了。";
+				mes "更重要的是，我想";
+				mes "我應該向查理斯先生道歉。";
+				close;
+			}
+			mes "["+strcharinfo(0)+"]";
+			mes "其實，是瑪德蓮";
+			mes "派我來這裡找";
+			mes "你的。她說你會";
+			mes "願意試吃這包裝裡的食物......";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "等等，等等......";
+			mes "我身上沒有！";
+			mes "我把那份食物包裝";
+			mes "放哪去了？";
+			close;
+		}
+	}
+	else if (cooking_q == 8) {
+		mes "[哲秀]";
+		mes "最近，似乎";
+		mes "沒有人想買我的";
+		mes "年糕。自從我離開普隆德拉後就一直這樣......";
+		next;
+		mes "[哲秀]";
+		mes "是這樣的，我以前";
+		mes "在那個城市裡，是查理斯先生";
+		mes "門下的其中一名學徒。那";
+		mes "只有短短幾個月，但我";
+		mes "非常興奮能有這個機會";
+		mes "向他學習。";
+		next;
+		mes "[哲秀]";
+		mes "至少，我一開始";
+		mes "是很興奮的。查理斯先生真的";
+		mes "讓我很有挫折感：他";
+		mes "只肯教我做那些";
+		mes "聽起來非常噁心的食譜！比如蝗蟲後腿，還有——呃！";
+		next;
+		mes "[哲秀]";
+		mes "他一直堅持說";
+		mes "我忘記了最重要";
+		mes "的食材，而且只要有它，";
+		mes "像炒溜溜猴尾巴之類的東西";
+		mes "也能變得美味。但我根本無法相信這種胡說八道！";
+		next;
+		mes "[哲秀]";
+		mes "最後，我逃跑了。";
+		mes "出於某種原因，我覺得";
+		mes "有點羞愧，並且後悔";
+		mes "我所做的事。儘管如此，我還是不懂";
+		mes "查理斯先生到底是什麼意思......";
+		close;
+	}
+	else {
+		mes "[哲秀]";
+		mes "你想不想";
+		mes "買塊年糕啊？";
+		mes "只要200 Zeny，不過";
+		mes "這可是非常美味的喔~";
+		next;
+		if (select("好啊，我買一個！:不了，謝謝。") == 1) {
+			if (Zeny < 200) {
+				mes "[哲秀]";
+				mes "喔，很抱歉，但";
+				mes "你沒有足夠的";
+				mes "錢來買年糕......";
+				mes "不過，要湊齊";
+				mes "200 Zeny應該很容易吧？";
+				close;
+			}
+			set Zeny, Zeny-200;
+			getitem 555,1; //Rice_Cake
+			mes "[哲秀]";
+			mes "非常";
+			mes "感謝你！希望你";
+			mes "會喜歡這塊年糕~";
+			close;
+		}
+		mes "[哲秀]";
+		mes "你確定嗎？";
+		mes "你在其他地方";
+		mes "可是吃不到";
+		mes "這麼美味的年糕的。";
+		mes "算了，那我就自己多吃點囉~";
+		close;
+	}
+}

@@ -1,0 +1,123 @@
+//===== rAthena Script ======================================= 
+//= Pile Bunker Quest
+//===== By: ================================================== 
+//= JayPee Mateo
+//===== Current Version: ===================================== 
+//= 2.2
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= 1.0 A Pile Bunker quest based on iRO WiKi. [JayPee Mateo]
+//= 2.0 Rewrited the Script a little so it looks a bit better. [Masao]
+//= 2.1 Switched to official script, coded by Gennosuke Kouga. [Euphy]
+//= 2.2 Updated to match the official script. [Euphy]
+//============================================================ 
+
+// Main NPC :: mech_book
+//============================================================
+yuno,179,174,4	script	高默	851,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 1000) {
+		mes "[高默]";
+		mes "你帶太多東西了。放下一些行李再來找我吧。";
+		close;
+	}
+	if (countitem(1549)) {
+		mes "[高默]";
+		mes "那麼，打樁機用起來感覺如何啊？";
+		close;
+	}
+	if (Class != Job_Mechanic && Class != Job_Mechanic_T && Class != Job_Baby_Mechanic) {
+		mes "[高默]";
+		mes "我是一名退休的機匠，我不認為我們之間有什麼好談的。";
+		close;
+	}
+	mes "[高默]";
+	mes "那麼？駕駛魔導戰甲的感覺如何？";
+	mes "對於那些無法找到自己道路的人來說，這是不被允許的。";
+	next;
+	mes "[高默]";
+	mes "我嗎？我很久以前就退休了。因為我出了意外……受了重傷，再也無法駕駛它了。我對此感到很沮喪。";
+	next;
+	mes "[高默]";
+	mes "所以我決定留在這裡為魔導戰甲鍛造裝備。";
+	mes "咦？我不是說我對這份工作有什麼不滿。";
+	next;
+	mes "[高默]";
+	mes "被迫做自己不喜歡的事，沒有比這更悲慘的了。";
+	next;
+	mes "[高默]";
+	mes "有些人只要當個配角就很開心，你知道的，就像是一堵讓人依靠的牆。";
+	next;
+	mes "[高默]";
+	mes "那讓我感覺很好，我正準備製作一個新裝備。我希望你能幫我。你覺得如何？";
+	next;
+	switch(select("我沒什麼興趣。:你打算做什麼？:你要去哪裡找材料？:我帶材料來了。")) {
+	case 1:
+		mes "[高默]";
+		mes "那我也無能為力了。";
+		mes "下次見！";
+		close;
+	case 2:
+		mes "[高默]";
+		mes "嗯，一根可以一擊粉碎對手的巨大金屬棒！";
+		next;
+		mes "[高默]";
+		mes "雖然看起來不起眼，但我設計了一個裝有彈簧的裝置，能以極大的力量進行攻擊。";
+		next;
+		mes "[高默]";
+		mes "它是隱藏的，所以當你找到機會時，一擊就能讓對手陷入瀕死狀態！";
+		mes "我等不及想看它實際運作的樣子了！";
+		next;
+		mes "[高默]";
+		mes "如果你能想像這種武器有多棒，我就會讓它成為現實。";
+		next;
+		mes "[高默]";
+		mes "帶給我 200 個鋼鐵、30 個軟管和 1 把破甲短錐。有了這些材料，我就能做出我剛剛描述的東西。";
+		close;
+	case 3:
+		mes "[高默]";
+		mes "你應該可以從犬妖等許多怪物身上獲得鋼鐵。";
+		next;
+		mes "[高默]";
+		mes "軟管比較稀有，會由艾因布羅克和里希塔樂鎮附近的金屬波利掉落。";
+		next;
+		mes "[高默]";
+		mes "最後，要找到破甲短錐非常困難，但你應該有辦法解決。哈哈，去拿吧！";
+		close;
+	case 4:
+		if (countitem(999) < 200 || countitem(7325) < 30 || countitem(1415) < 1) {
+			mes "[高默]";
+			mes "你沒有帶齊我要求的所有材料。";
+			next;
+			mes "[高默]";
+			mes "我有一個習慣，當靈感來的時候，就會放棄正在做的東西，去嘗試做新的東西。";
+			mes "你最好快點！";
+			close;
+		} else {
+			mes "[高默]";
+			mes "喔，我等很久了。你沒有準時來，我還以為你忘記了。請在那邊等一下。";
+			specialeffect EF_REPAIRWEAPON;
+			next;
+			mes "[高默]";
+			mes "完成了。你覺得如何？還不錯吧？雖然是我自己做的，但我得說這做得相當好。";
+			next;
+			mes "[高默]";
+			mes "結合了重量、體積，看看它的顏色和光澤。它緊緊抓住了我的心！";
+			next;
+			mes "[高默]";
+			mes "...........";
+			next;
+			mes "[高默]";
+			mes "呃，只要稍微改良一下，它就能量產並交貨。我確定我能做更多這種東西，所以這個就送給你了。";
+			next;
+			mes "[高默]";
+			mes "喔，結果發現我根本不需要那麼多鋼鐵。所以，這些退還給你。";
+			delitem 999,50; //Steel
+			delitem 7325,30; //Tube
+			delitem 1415,1; //Skewer
+			getitem 1549,1; //Pilebuncker
+			getitem 1360,1; //Two_Handed_Axe
+			close;
+		}
+	}
+}

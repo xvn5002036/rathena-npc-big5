@@ -1,0 +1,70 @@
+//===== rAthena Script =======================================
+//= War of Emperium Kafras for N Guild Castles
+//===== By: ==================================================
+//= kobra_k88
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project; RO Episode 5+
+//===== Description: =========================================
+//= Provides Kafra services for guild members of NGuild Castles.
+//= Used in conjuction with function F_Kafra.
+//===== Additional Comments: =================================
+//= Based off existing guild scripts. Do not know if it is accurate.[kobra_k88]
+//= 1.1 All N Guild Kafras teleport to Prontera only! [Lupus]
+//= 1.2 Added Kafra function. [L0ne_W0lf]
+//============================================================
+
+
+function	script	F_GKafra	{
+	cutin "kafra_01",2;
+	set @GID, GetCastleData(getarg(0),1);
+	if (getcharid(2) == @GID && getgdskilllv(@GID,10001)) goto L_StartG;
+	mes "[卡普拉服務人員]";
+	mes "我們有簽訂合約，我只負責為 ^ff0000" + GetGuildName(@GID) + "^000000 公會提供專屬服務。請您尋求附近其他的卡普拉服務人員服務。造成您的不便敬請見諒。";
+	cutin "",255;
+	close;
+L_StartG:
+	set @wrpP[0], 200;
+	set @wrpD$[0], getarg(1);
+	setarray @wrpC$[0], @wrpD$[0]+" ^880000"+@wrpP[0]+"^000000 z", "取消", "", "", "","";
+	callfunc "F_Kafra",2,0,0,0,800;
+	end;
+}
+
+// Castle 1 ===============================================
+nguild_alde,218,170,0	script	卡普拉服務人員#N01	117,{
+	callfunc "F_GKafra", "nguild_alde", "普隆德拉";
+	end;
+OnRecvCastleN01:
+	if (GetCastleData("nguild_alde",9) < 1) disablenpc "卡普拉服務人員#N01";
+	end;
+}
+
+// Castle 2 ===============================================
+//nguild_gef,96,173,0	script	卡普拉服務人員#N02	117,{
+nguild_gef,35,37,0	script	卡普拉服務人員#N02	117,{
+	callfunc "F_GKafra", "nguild_gef", "普隆德拉";
+	end;
+OnRecvCastleN02:
+	if (GetCastleData("nguild_gef",9) < 1) disablenpc "卡普拉服務人員#N02";
+	end;
+}
+
+// Castle 3 ===============================================
+nguild_pay,128,58,3	script	卡普拉服務人員#N03	117,{
+	callfunc "F_GKafra", "nguild_pay", "普隆德拉";
+	end;
+OnRecvCastleN03:
+	if (GetCastleData("nguild_pay",9) < 1) disablenpc "卡普拉服務人員#N03";
+	end;
+}
+
+// Castle 4 ===============================================
+nguild_prt,96,173,0	script	卡普拉服務人員#N04	117,{
+	callfunc "F_GKafra", "nguild_prt", "普隆德拉";
+	end;
+OnRecvCastleN04:
+	if (GetCastleData("nguild_prt",9) < 1) disablenpc "卡普拉服務人員#N04";
+	end;
+}

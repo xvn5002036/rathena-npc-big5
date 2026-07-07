@@ -1,0 +1,120 @@
+//===== rAthena Script ======================================= 
+//= Gemstone Trader
+//===== By: ================================================== 
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.3
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Trade various colors of gemstones for other color gemstones.
+//===== Additional Comments: ================================= 
+//= 1.0 Rescripted to Aegis 10.3 standards. [L0ne_W0lf]
+//=     Any notes pertaining to the prior trader may be found
+//=     in the cities/payon.txt
+//= 1.1 Corrected NPC names to fall within proper restrictions. [L0ne_W0lf]
+//= 1.2 Updated input with min/max values. [L0ne_W0lf]
+//=     Added a checkweight. 
+//= 1.3 Fixed checks. [Euphy]
+//============================================================ 
+
+payon,173,238,5	script	间紈#pay	754,{
+	if (checkweight(1201,1) == 0) {
+		mes "^3355FF单瞷ō狥﹁び叫рㄇ狥﹁秈炊┰畐ㄓ^000000";
+		close;
+	}
+	mes "[间紈]";
+	mes "倒иㄢ聋";
+	mes "肅︹臸膓ホ";
+	mes "и碞穦рウ";
+	mes "传Θぃ肅︹";
+	mes "臸膓ホ";
+	next;
+	switch(select("盢屡︹臸膓ホ传Θ︹:盢︹臸膓ホ传Θ独︹:盢独︹臸膓ホ传Θ屡︹")) {
+	case 1: callsub S_TradeGems,717,716;
+	case 2: callsub S_TradeGems,716,715;
+	case 3: callsub S_TradeGems,715,717;
+	}
+
+S_TradeGems:
+	.@item_req = getarg(0);
+	.@item_id = getarg(1);
+
+	if (countitem(.@item_req) < 2) {
+		mes "[间紈]";
+		mes "...";
+		mes "秨";
+		mes "狦硈";
+		mes "程膀セ";
+		mes "2 聋 "+ getitemname(.@item_req) +"";
+		mes "常ぃㄓ杠и⊿快猭狝叭";
+		close;
+	}
+	else {
+		.@gems = countitem(.@item_req) /2;
+		mes "[间紈]";
+		mes "и稱и籹";
+		mes "羆 "+ .@gems +" 聋 "+ getitemname(.@item_id) +"";
+		mes "ノヘ玡┮局Τ";
+		mes ""+ getitemname(.@item_req) +"";
+		mes "稱璶或暗";
+		next;
+		switch(select("荷腊и场传奔:и稱砞﹚计秖:иぃ稱传")) {
+		case 1:
+			delitem .@item_req,.@gems * 2;
+			getitem .@item_id,.@gems;
+			break;
+		case 2:
+			mes "[间紈]";
+			mes "ê或稱璶";
+			mes "传碭聋㎡";
+			mes "程";
+			mes "块 100 聋";
+			next;
+			while(1) {
+				input .@input,0,101;
+				if (.@input == 0) {
+					mes "[间紈]";
+					mes "聋常ぃ传盾";
+					mes "ㄓ";
+					mes "э跑種...";
+					close;
+				}
+				else if (.@input > 100) {
+					mes "[间紈]";
+					mes "...";
+					mes "и叫块";
+					mes "计秖ぃ";
+					mes "100";
+					mes "癘眔盾...";
+					next;
+				}
+				else if (.@gems < .@input) {
+					// Custom dialogue
+					mes "[间紈]";
+					mes "...";
+					mes "⊿Τê或";
+					mes "臸膓ホユ传...";
+					next;
+				}
+				else break;
+			}
+			delitem .@item_req,.@input * 2;
+			getitem .@item_id,.@input;
+			break;
+		case 3:
+			mes "[间紈]";
+			mes "⊿拜肈";
+			mes "舧繦ㄓ";
+			close;
+		}
+		mes "[间紈]";
+		mes "倒";
+		mes "舧繦";
+		mes "ㄓти";
+		mes "垛稦估ê妓帝и";
+		mes "и羪Τぐ或狥﹁盾";
+		close;
+	}
+}

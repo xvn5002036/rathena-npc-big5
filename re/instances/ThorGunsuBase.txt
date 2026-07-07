@@ -1,0 +1,480 @@
+//===== rAthena Script =======================================
+//= Instance: Thor Gunsu Base.
+//===== Description: =========================================
+//- [Walkthrough conversion]
+//- Part of the Episode 18 main quest.
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//============================================================
+
+// Main Quest: Step 47.
+que_thr,133,53,5	script	瑪藍#Armybase1	4_EP18_MARAM,{
+	if (ep18_main < 45 || ep18_main > 46)
+		end;
+	if (ep18_main == 45) {
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "你來了，冒險者！";
+		mes "謝謝你大老遠跑來這裡。";
+		next;
+		cutin "ep18_maram_03.png",2;
+		mes "[瑪藍]";
+		mes "看來這裡果然是來真的。這裡的守衛和目前為止所見的不同....";
+		mes "我們小心別被守衛發現，進去探查一下吧。";
+		next;
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "盡量避開守衛的視線行動。";
+		mes "如果被發現可能會遭到攻擊，所以如果無法突破，我們就在這裡會合。";
+		erasequest 16577;
+		setquest 16578;
+		ep18_main = 46;
+		next;
+	}
+	else if (ep18_main == 46) {
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "我們盡量避開監視塔潛入進去吧。";
+		next;
+	}
+
+	.@md_name$ = "托爾軍事基地";
+	cutin "",255;
+	mes "^FF0000警告：如果您在副本內進行抓寵等任意行為，將不被視為正常進度。^000000";
+	next;
+	// player has party
+	if (is_party_leader())
+		// player is leader of the party
+		.@create$ = "申請進入 " + .@md_name$ + "";
+	switch( select( .@create$, "進入 " + .@md_name$ + "" ) ) {
+	case 1:
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "當申請完成後，請再跟我對話並選擇 ^0000CD進入" + .@md_name$ + "^000000";
+		if (instance_create(.@md_name$) < 0) {
+			mes "隊伍：" + getpartyname(getcharid(1)) + "";
+			mes "隊長：" + strcharinfo(0) + "";
+			mes "^0000ff" + .@md_name$ + " ^000000- 未知錯誤";
+			close3;
+		}
+		close3;
+	case 2:
+		// Note: instance not forced solo
+		switch( instance_enter(.@md_name$) ) {
+		case IE_OTHER:
+			mes "[瑪藍]";
+			mes "^ff0000發生了未知的錯誤。^000000";
+			close;
+		case IE_NOINSTANCE:
+			cutin "ep18_maram_01.png",2;
+			mes "[瑪藍]";
+			mes "看來你還沒有建立副本。請稍後再確認一次。";
+			close3;
+		case IE_NOMEMBER:
+			mes "[瑪藍]";
+			mes "^ff0000只有隊伍成員才能進入紀念碑副本。^000000";
+			close;
+		case IE_OK:
+			mapannounce "que_thr", "隊伍 " + getpartyname( getcharid(1) ) + " 的 " + strcharinfo(0) + " 正在進入 " + .@md_name$ + "。", bc_map, 0xFF99;
+// warp 1@tcamp,103,237;
+			end;
+		}
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(16577) == 1" );
+	end;
+}
+
+1@tcamp,106,237,3	script	瑪藍#Base1	4_EP18_MARAM,{
+	mes "[瑪藍]";
+	mes "小心探查內部。";
+	mes "根據我之前從蒲公英那裡聽來的情報，這裡的人不多，但到處都有監視塔監控著相當廣的區域。";
+	next;
+	mes "[瑪藍]";
+	mes "如果被監視塔發現，士兵就會出現，所以要小心別被發現。";
+	mes "那麼，如果你發現了什麼，請聯絡我！";
+	close;
+
+OnInstanceInit:
+	'step = 0;
+	'map_tcamp$ = instance_mapname("1@tcamp");
+
+	setcell 'map_tcamp$,137,216,142,216,cell_walkable,0;
+	setcell 'map_tcamp$,135,145,144,145,cell_walkable,0;
+	setcell 'map_tcamp$,223,105,223,110,cell_walkable,0;
+	setcell 'map_tcamp$,80,94,80,100,cell_walkable,0;
+
+	// some monsters spawn randomly
+	monster 'map_tcamp$,0,0,"基地士兵",21310,18;	// EP18_MD_GUARD_A
+	monster 'map_tcamp$,0,0,"基地士兵",21309,18;	// EP18_MD_THOR_GUARD
+	end;
+}
+
+// unknown npc effect
+// 1@tcamp,244,152,3	duplicate(dummy_npc)	#Remote 1	CLEAR_NPC
+
+
+//-------------------------------------------------------------------
+// Traps
+//-------------------------------------------------------------------
+1@tcamp,120,228,3	script	監視塔#Watch1	4_SYSTEM_BOX,7,7,{
+	end;
+OnTouch:	// note: hidden player trigger the event
+	npctalk "發現入侵者！！";
+	mapannounce 'map_tcamp$, "發現入侵者，發現入侵者。立即排除。", bc_map, 0xFF0000;
+	getmapxy .@map$,.@x,.@y, BL_NPC;
+
+	areamonster 'map_tcamp$,.@x-2,.@y-2,.@x+2,.@y+2,"基地士兵",21309,3;
+// EP18_MD_THOR_GUARD
+	areamonster 'map_tcamp$,.@x-2,.@y-2,.@x+2,.@y+2,"基地士兵",21310,3;	// EP18_MD_GUARD_A
+	end;
+OnTimer2000:
+	specialeffect EF_WARP;
+	initnpctimer;
+	end;
+OnInstanceInit:
+	initnpctimer;
+	end;
+}
+
+1@tcamp,135,228,3	duplicate(監視塔#Watch1)	監視塔#Watch2	4_SYSTEM_BOX,7,7
+1@tcamp,152,133,3	duplicate(監視塔#Watch1)	監視塔#Watch3	4_SYSTEM_BOX,7,7
+1@tcamp,167,133,3	duplicate(監視塔#Watch1)	監視塔#Watch4	4_SYSTEM_BOX,7,7
+1@tcamp,182,133,3	duplicate(監視塔#Watch1)	監視塔#Watch5	4_SYSTEM_BOX,7,7
+1@tcamp,161,96,3	duplicate(監視塔#Watch1)	監視塔#Watch6	4_SYSTEM_BOX,7,7
+1@tcamp,146,96,3	duplicate(監視塔#Watch1)	監視塔#Watch7	4_SYSTEM_BOX,7,7
+1@tcamp,116,102,3	duplicate(監視塔#Watch1)	監視塔#Watch8	4_SYSTEM_BOX,7,7
+1@tcamp,88,92,3	duplicate(監視塔#Watch1)	監視塔#Watch9	4_SYSTEM_BOX,7,7
+1@tcamp,240,148,3	duplicate(監視塔#Watch1)	監視塔#Watch10	4_SYSTEM_BOX,7,7
+1@tcamp,156,71,3	duplicate(監視塔#Watch1)	監視塔#Watch11	4_SYSTEM_BOX,7,7
+1@tcamp,176,194,3	duplicate(監視塔#Watch1)	監視塔#Watch12	4_SYSTEM_BOX,7,7
+1@tcamp,192,194,3	duplicate(監視塔#Watch1)	監視塔#Watch13	4_SYSTEM_BOX,7,7
+1@tcamp,142,153,3	duplicate(監視塔#Watch1)	監視塔#Watch14	4_SYSTEM_BOX,7,7
+1@tcamp,142,168,3	duplicate(監視塔#Watch1)	監視塔#Watch15	4_SYSTEM_BOX,7,7
+1@tcamp,192,179,3	duplicate(監視塔#Watch1)	監視塔#Watch16	4_SYSTEM_BOX,7,7
+1@tcamp,237,90,3	duplicate(監視塔#Watch1)	監視塔#Watch17	4_SYSTEM_BOX,7,7
+
+
+//-------------------------------------------------------------------
+// Walls
+//-------------------------------------------------------------------
+1@tcamp,138,216,3	script	鎖定裝置#1-1	4_ROPEPILE,{
+	.@maram$ = instance_npcname("瑪藍#Lock Device1");
+	enablenpc .@maram$;
+	npctalk "瑪藍：請等一下。我知道怎麼打開它。", .@maram$;
+	progressbar_npc "3131FF",10;
+	npctalk "瑪藍：好了，我們現在可以通過了！", .@maram$;
+	disablenpc instance_npcname("鎖定裝置#1-1");
+	disablenpc instance_npcname("鎖定裝置#1-2");
+	disablenpc .@maram$;
+	setcell 'map_tcamp$,137,216,142,216,cell_walkable,1;
+	end;
+}
+1@tcamp,141,216,3	duplicate(鎖定裝置#1-1)	鎖定裝置#1-2	4_ROPEPILE
+1@tcamp,140,218,3	duplicate(dummy_disabled_npc)	瑪藍#Lock Device1	4_EP18_MARAM
+
+1@tcamp,136,145,3	script	鎖定裝置#2-1	4_ROPEPILE,{
+	.@maram$ = instance_npcname("瑪藍#Lock Device2");
+	enablenpc .@maram$;
+	progressbar_npc "3131FF",10;
+	npctalk "最好還是小心前進。", .@maram$;
+	disablenpc instance_npcname("鎖定裝置#2-1");
+	disablenpc instance_npcname("鎖定裝置#2-2");
+	disablenpc instance_npcname("鎖定裝置#2-3");
+	disablenpc instance_npcname("鎖定裝置#2-4");
+	disablenpc .@maram$;
+	setcell 'map_tcamp$,135,145,144,145,cell_walkable,1;
+	end;
+}
+1@tcamp,138,145,3	duplicate(鎖定裝置#2-1)	鎖定裝置#2-2	4_ROPEPILE
+1@tcamp,141,145,3	duplicate(鎖定裝置#2-1)	鎖定裝置#2-3	4_ROPEPILE
+1@tcamp,143,145,3	duplicate(鎖定裝置#2-1)	鎖定裝置#2-4	4_ROPEPILE
+1@tcamp,142,147,3	duplicate(dummy_disabled_npc)	瑪藍#Lock Device2	4_EP18_MARAM
+
+1@tcamp,223,109,3	script	鎖定裝置#3-1	4_ROPEPILE,{
+	.@maram$ = instance_npcname("瑪藍#Lock Device3");
+	enablenpc .@maram$;
+	npctalk "瑪藍：這棟建築看起來很可疑吧？這裡面一定也有監視系統。", .@maram$;
+	progressbar_npc "3131FF",10;
+	npctalk "瑪藍：這次我們小心探查，注意別被發現了。", .@maram$;
+	disablenpc instance_npcname("鎖定裝置#3-1");
+	disablenpc instance_npcname("鎖定裝置#3-2");
+	disablenpc .@maram$;
+	setcell 'map_tcamp$,223,105,223,110,cell_walkable,1;
+	end;
+}
+1@tcamp,223,106,3	duplicate(鎖定裝置#3-1)	鎖定裝置#3-2	4_ROPEPILE
+1@tcamp,226,114,3	duplicate(dummy_disabled_npc)	瑪藍#Lock Device3	4_EP18_MARAM
+
+1@tcamp,80,99,3	script	鎖定裝置#4-1	4_ROPEPILE,{
+	.@maram$ = instance_npcname("瑪藍#Lock Device4");
+	enablenpc .@maram$;
+	npctalk "瑪藍：看來我們已經深入內部了。我們應該能安全地找到我們需要的東西。", .@maram$;
+	progressbar_npc "3131FF",10;
+	npctalk "瑪藍：祝你好運？", .@maram$;
+	disablenpc instance_npcname("鎖定裝置#4-1");
+	disablenpc instance_npcname("鎖定裝置#4-2");
+	disablenpc instance_npcname("鎖定裝置#4-3");
+	disablenpc .@maram$;
+	setcell 'map_tcamp$,80,94,80,100,cell_walkable,1;
+
+	enablenpc instance_npcname("成堆的文件#Base1");
+	enablenpc instance_npcname("成堆的文件#Base2");
+	enablenpc instance_npcname("成堆的文件#Base3");
+	enablenpc instance_npcname("成堆的文件#Base4");
+	enablenpc instance_npcname("成堆的文件#Base5");
+	enablenpc instance_npcname("米莉亞#Base1");
+	enablenpc instance_npcname("瑪藍#Base5");
+	if ('step == 0)
+		'step = 1;
+	end;
+}
+1@tcamp,80,97,3	duplicate(鎖定裝置#4-1)	鎖定裝置#4-2	4_ROPEPILE
+1@tcamp,80,95,3	duplicate(鎖定裝置#4-1)	鎖定裝置#4-3	4_ROPEPILE
+1@tcamp,82,100,3	duplicate(dummy_disabled_npc)	瑪藍#Lock Device4	4_EP18_MARAM
+
+
+//-------------------------------------------------------------------
+// Final
+//-------------------------------------------------------------------
+1@tcamp,32,100,3	script(DISABLED)	成堆的文件#Base1	4_EP18_PAPERS,{
+	if ('step != 1)
+		end;
+	mes "[成堆的文件]";
+	mes "各種文件全混在一起。";
+	mes "我從中間抽出幾頁，發現是武器的有效期限和銷售紀錄。";
+	next;
+	mes "[成堆的文件]";
+	mes "連日期都非常近。還有一筆將大量武器交給蒲公英先生的紀錄。";
+	mes "看來我找到我要找的東西了。我把文件收進懷裡。";
+	close2;
+	getitem 1000409,1;	// Ep18_Docu_File
+	cloakonnpcself();
+	end;
+}
+
+1@tcamp,49,123,3	script(DISABLED)	成堆的文件#Base2	4_EP18_PAPERS,{
+	if ('step != 1)
+		end;
+	mes "[成堆的文件]";
+	mes "各種文件全混在一起。";
+	mes "最上面的一頁... 是為了決定午餐菜單而展開的戰鬥嗎？";
+	next;
+	mes "[成堆的文件]";
+	mes "看來菜單已經決定是淋上醬汁的炸魚了....";
+	mes "看來他只留下了一些不重要的文件。我們暫時先別管它們。";
+	close2;
+	getitem 1000409,1;
+// Ep18_Docu_File
+	cloakonnpcself();
+	end;
+}
+
+1@tcamp,29,86,3	script(DISABLED)	成堆的文件#Base3	4_EP18_PAPERS,{
+	if ('step != 1)
+		end;
+	mes "[成堆的文件]";
+	mes "各種文件全混在一起。";
+	mes "我從中間抽出一張看了看... 是軍事基地守衛的配置圖嗎？";
+	next;
+	mes "[成堆的文件]";
+	mes "看日期，這是很久以前的文件了。";
+	mes "看來他只留下了一些不重要的文件。我們暫時先別管它們。";
+	close2;
+	getitem 1000409,1;
+// Ep18_Docu_File
+	cloakonnpcself();
+	end;
+}
+
+1@tcamp,60,122,3	script(DISABLED)	成堆的文件#Base4	4_EP18_PAPERS,{
+	if ('step != 1)
+		end;
+	mes "[成堆的文件]";
+	mes "各種文件全混在一起。";
+	mes "最上面那章是...『如果餵熔岩波利吃馬鈴薯，過一段時間再狩獵它，它會掉落烤馬鈴薯嗎？』";
+	next;
+	mes "[成堆的文件]";
+	mes "...為什麼這裡會有這個？不過我對結果挺好奇的！";
+	mes "看來他只留下了一些不重要的文件。我們暫時先別管它們。";
+	close2;
+	getitem 1000409,1;
+// Ep18_Docu_File
+	cloakonnpcself();
+	end;
+}
+
+1@tcamp,31,84,3	script(DISABLED)	成堆的文件#Base5	4_EP18_PAPERS,{
+	if ('step != 1)
+		end;
+	mes "[成堆的文件]";
+	mes "各種文件全混在一起。";
+	mes "當我從中間抽出一張時... 我發現了一幅用筆畫著教皇餅乾糖霜的教皇插圖。";
+	next;
+	mes "[成堆的文件]";
+	mes "這是什麼畫？而且畫得真好....";
+	mes "看來他只留下了一些不重要的文件。我們暫時先別管它們。";
+	close2;
+	getitem 1000409,1;
+// Ep18_Docu_File
+	cloakonnpcself();
+	end;
+}
+
+
+1@tcamp,34,100,3	script(DISABLED)	米莉亞#Base1	4_EP18_MIRIAM,3,3,{
+	if ('step == 1) {
+		if (countitem(1000409) < 5) {	// Ep18_Docu_File
+			cutin "ep18_miriam_02.png",2;
+			mes "[米莉亞]";
+			mes "果然，你很有天賦，冒險者。我動用了所有的人脈才找出這個位置。";
+			mes "看來你馬上就找到了冒險者和瑪藍。";
+			next;
+			mes "[米莉亞]";
+			mes "請閱讀這些文件。裡面有我們要找的東西。";
+			mes "與其讓我向你解釋一切，不如你自己親眼看看。";
+			close3;
+		}
+		if (getequipid(EQI_HEAD_TOP) != 400127) {	// Ep18_Mini_Elly
+			mes "[迷你艾莉]";
+			mes "從包包裡拿出來。戴在頭上。";
+			close;
+		}
+		mes "[米莉亞]";
+		mes ".......";
+		next;
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "不對，米莉亞！妳怎麼會在這裡？";
+		mes "不是說好要分頭調查的嗎！";
+		next;
+		cutin "ep18_miriam_01.png",2;
+		mes "[米莉亞]";
+		mes "妳和冒險者是怎麼深入到這裡的？";
+		mes "果然，你們的身手不錯。我動用了所有的人脈才找出這個位置，但你們立刻就找到了。";
+		next;
+		cutin "ep18_maram_02.png",2;
+		mes "[瑪藍]";
+		mes "我們想點辦法吧，對吧，冒險者？";
+		mes "總之，你們得到了什麼情報？";
+		next;
+		cutin "ep18_miriam_02.png",2;
+		mes "[米莉亞]";
+		mes "看這裡的這份文件。";
+		next;
+		cutin "",255;
+		mes "[迷你艾莉]";
+		mes "這份文件是武器銷售紀錄。請讓我看看。";
+		mes "這些人處理掉的所有武器和槍械，距離有效期限都不到一年了。";
+		next;
+		cutin "ep18_miriam_03.png",2;
+		mes "[米莉亞]";
+		mes "你們就這樣草率地出售武器。";
+		mes "如果武器沒有妥善保養，就無法發揮正常功能。";
+		next;
+		cutin "ep18_maram_03.png",2;
+		mes "[瑪藍]";
+		mes "從後門流出的所有武器品質都是一樣的。";
+		mes "...但我想也是在這個時間點了。";
+		next;
+		mes "[瑪藍]";
+		mes "一年的有效期限不算長，但也算不上太緊。";
+		mes "為什麼偏偏在我們準備抗議的這個時候大量流出？";
+		next;
+		mes "[瑪藍]";
+		mes "根本沒有必要立刻處理掉它。";
+		next;
+		cutin "ep18_miriam_02.png",2;
+		mes "[米莉亞]";
+		mes "這是我養父管理的軍事基地之一。";
+		mes "我還在想會不會真的在這種時候跑出來。";
+		next;
+		cutin "",255;
+		select( "如果說是妳的養父，那是祭司 阿瑪爾嗎？", "那個身為強硬派又好戰的養父嗎？" );
+		cutin "ep18_miriam_02.png",2;
+		mes "[米莉亞]";
+		mes "沒錯，冒險者。我看了帳本，看來我養父並沒有牽涉其中。";
+		mes "我想這只是一起最底層的個別貪腐事件，也就是武器外流事件。";
+		next;
+		mes "[米莉亞]";
+		mes "我還需要再深入調查一下，但這是我目前的猜測。";
+		mes "噢，請把文件給我。我要把它們當作證據帶走。";
+		delitem 1000409,5;
+// Ep18_Docu_File
+		if ('step == 1)
+			'step = 2;
+		if (isbegin_quest(16578) == 1) {
+			erasequest 16578;
+			setquest 16579;
+		}
+		close2;
+		cutin "",255;
+		npctalk "瑪藍：哈，這還真是有趣。", instance_npcname("瑪藍#Base5");
+		end;
+	}
+	if ('step == 2) {
+		cutin "ep18_miriam_02.png",2;
+		mes "[米莉亞]";
+		mes "...稍等一下，我正在閱讀文件。";
+		close;
+	}
+	end;
+
+OnTouch:
+	if (countitem(1000409) < 5)
+		npctalk "米莉亞：噢，冒險者？瑪藍，你也來了！？";
+end;
+
+OnInstanceInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(16578) == 1 && countitem(1000409) > 4" );	// Ep18_Docu_File
+	end;
+}
+
+1@tcamp,32,102,3	script(DISABLED)	瑪藍#Base5	4_EP18_MARAM,{
+	if ('step == 1) {
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "我不知道米莉亞會在這裡。對吧，冒險者？";
+		close3;
+	}
+	if ('step == 2) {
+		mes "[瑪藍]";
+		mes "雖然是分頭行動，結果卻來到了同一個地方。";
+		mes "不過，從這過程中得到的東西不同，我想這還是有意義的。";
+		next;
+		cutin "ep18_miriam_02.png",2;
+		mes "[米莉亞]";
+		mes "那我想我得暫時離開一下了。";
+		mes "我得把我的發現轉告給我的養父。";
+		next;
+		mes "[米莉亞]";
+		mes "如果是個別的貪腐事件，很有可能連我養父都還不知情。";
+		next;
+		cutin "ep18_maram_03.png",2;
+		mes "[瑪藍]";
+		mes "這真的是單純的個別貪腐事件嗎？這是讓我感到在意的地方。";
+		mes "我也有東西要送到拉赫，所以米莉亞，我們一起走吧。";
+		next;
+		cutin "ep18_maram_01.png",2;
+		mes "[瑪藍]";
+		mes "我會告訴你一條出去的捷徑，所以冒險者，能麻煩你把在這裡發現的事告訴蘇亞得嗎？";
+		mes "我們很快就會跟上，所以請你先去通知他。";
+		if (ep18_main == 46) {
+			ep18_main = 47;
+			erasequest 16579;
+			setquest 16580;
+			getitem 1000405,50;	// Ep18_Amethyst_Fragment
+		}
+		close2;
+		warp "wolfvill",162,154;
+		end;
+	}
+	// debug
+	warp "wolfvill",162,154;
+	end;
+OnInstanceInit:
+	questinfo( QTYPE_QUEST2, QMARK_YELLOW, "isbegin_quest(16579) == 1" );
+	end;
+}

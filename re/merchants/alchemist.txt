@@ -1,0 +1,121 @@
+//===== rAthena Script ======================================= 
+//= Alchemist Shop
+//===== By: ================================================== 
+//= rAthena Dev Team
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Merchants for Alchemist Materials and Manuals.
+//===== Additional Comments: ================================= 
+//= 1.0 Split Geneticist shop from main file. [Euphy]
+//=     Updated dialogue to match the official script.
+//============================================================ 
+
+// Main NPC :: craft_book_alche_skill_npc
+//============================================================
+alde_alche,31,186,3	script	製造書商人#alde	883,{
+	mes "[製造書商人]";
+	mes "歡迎光臨。";
+	mes "我是在這裡販賣";
+	mes "基因學者專屬^0000FF特殊製造書籍^000000的人。";
+	next;
+	mes "[製造書商人]";
+	mes "基因學者有一些技能";
+	mes "必須要有對應的製造書才能發動。";
+	next;
+	mes "[製造書商人]";
+	mes "所以擁有的製造書越多，";
+	mes "能使用的技能就越豐富。";
+	next;
+	mes "[製造書商人]";
+	mes "請您諒解，";
+	mes "我只專門販售這些特殊的書籍，";
+	mes "^FF0000沒有販售其他物品^000000。";
+	next;
+	mes "[製造書商人]";
+	mes "您要看看我賣的製造書嗎？";
+	next;
+	if(select("好啊。:不了。") == 2) {
+		mes "[製造書商人]";
+		mes "感謝您光臨本店。";
+		mes "祝您旅途平安。";
+		close;
+	}
+	if (checkweight(1201,1) == 0) {
+		mes "[製造書商人]";
+		mes "抱歉，您的物品欄似乎已經滿了。";
+		mes "請先清空您的物品欄。";
+		close;
+	}
+	if (MaxWeight - Weight < 2500) {
+		mes "[製造書商人]";
+		mes "請先清空您的物品欄。";
+		close;
+	}
+	mes "[製造書商人]";
+	mes "好的，以下是目前可購買的製造書清單。";
+	next;
+	switch(select("[蘋果炸彈製造書] 100,000 zeny:[鳳梨炸彈製造書] 100,000 zeny:[椰子炸彈製造書] 100,000 zeny:[香瓜炸彈製造書] 100,000 zeny:[香蕉炸彈製造書] 100,000 zeny:[植物栽培法] 100,000 zeny:[高等藥水製造書] 100,000 zeny:[混合料理書] 100,000 zeny:[體力向上研究書] 100,000 zeny:[精力飲料配方] 100,000 zeny:關閉")){
+	case 1: set .@item,6279; break;
+	case 2: set .@item,6280; break;
+	case 3: set .@item,6281; break;
+	case 4: set .@item,6282; break;
+	case 5: set .@item,6283; break;
+	case 6: set .@item,6284; break;
+	case 7: set .@item,6285; break;
+	case 8: set .@item,11022; break;
+	case 9: set .@item,11023; break;
+	case 10: set .@item,11024; break;
+	case 11:
+		mes "[製造書商人]";
+		mes "感謝您的惠顧。";
+		mes "歡迎下次再來。";
+		close;
+	}
+	mes "[製造書商人]";
+	mes "^0000FF["+getitemname(.@item)+"]^000000 的價格是";
+	mes "100,000 zeny。";
+	mes "請問您要購買幾個？";
+	next;
+	input .@amount;
+	if (.@amount == 0) {
+		mes "[製造書商人]";
+		mes "您想看看其他的書籍嗎？";
+		close;
+	}
+	if (.@amount < 1 || .@amount > 99 ){
+		mes "[製造書商人]";
+		mes "您一次無法購買 100 個以上。";
+		close;
+	}
+	mes "[製造書商人]";
+	mes "您要購買 "+.@amount+"個 ^0000FF["+getitemname(.@item)+"]^000000。";
+	mes "確定要繼續嗎？";
+	next;
+	if (select("是的:取消") == 1) {
+		set .@total, .@amount * 100000;
+		if (Zeny < .@total) {
+			mes "[製造書商人]";
+			mes "抱歉，您的 Zeny 似乎不夠。";
+			close;
+		}
+		if (checkweight(.@item,.@amount) == 0){
+			mes "[製造書商人]";
+			mes "您似乎無法攜帶這麼多物品。";
+			mes "請確認您物品欄的空間。";
+			close;
+		}
+		mes "[製造書商人]";
+		mes "感謝您的惠顧。";
+		set Zeny,Zeny - .@total;
+		getitem .@item,.@amount;
+		close;
+	}
+	mes "[製造書商人]";
+	mes "請慢慢挑選，";
+	mes "決定好了再告訴我。";
+	close;
+}

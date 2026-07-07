@@ -1,0 +1,140 @@
+//===== rAthena Script =======================================
+//= War of Emperium (Al De Baran) - Wuerzburg
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= NPCs that relate to Al De Baran Guild Castle 4
+//===== Additional Comments: =================================
+//= 1.0 First Version. No longer uses functions. [L0ne_W0lf]
+//= 1.1 Removed dialog from interior flags. [L0ne_W0lf]
+//= 1.2 Partially rewrote Script. [Masao]
+//============================================================
+
+// Guild Flag (Outside Castle)
+//============================================================
+-	script	維爾茲堡#1::OutsideFlagsA4	722,{
+
+	set .@GID, GetCastleData("aldeg_cas04",1);
+
+	if (.@GID == 0) {
+		mes "[ 神聖盧恩米德加茲王國詔書 ]";
+		mes " ";
+		mes "1. 遵循神聖盧恩米德加茲王國的法令，";
+		mes "我們宣布";
+		mes "這座城池目前沒有正式的主人。";
+		mes " ";
+		mes "2. 凡是能夠";
+		mes "克服所有考驗";
+		mes "並擊碎華麗金屬的人，";
+		mes "國王將賦予他";
+		mes "這座城池的所有權。";
+		close;
+	}
+	if (getcharid(2) == .@GID) {
+		mes "[ 迴盪的聲音 ]";
+		mes "勇敢的人們...";
+		mes "你們希望回到屬於你們的榮耀之地嗎？";
+		next;
+		if(select("回到公會城池。:離開。") == 1) {
+			close2;
+			if (getcharid(2) == GetCastleData("aldeg_cas04",1)) {
+				warp "aldeg_cas04",116,217;
+				end;
+			}
+			end;
+		}
+		close;
+	}
+	mes "[ 神聖盧恩米德加茲王國詔書 ]";
+	mes " ";
+	mes "1. 遵循神聖盧恩米德加茲王國的法令，";
+	mes "我們承認這個地方";
+	mes "歸 ^ff0000"+GetGuildName(.@GID)+"^000000 公會私有。";
+	mes " ";
+	mes "2. ^ff0000"+GetGuildName(.@GID)+"^000000 公會的會長是";
+	mes "^ff0000"+GetGuildMaster(.@GID)+"^000000";
+	mes "如果有人對此有異議，";
+	mes "請用你手中的鋼刃來證明你的實力與榮耀。";
+	close;
+
+OnRecvCastleA04:
+	FlagEmblem GetCastleData("aldeg_cas04",1);
+	end;
+}
+
+alde_gld,239,246,2	duplicate(OutsideFlagsA4)	維爾茲堡#1-2	722
+alde_gld,239,239,2	duplicate(OutsideFlagsA4)	維爾茲堡#2	722
+
+// Guild Flag (Inside Castle)
+//============================================================
+-	script	維爾茲堡#3::InsideFlagsA4	722,{
+	end;
+
+OnRecvCastleA04:
+	FlagEmblem GetCastleData("aldeg_cas04",1);
+	end;
+}
+
+aldeg_cas04,167,61,2	duplicate(InsideFlagsA4)	維爾茲堡#3-2	722
+aldeg_cas04,164,90,2	duplicate(InsideFlagsA4)	維爾茲堡#4	722
+aldeg_cas04,129,193,2	duplicate(InsideFlagsA4)	維爾茲堡#5	722
+aldeg_cas04,112,206,2	duplicate(InsideFlagsA4)	維爾茲堡#6	722
+aldeg_cas04,113,212,2	duplicate(InsideFlagsA4)	維爾茲堡#7	722
+aldeg_cas04,77,117,2	duplicate(InsideFlagsA4)	維爾茲堡#8	722
+aldeg_cas04,186,42,2	duplicate(InsideFlagsA4)	維爾茲堡#9	722
+aldeg_cas04,30,69,2	duplicate(InsideFlagsA4)	維爾茲堡#10	722
+aldeg_cas04,55,97,2	duplicate(InsideFlagsA4)	維爾茲堡#11	722
+aldeg_cas04,45,98,2	duplicate(InsideFlagsA4)	維爾茲堡#12	722
+aldeg_cas04,33,116,2	duplicate(InsideFlagsA4)	維爾茲堡#13	722
+aldeg_cas04,130,180,2	duplicate(InsideFlagsA4)	維爾茲堡#14	722
+aldeg_cas04,129,193,2	duplicate(InsideFlagsA4)	維爾茲堡#15	722
+aldeg_cas04,33,107,2	duplicate(InsideFlagsA4)	維爾茲堡#16	722
+aldeg_cas04,133,220,2	duplicate(InsideFlagsA4)	維爾茲堡#17	722
+aldeg_cas04,169,22,2	duplicate(InsideFlagsA4)	維爾茲堡#18	722
+aldeg_cas04,169,15,2	duplicate(InsideFlagsA4)	維爾茲堡#19	722
+
+// Guild Flag (Town)
+//============================================================
+aldebaran,131,97,4	duplicate(InsideFlagsA4)	維爾茲堡#20	722
+
+// Kafra Employee
+//============================================================
+aldeg_cas04,45,88,0	duplicate(guildkafra)	卡普拉服務人員#aldeg_cas04	117
+
+// Steward
+//============================================================
+aldeg_cas04,67,116,0	duplicate(cm)	布林亨森#aldeg_cas04	55
+
+// Treasure Room Exit
+//============================================================
+aldeg_cas04,83,17,0	script	#lever_A04	111,{
+	mes " ";
+	mes "這裡有一個小拉桿。你要拉下它嗎？";
+	next;
+	if(select("拉下。:不要拉。") == 1) {
+		close2;
+		warp "aldeg_cas04",67,117;
+		end;
+	}
+	close;
+}
+
+// Guild Dungeon Switch
+//============================================================
+aldeg_cas04,76,64,0	duplicate(gdlever)	#aldeg_cas04	111
+
+// Guild Treasure Spawns
+//============================================================
+aldeg_cas04,84,13,0	duplicate(Gld_Trea_Spawn)	寶箱#aldeg_cas04	-1
+
+// AGIT Manager
+//============================================================
+aldeg_cas04,36,218,0	duplicate(Gld_Agit_Manager)	城池#aldeg_cas04	-1
+
+// Guardians
+//============================================================
+aldeg_cas04,67,116,0	duplicate(Gld_Guard_Template)	守護者#aldeg_cas04	-1

@@ -1,0 +1,151 @@
+//===== rAthena Script ======================================= 
+//= Armor Enchanter
+//===== By: ================================================== 
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.3a
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Add a +1, +2, or +3 random stat to a specified armor.
+//===== Additional Comments: ================================= 
+//= 1.0 First version.
+//= 1.1 Corrected typo (Sit -> Suit) (bugreport:4586)
+//= 1.2 Optimized. [Euphy]
+//= 1.3 Fixed some typos and optimized a little more. [Daegaladh]
+//= 1.3a Added 'disable_items' command. [Euphy]
+//============================================================ 
+
+prontera,165,60,2	script	見習工匠	73,{
+	disable_items;
+	mes "[見習工匠]";
+	if (Zeny >= 400000) {
+		mes "我一直在研究如何強化防具以發揮其最大潛能。";
+		next;
+		mes "[見習工匠]";
+		mes "附魔是一項能將神秘的能力注入到防具隱藏插槽中的驚人技術。";
+		next;
+		mes "[見習工匠]";
+		mes "不過，你必須記住，如果你身上有兩件相同的防具，附魔將會依照它們在你物品欄中的順序來進行。";
+		next;
+		mes "[見習工匠]";
+		mes "那樣的話，附魔可能會加在你不想附魔的裝備上。為了安全起見，請只帶 ^5555ff一件你要附魔的防具^000000 來...";
+		next;
+		mes "[見習工匠]";
+		mes "如果你物品欄裡有多件相同的防具，發生什麼後果我可不負責喔。";
+		next;
+		switch(select("無洞防具。:有洞防具。:高級防具。:下次再說吧。")) {
+		case 1:
+			setarray .@Items[0],2307,2309,2314,2316,2321,2325,2327,2328,2330,2332,2334,2335,2341,2344,2346,2348,2350,2337,2386,2394,2395,2396;
+			set .@j,50;
+			break;
+		case 2:
+			setarray .@Items[0],2311,2318,2319,2320,2308,2310,2315,2317,2322,2324,2326,2331,2333,2336,2342,2345,2347,2349,2351;
+			set .@j,55;
+			set .@k,1;
+			break;
+		case 3:
+			setarray .@Items[0],2364,2365,2391,2374,2375,2376,2377,2378,2379,2380,2381,2382,2387,2388,2389,2390;
+			set .@j,60;
+			break;
+		case 4:
+			mes "[見習工匠]";
+			mes "當你對防具附魔有興趣時，請再來找我吧。";
+			close;
+		}
+		set .@menu$,"";
+		for(set .@i,0; .@i<getarraysize(.@Items); set .@i,.@i+1)
+			set .@menu$, .@menu$+getitemname(.@Items[.@i])+((.@k)?" [1]":"")+":";
+		callsub S_EnchantArmor, .@Items[select(.@menu$)-1], .@j;
+		end;
+	}
+	mes "我負責防具的附魔。簡單來說，我一直在研究強化防具的方法。";
+	next;
+	mes "[見習工匠]";
+	mes "如果你想幫你的防具附魔，請帶 400,000 Zeny 和你想附魔的防具來找我，一切就準備就緒了。";
+	close;
+
+S_EnchantArmor:
+	set .@itemid,getarg(0);
+	set .@failrate,getarg(1);
+	mes "[見習工匠]";
+	if (countitem(.@itemid) == 1) {
+		mes "插槽附魔需要花費 400,000 Zeny。並且會隨機附加一種能力。當然，你的防具也有損壞的風險。";
+		next;
+		mes "[見習工匠]";
+		mes "第一點也是最重要的一點。";
+		mes "^ff5555防具上現有的精煉值";
+		mes "與卡片將會消失。^000000";
+		mes "你還想嘗試附魔嗎？";
+		next;
+		if(select("嗯... 讓我再想一下。:開始吧。") == 1) {
+			mes "[見習工匠]";
+			mes "好吧，我不能怪你。安全第一，對吧？";
+			mes "祝你有個美好的一天。";
+			close;
+		}
+		mes "[見習工匠]";
+		mes "真是個有冒險精神的人呢？那麼，我們開始吧？";
+		close2;
+		specialeffect2 EF_MAPPILLAR;
+		if (Zeny < 400000) {
+			mes "[見習工匠]";
+			mes "抱歉，但是你的 Zeny 不夠。";
+			close;
+		}
+		progressbar "ffff00",7;
+		set Zeny, Zeny-400000;
+		delitem .@itemid,1;
+		switch (rand(1,.@failrate)) {
+			case 1: set .@addpart,4702;break;
+			case 2: set .@addpart,4712;break;
+			case 3: set .@addpart,4722;break;
+			case 4: set .@addpart,4732;break;
+			case 5: set .@addpart,4742;break;
+			case 6: set .@addpart,4752;break;
+			case 7:
+			case 8: set .@addpart,4701;break;
+			case 9:
+			case 10: set .@addpart,4711;break;
+			case 11:
+			case 12: set .@addpart,4721;break;
+			case 13:
+			case 14: set .@addpart,4731;break;
+			case 15:
+			case 16: set .@addpart,4741;break;
+			case 17:
+			case 18: set .@addpart,4751;break;
+			case 19:
+			case 20:
+			case 21: set .@addpart,4700;break;
+			case 22:
+			case 23:
+			case 24: set .@addpart,4710;break;
+			case 25:
+			case 26:
+			case 27: set .@addpart,4720;break;
+			case 28:
+			case 29:
+			case 30: set .@addpart,4730;break;
+			case 31:
+			case 32:
+			case 33: set .@addpart,4740;break;
+			case 34:
+			case 35:
+			case 36: set .@addpart,4750;break;
+			default:
+				specialeffect2 EF_PHARMACY_FAIL;
+				mes "[見習工匠]";
+				mes "哎呀，真是太糟糕了。";
+				mes "你要求的裝備附魔失敗了。";
+				close;
+		}
+		getitem2 .@itemid, 1, 1, 0, 0, 0, 0, 0, .@addpart;
+	}
+	else {
+		mes "嗯？沒有東西可以附魔啊！";
+		mes "請帶著『一件』你要附魔的裝備再來找我吧。";
+		close;
+	}
+}

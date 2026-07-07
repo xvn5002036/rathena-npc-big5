@@ -1,0 +1,195 @@
+//===== rAthena Script =======================================
+//= Karachun Event (Xmas Rings Quest)
+//===== By: ==================================================
+//= Lupus (1.0)
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project;
+//= SVN r4880+
+//===== Description: =========================================
+//= Custom event: Karachun (from 8 Dec till 8 Jan), X-Mas, HNY
+//===== Additional Comments: =================================
+//= 1.0 Tested, fully working.
+//= 1.0a a few typos fix
+//= 1.1 Readded Mdef +1 and  Luk +1 to Santa's Hat [Lupus]
+//= 1.2 Fixed double quotes not being escaped [brianluau]
+//============================================================
+
+prontera,156,174,4	script	史諾爾	713,{
+	mes "[史諾爾]";
+	if (Q_XMSRINGS == 2) {
+		mes "喔... 這是真的嗎？你幫了我的妹妹史妮維？謝謝你。";
+	} else if (Q_XMSRINGS == 3) {
+		mes "史努維讓小鳥傳了訊息給我。她告訴我你幫了忙...";
+		mes "我來告訴你一個關於魔法戒指的秘密。";
+		emotion ET_BEST;
+		next;
+		mes "[史諾爾]";
+		mes "它們的魔力只在 12 月 8 日到 1 月 8 日之間有效。";
+		next;
+		mes "[史諾爾]";
+		mes "順帶一提，只要戴上聖誕帽就能發揮它們真正的力量。";
+		next;
+		mes "[史諾爾]";
+		mes "如果你同時戴上兩枚戒指，它們的力量將會倍增。";
+		mes "祝你有個美好的一天！";
+		close;
+	} else {
+		mes "嗨！我的兩個姊妹和我正在為這 3 個節日準備禮物！";
+	}
+	emotion ET_CRY;
+	next;
+	menu "你的姊妹們在哪裡？",-, "什麼節日？",M_PR,"什麼禮物？",M_WRAP,"需要我幫忙嗎？",M_QUEST;
+
+	mes "[史諾爾]";
+	mes "我的小妹史妮維去了一個遙遠的地方，為那裡貧苦的孩子們準備禮物... 我不知道在哪裡。你應該去問我的大妹和她的小鳥們。";
+	next;
+	mes "[史諾爾]";
+	mes "我大妹？她的名字是史努維。她航行到了一座綠色島嶼... 她說要給海豚什麼的準備禮物...";
+	close;
+
+M_PR:
+	mes "[史諾爾]";
+	mes "全部的三個節日？它們可是接連著來的呢！";
+	mes "^000080聖誕節^000000、^FF0000卡拉春節^000000 和 ^008000跨年夜^000000！";
+	next;
+	mes "[史諾爾]";
+	mes "^FF0000卡拉春節^000000？呵... 這是一個古老的異教徒節日。你知道的，在新年和聖誕節出現之前，他們都是慶祝這個節日的。";
+	next;
+	goto M_QUEST;
+
+M_WRAP:
+	mes "[史諾爾]";
+	mes "我的姊妹們說，所有的禮物都應該包裝得一模一樣。否則有些孩子可能會為了漂亮的禮物打架！";
+	next;
+	mes "[史諾爾]";
+	mes "你需要我用灰色包裝紙幫你把那些花俏的禮物盒包起來嗎？";
+	next;
+	menu "請幫我包裝！",-, "不用了，謝謝。",M_QUEST;
+
+	set @prizes, countitem(664)+countitem(665)+countitem(666)+countitem(667);
+	if (@prizes == 0) {
+		mes "[史諾爾]";
+		mes "我沒有看到你身上有任何花俏的禮物盒...";
+		if(countitem(644))mes "你身上只有灰色的盒子。";
+		close;
+	}
+	delitem 664,countitem(664);
+	delitem 665,countitem(665);
+	delitem 666,countitem(666);
+	delitem 667,countitem(667);
+	getitem 644,@prizes;
+
+	mes "[史諾爾]";
+	mes "*沙沙沙* 包好了，給你。";
+	next;
+
+M_QUEST:
+	mes "[史諾爾]";
+	mes "希望你能盡快找到我的姊妹們... 她們需要幫忙。";
+	if (Q_XMSRINGS == 0) set Q_XMSRINGS,1;
+	close;
+OnInit:
+//Santa's Hat
+	setitemscript 2236,"{ bonus bMdef,1; bonus bLuk,1; if(isequipped(2636,2637)){if(@xmr == gettime(DT_MINUTE))end; set @xmr,gettime(DT_MINUTE); misceffect EF_RAINBOW; end;} if(isequipped(2636)){if(@xmr == gettime(DT_MINUTE))end; set @xmr,gettime(DT_MINUTE); misceffect EF_SPHERE;} if(isequipped(2637)){if(@xmr == gettime(DT_MINUTE))end; set @xmr,gettime(DT_MINUTE); misceffect EF_ANGEL2;}}";
+//Gold Xmas Ring
+	setitemscript 2636,"{ bonus bLoseSPWhenUnequip,30; if(isequipped(2236)==0)end; if(getskilllv(\"AL_HEAL\")){skill \"TF_HIDING\",4+isequipped(2637);}else{skill \"AL_HEAL\",1+4*isequipped(2637);} }";
+//Silver Xmas Ring
+	setitemscript 2637,"{ bonus bDamageWhenUnequip,40; if(isequipped(2236)==0)end; if(getskilllv(\"AL_TELEPORT\")){skill \"MC_IDENTIFY\",1;}else{skill \"AL_TELEPORT\",1+isequipped(2636);} }";
+	end;
+}
+
+louyang,224,249,4	script	史妮維	717,{
+	mes "[史妮維]";
+	if (Q_XMSRINGS == 0) {
+		mes "嗨！我正在等我姊姊的小鳥送信來...";
+		emotion ET_CRY;
+		close;
+	}
+	if (Q_XMSRINGS == 1) {
+		mes "真希望我還有 4 個灰色的禮物盒可以給當地的孩子們...";
+		emotion ET_CRY;
+		next;
+		mes "[史妮維]";
+		mes "喔，你好。我的哥哥史諾爾把事情都告訴你了嗎？";
+		next;
+		menu "這是妳要的 4 個禮物盒",-, "我不認識什麼史諾爾的...",M_END;
+
+		mes "[史妮維]";
+		if (countitem(644) < 4) {
+			mes "給我 4 個給可憐孩子們的禮物... 等等，你身上沒有 4 個啊！";
+			emotion ET_SORRY;
+			close;
+		}
+		set Q_XMSRINGS,2;
+		delitem 644,4;
+		getnameditem 2637,strcharinfo(0);
+		emotion ET_CHUPCHUP;
+		mes "謝謝你！這點小東西送給你！";
+		next;
+		mes "[史妮維]";
+		mes "順帶一提，如果你戴上 2 枚不同的戒指，你在節日期間練功會更輕鬆喔！";
+		close;
+	}
+	emotion ET_THANKS;
+	mes "再次感謝！沒有任何孩子會在沒有禮物的情況下度過節日了！";
+	close;
+
+M_END:
+	mes "[史妮維]";
+	mes "真可惜... 我有一枚有魔力的聖誕戒指... 我原本想用它來換 4 個禮物盒的...";
+	emotion ET_SWEAT;
+	close;
+}
+
+izlu2dun,133,160,2	script	史努維	714,{
+	mes "[史努維]";
+	if (Q_XMSRINGS == 0) {
+		mes "哈囉??！你認識我的弟弟和妹妹嗎？怎麼會呢？我的弟弟史諾爾在普隆德拉可是很有名的！！去問那裡的任何一個孩子就知道。";
+		emotion ET_SCRATCH;
+		close;
+	}
+	if (Q_XMSRINGS == 1) {
+		mes "可惡... 貧苦的孩子怎麼會比海洋生物還重要呢... 難道我錯了嗎？";
+		next;
+		mes "[史努維]";
+		mes "呃。哈囉。我的妹妹史妮維傳了小鳥訊息給我。但是信弄濕了，除了她地址最後的幾個字外，我什麼都看不清楚...";
+		next;
+		mes "[史努維]";
+		mes "你看，最後幾個字好像是『yang（陽）』... 嗯... 她一定是把『阿爾·迪·波陽（Al Doo Boryang）』拼錯了...";
+		close;
+	}
+	if (Q_XMSRINGS == 2) {
+		mes "你幫了我的妹妹？那真是太好了！";
+		next;
+		mes "[史努維]";
+		mes "但我這邊也還需要 3 個禮物給我的海洋朋友們...";
+		next;
+		menu "這些禮物給妳！",-, "我需要一點回報",M_END;
+
+		mes "[史努維]";
+		if (countitem(644) < 3) {
+			mes "糟糕！！你身上沒有 3 個灰色的禮物盒。";
+			emotion ET_SORRY;
+			close;
+		}
+		set Q_XMSRINGS,3;
+		delitem 644,3;
+		getnameditem 2636,strcharinfo(0);
+		emotion ET_CHUP;
+		mes "謝?謝?你！收下這枚魔法戒指吧！";
+		close;
+	}
+	emotion ET_THANKS;
+	mes "喔... 全體海洋生物都向你表達感謝！他們太喜歡禮物了！！！";
+	if (rand(2))
+		mes "你不知道聖誕帽能引發出戒指真正的力量嗎？";
+	close;
+
+M_END:
+	mes "[史努維]";
+	mes "我原本想用一枚金色的魔法戒指換 3 個禮物盒的...";
+	emotion ET_SWEAT;
+	close;
+}

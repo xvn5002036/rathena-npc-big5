@@ -1,0 +1,368 @@
+//===== rAthena Script ======================================= 
+//= Card Separation System
+//===== By: ================================================== 
+//= Muad_Dib
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Separates cards from equipment.
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. [Euphy]
+//= 1.1 Added "Richard" NPC. [Euphy]
+//============================================================ 
+
+-	script	::CardSeparation_mal	-1,{
+	disable_items;
+	if (checkweight(1201,1) == 0) {
+		mes "你攜帶的物品種類太多了。請減少一些後再來吧。";
+		close;
+	}
+	if (MaxWeight - Weight < 10000) {
+		mes "你現在過重了，無法繼續。請減輕重量後再來吧。";
+		close;
+	}
+	if (strnpcinfo(1) == "Jeremy") {
+		set .@Jeremy,1;
+		set .@n$, "[傑勒米]";
+		setarray .@equip_name$[0],  "鎧甲",  "鞋子",  "披肩", "頭上";
+		setarray .@equip_slot[0], EQI_ARMOR,EQI_SHOES,EQI_GARMENT,EQI_HEAD_TOP;
+
+		mes .@n$;
+		mes "好久不見?";
+		mes "我學會了一項可以將卡片從鎧甲、鞋子、披肩和頭飾中分離出來的新技術。你想試試看嗎？";
+	} else {
+		set .@Jeremy,0;
+		set .@n$, "[理查]";
+		setarray .@equip_name$[0], "左手", "右手";
+		setarray .@equip_slot[0],   EQI_HAND_L,   EQI_HAND_R;
+
+		mes .@n$;
+		mes "傻瓜傑勒米因為怕弄壞卡片，所以不想碰武器和盾牌。這就是為什麼我準備了武器和盾牌的卡片分離技術...";
+	}
+	next;
+	mes .@n$;
+	mes "一般手續費是 1,000,000 Zeny。在卡片分離的過程中，你可以使用^990000能降低裝備或卡片損壞機率的特殊物品^000000。我們不會對此額外收費。";
+	next;
+	mes .@n$;
+	mes "即使使用了特殊物品，還是有損壞的可能性。而且，^ff0000精鍊值可能會歸零^000000。你有任何需要分離的裝備嗎？";
+	next;
+
+	for(set .@i,0; .@i<getarraysize(.@equip_slot); set .@i,.@i+1) {
+		if (getequipisequiped(.@equip_slot[.@i]))
+			set .@menu$, .@menu$+getequipname(.@equip_slot[.@i])+":";
+		else
+			set .@menu$, .@menu$+"^999999"+.@equip_name$[.@i]+" (未裝備)^000000:";
+	}
+
+	set .@i, select("停止作業:"+((.@Jeremy)?"這怎麼可能？":"")+":"+.@menu$);
+	switch(.@i) {
+	case 1:
+		mes .@n$;
+		mes "需要服務的時候，隨時來找我。";
+		close;
+	case 2:
+		mes .@n$;
+		mes "你好奇有什麼特別的嗎？嗯，我不喜歡只做簡單的介紹，讓我告訴你一個故事吧...";
+		next;
+		mes "^000099傑勒米伸展了一下肩膀和雙手。他可能正在等有人來跟他說話。^000000";
+		next;
+		mes .@n$;
+		mes "你知道綿綿島的特產是罐頭食品嗎？";
+		next;
+		select("我早就知道了。就只有這樣嗎？");
+		mes .@n$;
+		mes "嘿嘿... 大家都喜歡。但以前有些問題。";
+		next;
+		select("問題？有什麼壞掉的魚嗎？");
+		mes .@n$;
+		mes "不，魚沒有任何問題。問題是加工後會產生大量的魚油。那真是工業廢料。";
+		next;
+		mes .@n$;
+		mes "然而，經過活化提煉的過程，這種魚油變得非常有價值，可用於舊裝備的保養和工業潤滑。";
+		next;
+		mes .@n$;
+		mes "此外，這種油對於將遺物從裝備的武器中分離出來非常有用，以至於我們無法用 Zeny 買到高級潤滑劑和一般潤滑劑。";
+		next;
+		mes .@n$;
+		mes "嗯，別擔心錢的問題。高級潤滑劑當然很貴。如果你付一些 Zeny，我可以給你比較便宜的潤滑劑。";
+		next;
+		mes .@n$;
+		mes "我不敢保證成功率的品質。總之，這很便宜，對吧？";
+		close;
+	default:
+		set .@equip_num, .@equip_slot[.@i-3];
+		if (!getequipisequiped(.@equip_num)) {
+			mes .@n$;
+			if (.@Jeremy)
+				mes "這個部位，什麼都沒有？";
+			else
+				mes "那個部位沒有東西嗎？";
+			close;
+		}
+		break;
+	}
+
+	setarray .@check_equip_card[0], getequipcardid(.@equip_num,0),getequipcardid(.@equip_num,1),getequipcardid(.@equip_num,2),getequipcardid(.@equip_num,3);
+	setarray .@equip_card[0], .@check_equip_card[0], .@check_equip_card[1], .@check_equip_card[2], .@check_equip_card[3];
+	set .@mvp_list$,
+		"|4408|4128|4456|4168|4142"+  //Gloom_Under_Night_Card, Golden_Bug_Card, Nidhogg_Shadow_Card, Dark_Lord_Card, Doppelganger_Card
+		"|4134|4137|4386|4407|4357"+  //Dracula_Card, Drake_Card, Detale_Card, Randgris_Card, B_Seyren_Card
+		"|4146|4132|4147|4372|4145"+  //Maya_Card, Mistress_Card, Baphomet_Card, Bacsojin_Card, Berzebub_Card
+		"|4374|4352|4367|4236|4425"+  //Apocalips_H_Card, B_Ygnizem_Card, B_Shecil_Card, Amon_Ra_Card, Atroce_Card
+		"|4359|4123|4144|4135|4143"+  //B_Eremes_Card, Eddga_Card, Osiris_Card, Orc_Load_Card, Orc_Hero_Card
+		"|4263|4131|4430|4276|4419"+  //Incant_Samurai_Card, Moonlight_Flower_Card, Ifrit_Card, Lord_Of_Death_Card, Ktullanux_Card
+		"|4403|4399|4376|4441|4302"+  //Kiel_Card, Thanatos_Card, Lady_Tanee_Card, Fallen_Bishop_Card, Tao_Gunka_Card
+		"|4305|4148|4318|4121|4365"+  //Turtle_General_Card, Pharaoh_Card, Knight_Windstorm_Card, Phreeoni_Card, B_Katrinn_Card
+		"|4363|4324|4361|4330|4342|";
+//B_Magaleta_Card, Garm_Card, B_Harword_Card, Dark_Snake_Lord_Card, Rsx_0806_Card
+
+	if (.@Jeremy) {
+		for ( .@i = 0; .@i < MAX_SLOTS; .@i++ ) {
+			if (getiteminfo(.@equip_card[.@i], ITEMINFO_SUBTYPE) == CARD_ENCHANT)
+				.@equip_card[.@i] = 0;// Armor Enchant System
+		}
+		if (!getarraysize(.@equip_card)) {
+			mes .@n$;
+			mes "沒有裝備卡片。你想再確認一下嗎？";
+			close;
+		}
+		if ((.@equip_card[0] && compare(.@mvp_list$,"|"+.@equip_card[0]+"|")) ||
+			(.@equip_card[1] && compare(.@mvp_list$,"|"+.@equip_card[1]+"|")) ||
+			(.@equip_card[2] && compare(.@mvp_list$,"|"+.@equip_card[2]+"|")) ||
+			(.@equip_card[3] && compare(.@mvp_list$,"|"+.@equip_card[3]+"|")))
+			set .@boss_chk,1;
+	} else {
+		// Official "Richard" script uses a hardcoded list including every possible item.
+		//if (!getequipisequiped(.@equip_num)) {
+		//	mes "[Richard]";
+		//	mes "I'm sorry. We don't provide that equipment yet.";
+		//	close;
+		//}
+
+		mes "[理查]";
+		mes "你想分離第幾個插槽的卡片？從左邊的插槽開始，分別是 1、2、3、4。";
+		next;
+		set .@menu$,"";
+		for ( .@i = 0; .@i < MAX_SLOTS; .@i++ ) {
+			if (.@equip_card[.@i] && getiteminfo(.@equip_card[.@i], ITEMINFO_SUBTYPE) == CARD_NORMAL) // Armor Enchant System
+				.@menu$ = .@menu$ + "插槽 " + (.@i+1) + " - " + getitemname(.@equip_card[.@i])+":";
+			else {
+				.@menu$ = .@menu$ + "^777777插槽 " + (.@i+1) + " - 無卡片^000000:";
+			}
+		}
+		set .@i, select("停止作業:"+.@menu$);
+		switch(.@i) {
+		case 1:
+			mes .@n$;
+			mes "需要服務的時候，請隨時來找我。";
+			close;
+		default:
+			set .@slot, .@i-2;
+			if (.@equip_card[.@slot] == 0 || getiteminfo(.@equip_card[.@slot], ITEMINFO_SUBTYPE) == CARD_ENCHANT) {
+				mes .@n$;
+				mes "這個插槽沒有裝備任何卡片。你要不要再確認一下？";
+				close;
+			}
+			break;
+		}
+		if (compare(.@mvp_list$,"|"+.@equip_card[.@slot]+"|"))
+			set .@boss_chk,1;
+	}
+	if (.@boss_chk == 0) {
+		mes .@n$;
+		if (.@Jeremy)
+			mes "除了卡片之外，^ff0000所有附魔效果都將消失。^000000 如果你同意，請選擇作業方式：";
+		else
+			mes "請選擇手續費方案。";
+		next;
+		set .@menu$,
+			"下次再說...:"+
+			((Zeny >= 1000000)?"使用 1,000,000z (不使用特殊物品):":"^999999使用 1,000,000z (餘額不足)^000000:")+
+			((countitem(6441))?"使用高級潤滑劑:":"^999999高級潤滑劑 (數量不足)^000000:")+
+			((countitem(6440))?"使用一般潤滑劑":"^999999一般潤滑劑 (數量不足)^000000");
+		switch(select(.@menu$)) {
+		case 1:
+			mes .@n$;
+			mes "需要服務的時候，隨時來找我。";
+			close;
+		case 2:
+			if (Zeny < 1000000) {
+				mes .@n$;
+				mes "你的 Zeny 不足。請準備足夠的手續費再來。";
+				close;
+			}
+			mes .@n$;
+			mes "這是一件相當古老的裝備。在作業過程中，卡片或裝備有很高的機率會損壞。你確定要繼續嗎？";
+			next;
+			if(select("下次再說...:繼續") == 1) {
+				mes .@n$;
+				mes "需要服務的時候，隨時來找我。";
+				close;
+			}
+			set .@sf_c_num,150;
+			set .@sf_r_num,150;
+			set .@sf_w_num,150;
+			set Zeny, Zeny - 1000000;
+			break;
+		case 3:
+			if (countitem(6441) == 0) {
+				mes .@n$;
+				mes "你沒有高級潤滑劑。";
+				close;
+			}
+			mes .@n$;
+			mes "如果你使用高級潤滑劑，損壞率將會大幅降低，但我無法給你 100% 的保證。你確定要繼續嗎？";
+			next;
+			if(select("下次再說...:繼續") == 1) {
+				mes .@n$;
+				mes "需要服務的時候，隨時來找我。";
+				close;
+			}
+			set .@sf_c_num,75;
+			set .@sf_r_num,75;
+			set .@sf_w_num,75;
+			delitem 6441,1; //High_RankLubricant
+			break;
+		case 4:
+			if (countitem(6440) == 0) {
+				mes .@n$;
+				mes "你沒有一般潤滑劑。";
+				close;
+			}
+			mes .@n$;
+			mes "如果你使用一般潤滑劑，損壞率將會大幅降低，但我無法給你 100% 的保證。你確定要繼續嗎？";
+			next;
+			if(select("下次再說...:繼續") == 1) {
+				mes .@n$;
+				mes "需要服務的時候，隨時來找我。";
+				close;
+			}
+			set .@sf_c_num,75;
+			set .@sf_r_num,150;
+			set .@sf_w_num,150;
+			delitem 6440,1; //General_Lubricant
+			break;
+		}
+	} else if (.@boss_chk == 1) {
+		mes .@n$;
+		mes "這件裝備包含一張珍貴的 MVP 卡片。這張卡片無法用潤滑劑分離。如果你能帶來超級界面活性劑^0000ff獼猴桃果實^000000，我就能進行作業。";
+		next;
+		switch(select("下次再說...:我有獼猴桃果實。")) {
+		case 1:
+			mes .@n$;
+			mes "需要服務的時候，隨時來找我。";
+			close;
+		case 2:
+			if (countitem(6443) == 0) {
+				mes .@n$;
+				mes "你沒有獼猴桃果實。";
+				close;
+			}
+			break;
+		}
+		mes .@n$;
+		if (.@Jeremy) {
+			mes "除了卡片之外，^ff0000所有附魔效果都將消失。^000000 如果你同意，請選擇作業方式：";
+			set .@menu$,"好的，我們開始吧！";
+		} else {
+			mes "我可以繼續嗎？";
+			set .@menu$,"我知道了。快點開始吧！";
+		}
+		next;
+		switch(select("下次再說...:"+.@menu$)) {
+		case 1:
+			mes .@n$;
+			mes "需要服務的時候，隨時來找我。";
+			close;
+		case 2:
+			set .@sf_c_num,60;
+			set .@sf_r_num,60;
+			set .@sf_w_num,60;
+			delitem 6443,1; //Sillit_Pong_Bottle
+			break;
+		}
+	}
+
+	set .@equip_id, getequipid(.@equip_num);
+	set .@equip_refine, getequiprefinerycnt(.@equip_num);
+
+	// anti-hack
+	if (callfunc("F_IsEquipCardHack", .@equip_num, .@check_equip_card[0], .@check_equip_card[1], .@check_equip_card[2], .@check_equip_card[3]))
+		close;
+
+	delequip .@equip_num;
+
+	// Chance of retaining refine level.
+	if (rand(1,.@sf_r_num) >= 61)
+		set .@equip_refine,0;
+
+	if (.@Jeremy) {
+		// Chance of retaining equipment.
+		if (rand(1,.@sf_w_num) < 61) {
+			set .@equip_safe,1;
+			getitem2 .@equip_id,1,1,.@equip_refine,0,0,0,0,0;
+		}
+
+		// Chance of retaining cards.
+		for(set .@i,0; .@i<4; set .@i,.@i+1) {
+			if (.@equip_card[.@i]) {
+				if (rand(1,.@sf_c_num) < 61)
+					getitem .@equip_card[.@i],1;
+				else
+					set .@card_break,1;
+			}
+		}
+	} else {
+		set .@card, .@equip_card[.@slot];
+		set .@check_equip_card[.@slot],0;
+
+		// Chance of retaining equipment (all enchantments are preserved).
+		if (rand(1,.@sf_w_num) < 61) {
+			set .@equip_safe,1;
+			getitem2 .@equip_id,1,1,.@equip_refine,0,.@check_equip_card[0],.@check_equip_card[1],.@check_equip_card[2],.@check_equip_card[3];
+		}
+
+		// Chance of retaining card.
+		if (rand(1,.@sf_c_num) < 61)
+			getitem .@card,1;
+		else
+			set .@card_break,1;
+	}
+
+	// Display corresponding effect.
+	if (!.@equip_safe && .@card_break)
+		specialeffect2 EF_LORD;
+	else if (.@equip_safe && .@card_break)
+		specialeffect2 EF_SUI_EXPLOSION;
+	else if (!.@equip_safe && !.@card_break)
+		specialeffect2 EF_FIREPILLAR;
+	else
+		specialeffect2 EF_MAXPOWER;
+
+	// Output results.
+	mes "-- 卡片分離結果 --";
+	if (.@equip_safe) {
+		mes "卡片分離過程中並未產生裂痕。";
+		mes "^0000FF裝備分離正常。^000000";
+	} else {
+		mes "卡片分離過程中產生了裂痕。";
+		mes "裝備已損壞。^ff0000無法復原。^000000";
+	}
+	mes "-------------------";
+	if (!.@card_break) {
+		mes "卡片分離過程中並未發生表面侵蝕。";
+		mes "^0000ff卡片分離成功。^000000";
+	} else {
+		mes "卡片分離過程中發生了表面侵蝕。";
+		mes "卡片已損壞。^ff0000無法復原。^000000";
+	}
+	next;
+	mes .@n$;
+	mes "以上就是卡片分離的結果。歡迎下次光臨。";
+	close;
+}
+malangdo,215,166,4	duplicate(CardSeparation_mal)	傑勒米#pa0829	553	// Armors :: mal_yong
+malangdo,208,166,6	duplicate(CardSeparation_mal)	理查#pa0829	559	// Weapons :: soc_weapon

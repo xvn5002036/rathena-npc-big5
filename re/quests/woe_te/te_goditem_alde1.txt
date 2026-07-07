@@ -1,0 +1,994 @@
+//===== rAthena Script =======================================
+//= God Items Quest
+//===== Description: =========================================
+//= [Official Conversion]
+//= God Item Jormungand Creation script (WoE TE)
+//===== Changelogs: ==========================================
+//= 1.0 First Version. [Capuche]
+//============================================================
+
+te_aldecas1,226,34,3	script	鐵匠 卡諾#tegod01	4_M_RACHMAN1,{
+	if (checkweight(1201,1) == 0) {
+		mes "你身上的物品太多了，無法進行任務。";
+		mes "請減輕重量後再試一次。";
+		close;
+	}
+
+	.@guild_id = getcastledata("te_aldecas1",1);
+	.@economy  = getcastledata("te_aldecas1",2);
+	.@npc_name$ = "卡諾";
+
+	mes "["+ .@npc_name$ +"]";
+	if (.@guild_id != getcharid(2)) {
+		mes "你... 我好像沒見過你... ？";
+		mes "你是來威脅我的嗎？";
+		mes "不是吧？";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我有我的苦衷。";
+		mes "拜託，就當作沒看到我。";
+		close;
+	}
+	if (WoeTETimeStart(14400) == 1 || agitcheck3() == 1) {// cannot start the quest 4 hours before and during WOE TE
+		mes "從現在起，我會安靜地待在這裡，直到攻城戰結束前不會打擾任何人。";
+		mes "不用擔心我。";
+		close;
+	}
+	if (is_guild_leader() == false) {
+		mes "我一直很感激你讓我留在這裡。";
+		mes "這沒什麼特別的... 但如果你需要，我可以為你製作一些有用的工具。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我是說，如果公會會長有需要的話。";
+		mes "我也是一位追求極致工藝的工匠。";
+		mes "希望我能在這裡找到那條路。";
+		close;
+	}
+	if ($2012_tegod_kafra == 0) {// event status
+		mes "啊... 會長。";
+		mes "我一直都非常感激。";
+		mes "既然欠了你這麼大的人情，無論何時我都會幫忙的。";
+		next;
+		switch( select( "製作耶夢加得。","融合材料。","休息一下。" ) ) {
+		case 1:
+			if (.@economy > 29) {
+				if (countitem(6603) > 3 && countitem(6599) > 0 && countitem(6598) > 0 && countitem(6601) > 3 && countitem(6600) > 0 && countitem(6605) > 0 && countitem(6604) > 0 && countitem(1473) > 0) {
+					mes "^ff0000製作耶夢加得的過程中需要巫杖 魂咬。";
+					mes "為了進行任務，除了巫杖 魂咬以外，請不要攜帶任何其他物品。^ff0000";
+					next;
+					mes "^ff0000即使有精煉值或插卡，製作過程也只需要你擁有的任何一把巫杖 魂咬。";
+					mes "請整理好你的物品後再試一次。^000000";
+					next;
+					if (select( "整理物品。","維持現狀繼續。" ) == 1) {
+						mes "你決定只保留巫杖 魂咬。";
+						close;
+					}
+					mes "["+ .@npc_name$ +"]";
+					mes "看來你已經信守承諾，將這座城池發展起來了。";
+					mes "此外，你也找到了軌跡的黃昏...";
+					next;
+					mes "["+ .@npc_name$ +"]";
+					mes "...那麼..我們開始動工吧。";
+					mes "趕在那些女孩發現我們之前...";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "女孩... ？";
+					next;
+					mes "["+ .@npc_name$ +"]";
+					mes "...是啊，有幾個女孩..";
+					mes "我就是為了躲她們才逃到這裡的...";
+					donpcevent "#tequest_master_alde01::OnCommandOn";
+					mapannounce "te_aldecas1","少女的聲音：喂，你們在說我們嗎？是"+ .@npc_name$ +"，對吧？真不敢相信你居然逃到這種地方。",bc_map,"0x00FF00",FW_BOLD,20,0,40;
+					next;
+					mes "["+ .@npc_name$ +"]";
+					mes "喔，不... ！";
+					mes "她們來了..！！";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "交給我吧。";
+					next;
+					mes "^4d4dff！- 說明 -！";
+					mes "稍後，追捕"+ .@npc_name$ +"的 7 名女孩將會試圖入侵這座城池。";
+					mes "你必須保護"+ .@npc_name$ +"長達 1 小時。^000000";
+					next;
+					mes "^4d4dff！- 說明 -！";
+					mes "當實際的攻擊開始時，華麗金屬區域的通道將會被封鎖以進行保護。^000000";
+					close;
+				}
+				mes "["+ .@npc_name$ +"]";
+				mes "耶夢加得是一把以擁抱世界的神之子「耶夢加得」為原型的法杖。";
+				mes "它也象徵著諸神黃昏。";
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "但是，這裡有象徵諸神黃昏的物品...";
+				mes "真不敢相信我要親自用這些東西來製作耶夢加得...用我自己的雙手！";
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "然而，我們似乎還需要更多材料。";
+				mes "你能再確認一下嗎？我會把需要的清單給你。";
+				callsub S_Material, .@npc_name$,1,"因為耶夢加得擁有強大的力量。";
+			}
+			mes "["+ .@npc_name$ +"]";
+			mes "不過，我可以說幾句話嗎？";
+			mes "耶夢加得是我製作過最強大的戰鬥裝備之一，你也值得從我這裡得到這樣的裝備...";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "但我希望你至少具備最基本的資格。";
+			mes "好好管理這座城池，並將^4d4dff商業發展度提升到 30 以上^000000。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "能力越大，責任與義務也越大。";
+			mes "我希望你能先掌握好基礎。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "之後我會製作耶夢加得的。";
+			mes "如果你需要，我可以把材料清單給你。";
+			callsub S_Material, .@npc_name$,0,"因為耶夢加得擁有強大的力量。";
+		case 2:
+			callsub S_Fuse, .@npc_name$, "耶夢加得";
+		case 3:
+			mes "["+ .@npc_name$ +"]";
+			mes "你這麼說真是太好了。";
+			mes "對了，不知道我哥哥凱伊現在過得好不好？";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "我相信他一定跟我一樣過得很好。";
+			mes "...希望一切能像現在這樣和平。";
+			close;
+		}
+	}
+	if ($2012_tegod_kafra == 1) {// event started
+		mes "你聽到消息了嗎？";
+		mes "那些女孩來了。";
+		mes "殘酷無情的女孩們！！！";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "她們已經宣戰了，隨時都會抵達。";
+		mes "我敢肯定她們是為了耶夢加得而來的。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "阻止她們。拜託你！";
+		next;
+		switch( select( "交給我吧。","你說的『那些女孩』是什麼意思？" ) ) {
+		case 1:
+			mes "["+ .@npc_name$ +"]";
+			mes "謝謝你...";
+			mes "很抱歉給你帶來這麼多麻煩，但我現在真的束手無策。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "拜託，幫我阻止她們！";
+			close;
+		case 2:
+			mes "["+ .@npc_name$ +"]";
+			mes "...她們是一群想要成為女武神的女孩...";
+			mes "而且她們總是七個人一起行動。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "她們想要的是強大的戰鬥裝備...";
+			mes "她們總是威脅我哥哥凱伊和我。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "一開始她們對基本武器還算滿意，但...";
+			mes "很快地，她們開始威脅我們，說為了成為女武神，需要更強大的東西。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "我受不了了，所以就逃跑了... 但她們還是找來了...";
+			mes "你必須小心，因為她們發現製作耶夢加得的材料就在這裡。";
+			close;
+		}
+	}
+	if ($2012_tegod_kafra == 2) {// after 10 minutes delay
+		mes "啊，別再跟著我了！";
+		mes "如果你能把她們趕走... 耶夢加得，沒錯！我會為你製作耶夢加得！";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "她們什麼時候才會停止跟著我啊...";
+		mes "我現在對女孩都有陰影了... 我害怕得什麼都不敢做...";
+		next;
+		mes "他現在語無倫次了。";
+		mes "等他冷靜下來吧。";
+		mes "你得先解決那些女孩才行。";
+		close;
+	}
+	if ($2012_tegod_kafra == 3) {// event failed
+		mes "... 雖然我又成功從她們手中逃脫了...";
+		mes "但這太辛苦了。";
+		mes "生活... 真是太艱難了。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我筋疲力盡，什麼都做不了。";
+		mes "... 我想我暫時什麼都做不了，不管是生產還是鍛造。";
+		mes "抱歉，我要休息一下。";
+		close;
+	}
+	if ($2012_tegod_kafra == 4) {
+		mes "我終於能喘口氣了。";
+		mes "我會按照約定開始製作耶夢加得。";
+		next;
+		switch( select( "製作耶夢加得。","融合材料。","現在不方便。" ) ) {
+		case 1:
+			if (countitem(6603) > 3 && countitem(6599) > 0 && countitem(6598) > 0 && countitem(6601) > 3 && countitem(6600) > 0 && countitem(6605) > 0 && countitem(6604) > 0 && countitem(1473) > 0) {
+				mes "^ff0000製作耶夢加得的過程中需要巫杖 魂咬。";
+				mes "為了進行任務，除了巫杖 魂咬以外，請不要攜帶任何其他物品。^ff0000";
+				next;
+				mes "^ff0000即使有精煉值或插卡，製作過程也只需要你擁有的任何一把巫杖 魂咬。";
+				mes "請整理好你的物品後再試一次。^000000";
+				next;
+				if (select( "整理物品。","維持現狀繼續。" ) == 1) {
+					mes "你決定只保留巫杖 魂咬。";
+					close;
+				}
+				mes "["+ .@npc_name$ +"]";
+				mes "喔... 謝謝你。";
+				mes "真不敢相信我終於能親自觸摸這些材料了...";
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "就在這裡。";
+				mes "雖然我們經歷了許多步驟，但感覺是不是很快？";
+				mes "我太過沉浸其中，感覺就像只過了一瞬間。";
+				next;
+				mes "耶夢加得，這把匯集了神話中所有痕跡的強大武器，終於製作完成了";
+				mes "就在"+ .@npc_name$ +"的手中。";
+				delitem 6603,4;// Skin_Of_Hraesvelg
+				delitem 6599,1;// Spirit_Of_Hugin
+				delitem 6598,1;// Rib_Of_Jormungand
+				delitem 6601,4;// Chisel_Of_Giant
+				delitem 6600,1;// Spirit_Of_Munin
+				delitem 6605,1;// Muspellium
+				delitem 6604,1;// Essence_Of_Rune
+				delitem 1473,1;// Wizardy_Staff
+				$2012_tegod_kafra = 5;
+				getitem 2020,1;// Jormungand
+				announce "軌跡的黃昏 [ 耶夢加得 ] 藉由 ["+ getguildname(.@guild_id) +"] 公會的 ["+ strcharinfo(0) +"] 降臨於世。",bc_all,"0x70dbdb",FW_NORMAL,12;
+				if (.@economy > 20)
+					setcastledata "te_aldecas1",2,(.@economy -20);
+				else
+					setcastledata "te_aldecas1",2,1;// min is 1 for WOE TE
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "呼.. 我想我暫時沒辦法工作了。";
+				mes "我已經筋疲力盡了。哈哈哈...";
+				close;
+			}
+			mes "["+ .@npc_name$ +"]";
+			mes "然而，我們似乎還需要更多材料。";
+			mes "你能再確認一下嗎？我會把需要的清單給你。";
+			callsub S_Material, .@npc_name$,1;
+		case 2:
+			callsub S_Fuse, .@npc_name$, "耶夢加得";
+		case 3:
+			mes "["+ .@npc_name$ +"]";
+			mes "現在其實正是製作它的最佳時機。";
+			mes "等到下一個華麗金屬出現時，就不會再有機會了。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "還有，請記住我每週只能進行一次這項工作。";
+			close;
+		}
+	}
+	if ($2012_tegod_kafra == 5) {
+		mes "我有點累了。";
+		mes "我想我應該休息幾天。";
+		mes "我看起來可能沒事，但精神上非常疲憊。";
+		close;
+	}
+	mes "真奇怪。";
+	mes "我無法形容我現在的感覺。";
+	mes "我是不是健康出什麼問題了？";
+	mes "難道是什麼不治之症嗎？";
+	close;
+
+S_Material:
+	.@npc_name$ = getarg(0);
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "^4d4dff4個 赫拉斯瓦爾格的外皮";
+	mes "1個 福金的氣息";
+	mes "1個 霧尼的氣息";
+	mes "4個 巨人的鑿子";
+	mes "1個 耶夢加得的骨頭";
+	mes "1把 巫杖 魂咬";
+	mes "穆斯貝爾礦石與盧恩精華各 1個^000000";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "我們需要這麼多材料";
+	mes getarg(2,"");
+	mes "順帶一提，穆斯貝爾礦石和盧恩精華需要用額外的材料另外製作。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "為了製作穆斯貝爾礦石，你需要^4d4dff融合 50 個神之金屬和 50 個鋁^000000。";
+	mes "對於盧恩精華，你需要^4d4dff融合 200 個古老原石和 100 個神祕原石^000000。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "只要你提出要求，我隨時都可以為你製作穆斯貝爾礦石和盧恩精華，";
+	mes "當然，只要我們收集齊所有材料，我也會立刻開始製作耶夢加得。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	if (getarg(1))
+		mes "比起你為我做的一切，我所做的根本微不足道。";
+	else {
+		mes "然而，你是找不到軌跡的黃昏的。";
+		mes "...但人們說它絕對會出現在那些真心渴求它的人面前。祝你好運。";
+	}
+	close;
+
+S_Fuse:
+	.@npc_name$ = getarg(0);
+	mes "["+ .@npc_name$ +"]";
+	mes "你想製作哪種材料？";
+	next;
+	switch( select( "穆斯貝爾礦石","盧恩精華","算了。" ) ) {
+	case 1:
+		mes "["+ .@npc_name$ +"]";
+		if (countitem(985) > 49 && countitem(984) > 49) {
+			mes "我會用你準備好的材料來製作穆斯貝爾礦石。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "這不會花太多時間。";
+			mes "完成了。";
+			mes "這是製作荷爾海林和耶夢加得的必備材料。";
+			delitem 985,50;// Elunium
+			delitem 984,50;// Oridecon
+			getitem 6605,1;// Muspellium
+			close;
+		}
+		mes "為了製作穆斯貝爾礦石，";
+		mes "^4d4dff你需要 50 個神之金屬和 50 個鋁。^000000";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我們應該把所有的材料都準備好，對吧？";
+		close;
+	case 2:
+		mes "["+ .@npc_name$ +"]";
+		if (countitem(12735) > 199 && countitem(12736) > 99) {
+			mes "我會用你準備好的材料來製作盧恩精華。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "這不會花太多時間。";
+			mes "完成了。";
+			mes "這是製作荷爾海林和耶夢加得的必備材料。";
+			delitem 12735,200;// Runstone_Ancient
+			delitem 12736,100;// Runstone_Mystic
+			getitem 6604,1;// Essence_Of_Rune
+			close;
+		}
+		mes "關於盧恩精華，";
+		mes "^4d4dff你需要 200 個古老原石和 100 個神祕原石。^000000";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "這確實需要很多數量...";
+		close;
+	case 3:
+		mes "["+ .@npc_name$ +"]";
+		mes "有需要隨時告訴我。";
+		mes "我很高興至少能為你做這點事。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "還有，一個你可以找到 "+ getarg(1) +" 材料的地方...";
+		mes "這對我來說也像是夢想之地。";
+		close;
+	}
+
+OnInit:
+	if ($2012_tegod_kafra == 3 || agitcheck3())// 3 -> quest failed
+		disablenpc();
+	else
+		enablenpc();
+	end;
+}
+
+te_aldecas1,3,2,0	script	#tequest_master_alde01	CLEAR_NPC,{
+	mes "密碼？";
+	next;
+	if ( callfunc( "F_GM_NPC", 1854,0, 0,9999 ) < 1 ) {
+		mes "走開";
+		close;
+	}
+	.@map$ = "te_aldecas1";
+	mes "目前狀態：" + $2012_tegod_kafra;
+	mes "0：可進行任務";
+	mes "1：任務進行中。等待10分鐘";
+	mes "2：任務進行中";
+	mes "3：任務失敗";
+	mes "4：可製作物品，5：物品製作成功。";
+	next;
+	mes "公主狀態：" + $@2012_tegirls_alde01;
+	mes "當前城池商業發展度：" + getcastledata(.@map$,2);
+	next;
+	switch( select( "不執行","初始化","提升商業發展度","降低商業發展度" ) ) {
+	case 1:
+		end;
+	case 2:
+		mes "初始化";
+		donpcevent "#tequest_master_alde01::OnReset";
+		close;
+	case 3:
+		.@economy = getcastledata(.@map$,2) +30;
+		.@economy = .@economy > 100 ? 100 : .@economy;
+		setcastledata .@map$,2,.@economy;
+		mes "提升商業發展度 30";
+		mes "修改後的商業發展度：" + .@economy;
+		close;
+	case 4:
+		.@economy1 = getcastledata(.@map$,2);
+		.@economy2 = .@economy1 > 30 ? (.@economy1 -30) : 1;
+		if (.@economy1 > 30) {
+			mes "降低商業發展度 30";
+			setcastledata .@map$,2,.@economy2;
+		}
+		else {
+			mes "目前的等級低於 30，因此商業發展度將降至 0。";
+			setcastledata .@map$,2,1;// min is 1 for WOE TE
+		}
+		mes "修改後的商業發展度：" + .@economy2;
+		close;
+	}
+
+OnReset:// gm Initialization
+	callsub S_EventReset;// kill all quests mobs and stop timer of others npcs
+	callsub S_EventOff;// clear setnpcdisplay
+	$2012_tegod_kafra = 0;
+	$@2012_tegirls_alde01 = 0;
+	.npc_name$ = "";
+	enablenpc "aldeg-1-11_aldeg-1-15#te";
+	enablenpc "鐵匠 卡諾#tegod01";
+	stopnpctimer;
+	end;
+
+OnCommandOn:
+	$2012_tegod_kafra = 1;
+	.npc_name$ = strnpcinfo(0);// for script readability
+	initnpctimer;
+	end;
+
+OnTimer10000:
+	announce "少女們的聲音：卡諾?我們已經知道你在哪裡了。一切都結束了！",bc_all,"0xFF0000",FW_NORMAL,10;
+	end;
+OnTimer15000:
+	announce "少女們的聲音：我們只等 10 分鐘。如果你在這段時間內不出現，我們就要攻佔這座城池！",bc_all,"0xFF0000",FW_NORMAL,10;
+	end;
+OnTimer595000:
+	mapannounce "te_aldecas1","少女的聲音：卡諾！你竟敢無視我們的警告！看來你有幫手是吧？但你以為他們能陪你多久？！",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer598000:
+	mapannounce "te_aldecas1","你被未知的力量強行驅逐出城池。",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+
+OnTimer600000:
+	$2012_tegod_kafra = 2;
+	mapwarp "te_aldecas1", "te_alde_gld",130,264;
+	donpcevent "艾拉#fake01_alde01::OnCommandOn";
+	donpcevent "庫魯娜#fake01_alde01::OnCommandOn";
+	donpcevent "瑪莉娜#fake01_alde01::OnCommandOn";
+	donpcevent "伊澤拉#fake01_alde01::OnCommandOn";
+	donpcevent "露涅#fake01_alde01::OnCommandOn";
+	donpcevent "莫琳#fake01_alde01::OnCommandOn";
+	donpcevent "娜莎琳#fake01_alde01::OnCommandOn";
+
+	disablenpc "aldeg-1-11_aldeg-1-15#te";// warp to emperium room
+	end;
+OnTimer602000:
+	announce "卡普拉花園地區的格拉利斯正遭受一群不明生物的攻擊。",bc_all,"0xFF0000",FW_NORMAL,10;
+	monster "te_aldecas1",0,0,"幽靈劍士",1163,15, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"卡利斯格",1132,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"深淵騎士",1219,5, .npc_name$ +"::OnMyMobDead";
+
+	monster "te_aldecas1",207,34,"達隆吉",1272,1, .npc_name$ +"::OnMyMobDead";// DARK_LORD
+	monster "te_aldecas1",213,46,"召喚的馴鹿",1251,1, .npc_name$ +"::OnMyMobDead";// KNIGHT_OF_WINDSTORM
+	monster "te_aldecas1",218,46,"召喚的狼",1252,1, .npc_name$ +"::OnMyMobDead";// GARM
+
+	monster "te_aldecas1",26,224,"達隆吉",1272,1, .npc_name$ +"::OnMyMobDead";// DARK_LORD
+	monster "te_aldecas1",24,199,"召喚的馴鹿",1251,1, .npc_name$ +"::OnMyMobDead";// KNIGHT_OF_WINDSTORM
+	monster "te_aldecas1",113,93,"召喚的狼",1252,1, .npc_name$ +"::OnMyMobDead";// GARM
+	end;
+OnTimer610000:
+	monster "te_aldecas1",0,0,"幽靈劍士",1163,15, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"卡利斯格",1132,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"深淵騎士",1219,5, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"血腥騎士",1268,5, .npc_name$ +"::OnMyMobDead";
+	end;
+OnTimer1000000:
+OnTimer1300000:
+OnTimer1900000:
+OnTimer2500000:
+OnTimer3100000:
+	callsub S_MobRedondant;
+	end;
+S_MobRedondant:
+	monster "te_aldecas1",0,0,"幽靈劍士",1163,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"卡利斯格",1132,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"深淵騎士",1219,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"獸人戰士長",1213,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_aldecas1",0,0,"血腥騎士",1268,5, .npc_name$ +"::OnMyMobDead";
+	end;
+OnTimer4200000:
+	mapannounce "te_aldecas1","少女們：...我們還要等多久？",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer4205000:
+	mapannounce "te_aldecas1","少女們：耶夢加得應該是為我們量身打造的！",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer4210000:
+	mapannounce "te_aldecas1","少女們：夠了，住手！你們也太固執了吧！！",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer4220000:
+	mapannounce "te_aldecas1","艾拉：啊！我受不了了！女孩們，過來這裡！",bc_map,"0x00ff00",FW_NORMAL,12;
+	$2012_tegod_kafra = 3;// quest off until someone break the emp
+	callsub S_EventReset;
+	enablenpc "aldeg-1-11_aldeg-1-15#te";
+	end;
+
+OnTimer4225000:
+	donpcevent "#eproom_girls_alde01::OnReset";
+	donpcevent "#end_aira_alde01::OnCommandOn";
+	donpcevent "#end_kuluna_alde01::OnCommandOn";
+	donpcevent "#end_mallina_alde01::OnCommandOn";
+	donpcevent "#end_ezella_alde01::OnCommandOn";
+	donpcevent "#end_lune_alde01::OnCommandOn";
+	donpcevent "#end_morin_alde01::OnCommandOn";
+	donpcevent "#end_nasarin_alde01::OnCommandOn";
+	end;
+OnTimer4227000:
+	npctalk "卡諾：喔... 不！你們想對我做什麼？！", "鐵匠 卡諾#tegod01";
+	end;
+OnTimer4230000:
+	npctalk "艾拉：嗯？嘿，卡諾。你該回家了。", "#end_aira_alde01";
+	end;
+OnTimer4233000:
+	npctalk "庫魯娜：對啊?你回去後得幫我修好壞掉的法杖，還要幫我做強大的武器！", "#end_kuluna_alde01";
+	end;
+OnTimer4236000:
+	npctalk "伊澤拉：你再試著逃跑看看。你會後悔的，懂嗎？", "#end_ezella_alde01";
+	end;
+OnTimer4237000:
+	npctalk "娜莎琳：...直接把他帶走就是了。你們幹嘛跟他說那麼多廢話？", "#end_nasarin_alde01";
+	end;
+OnTimer4240000:
+	npctalk "艾拉：妳說得對！那就這樣吧！", "#end_aira_alde01";
+	npctalk "卡諾：喔... 不... 不！！！！！", "鐵匠 卡諾#tegod01";
+	end;
+OnTimer4243000:
+	mapannounce "te_aldecas1","你未能成功奪回城池。卡諾現在已經不在了。",bc_map,"0x00ff00",FW_NORMAL,12;
+	disablenpc "鐵匠 卡諾#tegod01";
+	callsub S_EventOff;// clear setnpcdisplay
+	.npc_name$ = "";
+	stopnpctimer;
+	end;
+
+S_EventOff:
+	donpcevent "#end_aira_alde01::OnCommandOff";
+	donpcevent "#end_kuluna_alde01::OnCommandOff";
+	donpcevent "#end_mallina_alde01::OnCommandOff";
+	donpcevent "#end_ezella_alde01::OnCommandOff";
+	donpcevent "#end_lune_alde01::OnCommandOff";
+	donpcevent "#end_morin_alde01::OnCommandOff";
+	donpcevent "#end_nasarin_alde01::OnCommandOff";
+	return;
+OnStop:// all girls have been defeated, kill remaining mobs and stop timer
+	callsub S_EventReset;
+	$@2012_tegirls_alde01 = 0;
+	.npc_name$ = "";
+	stopnpctimer;
+	end;
+
+S_EventReset:
+	killmonster "te_aldecas1", .npc_name$ +"::OnMyMobDead";
+	donpcevent "#eproom_girls_alde01::OnReset";
+	donpcevent "艾拉#fake01_alde01::OnReset";
+	donpcevent "庫魯娜#fake01_alde01::OnReset";
+	donpcevent "瑪莉娜#fake01_alde01::OnReset";
+	donpcevent "伊澤拉#fake01_alde01::OnReset";
+	donpcevent "露涅#fake01_alde01::OnReset";
+	donpcevent "莫琳#fake01_alde01::OnReset";
+	donpcevent "娜莎琳#fake01_alde01::OnReset";
+
+	donpcevent "#aira_real_alde01::OnReset";
+	donpcevent "#kuluna_real_alde01::OnReset";
+	donpcevent "#mallina_real_alde01::OnReset";
+	donpcevent "#ezella_real_alde01::OnReset";
+	donpcevent "#lune_real_alde01::OnReset";
+	donpcevent "#morin_real_alde01::OnReset";
+	donpcevent "#nasarin_real_alde01::OnReset";
+	return;
+
+OnMyMobDead:
+	end;
+OnInit:
+	$@2012_tegirls_alde01 = 0;// girls mobs killed count
+	if ($2012_tegod_kafra < 3)
+		$2012_tegod_kafra = 0;
+	end;
+}
+
+
+te_aldecas1,40,226,3	script	艾拉#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "艾拉#fake01_alde01";
+	setnpcdisplay "艾拉#fake01_alde01",2443;// AIRA
+	initnpctimer;
+	end;
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","艾拉#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#aira_real_alde01::OnCommandOn";
+	npctalk "艾拉：我的水球召喚！我會親手抓住你的！！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "艾拉#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "艾拉#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "艾拉#fake01_alde01";
+	end;
+
+OnTimer1000:
+	monster "te_aldecas1",26,224,"護衛",1213,5, "艾拉#fake01_alde01::OnMyMobDead";// HIGH_ORC
+	monster "te_aldecas1",26,224,"護衛",1309,5, "艾拉#fake01_alde01::OnMyMobDead";// GAJOMART
+	end;
+OnTimer2000:
+	monster "te_aldecas1",26,224,"護衛",1367,5, "艾拉#fake01_alde01::OnMyMobDead";// BLAZZER
+	monster "te_aldecas1",26,223,"護衛",1837,5, "艾拉#fake01_alde01::OnMyMobDead";// IMP
+	end;
+OnTimer3000:
+	monster "te_aldecas1",26,223,"護衛",1949,1, "艾拉#fake01_alde01::OnMyMobDead";// B_S_GUARDIAN
+	monster "te_aldecas1",26,224,"護衛",1833,2, "艾拉#fake01_alde01::OnMyMobDead";// KASA
+	monster "te_aldecas1",26,224,"護衛",1831,2, "艾拉#fake01_alde01::OnMyMobDead";// SALAMANDER
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,33,197,3	script	庫魯娜#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "庫魯娜#fake01_alde01";
+	setnpcdisplay "庫魯娜#fake01_alde01",2444;// KULUNA
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","庫魯娜#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#kuluna_real_alde01::OnCommandOn";
+	npctalk "庫魯娜：嗯？所以你打算那樣做嗎？你最好做好準備！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "庫魯娜#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "庫魯娜#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "庫魯娜#fake01_alde01";
+	end;
+
+OnTimer1000:
+	monster "te_aldecas1",24,199,"守護者",1143,10, "庫魯娜#fake01_alde01::OnMyMobDead";// MARIONETTE
+	end;
+OnTimer2000:
+	monster "te_aldecas1",24,199,"守護者",1693,10, "庫魯娜#fake01_alde01::OnMyMobDead";// PLASMA_Y
+	end;
+OnTimer3000:
+	monster "te_aldecas1",24,199,"守護者",1869,5, "庫魯娜#fake01_alde01::OnMyMobDead";// FLAME_SKULL
+	monster "te_aldecas1",24,199,"守護者",1704,1, "庫魯娜#fake01_alde01::OnMyMobDead";// THA_ODIUM
+	monster "te_aldecas1",24,199,"守護者",1705,1, "庫魯娜#fake01_alde01::OnMyMobDead";// THA_DESPERO
+	monster "te_aldecas1",24,199,"守護者",1706,1, "庫魯娜#fake01_alde01::OnMyMobDead";// THA_MAERO
+	monster "te_aldecas1",24,199,"守護者",1707,1, "庫魯娜#fake01_alde01::OnMyMobDead";// THA_DOLOR
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,90,69,3	script	瑪莉娜#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "瑪莉娜#fake01_alde01";
+	setnpcdisplay "瑪莉娜#fake01_alde01",2445;// MALLINA
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","瑪莉娜#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#mallina_real_alde01::OnCommandOn";
+	npctalk "瑪莉娜：住手！！別再來煩我了！！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "瑪莉娜#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "瑪莉娜#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "瑪莉娜#fake01_alde01";
+	end;
+
+OnTimer1000:
+	monster "te_aldecas1",83,70,"絕對者",1993,10, "瑪莉娜#fake01_alde01::OnMyMobDead";// NAGA
+	end;
+OnTimer3000:
+	monster "te_aldecas1",83,70,"絕對者",1695,10, "瑪莉娜#fake01_alde01::OnMyMobDead";// PLASMA_G
+	end;
+OnTimer5000:
+	monster "te_aldecas1",83,71,"絕對者",1717,1, "瑪莉娜#fake01_alde01::OnMyMobDead";// FERUS_
+	monster "te_aldecas1",82,71,"絕對者",1717,1, "瑪莉娜#fake01_alde01::OnMyMobDead";// FERUS_
+	monster "te_aldecas1",81,71,"絕對者",1717,1, "瑪莉娜#fake01_alde01::OnMyMobDead";// FERUS_
+	monster "te_aldecas1",80,71,"絕對者",1717,1, "瑪莉娜#fake01_alde01::OnMyMobDead";// FERUS_
+	monster "te_aldecas1",79,71,"絕對者",1717,1, "瑪莉娜#fake01_alde01::OnMyMobDead";// FERUS_
+
+	monster "te_aldecas1",83,70,"絕對者",1991,2, "瑪莉娜#fake01_alde01::OnMyMobDead";// TENDRILRION
+	monster "te_aldecas1",83,70,"絕對者",1989,2, "瑪莉娜#fake01_alde01::OnMyMobDead";// HILLSRION
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,109,91,3	script	伊澤拉#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "伊澤拉#fake01_alde01";
+	setnpcdisplay "伊澤拉#fake01_alde01",2446;// EZELLA
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","伊澤拉#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#ezella_real_alde01::OnCommandOn";
+	npctalk "伊澤拉：啊... 這只會讓我們兩敗俱傷而已...";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "伊澤拉#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "伊澤拉#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "伊澤拉#fake01_alde01";
+	end;
+OnTimer1000:
+	monster "te_aldecas1",113,93,"護衛隊",1692,10, "伊澤拉#fake01_alde01::OnMyMobDead";// BREEZE
+	end;
+OnTimer2000:
+	monster "te_aldecas1",113,93,"護衛隊",1627,2, "伊澤拉#fake01_alde01::OnMyMobDead";// ANOPHELES
+	monster "te_aldecas1",113,93,"護衛隊",1656,2, "伊澤拉#fake01_alde01::OnMyMobDead";// KAVAC
+	monster "te_aldecas1",113,93,"護衛隊",1315,6, "伊澤拉#fake01_alde01::OnMyMobDead";// ASSULTER
+	end;
+OnTimer3000:
+	monster "te_aldecas1",113,93,"護衛隊",1669,5, "伊澤拉#fake01_alde01::OnMyMobDead";// DIMIK
+	monster "te_aldecas1",113,93,"護衛隊",1259,2, "伊澤拉#fake01_alde01::OnMyMobDead";// GRYPHON
+	monster "te_aldecas1",113,93,"護衛隊",1783,1, "伊澤拉#fake01_alde01::OnMyMobDead";// GALION
+	monster "te_aldecas1",113,93,"護衛隊",1950,1, "伊澤拉#fake01_alde01::OnMyMobDead";// B_B_GUARDIAN
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,85,108,3	script	露涅#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "露涅#fake01_alde01";
+	setnpcdisplay "露涅#fake01_alde01",2447;// LUNE
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","露涅#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#lune_real_alde01::OnCommandOn";
+	npctalk "露涅：..你想被淹死在深海裡嗎？嗯？";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "露涅#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "露涅#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "露涅#fake01_alde01";
+	end;
+
+OnTimer1000:
+	monster "te_aldecas1",74,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";// GAZETI
+	monster "te_aldecas1",75,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",76,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",77,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",78,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",79,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",80,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",81,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",82,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",83,83,"護衛",1778,1, "露涅#fake01_alde01::OnMyMobDead";
+	end;
+OnTimer2000:
+	monster "te_aldecas1",84,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";// AQUA_ELEMENTAL
+	monster "te_aldecas1",85,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",86,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",87,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",88,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",89,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",90,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",91,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",92,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	monster "te_aldecas1",93,83,"護衛",2016,1, "露涅#fake01_alde01::OnMyMobDead";
+	end;
+OnTimer3000:
+	monster "te_aldecas1",82,95,"護衛",1777,5, "露涅#fake01_alde01::OnMyMobDead";// ICE_TITAN
+	monster "te_aldecas1",82,95,"護衛",1681,1, "露涅#fake01_alde01::OnMyMobDead";// GEMINI
+	monster "te_aldecas1",82,95,"護衛",2021,1, "露涅#fake01_alde01::OnMyMobDead";// PHYLLA
+	monster "te_aldecas1",82,95,"護衛",2020,2, "露涅#fake01_alde01::OnMyMobDead";// RHYNCHO
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,207,156,3	script	莫琳#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "莫琳#fake01_alde01";
+	setnpcdisplay "莫琳#fake01_alde01",2448;// MORIN
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","莫琳#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#morin_real_alde01::OnCommandOn";
+	npctalk "莫琳：... . ...";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "莫琳#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "莫琳#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "莫琳#fake01_alde01";
+	end;
+
+OnTimer1000:
+	monster "te_aldecas1",207,148,"夢魘幫",1379,10, "莫琳#fake01_alde01::OnMyMobDead";// NIGHTMARE_TERROR
+	end;
+OnTimer2000:
+	monster "te_aldecas1",207,148,"夢魘幫",1701,5, "莫琳#fake01_alde01::OnMyMobDead";// SHELTER
+	monster "te_aldecas1",207,148,"夢魘幫",1753,5, "莫琳#fake01_alde01::OnMyMobDead";// FRUS
+	end;
+OnTimer3000:
+	monster "te_aldecas1",207,148,"夢魘幫",1752,5, "莫琳#fake01_alde01::OnMyMobDead";// SKOGUL
+	monster "te_aldecas1",207,148,"夢魘幫",1733,1, "莫琳#fake01_alde01::OnMyMobDead";// KIEL
+	monster "te_aldecas1",207,148,"夢魘幫",1205,1, "莫琳#fake01_alde01::OnMyMobDead";// EXECUTIONER
+	monster "te_aldecas1",207,148,"夢魘幫",2040,1, "莫琳#fake01_alde01::OnMyMobDead";// TIRFING_R
+	monster "te_aldecas1",207,148,"夢魘幫",1203,1, "莫琳#fake01_alde01::OnMyMobDead";// MYSTELTAINN
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,214,176,3	script	娜莎琳#fake01_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "娜莎琳#fake01_alde01";
+	setnpcdisplay "娜莎琳#fake01_alde01",2449;// NASARIN
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","娜莎琳#fake01_alde01::OnMyMobDead" )) end;
+	donpcevent "#nasarin_real_alde01::OnCommandOn";
+	npctalk "娜莎琳：..啊.. 要成為女武神真是太難了！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "娜莎琳#fake01_alde01::OnMyMobDead";
+	setnpcdisplay "娜莎琳#fake01_alde01",CLEAR_NPC;
+OnInit:
+	disablenpc "娜莎琳#fake01_alde01";
+	end;
+OnTimer1000:
+	monster "te_aldecas1",212,170,"毒藥幫",1987,10, "娜莎琳#fake01_alde01::OnMyMobDead";// CENTIPEDE
+	end;
+OnTimer2000:
+	monster "te_aldecas1",212,170,"毒藥幫",2015,10, "娜莎琳#fake01_alde01::OnMyMobDead";// PINGUICULA_D
+	end;
+OnTimer3000:
+	monster "te_aldecas1",212,170,"毒藥幫",1618,3, "娜莎琳#fake01_alde01::OnMyMobDead";// UNGOLIANT
+	monster "te_aldecas1",212,170,"卡利斯格",1949,1, "娜莎琳#fake01_alde01::OnMyMobDead";// B_S_GUARDIAN
+	stopnpctimer;
+	end;
+}
+
+-	script	real_alde01	-1,{
+	end;
+OnCommandOn:
+	.@npc_name$ = strnpcinfo(0);
+	if (.@npc_name$ == "#aira_real_alde01")
+		monster "te_aldecas1",26,224,"燃燒的艾拉",2443,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#kuluna_real_alde01")
+		monster "te_aldecas1",24,199,"熱情的庫魯娜",2444,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#mallina_real_alde01")
+		monster "te_aldecas1",83,70,"大地的瑪莉娜",2445,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#ezella_real_alde01")
+		monster "te_aldecas1",113,93,"翠綠的伊澤拉",2446,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#lune_real_alde01")
+		monster "te_aldecas1",82,95,"永恆冰川的露涅",2447,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#morin_real_alde01")
+		monster "te_aldecas1",207,148,"深淵的莫琳",2448,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#nasarin_real_alde01")
+		monster "te_aldecas1",212,170,"致命的娜莎琳",2449,1, .@npc_name$ +"::OnMyMobDead";
+	end;
+
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", strnpcinfo(0)+"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_aldecas1",strnpcinfo(0) +"::OnMyMobDead" ) == 0)
+		initnpctimer;
+	end;
+OnTimer1000:
+	if (mobcount( "te_aldecas1",strnpcinfo(0) +"::OnMyMobDead" ) == 0) {
+		$@2012_tegirls_alde01++;
+		if ($@2012_tegirls_alde01 == 7) {
+			mapannounce "te_aldecas1","卡諾：啊！！女孩們打破了結界，並闖入了華麗金屬所在的地方！！！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			donpcevent "#eproom_girls_alde01::OnCommandOn";
+		}
+		else {
+			.@npc_name$ = strnpcinfo(0);
+			if (.@npc_name$ == "#aira_real_alde01")
+				mapannounce "te_aldecas1","艾拉：你以為我輸了？你錯了！我們要強行突破到卡諾那裡！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#kuluna_real_alde01")
+				mapannounce "te_aldecas1","庫魯娜：... 這叫做戰略性撤退。",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#mallina_real_alde01")
+				mapannounce "te_aldecas1","瑪莉娜：... 你為什麼要這麼妨礙我們？但最後的勝利一定屬於我們！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#ezella_real_alde01")
+				mapannounce "te_aldecas1","伊澤拉：喔，你這個像風一樣隨時會消散的弱者... ！！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#lune_real_alde01")
+				mapannounce "te_aldecas1","露涅：..好吧。讓戰鬥開始吧！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#morin_real_alde01")
+				mapannounce "te_aldecas1","莫琳：這已經... 不好玩了。",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#nasarin_real_alde01")
+				mapannounce "te_aldecas1","娜莎琳：.. 真是浪費我的時間。卡諾在這座城池的中心嗎？",bc_map,"0x00ff00",FW_NORMAL,12;
+		}
+	}
+	stopnpctimer;
+	end;
+}
+te_aldecas1,4,2,0	duplicate(real_alde01)	#aira_real_alde01	CLEAR_NPC
+te_aldecas1,5,2,0	duplicate(real_alde01)	#kuluna_real_alde01	CLEAR_NPC
+te_aldecas1,6,2,0	duplicate(real_alde01)	#mallina_real_alde01	CLEAR_NPC
+te_aldecas1,7,2,0	duplicate(real_alde01)	#ezella_real_alde01	CLEAR_NPC
+te_aldecas1,8,2,0	duplicate(real_alde01)	#lune_real_alde01	CLEAR_NPC
+te_aldecas1,9,2,0	duplicate(real_alde01)	#morin_real_alde01	CLEAR_NPC
+te_aldecas1,10,2,0	duplicate(real_alde01)	#nasarin_real_alde01	CLEAR_NPC
+
+
+te_aldecas1,11,2,0	script	#eproom_girls_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "aldeg-1-11_aldeg-1-15#te";
+	monster "te_aldecas1",207,34,"致命的娜莎琳",2449,1, "#eproom_girls_alde01::OnMyMobDead";
+	monster "te_aldecas1",216,26,"深淵的莫琳",2448,1, "#eproom_girls_alde01::OnMyMobDead";
+	monster "te_aldecas1",205,21,"永恆冰川的露涅",2447,1, "#eproom_girls_alde01::OnMyMobDead";
+	monster "te_aldecas1",215,34,"翠綠的伊澤拉",2446,1, "#eproom_girls_alde01::OnMyMobDead";
+	monster "te_aldecas1",226,24,"大地的瑪莉娜",2445,1, "#eproom_girls_alde01::OnMyMobDead";
+	monster "te_aldecas1",213,46,"熱情的庫魯娜",2444,1, "#eproom_girls_alde01::OnMyMobDead";
+	monster "te_aldecas1",218,46,"燃燒的艾拉",2443,1, "#eproom_girls_alde01::OnMyMobDead";
+	end;
+
+OnReset:
+	stopnpctimer;
+	killmonster "te_aldecas1", "#eproom_girls_alde01::OnMyMobDead";
+	end;
+OnMyMobDead:
+	if (mobcount( "te_aldecas1","#eproom_girls_alde01::OnMyMobDead" ) == 0)
+		initnpctimer;
+	end;
+
+OnTimer3000:
+	if (mobcount( "te_aldecas1","#eproom_girls_alde01::OnMyMobDead" ) == 0) {
+		donpcevent "#tequest_master_alde01::OnStop";
+		$2012_tegod_kafra = 4;
+		mapannounce "te_aldecas1","你擊敗了女孩們，並成功奪回了城池。",bc_map,"0x00ff00",FW_NORMAL,12;
+	}
+	stopnpctimer;
+	end;
+}
+
+te_aldecas1,225,34,5	script	#end_aira_alde01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	.@npc_name$ = strnpcinfo(0);
+	enablenpc .@npc_name$;
+	if (compare(.@npc_name$,"aira")) setnpcdisplay .@npc_name$,2443;
+	else if (compare(.@npc_name$,"kuluna")) setnpcdisplay .@npc_name$,2444;
+	else if (compare(.@npc_name$,"mallina")) setnpcdisplay .@npc_name$,2445;
+	else if (compare(.@npc_name$,"ezella")) setnpcdisplay .@npc_name$,2446;
+	else if (compare(.@npc_name$,"lune")) setnpcdisplay .@npc_name$,2447;
+	else if (compare(.@npc_name$,"morin")) setnpcdisplay .@npc_name$,2448;
+	else if (compare(.@npc_name$,"nasarin")) setnpcdisplay .@npc_name$,2449;
+	end;
+
+OnCommandOff:
+	setnpcdisplay strnpcinfo(0),CLEAR_NPC;
+OnInit:
+	disablenpc();
+	end;
+}
+te_aldecas1,227,35,3	duplicate(#end_aira_alde01)	#end_kuluna_alde01	CLEAR_NPC
+te_aldecas1,226,33,7	duplicate(#end_aira_alde01)	#end_mallina_alde01	CLEAR_NPC
+te_aldecas1,225,35,5	duplicate(#end_aira_alde01)	#end_ezella_alde01	CLEAR_NPC
+te_aldecas1,227,34,3	duplicate(#end_aira_alde01)	#end_lune_alde01	CLEAR_NPC
+te_aldecas1,226,35,4	duplicate(#end_aira_alde01)	#end_morin_alde01	CLEAR_NPC
+te_aldecas1,227,33,1	duplicate(#end_aira_alde01)	#end_nasarin_alde01	CLEAR_NPC

@@ -1,0 +1,1155 @@
+//===== rAthena Script =======================================
+//= Instance: Villa of High Priest.
+//===== Description: =========================================
+//- [Walkthrough conversion]
+//- Part of the Episode 18 main quest.
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//============================================================
+
+// Main Quest: Step 61.
+oz_dun01,219,117,5	script(CLOAKED)	伊拉#c12_01	4_M_BRZ_JACI,{
+	if (ep18_main == 54) {
+		.@md_name$ = "大主教的別墅";
+
+		mes "[伊拉]";
+		mes "別墅的入口？鑰匙就在入口處。";
+		mes "那裡施加了某種傳送魔法。";
+		mes "如果你準備好了，要我引導你前往別墅嗎？";
+		next;
+		mes "[伊拉]";
+		mes "還有...我們不知道裡面會發生什麼事。";
+		mes "如果你有同伴，我建議你們一起去。";
+		next;
+		switch( select( "申請進入 '" + .@md_name$ + "'。", "進入 '" + .@md_name$ + "'。" ) ) {
+		case 1:
+			if (getcharid(1) == 0 || is_party_leader() == false) {
+				mes "^4d4dff 這是一個副本事件。";
+				mes "副本必須由隊長提出申請。^000000";
+				close;
+			}
+			mes "[伊拉]";
+			mes "那麼請讓我護送你。";
+			if (instance_create(.@md_name$) < 0) {
+				mes "隊伍：" + getpartyname(getcharid(1)) + "";
+				mes "隊長：" + strcharinfo(0) + "";
+				mes "^0000ff" + .@md_name$ + " ^000000- 未知錯誤";
+				close;
+			}
+			close;
+		case 2:
+			switch( instance_enter(.@md_name$) ) {
+			case IE_OTHER:
+				mes "[伊拉]";
+				mes "^ff0000發生了未知的錯誤。^000000";
+				close;
+			case IE_NOINSTANCE:
+				mes "[伊拉]";
+				mes "嗯？能不能請你確認一下隊長是否已經申請進入別墅？";
+				close;
+			case IE_NOMEMBER:
+				mes "[伊拉]";
+				mes "^ff0000只有隊伍成員才能進入紀念碑副本。^000000";
+				close;
+			case IE_OK:
+				mapannounce "oz_dun01", "隊伍 " + getpartyname( getcharid(1) ) + " 的 " + strcharinfo(0) + " 已經進入了 " + .@md_name$ + "。", bc_map, 0xFF99;
+// warp "1@adv",123,17;
+				end;
+			}
+		}
+	}
+	end;
+}
+
+// warps
+1@adv,63,142,0	warp(DISABLED)	#left_room_in	1,1,1@adv,56,142
+1@adv,60,142,0	warp(DISABLED)	#left_room_out	1,1,1@adv,66,142
+1@adv,185,142,0	warp(DISABLED)	#right_room_in	1,1,1@adv,190,142
+1@adv,187,142,0	warp(DISABLED)	#right_room_out	1,1,1@adv,182,142
+1@adv,173,142,0	warp(DISABLED)	#center_room_in	1,1,1@adv,167,142
+1@adv,171,142,0	warp(DISABLED)	#center_room_out	1,1,1@adv,177,142
+1@adv,123,309,0	warp(DISABLED)	#boss_in	1,1,1@adv,123,321
+1@adv,123,312,0	warp(DISABLED)	#boss_out	1,1,oz_dun01,220,112
+
+
+1@adv,122,20,5	script	伊拉#aira01	4_M_BRZ_JACI,{
+	npctalk "別擔心我。我會待在門附近，如果有危險我會立刻離開。", "伊拉#aira01";
+	end;
+
+OnInstanceInit:
+	'adv_step = 0;
+	'Knight_left = 0;
+	'Knight_righ = 0;
+	'flower_num = rand(1,5);
+
+	'map_adv$ = instance_mapname("1@adv");
+	end;
+}
+
+1@adv,125,23,3	script	米莉亞#miriam01	EP18_NPC_MIRIAM,{
+	if (is_party_leader() == false) {
+		mes "[米莉亞]";
+		mes "大家都到齊了嗎？";
+		close;
+	}
+	if (ep18_main != 54)
+		end;
+	if ('adv_step == 0) {
+		'adv_step = 1;
+		// note: player can move and talk to other npc
+		.@ira$ = instance_npcname("伊拉#aira01");
+		sleep 2500;
+		npctalk "伊拉：就是這裡了。一樓只有相關人員會去，應該沒問題。", .@ira$;
+		sleep 2500;
+		npctalk "米莉亞：那二樓呢？";
+		sleep 2500;
+		npctalk "伊拉：有一群祭司待在那裡。我不知道他們是不是真正的祭司。", .@ira$;
+		sleep 2500;
+		npctalk "伊拉：他們似乎有武裝。", .@ira$;
+		sleep 2500;
+		npctalk "米莉亞：好。謝謝你的引導。我們來進行內部搜索。";
+		sleep 2500;
+		npctalk "伊拉：別擔心我。你們兩個要小心。", .@ira$;
+		sleep 2500;
+		npctalk "米莉亞：那我們小心地上樓吧。";
+		sleep 2500;
+		npctalk "伊拉：找到通往二樓宴會廳的鑰匙。那後面一定有什麼東西！", .@ira$;
+		sleep 2500;
+		npctalk "米莉亞：冒險者，我們來分工合作吧？";
+		'adv_step = 2;
+		end;
+	}
+	if ('adv_step == 2) {
+		mes "[米莉亞]";
+		mes "我想我應該去看看還有沒有其他員工，然後上二樓。";
+		npctalk "米莉亞：我想我應該去看看還有沒有其他員工，然後上二樓。", instance_npcname("米莉亞#miriam01");
+		cutin "ep18_miriam_01.png",0;
+		next;
+		mes "[米莉亞]";
+		mes "我感覺到中央樓梯後方有一股銳利的氣息。";
+		mes "可能是在神殿裡戰鬥過的心靈獵手。";
+		npctalk "米莉亞：我感覺到一股強烈的氣息。可能是心靈獵手。", instance_npcname("米莉亞#miriam01");
+		cutin "ep18_miriam_03.png",0;
+		next;
+		mes "[米莉亞]";
+		mes "我很擔心伊美樂心臟遺失的那一塊。";
+		mes "如果說是要煽動麻煩，神殿發生的事情就已經足夠了。";
+		npctalk "米莉亞：我很擔心遺失的伊美樂心臟。神殿發生的事情已經足夠了。", instance_npcname("米莉亞#miriam01");
+		next;
+		mes "[米莉亞]";
+		mes "如果我父親有其他計畫...";
+		mes "如果他再次走向錯誤的道路，我必須阻止他。";
+		npctalk "米莉亞：如果我父親有其他計畫並走向錯誤的道路，我必須阻止他。", instance_npcname("米莉亞#miriam01");
+		next;
+		mes "[米莉亞]";
+		mes "首先，我們去從別墅的員工那裡打聽一些情報吧？";
+		mes "我看到那邊有一位男員工。";
+		npctalk "米莉亞：首先，我們從剩下的員工那裡打聽一些情報吧？", instance_npcname("米莉亞#miriam01");
+		cutin "ep18_miriam_02.png",0;
+		next;
+		mes "[米莉亞]";
+		mes "我去找那位員工。";
+		mes "冒險者，請你找另一位員工詢問關於別墅的事。";
+		npctalk "米莉亞：我去找那位員工。冒險者，請你找另一位員工。", instance_npcname("米莉亞#miriam01");
+		close2;
+		cutin "",255;
+		npctalk "那我去找那邊那位員工。", instance_npcname("米莉亞#miriam01");
+		if ('adv_step == 2) {
+			'adv_step = 3;
+			npcwalkto 136,46;
+		}
+		end;
+	}
+	if ('adv_step == 3) {
+		npctalk "米莉亞：尋找另一位員工。";
+		end;
+	}
+	if ('adv_step == 4) {
+		'adv_step = 5;
+		.@extra01$ = instance_npcname("別墅員工#extra01");
+		.@extra02$ = instance_npcname("別墅員工#extra02");
+		.@rh01$ = instance_npcname("心靈獵手#rh01");
+		.@rh02$ = instance_npcname("心靈獵手#rh02");
+		npctalk "米莉亞：說到底，那一定是偽裝成祭司的心靈獵手，對吧？", instance_npcname("米莉亞#miriam01");
+		specialeffect EF_SCREEN_QUAKE;
+		sleep 2000;
+		emotion ET_SURPRISE, getnpcid(0, instance_npcname("米莉亞#miriam01"));
+		emotion ET_HUK, getnpcid(0, .@extra02$);
+		mapannounce 'map_adv$, "哭喊聲：天啊！你們為什麼要這樣！救命啊！", bc_map, 0xFF99;
+		sleep 1000;
+		npctalk "米莉亞：現在有尖叫聲了！發生了什麼事？", instance_npcname("米莉亞#miriam01");
+		sleep 1000;
+		mapannounce 'map_adv$, "呀啊啊啊啊啊啊啊——！", bc_map, 0xFF99;
+		sleep 1000;
+		npctalk "米莉亞：伊拉！！", instance_npcname("米莉亞#miriam01");
+		sleep 2500;
+		npctalk "米莉亞：看來發生了什麼事。我們去找伊拉。", instance_npcname("米莉亞#miriam01");
+		sleep 2500;
+		npctalk "漢斯：大小姐！請帶我一起走！", .@extra02$;
+		sleep 2500;
+		npctalk "米莉亞：那我這就去看看伊拉他們是否安全。", instance_npcname("米莉亞#miriam01");
+		sleep 2500;
+		npctalk "米莉亞：冒險者，請你先進去。漢斯先生，我們一起走吧。", instance_npcname("米莉亞#miriam01");
+		sleep 2500;
+		disablenpc .@extra01$;
+		disablenpc .@extra02$;
+		disablenpc instance_npcname("米莉亞#miriam01");
+		enablenpc .@rh01$;
+		enablenpc .@rh02$;
+		sleep 1000;
+		npctalk "噢，這不是我們的老朋友嗎？", .@rh01$;
+		npctalk "感謝你在狼村的付出！", .@rh02$;
+		sleep 2500;
+		disablenpc .@rh01$;
+		disablenpc .@rh02$;
+		donpcevent instance_npcname("adv_extra_02") + "::OnStart";
+		'adv_step = 6;
+		end;
+	}
+}
+
+1@adv,133,43,6	duplicate(dummy_disabled_npc)	心靈獵手#rh01	EP18_MD_HEARTHUNTER_R
+1@adv,135,41,7	duplicate(dummy_disabled_npc)	心靈獵手#rh02	EP18_MD_HEARTHUNTER_R
+
+1@adv,100,24,4	script	別墅員工#extra01	4_F_SHABBY,{
+	if ('adv_step == 3) {
+		mes "[別墅員工]";
+		mes "這是我第一次見到你。你是誰？";
+		mes "你是長老的客人嗎？";
+		next;
+		select( "阿瑪爾在哪裡？" );
+		mes "[別墅員工]";
+		mes "他不是應該在禮拜堂嗎？";
+		mes "無論何時來這裡，請先去禮拜堂看看...";
+		next;
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 別墅裡有禮拜堂嗎？";
+		mes "[別墅員工]";
+		mes "是的。他似乎是個虔誠的人，所以在宅邸內建了一座禮拜堂。";
+		next;
+		select( "那其他人呢？" );
+		mes "[別墅員工]";
+		mes "大部分的人都被突然解雇了。";
+		mes "不久前我也聽到有人叫我離開。這是要大規模裁員的徵兆嗎！？";
+		next;
+		mes "[別墅員工]";
+		mes "氣氛太沉重了，我根本不敢問。";
+		mes "只要走上中央樓梯並穿過宴會廳，就能到達禮拜堂。";
+		mes "那麼，去辦你的事吧。";
+		if ('adv_step == 3)
+			'adv_step = 4;
+		close;
+	}
+	mes "[別墅員工]";
+	mes "阿瑪爾大人去了禮拜堂。";
+	mes "走上中央樓梯，穿過宴會廳，你就會到達禮拜堂。";
+	close;
+}
+
+1@adv,138,49,3	script	別墅員工#extra02	4_M_MIDDLE,{
+	if ('adv_step < 4) {
+		mes "這是米莉亞決定調查的人。我們去找另一個吧。";
+		close;
+	}
+	npctalk "漢斯：別墅的氣氛很不尋常。所有的隨從祭司都武裝起來了。", instance_npcname("別墅員工#extra02");
+	end;
+}
+
+1@adv,1,1,5	script	adv_extra_02	-1,{
+	end;
+OnStart:
+	.@label$ = instance_npcname("adv_extra_02") + "::OnMobDead";
+	monster 'map_adv$,133,43,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,135,41,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	end;
+OnMobDead:
+	if ('adv_step != 6)
+		end;
+	if (mobcount('map_adv$, instance_npcname("adv_extra_02") + "::OnMobDead") < 1) {
+		'adv_step = 7;
+		enablenpc instance_npcname("伊拉#aira02");
+		enablenpc instance_npcname("安娜#anna01");
+		enablenpc instance_npcname("漢斯#hans01");
+		enablenpc instance_npcname("米莉亞#miriam02");
+	}
+	end;
+}
+
+1@adv,124,17,7	script(DISABLED)	米莉亞#miriam02	EP18_NPC_MIRIAM,{
+	if ('adv_step < 10) {
+		if (is_party_leader() == false || 'adv_step != 7) {
+			npctalk "米莉亞：把這裡交給我，你去對付二樓的心靈獵手。";
+			end;
+		}
+		'adv_step = 8;
+
+		setpcblock PCBLOCK_NPC, true;
+
+		.@miriam$ = instance_npcname("米莉亞#miriam02");
+		.@label$ = .@miriam$ + "::OnMobDead";
+
+		enablenpc instance_npcname("心靈獵手#rh03");
+		enablenpc instance_npcname("心靈獵手#rh04");
+		enablenpc instance_npcname("心靈獵手#rh05");
+		enablenpc instance_npcname("心靈獵手#rh06");
+		enablenpc instance_npcname("心靈獵手#rh07");
+		npctalk "哈...我不是清楚地告訴過你要清理一切嗎？為什麼還有老鼠？", instance_npcname("心靈獵手#rh05");
+		sleep2 2500;
+		npctalk "米莉亞：冒險者，這裡我來處理。", instance_npcname("米莉亞#miriam02");
+		sleep2 2500;
+		npctalk "米莉亞：冒險者，請突破大廳。我們分頭行動。", instance_npcname("米莉亞#miriam02");
+		sleep2 2000;
+		npctalk "你不能就這樣離開。擋住樓梯！", instance_npcname("心靈獵手#rh05");
+		unitwalk getnpcid(0,instance_npcname("心靈獵手#rh03")), 124,40, .@miriam$ + "::OnMove1";
+		unitwalk getnpcid(0,instance_npcname("心靈獵手#rh07")), 124,41, .@miriam$ + "::OnMove2";
+		sleep2 3000;
+		npctalk "米莉亞：冒險者！請阻止他們！我會處理這裡並疏散所有人！", instance_npcname("米莉亞#miriam02");
+		sleep2 1500;
+		npctalk "你要一個人去嗎？", instance_npcname("心靈獵手#rh05");
+		sleep2 1500;
+		npctalk "你逃不掉的！", instance_npcname("心靈獵手#rh06");
+		sleep2 1000;
+		npctalk "你好大的膽子！", instance_npcname("心靈獵手#rh04");
+		sleep2 1500;
+		npctalk "米莉亞：請把這裡交給我，你去對付二樓的心靈獵手。", instance_npcname("米莉亞#miriam02");
+		setpcblock PCBLOCK_NPC, false;
+
+		if ('adv_step != 8)
+			end;
+		'adv_step = 9;
+
+		monster 'map_adv$,125,42,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,121,42,"心靈獵手",21312,1, .@label$;
+		// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,126,43,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,121,43,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+
+		monster 'map_adv$,123,63,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,124,63,"心靈獵手",21312,1, .@label$;
+		// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,122,65,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+
+		monster 'map_adv$,102,64,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,102,64,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+
+		monster 'map_adv$,144,65,"心靈獵手",21312,1, .@label$;
+		// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,146,66,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+		monster 'map_adv$,146,63,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+		end;
+	}
+	if (is_party_leader() == false)
+		end;
+	if ('adv_step == 10)	// npc is walking
+		end;
+	if ('adv_step == 11) {
+		'adv_step = 12;
+		setpcblock PCBLOCK_NPC, true;
+		npctalk "米莉亞：門鎖上了。我們要分頭尋找鑰匙嗎？", instance_npcname("米莉亞#miriam02");
+		sleep2 2500;
+		npctalk "米莉亞：我去右邊的走廊。冒險者，請你搜索左邊。", instance_npcname("米莉亞#miriam02");
+		setpcblock PCBLOCK_NPC, false;
+		sleep 2500;
+		unitwalk getnpcid(0), 131,97, instance_npcname("米莉亞#miriam02") + "::OnRight";
+		donpcevent instance_npcname("adv_key_left") + "::OnStart";
+		end;
+	}
+	end;
+
+OnMove1:
+	disablenpc instance_npcname("心靈獵手#rh03");
+	end;
+OnMove2:
+	disablenpc instance_npcname("心靈獵手#rh07");
+	end;
+OnMiddle1:
+	unitwalk getnpcid(0), 124,77, instance_npcname("米莉亞#miriam02") + "::OnMiddle2";
+	end;
+OnMiddle2:
+	unitwalk getnpcid(0), 124,97, instance_npcname("米莉亞#miriam02") + "::OnMiddle3";
+	end;
+OnMiddle3:
+	'adv_step = 11;
+	end;
+OnRight:
+	disablenpc instance_npcname("米莉亞#miriam02");
+	enablenpc instance_npcname("米莉亞#miriam03");
+	end;
+OnMobDead:
+	if ('adv_step != 9)
+		end;
+	if (mobcount('map_adv$, instance_npcname("米莉亞#miriam02") + "::OnMobDead") < 1) {
+		'adv_step = 10;
+		disablenpc instance_npcname("心靈獵手#rh04");
+		disablenpc instance_npcname("心靈獵手#rh05");
+		disablenpc instance_npcname("心靈獵手#rh06");
+		disablenpc instance_npcname("伊拉#aira02");
+		disablenpc instance_npcname("安娜#anna01");
+		disablenpc instance_npcname("漢斯#hans01");
+		unitwalk getnpcid(0), 124,47, instance_npcname("米莉亞#miriam02") + "::OnMiddle1";
+	}
+	end;
+}
+
+1@adv,119,19,5	script(DISABLED)	心靈獵手#rh04	EP18_MD_HEARTHUNTER_R,{
+	npctalk "你的勇氣只是幻想！";
+	end;
+}
+1@adv,124,21,3	script(DISABLED)	心靈獵手#rh05	EP18_MD_HEARTHUNTER_R,{
+	npctalk "你要自己處理嗎？";
+	end;
+}
+1@adv,130,18,3	script(DISABLED)	心靈獵手#rh06	EP18_MD_HEARTHUNTER_R,{
+	npctalk "你逃不掉的！";
+	end;
+}
+
+1@adv,114,14,5	duplicate(dummy_disabled_npc)	心靈獵手#rh03	EP18_MD_HEARTHUNTER_R,3,5
+1@adv,133,14,3	duplicate(dummy_disabled_npc)	心靈獵手#rh07	EP18_MD_HEARTHUNTER_R,2,5
+
+1@adv,122,14,7	duplicate(dummy_disabled_npc)	伊拉#aira02	4_M_BRZ_JACI
+1@adv,124,14,6	duplicate(dummy_disabled_npc)	安娜#anna01	4_F_SHABBY
+1@adv,126,14,1	duplicate(dummy_disabled_npc)	漢斯#hans01	4_M_MIDDLE
+
+
+1@adv,1,1,5	script	adv_key_left	-1,{
+	end;
+OnStart:
+	.@label$ = instance_npcname("adv_key_left") + "::OnMobDead";
+	monster 'map_adv$,69,117,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,65,118,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,65,118,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,68,140,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,68,140,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,69,141,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+
+	monster 'map_adv$,66,159,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,68,160,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,68,160,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,65,182,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,67,182,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	end;
+OnMobDead:
+	if ('adv_step != 12)
+		end;
+	if (mobcount('map_adv$, instance_npcname("adv_key_left") + "::OnMobDead") < 1) {
+		'adv_step = 13;
+		enablenpc instance_npcname("銀鑰匙#key01");
+	}
+	end;
+}
+
+1@adv,67,182,3	script(DISABLED)	銀鑰匙#key01	4_POINT_WHITE,{
+	if ('adv_step != 13)
+		end;
+	progressbar "4D4DFF",2;
+	if ('adv_step != 13)
+		end;
+	'adv_step = 14;
+	disablenpc instance_npcname("銀鑰匙#key01");
+	unittalk getcharid(3), "" + strcharinfo(0) + " : 我找到了一把小銀鑰匙。";
+	end;
+}
+
+1@adv,63,142,0	script	上鎖的門#key01	4_POINT_WHITE,{
+	if ('adv_step < 14) {
+		mes "緊緊上鎖的門。";
+		mes "有一個可以插入銀鑰匙的孔。";
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 我需要一把銀鑰匙。";
+		close;
+	}
+	progressbar "4D4DFF",2;
+	if ('adv_step != 14)
+		end;
+	'adv_step = 15;
+	disablenpc instance_npcname("上鎖的門#key01");
+	enablenpc instance_npcname("#left_room_in");
+	enablenpc instance_npcname("#left_room_out");
+	donpcevent instance_npcname("adv_get_key02") + "::OnStart";
+	end;
+}
+
+1@adv,1,1,5	script	adv_get_key02	-1,{
+	end;
+OnStart:
+	.@label$ = instance_npcname("adv_get_key02") + "::OnMobDead";
+	monster 'map_adv$,40,142,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,40,141,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,39,143,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	end;
+OnMobDead:
+	if ('adv_step != 15)
+		end;
+	if (mobcount('map_adv$, instance_npcname("adv_get_key02") + "::OnMobDead") < 1) {
+		'adv_step = 16;
+		enablenpc instance_npcname("金鑰匙#key02");
+	}
+	end;
+}
+
+1@adv,29,157,3	script(DISABLED)	金鑰匙#key02	4_POINT_WHITE,{
+	if ('adv_step != 16)
+		end;
+	progressbar "4D4DFF",2;
+	if ('adv_step != 16)
+		end;
+	'adv_step = 17;
+	disablenpc instance_npcname("金鑰匙#key02");
+	unittalk getcharid(3), "" + strcharinfo(0) + " : 我找到了一把小金鑰匙。";
+	end;
+}
+
+
+
+
+1@adv,182,144,4	script(DISABLED)	米莉亞#miriam03	EP18_NPC_MIRIAM,{
+	if ('adv_step < 17)
+		end;
+	if ('adv_step == 17) {
+		mes "[米莉亞]";
+		mes "你找到鑰匙了。";
+		mes "看來有幾位別墅的員工被困在裡面。";
+		mes "我會在這裡警戒，你進去吧。";
+		cutin "ep18_miriam_01.png",0;
+		close2;
+		cutin "",255;
+		if ('adv_step == 17) {
+			'adv_step = 18;
+			enablenpc instance_npcname("#right_room_in");
+			enablenpc instance_npcname("#right_room_out");
+			enablenpc instance_npcname("別墅員工#ex21");
+			enablenpc instance_npcname("別墅員工#ex22");
+			enablenpc instance_npcname("別墅員工#ex23");
+		}
+		end;
+	}
+	if ('adv_step == 18) {
+		npctalk "米莉亞：我會守住入口，請你搜索房間內部。";
+		end;
+	}
+	if ('adv_step == 19) {
+		mes "[米莉亞]";
+		mes "如果我們放著不管，這些人全都會被處理掉。";
+		mes "我們需要在更多心靈獵手進來之前將他們疏散。";
+		cutin "ep18_miriam_01.png",0;
+		next;
+		mes "[米莉亞]";
+		mes "那麼，我把禮拜堂的調查交給冒險者了。";
+		mes "我會帶著這些人去疏散。";
+		mes "拜託你了。";
+		npctalk "米莉亞：裡面的人，我會護送你們。我們出去吧。", instance_npcname("米莉亞#miriam03");
+		close2;
+		cutin "",255;
+		disablenpc instance_npcname("米莉亞#miriam03");
+		end;
+	}
+	end;
+}
+
+1@adv,202,145,3	script(DISABLED)	別墅員工#ex21	4_F_SHABBY,{
+	npctalk "別墅員工：請讓我離開這裡...", instance_npcname("別墅員工#ex21");
+	end;
+}
+
+1@adv,204,143,3	script(DISABLED)	別墅員工#ex22	4_M_RACHMAN2,{
+	if ('adv_step == 18) {
+		mes "[別墅員工]";
+		mes "你們打算銷毀證據對吧！殺人犯！";
+		mes "嗯？";
+		next;
+		mes "[別墅員工]";
+		mes "你！你是來救我們的，對吧？";
+		mes "我在外面聽到的聲音是米莉亞，對吧？";
+		next;
+		mes "[別墅員工]";
+		mes "調查禮拜堂！那裡絕對有什麼可疑的東西！";
+		mes "什麼？宴會廳關閉了嗎？";
+		next;
+		mes "[別墅員工]";
+		mes "這是側門的鑰匙。";
+		mes "你可以離開這個房間，然後打開你正前方的門。";
+		mes "我有一把備用鑰匙，因為這是我平常送餐用的門。";
+		next;
+		mes "[別墅員工]";
+		mes "還有，請救救我們。";
+		mes "我們是無辜的。";
+		next;
+		mes "你獲得了^4d4dff備用鑰匙^000000。";
+		if ('adv_step == 18)
+			'adv_step = 19;
+		close;
+	}
+	npctalk "別墅員工：你可以用備用鑰匙開門。", instance_npcname("別墅員工#ex22");
+	end;
+}
+
+1@adv,210,140,6	script(DISABLED)	別墅員工#ex23	4_M_RACHMAN1,{
+	npctalk "別墅員工：我們真的會死嗎？", instance_npcname("別墅員工#ex23");
+	end;
+}
+
+1@adv,173,142,0	script	上鎖的門#key03	4_POINT_YELLOW,{
+	if ('adv_step < 19) {
+		mes "緊緊上鎖的門。";
+		mes "有一個小鑰匙孔。";
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 我需要一把鑰匙。";
+		close;
+	}
+	mes "我使用了備用鑰匙。";
+	progressbar "4D4DFF",2;
+	if ('adv_step != 19)
+		close;
+	'adv_step = 20;
+	disablenpc instance_npcname("上鎖的門#key03");
+	enablenpc instance_npcname("#center_room_in");
+	enablenpc instance_npcname("#center_room_out");
+	donpcevent instance_npcname("adv_center") + "::OnStart";
+	close;
+}
+
+1@adv,1,1,5	script	adv_center	-1,{
+	end;
+OnStart:
+	.@label$ = instance_npcname("adv_center") + "::OnMobDead";
+	monster 'map_adv$,156,133,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,156,132,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,155,132,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,156,154,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,155,156,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,124,124,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,123,124,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,122,126,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,126,182,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,122,182,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,126,183,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	end;
+OnMobDead:
+	if ('adv_step != 20)
+		end;
+	if (mobcount('map_adv$, instance_npcname("adv_center") + "::OnMobDead") < 1) {
+		'adv_step = 21;
+	}
+	end;
+}
+
+1@adv,124,210,0	script	華麗的門#door01	4_POINT_WHITE,{
+	if ('adv_step < 20)
+		end;
+	if ('adv_step < 22) {
+		mes "這扇門紋風不動。";
+		mes "感覺有一股強大的魔力擋住了這扇門。";
+		close;
+	}
+	warp 'map_adv$,124,217;
+	end;
+}
+
+// custom coordinates
+1@adv,124,213,0	warp	#garden_out	1,1,1@adv,124,206
+
+1@adv,115,208,0	script	璀璨的物品#Knight_left	4_POINT_WHITE,{
+	if ('adv_step < 20)
+		end;
+	specialeffect EF_BLUELINE;
+	specialeffect EF_SPELLBREAKER, AREA, instance_npcname("華麗的門#door01");
+	if ('adv_step != 21)
+		end;
+	if ('Knight_left == 1)
+		npctalk "華麗騎士的魔力已經消失了。";
+	else {
+		'Knight_left = 1;
+		if ('Knight_left == 1 && 'Knight_righ == 1) {
+			'adv_step = 22;
+			enablenpc instance_npcname("#flower01");
+			enablenpc instance_npcname("#flower02");
+			enablenpc instance_npcname("#flower03");
+			enablenpc instance_npcname("#flower04");
+			enablenpc instance_npcname("#flower05");
+		}
+	}
+	end;
+}
+
+1@adv,131,208,0	script	璀璨的物品#Knight_righ	4_POINT_WHITE,{
+	if ('adv_step < 20)
+		end;
+	specialeffect EF_BLUELINE;
+	specialeffect EF_SPELLBREAKER, AREA, instance_npcname("華麗的門#door01");
+	if ('adv_step != 21)
+		end;
+	if ('Knight_righ == 1)
+		npctalk "華麗騎士的魔力已經消失了。";
+	else {
+		'Knight_righ = 1;
+		if ('Knight_left == 1 && 'Knight_righ == 1) {
+			'adv_step = 22;
+			enablenpc instance_npcname("#flower01");
+			enablenpc instance_npcname("#flower02");
+			enablenpc instance_npcname("#flower03");
+			enablenpc instance_npcname("#flower04");
+			enablenpc instance_npcname("#flower05");
+		}
+	}
+	end;
+}
+
+
+// Garden
+1@adv,159,221,3	script(DISABLED)	#flower01	4_POINT_WHITE,{
+	if ('adv_step < 22)
+		end;
+	mes "這裡有一個花朵形狀的裝置。";
+	next;
+	if (select( "使用它。", "別管它。" ) == 2) {
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 我們去找另一個裝置吧。";
+		end;
+	}
+	progressbar "4D4DFF",5;
+	.@num = atoi( replacestr( strnpcinfo(2), "flower0", "" ) );
+	if ('flower_num == .@num) {
+		if ('adv_step != 22)
+			end;
+		'adv_step = 23;
+		specialeffect EF_BLUELINE;
+		specialeffect EF_SCREEN_QUAKE;
+		disablenpc instance_npcname( strnpcinfo(0) );
+		enablenpc instance_npcname("休蘭#shulang01");
+		end;
+	}
+	mes "什麼事都沒發生。";
+	close;
+}
+
+1@adv,153,255,3	duplicate(#flower01)	#flower02	4_POINT_WHITE
+1@adv,129,238,3	duplicate(#flower01)	#flower05	4_POINT_WHITE
+1@adv,89,225,3	duplicate(#flower01)	#flower03	4_POINT_WHITE
+1@adv,88,244,3	duplicate(#flower01)	#flower04	4_POINT_WHITE
+
+1@adv,124,267,3	script	優雅的門#door02	4_POINT_WHITE,{
+	if ('adv_step < 22)
+		end;
+	if ('adv_step == 22) {
+		mes "這裡有一扇門，上面雕刻著一朵優雅的^4d4dff百合花^000000。";
+		mes "我感覺到一股未知的魔力。";
+		close;
+	}
+	// (23 or more)
+	warp 'map_adv$,124,274;
+	end;
+}
+
+// Middle boss
+1@adv,124,301,3	script(DISABLED)	休蘭#shulang01	4_EP18_SHULANG,{
+	if ('adv_step != 23)
+		end;
+	if (is_party_leader() == false) {
+		mes "[休蘭]";
+		mes "冒險者...你不是一個人來的嗎？";
+		mes "誰是你的老大？";
+		close;
+	}
+	mes "[休蘭]";
+	mes "能來到這裡真是不簡單。";
+	mes "你是個不容錯過的人才。";
+	mes "不如和我們聯手吧？";
+	cutin "ep18_shulang.png",2;
+	next;
+	switch( select( "廢話少說。", "對我有什麼好處？" ) ) {
+	case 1:
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 廢話少說。";
+		mes "[休蘭]";
+		mes "我明白了。";
+		mes "我沒想到你這麼愚蠢。";
+		next;
+		break;
+	case 2:
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 對我有什麼好處？";
+		break;
+	}
+	mes "[休蘭]";
+	mes "冒險者總是追求力量。";
+	mes "你想要的力量，我們可以給你。";
+	next;
+	select( "為什麼要給我這個提議？" );
+	mes "[休蘭]";
+	mes "我想我比那個固執的傢伙更好溝通。";
+	next;
+	select( "如果你說的是固執的傢伙，是什麼意思？" );
+	mes "[休蘭]";
+	mes "就是那個名字。如果他能改變那守舊的個性，就能變得更強的人才。";
+	mes "可惜，機會已經錯過了。";
+	next;
+	mes "[休蘭]";
+	mes "看起來，你似乎不打算接受我們的提議啊。";
+	mes "那也沒辦法了。";
+	close2;
+	cutin "",255;
+	if ('adv_step != 23)
+		end;
+	'adv_step = 24;
+	npctalk "休蘭：你不能再前進了。", instance_npcname("休蘭#shulang01");
+	sleep 2500;
+	npctalk "休蘭：為了更偉大的利益，你必須死在這裡。", instance_npcname("休蘭#shulang01");
+	sleep 2500;
+	disablenpc instance_npcname("休蘭#shulang01");
+	donpcevent instance_npcname("adv_middle_boss") + "::OnStart";
+	end;
+}
+
+1@adv,1,1,5	script	adv_middle_boss	-1,{
+	end;
+OnStart:
+	if ('adv_step != 24)
+		end;
+	.@label$ = instance_npcname("adv_middle_boss") + "::OnMobDead";
+	monster 'map_adv$,124,301,"叛徒休蘭",21314,1, .@label$;	// EP18_MD_SCHULANG
+	monster 'map_adv$,120,303,"心靈獵手",21312,1, .@label$;
+	// EP18_MD_HEARTHUNTER_R
+	monster 'map_adv$,127,303,"心靈獵手",21312,1, .@label$;	// EP18_MD_HEARTHUNTER_R
+	end;
+OnMobDead:
+	if ('adv_step != 24)
+		end;
+	if (mobcount('map_adv$, instance_npcname("adv_middle_boss") + "::OnMobDead") < 1) {
+		'adv_step = 25;
+		enablenpc instance_npcname("#boss_in");
+		enablenpc instance_npcname("尤斯·阿瑪爾#jus01");
+		enablenpc instance_npcname("幻影巴格特#bagot01");
+	}
+	end;
+}
+
+1@adv,123,355,5	duplicate(dummy_disabled_npc)	米莉亞#miriam04	EP18_NPC_MIRIAM
+
+1@adv,124,357,3	duplicate(dummy_cloaked_npc)	扭曲神#demigod	4_EP18_DEMIFREYA
+1@adv,122,351,3	duplicate(dummy_cloaked_npc)	休蘭#shulang02	4_EP18_SHULANG
+
+// Boss room 1
+1@adv,127,356,3	script(DISABLED)	幻影巴格特#bagot01	4_EP18_BAGOT,{
+	npctalk "真有趣。";
+	end;
+}
+
+1@adv,121,355,5	script(DISABLED)	尤斯·阿瑪爾#jus01	4_M_RACHOLD,{
+	if ('adv_step != 25)
+		end;
+	if (is_party_leader() == false) {
+		mes "[尤斯]";
+		mes "別碰我！褻瀆神明的東西！";
+		npctalk "尤斯：別碰我！褻瀆神明的東西！";
+		close;
+	}
+	.@bagot01$ = instance_npcname("幻影巴格特#bagot01");
+	.@demigod$ = instance_npcname("扭曲神#demigod");
+	.@shulang02$ = instance_npcname("休蘭#shulang02");
+	.@miriam04$ = instance_npcname("米莉亞#miriam04");
+
+	mes "[阿瑪爾]";
+	mes "這些可惡的異教徒居然能走到這裡。";
+	mes "但這都不重要了。";
+	mes "你們很快就會在至高無上的神明面前跪下。";
+	npctalk "阿瑪爾：這些可惡的異教徒居然能走到這裡。但你們很快就會在至高無上的神明面前跪下。";
+	next;
+	mes "[阿瑪爾]";
+	mes "我將向奧丁那些傲慢的僕人展示奇蹟。";
+	mes "巴格特，請繼續儀式。";
+	npctalk "阿瑪爾：我將向奧丁那些傲慢的僕人展示奇蹟。巴格特，請繼續儀式。";
+	next;
+	mes "[阿瑪爾]";
+	mes "他們將親眼見證弗蕾亞的奇蹟。";
+	mes "在神的腳下跪拜，並重生為神的僕人吧！";
+	npctalk "阿瑪爾：他們將親眼見證弗蕾亞的奇蹟。跪拜並重生為神的僕人吧！";
+	next;
+	cutin "ep18_bagot_01.png",2;
+	mes "[巴格特]";
+	mes "哇...你說話的方式...真有啟發性。總之，";
+	mes "我答應過的事，我就會遵守。你明白嗎？";
+	npctalk "巴格特：哇...你說話的方式...真有啟發性。總之，我答應過的事，我就會遵守。", .@bagot01$;
+	next;
+	cutin "ep18_bagot_03.png",2;
+	mes "[巴格特]";
+	mes "首先，你就是那位冒險者嗎？";
+	mes "你想看看我的作品嗎？";
+	mes "你也能體驗到從窯中取出精美陶器時的那種感覺。";
+	npctalk "巴格特：你就是那位冒險者嗎？你想看看我的作品嗎？", .@bagot01$;
+	close2;
+	setpcblock PCBLOCK_NPC, true;
+	npctalk "巴格特：能立刻確認實驗的結果，感覺真棒。", .@bagot01$;
+	specialeffect EF_DQ9_CHARGE3, AREA, .@demigod$;
+	sleep2 500;
+	specialeffect EF_SCREEN_QUAKE, AREA, .@demigod$;
+	sleep2 1000;
+	specialeffect EF_BEGINSPELL_YB, AREA, .@demigod$;
+	// enablenpc .@demigod$;
+	cloakoffnpc .@demigod$;	// cloakoffnpc to display effect on rAthena
+	setpcblock PCBLOCK_NPC, false;
+
+	mes "[巴格特]";
+	mes "噠啦?科學與魔法的精髓就在這裡！";
+	mes "我將讓一個以神之姿態的存在降臨！";
+	npctalk "巴格特：噠啦?科學與魔法的精髓就在這裡！", .@bagot01$;
+	next;
+	mes "[巴格特]";
+	mes "做為神明降臨的容器，這點程度完全不是問題！";
+	npctalk "巴格特：做為神明降臨的容器，這點程度完全不是問題！", .@bagot01$;
+	next;
+	cutin "ep18_demifreya.png",1;
+	mes "[被稱為神的存在]";
+	mes "....";
+	npctalk "被稱為神的存在：....", .@demigod$;
+	next;
+	mes "[阿瑪爾]";
+	mes "喔...喔喔...！美麗的弗蕾亞...！您就是我的神嗎？";
+	npctalk "阿瑪爾：喔...喔喔...！美麗的弗蕾亞...！您就是我的神嗎？";
+	next;
+	mes "^4d4dff這個所謂的神聖存在，看起來就像是長大後的教皇。^000000";
+	mes "^4d4dff一個為了讓女神弗蕾亞降臨於世的容器。這就是它最根本的目的。^000000";
+	next;
+	select( "難道是教皇？！" );
+	unittalk getcharid(3), "" + strcharinfo(0) + " : 難道是教皇？！";
+	cutin "ep18_bagot_02.png",2;
+	mes "[巴格特]";
+	mes "你這是在說什麼鬼話？";
+	mes "無論巴格特有多壞，他還不至於卑鄙到去對教皇動手！";
+	npctalk "巴格特：你這是在說什麼鬼話？", .@bagot01$;
+	next;
+	cutin "ep18_bagot_03.png",2;
+	mes "[巴格特]";
+	mes "你對我的傑作也太無禮了吧？！";
+	mes "你是不是被我能創造神明降臨容器的能力給嚇到了？";
+	npctalk "巴格特：你是不是被我能創造神明降臨容器的能力給嚇到了？", .@bagot01$;
+	next;
+	cutin "",255;
+	mes "[阿瑪爾]";
+	mes "喔...喔喔...！我美麗的女神弗蕾亞...！";
+	npctalk "阿瑪爾：喔...喔喔...！我美麗的女神弗蕾亞...！";
+	next;
+	cutin "ep18_bagot_02.png",2;
+	mes "[巴格特]";
+	mes "你根本沒在聽我說話。那又如何？喔?！對了，奇蹟。只要展示奇蹟給你看就行了吧？";
+	npctalk "巴格特：你根本沒在聽我說話。那又如何？喔?！對了，奇蹟。", .@bagot01$;
+	next;
+	cutin "ep18_demifreya.png",1;
+	mes "[被稱為神的存在]";
+	mes ".....";
+	npctalk "被稱為神的存在：.....", .@demigod$;
+	next;
+	mes "[被稱為神的存在]";
+	mes ".....";
+	sleep2 500;
+	mes "虛";
+	npctalk "被稱為神的存在：..虛..", .@demigod$;
+	sleep2 1000;
+	mes "..弱..";
+	npctalk "被稱為神的存在：..弱..", .@demigod$;
+	sleep2 1000;
+	mes "...";
+	npctalk "被稱為神的存在：...", .@demigod$;
+	close2;
+	cutin "",255;
+
+	setpcblock PCBLOCK_NPC, true;
+	sleep2 1500;
+	specialeffect EF_DQ9_CHARGE3, AREA, .@shulang02$;
+	sleep2 1000;
+	specialeffect EF_BEGINSPELL_YB, AREA, .@shulang02$;
+	cloakoffnpc .@shulang02$;
+	sleep2 2500;
+	npctalk "巴格特：什麼？你救了他？你看到那個祭司了嗎？巴格特說了什麼？我說過這是有可能的。", .@bagot01$;
+	sleep2 1500;
+	setpcblock PCBLOCK_NPC, false;
+
+	cutin "ep18_bagot_03.png",2;
+	mes "[巴格特]";
+	mes "這就是證據。奇蹟?";
+	mes "老祭司。既然我如約召喚了你的神，那我就把^4d4dff心臟^000000帶走了。";
+	npctalk "巴格特：既然我如約召喚了你的神，那我就把心臟帶走了。", .@bagot01$;
+	next;
+	mes "[巴格特]";
+	mes "希望你長生不老?";
+	npctalk "巴格特：希望你長生不老?", .@bagot01$;
+	next;
+	cutin "",255;
+	mes "[阿瑪爾]";
+	mes "卑微的僕人見證了神的奇蹟！";
+	npctalk "阿瑪爾：卑微的僕人見證了神的奇蹟！";
+	next;
+	cutin "ep18_bagot_01.png",2;
+	mes "[巴格特]";
+	mes "你到底有沒有在聽？";
+	mes "休蘭是有點可惜了，但他的戲份也到此為止了。";
+	npctalk "巴格特：你到底有沒有在聽？休蘭是有點可惜了，但他的戲份也到此為止了。", .@bagot01$;
+	next;
+	cutin "ep18_bagot_03.png",2;
+	mes "[巴格特]";
+	mes "同時，我也信守了承諾，讓你嚐到了^4d4dff強烈的滋味^000000。";
+	mes "我先走了?那麼，冒險者？拜拜啦?！";
+	npctalk "巴格特：我信守了承諾，讓你嚐到了強烈的滋味。那麼，冒險者？拜拜啦?！", .@bagot01$;
+	close2;
+	cutin "",255;
+
+	setpcblock PCBLOCK_NPC, true;
+	disablenpc .@bagot01$;
+	npctalk "阿瑪爾：喔...弗蕾亞！請懲罰這些異教徒吧！";
+	sleep2 2500;
+	npctalk "被稱為神的存在：嘰嘰嘰 嘰嘰嘰 嘰嘰嘰", .@demigod$;
+	sleep2 2500;
+	npctalk "阿瑪爾：....？我的神啊，怎麼了？您卑微的僕人已準備好聆聽神諭了...";
+	sleep2 2500;
+	npctalk "被稱為神的存在：嘰嘰嘰 啊啊啊啊!!!!", .@demigod$;
+	sleep2 2500;
+	npctalk "阿瑪爾：...我感覺不到任何神力...？為什麼...？";
+	sleep2 2500;
+	specialeffect EF_BEGINSPELL5, AREA, .@demigod$;
+	sleep2 1000;
+	enablenpc .@miriam04$;
+	specialeffect EF_GUARD, AREA, .@miriam04$;
+	sleep2 1000;
+	npctalk "阿瑪爾：神怎麼會懲罰我，弗蕾亞的忠誠僕人？";
+	sleep2 2500;
+	npctalk "米莉亞：現在不是說這個的時候。你必須離開！那不是神！", .@miriam04$;
+	sleep2 2500;
+	npctalk "被稱為神的存在：嘰嘰嘰 嘰嘰嘰 ....", .@demigod$;
+	sleep2 2500;
+	npctalk "阿瑪爾：一派胡言！米莉亞，讓開！";
+	sleep2 2500;
+	npctalk "米莉亞：你剛剛差點就沒命了。看清楚前方。那個邪惡的存在哪一點像神了？", .@miriam04$;
+	sleep2 2500;
+	npctalk "米莉亞：看來你必須睜大眼睛看清楚了。父親。", .@miriam04$;
+	sleep2 2000;
+	npctalk "阿瑪爾：這不可能！放開我，米莉亞！";
+	sleep2 2000;
+	npctalk "被稱為神的存在：嘰嘰...？嘰嘰嘰 呀哈哈哈哈哈哈哈！！", .@demigod$;
+	sleep2 1000;
+	specialeffect EF_BEGINSPELL5, AREA, .@demigod$;
+	sleep2 700;
+	specialeffect EF_BEGINSPELL_YB, AREA, .@demigod$;
+	npctalk "米莉亞：你在做什麼！！！！", .@miriam04$;
+	sleep2 800;
+	disablenpc instance_npcname("尤斯·阿瑪爾#jus01");
+	disablenpc .@miriam04$;
+	sleep2 800;
+	npctalk "被稱為神的存在：呀哈哈哈哈哈哈哈！！", .@demigod$;
+	sleep2 1000;
+	setpcblock PCBLOCK_NPC, false;
+
+	specialeffect EF_BEGINSPELL_YB, AREA, .@demigod$;
+	mapannounce 'map_adv$, "禮拜堂已經被封鎖了。", bc_map, 0x4D4DFF;
+	disablenpc .@demigod$;
+	disablenpc .@shulang02$;
+	donpcevent instance_npcname("adv_demigod_boss") + "::OnStart";
+	end;
+}
+
+1@adv,1,1,5	script	adv_demigod_boss	-1,{
+	end;
+OnStart:
+	if ('adv_step != 25)
+		end;
+	'adv_step = 26;
+	monster 'map_adv$,124,356,"扭曲神",21315,1, instance_npcname("adv_demigod_boss") + "::OnMobDead";	// EP18_MD_DEMI_FREYJA
+	monster 'map_adv$,122,351,"復活的休蘭",21314,1, instance_npcname("adv_demigod_boss") + "::OnMobDead2";
+	// EP18_MD_SCHULANG
+	.@boss_gid = $@mobid[0];
+
+	unitskillusepos .@boss_gid,"NPC_CANE_OF_EVIL_EYE",3,123,349,-50,0,0,1;
+	unitskillusepos .@boss_gid,"NPC_CANE_OF_EVIL_EYE",3,133,338,-50,0,0,1;
+	unitskillusepos .@boss_gid,"NPC_CANE_OF_EVIL_EYE",3,113,338,-50,0,0,1;
+	unitskillusepos .@boss_gid,"NPC_CANE_OF_EVIL_EYE",3,123,330,-50,0,0,1;
+	end;
+OnMobDead:
+	if ('adv_step != 26)
+		end;
+	if (mobcount('map_adv$, instance_npcname("adv_demigod_boss") + "::OnMobDead") < 1) {
+		'adv_step = 27;
+		killmonster 'map_adv$, instance_npcname("adv_demigod_boss") + "::OnMobDead2";
+		mapannounce 'map_adv$, "阿瑪爾的聲音：喔，神啊——！！！", bc_map, 0xFF0000;
+		enablenpc instance_npcname("#boss_out");
+		enablenpc instance_npcname("米莉亞#miriam05");
+		enablenpc instance_npcname("尤斯·阿瑪爾#jus02");
+	}
+	end;
+OnMobDead2:
+	end;
+}
+
+
+// Boss room out
+1@adv,121,321,6	script(DISABLED)	米莉亞#miriam05	EP18_NPC_MIRIAM,{
+	if ('adv_step < 27)
+		end;
+	if ('adv_step == 27 && ep18_main == 54) {
+		npctalk "米莉亞：父親！", instance_npcname("米莉亞#miriam05");
+		mes "[米莉亞]";
+		mes "他做了什麼？它突然就飛出來了。";
+		mes "你還好嗎？";
+		cutin "ep18_miriam_03.png",0;
+		next;
+		cutin "",255;
+		mes "[阿瑪爾]";
+		mes "你對神做了什麼！！！！！！！！！！";
+		mes "你不能這麼做！";
+		mes "為了等待這一天，我到底都做了些什麼...！";
+		next;
+		cutin "ep18_miriam_03.png",0;
+		mes "[米莉亞]";
+		mes "你到現在還相信那是神嗎？";
+		mes "你真的是這麼想的嗎？";
+		next;
+		select( "這個胚胎掉了出來。" );
+		mes "[米莉亞]";
+		mes "確實...";
+		mes "這跟教皇的非常相似...";
+		mes "看這個掉出來的胚胎，這一定是由那個叫巴格特的人製造出來的。";
+		next;
+		select( "我會在這裡進行分析。" );
+		cutin "",255;
+		mes "[阿瑪爾]";
+		mes "米莉亞！抓住那個傲慢的蠢貨！";
+		mes "這個人理應受到神罰！";
+		mes "你這個褻瀆神明的人！";
+		next;
+		cutin "ep18_miriam_03.png",0;
+		mes "[米莉亞]";
+		mes "這不可能。";
+		mes "冒險者大老遠跑來就是為了幫助我們。";
+		next;
+		mes "[米莉亞]";
+		mes "在神殿時也是這樣。";
+		mes "看來他們也蒙蔽了我父親的雙眼。";
+		next;
+		cutin "",255;
+		mes "[阿瑪爾]";
+		mes "妳的意思是我中了他們的詭計嗎！";
+		next;
+		cutin "ep18_miriam_03.png",0;
+		mes "[米莉亞]";
+		mes "我們還是先離開這裡吧。";
+		mes "你可以在檢查完胚胎後再討論細節。";
+		next;
+		mes "[米莉亞]";
+		mes "冒險者，如果在調查結束後查出了扭曲神的身份，請告訴我。";
+		mes "我會照顧我父親的。";
+		ep18_main = 55;
+		erasequest 18083;
+		setquest 18084;
+		if (is_party_leader() == true)
+			enablenpc instance_npcname("#boss_out");
+		close3;
+	}
+	cutin "ep18_miriam_01.png",0;
+	mes "[米莉亞]";
+	mes "我需要照顧我父親，我們離開這裡吧。";
+	close3;
+}
+
+1@adv,119,320,6	script(DISABLED)	尤斯·阿瑪爾#jus02	4_M_RACHOLD,{
+	npctalk "阿瑪爾：...天啊...怎麼會變成這樣...", instance_npcname("尤斯·阿瑪爾#jus02");
+	end;
+}

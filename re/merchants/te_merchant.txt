@@ -1,0 +1,144 @@
+//===== rAthena Script =======================================
+//= Merchant WoE TE
+//===== Description: =========================================
+//= [Official Conversion]
+//= Merchants and Rental merchant template for WoE TE
+//	(duplicates in re/woe_te/<castle file>).
+//===== Changelogs: ==========================================
+//= 1.0 First Version. [Capuche]
+//============================================================
+
+te_prt_gld,114,153,4	shop	TE藥水商人#prt	4_M_TELEPORTER,11557:-1,11558:-1
+te_alde_gld,215,184,4	duplicate(TE藥水商人#prt)	TE藥水商人#alde	4_M_TELEPORTER
+
+// Rental Items manager
+//=======================================
+-	script	rental_woe_TE	-1,{
+	mes "[租賃物品管理員]";
+	if (jobcanentermap("te_prtcas01") == 1) {
+		.@list01$ = "[盾牌] [鎧甲] [披肩]";
+		.@list02$ = "[頭飾] [裝飾品] [鞋子]";
+		.@list03$ = "[劍] [長矛] [斧頭] [拳刃]";
+		.@list04$ = "[鈍器] [手杖] [拳套] [書本]";
+		.@list05$ = "[弓] [槍管] [樂器] [鞭子]";
+
+		mes "^4d4dff我們提供各種您可以根據 TE攻城戰 規則在葛羅麗亞與卡普拉花園地區使用的戰鬥裝備。^000000";
+		next;
+		mes "[租賃物品管理員]";
+		mes "^4d4dff我們免費提供一天的租賃期。^000000";
+		mes "不過，這些提供的租賃物品^4d4dff在 TE攻城戰 區域之外將不具備任何效果。^000000";
+		next;
+		mes "[租賃物品管理員]";
+		mes "^4d4dff您必須達到 Base Lv 40 或以上才能租賃物品。^000000";
+		mes "請選擇您想要的裝備。";
+		next;
+		while(1) {
+			switch( select( "查看租賃裝備", .@list01$, .@list02$, .@list03$, .@list04$, .@list05$, "離開" ) ) {
+			case 1:
+				mes "[租賃物品管理員]";
+				mes "這是租賃物品與說明的清單。";
+				close2;
+				readbook 11059,1;// WoE_TE_Rental_List
+				end;
+			case 2:
+				callsub( S_Rent, "盾牌、鎧甲與披肩",
+					 2178,"TE攻城圓盾",		// TE_Woe_Buckler
+					 2179,"TE攻城神盾",		// TE_Woe_Shield
+					 2180,"TE攻城魔法防禦",	// TE_Woe_Magic_Guard
+					15062,"TE攻城大衣",		// TE_Woe_Coat
+					15063,"TE攻城鎖子甲",			// TE_Woe_Chain_Mail
+					15064,"TE攻城魔法外套",	// TE_Woe_Mage_Coat
+					20702,"TE攻城斗篷",		// TE_Woe_Muffler
+					20703,"TE攻城披肩",			// TE_Woe_Manteau
+					20704,"TE攻城魔法披肩" ); // TE_Woe_Magic_Manteau
+				break;
+			case 3:
+				callsub( S_Rent, "頭飾、裝飾品與鞋子",
+					2496,"TE攻城戰靴",			// TE_Woe_Shoes
+					2497,"TE攻城長靴",			// TE_Woe_Boots
+					2498,"TE攻城魔法涼鞋",	// TE_Woe_Magic_Sandal
+					2944,"TE守護之戒",		// TE_Ring_Of_Protection
+					2945,"TE憤怒之戒",		// TE_Ring_Of_Rage
+					2946,"TE反叛之戒",	// TE_Ring_Of_Defiance
+					18732,"TE攻城無邊帽",			// TE_Woe_Cap
+					18733,"TE攻城骨製頭盔",		// TE_Woe_Bone_Helm
+					18734,"TE攻城魔力之眼" ); // TE_Woe_Magic_Eyes
+				break;
+			case 4:
+				callsub( S_Rent, "劍、長矛、斧頭與拳刃",
+					1299,"TE攻城拳刃",				// TE_Woe_Katar
+					1399,"TE攻城雙手斧",		// TE_Woe_Two_Handed_Axe
+					1495,"TE攻城騎士長矛",				// TE_Woe_Lance
+					13317,"TE攻城風魔飛鏢",	// TE_Woe_Huuma
+					21006,"TE攻城雙手劍",	// TE_Woe_Two_Hand_Sword
+					1319,"TE攻城戰斧",				// TE_Woe_Axe
+					1437,"TE攻城長矛",				// TE_Woe_Pike
+					13083,"TE攻城短劍",				// TE_Woe_Knife
+					13439,"TE攻城長劍" ); // TE_Woe_Sword
+				break;
+			case 5:
+				callsub( S_Rent, "手杖、鈍器、書本與拳套",
+					2019,"TE攻城雙手杖",// TE_Woe_Two_Hand_Staff
+					1591,"TE攻城書本",			// TE_Woe_Book
+					1667,"TE攻城手杖",			// TE_Woe_Staff
+					1834,"TE攻城拳套",			// TE_Woe_Fist
+					16025,"TE攻城流星錘" ); // TE_Woe_Mace
+				break;
+			case 6:
+				callsub( S_Rent, "弓、槍管、樂器與鞭子",
+					18118,"TE攻城角弓",			// TE_Woe_Bow
+					13117,"TE攻城手槍",		// TE_Woe_Pistol
+					13184,"TE攻城來福槍",			// TE_Woe_Rifle
+					13185,"TE攻城格林機槍",	// TE_Woe_Gatling
+					13186,"TE攻城霰彈槍",		// TE_Woe_Shotgun
+					13187,"TE攻城榴彈槍",	// TE_Woe_Grenade
+					1932,"TE攻城吉他",			// TE_Woe_Guitar
+					1987,"TE攻城繩索" ); // TE_Woe_Rope
+				break;
+			case 7:
+				mes "[租賃物品管理員]";
+				mes "那麼隨時歡迎你再來。";
+				close;
+			}
+		}
+	}
+	mes "我們提供各種您可以根據 TE攻城戰 規則在葛羅麗亞與卡普拉花園地區使用的戰鬥裝備。";
+	next;
+	mes "[租賃物品管理員]";
+	mes "很抱歉，您的職業不允許參加 TE攻城戰。";
+	mes "恐怕我無法為您提供任何物品。";
+	close;
+
+S_Rent:
+	mes "[租賃物品管理員]";
+	if (checkweight(1304,3) == 0) {
+		mes "您身上已經有太多物品，無法領取新的租賃裝備。";
+		mes "請整理您的物品後再試一次。";
+		close;
+	}
+	mes "我們為您準備了"+ getarg(0) +"。";
+	mes "請選擇您想要的物品。";
+	next;
+	for ( .@i = 1; .@i < getargcount(); .@i += 2 ) {
+		if (rentalcountitem(getarg(.@i)) > isequippedcnt(getarg(.@i)))// don't count item equipped
+			.@menu$ = .@menu$ + "^4d4dff"+ getarg(.@i+1) +" - 已租借^000000:";
+		else
+			.@menu$ = .@menu$ + getarg(.@i+1) + ":";
+	}
+	.@total_item = (getargcount() -1) /2;
+	.@s = select( .@menu$ + ":查看其他物品" ) -1;
+	if (.@s <= .@total_item) {
+		.@index = .@s *2 +1;
+		mes "[租賃物品管理員]";
+		if (rentalcountitem(getarg(.@index)) > isequippedcnt(getarg(.@index)))
+			mes "您已經擁有 "+ getarg(.@index+1) +"。";
+		else {
+			mes "這是您的 "+ getarg(.@index+1) +"。";
+			mes "^4d4dff此物品在接下來的 24 小時內有效^000000，之後便會過期。";
+			rentitem getarg(.@index),86400;
+		}
+		mes "您還需要其他東西嗎？";
+		next;
+	}
+	return;
+}

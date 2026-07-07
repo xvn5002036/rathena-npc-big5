@@ -1,0 +1,6683 @@
+//===== rAthena Script =======================================
+//= Phantasmagorika Quests (episodes 15.1).
+//===== Description: =========================================
+//= [Official Conversion]
+//--- Quests list:
+//- Phantasmagorika Main Quest
+//- Wandering Bard Quest
+//- Police Quests
+//- 'New Power Source'
+//- 'To Phantasmagorika!'
+//- 'Looking for the Traces' (part 2 of 'To Phantasmagorika!')
+//===== Changelogs: ==========================================
+//= 1.0 Initial release [Capuche]
+//= 1.1 Fixed NPC names [zackdreaver]
+//= 2.0 Updated using Aegis files [Capuche]
+//============================================================
+
+prontera,121,77,3	script	幻影馬格里卡發言人#prt::spokesperson	4_F_ZONDAGIRL,4,4,{
+	mes "[發言人]";
+	mes "你好。";
+	mes "雷根貝爾正在招募冒險者，參與幻影馬格里卡的挖掘計畫，那是最近在優沛擂斯發現的遺跡。";
+	next;
+	mes "[發言人]";
+	mes "如果你有興趣，直接過來就好。";
+	mes "挖掘所需的一切都會由雷根貝爾提供。";
+	next;
+	mes "[發言人]";
+	mes "加入我們，一起在最近發現的優沛擂斯遺跡中探險吧，";
+	mes "那是一座古老的城市，其科學知識推動了現代文明的發展。";
+	next;
+	mes "[發言人]";
+	mes "如果你想加入，請組成一個挖掘小隊並填寫申請表。";
+	next;
+	switch( select( "挖掘小隊？申請表？", "幻影馬格里卡？", "再見。" ) ) {
+	case 1:
+		mes "[發言人]";
+		mes "我們正在招募挖掘小隊，來研究最新發現的遺跡——幻影馬格里卡。";
+		mes "這個計畫需要各個領域的專業知識，所以我們決定招募";
+		mes "挖掘小隊，而不是個人。";
+		next;
+		mes "[發言人]";
+		mes "你可以登記參與挖掘計畫，";
+		mes "並盡你所能地幫助我們。";
+		mes "登記的挖掘者會獲得特別福利和商品，";
+		next;
+		mes "[發言人]";
+		mes "作為在遺跡中發現資訊的交換。我們將利用這些資訊來研究遺跡。";
+		mes "即使你沒能找到有用的資訊，我們也會因你的參與而給予獎勵。";
+		next;
+		mes "[發言人]";
+		mes "如果你想加入這個計畫，請向伊甸園提交你的申請。";
+		close;
+	case 2:
+		mes "[發言人]";
+		mes "在優沛擂斯剛剛發現了一個古代遺址。";
+		mes "它隱藏在一條長隧道的盡頭。";
+		next;
+		mes "[發言人]";
+		mes "雷根貝爾將這個遺址命名為 ^4d4dff幻影馬格里卡^000000";
+		mes "並開始了挖掘工作。";
+		next;
+		mes "[發言人]";
+		mes "我們希望能找到比過去在優沛擂斯地區所發現的，更先進的魔導機甲和更高層次的科學知識。";
+		close;
+	case 3:
+		mes "[發言人]";
+		mes "雷根貝爾正在尋找才華洋溢的冒險者來挖掘幻影馬格里卡。";
+		mes "隨時歡迎加入我們！";
+		mes "我們需要你！";
+		close;
+	}
+	end;
+
+OnTouch_:
+	.@npc$ = strnpcinfo(2);
+	if (getd( "." + .@npc$ ) == 1)
+		end;
+	setd "." + .@npc$, 1;
+	sleep 3000;
+	npctalk "發言人：招募冒險者參與幻影馬格里卡的挖掘工作。";
+	sleep 17000;
+	setd "." + .@npc$, 0;
+	end;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 140 && isbegin_quest(7610) == 0" );
+	end;
+}
+morocc,208,287,3	duplicate(spokesperson)	幻影馬格里卡發言人#moc	4_F_ZONDAGIRL,4,4
+payon,174,113,3	duplicate(spokesperson)	幻影馬格里卡發言人#pay	4_F_ZONDAGIRL,4,4
+geffen,135,64,3	duplicate(spokesperson)	幻影馬格里卡發言人#gef	4_F_ZONDAGIRL,4,4
+alberta,119,65,3	duplicate(spokesperson)	幻影馬格里卡發言人#alb	4_F_ZONDAGIRL,4,2
+
+moc_para01,31,14,0	script	#atnevt01	HIDDEN_WARP_NPC,1,1,{
+	end;
+OnTouch:
+	if (countitem(6219) < 1 && countitem(22508) < 1)	// Para_Team_Mark, Para_Team_Mark_
+		end;
+	if (ep15_1_atnad == 0 && BaseLevel > 139) {
+		cutin "laime_evenor01.bmp",2;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "歡迎回來，";
+		mes "" + strcharinfo(0) + "。我真不知道沒有你我們該怎麼辦。";
+		next;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "你聽說了嗎？";
+		mes "在優沛擂斯剛剛發現了一個古代遺址。";
+		mes "雷根貝爾正在招募冒險者來挖掘那個地方，";
+		next;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "而且我們已經決定要加入了。";
+		mes "隊長想見你，就是為了這件事。";
+		next;
+		select("我不知道你們有隊長。");
+		cutin "laime_evenor02.bmp",2;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "怎麼，你以為這差事是我一個人撐起來的嗎？";
+		mes "老...我是說，隊長很少對什麼事情感到興奮，而這次是罕見的例外。你應該見見她。";
+		next;
+		cutin "laime_evenor01.bmp",2;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "她的辦公室在二樓最左邊。";
+		ep15_1_atnad = 1;
+		setquest 7607;	// Eden Group Leader
+		close3;
+	}
+	end;
+}
+
+moc_para01,38,175,5	script	秘書 萊伊姆 伊凡諾#evtat01	4_F_EDEN_OFFICER,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 你的物品過多，無法進行任務。 -";
+		close;
+	}
+	mes "[秘書 萊伊姆 伊凡諾]";
+	if (countitem(6219) < 1 && countitem(22508) < 1) {
+		cutin "laime_evenor01.bmp",2;
+		mes "你需要先加入伊甸園。";
+		close3;
+	}
+	if (BaseLevel < 140) {
+		cutin "laime_evenor01.bmp",2;
+		mes "我也偶爾會來這裡處理一些公務。";
+		mes "其實中央那間房間是我的。";
+		close3;
+	}
+	switch(ep15_1_atnad) {
+	case 0:
+		cutin "laime_evenor01.bmp",2;
+		mes "歡迎回來，";
+		mes "" + strcharinfo(0) + "。我真不知道沒有你我們該怎麼辦。";
+		next;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "你聽說了嗎？";
+		mes "在優沛擂斯剛剛發現了一個古代遺址。";
+		mes "雷根貝爾正在招募冒險者來挖掘那個地方，";
+		next;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "而且我們已經決定要加入了。";
+		mes "隊長想見你，就是為了這件事。";
+		next;
+		select("我不知道你們有隊長。");
+		cutin "laime_evenor02.bmp",2;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "怎麼，你以為這差事是我一個人撐起來的嗎？";
+		mes "老...我是說，隊長很少對什麼事情感到興奮，而這次是罕見的例外。你應該見見她。";
+		next;
+		cutin "laime_evenor01.bmp",2;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "她的辦公室在二樓最左邊。";
+		ep15_1_atnad = 1;
+		setquest 7607;// Eden Group Leader
+		close3;
+	case 1:
+	case 2:
+		cutin "laime_evenor03.bmp",2;
+		mes "隊長正在等你。";
+		mes "她的辦公室在這邊最左邊。";
+		mes "我們稍後再見。";
+		close3;
+	case 3:
+		cutin "laime_evenor03.bmp",2;
+		mes "看來你跟隊長談得還算順利。";
+		mes "我們移步到中央房間吧？";
+		mes "我們有位客人在等著";
+		mes "跟我們談些事情。";
+		close3;
+	case 4:
+		cutin "laime_evenor01.bmp",2;
+		mes "我會在這裡為你加油的。";
+		mes "不用擔心後勤支援。";
+		mes "我會確保你得到所有需要的東西。";
+		close3;
+	default:
+		cutin "laime_evenor01.bmp",2;
+		mes "到目前為止，挖掘工作似乎進展順利。";
+		mes "阿特納德博士感興趣的物品也在雷根貝爾的雷達上；它應該會獲得很高的評價。";
+		next;
+		mes "[秘書 萊伊姆 伊凡諾]";
+		mes "謝謝你幫助博士們專注於他們的工作。";
+		mes "繼續保持。";
+		close3;
+	}
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 140 && isbegin_quest(7607) == 0 && ep15_1_atnad < 3" );
+	end;
+}
+
+moc_para01,174,165,3	script	萊伊姆 伊凡諾#atnd02	4_F_EDEN_OFFICER,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 你的物品過多，無法進行任務。 -";
+		close;
+	}
+	mes "[萊伊姆]";
+	switch(ep15_1_atnad) {
+	case 0:
+		cutin "laime_evenor01.bmp",2;
+		mes "這個房間僅供員工使用。";
+		mes "如果你需要休息的地方，請使用隔壁房間。";
+		break;
+	case 1:
+	case 2:
+		cutin "laime_evenor01.bmp",2;
+		mes "隊長在隔壁房間。";
+		mes "在左邊。";
+		mes "請先跟隊長談談。";
+		break;
+	case 3:
+		cutin "laime_evenor01.bmp",2;
+		mes "" + strcharinfo(0) + "。請走這邊。";
+		mes "讓我為你介紹";
+		mes "阿特納德挖掘小隊的考古學家，奧雷斯。";
+		next;
+		mes "[萊伊姆]";
+		mes "奧雷斯博士，這位是 " + strcharinfo(0) + "，將會在幻影馬格里卡協助你。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "很高興認識你。我叫奧雷斯。";
+		mes "我團隊裡的每個成員都年老體衰。我們真的很需要像你這樣的新血。";
+		mes "歡迎加入團隊。";
+		next;
+		cutin "laime_evenor01.bmp",2;
+		mes "[萊伊姆]";
+		mes "看來你跟隊長談得很順利。";
+		mes "你的工作很簡單：";
+		mes "只要協助奧雷斯博士和他的阿特納德挖掘小隊就好。";
+		next;
+		mes "[萊伊姆]";
+		mes "我預計你會花大部分的時間在跑腿上";
+		mes "以及做些需要體力的事情，因為這個團隊的所有成員都已經過了他們的黃金歲月。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "沒錯。我們所有人都早就退休了。";
+		mes "這此挖掘大概會是我們死前最後一次的挖掘了。";
+		next;
+		mes "[奧雷斯]";
+		mes "如果不是萊伊姆幫忙，我們在那個地方的入口處就會改變主意了。";
+		next;
+		cutin "laime_evenor01.bmp",2;
+		mes "[萊伊姆]";
+		mes "請別這麼說。";
+		mes "你們是我見過經驗最豐富的考古學家。";
+		mes "對了，阿特納德博士好嗎？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "阿特納德？別跟我提他。";
+		mes "他跟他女兒一樣固執，甚至有過之而無不及。";
+		mes "她賣掉遺產，在她聯絡不上父親時就離開了。";
+		next;
+		mes "[奧雷斯]";
+		mes "他好幾年沒跟家人聯絡。當他發現他的房子被賣掉時，";
+		mes "他大發雷霆並失去了音訊，";
+		mes "而且他現在還在生她的氣。";
+		next;
+		cutin "laime_evenor01.bmp",2;
+		mes "[萊伊姆]";
+		mes "而我們就被夾在他們的心結之間。";
+		next;
+		switch( select( "他們是誰？", "請切入正題。" ) ) {
+		case 1:
+			cutin "verus_aures.bmp",0;
+			mes "[奧雷斯]";
+			mes "讓我來告訴你吧。當萊伊姆來找我們時，";
+			mes "我們都很好奇，像伊甸園這麼有名的組織，為什麼要支援我們這群東拼西湊的糟老頭。";
+			mes "然後我們發現她們是父女。";
+			next;
+			select("父女？誰？");
+			cutin "laime_evenor03.bmp",2;
+			mes "[萊伊姆]";
+			mes "喔，隊長沒告訴你嗎？";
+			mes "她的父親是阿特納德挖掘小隊的隊長。";
+			next;
+			mes "[萊伊姆]";
+			mes "當我第一次提議我們應該加入這個計畫時，";
+			mes "她想支援阿特納德挖掘小隊。";
+			mes "一開始我考慮的是比較接近合併團隊的方向。";
+			next;
+			mes "[萊伊姆]";
+			mes "雷根貝爾負責計畫的財務方面，而我們負責人力。";
+			mes "然後我才意識到該小隊的隊長是我老闆的父親。";
+			next;
+			cutin "laime_evenor04.bmp",2;
+			mes "[萊伊姆]";
+			mes "我想盡我所能地支援團隊，";
+			mes "但他們之間惡劣的關係卻成了阻礙。";
+			next;
+			cutin "verus_aures.bmp",0;
+			mes "[奧雷斯]";
+			mes "伊安，我是說老阿特納德，張開雙臂歡迎你的提議。";
+			mes "然後當他發現你們隊長是他女兒時，他氣得火冒三丈。";
+			next;
+			mes "[奧雷斯]";
+			mes "我不懂這有什麼好糾結的。";
+			mes "看在老天的份上，她是他的女兒啊。";
+			mes "我想你應該在他們兩個之間居中協調一下。";
+			next;
+			cutin "laime_evenor01.bmp",2;
+			mes "[萊伊姆]";
+			mes "我希望這次的合作能成為他們和解的契機。";
+			mes "好了，我們現在該動身前往現場了。";
+			break;
+		case 2:
+			cutin "laime_evenor03.bmp",2;
+			mes "[萊伊姆]";
+			mes "確實。在我們出發前，我們來談談在現場可以期待些什麼吧。";
+			break;
+		}
+		next;
+		cutin "laime_evenor03.bmp",2;
+		mes "[萊伊姆]";
+		mes "奧雷斯，路克會跟你一起去。";
+		mes "" + strcharinfo(0) + "，你準備好後隨時可以前往幻影馬格里卡。";
+		next;
+		mes "[萊伊姆]";
+		mes "可以經由優沛擂斯進入，";
+		mes "所以先移動到朱諾，然後從那裡前往優沛擂斯的入口。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "雷根貝爾一直在整個大陸推廣這個計畫，";
+		mes "並成功地招來了超乎你想像的人數。";
+		mes "只要找一大群人，你就不會錯過那個地方。到了那裡見。";
+		next;
+		cutin "laime_evenor01.bmp",2;
+		mes "[萊伊姆]";
+		mes "一切對你來說應該都很簡單，";
+		mes "雖然你得向雷根貝爾註冊參與挖掘。";
+		mes "你可以登記為獨立挖掘者，但我比較希望你作為阿特納德挖掘小隊的一員來登記。";
+		next;
+		mes "[萊伊姆]";
+		mes "一旦你的註冊通過，你就可以開始為阿特納德挖掘小隊工作，";
+		mes "而其他一切都會水到渠成。";
+		mes "謝謝你這麼做。";
+		ep15_1_atnad = 4;
+		completequest 7608;// Atnad Excavation Team 1
+		setquest 7609;// Atnad Excavation Team 2
+		break;
+	case 4:
+		cutin "laime_evenor01.bmp",2;
+		mes "挖掘現場連接到優沛擂斯，";
+		mes "所以你應該先移動到優沛擂斯。";
+		mes "挖掘計畫被廣泛宣傳，所以要找到代表不會有問題。";
+		break;
+	default:
+		cutin "laime_evenor02.bmp", 2;
+		mes "挖掘現場的狀況如何？";
+		mes "唉，為什麼伊安就是不能原諒他女兒呢？";
+		break;
+	}
+	close3;
+}
+
+moc_para01,172,164,5	script	考古學家 奧雷斯#atnd02	4_M_OLDSCHOLAR,{
+	if (ep15_1_atnad < 4) {
+		cutin "laime_evenor01.bmp",2;
+		mes "[萊伊姆]";
+		mes "很抱歉，他是我們的客人。";
+		mes "而且這間辦公室僅供伊甸園員工使用。";
+		mes "宿舍在隔壁房間。";;
+	}
+	else if (ep15_1_atnad == 4) {
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "我們挖掘現場見，好嗎？";
+		mes "伊甸園為我僱用了一名護衛，所以我會跟他一起旅行。";
+		mes "現場見。";
+	}
+	else {
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "喔，你來了。";
+		mes "我常來這裡。";
+		mes "我為路克感到抱歉，他因為我必須這麼頻繁地旅行。";
+		next;
+		mes "[奧雷斯]";
+		mes "能有一個隨時想來就能來的地方真棒。我已經好幾年沒有可以稱之為家的地方了。";
+		mes "哈哈哈！";
+		mes "我們挖掘現場見。";
+	}
+	close3;
+}
+
+moc_para01,178,167,3	script	路克 拉佩茲#atnd03	4_M_EDEN_GUARDER,{
+	mes "[路克]";
+	if (ep15_1_atnad < 4) {
+		cutin "looke_rapez02.bmp",0;
+		mes "嘿，萊伊姆。";
+		mes "我們有客人。";
+		mes "...";
+	}
+	else if (ep15_1_atnad == 4) {
+		cutin "looke_rapez02.bmp",0;
+		mes "...";
+		mes "我跟你無話可說。";
+	}
+	else {
+		cutin "looke_rapez04.bmp",0;
+		mes "嗯...";
+	}
+	close3;
+}
+
+ver_eju,114,40,4	script	經理 蜜雪兒#atnd05	4_M_LGTGUARD,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 你的物品過多，無法進行任務。 -";
+		close;
+	}
+	mes "[經理 蜜雪兒]";
+	if (ep15_1_atnad < 4) {
+		mes "等等。你是哪個挖掘小隊的？";
+		mes "...你是獨立的。";
+		mes "你是獨立註冊的嗎？你有推薦信嗎？";
+		next;
+		mes "[經理 蜜雪兒]";
+		mes "我想也是。";
+		mes "很抱歉，但你必須有推薦信或隸屬於某個挖掘小隊。";
+		mes "各式各樣的人都跑來挖掘現場找工作。";
+		next;
+		mes "[經理 蜜雪兒]";
+		mes "喔，對了。^4d4dff伊甸園^000000 是最容易拿到推薦信的地方。";
+		mes "如果你符合資格，那麼該組織就會推薦你給我們參與挖掘計畫。";
+		next;
+		mes "[經理 蜜雪兒]";
+		mes "現在，為了你的安全請退後。";
+		close;
+	}
+	if (ep15_1_atnad == 4) {
+		if (checkquest(7611,HUNTING) == -1) {
+			mes "等等。";
+			mes "你是幻影馬格里卡挖掘計畫的參與者嗎？";
+			next;
+			select("是的。");
+			mes "[經理 蜜雪兒]";
+			mes "讓我查一下名單。";
+			mes "你的名字是... " + strcharinfo(0) + "。啊，找到了。";
+			mes "你是伊甸園的人，沒錯。";
+			next;
+			mes "[經理 蜜雪兒]";
+			mes "挖掘現場就在這條隧道的另一端。";
+			mes "一旦你進去了，你必須在中央指揮中心正式註冊。";
+			next;
+			mes "[經理 蜜雪兒]";
+			mes "喔，幫我個忙。";
+			mes "優沛擂斯廢墟的魔物已經遷移到隧道裡，";
+			mes "而且牠們快要失控了。";
+			next;
+			mes "[經理 蜜雪兒]";
+			mes "你能幫我們處理掉牠們嗎？包含這附近的。";
+			mes "我會為你寫一封推薦信，這樣你就可以在中央指揮中心領取你的獎勵。";
+			setquest 7611;// Passage Cleaning
+			close;
+		}
+		mes "只要清除隧道裡的魔物，";
+		mes "並向中央指揮中心報告。";
+		mes "感謝你的幫忙。";
+		close;
+	}
+	if (isbegin_quest(7610) == 0) {
+		mes "[經理 蜜雪兒]";
+		mes "你在找新工作嗎？";
+		mes "如果你偏好勞力工作，";
+		mes "你隨時可以幫我消滅魔物。";
+		close;
+	}
+	switch( checkquest(7612,PLAYTIME) ) {
+	case -1:
+		switch( checkquest(7611,HUNTING) ) {
+		case -1:
+			mes "你能再幫我一次嗎？";
+			mes "你知道的，消滅隧道和這附近的魔物。";
+			mes "這次，你可以直接向我報告，不用再跑一趟中央指揮中心了。";
+			mes "感謝你的幫忙。";
+			setquest 7611;// Passage Cleaning
+			close;
+		case 0:
+		case 1:
+			mes "只要解決掉一些隧道裡和這附近的就行了。";
+			mes "我很高興你喜歡這份工作。";
+			next;
+			mes "[經理 蜜雪兒]";
+			mes "完成後，你可以回來向我報告，";
+			mes "或是去中央指揮中心找路易斯。";
+			mes "感謝你的幫忙。";
+			close;
+		case 2:
+			mes "喔，消滅魔物做得好。";
+			mes "我們的士兵會很感激你的幫忙。";
+			mes "請收下這點微薄的謝意。";
+			mes "希望這對你有幫助。";
+			erasequest 7611;// Passage Cleaning
+			setquest 7612;// Passage Cleaning - Down
+			getexp 1500000,1000000;
+			close;
+		}
+	case 0:
+	case 1:
+		mes "謝謝你清除隧道裡的魔物。";
+		mes "如果你能繼續這樣做，我會很感激的。";
+		close;
+	case 2:
+		mes "你在找新工作嗎？";
+		mes "如果你偏好勞力工作，";
+		mes "你隨時可以幫我消滅魔物。";
+		erasequest 7612;// Passage Cleaning - Down
+		close;
+	}
+	end;
+
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7611) == 0 && ep15_1_atnad == 4" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7612) == 0" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "checkquest(7611,HUNTING) == 2" );
+	end;
+}
+
+verus04,182,168,5	script	接待員 娜拉#atnd06	4_F_HUWOMAN,{
+	mes "[娜拉]";
+	if (ep15_1_atnad < 4) {
+		mes "你好。";
+		mes "感謝您使用幻影馬格里卡挖掘接待處。";
+		mes "你有推薦信嗎？或者你是某個挖掘小隊的成員嗎？";
+		next;
+		mes "[娜拉]";
+		mes "喔，都不是。";
+		mes "很抱歉，我不能讓你註冊。";
+		mes "我們確實需要挖掘者，但我們是有標準的。";
+		next;
+		switch( select( "我想現在註冊。", "我稍後再來。" ) ) {
+		case 1:
+			if (BaseLevel > 139) {
+				mes "[娜拉]";
+				mes "你不是要有推薦信，就是得成為挖掘小隊的成員。";
+				mes "很抱歉。";
+				mes "嗯...";
+				next;
+				mes "[娜拉]";
+				mes "如果你不知道去哪裡取得推薦信或找到挖掘小隊，";
+				mes "你隨時可以加入 ^4d4dff伊甸園^000000。";
+				next;
+				mes "[娜拉]";
+				mes "如果你以前為該組織工作過，那麼要拿到推薦信應該沒問題。";
+				close;
+			}
+			mes "[娜拉]";
+			mes "嗯...";
+			mes "很抱歉，但我無能為力。";
+			mes "這個地方目前對你來說太危險了。";
+			next;
+			mes "[娜拉]";
+			mes "請在你變得更有經驗後再來。";
+			mes "你必須至少達到 140 級才能向我們註冊。";
+			mes "這是必要的，否則我們只會有一群烏合之眾的新手來當挖掘者。";
+			mes "抱歉。";
+			close;
+		case 2:
+			mes "[娜拉]";
+			mes "請帶著官方的挖掘小隊，或是帶著推薦信回來。";
+			close;
+		}
+	}
+	if (ep15_1_atnad == 4) {
+		mes "你好。";
+		mes "感謝您使用幻影馬格里卡挖掘接待處。";
+		mes "你有推薦信嗎？或者你是某個挖掘小隊的成員嗎？";
+		next;
+		select("我來自伊甸園。");
+		mes "[娜拉]";
+		mes "來自伊甸園，明白了。";
+		mes "請問你的名字是？" + strcharinfo(0) + "...";
+		mes "啊，找到了。";
+		next;
+		mes "[娜拉]";
+		mes "你是一個獨立挖掘小隊的成員。";
+		mes "你屬於哪個挖掘小隊？";
+		next;
+		input .@string$;
+		mes "[娜拉]";
+		if (.@string$ != "阿特納德" && .@string$ != "阿特納德挖掘" && .@string$ != "阿特納德挖掘小隊") {
+			mes "..." + .@string$ + "...？";
+			mes "你確定是這個嗎？";
+			mes "因為我在名單上找不到這個名字。";
+			next;
+			mes "[娜拉]";
+			mes "請再確認一下。";
+			close;
+		}
+		mes "阿特納德... 阿特納德...";
+		mes "喔，我找到了。";
+		mes "加上你，" + strcharinfo(0) + "，這個隊伍勉強達到了最低人數要求。";
+		mes "喔，我們不會歧視小團體。別擔心。";
+		next;
+		mes "[娜拉]";
+		mes "在聽從你挖掘小隊隊長的指揮的同時，";
+		mes "你也可以承接中央指揮中心提供的任務。";
+		next;
+		mes "[娜拉]";
+		mes "如果有特殊事件，我們會通知你。";
+		mes "如果你受傷或筋疲力盡，隨時可以使用在指揮中心待命的治療師。";
+		next;
+		mes "[娜拉]";
+		mes "雷根貝爾會提供你在挖掘現場工作時所需的一切。";
+		mes "作為回報，我們期望你能專注於揭開埋藏在幻影馬格里卡的秘密。";
+		mes "祝你挖掘順利。";
+		erasequest 7609;// Atnad Excavation Team 2
+		setquest 7610;// Registered Excavator
+		completequest 7610;// Registered Excavator
+		ep15_1_atnad = 5;
+		getexp 300000,300000;
+		close;
+	}
+	if (ep15_1_atnad == 5) {
+		mes "現在你可以不受限制地進入這個區域了。";
+		mes "如果你在挖掘或探索時遇到問題，請隨時告訴我們。";
+		next;
+		mes "[娜拉]";
+		mes "你的註冊已經處理完畢。如果你需要幫助或指示，請跟路易斯指揮官談談。";
+		mes "他那裡也會有一些消滅魔物的任務給你。";
+		next;
+		mes "[娜拉]";
+		mes "祝你好運！";
+		close;
+	}
+	mes "你今天好嗎？";
+	mes "繼續保持。";
+	close;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7610) == 0 && BaseLevel >= 140" );
+	end;
+}
+
+verus04,179,165,5	script	指揮官 路易斯#atnd07	4_M_LGTGUARD,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 你的物品過多，無法進行任務。 -";
+		close;
+	}
+	mes "[路易斯]";
+	if (ep15_1_atnad < 5) {
+		mes "請註冊成為正式的挖掘者，否則你將被請出這裡。";
+		mes "你可以在接待處註冊。";
+		close;
+	}
+	mes "你是阿特納德挖掘小隊的。";
+	mes "有什麼我可以幫忙的嗎？";
+	next;
+	switch( select( "報告挖掘結果。", "關於清理隧道。", "關於消滅魔物。", "沒事。" ) ) {
+	case 1:
+		mes "[路易斯]";
+		if (ep15_1_atnad == 12) {
+			if (isbegin_quest(7617) != 1 || countitem(6748) < 1) {
+				mes "你要報告結果嗎？";
+				mes "...報告上必須有阿特納德考古探險隊隊長的印章！";
+				next;
+				mes "[路易斯]";
+				mes "像這樣的資訊基本上會被建檔。";
+				mes "抱歉麻煩你了。";
+				mes "阿特納德考古小隊的內容撿起來。一定非常有趣，我們很期待！";
+				close;
+			}
+			mes "啊，你們團隊的挖掘結果。";
+			mes "我看得出來你們團隊一直專注在核心上。";
+			next;
+			mes "[路易斯]";
+			mes "總裁對你們的團隊特別感興趣。";
+			mes "繼續保持，你就會收到他的消息。";
+			next;
+			mes "[路易斯]";
+			mes "今天辛苦你了。";
+			mes "明天見。";
+			next;
+			mes "[路易斯]";
+			mes "喔，等等。";
+			mes "你們團隊在無線電上找你。";
+			mes "我幫你接過去。";
+			next;
+			mes "[伊安 阿特納德的聲音]";
+			mes "*劈啪* 喂... *劈啪* 菜鳥...";
+			mes "*劈啪* 這東西... 怎麼回事...";
+			mes "*劈啪* 我聽不到...";
+			mes "菜鳥... *劈啪* 給我滾過來... *劈啪*";
+			mes "哼！*嗶*";
+			next;
+			mes "[路易斯]";
+			mes "抱歉，訊號通常沒這麼差。";
+			mes "我猜博士在找你。";
+			mes "你該走了。";
+			delitem 6748,1;// Excavator_Repoet
+			erasequest 7617;// Turning In Excavation Report
+			setquest 7623;// Atnad's Summon
+			ep15_1_atnad = 13;
+			getexp 300000,300000;
+			close;
+		}
+		if (ep15_1_atnad == 13) {
+			mes "雖然只是短暫的調查，但你們的團隊卻取得了如此豐碩的成果。";
+			next;
+			mes "[路易斯]";
+			mes "當其他學者和挖掘者只能進行表面觀察時，";
+			mes "你們團隊已經取得了一些技術上的發現。";
+			next;
+			mes "[路易斯]";
+			mes "我會將此事報告給總裁，並確保你們團隊能獲得特別福利。";
+			mes "我會期待你們的下一份報告。";
+			close;
+		}
+		if (isbegin_quest(7618) == 1) {
+			mes "高層對此很感興趣";
+			mes "希望能聽到更多關於你們的發現。";
+			mes "希望你們能繼續帶給我們驚喜。";
+			close;
+		}
+		if (isbegin_quest(7617) != 1 || countitem(6748) < 1) {
+			mes "你是來報告每日結果的嗎？";
+			mes "請給我一份有你們隊長簽名的報告。";
+			next;
+			mes "[路易斯]";
+			mes "留下紀錄總是比較保險。";
+			mes "報告準備好後請盡快送來。";
+			mes "閱讀你們的報告總是讓我感到興奮。";
+			close;
+		}
+		mes "啊，你們團隊的挖掘結果。";
+		mes "我看得出來你們團隊一直專注在核心上。";
+		next;
+		mes "[路易斯]";
+		mes "總裁對你們的團隊特別感興趣。";
+		mes "繼續保持，你就會收到他的消息。";
+		next;
+		mes "[路易斯]";
+		mes "今天辛苦你了。";
+		mes "明天見。";
+		delitem 6748,1;// Excavator_Repoet
+		erasequest 7617;// Turning In Excavation Report
+		setquest 7618;// Reporting the Results - Down
+		getexp 300000,300000;
+		close;
+	case 2:
+		mes "[路易斯]";
+		switch( checkquest(7612,PLAYTIME) ) {
+		case -1:
+			switch( checkquest(7611,HUNTING) ) {
+			case -1:
+				mes "啊，你來得正是時候。";
+				mes "隧道和遺跡裡的魔物越來越多了。";
+				mes "傭兵們要求增援。";
+				next;
+				if (select( "我去。", "拒絕。" ) == 2) {
+					mes "[路易斯]";
+					mes "當然，你的首要任務是挖掘。";
+					mes "我會找別人。";
+					close;
+				}
+				mes "[路易斯]";
+				mes "很好。";
+				mes "先謝謝你了。";
+				mes "完成後，你可以向東邊遺跡的蜜雪兒經理報告結果。";
+				mes "祝狩獵愉快。";
+				setquest 7611;// Passage Cleaning
+				close;
+			case 0:
+			case 1:
+				mes "謝謝你。";
+				mes "穿過隧道，解決裡面的魔物。";
+				mes "完成後，請向東邊遺跡的蜜雪兒經理報告結果。";
+				close;
+			case 2:
+				mes "你把隧道和遺跡裡的魔物解決了嗎？";
+				mes "我們的傭兵會很高興的。";
+				mes "他們要求增援已經有一陣子了。哈哈！";
+				next;
+				mes "[路易斯]";
+				mes "辛苦你了。";
+				mes "請去休息吧，這樣你才能繼續進行挖掘任務。";
+				erasequest 7611;// Passage Cleaning
+				setquest 7612;// Passage Cleaning - Down
+				getexp 1500000,1000000;
+				close;
+			}
+		case 0:
+		case 1:
+			mes "我們的傭兵可以對付隧道和遺跡裡的魔物。";
+			mes "不過還是謝謝你關心現場的安全。";
+			close;
+		case 2:
+			erasequest 7612;// Passage Cleaning - Down
+			mes "你擔心隧道和遺跡裡的魔物嗎？";
+			mes "如果你休息夠了，那我可以把討伐任務交給你。";
+			next;
+			mes "[路易斯]";
+			mes "如果你打算出去，不妨接下這個任務，一石二鳥。";
+			mes "而且你可以向東邊遺跡的蜜雪兒經理報告結果。";
+			close;
+		}
+	case 3:
+		mes "[路易斯]";
+		switch( checkquest(7614,PLAYTIME) ) {
+		case -1:
+			switch( checkquest(7613,HUNTING) ) {
+			case -1:
+				mes "啊，你來得正是時候。";
+				mes "廣場上出現了具威脅性的機器。";
+				mes "工人們要求戰鬥部隊支援。";
+				next;
+				if (select( "我去。", "拒絕。" ) == 2) {
+					mes "[路易斯]";
+					mes "當然，你的首要任務是挖掘。";
+					mes "我會找別人。";
+					close;
+				}
+				mes "[路易斯]";
+				mes "很好。";
+				mes "先謝謝你了。";
+				mes "請小心！";
+				setquest 7613;// Eliminating Risks
+				close;
+			case 0:
+			case 1:
+				mes "謝謝你。";
+				mes "廣場是主要挖掘工作進行的地方。";
+				mes "如果你能從被你摧毀的機器中找到什麼東西，那就太棒了。";
+				close;
+			case 2:
+				mes "事情似乎已經平息了。";
+				mes "工人們很快就會復工。";
+				mes "他們不是戰士，所以在這種時候通常很被動。";
+				next;
+				mes "[路易斯]";
+				mes "辛苦你了。";
+				mes "我們的工人會感激你保護他們的安全。";
+				erasequest 7613;// Eliminating Risks
+				setquest 7614;// Eliminating Risks - Down
+				getexp 1500000,1000000;
+				close;
+			}
+		case 0:
+		case 1:
+			mes "我有其他志願者可以去處理主要挖掘點，也就是廣場上的魔物。";
+			mes "你應該休息一下。";
+			close;
+		case 2:
+			erasequest 7614;// Eliminating Risks - Down
+			mes "你擔心主要挖掘點的那些機器嗎？";
+			mes "確實，有些機器非常敏感且具有攻擊性，";
+			mes "我也同意它們對我們的工作構成威脅。";
+			next;
+			mes "[路易斯]";
+			mes "如果你能解決它們，那我可以正式把這個任務交給你，";
+			mes "這樣你就能得到相應的報酬。雷根貝爾絕對不會將你的付出視為理所當然。";
+			close;
+		}
+	case 4:
+		mes "[路易斯]";
+		mes "是這樣嗎？";
+		mes "如果你發現任何奇怪的地方，請告訴我。";
+		close;
+	}
+	end;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7610) == 2 && isbegin_quest(7611) == 0 && isbegin_quest(7612) == 0" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7613) == 0 && isbegin_quest(7614) == 0" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "checkquest(7613,HUNTING) == 2 && isbegin_quest(7614) == 0" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7618) == 0 && isbegin_quest(7617) == 1" );
+	end;
+}
+
+verus04,176,161,5	script	治療師 米優#atnd08	4_F_ACOLYTE,{
+	mes "[米優]";
+	mes "請進。";
+	mes "哪裡痛？";
+	next;
+	.@s = select( "HP/SP 完全恢復 5,000 z", "HP/SP 恢復一半 2,000 z" );
+	if (isbegin_quest(7610) > 0)
+		setarray .@cost[1],4500,1800;
+	else
+		setarray .@cost[1],5000,2000;
+	if (Zeny < .@cost[.@s]) {
+		mes "[米優]";
+		mes "...看看你，你";
+		mes "連治療費都付不起？";
+		close;
+	}
+	Zeny = Zeny - .@cost[.@s];
+	npcskill "AL_HEAL",(10/.@s),(99/.@s),(99/.@s);
+	percentheal (100 / .@s), (100 / .@s);
+	mes "[米優]";
+	mes "喔，你累壞了。";
+	mes "讓我為你恢復" + ( .@s == 1 ? "全部" : "一些" ) + "體力。";
+	mes "我為官方挖掘者提供九折優惠。";
+	mes "笑一個，你會感覺好點的。";
+	close;
+}
+
+verus04,141,193,5	script	考古學家 奧雷斯#atnd09	4_M_OLDSCHOLAR,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 你的物品過多，無法進行任務。 -";
+		close;
+	}
+	switch(ep15_1_atnad) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+		mes "這位老考古學家背對著你，正在處理些什麼。";
+		mes "你不該打擾他。";
+		close;
+	case 4:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "啊，歡迎。";
+		mes "我一直在等你。";
+		mes "首先：你應該去中央指揮中心註冊。";
+		next;
+		mes "[奧雷斯]";
+		mes "你的名字已經在名單上了。只要去中心報到即可。";
+		mes "否則你將無法完全進入這個區域。";
+		next;
+		mes "[奧雷斯]";
+		mes "完成後再回來。我會把你介紹給其他成員。";
+		mes "去吧。";
+		close3;
+	case 5:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "啊，你回來了。";
+		mes "來跟我們的隊長，伊安 阿特納德打聲招呼。";
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...菜鳥。";
+		mes "我沒時間理菜鳥。把他們送回去！";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "你又來了。";
+		mes "我們都老了。我們需要幫手！";
+		mes "別那麼固執。";
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...喂，菜鳥。";
+		mes "是我女兒派你來監視我的嗎？";
+		mes "告訴我！";
+		next;
+		if (select( "我是來幫忙的。", "我不知道你在說什麼。" ) == 2) {
+			cutin "verus_ian02.bmp",2;
+			mes "[伊安 阿特納德]";
+			mes "嗯？你不知道我女兒是誰？";
+			mes "好吧，我們就別提她了。";
+			next;
+		}
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "這表示你知道我女兒是誰。";
+		mes "你真的認為你可以跟我共事嗎？";
+		mes "在知道我是誰的情況下？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "好吧，隨便。";
+		mes "開始工作吧。";
+		mes "我想知道你能不能聽從我的命令。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "伊安，你真是無可救藥。";
+		mes "好吧，歡迎加入團隊，年輕的冒險者。";
+		mes "我們計劃中的一些事情非常耗費體力，更別說很危險了。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "夠了。菜鳥，過來這裡。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "抱歉。";
+		mes "你最好快過去。";
+		mes "別讓他惹你生氣。";
+		ep15_1_atnad = 6;
+		close3;
+	case 6:
+	case 7:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "謝謝你對伊安的耐心。";
+		mes "他以前不是這樣的。";
+		mes "他是故意的。";
+		close3;
+	case 8:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "如果你搞定他了，我需要你的幫忙。";
+		mes "我們團隊裡還有一名成員。";
+		next;
+		mes "[奧雷斯]";
+		mes "他去廣場調查遺跡了。";
+		mes "他是個名叫 ^4d4dff勞埃德^000000 的年輕人。";
+		mes "我派了路克跟他一起去保護他，";
+		next;
+		mes "[奧雷斯]";
+		mes "但我想知道勞埃德的調查進展如何。";
+		mes "你能去看看他嗎？";
+		mes "謝謝你。";
+		completequest 7619;// Assisting the Excavation Team
+		setquest 7620;// Young Blood?
+		ep15_1_atnad = 9;
+		close3;
+	case 9:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "勞埃德一定在維魯斯中央廣場的某個地方。";
+		mes "找路克。他應該在勞埃德附近。";
+		next;
+		mes "[奧雷斯]";
+		mes "除了你之外，他是唯一年輕的成員。";
+		mes "我們團隊的其他成員都跟我一樣老了，無法長途跋涉。";
+		next;
+		mes "[奧雷斯]";
+		mes "請好好照顧";
+		mes "勞埃德。";
+		close3;
+	case 10:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "勞埃德還好嗎？";
+		mes "啊，所以你在幫他。";
+		next;
+		mes "[奧雷斯]";
+		mes "謝謝你";
+		mes "辛苦了。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "他們是來為我們工作的。";
+		mes "別再謝他們了。";
+		mes "他們已經夠被寵壞了。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "唉，你能不能別說了？";
+		mes "*搖頭*";
+		close3;
+	case 11:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "啊，你回來了。";
+		mes "勞埃德還好嗎？";
+		mes "他想在那裡紮營。";
+		mes "那樣不會太危險嗎？我想路克能保護他。";
+		next;
+		mes "[奧雷斯]";
+		mes "請走這邊。";
+		mes "我在等你的時候寫了一份報告。";
+		mes "我希望你能把它拿給中央指揮中心的路易斯指揮官。";
+		next;
+		mes "[奧雷斯]";
+		mes "這或許是個簡單的差事，";
+		mes "但它能讓你個機會去結識指揮官。";
+		next;
+		mes "[奧雷斯]";
+		mes "我們老了，不在乎名聲。你不同。";
+		mes "贏得雷根貝爾的青睞";
+		mes "能讓你有長遠的發展。";
+		erasequest 7622;// Good News!
+		setquest 7617;// Turning In Excavation Report
+		ep15_1_atnad = 12;
+		getitem 6748,1;// Excavator_Repoet
+		close3;
+	case 12:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "請把那份報告拿給路易斯指揮官。";
+		mes "每天寫報告是件苦差事，但卻是一件重要的苦差事。";
+		next;
+		mes "[奧雷斯]";
+		mes "我注意到路易斯一直在觀察我們。希望那是個好兆頭。";
+		close3;
+	case 13:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "你把報告送到了嗎？";
+		mes "很好。";
+		mes "你現在可以休息了。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "不，你不行！";
+		mes "你還有工作要做！";
+		mes "馬上給我過來！";
+		close3;
+	case 14:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "我有時真不懂他。";
+		mes "我替你感到抱歉。";
+		mes "真希望我能幫上忙。";
+		next;
+		mes "[奧雷斯]";
+		mes "或許其他年輕人能給你更好的建議。";
+		mes "^4d4dff你為什麼不去找勞埃德或路克商量呢？^000000";
+		next;
+		mes "[奧雷斯]";
+		mes "唉，他頑固得像頭騾子。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "我聽到了。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "那就適可而止";
+		mes "別再折磨他們了。";
+		mes "伊甸園如果知道這件事是不會高興的。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "伊甸園？*哼* 誰在乎？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "你真是無可救藥。";
+		mes "我真的、真的很為他的行為感到抱歉。";
+		mes "你真的該去跟那兩個人談談。";
+		close3;
+	case 15:
+	case 16:
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "所以你找到了一些線索，是吧？";
+		mes "嗯，連我都覺得興奮了。";
+		close3;
+	default:
+		switch( checkquest(7618,PLAYTIME) ) {
+		case -1:
+			if (isbegin_quest(7617) == 1) {
+				cutin "verus_aures.bmp",0;
+				mes "[奧雷斯]";
+				mes "請把那份報告拿給路易斯指揮官。";
+				mes "每天寫報告是件苦差事，但卻是一件重要的苦差事。";
+				next;
+				mes "[奧雷斯]";
+				mes "我注意到路易斯一直在觀察我們。希望那是個好兆頭。";
+				close3;
+			}
+			if ((checkquest(7616,PLAYTIME) == 0 || checkquest(7616,PLAYTIME) == 1) && (checkquest(7629,PLAYTIME) == 0 || checkquest(7629,PLAYTIME) == 1)) {
+				cutin "verus_aures.bmp",0;
+				mes "[奧雷斯]";
+				mes "你回來得正是時候。";
+				mes "我用你帶回來的動力控制裝置進行研究，取得了一些進展。";
+				next;
+				mes "[奧雷斯]";
+				mes "我剛寫完關於它的報告";
+				mes "連同勞埃德正在研究的能源。";
+				next;
+				mes "[奧雷斯]";
+				mes "這是報告。";
+				mes "請 ^4d4dff把它帶給指揮中心";
+				mes "的路易斯^000000。";
+				setquest 7617;// Turning In Excavation Report
+				getitem 6748,1;// Excavator_Repoet
+				close3;
+			}
+			cutin "verus_aures.bmp",0;
+			mes "[奧雷斯]";
+			mes "伊安正在研究動力控制裝置。";
+			mes "勞埃德正在研究裝置的電源。";
+			next;
+			mes "[奧雷斯]";
+			mes "好吧，那我就只剩下整理文件的粗活了。";
+			mes "你能幫幫他們兩個嗎？";
+			next;
+			mes "[奧雷斯]";
+			mes "我們越快收集到研究材料，就能越快提出報告。";
+			close3;
+		case 0:
+		case 1:
+			cutin "verus_aures.bmp",0;
+			mes "[奧雷斯]";
+			mes "你把報告送到了嗎？";
+			mes "這或許是個簡單的差事，";
+			mes "但它能讓你個機會去結識指揮官。";
+			next;
+			mes "[奧雷斯]";
+			mes "我們老了，不在乎名聲。你不同。";
+			mes "贏得雷根貝爾的青睞能讓你有長遠的發展。";
+			next;
+			mes "[奧雷斯]";
+			mes "所以從現在起，就由你來提交報告吧。";
+			close3;
+		case 2:
+			erasequest 7618;// Reporting the Results - Down
+			mes "[奧雷斯]";
+			mes "是時候寫另一份報告了。";
+			mes "等我研究完動力控制裝置後就會寫。";
+			close3;
+		}
+	}
+	end;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7619) == 0" );
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(7617) == 0 && isbegin_quest(7618) == 0 && (checkquest(7616,PLAYTIME) == 0 || checkquest(7616,PLAYTIME) == 1) && (checkquest(7629,PLAYTIME) == 0 || checkquest(7629,PLAYTIME) == 1)" );
+	end;
+}
+
+verus04,144,193,3	script	伊安 阿特納德#ep152	4_M_IAN,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 無法進行任務，因為你的物品欄裡有太多東西。 -";
+		close;
+	}
+	mes "[伊安 阿特納德]";
+	switch(ep15_1_atnad) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+		cutin "verus_ian01.bmp",2;
+		mes "... 那很讓人分心。";
+		close3;
+	case 5:
+		cutin "verus_ian01.bmp",2;
+		mes "你一直在這遊手好閒做什麼？";
+		mes "這到底是誰？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "伊安，你怎麼這樣？";
+		mes "這位年輕的冒險者是伊甸園派來的。";
+		mes "他是來幫我們的。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "..嗯... 菜鳥。";
+		mes "我不需要這種人情，把他們送回去！";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "我看他又開始這樣了..";
+		mes "你以為一群老頭子能輕易完成這項任務嗎？";
+		mes "別再這麼固執了。";
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "..喂，菜鳥。";
+		mes "你是我女兒派來監視我的嗎？";
+		mes "是這樣嗎？";
+		next;
+		if (select( "只是來幫忙的。", "這對我來說是新聞。" ) == 2) {
+			cutin "verus_ian02.bmp",2;
+			mes "[伊安 阿特納德]";
+			mes "嗯？你沒聽說過我女兒的事？";
+			mes "那我就不需要提起這種閒話了。";
+		}
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...所以你知道我和我女兒的關係？";
+		mes "所以你是想保持沉默，只管做你的工作？";
+		mes "你不想捲入其中？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "很好。";
+		mes "那我就馬上命令你去做你真正需要做的事。";
+		mes "讓我看看你多能聽從我的指示。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "這傢伙.. 他到最後還是這樣。";
+		mes "總之，既然我們來了，我也會為您效勞。";
+		mes "恐怕我們想做的工作有點危險。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "別說廢話了，過來，菜鳥。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "抱歉了。";
+		mes "讓我們先走吧。";
+		mes "我會支援你的。";
+		ep15_1_atnad = 6;
+		close3;
+	case 6:
+		cutin "verus_ian01.bmp",2;
+		mes "所以，你說你要幫我們工作？";
+		mes "那就讓我們看看你做得多好。";
+		mes "如果你離開這個區域，再往裡面走，會有一個廣場。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "那裡會有來自高度先進文明的機器。";
+		mes "有一種能讓機器運轉的必要裝置。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "目前，有一種暫時被稱為 ^4d4dff操作控制裝置^000000 的東西，因為它還在調查中。";
+		mes "調查機器並收集 20 個操作控制裝置。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "我會看看你工作得有多好。";
+		setquest 7615;// Core Collection
+		ep15_1_atnad = 7;
+		close3;
+	case 7:
+		if (countitem(6749) < 20) {// Power_Control_Device
+			cutin "verus_ian01.bmp",2;
+			mes "20 個動力控制裝置。";
+			mes "對一個被所謂的大人物推薦的人來說，應該不成問題吧？";
+			mes "嗯。";
+			close3;
+		}
+		cutin "verus_ian02.bmp",2;
+		mes ".. 嗯..";
+		mes "別因為這個就沾沾自喜！";
+		mes "我們會用那個來做研究。";
+		mes "把你身上所有的都交出來。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "哈哈.. 這傢伙還是一如往常的死板。";
+		mes "對一份做得很好的工作說句謝謝有那麼難嗎？";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "走開！";
+		mes "你為什麼一直干涉。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "這是這個老頭子為數不多的樂趣之一，你能怎麼辦。";
+		mes "我會代替他謝謝你的。";
+		mes "總之，謝謝你的幫忙。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "你將來可能會專注於這類工作。";
+		mes "我們想研究這些操作裝置，但我們不知道那些機器有多可怕。";
+		next;
+		mes "[奧雷斯]";
+		mes "我很快就會寫報告，所以到時候我也會請你幫忙。";
+		delitem 6749, countitem(6749);// Power_Control_Device
+		erasequest 7615;// Core Collection
+		setquest 7619;// Assisting the Excavation Team
+		getexp 750000,500000;
+		ep15_1_atnad = 8;
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "你們兩個相處得很好嘛。";
+		mes "走開！";
+		close3;
+	case 8:
+		cutin "verus_ian01.bmp",2;
+		mes "...我還是不信任你。";
+		mes "這叫做合約，所以我希望你安靜地繼續工作。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "你在期待我會說聲謝謝嗎...";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "喂。別理那個固執的傢伙，過來一下！";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...... 哼.. 你在做什麼？去吧！";
+		close3;
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+		cutin "verus_ian01.bmp",2;
+		mes "....你..";
+		mes "你為什麼不去找點事做，而是在這裡玩？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "我再說一次，";
+		mes "我不認為你只是來幫我們的。";
+		mes "我確信阿爾奎恩在搞什麼鬼。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes ".....嗯。";
+		mes "做完你正在做的事後，趕快回到我這裡。";
+		close3;
+	case 13:
+		cutin "verus_ian01.bmp",2;
+		mes "你是送報告回來的嗎？";
+		mes "時間剛好。";
+		mes "給我帶點零食來。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "不是這裡的配給補給品.. 那是什麼東西？";
+		mes "天氣又熱又悶，找點美味佳餚來刺激我的食慾吧。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "嘿，老兄。你在這裡想找什麼美味佳餚？";
+		mes "就拿路易斯帶來的東西吧。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "啊，你別插手。";
+		mes "這件事讓菜鳥自己去處理。";
+		mes "幫我找一份 ^4d4dff方便食用，但又多汁清爽，且回味無窮的美味佳餚^000000！";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "如果你能找到我想要的東西，我就答應你一個願望。";
+		mes "你難道不是為了得到什麼才來這裡的嗎？";
+		next;
+		cutin "",255;
+		mes "為了向 伊安 阿特納德 詢問關於 ^4d4dff最後一次探險^000000 的事，";
+		mes "看來必須找到一份 ^4d4dff方便食用，但又多汁清爽，且回味無窮的美味佳餚^000000。";
+		erasequest 7623;// Atnad's Summon
+		setquest 7624;// In Search of a Delicacy
+		ep15_1_atnad = 14;
+		close;
+	case 14:
+	case 15:
+		cutin "verus_ian03.bmp",2;
+		mes "你要我再說一次嗎？";
+		mes "幫我找一份 ^4d4dff方便食用，但又多汁清爽，且回味無窮的美味佳餚^000000";
+		mes "我就答應你的要求。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "如果你那遲鈍的腦袋覺得很難找到，那至少去問問別人吧！";
+		mes "找點合我胃口的東西。";
+		close3;
+	case 16:
+		cutin "verus_ian01.bmp",2;
+		if (countitem(11519) < 1) {// Beef_Toast
+			mes "..嗯。";
+			mes "放棄了？";
+			mes "你真的是嗎？";
+			mes "我可沒看出你是那種會輕易放棄的人..？";
+			next;
+			mes "[伊安 阿特納德]";
+			mes "如果我要求的東西那麼難找，那我就收回。";
+			mes "不過，你必須離開這個挖掘小隊。";
+			next;
+			cutin "",255;
+			mes "我必須在某處找到遺失的牛肉吐司。";
+			close;
+		}
+		mes "嗯.. 是這個嗎？";
+		mes "......這東西真的能讓我在工作時方便食用，而不需要另外使用餐具嗎。";
+		mes "..聞起來有剛烤好的肉香。";
+		next;
+		mes "伊安擦了擦手，開始慢慢吃起牛肉吐司。";
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "嗯...";
+		mes ".....！";
+		mes "這... 這個味道！";
+		mes "充滿了細絞肉的多汁感！";
+		mes "我能嚐到直火烘烤的味道..！";
+		next;
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "異國風味的水果和蔬菜中和了油脂的微妙油膩感！";
+		mes "...！";
+		next;
+		select("試試看包在最外面的葉子。");
+		cutin "verus_ian04.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "的確.. 這個也可以吃。";
+		mes "豐富的多汁感和新鮮的沙拉.. 甜美的水果..";
+		mes "最後用清新的餘韻將這一切完美融合..！";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "...孩子..";
+		mes "不錯嘛。";
+		mes "你滿足了我提出的所有條件。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "我別無選擇。";
+		mes "好吧。我料到你有想要的東西。";
+		mes "一言為定。你想從我這裡得到什麼？";
+		next;
+		select("想知道關於最後一次探險的事");
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "... 原來是這樣。";
+		mes "我明白了....";
+		mes "要談論那件事..給我點時間考慮。";
+		mes "....";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "我也需要時間整理一下。";
+		mes ".......";
+		mes "晚點再來。";
+		mes "拜託了。";
+		delitem 11519,1;// Beef_Toast
+		erasequest 7626;// Delicacy for Him
+		setquest 7627;// Last Exploration
+		ep15_1_atnad = 17;
+		close3;
+	case 17:
+	case 18:
+	case 19:
+		cutin "verus_ian01.bmp",2;
+		mes "你到了嗎？";
+		mes "你適應挖掘現場了嗎？";
+		mes "那麼這次又是什麼事。";
+		next;
+		switch( select( "關於挖掘計畫", "交談", "取消" ) ) {
+		case 1:
+			callsub S_Daily;
+			close3;
+		case 2:
+			cutin "verus_ian04.bmp",2;
+			mes "[伊安 阿特納德]";
+			if (ep15_1_atnad == 17) {
+				mes "你來得正好。";
+				mes "實驗室和研究設施的通行證似乎發下來了。";
+				mes "所以我們計畫擴大調查區域..";
+				next;
+				select("那最後一次探險呢！");
+				cutin "verus_ian01.bmp",2;
+				mes "[伊安 阿特納德]";
+				mes "..最後一次探險，沒什麼大不了的。";
+				mes "探險地點是優沛擂斯。";
+				mes "雖然有各種目標，但..";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "我很清楚那是我人生的一個重大轉捩點。";
+				mes "我覺得腦袋裡像是有團迷霧。";
+				mes "而且我想我會在這裡找到另一個轉捩點。";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "雖然這只是一種感覺。";
+				mes "我不認為我一直在尋找的地方和這裡有關。";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "那麼你願意暫時幫我嗎？";
+				mes "....";
+				next;
+				select("我別無選擇。");
+				mes "[伊安 阿特納德]";
+				mes "是的，這是最後的任務。";
+				mes "阿爾奎恩也必須知道。";
+				mes "我們很快就會開始，所以準備好再來。";
+				ep15_1_atnad = 18;
+				close3;
+			}
+			if (ep15_1_atnad == 18) {
+				cutin "verus_ian01.bmp",2;
+				mes "由於你的行動，我們挖掘小隊的地位提升了不少。";
+				mes "多虧了你，我們獲得了探索封閉區域的許可。";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "所以我們正試圖擴大調查區域。";
+				mes "但它被封閉似乎是有原因的。";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "那個區域似乎有很多對生物反應敏感的機器。";
+				mes "此外，還有一層奇特的能量面紗..";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "先去查看研究設施區域。";
+				mes "如果有任何異常，請告訴我。";
+				erasequest 7627;// Last Exploration
+				setquest 7641;// Access Permitted
+				setquest 7642;// Explore Research facilities
+				ep15_1_atnad = 19;
+				ep15_2_permit = 1;
+				close3;
+			}
+			cutin "verus_ian01.bmp",2;
+			mes "他們說研究設施區域與廣場右側向上的道路相連。";
+			mes "嗯，如果你上去那裡，那些企業的混蛋就會在那裡限制出入。";
+			next;
+			mes "[伊安 阿特納德]";
+			mes "如果你發現了值得冒險的東西，馬上回來告訴我！";
+			close3;
+		case 3:
+			cutin "verus_ian01.bmp",2;
+			mes "[伊安 阿特納德]";
+			mes "我們也四處看看吧，別只顧著工作。";
+			mes "這種機會很難得。";
+			close3;
+		}
+	case 20:
+		cutin "verus_ian01.bmp",2;
+		mes "你終於來了。";
+		mes "那麼，你有得到任何結果嗎？";
+		next;
+		if (countitem(6757) < 1) {	// todo missing text
+			close3;
+		}
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "嗯...？什..什麼。你手裡拿的是什麼？！";
+		mes "這...怎麼可能。";
+		mes "我沒想到會在這裡看到這個...？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "咦？那是什麼？";
+		mes "你看起來眼珠子都要掉出來了。";
+		mes "讓我也分享一下這份驚喜吧。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "這..這個是。";
+		mes "這是一個記憶唱片.. 你不是曾經跟我提過這個嗎？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "我的曾祖父母也有看起來像這樣的東西...";
+		mes "這是一種用來記錄聲音的儲存媒介。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "喔... 這是魔法嗎？";
+		mes "我知道有一種圖像魔法可以保存眼睛看到的影像..";
+		mes "這是類似的東西嗎？";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "不。這不是魔法的應用。";
+		mes "這純粹是科學的產物。我見過我的曾祖父母用這個來聽歌或錄音。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "年輕時，我以為這只是曾祖父母發明的一種玩具般的東西....";
+		mes "現在我想知道為什麼他們沒有公開那項技術。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "這是我很小時候的記憶，但它看起來就像這個。";
+		mes "..我們能用那個知道記憶唱片裡的內容嗎。";
+		next;
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "我需要那個！我懂了！";
+		mes "那個..";
+		mes "...啊....";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "嘿，你還好嗎？";
+		mes "能解碼那個的裝置不是在你家嗎？";
+		next;
+		mes "[奧雷斯]";
+		mes "你.. 啊...";
+		mes "我懂了。啊哈哈哈哈..";
+		mes "這傢伙。你不知道你家在哪裡？";
+		mes "啊哈哈哈哈！";
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes ".... 你不是說阿爾奎恩把房子處理掉了嗎..？";
+		mes "只要我們有唱片播放器，就能輕易搞清楚。";
+		next;
+		select("..什麼？你為什麼看著我？");
+		mes "[伊安 阿特納德]";
+		mes "你是那孩子的線人！";
+		mes "所以去那裡，把 ^4d4dff唱片播放器^000000 帶回來。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "原來如此。現在能輕易跟她說上話的人就是你了。";
+		mes "如果可以的話，我們想拜託你這麼做。";
+		erasequest 7643;// Mysterious Piece
+		setquest 7644;// Record Player
+		ep15_1_atnad = 21;
+		close3;
+	case 21:
+		cutin "verus_ian01.bmp",2;
+		mes "找到阿爾奎恩那個孩子，把唱片播放器帶回來。";
+		mes "她至少得給我這個。";
+		close3;
+	case 22:
+	case 23:
+	case 24:
+	case 25:
+		cutin "verus_ian03.bmp",2;
+		mes "我看不出來那孩子在搞什麼鬼。";
+		mes "如果她對我有意見，叫她直接來跟我說！";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "...她到底為什麼不給！";
+		mes "那你難道每次都要跑去聽嗎？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "嗯，這樣也不錯。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "是啊，不錯。";
+		mes "才怪！";
+		mes "總之.. 既然變成這樣了，你一定要把它帶來。好嗎？";
+		close3;
+	case 26:
+		cutin "verus_ian01.bmp",2;
+		mes "你這次有看到什麼結果嗎？";
+		next;
+		select("告訴他記憶唱片的內容。");
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...你有沒有可能聽錯了？";
+		mes "為什麼那裡會提到阿特納德？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "這很難說。";
+		mes "既然你家有唱片那種東西，難道你是這座城市的後裔？";
+		next;
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "我是... 這座城市..維魯斯的後裔？";
+		mes "那為什麼這個地方現在才被發現？";
+		mes "我們不是應該早就知道這個地方了嗎？";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "不，不。這很奇怪。";
+		mes "這就是為什麼優沛擂斯.. 這就是為什麼我對優沛擂斯並不感到陌生，所以我才抓著不放。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "如果我的祖先是這座城市的人.. 為什麼他們要保守秘密？";
+		next;
+		select("這我們就不知道了。");
+		mes "[伊安 阿特納德]";
+		mes "是啊.. 是的。我們當然不知道。";
+		mes "看來我們得找到更多這種記憶唱片，才能了解更多。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "很抱歉，但是.. 你去過研究設施了，對吧？";
+		mes "你知道實驗室附近發現的巨大地下設施嗎？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "第一次聽說？";
+		mes ".. 看來在那個地下設施裡也發現了像記憶唱片之類的東西。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "我們得在其他人開始感興趣之前搶佔先機。";
+		mes "反正其他人也無法解讀這些訊息。";
+		next;
+		cutin "verus_ian03.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "而且，如果我們收集到足夠的記憶唱片.....";
+		mes "去找阿爾奎恩，找出... 呃... 內容。";
+		mes "你明白嗎？";
+		erasequest 7647;// Report Memory Record
+		setquest 7648;// Memory Records of the Laboratories
+		ep15_1_atnad = 27;
+		close3;
+	case 27:
+		cutin "verus_ian01.bmp",2;
+		mes "如果你走到廣場區域西北方的連接道路，你就會找到限制區域。";
+		mes "我們有挖掘許可證，所以你可以進去。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "但我聽說那裡有奇怪的機器人，具有攻擊性，所以要小心。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "找到進入地下設施的入口路徑後再回來。";
+		mes "記住 ^4d4dff收集實驗室的記憶唱片是你的目標^000000。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "至少五個？我們需要五個才能解碼，對吧？";
+		mes "把它們收集起來去找阿爾奎恩。";
+		close3;
+	case 28:
+	case 29:
+		cutin "verus_ian03.bmp",2;
+		mes "這次也是！";
+		mes "為什麼.. 為什麼那孩子會這樣！";
+		next;
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "什麼？她也想參與這個計畫？";
+		mes "她會定期解碼記憶唱片，並把結果送過來..？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "...她為什麼要這麼做。而且還這麼突然..？";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "看來她也意識到了什麼。";
+		mes "這難道不是件好事嗎？";
+		mes "父女倆可以和睦相處，並弄清楚他們祖先的過去。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...是嗎？沒有別的辦法了嗎？";
+		mes "總之，你去看看結果吧。";
+		mes "你必須確認阿爾奎恩是否做得正確。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "我們也需要有人去收集記憶唱片嗎？";
+		mes "啊哈哈哈哈";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "嗯，那也不是假話...";
+		mes "總之，你去吧。";
+		close3;
+	case 30:
+		if (ep15_2_permit == 6) {
+			cutin "verus_ian01.bmp",2;
+			mes "你到了嗎？";
+			mes "事實上我一直在等你。";
+			next;
+			select("有什麼不對勁嗎？");
+			mes "[伊安 阿特納德]";
+			mes "有什麼不對勁？事情很不對勁。";
+			mes "事情非常不對勁。";
+			next;
+			cutin "ep15_tatio01.bmp",0;
+			mes "[雷根貝爾首席秘書]";
+			mes "你好？";
+			mes "我是雷根貝爾秘書處的首席秘書，W.H。";
+			mes "我一直在等你們。";
+			next;
+			select("雷根貝爾總裁的秘書？");
+			mes "[雷根貝爾首席秘書]";
+			mes "沒錯。";
+			mes "我為雷根貝爾總裁服務。";
+			next;
+			cutin "verus_ian02.bmp",2;
+			mes "[伊安 阿特納德]";
+			mes "那麼，堂堂總裁的秘書在這種地方做什麼？";
+			mes "我以為關於挖掘的報告會另外發送？";
+			next;
+			cutin "ep15_tatio01.bmp",0;
+			mes "[雷根貝爾首席秘書]";
+			mes "總裁想見你們所有人。";
+			mes "隨時歡迎你們來里希塔樂鎮的總部拜訪。";
+			next;
+			mes "[雷根貝爾首席秘書]";
+			mes "如果你們能盡快來拜訪，那就更好了..";
+			mes "我們要求暫時不要公開記憶唱片的內容。";
+			next;
+			cutin "verus_ian03.bmp",2;
+			mes "[伊安 阿特納德]";
+			mes "為什麼？";
+			mes "我們為什麼要這麼做？";
+			next;
+			cutin "ep15_tatio01.bmp",0;
+			mes "[雷根貝爾首席秘書]";
+			mes "嗯.. 我想我知道你要說什麼，但是...";
+			mes "就當作時機還沒成熟吧。";
+			next;
+			mes "[雷根貝爾首席秘書]";
+			mes "我們邀請你們，也是為了討論這個問題的細節。";
+			mes "所以最好盡快來拜訪，不是嗎？";
+			mes "我們會等你們的。";
+			next;
+			cutin "verus_aures.bmp",0;
+			mes "[奧雷斯]";
+			mes "這..到底是.. 怎麼回事..";
+			mes "嘿，伊安，你是不是惹到這家企業了？";
+			next;
+			cutin "verus_ian01.bmp",2;
+			mes "[伊安 阿特納德]";
+			mes "我不知道！";
+			mes "既然他們都開口了，我們無論如何都得去。";
+			mes "喂，你。";
+			next;
+			select("我？");
+			mes "[伊安 阿特納德]";
+			mes "是的。你。";
+			mes "他們說你必須陪我們去。";
+			mes "我們在雷根貝爾企業總部見。";
+			mes "像這種事，最好一次解決。";
+			ep15_1_atnad = 31;
+			close3;
+		}
+		cutin "verus_ian01.bmp",2;
+		mes "解碼記憶唱片的事，我暫時就交給你和阿爾奎恩了。";
+		mes "既然你說你不會再問最後一次探險的事了..";
+		mes "今天有什麼事？";
+		next;
+		if (select( "關於挖掘計畫", "關於記憶唱片" ) == 1) {
+			callsub S_Daily;
+			close3;
+		}
+		mes "[伊安 阿特納德]";
+		if (isbegin_quest(7649) != 1) {
+			cutin "verus_ian01.bmp",2;
+			mes "如果我仔細想想，這種結構也不壞。";
+			mes "記錄在記憶唱片裡的內容才是重點。";
+			next;
+			mes "[伊安 阿特納德]";
+			mes "既然我不費吹灰之力就能得到結果..";
+			mes "......很好.. 我會往好的方面想。是的。";
+			close3;
+		}
+		cutin "verus_ian01.bmp",2;
+		mes "我搞不懂阿爾奎恩在想什麼。";
+		mes "如果我把唱片播放器帶回來，對我來說會好得多。";
+		next;
+		cutin "verus_ian02.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "什麼？她也想參與這個計畫？";
+		mes "她會定期解碼記憶唱片，並把結果送過來..？";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "她以前連做夢都討厭工作，現在卻變成這樣，真是奇怪。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "看來她也意識到了什麼。";
+		mes "這難道不是件好事嗎？";
+		mes "父女倆可以和睦相處，並弄清楚他們祖先的過去。";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "...是這樣嗎？沒有別的辦法了嗎？";
+		mes "總之，看來我們需要你的幫忙。";
+		mes "你必須確認阿爾奎恩是否做得正確。";
+		next;
+		cutin "verus_aures.bmp",0;
+		mes "[奧雷斯]";
+		mes "我們也需要有人去收集記憶唱片嗎？";
+		mes "啊哈哈哈哈";
+		next;
+		cutin "verus_ian01.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "嗯，那也不是假話...";
+		mes "^4d4dff暫時跟阿爾奎恩一起工作吧。^000000";
+		erasequest 7649;// Report Memory Record Content
+		close3;
+	case 31:
+	case 32:
+	case 33:
+		cutin "verus_ian01.bmp",2;
+		mes "你在做什麼？快點。";
+		mes "^4d4dff雷根貝爾總部在里希塔樂鎮^000000。";
+		mes "你先走。我們在那裡碰頭。";
+		close3;
+	default:
+		cutin "verus_ian01.bmp",2;
+		mes "你永遠不知道會發生什麼事。";
+		mes "我想我應該對擁有記憶唱片的獨家權利感到高興。";
+		mes "今天有什麼事？";
+		next;
+		select("關於挖掘計畫");
+		callsub S_Daily;
+		close3;
+	}
+	end;
+
+S_Daily:
+	mes "[伊安 阿特納德]";
+	mes "挖掘計畫？";
+	mes ".. 你是指動力控制裝置嗎？";
+	next;
+	mes "[伊安 阿特納德]";
+	switch( checkquest(7616,PLAYTIME) ) {// Core Collection - Down
+	case -1:
+		if (isbegin_quest(7615) == 0) {// Core Collection
+			cutin "verus_ian01.bmp",2;
+			mes "你在說今天的工作嗎？";
+			mes "這可能很明顯，但就是去尋找動力控制裝置。";
+			mes "...";
+			mes "..如果你不想做，你不需要勉強。";
+			next;
+			if (select( "我會去尋找動力控制裝置。", "這太難了。" ) == 1) {
+				mes "[伊安 阿特納德]";
+				mes "你？你確定你說過你會自己去找？";
+				mes "我沒有理由拒絕這個提議。";
+				mes "既然你說你會自己去做。";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "這次也要收集 20 個動力控制裝置。";
+				mes "如果我們能解開動力控制裝置的秘密...";
+				mes "我們應該就能修復壞掉的，並自己使用它們，對吧？";
+				mes "那會很有趣的。";
+				next;
+				mes "[伊安 阿特納德]";
+				mes "... 而且.. 我覺得我好像見過它.. 感覺我會知道的。";
+				mes "就像我會想起來。如果我一直研究，直到它深深刻在我的腦海裡，我相信一定會有什麼成果的。";
+				setquest 7615;// Core Collection
+				return;
+			}
+			mes "[伊安 阿特納德]";
+			mes "如果你不是來工作的，那就走開。";
+			mes "你讓我分心了。";
+			return;
+		}
+		if (countitem(6749) < 20) {// Power_Control_Device
+			mes "總是一樣的。";
+			mes "是 ^4d4dff20 個動力控制裝置^000000。";
+			mes "既然我們都在這了，我想把這件事做好，所以盡量別搞砸了。";
+			return;
+		}
+		mes "你又做對了。";
+		mes "....";
+		mes "你在看什麼？";
+		mes "放下你帶來的東西，然後離開。";
+		next;
+		mes "[伊安 阿特納德]";
+		mes "......這次我會好好使用它，不會把它弄壞的。";
+		mes "讓我們也慢慢開始進行修復工作吧。";
+		delitem 6749, countitem(6749);// Power_Control_Device
+		erasequest 7615;// Core Collection
+		setquest 7616;// Core Collection - Down
+		getexp 1500000,1000000;
+		return;
+	case 0:
+	case 1:
+		mes "我們現在正在研究它。";
+		mes "很可能我們會在實驗中把它弄壞。";
+		mes "總之我現在很忙，別來煩我。";
+		return;
+	case 2:
+		erasequest 7616;// Core Collection - Down
+		mes "我們過去回收的動力控制裝置都壞了。";
+		mes "它們無法承受所有的實驗。";
+		mes "就像現在這些一樣。";
+		next;
+		cutin "verus_ian04.bmp",2;
+		mes "[伊安 阿特納德]";
+		mes "阿爾奎恩也是那樣。";
+		mes "......因為她無法承受... ..";
+		mes "...呼..";
+		return;
+	}
+	end;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "!isbegin_quest(7616) && ep15_1_atnad > 16" );
+	end;
+}
+
+//- Wandering Bard Quest
+verus03,129,21,5	script	流浪吟遊詩人#ep15	1_M_BARD,{
+function checkstatusquest;
+	if (BaseLevel < 99) {
+		mes "[流浪吟遊詩人]";
+		mes "這裡非常危險，";
+		mes "最好還是離開這裡，";
+		mes "前方即將面臨";
+		mes "極端死亡的危險。";
+		close;
+	}
+	mes "[流浪吟遊詩人]";
+	if (isbegin_quest(4295) == 2) {// Wandering Bard
+		mes "我已經告訴你";
+		mes "我想告訴你的一切了。";
+		mes "希望我們能在其他地方再相見。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "在那之前，";
+		mes "請保重。";
+		mes "我要前往其他地方";
+		mes "去尋找新的故事來講述。";
+		mes "你走你的路，我過我的橋。";
+		close;
+	}
+
+	switch( checkquest(4296,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "我現在沒有故事可以告訴你。";
+		mes "我正在試著讓我的心靈休息。";
+		mes "你為什麼不去";
+		mes "休息一下呢？";
+		close;
+	case 2:
+		erasequest 4296;
+		break;
+	}
+
+	setarray .@quest_id[0],
+		4297,	// Bard's Story: Some Corporation
+		4298,	// Bard's Story: The President
+		4299,	// Bard's Story: a Scholar in Juno
+		4300,	// Bard's Story: a Mad Scientist
+		4301,	// Bard's Story: Hugel
+		4302;
+	// Bard's Story: Odin Temple
+	.@size_quest_id = getarraysize(.@quest_id);
+
+	for ( .@i = 0; .@i < .@size_quest_id; .@i++ ) {
+		switch( isbegin_quest(.@quest_id[.@i]) ) {
+		case 0:
+			.@quest_undone[.@size_undone] = .@quest_id[.@i];
+			.@size_undone++;
+			continue;
+		case 1:
+			break;
+		case 2:
+			.@total += 2;
+			continue;
+		}
+		break;
+	}
+
+	if (.@i < .@size_quest_id) {
+		mes "冒險者，";
+		mes "你給我帶來了";
+		mes "什麼故事？";
+		next;
+		if (checkstatusquest(.@quest_id[.@i]) == 0) {
+			mes "^ff0000你尚未達到完成任務的要求。^000000";
+			next;
+			if (select( "返回任務。", "結束對話。" ) == 2) {
+				mes "[流浪吟遊詩人]";
+				mes "請保重。";
+				close;
+			}
+			mes "[流浪吟遊詩人]";
+			mes "也許你還沒準備好";
+			mes "接受那項任務。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "晚點再來吧，";
+			mes "我會為你準備一個新故事。";
+			mes "暫時先說再見了。";
+			erasequest .@quest_id[.@i];
+			if (.@quest_id[.@i] == 4297)	// actually this quest is the only one to give a delay
+				setquest 4296;// Take a Break
+			close;
+		}
+		mes "- 講述你的故事。 -";
+		next;
+		mes "[流浪吟遊詩人]";
+		switch( .@quest_id[.@i] ) {
+		case 4297:
+			mes "也許事情";
+			mes "不僅止於此，";
+			mes "但我們無從得知";
+			mes "因為一切都太遲了。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "你的故事讓我心情沉重，";
+			mes "而我原本心情就沒有很好。";
+			mes "嗯，至少我很高興看到你平安歸來。";
+			break;
+		case 4298:
+			mes "秀發茲發德似乎";
+			mes "分裂成";
+			mes "各個政治派系。";
+			mes "政治陰謀對我這樣";
+			mes "流浪的藝術家來說，沒什麼意義。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "不過，我為你感到驕傲：";
+			mes "你結識了總統";
+			mes "並為他執行了一項秘密任務。";
+			mes "我也很高興看到你平安歸來。";
+			break;
+		case 4299:
+			mes "學者真是一種奇怪的生物。";
+			mes "我無法理解他們在研究那種東西時";
+			mes "會感到什麼樂趣。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "當然，對某些人來說";
+			mes "我尋找新故事的行為";
+			mes "聽起來毫無意義。";
+			mes "我不在乎，只要我有";
+			mes "像你這樣充滿好奇心的冒險者可以一起打發時間就好。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "歡迎回來。";
+			mes "我非常喜歡你的這個故事。";
+			break;
+		case 4300:
+			mes "只有神知道";
+			mes "誰是對的";
+			mes "誰是錯的。";
+			mes "我相信這也適用於那些科學家。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "如果你問我，";
+			mes "我無法判斷哪一方是對是錯。";
+			mes "你能嗎？";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "歡迎回來。";
+			mes "我非常喜歡你的這個故事。";
+			break;
+		case 4301:
+			mes "科技的進步並不總意味著";
+			mes "對舊事物的破壞。";
+			mes "科技無法自行發展。";
+			mes "醫學也是如此";
+			mes "生命研究也是。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "嗯，";
+			mes "至少我聽到的是這樣。";
+			mes "...就當我沒說過吧。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "一般大眾";
+			mes "只喜歡聽到快樂的結局，";
+			mes "所以讓我們把焦點放在";
+			mes "故事中積極的一面，";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "歡迎回來。";
+			mes "而不是";
+			mes "黑暗、";
+			mes "令人沮喪的一面。";
+			break;
+		case 4302:
+			mes "我不確定同樣的事情";
+			mes "是否不會發生";
+			mes "在這個挖掘現場";
+			mes "因為連我都能感覺到籠罩在它上方的危險陰影。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "關於你見到的最後一個人，";
+			mes "嗯...";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "算了。我根本不該說那件事。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "我們只能看著";
+			mes "各方勢力互相算計";
+			mes "並祈禱";
+			mes "最好的結果。";
+			mes "身為一名吟遊詩人，我的職責只是向大眾傳播消息。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "我很高興看到你平安歸來。";
+			mes "也謝謝你";
+			mes "帶來這麼寶貴的故事。";
+			break;
+		}
+		next;
+		mes "[流浪吟遊詩人]";
+		if (.@total == 10) {
+			mes "唉，我很不想這麼說，";
+			mes "但這將是我們最後一次";
+			mes "互相分享故事了。";
+			mes "謝謝你告訴我所有這些有趣的故事。";
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "請收下這個。";
+			mes "我希望";
+			mes "這對你會有所幫助。";
+			mes "希望我們能在其他地方再相見。";
+			completequest .@quest_id[.@i];
+			setquest 4295;// Wandering Bard
+			completequest 4295;
+			getitem 12263,5;// Comp_Battle_Manual
+			next;
+			mes "[流浪吟遊詩人]";
+			mes "我必須離開";
+			mes "去尋找新的故事了。";
+			mes "你走你的路，我過我的橋。";
+			mes "保重。";
+			close;
+		}
+		completequest .@quest_id[.@i];
+		setquest 4296;// Take a Break
+		mes "請給我一點時間。";
+		mes "我想根據你剛才告訴我的故事";
+		mes "創作一首新歌。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "在這段期間，你應該好好休息並重整旗鼓。";
+		close;
+	}
+	.@r = rand(.@size_undone);
+	setquest .@quest_undone[.@r];
+	mes "聽我說個故事吧。";
+	next;
+	mes "[流浪吟遊詩人]";
+	switch( .@quest_undone[.@r] ) {
+	case 4297:
+		mes "在秀發茲發德共和國，";
+		mes "一個科學凌駕於魔法的地方，";
+		mes "有一家龐大的跨國企業";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "傳聞他們正在進行的研究";
+		mes "其目的既崇高又令人起疑。";
+		mes "你知道";
+		mes "這家企業在緊閉的門後進行著什麼事嗎？";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "你應該";
+		mes "進一步調查這家企業的所作所為。";
+		mes "請務必小心。";
+		close;
+	case 4298:
+		mes "你認識";
+		mes "秀發茲發德共和國的總統嗎？";
+		mes "通常，像你我這樣的平民";
+		mes "連作夢都不敢想能見到這樣一位顯赫的人物，";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "但謠傳你可以，";
+		mes "只要你能找到他在里希塔樂鎮的聯絡人。";
+		mes "你不僅可以見到總統，";
+		mes "還能開啟一段新的冒險。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "去尋找他的聯絡人吧，";
+		mes "其他事情都會水到渠成的。";
+		mes "誰知道呢？";
+		mes "你人生中最偉大的冒險可能正等著你。";
+		close;
+	case 4299:
+		mes "我想知道這些研究人員";
+		mes "都是從哪裡來的。";
+		mes "他們一定";
+		mes "來自世界各地，";
+		mes "為了尋求發現未知事物的刺激。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "我認為最大膽的一群人是";
+		mes "學者和研究人員，";
+		mes "就像朱諾圖書館裡的那些人...";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "喔，說到朱諾圖書館，";
+		mes "我認識一位學者";
+		mes "他也在做這類的研究，";
+		mes "你知道的，";
+		mes "就是整天盯著那些長相奇特的東西看。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "你應該";
+		mes "去跟那位學者談談。";
+		mes "他或許能讓你大開眼界，看到一個全新的世界。";
+		close;
+	case 4300:
+		mes "這些人";
+		mes "是在互相幫助嗎？";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "謠傳朱諾有位瘋狂科學家，";
+		mes "而有一群人正試圖";
+		mes "阻止他那危險的研究。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "我覺得這種說法有失偏頗。";
+		mes "也許那位科學家是理智的，";
+		mes "而危險的是那些人。";
+		mes "誰知道呢？不過如果我是你，我會對這兩方都敬而遠之。";
+		close;
+	case 4301:
+		mes "學者們。他們研究的底線在哪裡？";
+		mes "像你我這樣的流浪者";
+		mes "對這個世界漠不關心，我對此感到慶幸。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "在毀葛，有位學者";
+		mes "謠傳他沉迷於一項危險的實驗。";
+		mes "我想請你去查清楚";
+		mes "他到底在追求什麼：";
+		mes "是幸福還是空虛的野心。";
+		close;
+	case 4302:
+		mes "很久以前";
+		mes "我就見過同樣的景色，";
+		mes "那是在奧丁神殿";
+		mes "剛被發現的時候。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "喔，這讓我想起";
+		mes "關於";
+		mes "兩個--不，三個與奧丁神殿有關的人的故事。";
+		next;
+		mes "[流浪吟遊詩人]";
+		mes "我想知道毀葛是否還有那個";
+		mes "招募挖掘者的招牌。";
+		mes "你願意去查看一下嗎？";
+		mes "等你回來後，我想聽聽那些挖掘者背後的故事。";
+		close;
+	}
+	end;
+function checkstatusquest {
+	switch( getarg(0) ) {
+	case 4297:
+		if (lhz_curse >= 31)// Cursed Spirit Quest
+			return true;
+		break;
+	case 4298:
+		if (lhz_boss >= 43)// President Quest
+			return true;
+		break;
+	case 4299:
+		if (yuno_hist >= 10)// Juperos Ruins History Quest
+			return true;
+		break;
+	case 4300:
+		if (metto_q >= 9)// Metto Quest
+			return true;
+		break;
+	case 4301:
+		if (hg_bio >= 9)// Biological Weapon Quest
+			return true;
+		break;
+	case 4302:
+		if (hg_odin >= 60)// Odin Temple Excavation Quest
+			return true;
+		break;
+	}
+	return false;
+}
+}
+
+//- Police Quests
+verus04,133,212,4	script	警察局長 克斯勒#EP15_1	2_M_SWORDMASTER,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 由於您的物品過多，無法繼續。 -";
+		close;
+	}
+	.@playtime_5318 = checkquest(5318,PLAYTIME);	// Come Back Tomorrow
+	.@quest_5309 = isbegin_quest(5309);				// Police Chief's Request
+	if (.@playtime_5318 == 2) {
+		erasequest 5318;
+		mes "[警察局長 克斯勒]";
+		mes "很高興認識你。我是克斯勒，幻影馬格里卡警察局長。";
+		emotion ET_DELIGHT;
+	}
+	else {
+		mes "[警察局長 克斯勒]";
+		mes "歡迎來到幻影馬格里卡警察局。";
+		emotion ET_PROFUSELY_SWEAT;
+	}
+	next;
+	if (countitem(6753) < 1)// Sign_Of_Destruction
+		.@menu$[0] = "在幻影馬格里卡該注意些什麼";
+	else
+		.@menu$[1] = "我帶來了毀滅之證。";
+	switch( select( "幻影馬格里卡警察局？", "有什麼我可以幫忙的嗎？", .@menu$[0], .@menu$[1], "沒事。" ) ) {
+	case 1:
+		emotion ET_SCRATCH;
+		mes "[警察局長 克斯勒]";
+		mes "喔，你想了解我們 ^4E9867幻影馬格里卡警察局^000000 嗎？哎呀，謝謝你。沒什麼人對我們的工作感興趣。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "你可能想知道為什麼這麼新的遺跡需要警察單位。嗯，這是有正當理由的。";
+		next;
+		select("那是什麼？");
+		mes "[警察局長 克斯勒]";
+		mes "你聽說過 ^F8081E末日祈禱者^000000 嗎？";
+		next;
+		emotion ET_FRET;
+		mes "[警察局長 克斯勒]";
+		mes "他們是一個宣揚世界末日的邪教組織。他們以他們神的名義到處破壞。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "他們最近才出現在幻影馬格里卡，但他們已經造成了很大的破壞，所以學者和傭兵們組織了這個警察單位。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "^F8081E末日祈禱者^000000 主要出沒在 ^82ABE9維魯斯中央廣場^000000。如果你遇到他們，儘管給他們點教訓。";
+		next;
+		emotion ET_SMILE;
+		mes "[警察局長 克斯勒]";
+		mes "哈哈，我們人手不足。";
+		close;
+	case 2:
+		if (isbegin_quest(5309) == 0) {
+			mes "[警察局長 克斯勒]";
+			if (BaseLevel < 140) {
+				mes "我了解你的熱忱，但你現在應該專注於你的修練。";
+				next;
+				emotion ET_SORRY;
+				mes "[警察局長 克斯勒]";
+				mes "幻影馬格里卡比你想像的還要危險。";
+				close;
+			}
+			if (.@playtime_5318 == 0 || .@playtime_5318 == 1) {
+				mes "謝謝你主動提供協助，但我們自己能應付。";
+				close;
+			}
+			if (isbegin_quest(5304) == 0) {
+				emotion ET_HUK;
+				mes "抱歉，你說什麼？";
+				next;
+				select("有什麼我可以幫忙的嗎？");
+			}
+			mes "[警察局長 克斯勒]";
+			mes "哇，你是第一個主動幫忙的人。我們分身乏術，得同時應付末日祈禱者和其他所有事情。";
+			next;
+			mes "[警察局長 克斯勒]";
+			mes "我都沒時間去了解我單位裡的成員們可能遇到的工作困難。";
+			next;
+			mes "[警察局長 克斯勒]";
+			mes "你能去幻影馬格里卡巡視一圈，跟警員們談談嗎？";
+			next;
+			if (select( "沒問題。", "晚點再說。" ) == 2) {
+				emotion ET_CRY;
+				mes "[警察局長 克斯勒]";
+				mes "喔，我還以為你想幫忙呢。";
+				close;
+			}
+			setquest 5309;// Police Chief's Request
+			mes "[警察局長 克斯勒]";
+			mes "謝謝。";
+			close;
+		}
+		if (isbegin_quest(5310) == 0 || isbegin_quest(5311) == 0 || isbegin_quest(5312) == 0 || isbegin_quest(5313) == 0) {
+			emotion ET_QUESTION;
+			mes "你還沒見過所有成員。";
+			next;
+			mes "[警察局長 克斯勒]";
+			mes "請在你見過之後再回來。";
+			close;
+		}
+		mes "你已經見過我所有的成員了。謝謝你。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "我很高興他們——薩爾格蘭、傑列夫、塞登和皮夫斯——都沒有遇到問題。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "請收下這點微薄的謝意。";
+		next;
+		for ( .@quest_id = 5309; .@quest_id <= 5313; .@quest_id++ )
+			erasequest .@quest_id;
+		for ( .@quest_id = 5314; .@quest_id <= 5317; .@quest_id++ ) {
+			if (isbegin_quest(.@quest_id) == 2) {
+				erasequest .@quest_id;
+				.@success++;
+			}
+		}
+		setquest 5318;// Come Back Tomorrow
+		getexp 200000 + (200000 * .@success),0;
+		mes "[警察局長 克斯勒]";
+		mes "如果你明天不忙的話，能回來再幫我一次嗎？";
+		close;
+	case 3:
+		emotion ET_HUK;
+		mes "[警察局長 克斯勒]";
+		mes "喔，你是第一次來幻影馬格里卡嗎？";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "這個遺跡最近才被發現，所以相當安全。我想不到你有什麼需要擔心的...";
+		next;
+		emotion ET_HUK;
+		mes "[警察局長 克斯勒]";
+		mes "喔，當我沒說——有一件事。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "這個 ^82ABE9維魯斯挖掘現場^000000 很安全，但如果你打算前往 ^82ABE9維魯斯中央廣場^000000，那就得做好最壞的打算。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "對了，這個遺跡的挖掘工作才剛開始，在挖掘結束前，裡面的所有東西都必須保持原狀。";
+		next;
+		emotion ET_FRET;
+		mes "[警察局長 克斯勒]";
+		mes "但那些末日祈禱者讓這變得不可能。呸！%$#@#$#@";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "為了他們操心，我都快禿頭了。我本來頭髮就不多。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "...";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "嗯，我不是故意要抱怨我的頭髮。";
+		next;
+		emotion ET_OK;
+		mes "[警察局長 克斯勒]";
+		mes "只要小心別破壞在這個遺跡裡發現的任何東西就好。";
+		close;
+	case 4:
+		if (isbegin_quest(5304) == 2) {
+			mes "[警察局長 克斯勒]";
+			mes "喔，你剛才不是帶了一些毀滅之證來嗎？";
+			next;
+			mes "[警察局長 克斯勒]";
+			mes "我猜你還沒離開？你一定很喜歡待在這裡。我也是。哈哈哈！";
+			while(1) {
+				next;
+				switch( select( "用毀滅之證可以換什麼", "給予毀滅之證。", "沒事。" ) ) {
+				case 1:
+					mes "[警察局長 克斯勒]";
+					mes "我記得你第一次帶毀滅之證來的時候我就跟你說過了，不過沒關係，我不介意再說一次。";
+					next;
+					mes "[警察局長 克斯勒]";
+					mes "毀滅之證可以兌換在挖掘現場經常發現的包裝信封。";
+					next;
+					mes "[警察局長 克斯勒]";
+					mes "學者們發現打開信封會觸發各種效果。";
+					next;
+					mes "[警察局長 克斯勒]";
+					mes "效果的持續時間很短，但總比沒有好。";
+					continue;
+				case 2:
+					.@amount = countitem(6753);// Sign_Of_Destruction
+					.@r = (.@amount > 2) ? .@amount : (.@amount - 2);
+					.@reward_amount = rand(.@r, .@amount);
+					delitem 6753, .@amount;
+					getitem 22611, .@reward_amount;// Packed_Envelope
+					mes "[警察局長 克斯勒]";
+					mes "你帶來了 " + .@amount + " 個毀滅之證。我可以給你 " + .@reward_amount + " 個包裝信封。";
+					next;
+					mes "[警察局長 克斯勒]";
+					mes "謝謝，繼續保持。";
+					close;
+				case 3:
+					emotion ET_SCRATCH;
+					mes "[警察局長 克斯勒]";
+					mes "嗯，你不是說你有毀滅之證嗎？";
+					close;
+				}
+			}
+		}
+		emotion ET_HUK;
+		mes "[警察局長 克斯勒]";
+		mes "喔，末日祈禱者身上帶著這個 ^F8081E毀滅之證^000000。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "你在哪裡找到這個的？";
+		next;
+		select("告訴他你在哪裡找到的。");
+		emotion ET_THANKS;
+		mes "[警察局長 克斯勒]";
+		mes "非常感謝你協助我們維持治安。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "你應該得到獎勵，但我一時想不到什麼好東西。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "嗯...";
+		next;
+		emotion ET_SURPRISE;
+		mes "[警察局長 克斯勒]";
+		mes "喔，我有個主意！給我 ^F8081E毀滅之證^000000，我會用 ^4E9867包裝信封^000000 跟你換。";
+		next;
+		select("包裝信封？");
+		mes "[警察局長 克斯勒]";
+		mes "這是在挖掘現場經常發現的一種信封。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "學者們發現打開信封會觸發各種效果。";
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "你現在想用毀滅之證兌換包裝信封嗎？或者你也可以晚點再換。";
+		next;
+		if (select( "現在兌換。", "晚點再說。" ) == 2) {
+			mes "[警察局長 克斯勒]";
+			mes "當然，沒問題。毀滅之證又沒有保存期限。";
+		}
+		else {
+			.@amount = countitem(6753);// Sign_Of_Destruction
+			delitem 6753, .@amount;
+			getitem 22611, .@amount;// Packing_Envelope
+			mes "[警察局長 克斯勒]";
+			mes "作為你 " + .@amount + " 個毀滅之證的交換，我給你了 " + .@amount + " 個包裝信封。";
+		}
+		setquest 5304;// Police Chief Kesler
+		completequest 5304;
+		next;
+		mes "[警察局長 克斯勒]";
+		mes "感謝你持續支持討伐末日祈禱者的行動。";
+		close;
+	case 5:
+		emotion ET_STARE_ABOUT;
+		mes "[警察局長 克斯勒]";
+		mes "這是我對每位新訪客說的第一件事：如果你看到 ^F8081E末日祈禱者^000000，請毫不猶豫地向最近的警察局報告。";
+		close;
+	default:
+		mes "[警察局長 克斯勒]";
+		mes "發生錯誤。如果重試後仍然如此，請截圖並向營運團隊反映。";
+		close;
+	}
+}
+
+verus03,36,113,4	script	警員 薩爾格蘭#EP15	2_M_THIEFMASTER,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 由於您的物品過多，無法繼續。 -";
+		close;
+	}
+	.@quest_5305 = isbegin_quest(5305);// Police Officer Salgran
+	.@quest_5309 = isbegin_quest(5309);// Police Chief's Request
+	.@quest_5310 = isbegin_quest(5310);// Salgran's Problem
+	.@quest_5314 = isbegin_quest(5314);// Salgran's Request
+	.@quest_5315 = isbegin_quest(5315);// Gerev's Request
+	.@quest_5316 = isbegin_quest(5316);// Seiden's Request
+	.@quest_5317 = isbegin_quest(5317);// Piffs's Request
+	.@playtime_5318 = checkquest(5318,PLAYTIME);
+	if (.@quest_5309 != 1) {
+		if (isbegin_quest(5305) == 0) {
+			specialeffect EF_SLEEPATTACK;
+			mes "[警員 薩爾格蘭]";
+			mes "Zzz... Zzz...";
+			next;
+			emotion ET_PROFUSELY_SWEAT;
+			mes "[警員 薩爾格蘭]";
+			mes "局、局長，對不起！";
+			next;
+			mes "他在說夢話。";
+			close;
+		}
+		mes "[警員 薩爾格蘭]";
+		mes "是嗎？這裡什麼都沒有，你什麼都不是嗎？";
+		close;
+	}
+	if (.@quest_5315 == 1 || .@quest_5316 == 1 || .@quest_5317 == 1) {
+		if (isbegin_quest(5305) == 0) {
+			specialeffect EF_SLEEPATTACK;
+			mes "[警員 薩爾格蘭]";
+			mes "Zzz... Zzz...";
+			next;
+			emotion ET_PROFUSELY_SWEAT;
+			mes "[警員 薩爾格蘭]";
+			mes "局、局長，對不起！";
+			next;
+			mes "他在說夢話。";
+			close;
+		}
+		if (isbegin_quest(5310) == 0) {
+			mes "[警員 薩爾格蘭]";
+			mes "你現在在別的區域工作。等你那邊忙完再回來吧。";
+			close;
+		}
+		mes "[警員 薩爾格蘭]";
+		mes "你是不是在別的區域幫忙處理其他事情？...";
+		close;
+	}
+	if (.@quest_5310 != 0) {
+		mes "[警員 薩爾格蘭]";
+		mes "你還沒向局長報告嗎？我說過我這區一切正常。";
+		close;
+	}
+	switch(.@quest_5314) {
+	case 0:
+		if (.@quest_5305 == 0) {
+			specialeffect EF_SLEEPATTACK;
+			select("不好意思。");
+			emotion ET_HUK;
+			mes "[警員 薩爾格蘭]";
+			mes "克、克斯勒局長！我、我沒有打瞌睡！";
+			next;
+			emotion ET_THINK;
+			mes "[警員 薩爾格蘭]";
+			mes "...";
+			next;
+			mes "[警員 薩爾格蘭]";
+			mes "呼，你不是局長。你是誰？";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "你們在幻影馬格里卡中央的局長派我來的。";
+			next;
+			emotion ET_SEXY;
+			mes "[警員 薩爾格蘭]";
+			mes "謝天謝地，他沒有親自過來。他一定很忙吧？歡迎。你能幫我個忙嗎？";
+			next;
+			if (select( "幫忙。", "下次吧。" ) == 2) {
+				emotion ET_OHNO;
+				setquest 5305;// Police Officer Salgran
+				completequest 5305;// Police Officer Salgran
+				setquest 5310;// Salgran's Problem
+				mes "[警員 薩爾格蘭]";
+				mes "你一定很忙。好吧，那就告訴局長我這區一切正常。";
+				close;
+			}
+			mes "[警員 薩爾格蘭]";
+			mes "謝謝！我被分配到了一些麻煩的差事，很需要你的幫忙。";
+			next;
+			mes "[警員 薩爾格蘭]";
+			mes "你知道末日祈禱者就在我們之中吧？";
+			next;
+			mes "[警員 薩爾格蘭]";
+			mes "他們到處散發非法的宣傳傳單，而且不管他們用了什麼紙，都像口香糖一樣黏在地上。";
+			next;
+			mes "[警員 薩爾格蘭]";
+			mes "我必須在這些傳單永遠黏死在地上之前清除它們。";
+			next;
+			mes "[警員 薩爾格蘭]";
+			mes "如果你在現場看到，能幫忙清除它們嗎？它們讓我頭痛死了。";
+			next;
+			if (select( "好的。", "下次吧。" ) == 2) {
+				emotion ET_OHNO;
+				setquest 5305;// Police Officer Salgran
+				completequest 5305;// Police Officer Salgran
+				setquest 5310;// Salgran's Problem
+				mes "[警員 薩爾格蘭]";
+				mes "你一定很忙。好吧，那就告訴局長我這區一切正常。";
+				close;
+			}
+			setquest 5314;
+			mes "[警員 薩爾格蘭]";
+			mes "謝謝你。清除 10 張非法傳單後再回來吧。";
+			close;
+		}
+		emotion ET_WRAP;
+		mes "[警員 薩爾格蘭]";
+		mes "歡迎回來。局長又派你來了嗎？";
+		next;
+		emotion ET_QUESTION;
+		mes "[警員 薩爾格蘭]";
+		mes "太好了，你能再幫我清除那些非法傳單嗎？";
+		next;
+		if (select( "幫忙。", "下次吧。" ) == 1) {
+			setquest 5314;
+			mes "[警員 薩爾格蘭]";
+			mes "謝謝你。清除 10 張非法傳單後再回來吧。";
+			close;
+		}
+		setquest 5310;// Salgran's Problem
+		mes "[警員 薩爾格蘭]";
+		mes "你一定很忙。好吧，那就告訴局長我這區一切正常。";
+		close;
+	case 1:
+		mes "[警員 薩爾格蘭]";
+		mes "哇，我還以為你才剛走，沒想到你已經回來了。你把非法傳單清掉了嗎？";
+		next;
+		switch( select( "清掉了。", "在哪裡可以找到它們？", "我可以不做這個嗎？", "沒事。" ) ) {
+		case 1:
+			mes "[警員 薩爾格蘭]";
+			if (checkquest(5314,HUNTING) == 2) {
+				mes "喔，做得好！局長不會忘記你的幫忙。看他的心情，他也許會給你更豐厚的獎勵。";
+				completequest 5314;
+				if (isbegin_quest(5305) == 0) {
+					setquest 5305;
+					completequest 5305;
+				}
+				setquest 5310;
+				close;
+			}
+			emotion ET_OHNO;
+			mes "哼，當然沒人能這麼快。我是請你清除至少 10 張非法傳單。";
+			close;
+		case 2:
+			emotion ET_HUK;
+			mes "[警員 薩爾格蘭]";
+			mes "幻影馬格里卡到處都是。你不可能看不到。";
+			next;
+			emotion ET_SCRATCH;
+			mes "[警員 薩爾格蘭]";
+			mes "你的視力有問題嗎？你不可能錯過它們的。";
+			close;
+		case 3:
+			erasequest 5314;
+			if (isbegin_quest(5305) == 0) {
+				setquest 5305;
+				completequest 5305;
+			}
+			setquest 5310;
+			mes "[警員 薩爾格蘭]";
+			mes "我很想說不行，但我不能強迫你。去告訴局長我這區一切正常吧。";
+			close;
+		case 4:
+			emotion ET_SCRATCH;
+			mes "[警員 薩爾格蘭]";
+			mes "你真傻。";
+			close;
+		}
+	case 2:
+		end;
+	}
+	mes "[警員 薩爾格蘭]";
+	mes "你還沒向局長報告嗎？我說過我這區一切正常。";
+	close;
+}
+
+verus03,116,36,6	script	警員 傑列夫#EP15_1D	4_M_ALCHE_A,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 由於您的物品過多，無法繼續。 -";
+		close;
+	}
+	.@quest_5306 = isbegin_quest(5306);// Police Officer Gerev
+	.@quest_5309 = isbegin_quest(5309);// Police Chief's Request
+	.@quest_5311 = isbegin_quest(5311);// Gerev's Problem
+	.@quest_5314 = isbegin_quest(5314);// Salgran's Request
+	.@quest_5315 = isbegin_quest(5315);// Gerev's Request
+	.@quest_5316 = isbegin_quest(5316);// Seiden's Request
+	.@quest_5317 = isbegin_quest(5317);// Piffs's Request
+	.@playtime_5318 = checkquest(5318,PLAYTIME);
+	mes "[警員 傑列夫]";
+	if (.@quest_5309 != 1) {
+		if (isbegin_quest(5306) == 0) {
+			emotion ET_OTL;
+			mes "呃，我感覺到壓力在體內不斷累積... 唔，這地方讓我胃痛！";
+			next;
+			mes "他痛苦地抓著頭髮。";
+			close;
+		}
+		emotion ET_DELIGHT;
+		mes "我現在感覺好多了。請告訴克斯勒局長我這區一切正常。";
+		close;
+	}
+	if (.@quest_5314 == 1 || .@quest_5316 == 1 || .@quest_5317 == 1) {
+		if (isbegin_quest(5306) == 0) {
+			emotion ET_OTL;
+			mes "呃，我感覺到壓力在體內不斷累積... 唔，這地方讓我胃痛！";
+			next;
+			mes "他痛苦地抓著頭髮。";
+			close;
+		}
+		if (isbegin_quest(5311) == 0) {
+			emotion ET_PROFUSELY_SWEAT;
+			mes "呃，我胃抽筋了。等你完成目前的任務再回來吧。";
+			close;
+		}
+		mes "[警員 傑列夫]";
+		mes "你在幫忙其他區域嗎？真厲害... 我只求沒有壓力就好... ";
+		close;
+	}
+	if (.@quest_5311 != 0) {
+		emotion ET_DELIGHT;
+		mes "我現在感覺好多了。請告訴克斯勒局長我這區一切正常。";
+		close;
+	}
+	switch(.@quest_5315) {
+	case 0:
+		if (.@quest_5306 == 0) {
+			emotion ET_CONFUSE;
+			mes "啊，我的筆呢？我離開警局時還在的。難道是那些機器人偷走了？";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "檢查一下你的耳後。";
+			next;
+			emotion ET_HUK;
+			mes "[警員 傑列夫]";
+			mes "咦？我不記得把它放在那裡了。";
+			next;
+			emotion ET_QUESTION;
+			mes "[警員 傑列夫]";
+			mes "哎呀，抱歉。有什麼我可以幫忙的嗎？";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "你們在幻影馬格里卡中央的局長派我來的。";
+			next;
+			emotion ET_FRET;
+			mes "[警員 傑列夫]";
+			mes "啊，克斯勒局長派你來的。如果我不是認識他，我會以為他太忙了沒空來看我。不過我敢說我比他還忙。";
+			next;
+			if (select( "我可以幫忙。", "抱歉，我幫不上忙。" ) == 2) {
+				if (isbegin_quest(5306) == 0) {
+					setquest 5306;
+					completequest 5306;
+				}
+				setquest 5311;// Gerev's Problem
+				mes "[警員 傑列夫]";
+				mes "你願意幫局長，卻不願意幫我。為什麼，因為我不是局長嗎？";
+				next;
+				emotion ET_STARE;
+				mes "[警員 傑列夫]";
+				mes "*哼* 去告訴克斯勒局長我這區一切平靜。";
+				close;
+			}
+			emotion ET_BIGTHROB;
+			mes "[警員 傑列夫]";
+			mes "你確定嗎？因為我真的很討厭失望。";
+			next;
+			mes "[警員 傑列夫]";
+			mes "如你所知，末日祈禱者就在我們之中。咕，光是想到他們就讓我咬牙切齒。";
+			next;
+			mes "[警員 傑列夫]";
+			mes "昨天我踩到他們設的陷阱扭傷了腳踝，";
+			next;
+			mes "[警員 傑列夫]";
+			mes "這還是發生在我身上眾多倒楣事之一。";
+			next;
+			mes "[警員 傑列夫]";
+			mes "唉，你能拆除他們的陷阱嗎？";
+			next;
+			if (select( "沒問題。", "下次吧。" ) == 2) {
+				emotion ET_FRET;
+				if (isbegin_quest(5306) == 0) {
+					setquest 5306;
+					completequest 5306;
+				}
+				setquest 5311;
+				mes "[警員 傑列夫]";
+				mes "*哼* 我就知道。去告訴克斯勒局長我這區一切平靜。";
+				close;
+			}
+			setquest 5315;
+			mes "[警員 傑列夫]";
+			mes "謝謝你。請拆除設置在幻影馬格里卡的 10 個陷阱。";
+			next;
+			mes "[警員 傑列夫]";
+			mes "如果你能先清除我這附近的陷阱，我會很感激的。";
+			close;
+		}
+		mes "又見面了。局長派你來的嗎？";
+		next;
+		mes "[警員 傑列夫]";
+		mes "如果你不忙的話，能拆除散佈在幻影馬格里卡的末日祈禱者陷阱嗎？";
+		next;
+		if (select( "好。", "下次吧。" ) == 1) {
+			setquest 5315;
+			ep15_1_mang = 0;
+			mes "[警員 傑列夫]";
+			mes "謝謝你。請拆除設置在幻影馬格里卡的 10 個陷阱。";
+			close;
+		}
+		emotion ET_SCRATCH;
+		setquest 5311;
+		mes "[警員 傑列夫]";
+		mes "你也一樣忙，是嗎？沒關係。我還有其他冒險者在幫我。請告訴克斯勒局長我這區一切正常。";
+		close;
+	case 1:
+		emotion ET_HUK;
+		mes "哇，你已經拆除所有的陷阱了嗎？";
+		next;
+		switch( select( "我拆完了！", "陷阱在哪裡？", "我手頭上有更緊急的事。", "沒事。" ) ) {
+		case 1:
+			if (ep15_1_mang >= 10) {
+				completequest 5315;// Gerev's Request
+				if (isbegin_quest(5306) == 0) {
+					setquest 5306;
+					completequest 5306;
+				}
+				setquest 5311;// Gerev's Problem
+				ep15_1_mang = 0;
+				mes "[警員 傑列夫]";
+				mes "謝謝你。知道我周圍的陷阱變少了，我感覺好多了。請告訴克斯勒局長我這區一切正常。";
+				close;
+			}
+			emotion ET_OTL;
+			mes "[警員 傑列夫]";
+			mes "我已經處於崩潰邊緣了。你不需要再逼我了。";
+			next;
+			mes "[警員 傑列夫]";
+			mes "你還沒拆完 10 個陷阱。我眼前就有一個。你為什麼不從那個開始？";
+			close;
+		case 2:
+			emotion ET_STARE;
+			mes "[警員 傑列夫]";
+			mes "喔不，你連一個陷阱都沒看到嗎？";
+			next;
+			mes "[警員 傑列夫]";
+			mes "找找地上寫著 ??? 的地方。那就是末日祈禱者的標記。";
+			next;
+			mes "[警員 傑列夫]";
+			mes "我眼前就有一個。呃，我的胃... ";
+			next;
+			mes "[警員 傑列夫]";
+			mes "我一定又感到壓力了。我覺得胃在抽緊... ";
+			close;
+		case 3:
+			erasequest 5315;// Gerev's Request
+			ep15_1_mang = 0;
+			if (isbegin_quest(5306) == 0) {
+				setquest 5306;
+				completequest 5306;
+			}
+			setquest 5311;
+			close;
+		case 4:
+			emotion ET_OTL;
+			mes "[警員 傑列夫]";
+			mes "...什、什麼？呃... 我、我的胃... ";
+			close;
+		}
+	case 2:
+		end;
+	}
+}
+
+verus03,81,241,6	script	警員 塞登#EP15_1	4_M_ORIENT02,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 由於您的物品過多，無法繼續。 -";
+		close;
+	}
+	.@quest_5307 = isbegin_quest(5307);// Police Officer Seiden
+	.@quest_5309 = isbegin_quest(5309);// Police Chief's Request
+	.@quest_5312 = isbegin_quest(5312);// Seiden's Problem
+	.@quest_5314 = isbegin_quest(5314);// Salgran's Request
+	.@quest_5315 = isbegin_quest(5315);// Gerev's Request
+	.@quest_5316 = isbegin_quest(5316);// Seiden's Request
+	.@quest_5317 = isbegin_quest(5317);// Piffs's Request
+	.@playtime_5318 = checkquest(5318,PLAYTIME);
+	if (.@quest_5309 != 1) {
+		if (isbegin_quest(5307) == 0) {
+			mes "[警員 塞登]";
+			mes "*輕笑* 我知道你是誰，但我不想跟你說話。";
+			next;
+			mes "他真令人毛骨悚然。";
+			close;
+		}
+		emotion ET_KIK;
+		mes "[警員 塞登]";
+		mes "*輕笑* 小心別惹怒任何人。";
+		close;
+	}
+	if (.@quest_5314 == 1 || .@quest_5315 == 1 || .@quest_5317 == 1) {
+		if (isbegin_quest(5307) == 0) {
+			mes "[警員 塞登]";
+			mes "*輕笑* 我知道你是誰，但我不想跟你說話。";
+			next;
+			mes "他真令人毛骨悚然。";
+			close;
+		}
+		if (isbegin_quest(5312) == 0) {
+			emotion ET_KIK;
+			mes "[警員 塞登]";
+			mes "*輕笑*...分心是不行的，不然會很麻煩的。*輕笑*...";
+			close;
+		}
+		emotion ET_KIK;
+		mes "[警員 塞登]";
+		mes "*輕笑* 一次專心做一件事吧，否則幻影馬格里卡的詛咒會降臨在你身上。";
+		close;
+	}
+	if (.@quest_5312 != 0) {
+		emotion ET_KIK;
+		mes "[警員 塞登]";
+		mes "*輕笑* 小心別惹怒任何人。";
+		close;
+	}
+	switch(.@quest_5316) {
+	case 0:
+		if (.@quest_5307 == 0) {
+			emotion ET_KIK;
+			mes "[警員 塞登]";
+			mes "*輕笑* 局長派你來的。我知道，因為我一直在等。";
+			next;
+			emotion ET_SURPRISE, playerattached();
+			mes "[" + strcharinfo(0) + "]";
+			mes "?!";
+			next;
+			mes "[警員 塞登]";
+			mes "別問我怎麼知道的——我有我的消息來源。我們切入正題吧。";
+			next;
+			mes "[警員 塞登]";
+			mes "如果你願意且不忙的話，我需要你的幫忙。";
+			next;
+			if (select( "好。", "現在不行。" ) == 2) {
+				emotion ET_SCRATCH;
+				if (isbegin_quest(5307) == 0) {
+					setquest 5307;
+					completequest 5307;
+				}
+				setquest 5312;// Seiden's Problem
+				mes "[警員 塞登]";
+				mes "我不明白。我的朋友發誓這招對人屢試不爽，嗯... 好吧，告訴克斯勒局長我這邊一切都好。";
+				close;
+			}
+			emotion ET_KIK;
+			mes "[警員 塞登]";
+			mes "*輕笑* 我就知道。啊，忘了我剛才說的吧。";
+			next;
+			mes "[警員 塞登]";
+			mes "我的工作遇到了一點困難。";
+			next;
+			mes "[警員 塞登]";
+			mes "末日祈禱者朝我們扔石頭，我擔心他們會傷到無辜的人。";
+			next;
+			mes "[警員 塞登]";
+			mes "你能撿起在幻影馬格里卡看到的石頭嗎？目前 10 顆就夠了。繼續這樣做，總有一天我們會把所有的石頭都撿完。";
+			next;
+			if (select( "我會回來的。", "下次吧。" ) == 2) {
+				emotion ET_SCRATCH;
+				if (isbegin_quest(5307) == 0) {
+					setquest 5307;
+					completequest 5307;
+				}
+				setquest 5312;// Seiden's Problem
+				mes "[警員 塞登]";
+				mes "我不明白。我的朋友發誓這招對人屢試不爽，嗯... 好吧，告訴克斯勒局長我這邊一切都好。";
+				close;
+			}
+			emotion ET_KIK;
+			setquest 5316;
+			ep15_1_mang = 0;
+			mes "[警員 塞登]";
+			mes "*輕笑* 小碎石不算。請帶來 10 顆大到能握在手裡的石頭。";
+			close;
+		}
+		emotion ET_KIK;
+		mes "[警員 塞登]";
+		mes "*輕笑* 我想也差不多是時候了。";
+		next;
+		mes "[警員 塞登]";
+		mes "*輕笑* 請像上次一樣，清除幻影馬格里卡的石頭。";
+		next;
+		if (select( "好。", "下次吧。" ) == 1) {
+			setquest 5316;
+			ep15_1_mang = 0;
+			mes "[警員 塞登]";
+			mes "小碎石不算。請帶來 10 顆大到能握在手裡的石頭。";
+			close;
+		}
+		setquest 5312;
+		mes "[警員 塞登]";
+		mes "你還是很忙，是嗎？沒關係。去告訴克斯勒局長我這區一切平靜。";
+		close;
+	case 1:
+		emotion ET_KIK;
+		mes "[警員 塞登]";
+		mes "*輕笑* 你把石頭都撿完了嗎？";
+		next;
+		switch( select( "撿完了。", "它們在哪裡？", "我沒時間理它們。", "沒事。" ) ) {
+		case 1:
+			emotion ET_KIK;
+			mes "[警員 塞登]";
+			if (ep15_1_mang < 10) {
+				if (countitem(7049) < 10)
+					mes "*輕笑* 它們在哪裡？撿起它們，否則受害者的靈魂會永遠糾纏著你。";
+				else
+					mes "*輕笑* 看看周圍——到處都是石頭。那麼你這顆石頭是在哪裡找到的？";
+				close;
+			}
+			if (countitem(7049) < 10) {
+				mes "*輕笑* 石頭在哪裡？請把它們交給我。";
+				close;
+			}
+			delitem 7049,10;// Stone
+			ep15_1_mang = 0;
+			completequest 5316;
+			if (isbegin_quest(5307) == 0) {
+				setquest 5307;
+				completequest 5307;
+			}
+			setquest 5312;
+			mes "[警員 塞登]";
+			mes "*輕笑* 謝謝你。受害者的靈魂暫時平息了。";
+			close;
+		case 2:
+			emotion ET_KIK;
+			mes "[警員 塞登]";
+			mes "*輕笑* 石頭無處不在。";
+			next;
+			mes "[警員 塞登]";
+			mes "在地上找找。*輕笑* 這還要我告訴你嗎？";
+			close;
+		case 3:
+			emotion ET_KIK;
+			erasequest 5316;
+			ep15_1_mang = 0;
+			if (isbegin_quest(5307) == 0) {
+				setquest 5307;
+				completequest 5307;
+			}
+			setquest 5312;
+			mes "[警員 塞登]";
+			mes "*輕笑* 請將你的石頭放在遠離人群的地方。小心受害者的靈魂！";
+			close;
+		case 4:
+			emotion ET_KIK;
+			mes "[警員 塞登]";
+			mes "*輕笑* 知道了。繼續保持。";
+			close;
+		}
+	case 2:
+		end;
+	}
+}
+
+verus03,127,36,4	script	???#EP15_1D_01	4_CRACK,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 由於您的物品過多，無法繼續。 -";
+		close;
+	}
+	.@quest_5315 = isbegin_quest(5315);// Gerev's Request
+	.@quest_5316 = isbegin_quest(5316);// Seiden's Request
+	if (.@quest_5315 == 1 || .@quest_5316 == 1) {
+		if (.@quest_5315 == 1) {
+			if (ep15_1_mang >= 10) {
+				mes "你已經拆除了所有必須拆除的陷阱。";
+				close;
+			}
+			emotion ET_SURPRISE;
+			mes "地上的 ??? 看起來很可疑。你想要做什麼？";
+			next;
+			if (select( "調查。", "離開。" ) == 2) {
+				mes "你決定不去碰這個可疑的物體。";
+				close;
+			}
+			progressbar "00ff00",2;
+			if (rand(2))
+				mes "你覺得沒什麼大不了的。";
+			else {
+				mes "你拆除了末日祈禱者的陷阱。";
+				ep15_1_mang++;
+			}
+		}
+		else {
+			if (ep15_1_mang > 9) {
+				mes "你撿起了 10 顆大石頭。把它們交給警員吧。";
+				close;
+			}
+			mes "你發現了一顆半埋在地裡的石頭。你想撿起來嗎？";
+			next;
+			if (select( "撿起來。", "離開。" ) == 2) {
+				mes "你決定留下這顆小石頭。";
+				close;
+			}
+			if (rand(2))
+				mes "這顆小石頭太小了，丟出去也無法造成嚴重的傷害。";
+			else {
+				mes "你撿起了一顆危險的大石頭。";
+				getitem 7049,1;
+				ep15_1_mang++;
+			}
+		}
+		close2;
+		initnpctimer;
+		disablenpc();
+	}
+	end;
+
+OnTimer30000:
+OnTimer60000:
+OnTimer90000:
+OnTimer120000:
+	if (rand(1,2) != 1)
+		end;
+OnTimer150000:
+	enablenpc();
+	stopnpctimer;
+	end;
+}
+verus03,119,17,4	duplicate(???#EP15_1D_01)	???#EP15_1D_02	4_CRACK
+verus03,163,33,4	duplicate(???#EP15_1D_01)	???#EP15_1D_03	4_CRACK
+verus03,207,47,4	duplicate(???#EP15_1D_01)	???#EP15_1D_04	4_CRACK
+verus03,225,245,4	duplicate(???#EP15_1D_01)	???#EP15_1D_05	4_CRACK
+verus03,169,181,4	duplicate(???#EP15_1D_01)	???#EP15_1D_06	4_CRACK
+verus03,122,139,4	duplicate(???#EP15_1D_01)	???#EP15_1D_07	4_CRACK
+verus03,80,230,4	duplicate(???#EP15_1D_01)	???#EP15_1D_08	4_CRACK
+verus03,42,105,4	duplicate(???#EP15_1D_01)	???#EP15_1D_09	4_CRACK
+verus03,99,235,4	duplicate(???#EP15_1D_01)	???#EP15_1D_10	4_CRACK
+verus03,81,207,4	duplicate(???#EP15_1D_01)	???#EP15_1D_11	4_CRACK
+verus03,226,243,4	duplicate(???#EP15_1D_01)	???#EP15_1D_12	4_CRACK
+verus03,148,144,4	duplicate(???#EP15_1D_01)	???#EP15_1D_13	4_CRACK
+verus03,74,44,4	duplicate(???#EP15_1D_01)	???#EP15_1D_14	4_CRACK
+verus03,20,54,4	duplicate(???#EP15_1D_01)	???#EP15_1D_15	4_CRACK
+verus03,74,212,4	duplicate(???#EP15_1D_01)	???#EP15_1D_16	4_CRACK
+verus03,42,47,4	duplicate(???#EP15_1D_01)	???#EP15_1D_17	4_CRACK
+verus03,80,195,4	duplicate(???#EP15_1D_01)	???#EP15_1D_18	4_CRACK
+verus03,134,72,4	duplicate(???#EP15_1D_01)	???#EP15_1D_19	4_CRACK
+verus03,45,45,4	duplicate(???#EP15_1D_01)	???#EP15_1D_20	4_CRACK
+verus03,115,235,4	duplicate(???#EP15_1D_01)	???#EP15_1D_21	4_CRACK
+verus03,76,194,4	duplicate(???#EP15_1D_01)	???#EP15_1D_22	4_CRACK
+verus03,166,32,4	duplicate(???#EP15_1D_01)	???#EP15_1D_23	4_CRACK
+verus03,121,42,4	duplicate(???#EP15_1D_01)	???#EP15_1D_24	4_CRACK
+verus03,141,36,4	duplicate(???#EP15_1D_01)	???#EP15_1D_25	4_CRACK
+
+verus04,202,258,4	script	警員 皮夫斯#EP15_1	4_M_SAGE_C,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 由於您的物品過多，無法繼續。-";
+		close;
+	}
+	.@quest_5308 = isbegin_quest(5308);// Police Officer Piffs
+	.@quest_5309 = isbegin_quest(5309);// Police Chief's Request
+	.@quest_5313 = isbegin_quest(5313);// Piffs's Problem
+	.@quest_5314 = isbegin_quest(5314);// Salgran's Request
+	.@quest_5315 = isbegin_quest(5315);// Gerev's Request
+	.@quest_5316 = isbegin_quest(5316);// Seiden's Request
+	.@quest_5317 = isbegin_quest(5317);// Piffs's Request
+	.@playtime_5318 = checkquest(5318,PLAYTIME);
+
+	mes "[警員 皮夫斯]";
+	if (.@quest_5309 != 1) {
+		if (isbegin_quest(5308) == 0) {
+			emotion ET_HUNGRY;
+			mes "*嚼嚼*";
+			mes "嗯，這肉真好吃！";
+			next;
+			mes "他正在嚼著肉。";
+			close;
+		}
+		mes "[警員 皮夫斯]";
+		mes "別擔心。我會保護這個區域的安全。";
+		close;
+	}
+	if (.@quest_5314 == 1 || .@quest_5315 == 1 || .@quest_5316 == 1) {
+		if (isbegin_quest(5308) == 0) {
+			emotion ET_HUNGRY;
+			mes "*嚼嚼*";
+			mes "嗯，這肉真好吃！";
+			next;
+			mes "他正在嚼著肉。";
+			close;
+		}
+		if (isbegin_quest(5313) == 0) {
+			mes "[警員 皮夫斯]";
+			mes "你也在其他區域幫忙嗎？那你有空再來幫我吧！";
+			close;
+		}
+		emotion ET_BEST;
+		mes "天啊，你同時在多個區域工作嗎？你真是個超人。";
+		close;
+	}
+	if (.@quest_5313 != 0) {
+		emotion ET_BEST;
+		mes "放心，有我在。";
+		close;
+	}
+	switch(.@quest_5317) {
+	case 0:
+		if (.@quest_5308 == 0) {
+			emotion ET_HUNGRY;
+			mes "*嚼嚼* 真美味！";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "不好意思。";
+			next;
+			emotion ET_HUK;
+			mes "[警員 皮夫斯]";
+			mes "哎呀。";
+			mes "抱歉；我不該在公共場合吃零食。";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "你好。我的名字是皮夫斯，我是一名賢者。我是來研究幻影馬格里卡的。";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "是局長派你來的嗎？太好了。";
+			next;
+			emotion ET_QUESTION;
+			mes "[警員 皮夫斯]";
+			mes "我的一些補給品快用完了，但我不能離開我的崗位。你能幫我嗎？";
+			next;
+			if (select("沒問題。", "現在不行。") == 2) {
+				if (isbegin_quest(5308) == 0) {
+					setquest 5308;// Police Officer Piffs
+					completequest 5308;
+				}
+				setquest 5313;// Piffs's Problem
+				mes "[警員 皮夫斯]";
+				mes "我了解。不過，如果你改變主意，再來找我吧。";
+				close;
+			}
+			mes "[警員 皮夫斯]";
+			mes "哈哈哈，謝謝你。";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "這個區域相當安全，但駐紮在廣場的同事很容易被末日祈禱者弄傷。";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "我必須為他們採集藥草，但正如我所說，我不能離開我的崗位。";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "我知道這裡哪裡長有好的藥草。你能幫我採集嗎？";
+		}
+		else {
+			mes "哈哈！又見面了。是局長派你來的嗎？";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "如果你不忙的話，我想請你再採集一些藥草。可以嗎？";
+		}
+		next;
+		if (select( "沒問題。", "下次吧。" ) == 1) {
+			setquest 5317;// Piffs's Request
+			mes "[警員 皮夫斯]";
+			mes "謝謝你。在灌木叢周圍找找，你會看到一些藥草。我只需要 10 株。";
+			close;
+		}
+		if (isbegin_quest(5308) == 0) {
+			setquest 5308;// Police Officer Piffs
+			completequest 5308;
+		}
+		setquest 5313;// Piffs's Problem
+		mes "[警員 皮夫斯]";
+		mes "我了解。不過，如果你改變主意，再來找我吧。";
+		close;
+	case 1:
+		emotion ET_QUESTION;
+		mes "歡迎回來。你找到所有的藥草了嗎？";
+		next;
+		switch( select( "拿去吧。", "我可以在哪裡找到它們？", "我手頭上有更緊急的事。", "沒事。" ) ) {
+		case 1:
+			mes "[警員 皮夫斯]";
+			if (ep15_1_mang > 9 && countitem(6754) > 9) {
+				delitem 6754,10;// Collected_Medicinal_Herbs
+				ep15_1_mang = 0;
+				completequest 5317;
+				setquest 5313;
+				if (isbegin_quest(5308) == 0) {
+					setquest 5308;
+					completequest 5308;
+				}
+				mes "謝謝你幫我儲備藥草。";
+				next;
+				mes "[警員 皮夫斯]";
+				mes "這藥草聞起來很香。我想這會是很好的肉類配菜... *咳咳* 我不是說我想吃它。";
+			}
+			else {
+				mes "你說你採集的藥草在哪裡？";
+				next;
+				mes "[警員 皮夫斯]";
+				mes "不，我不吃藥草。我只是想把它們儲存起來給同事備用。";
+			}
+			close;
+		case 2:
+			mes "[警員 皮夫斯]";
+			mes "你在哪裡可以找到藥草？";
+			next;
+			mes "[警員 皮夫斯]";
+			mes "在灌木叢周圍找找，你會看到一些藥草。";
+			close;
+		case 3:
+			changequest 5317,5313;
+			if (isbegin_quest(5308) == 0) {
+				setquest 5308;
+				completequest 5308;
+			}
+			ep15_1_mang = 0;
+			if (countitem(6754)) {
+				delitem 6754, countitem(6754);// Collected_Medicinal_Herbs
+				mes "[警員 皮夫斯]";
+				mes "我拿走了你採集的藥草。就先這樣吧，你趕緊先離開！";
+				close;
+			}
+			mes "[警員 皮夫斯]";
+			mes "你可以離開了。我會通知局長的。";
+			close;
+		case 4:
+			mes "[警員 皮夫斯]";
+			mes "別忘了我需要 10 株藥草。";
+			close;
+		}
+	case 2:
+		end;
+	}
+}
+
+verus04,187,219,4	script	灌木叢#EP15_1D_01	4_CREEPER,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 攜帶的物品過多，無法進行任務。 -";
+		close;
+	}
+	if (isbegin_quest(5317) == 1) {// Piffs's Request
+		if (ep15_1_mang > 9) {
+			mes "這種灌木叢在夢幻秘境到處都是。";
+			close;
+		}
+		mes "這個灌木叢看起來裡面藏著一些藥草。你想怎麼做？";
+		next;
+		if (select( "採集藥草。", "離開。" ) == 2) {
+			mes "你決定算了。";
+			close;
+		}
+		progressbar "00ff00",2;
+		if (rand(2))
+			mes "在灌木叢中沒有找到藥草。";
+		else {
+			ep15_1_mang++;
+			getitem 6754,1;// Collected_Herb
+			mes "採集到藥草。";
+		}
+		close2;
+		disablenpc();
+		initnpctimer;
+	}
+	end;
+
+OnTimer60000:
+OnTimer120000:
+OnTimer180000:
+OnTimer240000:
+	if (rand(1,2) != 1)
+		end;
+OnTimer300000:
+	enablenpc();
+	stopnpctimer;
+	end;
+}
+verus04,167,206,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_02	4_CREEPER
+verus04,198,198,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_03	4_CREEPER
+verus04,143,205,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_04	4_CREEPER
+verus04,125,265,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_05	4_CREEPER
+verus04,92,203,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_06	4_CREEPER
+verus04,97,204,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_07	4_CREEPER
+verus04,85,189,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_08	4_CREEPER
+verus04,64,191,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_09	4_CREEPER
+verus04,55,185,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_10	4_CREEPER
+verus04,42,185,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_11	4_CREEPER
+verus04,29,189,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_12	4_CREEPER
+verus04,40,223,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_13	4_CREEPER
+verus04,32,240,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_14	4_CREEPER
+verus04,27,243,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_15	4_CREEPER
+verus04,34,248,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_16	4_CREEPER
+verus04,52,251,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_17	4_CREEPER
+verus04,72,247,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_18	4_CREEPER
+verus04,75,243,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_19	4_CREEPER
+verus04,81,252,4	duplicate(灌木叢#EP15_1D_01)	灌木叢#EP15_1D_20	4_CREEPER
+
+//- New Power Source
+verus03,107,177,3	script	路克 羅培茲#atnd09	4_M_EDEN_GUARDER,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 攜帶的物品過多，無法進行任務。";
+		mes "-";
+		close;
+	}
+	mes "[路克]";
+	if (ep15_1_atnad < 14) {
+		cutin "looke_rapez04.bmp",0;
+		mes "不用擔心他。";
+		mes "他知道自己在做什麼。";
+		close3;
+	}
+	if (ep15_1_atnad == 14) {
+		cutin "looke_rapez02.bmp",0;
+		mes "...？";
+		mes "真有趣。";
+		mes "他想要馬上能吃、多汁、清爽且味道乾淨的東西？";
+		next;
+		cutin "looke_rapez03.bmp",0;
+		mes "[路克]";
+		mes "嗯，我有個點子。";
+		mes "幫我拿一些食材來，我來為你做點東西。";
+		mes "我很確定這會符合要求。";
+		next;
+		mes "[路克]";
+		mes "問題是";
+		mes "這些食材很難找。";
+		mes "這是我在跨越次元旅行時學到的食譜。";
+		next;
+		cutin "looke_rapez04.bmp",0;
+		mes "[路克]";
+		mes "嗯，得由你去找食材：";
+		mes "2個肉、1個穆拉橘子和1個香蕉。";
+		mes "你能弄到嗎？";
+		next;
+		cutin "looke_rapez02.bmp",0;
+		mes "[路克]";
+		mes "有些水果生長在^4d4dff迷霧森林迷宮^000000附近。";
+		mes "你得努力找找。";
+		erasequest 7624;// In Search of a Delicacy
+		setquest 7625;// Count On Me
+		ep15_1_atnad = 15;
+		close3;
+	}
+	if (ep15_1_atnad == 15) {
+		if (countitem(517) < 2 || countitem(11520) < 1 || countitem(513) < 1) {
+			cutin "looke_rapez04.bmp",0;
+			mes "你忘記食材了嗎？";
+			mes "2個肉、1個穆拉橘子和1個香蕉。";
+			next;
+			mes "[路克]";
+			mes "有些水果生長在^4d4dff迷霧森林迷宮^000000附近。";
+			mes "...";
+			close3;
+		}
+		cutin "looke_rapez02.bmp",0;
+		mes "這樣應該夠了。";
+		mes "我有一陣子沒做了，但食譜還在我腦海裡。";
+		next;
+		mes "[路克]";
+		mes "完成了。";
+		mes "這食物應該";
+		mes "符合你告訴我的所有條件。";
+		next;
+		cutin "",255;
+		mes "路克給了你穆拉村的特色食物「牛肉吐司」。";
+		mes "這完美符合伊恩想要的一切條件。";
+		delitem 517,2;	// Meat
+		delitem 11520,1;// Mora_Mandarin
+		delitem 513,1;	// Banana
+		getitem 11519,1;// Beef_Toast
+		erasequest 7625;// Count On Me
+		setquest 7626;// Delicacy for Him
+		ep15_1_atnad = 16;
+		close;
+	}
+	if (ep15_1_atnad == 16) {
+		cutin "looke_rapez01.bmp",0;
+		mes "*輕笑*";
+		mes "如果你需要更多，直接去穆拉村買會比較容易。";
+		mes "盡你所能去討好那個老頭子吧。";
+		next;
+		mes "[路克]";
+		mes "否則你找不到隊長想要的答案。";
+		mes "祝你好運。";
+		close3;
+	}
+	cutin "looke_rapez03.bmp",0;
+	mes "這個地方真無聊，跟其他地方一樣。";
+	mes "沒有更強的魔物嗎？";
+	next;
+	cutin "",255;
+	mes "[洛伊德]";
+	mes "別這麼說。";
+	mes "你會烏鴉嘴的。";
+	mes "我雖然是一隻勇敢的貓咪，但我的爪子連抓傷牠們都做不到。";
+	next;
+	cutin "looke_rapez01.bmp",0;
+	mes "[路克]";
+	mes "好啦，好啦。";
+	mes "不過別擔心。";
+	mes "我不傻。";
+	mes "我絕不會讓我的保護對象陷入危險。";
+	close3;
+}
+
+verus03,103,177,5	script	技師 洛伊德#atnd09	4_M_BOSSCAT,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 攜帶的物品過多，無法進行任務。 -";
+		close;
+	}
+	mes "[洛伊德]";
+	if (ep15_1_atnad < 9) {
+		mes "你";
+		mes "因為我是一隻貓就看不起我。";
+		mes "嘖，嘖。";
+		mes "你們人類真是膚淺。";
+		next;
+		mes "[洛伊德]";
+		mes "保持距離，管好你自己的事就好。";
+		mes "只要你不偷我的心血，我們就會相安無事。";
+		close;
+	}
+	if (ep15_1_atnad == 9) {
+		mes "你因為我是一隻貓就看不起我。";
+		next;
+		select("你是洛伊德嗎？");
+		mes "[洛伊德]";
+		mes "對。有什麼事？";
+		mes "咦？奧雷斯派你來的？";
+		mes "來檢查我的進度？";
+		next;
+		mes "[洛伊德]";
+		mes "噢，我有麻煩了。";
+		mes "我必須不辜負他的期望，";
+		mes "但我的研究一直停滯不前。";
+		next;
+		mes "[洛伊德]";
+		mes "嘿，你能幫";
+		mes "我個忙嗎？";
+		next;
+		switch( select( "好啊。", "一隻貓在這裡做什麼？", "不要。" ) ) {
+		case 1:
+			break;
+		case 2:
+			mes "[洛伊德]";
+			mes "不像許多來自綿綿島的同鄉，我一直對新科技和文化很感興趣。";
+			mes "我曾在公司工作，還學過鍊金術。";
+			next;
+			mes "[洛伊德]";
+			mes "聽到發現韋魯斯城的消息後，我就來到了這裡。別人告訴我，我必須加入發掘團才能留在城裡。";
+			next;
+			mes "[洛伊德]";
+			mes "是奧雷斯幫我進來的。";
+			mes "我也是阿特納德發掘團的成員。";
+			next;
+			break;
+		case 3:
+			cutin "looke_rapez04.bmp",0;
+			mes "[路克]";
+			mes "抱歉打擾一下，";
+			mes "但你是伊甸園派來協助發掘團的。";
+			next;
+			mes "[路克]";
+			mes "你的工作就是幫助洛伊德。";
+			mes "你不能拒絕。";
+			next;
+			cutin "",255;
+			mes "[洛伊德]";
+			mes "他說得對！";
+			mes "你有義務幫我進行研究！";
+			next;
+			break;
+		}
+		mes "[洛伊德]";
+		mes "我們長話短說吧。";
+		mes "嘿，人類助手。";
+		mes "拿10個空玻璃瓶，";
+		mes "去收集機器人殘骸周圍的凝結能量。";
+		next;
+		mes "[洛伊德]";
+		mes "這裡到處都是損壞的機器人和機器。";
+		mes "牠們附近發現了一團團的物理能量。";
+		next;
+		mes "[洛伊德]";
+		mes "只要把空瓶靠近這些能量，它就會跑進瓶子裡。";
+		mes "給我帶10個瓶子來。";
+		next;
+		mes "[洛伊德]";
+		mes "我會等你的。";
+		erasequest 7620;// Young Blood?
+		setquest 7621;// Bottling the Energy
+		ep15_1_atnad = 10;
+		close;
+	}
+	if (ep15_1_atnad == 10) {
+		if (countitem(6756) < 10) {// Condensed_Energy
+			mes "這裡到處都是損壞的機器人和機器。";
+			mes "牠們附近發現了一團團的物理能量。";
+			next;
+			mes "[洛伊德]";
+			mes "只要把空瓶靠近這些能量，它就會跑進瓶子裡。";
+			mes "給我帶10個瓶子來。";
+			next;
+			mes "[洛伊德]";
+			mes "如果你非得問第二遍，那你一定比看起來還笨。";
+			close;
+		}
+		mes "噢，這些夠了。";
+		mes "你很不錯。";
+		mes "我對你的評價提高了一點。";
+		next;
+		mes "[洛伊德]";
+		mes "你讓我的工作輕鬆多了。";
+		mes "終於，我可以幫上奧雷斯的忙了。";
+		mes "如果我能找到能量凝結的原因及其潛在應用，或許";
+		next;
+		mes "[洛伊德]";
+		mes "伊恩和我就可以重新啟動這裡的機器人。";
+		mes "這一直是我們想要的。";
+		next;
+		mes "[洛伊德]";
+		mes "去告訴奧雷斯我取得進展了。";
+		mes "幹得好，人類。";
+		mes "我很期待再次使用你的服務。";
+		delitem 6756,10;// Condensed_Energy
+		erasequest 7621;// Bottling the Energy
+		setquest 7622;// Good News!
+		ep15_1_atnad = 11;
+		close;
+	}
+	if (ep15_1_atnad > 10 && ep15_1_atnad < 17) {
+		mes "很快我就會每天都需要你的服務了。";
+		mes "別抱怨，為了團隊付出一點吧。";
+		close;
+	}
+	switch( checkquest(7629,PLAYTIME) ) {
+	case -1:
+		if (isbegin_quest(7628) == 0) {
+			mes "你知道規矩的：收集凝結的能量。";
+			mes "你會幫我做的，對吧？";
+			next;
+			if (select( "好啊。","拒絕。" ) == 2) {
+				mes "[洛伊德]";
+				mes "怎麼，你還有別的事要忙嗎？";
+				mes "好吧，";
+				mes "那我就叫路克帶我到處走走。";
+				next;
+				cutin "looke_rapez01.bmp",0;
+				mes "[路克]";
+				mes "我還以為你永遠不會問呢！";
+				mes "我早就手癢想活動活動了。";
+				close3;
+			}
+			mes "[洛伊德]";
+			mes "你只要收集自然聚集在機器人和機器殘骸周圍的能量就行了。";
+			mes "我每天需要10瓶。";
+			setquest 7628;// New Power Source
+			close;
+		}
+		if (countitem(6756) < 10) {
+			mes "你只要收集自然聚集在機器人和機器殘骸周圍的能量就行了。";
+			mes "我每天需要10瓶。";
+			close;
+		}
+		mes "我想我喜歡上你了！";
+		mes "不過還比不上奧雷斯和路克啦。";
+		mes "好吧，我會好好利用這些能量的。";
+		next;
+		mes "[洛伊德]";
+		mes "明天再來吧。";
+		mes "嗯，你最好每天這個時候都來。";
+		mes "你不能拒絕。";
+		mes "我需要你。";
+		delitem 6756,10;// Cohesive_Energy
+		changequest 7628,7629;// Tomorrow for Tomorrow's Energy
+		getexp 150000,1000000;
+		close;
+	case 0:
+	case 1:
+		mes "我正在分析收集到的能量。";
+		mes "...";
+		next;
+		mes "[洛伊德]";
+		mes "你遲鈍嗎？";
+		mes "意思是我想一個人靜一靜！";
+		close;
+	case 2:
+		erasequest 7629;
+		mes "嗯，也許我需要找一種特殊的儲存方法。";
+		mes "這能量消散得太快了。";
+		next;
+		mes "[洛伊德]";
+		mes "我需要更多瓶能量。";
+		mes "你好嗎？";
+		mes "準備好為了團隊貢獻己力了嗎？";
+		close;
+	}
+}
+verus03,127,145,0	script	機器殘骸#atnd01	4_ENERGY_RED,3,3,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 攜帶的物品過多，無法進行任務。 -";
+		close;
+	}
+	if (isbegin_quest(7621) != 1 && isbegin_quest(7628) != 1) {
+		mes "你現在不需要收集更多的能量了。";
+		close;
+	}
+	if (countitem(6756) > 9)// Condensed_Energy
+		mes "你已經有足夠的^4d4dff凝結的能量^000000了。";
+	else if (countitem(713) < 1)
+		mes "收集凝結的能量需要^4d4dff空瓶^000000。";
+	else {
+		mes "在破碎的金屬殘骸之間，可以看到一團濃厚的能量雲。";
+		mes "將空瓶靠近能量雲的邊緣，就能收集到能量。";
+		next;
+		progressbar "00ff00",3;
+		delitem 713,1;// Empty Bottle
+		getitem 6756,1;// Condensed_Energy
+		mes "收集到凝結的能量！";
+		initnpctimer;
+		disablenpc();
+	}
+	close;
+
+OnTimer30000:
+	stopnpctimer;
+	enablenpc();
+	end;
+OnTouch_:
+	if (isbegin_quest(7621) == 1 || isbegin_quest(7628) == 1)
+		specialeffect EF_LEVEL99_4;
+	end;
+}
+verus03,84,152,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd02	4_ENERGY_RED,3,3
+verus03,104,181,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd03	4_ENERGY_RED,3,3
+verus03,204,202,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd04	4_ENERGY_RED,3,3
+verus03,219,199,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd05	4_ENERGY_RED,3,3
+verus03,260,194,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd06	4_ENERGY_RED,3,3
+verus03,198,181,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd07	4_ENERGY_RED,3,3
+verus03,207,115,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd08	4_ENERGY_RED,3,3
+verus03,54,78,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd09	4_ENERGY_RED,3,3
+verus03,24,74,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd10	4_ENERGY_RED,3,3
+verus03,41,121,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd11	4_ENERGY_RED,3,3
+verus03,62,120,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd12	4_ENERGY_RED,3,3
+verus03,44,195,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd13	4_ENERGY_RED,3,3
+verus03,124,61,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd14	4_ENERGY_RED,3,3
+verus03,168,229,3	duplicate(機器殘骸#atnd01)	機器殘骸#atnd15	4_ENERGY_RED,3,3
+
+ver_eju,116,43,5	script	雷根貝勒 傭兵#atd01	4_GEFFEN_09,{
+	switch( rand(0,2) ) {
+		case 0: npctalk "牠們源源不絕地過來。";
+		end;
+		case 1: npctalk "請多加小心。"; end;
+		case 2: npctalk "..."; end;
+	}
+}
+
+ver_eju,125,40,1	script	雷根貝勒 傭兵#atd02	4_GEFFEN_03,{
+	switch( rand(0,2) ) {
+		case 0: npctalk "增援在哪裡？"; end;
+		case 1: npctalk "呃，我真的需要休息一下。";
+		end;
+		case 2: npctalk "呃，這些怪物！"; end;
+	}
+}
+
+ver_eju,117,35,7	script	雷根貝勒 傭兵#atd03	4_GEFFEN_08,{
+	switch( rand(0,2) ) {
+		case 0: npctalk "這真無聊。"; end;
+		case 1: npctalk "如果你是發掘團的人，請穿過隧道。"; end;
+		case 2: npctalk "你最好小心點。"; end;
+	}
+}
+
+ver_eju,15,151,3	script	雷根貝勒 警衛#atd04	4_M_LGTGUARD,{
+	mes "[雷根貝勒 警衛]";
+	mes "你要去夢幻秘境嗎？";
+	mes "那裡可能很難找。讓我給你指條路吧。";
+	next;
+	mes "[雷根貝勒 警衛]";
+	mes "沿著這條路一直往上走，然後往西南方走。";
+	mes "讓我在你的迷你地圖上標出位置。";
+	viewpoint 1,113,36,0,0x4DFF00;
+	next;
+	mes "[雷根貝勒 警衛]";
+	mes "這個地方跟舊優沛擂斯的其它區域一樣，充滿了可怕的魔物。";
+	mes "祝你旅途平安。";
+	close;
+}
+
+juperos_01,48,243,5	script	雷根貝勒 警衛#atd05	4_M_LGTGUARD,{
+	mes "[雷根貝勒 警衛]";
+	mes "你要去夢幻秘境嗎？";
+	mes "那裡可能很難找。讓我給你指條路吧。";
+	next;
+	mes "[雷根貝勒 警衛]";
+	mes "一直往東走，然後沿著路往南。你會在角落看到一個巨大的雕像。";
+	mes "讓我在你的迷你地圖上標出位置。";
+	viewpoint 1,242,87,0,0x4DFF00;
+	next;
+	mes "[雷根貝勒 警衛]";
+	mes "誰知道雕像後面竟然隱藏著一個地方？我們純粹是運氣好才發現的。";
+	mes "去那裡的路很危險。請注意安全。";
+	close;
+}
+
+juperos_01,242,91,3	script	雷根貝勒 警衛#atd06	4_M_LGTGUARD,{
+	mes "[雷根貝勒 警衛]";
+	mes "你是夢幻秘境計畫的參與者嗎？";
+	mes "這裡是東方新發現遺跡的入口。";
+	next;
+	mes "[雷根貝勒 警衛]";
+	mes "入口的另一側有一名嚮導，會引導你去發掘現場。";
+	mes "請在魔物撲向你之前趕快進去吧。";
+	next;
+	mes "[雷根貝勒 警衛]";
+	mes "噢，入口的另一側充滿了具攻擊性的機器人。";
+	mes "你最好做好心理準備。";
+	close;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 140 && isbegin_quest(7610) == 0" );
+	end;
+}
+
+yuno_fild07,211,179,5	script	發掘團 嚮導#atd07	4_M_LGTGUARD,{
+	mes "[發掘團 嚮導]";
+	mes "你是夢幻秘境計畫的參與者嗎？";
+	mes "如你所知，你現在位於優沛擂斯的入口。";
+	next;
+	mes "[發掘團 嚮導]";
+	mes "我在這裡是為了引導你前往連接優沛擂斯內部的發掘現場。";
+	next;
+	mes "[發掘團 嚮導]";
+	mes "內部還散佈著更多嚮導，";
+	mes "萬一你迷路了，可以很容易找到他們。";
+	next;
+	mes "[發掘團 嚮導]";
+	mes "感謝你對人類發展的貢獻。祝你好運。";
+	close;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 140 && isbegin_quest(7610) == 0" );
+	end;
+}
+
+verus04,194,165,5	script	雷根貝勒 警衛#ver01	4_M_LGTGUARD,{
+	mes "[雷根貝勒 警衛]";
+	mes "你是發掘團的成員嗎？";
+	mes "我們總裁親自下令要我們保護你的安全，這樣你才能專注在發掘工作上。";
+	close;
+}
+verus04,203,171,3	script	雷根貝勒 警衛#ver02	4_M_LGTGUARD,{
+	mes "[雷根貝勒 警衛]";
+	mes "我們在這裡支援你對韋魯斯城的發掘。";
+	mes "如果遇到任何問題，請告訴我們。";
+	close;
+}
+verus04,171,267,3	script	雷根貝勒 警衛#ver03	4_M_LGTGUARD2,{
+	mes "[雷根貝勒 警衛]";
+	if (Sex == SEX_MALE)
+		mes "我討厭使用流動廁所，但我的膀胱似乎憋不了太久。你呢？";
+	else
+		mes "啊！去去！別靠近！我可是要為了我未來的妻子守身如玉的！";
+	close;
+}
+verus04,218,217,5	script	地質學家#ver04	4_M_HUGRANFA,{
+	mes "[地質學家]";
+	mes "嗯，這棟建築被石牆壓垮了。";
+	mes "其餘的部分幾乎被碾成了粉末。";
+	next;
+	mes "[助手]";
+	mes "是的，教授。";
+	next;
+	mes "[地質學家]";
+	mes "比起這面石牆，這個村莊所在的這片地形是在不同時期形成的。至少這是我初步的評估。";
+	next;
+	mes "[助手]";
+	mes "是的，教授。";
+	next;
+	mes "[地質學家]";
+	mes "這座地下村莊似乎不是人造的，雖然我無法想像它怎麼會自然形成。你覺得呢？";
+	next;
+	mes "[助手]";
+	mes "是的，教授。";
+	next;
+	mes "[地質學家]";
+	mes "……你有在聽我說話嗎？";
+	next;
+	mes "[助手]";
+	mes "是的，教授。";
+	next;
+	mes "[地質學家]";
+	mes "唉。";
+	mes "我們去吃午餐吧。";
+	next;
+	mes "[助手]";
+	mes "好的，教授！";
+	close;
+}
+verus04,217,216,5	duplicate(地質學家#ver04)	學生#ver05	4_M_HUMAN_01
+
+verus04,50,193,3	script	學者#ver06	4_M_HUMERCHANT,{
+	mes "[學者]";
+	mes "秀發茲發德或許是米德加爾特三個國家中科學最發達的，但跟這裡比起來仍然是小巫見大巫。";
+	next;
+	mes "[學者]";
+	mes "優沛擂斯也是一樣。如果這個地方的科學知識傳承給了秀發茲發德，它肯定會強大得多。";
+	next;
+	mes "[學者]";
+	mes "當然，這是基於我的理論，即這個地方的居民也是秀發茲發德人。";
+	close;
+}
+verus04,127,243,3	script	皮耶羅#ver07	4_M_PIERROT,{
+	mes "[皮耶羅]";
+	mes "被困在這個狹小的空間裡，我覺得自己快瘋了。";
+	mes "嘿，不如我用我的雜耍球來為你占卜一下今天的運勢吧？";
+	next;
+	if (select( "好啊。", "不了，謝謝。" ) == 2)
+		close;
+	mes "[皮耶羅]";
+	mes "很好，選一個你喜歡的顏色。";
+	mes "你選的顏色會告訴我你的運勢。";
+	next;
+	.@s = select( "紅色", "藍色", "黃色", "綠色" );
+	mes "[皮耶羅]";
+	mes "登，登，登！你今天的運勢！";
+	mes "讓我拿出球裡的籤詩……";
+	next;
+	mes "[皮耶羅]";
+	mes "今天是……";
+	next;
+	mes "[皮耶羅]";
+	switch(.@s) {
+	case 1:
+		mes "和昨天、前天一樣無聊的一天。";
+		mes "只有積極的思考才能帶你走出這低谷。微笑並善待他人，也許幸運女神會照亮你的一天。";
+		break;
+	case 2:
+		mes "哎呀，你今天真不該起床的。無論你去哪裡，麻煩都會跟著你。";
+		mes "我強烈建議你今天待在避難所。把壞運氣睡掉。";
+		break;
+	case 3:
+		mes "還不錯的一天，但你必須努力才能享受到好運。";
+		mes "去發掘現場挖些土吧。你可能會發現一些寶藏。";
+		break;
+	case 4:
+		mes "你生命中最幸運的一天！無論你去哪裡，都會找到財富和朋友。";
+		mes "也許你會在這裡發現一些埋藏的歷史文物。那會很棒，對吧？";
+		break;
+	}
+	next;
+	mes "[皮耶羅]";
+	mes "你喜歡我的占卜嗎？還是討厭它？";
+	mes "你的未來是靈活的——你可以隨心所欲地塑造它。";
+	mes "別太興奮也別太沮喪。專注於你的目標就好。";
+	next;
+	mes "[皮耶羅]";
+	mes "好吧，如果你還想再占卜一次就回來找我。";
+	close;
+}
+
+verus04,180,209,3	script	發掘者#tre01	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "這棟房子的主人一定是韋魯斯城的重要人物。";
+	mes "這個房間裡發現了成堆的官方文件。";
+	next;
+	mes "[發掘者]";
+	mes "這些文件大部分都是瑣碎的民事投訴，像是用水問題或鄰里糾紛。";
+	mes "然而，所有的文件上都有縮寫「OX」。我不知道這是一個人名還是某種縮寫。";
+	close;
+}
+verus04,202,181,3	script	#tre02	CLEAR_NPC,{
+	mes "- 建築物入口處有明顯的磨損，顯示人潮絡繹不絕造成的破壞。門上寫著「YHT」和「請勿喧嘩」。 -";
+	close;
+}
+// tre03 ?
+verus04,121,188,3	script	發掘者#tre04	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "這棟建築家具齊全，但卻沒有人居住的跡象。";
+	mes "也許主人住在別的地方，像是避暑別墅之類的。";
+	close;
+}
+verus04,119,177,3	script	#tre05	CLEAR_NPC,{
+	mes "- 門上寫著「ZERT...」。其餘的字跡看起來像是被石頭刮掉的。-";
+	close;
+}
+verus04,85,145,3	script	#tre06	CLEAR_NPC,{
+	mes "- 門上寫著「+1」。這會是什麼意思呢？ -";
+	close;
+}
+verus04,83,131,3	script	發掘者#tre07	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "這棟房子的主人一定是個舞者。她的衣櫃裡裝滿了閃亮的舞臺服裝。";
+	mes "從尺寸來看，以女人來說她一定非常高。真想知道她長什麼樣子。";
+	close;
+}
+verus04,71,118,3	script	#tre08	CLEAR_NPC,{
+	mes "- 門上寫著「KDY」。從內部向入口處向外擴散的煙灰痕跡，顯示這裡經常發生爆炸。 -";
+	close;
+}
+verus04,71,131,3	script	#tre09	CLEAR_NPC,{
+	mes "- 門上寫著「KJH」。入口的牆上點綴著寫有時間和數字的小紙片。 -";
+	close;
+}
+verus04,71,145,3	script	#tre10	CLEAR_NPC,{
+	mes "- 門上寫著「PKY」。房子周圍散落著空酒瓶。 -";
+	close;
+}
+verus04,39,123,3	script	#tre11	CLEAR_NPC,{
+	mes "- 門上寫著「DGDG'S BOARD」。那是什麼意思？ -";
+	close;
+}
+verus04,17,145,3	script	#tre12	CLEAR_NPC,{
+	mes "- 門上寫著「THE SUNS」。 -";
+	close;
+}
+verus04,16,166,5	script	發掘者#tre13	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "*咳咳* 這棟房子的主人是個囤積狂。";
+	mes "很多書。很多貓毛球。很多十字刺客的照片。*咳咳*";
+	close;
+}
+verus04,118,159,5	script	發掘者#tre14	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "這棟房子裡長滿了紅蘑菇。牠們可以吃嗎？為什麼只有在這棟房子裡才找得到？主人在種植牠們嗎？";
+	close;
+}
+verus04,123,143,3	script	#tre15	CLEAR_NPC,{
+	mes "- 門上寫著「MARES」，旁邊還有各種似乎象徵著海盜的畫。 -";
+	close;
+}
+verus04,72,168,3	script	#tre16	CLEAR_NPC,{
+	mes "- 門上寫著「LMH」，邊緣還畫了一連串的愛心。 -";
+	close;
+}
+verus04,91,168,3	script	#tre17	CLEAR_NPC,{
+	mes "- 門上寫著「MISA」。建築物周圍散落著各種玩具武器。 -";
+	close;
+}
+verus04,50,197,3	script	發掘者#tre18	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "...";
+	next;
+	mes "[發掘者]";
+	mes "在這房子裡找到了各種照片，全都是主人和不同的男人在一起的照片。";
+	mes "我覺得這挺奇怪的。";
+	close;
+}
+verus04,34,197,3	script	#tre19	CLEAR_NPC,{
+	mes "- 門上寫著「ELTOHC」。門的中央有一個畫在圓圈裡的「W」。這可能是主人最喜歡的字母。 -";
+	close;
+}
+verus04,17,245,3	script	#tre20	CLEAR_NPC,{
+	mes "- 門上寫著「LEONA'S BIRD HEAVEN」。不出所料，房子周圍散落著鳥羽毛。 -";
+	close;
+}
+verus04,13,262,3	script	#tre21	CLEAR_NPC,{
+	mes "- 門上寫著「KURAT」。建築物的牆壁上畫滿了手繪的頭骨。 -";
+	close;
+}
+verus04,28,262,3	script	#tre22	CLEAR_NPC,{
+	mes "- 門上寫著「KSY」。入口處的牆上掛著一張大膽印著「世紀演出！」的海報。 -";
+	close;
+}
+verus04,54,256,3	script	#tre23	CLEAR_NPC,{
+	mes "- 門上寫著「BIBIC & MORZIP'S LOVE HOUSE」。這棟房子以前一定是住著一對情侶。 -";
+	close;
+}
+verus04,31,236,3	script	發掘者#tre24	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "這棟房子的主人一定是某種收藏家。裡面有很多穿著奇裝異服的女性照片。";
+	next;
+	mes "[發掘者]";
+	mes "你有看到門上畫的「SKM」嗎？這讓我想到另一棟門上畫著愛心的房子。";
+	mes "我希望那不是什麼幼稚的習俗。你懂的，為了標記某人是自己的。";
+	close;
+}
+verus04,62,230,3	script	#tre25	CLEAR_NPC,{
+	mes "- 門上寫著「HDY」。 -";
+	close;
+}
+verus04,80,230,3	script	#tre26	CLEAR_NPC,{
+	mes "- 門上寫著「BRAN」。房子一側立著一排排的空瓶子。 -";
+	close;
+}
+verus04,79,265,3	script	#tre27	CLEAR_NPC,{
+	mes "- 門上寫著「KYH」。這棟建築的狀況比附近其他的都要好。-";
+	close;
+}
+verus04,96,267,3	script	#tre28	CLEAR_NPC,{
+	mes "- 門上寫著「YAOB」，旁邊還畫著圓圓毛茸茸的動物。 -";
+	close;
+}
+verus04,133,267,3	script	發掘者#tre29	4_M_HUMAN_01,{
+	mes "[發掘者]";
+	mes "這棟房子疑似屬於一對名叫SSUL和SINYC的情侶。";
+	mes "屋子裡充滿了不可思議的東西。裡面的一切都非常華麗。";
+	close;
+}
+verus04,152,267,3	script	#tre30	CLEAR_NPC,{
+	mes "- 門上寫著「LMS」，邊緣還寫著「作曲專家」。 -";
+	close;
+}
+verus04,168,267,3	script	#tre30_	CLEAR_NPC,{
+	mes "- 門上寫著「KJK」。 -";
+	close;
+}
+verus04,190,265,3	script	#tre31	CLEAR_NPC,{
+	mes "- 門上寫著「LJH」。建築物的牆上貼滿了許多雜貨店的貼紙。 -";
+	close;
+}
+verus04,172,234,3	script	#tre32	CLEAR_NPC,{
+	mes "- 門上寫著「YG」。透過窗戶可以看到一張面帶微笑的嬰兒的大照片。 -";
+	close;
+}
+verus04,204,235,3	script	#tre33	CLEAR_NPC,{
+	mes "- 門上寫著「CHJ」。 -";
+	close;
+}
+
+verus04,91,252,5	script	考古學家#tevt01	4_M_6THPRIN1,10,10,{
+	mes "[考古學家]";
+	mes "有時，我們會聚在一起聊天。";
+	mes "分享資訊也是工作的一部分。";
+	close;
+
+OnTouch_:
+	if (.ontalk == 1)
+		end;
+	.ontalk = 1;
+	sleep 3000;
+	npctalk "我懷疑這座韋魯斯城有某種特殊用途。", "考古學家#tevt01";
+	sleep 5000;
+	npctalk "你怎麼知道這地方叫韋魯斯？", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "噢，廣場上各種里程碑和牆壁上都寫著這個名字。", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "韋魯斯城，韋魯斯鎮，韋魯斯廣場……", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "還有兩個區域目前無法進入。", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "噢，就是需要許可證的那兩個區域。你知道的真多。", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "這是我從鎮上一棟房子裡找到的地圖上推斷出來的。", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "這個地方由四個區域組成，目前只有城鎮和廣場可以探索。", "考古學家#tevt01";
+	sleep 5000;
+	npctalk "我們最好更努力工作，否則我們的探索可能只會侷限在這個區域了。", "考古學家#tevt01";
+	sleep 5000;
+	npctalk "如果這真的是一座計畫城市，那它的計畫是什麼？", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "艾音貝赫純粹是為了採礦目的而建造的。這座城市可能也有類似的特殊用途。", "科學家#tevt05";
+	sleep 5000;
+	npctalk "肯定與技術研究和實驗有關。", "科學家#tevt05";
+	sleep 5000;
+	npctalk "這是我從鎮上找到的期刊和日記中推論出來的。", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "這些期刊和日記大部分屬於學者和科學家。", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "重點是這個古代文明擁有非常先進的科學。", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "它可能根本不是古代的。它可能是某種深不可測的東西。", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "我們來這裡是為了解開謎團，為人類創造更美好的未來！", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "*哼* 到頭來還不是全都被雷根貝勒拿走。", "科學家#tevt05";
+	sleep 5000;
+	npctalk "但是核心的發現和發掘成果是由所有參與的組織共享的。", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "我們能做的，就是盡我們所能做到最好。", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "但我還是忍不住覺得雷根貝勒有隱藏的目的。我不是不知感激，只是……", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "我們暫時專注於眼前的事吧。", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "除了我們各自的研究主題外，何不分享我們找到的所有資訊呢？", "考古學家#tevt01";
+	sleep 5000;
+	npctalk "我同意。", "文明 研究員#tevt04";
+	sleep 1000;
+	npctalk "好吧。", "科學家#tevt05";
+	sleep 5000;
+	npctalk "嗯，你們知道今天午餐吃什麼嗎？", "科學家#tevt05";
+	sleep 3000;
+	npctalk "嗯……", "考古學家#tevt01";
+	sleep 5000;
+	npctalk "一些冷凍食品。我打算吃我昨天留下來的麵包就好。", "文明 研究員#tevt04";
+	sleep 5000;
+	npctalk "唉，雷根貝勒想小氣的時候還真小氣。", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "為什麼？冷凍食品有什麼不好嗎？", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "來，嚐嚐我的。", "歷史學家#tevt02";
+	sleep 5000;
+	npctalk "你也可以拿我的。", "考古學家#tevt01";
+	sleep 5000;
+	npctalk "或者我的。", "科學家#tevt05";
+	sleep 3000;
+	npctalk "……", "新手 發掘者#tevt03";
+	sleep 5000;
+	npctalk "嗯，你們不餓嗎？", "新手 發掘者#tevt03";
+	sleep 5000;
+	sleep 5000;
+	npctalk "有沒有可能是因為不冷凍就會變得很難吃？", "新手 發掘者#tevt03";
+	sleep 35000;
+	.ontalk = 0;
+	end;
+}
+
+verus04,89,251,5	script	歷史學家#tevt02	4_TOWER_07,{
+	mes "[歷史學家]";
+	mes "我的工作最困難的地方是什麼？";
+	mes "就是當我被迫吃下贊助商提供的難吃午餐時。";
+	next;
+	mes "[歷史學家]";
+	mes "事實上，自從我來到韋魯斯城後一直都是這樣。";
+	mes "今天也不例外。";
+	close;
+}
+
+verus04,91,248,7	script	新手 發掘者#tevt03	4_TOWER_04,{
+	mes "[新手 發掘者]";
+	mes "我有很多東西要學，而且我學得很快。";
+	mes "目前我主要做些體力活。";
+	next;
+	mes "[新手 發掘者]";
+	mes "包吃包住又有錢拿。我還能要求什麼呢？";
+	close;
+}
+
+verus04,94,251,3	script	文明 研究員#tevt04	4_TOWER_16,{
+	mes "[文明 研究員]";
+	mes "我原本以為這裡是優沛擂斯的一部分。";
+	mes "我現在正在重新考慮這個理論。";
+	next;
+	mes "[文明 研究員]";
+	mes "韋魯斯和優沛擂斯很像，但又不太一樣。";
+	mes "不知為何，這裡的一切都更加精緻和複雜。";
+	close;
+}
+
+verus04,94,248,1	script	科學家#tevt05	4_M_SAGE_C,{
+	mes "[科學家]";
+	mes "這座城市的機械工程水準令人驚嘆。";
+	mes "這裡沒有任何魔法的痕跡。";
+	next;
+	mes "[科學家]";
+	mes "但我有些擔心：";
+	mes "快速的發展和突然引入的先進技術可能會弊大於利。";
+	close;
+}
+
+verus04,116,220,0	script	#ep15_1elb	PORTAL,{
+	mes "^FF0000- 警告 -";
+	mes "- 為了您的安全， -";
+	mes "- 內部請勿奔跑 -";
+	mes "- 或是 -";
+	mes "- 跳躍。 -^000000";
+	close;
+}
+
+verus04,153,193,8	script	商人#ep15_1el10	4_F_CAPEGIRL,{
+	mes "[商人]";
+	mes "呵呵呵！";
+	mes "我先來的，所以我佔了最好的位置！";
+	close;
+}
+
+verus04,155,197,5	script	冒險家 ?#ep15_1el11	4_M_LGTPOOR,{
+	mes "[冒險家 ?]";
+	mes "*肚子咕嚕咕嚕叫*";
+	mes "嗚嗚，我好餓……";
+	next;
+	mes "[冒險家]";
+	mes "但我沒錢買食物……";
+	close;
+}
+
+verus04,150,193,3	script	冒險家#ep15_1el12	4_M_DIEMAN,{
+	mes "[Jean Baljean]";
+	mes "呃，為了一塊麵包我被打了19次。";
+	close;
+}
+
+verus04,102,246,3	script	冒險家#ep15_1el13	4_M_RACHMAN2,{
+	mes "[冒險家]";
+	mes "從石頭裡長出來的蘑菇。";
+	mes "生命力真強啊！";
+	close;
+}
+
+verus04,16,157,3	script	冒險家#ep15_1el14	4_M_MIDDLE1,{
+	mes "[冒險家]";
+	mes "啊！";
+	mes "好多路都被堵住了！";
+	close;
+}
+
+// missing #ep15_1el15 - 18
+verus04,104,120,3	script	牛#ep15_1el19	4_BULL,{
+	mes "[牛]";
+	mes "*哞*";
+	close;
+}
+
+verus04,111,215,5	script	冒險家#ep15_1el20	4_F_SHABBY,{
+	mes "[冒險家]";
+	mes "嘿。 *流口水*";
+	mes "這個地方太不可思議了！";
+	close;
+}
+
+verus04,111,211,3	script	冒險家#ep15_1el21	4_F_KHGIRL,{
+	mes "[冒險家]";
+	mes "這個遺跡太神奇了。";
+	mes "難怪雷根貝勒要先搶佔這裡。";
+	close;
+}
+
+verus04,113,235,5	script	冒險家#ep15_1el22	4_M_PECOKNIGHT,{
+	mes "[冒險家]";
+	mes "我想找些很棒的東西！";
+	close;
+}
+
+verus04,124,220,8	script	冒險家#ep15_1el23	4_M_HUMERCHANT,{
+	mes "[冒險家]";
+	mes "未來的時代將是你們的。";
+	close;
+}
+
+verus04,135,213,4	script	告示牌#EP15_1DCenter	4_BOARD3,{
+	mes "[警告]";
+	mes "夢幻秘境的遊客請注意，";
+	next;
+	mes "[警告]";
+	mes "最近經常在此區域發現名為「末日祈禱者」的邪教團體。";
+	next;
+	mes "[警告]";
+	mes "如果您是該團體騷擾的受害者或目擊者，請向夢幻秘境警察局報案。";
+	mes "- 夢幻秘境警察局長 -";
+	close;
+}
+verus04,204,260,4	duplicate(告示牌#EP15_1DCenter)	告示牌#EP15_1DNorth	4_BOARD3
+verus03,83,241,4	duplicate(告示牌#EP15_1DCenter)	告示牌#EP15_1DSouth	4_BOARD3
+verus03,38,114,4	duplicate(告示牌#EP15_1DCenter)	告示牌#EP15_1DEast	4_BOARD3
+verus03,116,39,4	duplicate(告示牌#EP15_1DCenter)	告示牌#EP15_1DWest	4_BOARD3
+
+
+verus04,96,195,5	script	冒險家 貓咪#ep15_1el18	4_CAT_REST,{
+	mes "[冒險家 貓咪]";
+	mes "我必須調……查……";
+	mes "Zzz... Zzz...";
+	close;
+}
+verus04,96,194,5	script	冒險家 貓咪#ep15_1el17	4_CAT_REST,{
+	mes "[冒險家 貓咪]";
+	mes "*呼嚕*";
+	mes "*喵*";
+	close;
+}
+verus04,96,193,5	script	冒險家 貓咪#ep15_1el16	4_CAT_REST,{
+	mes "[冒險家 貓咪]";
+	mes "不知道為什麼，我站不起來了。";
+	mes "*喵*";
+	close;
+}
+verus04,96,192,5	script	冒險家 貓咪#ep15_1el15	4_CAT_REST,{
+	mes "[冒險家 貓咪]";
+	mes "我佔了個好位置。";
+	mes "*呼嚕*";
+	close;
+}
+
+yuno_fild07,218,154,3	script	冒險家#ep15_1el01	4_M_ARUNA_NFM1,{
+	mes "[冒險家]";
+	mes "啊！";
+	mes "我想看！";
+	mes "為什麼我不能進去？！";
+	close;
+}
+yuno_fild07,218,159,5	script	冒險家#ep15_1el02	4_M_KHBOY,{
+	mes "[冒險家]";
+	mes "太好了！";
+	mes "這次我要寫一份關於夢幻秘境實地考察的報告。";
+	next;
+	mes "[冒險家]";
+	mes "瓊斯教授一定會對我刮目相看，給我A+。*輕笑*";
+	close;
+}
+yuno_fild07,221,157,3	script	冒險家#ep15_1el03	4_M_CHN8GUEK,{
+	mes "[冒險家]";
+	mes "喝！";
+	mes "健全的心靈寓於健全的身體！";
+	close;
+}
+yuno_fild07,221,155,8	script	冒險家#ep15_1el04	4_M_ALCHE_B,{
+	mes "[冒險家]";
+	mes "去夢幻秘境的旅程，我最好多準備一些藥水。";
+	close;
+}
+yuno_fild07,217,155,5	script	冒險家#ep15_1el05	4_F_ROGUE,{
+	mes "[冒險家]";
+	mes "雷根貝勒的支援讓我印象深刻。";
+	mes "嗯……";
+	close;
+}
+yuno_fild07,225,166,3	script	商人#ep15_1el06	4_CAT_DOWN,{
+	mes "[商人]";
+	mes "噢噢噢！";
+	mes "我找到一個做生意的絕佳地點了！";
+	close;
+}
+yuno_fild07,225,144,1	script	冒險家#ep15_1el07	1_M_ORIENT01,{
+	mes "[冒險家]";
+	mes "電梯？秀發茲發德的科學進步真是令人驚嘆！";
+	close;
+}
+yuno_fild07,217,149,3	script	冒險家#ep15_1el08	4_F_JOB_BLACKSMITH,{
+	mes "[冒險家]";
+	mes "一個古代文明。聽起來是不是很不可思議？";
+	mes "我覺得我都能聽到古代機器發出巨大的金屬撞擊聲了。";
+	next;
+	mes "[冒險家]";
+	mes "*如夢似幻的眼神*";
+	mes "*目瞪口呆*";
+	close;
+}
+yuno_fild07,224,152,3	script	冒險家#ep15_1el09	4_M_SITDOWN,{
+	mes "[冒險家]";
+	mes "天啊，這裡已經擠滿了人！";
+	mes "光看這些人我就覺得累。";
+	close;
+}
+
+// ep15_1_elbs - To Phantasmagorika!
+yuno_fild07,216,157,5	script	嚮導 艾麗莎#ep15_1bs2	4_F_ZONDAGIRL,{
+	mes "[艾麗莎]";
+	mes "剛才還好好的。";
+	mes "很抱歉。";
+	mes "我得叫維修人員來了。請改走樓梯吧。";
+	next;
+	mes "[艾麗莎]";
+	mes "^0000FF夢幻秘境就在優沛擂斯廢墟外東南門往南穿過隧道的地方。^000000";
+	next;
+	mes "[艾麗莎]";
+	mes "廣場中央噴泉附近有電梯門。你可以去看看電梯怎麼了嗎？";
+	close;
+OnInit:
+	disablenpc "嚮導 艾麗莎#ep15_1bs2";
+	end;
+}
+
+/* Illogical
+verus04,1,1,5	script	海洛#ep15_1_elyo	4_M_DIEMAN,{
+	end;
+OnEnable:
+	enablenpc "海洛#ep15_1_elyo";
+	donpcevent "倒下的人#ep15_1_elyo::OnDisable";
+	end;
+OnInit:
+	disablenpc "海洛#ep15_1_elyo";
+	end;
+}
+*/
+
+verus04,115,221,5	script	倒下的人#ep15_1_elyo	4_M_DIEMAN,{
+	if (checkweight(1119,3) == 0) {
+		mes "- 攜帶的物品過多，無法進行任務 -";
+		close;
+	}
+	.@name$ = strcharinfo(0);
+	mes "- 有人死了！ -";
+	next;
+	mes "- 不幸的是，死掉的人被卡在電梯門上，而電梯不斷開關，一直夾著他.. -";
+	next;
+	mes "[" + .@name$ + "]";
+	mes "你還好嗎？";
+	next;
+	mes "[倒下的人]";
+	mes "......";
+	next;
+	mes "[" + .@name$ + "]";
+	mes "聽得到我說話嗎？";
+	next;
+	mes "[倒下的人]";
+	mes "……讓我靜一靜……";
+	next;
+	mes "[" + .@name$ + "]";
+	mes "什麼？";
+	next;
+	mes "[倒下的人]";
+	mes "我沒事，放開我..";
+	next;
+	mes "[" + .@name$ + "]";
+	mes "但你看起來一點也不像沒事……";
+	mes "在這裡等著，";
+	mes "我來幫你。";
+	next;
+	mes "[倒下的人]";
+	mes "都跟你說我沒事……嘿！我的腰！！！";
+	next;
+	mes "[" + .@name$ + "]";
+	mes "......";
+	next;
+	mes "[" + .@name$ + "]";
+	mes "我會幫你找醫生的！";
+	next;
+	mes "[倒下的人]";
+	mes "不好意思，謝謝你。";
+	next;
+	.@time = checkquest(11377,PLAYTIME);
+	if (.@time > 1)
+		erasequest 11377;
+	if (checkweight(1119,3) == 0) {
+		mes "- 攜帶的物品過多，無法進行任務 -";
+		close;
+	}
+	if (.@time == 1)
+		mes "後來，躺在擔架上的男孩們感到很尷尬，突然抓住了我的手..";
+	else {
+		mes "後來，躺在擔架上的男孩看起來很尷尬，突然塞了一顆小果實到我手裡..";
+		if (isbegin_quest(11377) == 0)
+			setquest 11377;
+		if (isbegin_quest(11376) == 0)
+			getitem 522,1;// Fruit_Of_Mastela
+		else {
+			erasequest 11376;
+			getitem 522,2;// Fruit_Of_Mastela
+		}
+	}
+	// donpcevent "海洛#ep15_1_elyo::OnEnable";
+	donpcevent "倒下的人#ep15_1_elyo::OnDisable";
+	close;
+
+OnDisable:
+	disablenpc "倒下的人#ep15_1_elyo";
+	disablenpc "嚮導 艾麗莎#ep15_1bs2";
+
+ 	enablenpc "嚮導 艾麗莎#ep15_1bs";
+	enablenpc "嚮導 史嘉蕾#ep15_1bs";
+	enablenpc "杜#ep15_1elb";
+	enablenpc "馬克#ep15_1elb";
+	enablenpc "塔瑪林#ep15_1elb";
+	enablenpc "阿爾夫#ep15_1elb";
+	enablenpc "瑪姬#ep15_1elb";
+	// disablenpc "海洛#ep15_1_elyo";
+	stopnpctimer;
+	end;
+OnEnable:
+	enablenpc "倒下的人#ep15_1_elyo";
+	enablenpc "嚮導 艾麗莎#ep15_1bs2";
+
+	disablenpc "嚮導 艾麗莎#ep15_1bs";
+	disablenpc "嚮導 史嘉蕾#ep15_1bs";
+	disablenpc "杜#ep15_1elb";
+	disablenpc "馬克#ep15_1elb";
+	disablenpc "塔瑪林#ep15_1elb";
+	disablenpc "阿爾夫#ep15_1elb";
+	disablenpc "瑪姬#ep15_1elb";
+	initnpctimer;
+	end;
+OnTimer3600000:
+	donpcevent "倒下的人#ep15_1_elyo::OnDisable";
+	stopnpctimer;
+	end;
+OnInit:
+	disablenpc "倒下的人#ep15_1_elyo";
+	end;
+}
+
+yuno_fild07,216,157,5	script	嚮導 艾麗莎#ep15_1bs	4_F_ZONDAGIRL,{
+	if (isbegin_quest(11376) > 0) {
+		mes "[艾麗莎]";
+		mes "奇怪！！電梯怎麼突然又能動了？";
+		mes "也許跟下面的人有關係？";
+		erasequest 11376;
+		close;
+	}
+	.@name$ = strcharinfo(0);
+	if (checkquest(11377,PLAYTIME) > 1)
+		erasequest 11377;
+	if (ep15_1_atnad < 4) {
+		mes "[艾麗莎]";
+		mes "我們雷根貝勒公司與伊甸園有合作關係";
+		mes "共同進行^0000FF夢幻秘境發掘計畫^000000。";
+		next;
+		mes "[艾麗莎]";
+		mes "新發現的古代遺產：夢幻秘境！";
+		mes "請聯絡^0000FF伊甸園^000000加入他們的夢幻秘境發掘計畫！";
+		close;
+	}
+	mes "[艾麗莎]";
+	mes "你好。";
+	mes "請說出你的名字，讓我確認一下你的登記資料。";
+	emotion ET_THROB;
+	next;
+	switch( select( "說出名字。", "詢問關於登記的事。", "結束對話。" ) ) {
+	case 1:
+		mes "[艾麗莎]";
+		switch(ep15_1_elb) {
+		case 0:
+		case 1:
+			mes "嗯，我看看……";
+			mes "很抱歉，你不在名單上。你可以確認一下你的登記狀態嗎？";
+			emotion ET_PROFUSELY_SWEAT;
+			close;
+		case 2:
+			mes "你這麼快就回來啦。";
+			emotion ET_THROB;
+			next;
+			mes "[艾麗莎]";
+			mes "我看看……";
+			mes "啊，我找到你的名字了。";
+			mes "你現在想要^0000FF前往夢幻秘境^000000嗎？";
+			next;
+			if (select( "不。", "是。" ) == 1) {
+				mes "[艾麗莎]";
+				mes "祝你有美好的一天。";
+				emotion ET_THROB;
+				close;
+			}
+			mes "[艾麗莎]";
+			mes "讓我送你前往夢幻秘境吧。";
+			next;
+			mes "[艾麗莎]";
+			mes "為了您的安全，在內部請勿奔跑或跳躍。";
+			next;
+			mes "[艾麗莎]";
+			mes "準備好了嗎？";
+			mes "祝你探索平安！";
+			emotion ET_THROB;
+			next;
+			mes "^FF0000- 嗶-！ -";
+			mes "- 服務暫時無法使用。 -^000000";
+			emotion ET_HUK, playerattached();
+			next;
+			mes "[艾麗莎]";
+			mes "嗯？";
+			mes "請稍等一下好嗎？";
+			emotion ET_PROFUSELY_SWEAT;
+			next;
+			mes "^FF0000- 嗶-！ -";
+			mes "- 服務暫時無法使用。 -^000000";
+			emotion ET_HUK, playerattached();
+			next;
+			mes "[艾麗莎]";
+			mes "嗯……";
+			mes "它怎麼了？";
+			mes "請給我一點時間。";
+			emotion ET_PROFUSELY_SWEAT;
+			next;
+			mes "^FF0000- 嗶-！ -";
+			mes "- 服務暫時無法使用。 -^000000";
+			emotion ET_HUK, playerattached();
+			next;
+			mes "[艾麗莎]";
+			mes "哎呀。";
+			mes "故障了嗎？";
+			mes "不可能啊！";
+			emotion ET_HUK;
+			next;
+			mes "^FF0000- 嗶-！ -";
+			mes "- 服務暫時無法使用。 -^000000";
+			emotion ET_HUK, playerattached();
+			next;
+			mes "[艾麗莎]";
+			mes "很抱歉，" + .@name$ + "。";
+			mes "我知道你已經登記使用這項服務，但它現在故障了。";
+			mes "對於造成你的不便，我深感抱歉。";
+			emotion ET_PROFUSELY_SWEAT;
+			emotion ET_HUK, playerattached();
+			next;
+			mes "[艾麗莎]";
+			mes "剛才還好好的。";
+			mes "很抱歉。";
+			mes "我得叫維修人員來了。請改走樓梯吧。";
+			next;
+			mes "[艾麗莎]";
+			mes "^0000FF夢幻秘境就在優沛擂斯廢墟外東南門往南穿過隧道的地方。^000000";
+			next;
+			mes "[艾麗莎]";
+			mes "廣場中央噴泉附近有電梯門。你可以去看看電梯怎麼了嗎？";
+			mes "真的很抱歉發生這種事。";
+			emotion ET_CRY;
+			ep15_1_elb = 3;
+			completequest 11364;
+			setquest 11365;
+			close;
+		case 3:
+			mes "剛才還好好的。";
+			mes "很抱歉。";
+			mes "我得叫維修人員來了。請改走樓梯吧。";
+			next;
+			mes "[艾麗莎]";
+			mes "^0000FF夢幻秘境就在優沛擂斯廢墟外東南門往南穿過隧道的地方。^000000";
+			next;
+			mes "[艾麗莎]";
+			mes "廣場中央噴泉附近有電梯門。你可以去看看電梯怎麼了嗎？";
+			mes "真的很抱歉發生這種事。";
+			emotion ET_CRY;
+			close;
+		case 4:
+			mes "很抱歉。";
+			mes "電梯目前故障中。";
+			close;
+		default:
+			break;
+		}
+		if (checkquest(11377,PLAYTIME) > 1)
+			erasequest 11377;
+		if (checkquest(11377,PLAYTIME) == -1) {
+			if (rand(1,100) == 77) {
+				mes "天啊！怎麼又來了！！！";
+				mes "這部破電梯老是壞掉！每天都這樣！！！";
+				setquest 11376;
+				donpcevent "倒下的人#ep15_1_elyo::OnEnable";
+				close;
+			}
+		}
+		mes "我看看……";
+		mes "A... B... C... D... E... F... 啊，找到了！";
+		emotion ET_PROFUSELY_SWEAT;
+		next;
+		mes "[艾麗莎]";
+		mes "" + .@name$ + "，您的登記已確認。";
+		mes "你想要前往夢幻秘境嗎？";
+		emotion ET_THROB;
+		next;
+		if (select( "不", "是" ) == 1) {
+			mes "[艾麗莎]";
+			mes "祝你有美好的一天。";
+			close;
+		}
+		mes "[艾麗莎]";
+		mes "讓我送你前往夢幻秘境吧。";
+		next;
+		mes "[艾麗莎]";
+		mes "為了您的安全，在內部請勿奔跑或跳躍。";
+		next;
+		mes "[艾麗莎]";
+		mes "準備好了嗎？";
+		mes "祝你探索平安！";
+		close2;
+		warp "verus04",122,217;
+		end;
+	case 2:
+		mes "[艾麗莎]";
+		mes "*清了清喉嚨*";
+		mes "此設施由^0000FF雷根貝勒^000000提供";
+		next;
+		mes "[艾麗莎]";
+		mes "讓^0000FF伊甸園成員^000000能夠安全抵達^0000FF夢幻秘境^000000。";
+		next;
+		mes "[艾麗莎]";
+		mes "若要使用此設施，您必須是^0000FF登記參與夢幻秘境發掘計畫的伊甸園成員^000000。";
+		next;
+		mes "[艾麗莎]";
+		mes "只要您是已登記的伊甸園發掘人員，就可以在^0000FF雷根貝勒公司總部^000000辦理設施使用登記。";
+		if (ep15_1_elb > 1)
+			close;
+		next;
+		if (select( "結束對話。", "詢問路線。" ) == 1) {
+			mes "[艾麗莎]";
+			mes "我們雷根貝勒公司與伊甸園有合作關係";
+			mes "共同進行^0000FF夢幻秘境發掘計畫^000000。";
+			next;
+			mes "[艾麗莎]";
+			mes "新發現的古代遺產：夢幻秘境！";
+			mes "請聯絡^0000FF伊甸園^000000加入他們的夢幻秘境發掘計畫！";
+			close;
+		}
+		mes "[艾麗莎]";
+		mes "若要登記使用本設施，請前往^0000FF里希塔樂鎮的雷根貝勒公司總部，與一樓大門西側服務台的萊特納交談^000000。";
+		next;
+		mes "[艾麗莎]";
+		mes "整個登記流程聽起來可能很繁瑣，但為了使用電梯，這點麻煩是值得的。";
+		if (ep15_1_elb == 0) {
+			ep15_1_elb = 1;
+			setquest 11363;// To Phantasmagorika!
+		}
+		close;
+	case 3:
+		mes "[艾麗莎]";
+		mes "我們雷根貝勒公司與伊甸園有合作關係";
+		mes "共同進行^0000FF夢幻秘境發掘計畫^000000。";
+		next;
+		mes "[艾麗莎]";
+		mes "新發現的古代遺產：夢幻秘境！";
+		mes "請聯絡^0000FF伊甸園^000000加入他們的夢幻秘境發掘計畫！";
+		close;
+	}
+	end;
+OnInit:
+	questinfo( QTYPE_QUEST, QMARK_YELLOW, "!isbegin_quest(11363)" );
+	end;
+}
+
+lhz_in01,75,209,3	script	萊特納#ep15_1bs	4_LGTSCIENCE,{
+	mes "[萊特納]";
+	switch(ep15_1_elb) {
+	case 0:
+		mes "嘿呀！";
+		mes "什麼風把你吹來了，親愛的？";
+		mes "如果你需要一個可以哭泣的肩膀，我一直都在。";
+		emotion ET_CHUP;
+		close;
+	case 1:
+		mes "嘿呀！";
+		mes "什麼風把你吹來了，親愛的？";
+		mes "如果你需要一個可以哭泣的肩膀，我一直都在。";
+		emotion ET_CHUP;
+		next;
+		select("詢問登記流程。");
+		mes "[萊特納]";
+		mes "噢。";
+		mes "我早該知道的。";
+		mes "你是指去夢幻秘境的電梯，對吧？";
+		emotion ET_THINK;
+		next;
+		mes "[萊特納]";
+		mes "我剛得到這份工作時，電梯是不對外開放的，我什麼都不用做。";
+		next;
+		mes "[萊特納]";
+		mes "後來，管理層把它對外開放了，我的生活就變成了一場災難。";
+		next;
+		mes "[萊特納]";
+		mes "啊，為什麼是我？！";
+		mes "再見了，平靜的日子！";
+		mes "我忙到幾乎沒時間陪女士們了。";
+		emotion ET_HELP;
+		next;
+		mes "[萊特納]";
+		mes "總之，我們來幫你登記吧。我還想回去休息呢。";
+		mes "呃……把名字寫在這裡，然後在旁邊按上指紋。";
+		mes "完成了。很簡單，對吧？";
+		next;
+		mes "[萊特納]";
+		mes "我知道，我知道；既然電梯都對外開放了，為什麼還要多此一舉？";
+		next;
+		mes "^0000FF- 嗶-！ -";
+		mes "- 以下使用者 -";
+		mes "- 已完成登記。 -^000000";
+		next;
+		mes "[萊特納]";
+		mes "好了，";
+		mes "你可以走了。";
+		mes "現在你可以使用電梯了。";
+		ep15_1_elb = 2;
+		completequest 11363;// To Phantasmagorika!
+		setquest 11364;
+		close;
+	case 2:
+		mes "我知道，我知道；既然電梯都對外開放了，為什麼還要多此一舉？";
+		next;
+		mes "[萊特納]";
+		mes "現在你可以使用電梯了。";
+		close;
+	default:
+		mes "電梯幾乎每天都在壞，可能是因為載了太多人吧。";
+		mes "啊，我需要休息。唉。";
+		emotion ET_HELP;
+		close;
+	}
+}
+
+verus04,119,220,3	script	嚮導 史嘉蕾#ep15_1bs	4_M_TELEPORTER,{
+	if (isbegin_quest(11376) > 0) {
+		mes "[史嘉蕾]";
+		mes "嘿！那件事已經解決了！";
+		mes "嘿……抱歉，我不該笑的，但這真的很好笑……噢……";
+		erasequest 11376;
+		close;
+	}
+	.@name$ = strcharinfo(0);
+	mes "[史嘉蕾]";
+	switch(ep15_1_elb) {
+	case 0:
+	case 1:
+	case 2:
+		mes "*清了清喉嚨*";
+		mes "此設施由^0000FF雷根貝勒^000000提供";
+		next;
+		mes "[史嘉蕾]";
+		mes "讓^0000FF伊甸園成員^000000能夠安全抵達^0000FF夢幻秘境^000000。";
+		next;
+		mes "[史嘉蕾]";
+		mes "若要使用此設施，您必須是^0000FF登記參與夢幻秘境發掘計畫的伊甸園成員^000000。";
+		next;
+		mes "[史嘉蕾]";
+		mes "只要您是已登記的伊甸園發掘人員，就可以在^0000FF雷根貝勒公司總部^000000辦理設施使用登記。";
+		next;
+		mes "[史嘉蕾]";
+		mes "登記完成後，使用設施前請務必再次確認您的登記狀態。";
+		close;
+	case 3:
+		mes "你們在電梯裡做了什麼？";
+		emotion ET_FRET;
+		next;
+		mes "[史嘉蕾]";
+		mes "我說過在電梯裡不要奔跑或跳躍的！";
+		next;
+		mes "[史嘉蕾]";
+		mes "真不敢相信你們竟然把門弄壞了！";
+		next;
+		mes "[馬克]";
+		mes "這是我的錯。";
+		mes "我早該嚴格管好他的。";
+		emotion ET_PROFUSELY_SWEAT, getnpcid(0, "馬克#ep15_1elb");
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[杜]";
+		mes "你怎麼能指望我把自己的安全交給這種破機器？";
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du3.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "夠了！";
+		mes "快向這位小姐道歉！";
+		emotion ET_FRET, getnpcid(0, "馬克#ep15_1elb");
+		cutin "bu_mark4.bmp",0;
+		next;
+		mes "[杜]";
+		mes "可是是他先開始的……";
+		cutin "bu_du3.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "......";
+		emotion ET_FRET, getnpcid(0, "馬克#ep15_1elb");
+		cutin "bu_mark4.bmp",0;
+		next;
+		mes "[塔瑪林]";
+		mes "我叫你別跳了！";
+		emotion ET_HUK, getnpcid(0, "塔瑪林#ep15_1elb");
+		cutin "ep143_taang.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "你們幾個，";
+		mes "別吵了。";
+		mes "這地板感覺非常不穩固。";
+		emotion ET_PROFUSELY_SWEAT, getnpcid(0, "阿爾夫#ep15_1elb");
+		cutin "bu_alp2.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "我們都該下去，然後叫維修人員……";
+		cutin "",255;
+		next;
+		mes "^FF0000- 碰 -^000000";
+		emotion ET_HUK;
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		emotion ET_HUK, getnpcid(0, "馬克#ep15_1elb");
+		emotion ET_HUK, getnpcid(0, "塔瑪林#ep15_1elb");
+		emotion ET_HUK, getnpcid(0, "阿爾夫#ep15_1elb");
+		emotion ET_HUK, getnpcid(0, "瑪姬#ep15_1elb");
+		next;
+		mes "[瑪姬]";
+		mes "呀啊啊啊-！";
+		emotion ET_HUK, getnpcid(0, "瑪姬#ep15_1elb");
+		cutin "bu_maggi4.bmp",2;
+		next;
+		mes "[杜]";
+		mes "哇！";
+		mes "地板在晃動！";
+		emotion ET_PROFUSELY_SWEAT, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "停下來！";
+		mes "所有人，待在原地別動！";
+		mes "否則我們可能會直接墜落到底部！";
+		emotion ET_HUK;
+		cutin "",255;
+		next;
+		mes "[史嘉蕾]";
+		mes "嘿，";
+		mes "你！";
+		mes "救命啊！";
+		emotion ET_HELP;
+		next;
+		mes "[史嘉蕾]";
+		mes "這部電梯太不穩了，我們誰都不敢動。";
+		mes "你能幫我們拿點可以^0000FF支撐地板^000000的東西來嗎？";
+		next;
+		mes "[史嘉蕾]";
+		mes "我們沒時間等維修人員來了！";
+		mes "我們只需要優沛擂斯裡^FF0000迪靡克掉落的30個廢鐵板^000000！";
+		next;
+		mes "[史嘉蕾]";
+		mes "請幫幫我們！";
+		ep15_1_elb = 4;
+		completequest 11365;
+		setquest 11366;
+		close;
+	case 4:
+		mes "小心！";
+		mes "所有人，別動！";
+		next;
+		mes "[杜]";
+		mes "哇-！";
+		mes "我們要摔到地面上了！";
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "別這麼說！";
+		mes "這都是你的錯！";
+		emotion ET_FRET, getnpcid(0, "塔瑪林#ep15_1elb");
+		cutin "ep143_taang.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "安靜，你們兩個！";
+		mes "如果再動一下，我們全都會沒命的！";
+		emotion ET_HUK;
+		cutin "",255;
+		next;
+		if (countitem(7319) < 30) {
+			mes "[史嘉蕾]";
+			mes "這部電梯太不穩了，我們誰都不敢動。";
+			mes "你能幫我們拿點可以^0000FF支撐地板^000000的東西來嗎？";
+			next;
+			mes "[史嘉蕾]";
+			mes "我們沒時間等維修人員來了！";
+			mes "我們只需要優沛擂斯裡^FF0000迪靡克掉落的30個廢鐵板^000000！";
+			next;
+			mes "[史嘉蕾]";
+			mes "請幫幫我們！";
+			close;
+		}
+		mes "[史嘉蕾]";
+		mes "你帶來廢鐵板了嗎？";
+		mes "請小心地把它們一個一個推過來。";
+		delitem 7319,30;// Old_Steel_Plate
+		ep15_1_elb = 5;
+		completequest 11366;
+		next;
+		mes "[史嘉蕾]";
+		mes "雖然可能撐不了多久，但應該足夠讓我們逃出去了。";
+		next;
+		select("把廢鐵板推過去。");
+		mes "[史嘉蕾]";
+		mes "現在，快下去！";
+		mes "鐵板撐不了多久的！";
+		next;
+		mes "[杜]";
+		mes "感謝神明！";
+		mes "來，瑪姬！";
+		mes "抓住我的手，快下來。";
+		cutin "bu_du4.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "呼……";
+		mes "很高興沒人受傷。";
+		mes "這次就算了，";
+		mes "但下不為例！";
+		cutin "",255;
+		next;
+		mes "[史嘉蕾]";
+		mes "還有" + .@name$ + "，太感謝你了。";
+		mes "要不是有你，我們就真的有大麻煩了。";
+		emotion ET_THANKS;
+		next;
+		mes "[史嘉蕾]";
+		mes "我剛收到艾麗莎的聯絡。";
+		mes "電梯壞了，所以你只好走過來，對吧？";
+		next;
+		mes "[史嘉蕾]";
+		mes "對於造成你的不便，我深感抱歉。";
+		mes "電梯現在已經恢復運作了。如果你想上去，請告訴我。";
+		next;
+		mes "[馬克]";
+		mes "呼！" + .@name$ + "，你救了我們。";
+		mes "唉，我不知道他什麼時候才會長大。";
+		emotion ET_THANKS, getnpcid(0, "馬克#ep15_1elb");
+		cutin "bu_mark2.bmp",0;
+		next;
+		mes "[瑪姬]";
+		mes "*啜泣* *打嗝*";
+		mes "謝、謝謝…… *啜泣* *打嗝*";
+		mes "我剛才嚇死了！哇-！";
+		emotion ET_THANKS, getnpcid(0, "瑪姬#ep15_1elb");
+		cutin "bu_maggi4.bmp",2;
+		next;
+		mes "[杜]";
+		mes "……對不起。";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "謝謝你。";
+		mes "唉，我真不敢想像，要是剛才" + .@name$ + "沒有經過的話，會發生什麼事。";
+		emotion ET_THANKS, getnpcid(0, "塔瑪林#ep15_1elb");
+		cutin "ep143_tasmi.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "……謝謝你。";
+		cutin "bu_alp1.bmp",2;
+		emotion ET_THANKS, getnpcid(0, "阿爾夫#ep15_1elb");
+		next;
+		mes "[塔瑪林]";
+		mes "對了，你不覺得很奇怪嗎";
+		mes "在新發現的遺跡裡，竟然設置了正在運作的電梯？";
+		cutin "ep143_tasta.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "這個嘛，";
+		mes "雷根貝勒贊助了這次發掘，這對我來說已經是個足夠的理由了。";
+		cutin "bu_mark1.bmp",0;
+		next;
+		mes "[???]";
+		mes "優沛擂斯下方的遺跡。這不是很令人興奮嗎？";
+		cutin "",255;
+		next;
+		mes "[杜]";
+		mes "確實是！";
+		mes "還沒有人查出這座遺跡是什麼時候建造的。";
+		mes "走吧！我要成為第一個弄清楚的人！";
+		cutin "bu_du2.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "冷靜點！";
+		mes "你還沒學到教訓嗎？你差點就把電梯弄壞了！";
+		emotion ET_FRET, getnpcid(0, "馬克#ep15_1elb");
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[史嘉蕾]";
+		mes "小心點！";
+		mes "地板還是很不穩！";
+		cutin "",255;
+		close;
+	default:
+		mes "你好。";
+		mes "請說出你的名字，讓我確認一下你的登記資料。";
+		next;
+		if (select( "說出名字。", "結束對話。" ) == 2) {
+			mes "[史嘉蕾]";
+			mes "祝你有美好的一天。";
+			close;
+		}
+		mes "[史嘉蕾]";
+		mes "嗯……";
+		mes "是的，" + .@name$ + "，您的登記已確認。";
+		mes "你想要前往優沛擂斯的入口嗎？";
+		next;
+		if (select( "不", "是" ) == 1) {
+			mes "[史嘉蕾]";
+			mes "祝你有美好的一天。";
+			close;
+		}
+		mes "[史嘉蕾]";
+		mes "準備好了嗎？";
+		mes "祝你探索平安！";
+		close2;
+		warp "yuno_fild07",230,156;
+		end;
+	}
+}
+
+function	script	excavator_part2	{
+	mes "[杜]";
+	mes "嗯……";
+	mes "這個地方看起來沒有我想像的那麼令人興奮。";
+	cutin "bu_du3.bmp",2;
+	next;
+	mes "[馬克]";
+	mes "你期待什麼？";
+	emotion ET_THINK, getnpcid(0, "馬克#ep15_1elb");
+	cutin "bu_mark1.bmp",0;
+	next;
+	mes "[杜]";
+	mes "你知道的，";
+	mes "我以為裡面會充滿了驚人的寶藏。";
+	cutin "bu_du2.bmp",2;
+	next;
+	mes "[馬克]";
+	mes "如果有的話，別人大概早就捷足先登了。";
+	cutin "bu_mark2.bmp",0;
+	next;
+	mes "[阿爾夫]";
+	mes "嗯……";
+	mes "這個地方或許看起來不起眼，但建築風格和材料與我在米德加爾特見過的不太一樣。";
+	cutin "bu_alp1.bmp",2;
+	next;
+	mes "[阿爾夫]";
+	mes "也和優沛擂斯不同。";
+	next;
+	mes "[杜]";
+	mes "哇！";
+	mes "大家，快來看這座噴泉！";
+	emotion ET_HUK, getnpcid(0, "Fountain#ep15_1elb");
+	cutin "bu_du2.bmp",2;
+	setquest 11367;// Looking for the Traces
+	ep15_1_elb = 6;
+	return;
+}
+
+verus04,117,219,0	script	阿爾夫#ep15_1elb	4_M_BLACKMAN,{
+	switch(ep15_1_elb) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[阿爾夫]";
+		mes "發掘，這真是個好主題。";
+		emotion ET_THINK;
+		cutin "bu_alp4.bmp",2;
+		close3;
+	case 3:
+		mes "[阿爾夫]";
+		mes "......";
+		mes "別、別動。";
+		emotion ET_PROFUSELY_SWEAT;
+		cutin "bu_alp2.bmp",2;
+		next;
+		mes "[杜]";
+		mes "哇啊啊啊啊-！";
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "你們在電梯裡做了什麼？";
+		mes "我說過在電梯裡不要奔跑或跳躍的！";
+		emotion ET_HUK, getnpcid(0, "嚮導 史嘉蕾#ep15_1bs");
+		cutin "",255;
+		close;
+	case 4:
+		mes "[阿爾夫]";
+		mes "別、別動。";
+		mes "地、地板……";
+		emotion ET_PROFUSELY_SWEAT;
+		cutin "bu_alp2.bmp",2;
+		close3;
+	case 5:
+		excavator_part2();
+		close3;
+	case 6:
+		mes "[阿爾夫]";
+		mes "噴泉怎麼了？";
+		emotion ET_HUK, getnpcid(0, "Fountain#ep15_1elb");
+		cutin "bu_alp1.bmp",2;
+		close3;
+	default:
+		mes "[阿爾夫]";
+		mes "……謝謝你。";
+		cutin "bu_alp1.bmp",2;
+		close3;
+	}
+}
+
+verus04,115,220,5	script	杜#ep15_1elb	4_M_REDMAN,{
+	switch(ep15_1_elb) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[杜]";
+		mes "冒險家們，";
+		mes "我們走吧！";
+		cutin "bu_du2.bmp",2;
+		close3;
+	case 3:
+		mes "[杜]";
+		mes "哇啊啊啊啊-！";
+		emotion ET_HUK;
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[杜]";
+		mes "誰來想想辦法啊！";
+		next;
+		mes "[史嘉蕾]";
+		mes "你們在電梯裡做了什麼？";
+		mes "我說過在電梯裡不要奔跑或跳躍的！";
+		emotion ET_HUK, getnpcid(0, "嚮導 史嘉蕾#ep15_1bs");
+		cutin "",255;
+		close;
+	case 4:
+		mes "[杜]";
+		mes "哇-！";
+		mes "我們要摔到地面上了！";
+		emotion ET_HUK;
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "別這麼說！";
+		mes "這都是你的錯！";
+		emotion ET_HUK, getnpcid(0, "塔瑪林#ep15_1elb");
+		cutin "ep143_tahuk.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "安靜，你們兩個！";
+		mes "如果再動一下，我們全都會沒命的！";
+		emotion ET_HUK, getnpcid(0, "嚮導 史嘉蕾#ep15_1bs");
+		cutin "",255;
+		close;
+	case 5:
+		excavator_part2();
+		close3;
+	case 6:
+		mes "[杜]";
+		mes "哇！";
+		mes "大家，快來看這座噴泉！";
+		emotion ET_HUK, getnpcid(0, "Fountain#ep15_1elb");
+		cutin "bu_du2.bmp",2;
+		close3;
+	default:
+		mes "[杜]";
+		mes "冒險就是要充滿勇氣和好奇心！";
+		cutin "bu_du2.bmp",2;
+		close3;
+	}
+}
+
+verus04,117,220,3	script	瑪姬#ep15_1elb	4_F_PINKWOMAN,{
+	switch(ep15_1_elb) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[瑪姬]";
+		mes "夢幻秘境。多美的名字啊！";
+		cutin "bu_maggi2.bmp",2;
+		close3;
+	case 3:
+		mes "[瑪姬]";
+		mes "呀啊啊啊-！！！";
+		emotion ET_HUK;
+		cutin "bu_maggi4.bmp",2;
+		next;
+		mes "[杜]";
+		mes "哇啊啊啊啊-！";
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "你們在電梯裡做了什麼？";
+		mes "我說過在電梯裡不要奔跑或跳躍的！";
+		emotion ET_HUK, getnpcid(0, "嚮導 史嘉蕾#ep15_1bs");
+		cutin "",255;
+		close;
+	case 4:
+		mes "[瑪姬]";
+		mes "呀啊啊啊-！！！！";
+		emotion ET_HUK;
+		cutin "bu_maggi4.bmp",2;
+		close3;
+	case 5:
+		excavator_part2();
+		close3;
+	case 6:
+		mes "[瑪姬]";
+		mes "杜總是這樣急躁。";
+		mes "那座噴泉有什麼有趣的？";
+		emotion ET_HUK, getnpcid(0, "Fountain#ep15_1elb");
+		cutin "bu_maggi1.bmp",2;
+		close3;
+	default:
+		mes "[瑪姬]";
+		mes "*啜泣* *打嗝*";
+		mes "謝、謝謝…… *啜泣* *打嗝*";
+		mes "我剛才嚇死了！哇-！";
+		emotion ET_CRY;
+		cutin "bu_maggi4.bmp",2;
+		close3;
+	}
+}
+
+verus04,115,221,5	script	馬克#ep15_1elb	4_M_BLUEMAN,{
+	switch(ep15_1_elb) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[馬克]";
+		mes "夢幻秘境。";
+		mes "我等不及想多了解這個地方了。";
+		cutin "bu_mark1.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "它在優沛擂斯附近被發現，但被認為屬於另一個不同的文明。";
+		cutin "bu_mark2.bmp",0;
+		close3;
+	case 3:
+		mes "[馬克]";
+		mes "小心！";
+		emotion ET_HUK;
+		cutin "bu_mark4.bmp",0;
+		next;
+		mes "[杜]";
+		mes "哇啊啊啊啊-！";
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "你們在電梯裡做了什麼？";
+		mes "我說過在電梯裡不要奔跑或跳躍的！";
+		emotion ET_HUK, getnpcid(0, "嚮導 史嘉蕾#ep15_1bs");
+		cutin "",255;
+		close;
+	case 4:
+		mes "[馬克]";
+		mes "我的天啊，杜！";
+		mes "你會害我心臟病發作的！";
+		emotion ET_FRET;
+		cutin "bu_mark3.bmp",0;
+		close3;
+	case 5:
+		excavator_part2();
+		close3;
+	case 6:
+		mes "[馬克]";
+		mes "噴泉怎麼了？";
+		emotion ET_HUK, getnpcid(0, "Fountain#ep15_1elb");
+		cutin "bu_mark3.bmp",0;
+		close3;
+	default:
+		mes "[馬克]";
+		mes "呼！" + strcharinfo(0) + "，你救了我們。";
+		mes "唉，我不知道他什麼時候才會長大。";
+		cutin "bu_mark3.bmp",0;
+		close3;
+	}
+}
+
+verus04,116,219,5	script	塔瑪林#ep15_1elb	4_M_TAMARIN,{
+	switch(ep15_1_elb) {
+	case 0:
+	case 1:
+	case 2:
+		mes "[塔瑪林]";
+		mes "這種規模的發掘計畫應該會吸引一大群人。";
+		cutin "ep143_tasta.bmp",2;
+		close3;
+	case 3:
+		mes "[塔瑪林]";
+		mes "我叫你別跳了！";
+		emotion ET_HUK;
+		cutin "ep143_tahuk.bmp",2;
+		next;
+		mes "[杜]";
+		mes "哇啊啊啊啊-！";
+		emotion ET_HUK, getnpcid(0, "杜#ep15_1elb");
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[史嘉蕾]";
+		mes "你們在電梯裡做了什麼？";
+		mes "我說過在電梯裡不要奔跑或跳躍的！";
+		emotion ET_HUK, getnpcid(0, "嚮導 史嘉蕾#ep15_1bs");
+		cutin "",255;
+		close;
+	case 4:
+		mes "[塔瑪林]";
+		mes "啊，";
+		mes "什麼事都不順我的意！";
+		emotion ET_CRY;
+		cutin "ep143_tahuk.bmp",2;
+		close3;
+	case 5:
+		excavator_part2();
+		close3;
+	case 6:
+		mes "[塔瑪林]";
+		mes "嗯，杜在噴泉裡發現了什麼嗎？";
+		emotion ET_HUK, getnpcid(0, "Fountain#ep15_1elb");
+		cutin "ep143_tasmi.bmp",2;
+		close3;
+	default:
+		mes "[塔瑪林]";
+		mes "謝謝你。";
+		mes "唉，我真不敢想像，要是剛才" + strcharinfo(0) + "沒有經過的話，會發生什麼事。";
+		cutin "ep143_tasmi.bmp",2;
+		close3;
+	}
+}
+
+verus04,116,226,0	script	噴泉#ep15_1elb	HIDDEN_NPC,{
+	if (ep15_1_elb == 6) {
+		mes "[杜]";
+		mes "看，我擦過了，它閃閃發亮呢！";
+		cutin "bu_du2.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "你為什麼就是不聽我們的話？";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "別在這種蠢事上浪費時間了！";
+		cutin "ep143_taang.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "嗯……";
+		mes "等等。";
+		cutin "bu_alp3.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "看，它看起來不像是在地底埋藏了幾個世紀的樣子。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "你說得對。在所有的泥土和污垢底下，它看起來太乾淨了。";
+		cutin "ep143_tasta.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "讓我看看……";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "嗯……";
+		mes "太乾淨了。我看不出任何端倪。";
+		cutin "bu_alp2.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "如果這座噴泉曾經被使用過，底部應該會留下一些沉積物，但卻一點也沒有。就好像水是一下子被排乾的。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "沉積物可能在很長一段時間後自然消失了。";
+		next;
+		mes "[阿爾夫]";
+		mes "我們去周圍找找看有沒有別的東西吧。";
+		next;
+		mes "[塔瑪林]";
+		mes "左邊那些雜物怎麼樣？";
+		emotion ET_HUK, getnpcid(0, "雜物#ep15_1elb");
+		cutin "ep143_tasta.bmp",2;
+		ep15_1_elb = 7;
+		completequest 11367;
+		setquest 11368;
+		close3;
+	}
+	if (ep15_1_elb == 7) {
+		mes "[阿爾夫]";
+		mes "我們去周圍找找看有沒有別的東西吧。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "左邊那些雜物怎麼樣？";
+		emotion ET_HUK, getnpcid(0, "雜物#ep15_1elb");
+		cutin "ep143_tasta.bmp",2;
+		close3;
+	}
+	mes "- 看似普通的噴泉 -";
+	mes "- 裡面什麼也沒有。 -";
+	close;
+}
+
+verus04,95,238,0	script	雜物#ep15_1elb	HIDDEN_NPC,{
+	if (ep15_1_elb == 7) {
+		mes "[阿爾夫]";
+		mes "嗯……";
+		mes "一切看起來都太乾淨了。";
+		mes "這個遺跡看起來並沒有我們想像的那麼古老。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "除了那些成堆的破損機器，看起來沒什麼特別的。";
+		next;
+		mes "[阿爾夫]";
+		mes "看看左邊那棵樹。";
+		emotion ET_HUK, getnpcid(0, "樹#ep15_1elb");
+		ep15_1_elb = 8;
+		completequest 11368;
+		setquest 11369;// Looking for the Traces
+		close3;
+	}
+	if (ep15_1_elb == 8) {
+		mes "[阿爾夫]";
+		mes "看看左邊那棵樹。";
+		cutin "bu_alp1.bmp",2;
+		emotion ET_HUK, getnpcid(0, "樹#ep15_1elb");
+		close3;
+	}
+	mes "- 地上散落著雜物。 -";
+	close;
+}
+
+verus04,79,249,0	script	樹#ep15_1elb	HIDDEN_NPC,{
+	if (ep15_1_elb == 8) {
+		mes "[杜]";
+		mes "自從我們到達這裡，我就一直在想：樹木不是需要陽光才能生長嗎？";
+		cutin "bu_du1.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "*倒抽一口氣*";
+		mes "杜，這是我聽過你說過最聰明的話了。";
+		cutin "ep143_tahuk.bmp",2;
+		next;
+		mes "[杜]";
+		mes "你說什麼？";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "這棵樹怎麼會在地下生長？";
+		mes "這裡沒有陽光啊。";
+		cutin "bu_mark1.bmp",0;
+		next;
+		mes "[瑪姬]";
+		mes "它看起來不像是被施了魔法。";
+		cutin "bu_maggi1.bmp",2;
+		next;
+		mes "[杜]";
+		mes "噢，看這裡！";
+		mes "門前站著一個奇怪的東西！";
+		emotion ET_HUK, getnpcid(0, "告示牌#ep15_1elb");
+		cutin "bu_du2.bmp",2;
+		ep15_1_elb = 9;
+		completequest 11369;
+		setquest 11370;
+		close3;
+	}
+	if (ep15_1_elb == 9) {
+		mes "[杜]";
+		mes "噢，看這裡！";
+		mes "門前站著一個奇怪的東西！";
+		emotion ET_HUK, getnpcid(0, "告示牌#ep15_1elb");
+		cutin "bu_du2.bmp",2;
+		close3;
+	}
+	mes "一棵高大翠綠的樹。";
+	mes "除了生長在地下之外，看起來沒什麼特別的。";
+	close;
+}
+
+verus04,62,255,0	script	告示牌#ep15_1elb	HIDDEN_NPC,{
+	if (ep15_1_elb == 9) {
+		mes "[馬克]";
+		mes "嘿！";
+		mes "別再到處亂跑了！這地方可能很危險！";
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[杜]";
+		mes "冒險就是要充滿勇氣和好奇心！";
+		cutin "bu_du2.bmp",2;
+		next;
+		mes "[杜]";
+		mes "而且我才不會讓別人把寶藏全拿走！";
+		cutin "bu_du1.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "上次你這麼說的時候，你在醫院躺了一個月。";
+		cutin "ep143_taang.bmp",2;
+		next;
+		mes "[杜]";
+		mes "這次不一樣！";
+		mes "再說，那些殺不死我的，只會讓我更強大。的確是這樣！";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "你妄想症發作了吧。";
+		cutin "bu_mark4.bmp",0;
+		next;
+		mes "[阿爾夫]";
+		mes "噢，";
+		mes "等等。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "看看建築物後面。";
+		mes "有一條向上的小路。";
+		cutin "bu_alp3.bmp",2;
+		next;
+		mes "[杜]";
+		mes "我的直覺";
+		mes "帶我去哪，我就去哪！";
+		mes "哇哈哈！";
+		cutin "bu_du2.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "杜，站住！";
+		mes "你沒聽到我的話嗎？！";
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "呃！";
+		mes "他失控了。";
+		next;
+		mes "[瑪姬]";
+		mes "馬克，";
+		mes "杜已經跑那麼遠了。";
+		cutin "bu_maggi1.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "呃！";
+		mes "那個笨蛋！";
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "我們最好在他走丟之前跟上他。";
+		cutin "bu_mark1.bmp",0;
+		ep15_1_elb = 10;
+		completequest 11370;
+		setquest 11371;
+		close3;
+	}
+	if (ep15_1_elb == 10) {
+		mes "[阿爾夫]";
+		mes "看看建築物後面。";
+		mes "有一條向上的小路。";
+		cutin "bu_alp3.bmp",2;
+		next;
+		mes "[杜]";
+		mes "我的直覺";
+		mes "帶我去哪，我就去哪！";
+		mes "哇哈哈！";
+		cutin "bu_du2.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "杜，站住！";
+		mes "你沒聽到我的話嗎？！";
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "呃！";
+		mes "他失控了。";
+		next;
+		mes "[瑪姬]";
+		mes "馬克，";
+		mes "杜已經跑那麼遠了。";
+		cutin "bu_maggi1.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "呃！";
+		mes "那個笨蛋！";
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "我們最好在他走丟之前跟上他。";
+		cutin "bu_mark1.bmp",0;
+		close3;
+	}
+	mes "- 門被堵住了。 -";
+	close;
+}
+
+verus03,46,23,3	script	杜#ep15_1elb03	4_M_REDMAN,{
+	if (ep15_1_elb == 10) {
+		mes "[杜]";
+		mes "哇……";
+		mes "我以為這個地方會和上一個一樣，但這裡卻到處都是機器。";
+		emotion ET_HUK;
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[杜]";
+		mes "這些和優沛擂斯裡的是一樣的嗎？";
+		cutin "bu_du1.bmp",2;
+		next;
+		mes "[杜]";
+		mes "這個地方和優沛擂斯有什麼關係？";
+		next;
+		mes "[杜]";
+		mes "在上面，我看到了另一個看起來和上一個很像的噴泉。";
+		mes "你們想去看看嗎？";
+		cutin "bu_du2.bmp",2;
+		ep15_1_elb = 11;
+		completequest 11371;
+		setquest 11372;
+		close3;
+	}
+	if (ep15_1_elb == 11) {
+		mes "[杜]";
+		mes "在上面，我看到了另一個看起來和上一個很像的噴泉。";
+		mes "你們想去看看嗎？";
+		cutin "bu_du2.bmp",2;
+		close3;
+	}
+	mes "[杜]";
+	mes "這個地方和優沛擂斯有什麼關係？";
+	close;
+}
+
+verus03,44,65,0	script	噴泉#ep15_1elb03	HIDDEN_NPC,{
+	if (ep15_1_elb == 11) {
+		mes "[阿爾夫]";
+		mes "嗯……";
+		mes "這個地方乾淨得令人不安。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "所有的建築都保存完好。你覺得主人們怎麼了？";
+		cutin "ep143_tasta.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "如果他們死了，他們並沒有被埋葬或留在這裡腐爛。如果他們離開了……嗯，我不認為他們離開了。";
+		cutin "bu_alp3.bmp",2;
+		next;
+		mes "[瑪姬]";
+		mes "我試著用魔法感知，";
+		mes "但徒勞無功。";
+		cutin "bu_maggi1.bmp",2;
+		next;
+		mes "[杜]";
+		mes "所以線索就這樣斷了。";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "......";
+		cutin "bu_mark3.bmp",0;
+		next;
+		mes "[杜]";
+		mes "哎喲！你幹嘛打我？";
+		cutin "bu_du4.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "我走北邊的路。待會在那邊會合。";
+		cutin "bu_mark2.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "看好杜；他很容易走丟。";
+		cutin "bu_mark4.bmp",0;
+		ep15_1_elb = 12;
+		completequest 11372;
+		setquest 11373;
+		close3;
+	}
+	if (ep15_1_elb == 12) {
+		mes "[馬克]";
+		mes "我走北邊的路。待會在那邊會合。";
+		cutin "bu_mark2.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "看好杜；他很容易走丟。";
+		cutin "bu_mark4.bmp",0;
+		close3;
+	}
+	mes "- 看似普通的噴泉 -";
+	mes "- 裡面什麼也沒有。 -";
+	close;
+}
+
+verus03,88,237,3	script	馬克#ep15_1elb03	4_M_BLUEMAN,{
+	if (ep15_1_elb == 12) {
+		mes "[馬克]";
+		mes "你看到我們前面的巨大機器了嗎？";
+		mes "和第一個地方不同，這裡充滿了巨大的機器。";
+		cutin "bu_mark1.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "建築物倒塌了。地面到處都塌陷了。";
+		next;
+		mes "[馬克]";
+		mes "我在那邊找到了一條路，雖然被堵住了。";
+		next;
+		mes "[馬克]";
+		mes "這可不是什麼好兆頭。";
+		cutin "bu_mark4.bmp",0;
+		next;
+		mes "[馬克]";
+		mes "噢，塔瑪林！";
+		mes "不要過去那邊！";
+		cutin "bu_mark1.bmp",0;
+		emotion ET_HUK;
+		emotion ET_HUK, getnpcid(0, "塔瑪林#ep15_1elb03");
+		ep15_1_elb = 13;
+		completequest 11373;
+		setquest 11374;
+		close3;
+	}
+	if (ep15_1_elb == 13) {
+		mes "[馬克]";
+		mes "噢，塔瑪林！";
+		mes "不要過去那邊！";
+		cutin "bu_mark1.bmp",0;
+		emotion ET_HUK;
+		emotion ET_HUK, getnpcid(0, "塔瑪林#ep15_1elb03");
+		close3;
+	}
+	mes "[馬克]";
+	mes "你看到我們前面的巨大機器了嗎？";
+	mes "和第一個地方不同，這裡充滿了巨大的機器。";
+	cutin "bu_mark1.bmp",0;
+	close3;
+}
+
+verus03,51,256,3	script	塔瑪林#ep15_1elb03	4_M_TAMARIN,{
+	mes "[塔瑪林]";
+	mes "看那邊。";
+	mes "那個部分的地方完全被摧毀了。";
+	cutin "ep143_tahuk.bmp",2;
+	if (ep15_1_elb == 13 || ep15_1_elb == 14) {
+		next;
+		mes "[塔瑪林]";
+		mes "瑪姬，那邊情況怎麼樣？";
+		cutin "ep143_tasta.bmp",2;
+		emotion ET_HUK, getnpcid(0, "瑪姬#ep15_1elb03");
+		if (ep15_1_elb == 13) {
+			ep15_1_elb = 14;
+			completequest 11374;
+			setquest 11375;
+		}
+	}
+	close3;
+}
+
+verus03,35,254,3	script	瑪姬#ep15_1elb03	4_F_PINKWOMAN,{
+	if (ep15_1_elb == 14) {
+		mes "[瑪姬]";
+		mes "噢。";
+		mes "這邊的路也被堵住了。";
+		cutin "bu_maggi1.bmp",2;
+		next;
+		mes "[瑪姬]";
+		mes "我感覺到另一邊有某種水流，";
+		mes "但我說不準究竟是什麼。";
+		cutin "bu_maggi3.bmp",2;
+		next;
+		mes "[瑪姬]";
+		mes "感覺不像是活物，";
+		mes "但也一樣強大。";
+		cutin "bu_maggi1.bmp",2;
+		next;
+		mes "[杜]";
+		mes "嗯。";
+		mes "我真的不想去那邊。";
+		cutin "bu_du3.bmp",2;
+		next;
+		mes "[塔瑪林]";
+		mes "……！";
+		mes "這可是頭一遭。你之所以被叫做紅髮野豬，是因為你從不停止奔跑。";
+		cutin "ep143_tahuk.bmp",2;
+		next;
+		mes "[杜]";
+		mes "沒人那麼叫我！";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[杜]";
+		mes "我還有更酷的綽號！叫我那些！";
+		next;
+		mes "[阿爾夫]";
+		mes "杜。";
+		mes "不要侮辱野豬。";
+		mes "牠們從頭到腳，所有的部位都有用處。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "而且很美味。";
+		cutin "bu_alp4.bmp",2;
+		next;
+		mes "[杜]";
+		mes "這不是重點！";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "杜的直覺從未背叛過我們。我們應該避開那條路。";
+		mes "對吧，野豬？";
+		cutin "bu_mark2.bmp",0;
+		next;
+		mes "[杜]";
+		mes "呃！";
+		mes "我說了";
+		mes "不准那樣叫我！";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[阿爾夫]";
+		mes "路被堵住了，如果夢幻秘境發掘團沒有清理它，那一定有原因。在我們查明真相之前，還是先避開它吧。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[杜]";
+		mes "不要取笑我！";
+		cutin "bu_du5.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "我同意。";
+		mes "我們先去看看其他地方。";
+		ep15_1_elb = 15;
+		completequest 11375;
+		getexp 1000000,0;
+		cutin "bu_mark2.bmp",0;
+		close3;
+	}
+	if (ep15_1_elb == 15) {
+		mes "[阿爾夫]";
+		mes "路被堵住了，如果夢幻秘境發掘團沒有清理它，那一定有原因。在我們查明真相之前，還是先避開它吧。";
+		cutin "bu_alp1.bmp",2;
+		next;
+		mes "[馬克]";
+		mes "我同意。";
+		mes "我們先去看看其他地方。";
+		cutin "bu_mark2.bmp",0;
+		close3;
+	}
+	mes "[瑪姬]";
+	mes "空氣中瀰漫著危險的氣息。我能感覺到。";
+	cutin "bu_maggi3.bmp",2;
+	close3;
+}
+
+verus04,144,239,3	shop	道具商人#verus	4_M_DEWMAN,611:-1,504:-1,656:-1,601:-1,602:-1,610:-1
+
+// ep15_1_moc_nk - Reward Coordinator
+morocc,54,190,5	script	獎勵負責人	4_M_SAGE_C,{
+	for ( .@i = 5252; .@i <= 5264; .@i += 2 ) {
+		if (isbegin_quest(.@i) == 1)
+			erasequest .@i;
+	}
+	if (isbegin_quest(5269) == 1)
+		erasequest 5269;
+	if (isbegin_quest(5275) == 1)
+		erasequest 5275;
+
+	if (countitem(6688) > 0)
+		delitem 6688, countitem(6688); // Wood_
+	if (countitem(6688) > 0)
+		delitem 6687, countitem(6687);	// LongRopes
+	if (countitem(6686) > 0)
+		delitem 6686, countitem(6686);	// Brick
+	mes "[獎勵負責人]";
+	mes "所以，嗯……我……";
+	mes "我想我被派到這裡";
+	mes "是為了……為了……讓我想想……";
+	mes "噢，對了，是為了支援夢羅克重建工作。";
+	next;
+	mes "[獎勵負責人]";
+	mes "重建工作已經完成了，";
+	mes "但我留下來";
+	mes "是為了發放獎勵給志工。";
+	next;
+	mes "[獎勵負責人]";
+	mes "那麼，今天需要什麼服務嗎？";
+	next;
+	switch( select( "領取獎勵。", "貢獻證書販賣機有什麼用？", "結束對話。" ) ) {
+	case 1:
+		for ( .@i = 5251; .@i <= 5263; .@i += 2 ) {
+			if (isbegin_quest(.@i) == 1)
+				.@moc_on++;
+		}
+		if (isbegin_quest(5265) == 1 || isbegin_quest(5266) == 1 || isbegin_quest(5267) == 1 || isbegin_quest(5268) == 1)
+			.@moc_on++;
+		if (isbegin_quest(5270) == 1 || isbegin_quest(5271) == 1 || isbegin_quest(5272) == 1 || isbegin_quest(5273) == 1 || isbegin_quest(5274) == 1)
+			.@moc_on++;
+		if (.@moc_on > 0) {
+			mes "[獎勵負責人]";
+			mes "為了表彰你的貢獻，";
+			mes "我們將頒發證書給你。";
+			mes "這些證書可以在旁邊的販賣機使用。";
+			getitem 6685, .@moc_on;
+			// MoroccMerit
+			for ( .@i = 5251; .@i < 5275; .@i++ ) {
+				if (isbegin_quest(.@i) == 1)
+					completequest .@i;
+			}
+			close;
+		}
+		mes "[獎勵負責人]";
+		mes "你還沒完成你的任務，";
+		mes "或者從未接受過任務。請確認你的任務紀錄。";
+		close;
+	case 2:
+		mes "[獎勵負責人]";
+		mes "你看到我旁邊的販賣機了嗎？";
+		mes "你可以將證書投入機器中";
+		mes "來兌換經驗值和各種物品。";
+		next;
+		mes "[獎勵負責人]";
+		mes "更多詳細資訊，請點擊販賣機。";
+		close;
+	case 3:
+		mes "[獎勵負責人]";
+		mes "嗯，所以……";
+		mes "請問你為什麼";
+		mes "要跟我說話呢？";
+		next;
+		mes "[獎勵負責人]";
+		mes "啊，我討厭這滿是沙子的風。";
+		mes "它讓我漂亮的衣服";
+		mes "變得充滿沙子又難受。";
+		close;
+	}
+}
+
+morocc,43,191,5	script	公告欄#moc_re	4_BOARD3,{
+	if (ep14_3_mocrank > $@2012_ep14_moc_most) {
+		$@2012_ep14_moc_most = ep14_3_mocrank;
+		$@2012_ep14_moc_mostname$ = strcharinfo(0);
+	}
+	mes "[夢羅克重建計畫主任 派克]";
+	mes "目前貢獻最大的是";
+	mes "偉大的冒險家 " + $@2012_ep14_moc_mostname$ + "，";
+	mes "至今已做出了總共 " + $@2012_ep14_moc_most + " 次的貢獻。";
+	mes "我想代表整個城市向這位冒險家致謝。";
+	close;
+}
+
+morocc,52,197,6	script	貢獻證書販賣機#ep14_3	2_VENDING_MACHINE1,{
+	if (checkweight(1301,1) == 0) {
+		mes "- 攜帶的物品過多，無法進行對話 -";
+		close;
+	}
+	if (BaseLevel < 80) {
+		mes "[販賣機管理員]";
+		mes "你好~ 請不要隨便碰販賣機。";
+		close;
+	}
+	mes "[貢獻證書販賣機]";
+	mes "- 請選擇你想要的物品。 -";
+	mes "目前擁有的貢獻證書： " + countitem(6685) + "";
+	next;
+	switch( select(
+		"不兌換。",
+		"[1] 經驗值 -(1)",
+		"[2] 職業介紹所推薦信 -(1)",
+		"[3] 20個 纖白藥水 -(10)",
+		"[4] 10個 紅色魔力礦石 -(20)",
+		"[5] 10個 黃色魔力礦石 -(20)",
+		"[6] 1個 瑪哪樹枝 -(20)",
+		"[7] 1個 天地樹的粉末 -(20)",
+		"[8] 1個 蘆薈葉子 -(20)",
+		"[9] 1個 莫拉吉格 -(20)",
+		"[10] 1個 藍色藥水 -(30)",
+		"[11] 1個 地靈原石 -(50)",
+		"[12] 1個 風靈原石 -(50)",
+		"[13] 1個 水靈原石 -(50)",
+		"[14] 1個 火靈原石 -(50)",
+		"[15] 1個 天地樹種子 -(100)" ) ) {
+	case 1:
+		close;
+	case 2:
+		mes "[貢獻證書販賣機]";
+		mes "你想要經驗值嗎？";
+		next;
+		while(1) {
+			if (select("是。", "否。") == 2) {
+				mes "[貢獻證書販賣機]";
+				mes "感謝您使用本販賣機。";
+				close;
+			}
+			if (countitem(6685) < 1) {
+				mes "[貢獻證書販賣機]";
+				mes "證書數量不足。";
+				next;
+				mes "[貢獻證書販賣機]";
+				mes "感謝您使用本販賣機。";
+				close;
+			}
+			delitem 6685,1;
+			// MoroccMerit
+			if (BaseLevel > 79 && BaseLevel < 91)
+				getexp 10000,0;
+			else if (BaseLevel > 90 && BaseLevel < 101)
+				getexp 15000,0;
+			else if (BaseLevel > 100 && BaseLevel < 111)
+				getexp 20000,0;
+			else if (BaseLevel > 110 && BaseLevel < 121)
+				getexp 25000,0;
+			else if (BaseLevel > 120 && BaseLevel < 131)
+				getexp 30000,0;
+			else if (BaseLevel > 130 && BaseLevel < 141)
+				getexp 35000,0;
+			else if (BaseLevel > 140 && BaseLevel < 151)
+				getexp 40000,0;
+			else
+				getexp 45000,0;
+			mes "[貢獻證書販賣機]";
+			mes "你還要繼續兌換嗎？";
+			next;
+		}
+		end;
+	case 3:
+		mes "[貢獻證書販賣機]";
+		mes "你想要職業介紹所推薦信嗎？";
+		next;
+		while(1) {
+			if (select("是。", "否。") == 2) {
+				mes "[貢獻證書販賣機]";
+				mes "感謝您使用本販賣機。";
+				close;
+			}
+			if (countitem(6685) < 1) {
+				mes "[貢獻證書販賣機]";
+				mes "證書數量不足。";
+				next;
+				mes "[貢獻證書販賣機]";
+				mes "感謝您使用本販賣機。";
+				close;
+			}
+			delitem 6685,1;	// MoroccMerit
+			if (BaseLevel > 79 && BaseLevel < 91)
+				getexp 0,10000;
+			else if (BaseLevel > 90 && BaseLevel < 101)
+				getexp 0,12000;
+			else if (BaseLevel > 100 && BaseLevel < 111)
+				getexp 0,5000;
+			else if (BaseLevel > 110 && BaseLevel < 121)
+				getexp 0,7000;
+			else if (BaseLevel > 120 && BaseLevel < 131)
+				getexp 0,9000;
+			else if (BaseLevel > 130 && BaseLevel < 141)
+				getexp 0,11000;
+			else if (BaseLevel > 140 && BaseLevel < 151)
+				getexp 0,13000;
+			else
+				getexp 0,13000;
+			mes "[貢獻證書販賣機]";
+			mes "你還要繼續兌換嗎？";
+			next;
+		}
+		end;
+	case 4:  callsub( S_Exchange, 10,   547, 20 ); // White_Slim_Potion
+	case 5:  callsub( S_Exchange, 20,   716, 10 ); // Red_Gemstone
+	case 6:  callsub( S_Exchange, 20,   715, 10 ); // Yellow_Gemstone
+	case 7:  callsub( S_Exchange, 20, 12814,  1 ); // Slapping_Herb
+	case 8:  callsub( S_Exchange, 20, 12815,  1 ); // Yggdrasil_Dust
+	case 9:  callsub( S_Exchange, 20, 12812,  1 ); // Snow_Flip
+	case 10: callsub( S_Exchange, 20, 12813,  1 ); // Peony_Mommy
+	case 11: callsub( S_Exchange, 30,   505,  1 ); // Blue_Potion
+	case 12: callsub( S_Exchange, 50,   997,  1 ); // Great_Nature
+	case 13: callsub( S_Exchange, 50,   996,  1 ); // Rough_Wind
+	case 14: callsub( S_Exchange, 50,   995,  1 ); // Mistic_Frozen
+	case 15: callsub( S_Exchange, 50,   994,  1 ); // Flame_Heart
+	case 16: callsub( S_Exchange, 100,  608,  1 );	// Seed_Of_Yggdrasil
+	default:
+		mes "[貢獻證書販賣機]";
+		mes "故障。";
+		close;
+	}
+	end;
+
+S_Exchange:
+	.@item_id = getarg(1);
+	mes "[貢獻證書販賣機]";
+	mes "你想要 " + getitemname(.@item_id) + " 嗎？";
+	next;
+	while(1) {
+		if (select("是。", "否。") == 2) {
+			mes "[貢獻證書販賣機]";
+			mes "感謝您使用本販賣機。";
+			close;
+		}
+		if (countitem(6685) < getarg(0)) {
+			mes "[貢獻證書販賣機]";
+			mes "證書數量不足。";
+			next;
+			mes "[貢獻證書販賣機]";
+			mes "感謝您使用本販賣機。";
+			close;
+		}
+		delitem 6685, getarg(0);	// MoroccMerit
+		getitem .@item_id, getarg(2);
+		mes "[貢獻證書販賣機]";
+		mes "你還要繼續兌換嗎？";
+		next;
+	}
+	end;
+}
+
+
+// Doom Prayers event on verus04
+verus04,2,2,0	script	偷襲計時器#EP15_1D	HIDDEN_WARP_NPC,{
+	end;
+OnTimer60000:
+	if (rand(1,2) == 1)
+		initnpctimer "末日祈禱會#EP15_1D";
+	end;
+OnTimer3600000:
+OnInit:
+	initnpctimer;
+	end;
+}
+
+verus04,3,3,4	script	末日祈禱會#EP15_1D	CLEAR_NPC,{
+	if (callfunc("F_GM_NPC",1854,0,0,9999) < 1)
+		end;
+	mes "[小幫手]";
+	mes "Episode 15.1";
+	mes "我是夢幻秘境保安隊任務的小幫手。你需要幫忙嗎？";
+	next;
+	while(1) {
+		switch( select( "查看任務狀態", "任務設定", "活動操作", "結束NPC" ) ) {
+		case 1:
+			mes "5304(N)" + isbegin_quest(5304) + " / 5312(N)" + isbegin_quest(5312) + "";
+			mes "5305(N)" + isbegin_quest(5305) + " / 5313(N)" + isbegin_quest(5313) + "";
+			mes "5306(N)" + isbegin_quest(5306) + " / 5314(H)" + checkquest(5314,HUNTING) + "";
+			mes "5307(N)" + isbegin_quest(5307) + " / 5315(N)" + isbegin_quest(5315) + "";
+			mes "5308(N)" + isbegin_quest(5308) + " / 5316(N)" + isbegin_quest(5316) + "";
+			mes "5309(N)" + isbegin_quest(5309) + " / 5317(N)" + isbegin_quest(5317) + "";
+			mes "5310(N)" + isbegin_quest(5310) + " / 5318(T)" + checkquest(5318,PLAYTIME) + "";
+			mes "5311(N)" + isbegin_quest(5311) + " / (N)一般 (H)狩獵 (T)時間";
+			next;
+			continue;
+		case 2:
+			mes "[小幫手]";
+			mes "任務設定。";
+			mes "等級限制140。";
+			mes "未達140級者可能無法執行任務。";
+			next;
+			switch( select( "重置冷卻時間", "設定為領取獎勵前", "道具說明", "任務初始化" ) ) {
+			case 1:
+				mes "[小幫手]";
+				mes "只移除23小時的冷卻時間。";
+				next;
+				select("移除");
+				erasequest 5318;
+				mes "[小幫手]";
+				mes "已移除。";
+				next;
+				continue;
+			case 2:
+				mes "[小幫手]";
+				mes "請在設定為領取獎勵前，選擇是否接受任務..";
+				next;
+				if (isbegin_quest(5304) == 0) {
+					setquest 5304;
+					completequest 5304;
+				}
+				setquest 5309;
+				setarray .@name$[0], "薩爾格蘭", "傑雷夫", "賽伊登", "皮夫斯";
+				for ( .@i = 0; .@i < 4; ++.@i ) {
+					if (select( "警官 " + .@name$[.@i] + " 請詢問O", "警官 " + .@name$[.@i] + " 請詢問X" ) == 1) {
+						.@id = 5314 + .@i;
+						if (isbegin_quest(.@id) == 0)
+							setquest .@id;
+						if (isbegin_quest(.@id) == 1)
+							completequest .@id;
+					}
+					.@id = 5305 + .@i;
+					if (isbegin_quest(.@id) == 0) {
+						setquest .@id;
+						completequest .@id;
+					}
+					setquest (5310 + .@i);
+				}
+				mes "[小幫手]";
+				mes "完成。";
+				next;
+				continue;
+			case 3:
+				mes "[小幫手]";
+				mes "這項設定將會確認任務與訪客。請在接受任務後再使用此功能..";
+				next;
+				switch( select( "移除陷阱", "收集石頭", "採集藥草。", "結束NPC" ) ) {
+				case 1:
+					mes "[小幫手]";
+					mes "設定為陷阱已移除的狀態。";
+					next;
+					select("設定");
+					ep15_1_mang = 10;
+					continue;
+				case 2:
+					mes "[小幫手]";
+					mes "設定為收集石頭已完成的狀態。";
+					next;
+					select("設定");
+					ep15_1_mang = 10;
+					getitem 7049,10;// Stone
+					continue;
+				case 3:
+					mes "[小幫手]";
+					mes "設定為採集藥草已完成的狀態。";
+					next;
+					select("設定");
+					ep15_1_mang = 10;
+					getitem 6754,10;// Collected_Herb
+					continue;
+				case 4:
+					mes "[小幫手]";
+					mes "掰掰~";
+					close;
+				}
+				end;
+			case 4:
+				mes "[小幫手]";
+				mes "末日祈禱者與夢幻秘境保安隊任務初始化。";
+				next;
+				select("任務初始化");
+				ep15_1_mang = 0;
+				delitem 7049, countitem(7049);// Stone
+				getitem 6754, countitem(6754);// Collected_Herb
+				for ( .@i = 5304; .@i <= 5318; ++.@i ) {
+					if (isbegin_quest(.@i) > 0)
+						erasequest .@i;
+				}
+				mes "[小幫手]";
+				mes "已初始化。";
+				next;
+				continue;
+			}
+			end;
+		case 3:
+			mes "[小幫手]";
+			mes "調整突發活動的區段，無須確認即可執行，所以請在評估後再使用。";
+			next;
+			switch( select( "活動開始", "活動結束", "控制計時器啟動", "控制計時器關閉" ) ) {
+			case 1:
+				mes "[小幫手]";
+				mes "突發活動開始，目前地圖人數為 " + getmapusers("verus04") + " 人，釋放的魔物有 15 + " + getmapusers("verus04") + " 隻。";
+				next;
+				select("開始");
+				initnpctimer "末日祈禱會#EP15_1D";
+				mes "[小幫手]";
+				mes "突發任務開始。";
+				next;
+				continue;
+			case 2:
+				mes "[小幫手]";
+				mes "突發任務結束，一旦選擇，即使任務實際仍在進行中也會強制結束。";
+				next;
+				select("結束");
+				donpcevent "末日祈禱會#EP15_1D::OnStop";
+				mes "[小幫手]";
+				mes "突發任務結束。";
+				next;
+				continue;
+			case 3:
+				mes "[小幫手]";
+				mes "將控制突發活動的計時器設定為開啟。這不會有確認提示，操作時請注意。";
+				next;
+				select("啟動");
+				initnpctimer "偷襲計時器#EP15_1D";
+				mes "[小幫手]";
+				mes "突發活動計時器已啟動。";
+				next;
+				continue;
+			case 4:
+				mes "[小幫手]";
+				mes "將控制突發活動的計時器設定為關閉。這不會有確認提示，操作時請注意。";
+				next;
+				select("結束");
+				stopnpctimer "偷襲計時器#EP15_1D";
+				mes "[小幫手]";
+				mes "突發活動計時器已結束。";
+				next;
+				continue;
+			}
+			end;
+		case 4:
+			mes "[小幫手]";
+			mes "掰掰~";
+			close;
+		}
+	}
+	end;
+
+OnTimer1000:
+	.@count = 10 + getmapusers("verus04");
+	.@label$ = "末日祈禱會#EP15_1D::OnMyMobDead";
+	monster "verus04",0,0,"末日祈禱 信徒",3158,.@count, .@label$;	// RUIN_BELIEVER2
+    monster "verus04",0,0,"毀滅恩典 信徒",3157,5, .@label$;			// RUIN_BELIEVER1
+	copyarray .mob_id[0], $@mobid[0], 5;
+	mapannounce "verus04", "警官 皮夫斯：末日祈禱者發動攻擊了！", bc_map,0xFFFF00;
+	end;
+OnTimer3000:
+	mapannounce "verus04", "警察局長 凱斯勒：所有警官注意，在他們摧毀發掘現場之前阻止末日祈禱者！", bc_map,0xFFFF00;
+	end;
+OnTimer30000:
+	mapannounce "verus04", "末日祈禱 幹部：毀滅並帶來世界的終結！毀滅並獲得救贖！", bc_map,0xFFFF00;
+	end;
+OnTimer60000:
+	mapannounce "verus04", "警官 皮夫斯：呃，末日祈禱者！他們到底從哪裡冒出來的？！", bc_map,0xFFFF00;
+	callsub( S_String,
+		"末日祈禱 幹部：*輕笑*……毀滅的時刻近了。",
+		"末日祈禱 幹部：讓一切毀滅吧！！",
+		"末日祈禱 幹部：全都給我拿石頭丟！！",
+		"末日祈禱 幹部：只有死亡，我們才能獲得救贖。",
+		"末日祈禱 幹部：有太多不必要的人了！攻擊~~！！"
+	);
+OnTimer120000:
+	mapannounce "verus04", "警察局長 凱斯勒：大家，不要退縮！別讓他們摧毀發掘現場！", bc_map,0xFFFF00;
+	callsub( S_String,
+		"末日祈禱 幹部：有太多不必要的人了！攻擊~~！！",
+		"末日祈禱 幹部：*輕笑*……毀滅的時刻近了。",
+		"末日祈禱 幹部：讓一切毀滅吧！！",
+		"末日祈禱 幹部：全都給我拿石頭丟！！",
+		"末日祈禱 幹部：只有死亡，我們才能獲得救贖。"
+	);
+OnTimer180000:
+	mapannounce "verus04", "警官 皮夫斯：那些末日祈禱者太小看我們了。", bc_map,0xFFFF00;
+	callsub( S_String,
+		"末日祈禱 幹部：只有死亡，我們才能獲得救贖。",
+		"末日祈禱 幹部：有太多不必要的人了！攻擊~~！！",
+		"末日祈禱 幹部：*輕笑*……毀滅的時刻近了。",
+		"末日祈禱 幹部：讓一切毀滅吧！！",
+		"末日祈禱 幹部：全都給我拿石頭丟！！"
+	);
+OnTimer240000:
+	mapannounce "verus04", "警察局長 凱斯勒：在攻擊中喪生的傢伙們還以為我們好欺負呢！", bc_map,0xFFFF00;
+	callsub( S_String,
+		"末日祈禱 幹部：全都給我拿石頭丟！！",
+		"末日祈禱 幹部：只有死亡，我們才能獲得救贖。",
+		"末日祈禱 幹部：有太多不必要的人了！攻擊~~！！",
+		"末日祈禱 幹部：*輕笑*……毀滅的時刻近了。",
+		"末日祈禱 幹部：讓一切毀滅吧！！"
+	);
+OnTimer300000:
+	// fallthrough
+OnStop:
+	stopnpctimer;
+	killmonster "verus04", "末日祈禱會#EP15_1D::OnMyMobDead";
+	mapannounce "verus04", "警察局長 凱斯勒：冒險家們，末日祈禱者已經被趕出夢幻秘境了。他們不再威脅你們的安全了。", bc_map,0xFFFF00;
+	end;
+OnMyMobDead:
+	if (mobcount( "verus04", "末日祈禱會#EP15_1D::OnMyMobDead" ) < 1) {
+		mapannounce "verus04", "末日祈禱 幹部：可惡！這次只能暫時撤退了！！！", bc_map,0xFFFF00;
+		donpcevent "末日祈禱會#EP15_1D::OnStop";
+	}
+	end;
+S_String:
+	for ( .@i = 0; .@i < 5; ++.@i ) {
+		if (unitexists(.mob_id[.@i]) == true)
+			unittalk .mob_id[.@i], getarg(.@i);
+	}
+	end;
+}

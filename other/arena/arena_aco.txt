@@ -1,0 +1,1775 @@
+//===== rAthena Script =======================================
+//= Izlude Arena Script
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.5
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Izlude Acolyte Battle Arena
+//===== Additional Comments: =================================
+//= 1.0 First version.
+//= 1.1 Corrected variable typos. (bugreport:4374) [L0ne_w0lf]
+//= 1.2 Updated 'waitingroom' to support required zeny/lvl. [Kisuka]
+//= 1.3 Label standardization. [Euphy]
+//= 1.4 Script updates, and removed two level restrictions. [Euphy]
+//= 1.5 Added GM management function. [Euphy]
+//============================================================
+
+arena_room,114,102,0	script	限定服事#arena	45,1,1,{
+OnTouch_:
+	if (BaseClass == Job_Acolyte) {
+		warp "arena_room",135,129;
+		end;
+	}
+	else {
+		mes "只有服事系職業才能參加這個模式。";
+		close;
+	}
+}
+
+arena_room,136,138,3	script	服事等候室	124,{
+	end;
+
+OnInit:
+	waitingroom "個人限時挑戰，服事系",50,"服事等候室::OnStartArena",1,1000,10;
+	enablewaitingroomevent;
+	end;
+
+OnStartArena:
+	warpwaitingpc "force_5-1",99,12;
+	enablenpc "競技場#aco";
+	disablewaitingroomevent;
+	end;
+
+OnStart:
+	enablewaitingroomevent;
+	end;
+}
+
+force_5-1,100,12,0	script	競技場#aco	-1,5,5,{
+OnTouch_:
+	donpcevent "全滅#aco::OnEnable";
+	if (BaseJob == Job_Acolyte) {
+		donpcevent "競技場_服事1::OnStart";
+	}
+	else {
+		donpcevent "競技場_服事2::OnStart";
+	}
+	disablenpc "競技場#aco";
+	end;
+}
+
+-	script	競技場_服事1	-1,{
+OnStart:
+	donpcevent "特羅科#aco1::OnEnable";
+	end;
+
+OnReset_01:
+	enablenpc "關卡_01_02#aco";
+	enablenpc "關卡_02起點#aco";
+	end;
+
+OnReset_02:
+	donpcevent "關卡_02怪物#aco::OnReset";
+	enablenpc "關卡_02_03#aco";
+	enablenpc "關卡_03起點#aco";
+	end;
+
+OnReset_03:
+	enablenpc "關卡_03_04#aco";
+	enablenpc "關卡_04起點#aco";
+	end;
+
+OnReset_04:
+	enablenpc "關卡_04_05#aco";
+	enablenpc "關卡_05起點#aco";
+	end;
+
+OnReset_05:
+	enablenpc "關卡_05_06#aco";
+	enablenpc "關卡_06起點#aco";
+	end;
+
+OnReset_06:
+	enablenpc "關卡_06_07#aco";
+	enablenpc "關卡_07起點#aco";
+	end;
+
+OnReset_07:
+	enablenpc "關卡_07_08#aco";
+	enablenpc "關卡_08起點#aco";
+	end;
+
+OnReset_08:
+	enablenpc "關卡_08_09#aco";
+	enablenpc "關卡_09起點#aco";
+	end;
+
+OnReset_09:
+	enablenpc "關卡_出口#aco";
+	end;
+}
+
+-	script	特羅科#aco1	-1,{
+OnEnable:
+	initnpctimer;
+	set $@arn_1,gettimetick(2);
+	end;
+
+OnTimer2000:
+	mapannounce "force_5-1","你好！我是特羅科，服事系限時挑戰的主持人！",bc_map|bc_npc;
+	end;
+
+OnTimer3000:
+	mapannounce "force_5-1","請謹慎做出決定。在這裡，正確的選擇將決定你的勝負！",bc_map|bc_npc;
+	end;
+
+OnTimer4000:
+	mapannounce "force_5-1","你現在有 8 分鐘的時間來完成這項挑戰。現在進入左側入口開始吧。記住，通關時請以順時針方向前進。",bc_map|bc_npc;
+	end;
+
+OnTimer60000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：7 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer120000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：6 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer180000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：5 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer240000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：4 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer300000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：3 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer360000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：2 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer420000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco1::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：1 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer480000:
+	mapannounce "force_5-1","時間到！希望你玩得開心！",bc_map|bc_npc;
+	end;
+
+OnTimer485000:
+OnTimer486000:
+OnTimer487000:
+OnTimer488000:
+OnTimer489000:
+OnTimer490000:
+OnTimer491000:
+OnTimer492000:
+OnTimer493000:
+OnTimer494000:
+	mapwarp "force_5-1","prt_are_in",177,86;
+	end;
+
+OnTimer495000:
+	mapwarp "force_5-1","prt_are_in",177,86;
+	donpcevent "特羅科#aco1::OnFailClearStage";
+	end;
+
+OnTimerOff:
+	stopnpctimer;
+	end;
+
+OnFailClearStage:
+	mapwarp "force_5-1","prt_are_in",177,86;
+	donpcevent "特羅科#aco1::OnTimerOff";
+	//donpcevent "競技場_服事1::OnReset";
+	donpcevent "服事等候室::OnStart";
+	end;
+
+On01_Start:
+	mapannounce "force_5-1","目標：消滅所有的紅色草！",bc_map|bc_npc;
+	end;
+
+On01_End:
+	mapannounce "force_5-1","北側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On02_Start:
+	mapannounce "force_5-1","目標：擊殺至少 10 隻土波利！",bc_map|bc_npc;
+	end;
+
+On02_End:
+	mapannounce "force_5-1","北側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On03_Start:
+	mapannounce "force_5-1","目標：消滅所有的腐屍！",bc_map|bc_npc;
+	end;
+
+On03_End:
+	mapannounce "force_5-1","東側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On04_Start:
+	mapannounce "force_5-1","作為獎勵，我們將恢復你的一些 HP 和 SP。現在，前往下一個房間！衝衝衝！！",bc_map|bc_npc;
+	end;
+
+On05_Start:
+	mapannounce "force_5-1","目標：消滅所有的歐克腐屍！",bc_map|bc_npc;
+	end;
+
+On05_End:
+	mapannounce "force_5-1","南側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On06_Start:
+	mapannounce "force_5-1","目標：在躲避海葵的同時抵達南側出口！",bc_map|bc_npc;
+	end;
+
+On07_Start:
+	mapannounce "force_5-1","目標：擊殺所有的邪骸弓箭手與火銃兵！",bc_map|bc_npc;
+	end;
+
+On07_End:
+	mapannounce "force_5-1","西側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On08_Start:
+	mapannounce "force_5-1","目標：首領戰。請前往北側的房間！",bc_map|bc_npc;
+	end;
+
+On09_Start:
+	mapannounce "force_5-1","目標：擊殺腐屍戰俘、邪骸戰俘和腐屍！",bc_map|bc_npc;
+	end;
+
+On09_End:
+	mapannounce "force_5-1","首領已被擊敗！北側出口已開啟。謝謝。",bc_map|bc_npc;
+	end;
+}
+
+force_5-1,40,26,0	script	關卡_01起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_01怪物#aco::OnEnable";
+	disablenpc "關卡_01起點#aco";
+	end;
+}
+
+-	script	關卡_01怪物#aco	-1,{
+OnEnable:
+	donpcevent "特羅科#aco1::On01_Start";
+	monster "force_5-1",22,29,"紅色草",1078,1,"關卡_01怪物#aco::OnMyMobDead";
+	monster "force_5-1",29,29,"紅色草",1078,1,"關卡_01怪物#aco::OnMyMobDead";
+	monster "force_5-1",29,22,"紅色草",1078,1,"關卡_01怪物#aco::OnMyMobDead";
+	monster "force_5-1",22,22,"紅色草",1078,1,"關卡_01怪物#aco::OnMyMobDead";
+	monster "force_5-1",25,25,"紅色草",1078,1,"關卡_01怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_01怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_01怪物#aco::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco1::On01_End";
+		donpcevent "競技場_服事1::OnReset_01";
+	}
+	end;
+}
+
+force_5-1,25,69,0	script	關卡_02起點#aco	-1,1,1,{
+OnTouch_:
+	set $@drop_gate,0;
+	donpcevent "關卡_02怪物#aco::OnEnable";
+	disablenpc "關卡_02起點#aco";
+	end;
+}
+
+-	script	關卡_02怪物#aco	-1,{
+OnEnable:
+	donpcevent "特羅科#aco1::On02_Start";
+	areamonster "force_5-1",22,69,29,130,"土波利",1572,20,"關卡_02怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_02怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if ((mobcount("force_5-1","關卡_02怪物#aco::OnMyMobDead") < 11) && ($@drop_gate == 0)) {
+		set $@drop_gate,1;
+		donpcevent "特羅科#aco1::On02_End";
+		donpcevent "競技場_服事1::OnReset_02";
+	}
+	end;
+}
+
+force_5-1,25,159,0	script	關卡_03起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_03怪物#aco::OnEnable";
+	disablenpc "關卡_03起點#aco";
+}
+
+-	script	關卡_03怪物#aco	-1,{
+OnEnable:
+	donpcevent "特羅科#aco1::On03_Start";
+	areamonster "force_5-1",9,157,41,190,"腐屍",1394,10,"關卡_03怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_03怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_03怪物#aco::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco1::On03_End";
+		donpcevent "競技場_服事1::OnReset_03";
+	}
+	end;
+}
+
+force_5-1,69,174,0	script	關卡_04起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "特羅科#aco1::On04_Start";
+	donpcevent "競技場_服事1::OnReset_04";
+	percentheal 50,50;
+	disablenpc "關卡_04起點#aco";
+	end;
+}
+
+force_5-1,159,174,0	script	關卡_05起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_05怪物#aco::OnEnable";
+	disablenpc "關卡_05起點#aco";
+	end;
+}
+
+-	script	關卡_05怪物#aco	-1,{
+OnEnable:
+	donpcevent "特羅科#aco1::On05_Start";
+	areamonster "force_5-1",159,157,187,190,"歐克腐屍",1463,8,"關卡_05怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_05怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_05怪物#aco::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco1::On05_End";
+		donpcevent "競技場_服事1::OnReset_05";
+	}
+	end;
+}
+
+force_5-1,174,130,0	script	關卡_06起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_06怪物#aco::OnEnable";
+	donpcevent "競技場_服事1::OnReset_06";
+	disablenpc "關卡_06起點#aco";
+	end;
+}
+
+-	script	關卡_06怪物#aco	-1,{
+OnEnable:
+	donpcevent "特羅科#aco1::On06_Start";
+	monster "force_5-1",170,124,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",170,121,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",173,116,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",175,113,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",175,110,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",170,106,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",173,106,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",176,106,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",179,106,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",174,100,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",174,96,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",174,92,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",174,88,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",170,80,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",173,80,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",176,80,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	monster "force_5-1",179,80,"海葵",1579,1,"關卡_06怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_06怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+force_5-1,174,40,0	script	關卡_07起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_07怪物#aco::OnEnable";
+	disablenpc "關卡_07起點#aco";
+}
+
+-	script	關卡_07怪物#aco	-1,{
+OnEnable:
+	donpcevent "特羅科#aco1::On07_Start";
+	monster "force_5-1",170,32,"邪骸弓箭手",1420,1,"關卡_07怪物#aco::OnMyMobDead";
+	monster "force_5-1",184,23,"邪骸弓箭手",1420,1,"關卡_07怪物#aco::OnMyMobDead";
+	monster "force_5-1",165,9,"邪骸弓箭手",1420,1,"關卡_07怪物#aco::OnMyMobDead";
+	monster "force_5-1",184,15,"火銃兵",1523,1,"關卡_07怪物#aco::OnMyMobDead";
+	monster "force_5-1",189,23,"火銃兵",1523,1,"關卡_07怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_07怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_07怪物#aco::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco1::On07_End";
+		donpcevent "競技場_服事1::OnReset_07";
+	}
+	end;
+}
+
+force_5-1,132,26,0	script	關卡_08起點#aco	-1,1,1,{
+OnTouch_:
+	percentheal 50,50;
+	donpcevent "特羅科#aco1::On08_Start";
+	donpcevent "競技場_服事1::OnReset_08";
+	disablenpc "關卡_08起點#aco";
+	end;
+}
+
+force_5-1,99,82,0	script	關卡_09起點#aco	-1,1,1,{
+OnTouch_:
+	donpcevent "特羅科#aco1::On09_Start";
+	donpcevent "關卡_09怪物#aco::OnEnable";
+	disablenpc "關卡_09起點#aco";
+	end;
+}
+
+-	script	關卡_09怪物#aco	-1,{
+OnEnable:
+	monster "force_5-1",rand(88,111),rand(89,110),"腐屍戰俘",1480,1,"關卡_09怪物#aco::OnMyMobDead";
+	monster "force_5-1",rand(88,111),rand(89,110),"邪骸戰俘",1479,1,"關卡_09怪物#aco::OnMyMobDead";
+	areamonster "force_5-1",88,89,111,110,"腐屍",1394,4,"關卡_09怪物#aco::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_09怪物#aco::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_09怪物#aco::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco1::On09_End";
+		set $@arn_2,gettimetick(2);
+		donpcevent "競技場_服事1::OnReset_09";
+	}
+	end;
+}
+
+-	script	競技場_服事2	-1,{
+OnStart:
+	donpcevent "特羅科#aco2::OnEnable";
+	end;
+
+OnReset_01:
+	enablenpc "關卡_01_02#aco";
+	enablenpc "關卡_02起點#pri";
+	end;
+
+OnReset_02:
+	donpcevent "關卡_02怪物#pri::OnReset";
+	enablenpc "關卡_02_03#aco";
+	enablenpc "關卡_03起點#pri";
+	end;
+
+OnReset_03:
+	enablenpc "關卡_03_04#aco";
+	enablenpc "關卡_04起點#pri";
+	end;
+
+OnReset_04:
+	enablenpc "關卡_04_05#aco";
+	enablenpc "關卡_05起點#pri";
+	end;
+
+OnReset_05:
+	enablenpc "關卡_05_06#aco";
+	enablenpc "關卡_06起點#pri";
+	end;
+
+OnReset_06:
+	enablenpc "關卡_06_07#aco";
+	enablenpc "關卡_07起點#pri";
+	end;
+
+OnReset_07:
+	enablenpc "關卡_07_08#aco";
+	enablenpc "關卡_08起點#pri";
+	end;
+
+OnReset_08:
+	enablenpc "關卡_08_09#aco";
+	enablenpc "關卡_09起點#pri";
+	end;
+
+OnReset_09:
+	enablenpc "關卡_出口#aco";
+}
+
+-	script	特羅科#aco2	-1,{
+OnEnable:
+	initnpctimer;
+	set $@arn_1,gettimetick(2);
+	end;
+
+OnTimer2000:
+	mapannounce "force_5-1","你好！我是特羅科，服事系限時挑戰的主持人！",bc_map|bc_npc;
+	end;
+
+OnTimer3000:
+	mapannounce "force_5-1","請謹慎做出決定。在這裡，正確的選擇將決定你的勝負！",bc_map|bc_npc;
+	end;
+
+OnTimer4000:
+	mapannounce "force_5-1","你現在有 8 分鐘的時間來完成這項挑戰。現在進入左側入口開始吧。記住，通關時請以順時針方向前進。",bc_map|bc_npc;
+	end;
+
+OnTimer60000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：7 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer120000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：6 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer180000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：5 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer240000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：4 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer300000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：3 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer360000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：2 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer420000:
+	if (getmapusers("force_5-1") == 0) {
+		donpcevent "特羅科#aco2::OnFailClearStage";
+	}
+	mapannounce "force_5-1","剩餘時間：1 分鐘",bc_map|bc_npc;
+	end;
+
+OnTimer480000:
+	mapannounce "force_5-1","時間到！希望你玩得開心！",bc_map|bc_npc;
+	end;
+
+OnTimer485000:
+OnTimer486000:
+OnTimer487000:
+OnTimer488000:
+OnTimer489000:
+OnTimer490000:
+OnTimer491000:
+OnTimer492000:
+OnTimer493000:
+OnTimer494000:
+	mapwarp "force_5-1","prt_are_in",177,86;
+	end;
+
+OnTimer495000:
+	mapwarp "force_5-1","prt_are_in",177,86;
+	donpcevent "特羅科#aco2::OnFailClearStage";
+	end;
+
+OnTimerOff:
+	stopnpctimer;
+	end;
+
+OnFailClearStage:
+	mapwarp "force_5-1","prt_are_in",177,86;
+	donpcevent "特羅科#aco2::OnTimerOff";
+	//donpcevent "競技場_服事2::OnReset";
+	donpcevent "服事等候室::OnStart";
+	end;
+
+On01_Start:
+	mapannounce "force_5-1","目標：擊殺所有的腐屍！",bc_map|bc_npc;
+	end;
+
+On01_End:
+	mapannounce "force_5-1","北側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On02_Start:
+	mapannounce "force_5-1","目標：擊敗所有魔物！",bc_map|bc_npc;
+	end;
+
+On02_End:
+	mapannounce "force_5-1","北側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On03_Start:
+	mapannounce "force_5-1","目標：消滅所有的紅色草！",bc_map|bc_npc;
+	end;
+
+On03_End:
+	mapannounce "force_5-1","東側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On04_Start:
+	mapannounce "force_5-1","目標：消滅每一個魔物！",bc_map|bc_npc;
+	end;
+
+On04_End:
+	mapannounce "force_5-1","東側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On05_Start:
+	mapannounce "force_5-1","目標：擊敗石像鬼！",bc_map|bc_npc;
+	end;
+
+On05_End:
+	mapannounce "force_5-1","南側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On06_Start:
+	mapannounce "force_5-1","目標：擊殺所有的卡利斯格！",bc_map|bc_npc;
+	end;
+
+On06_End:
+	mapannounce "force_5-1","南側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On07_Start:
+	mapannounce "force_5-1","目標：擊殺 1 隻狂暴木乃伊！",bc_map|bc_npc;
+	end;
+
+On07_End:
+	mapannounce "force_5-1","西側出口已開啟！",bc_map|bc_npc;
+	end;
+
+On08_Start:
+	mapannounce "force_5-1","首領戰的時間到了。請向北移動到下一個房間……",bc_map|bc_npc;
+	end;
+
+On09_Start:
+	mapannounce "force_5-1","目標：擊敗首領魔物！",bc_map|bc_npc;
+	end;
+
+On09_End:
+	mapannounce "force_5-1","首領已清除！北側出口已開啟！謝謝。",bc_map|bc_npc;
+	end;
+}
+
+force_5-1,40,26,0	script	關卡_01起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_01怪物#pri::OnEnable";
+	disablenpc "關卡_01起點#pri";
+	end;
+}
+
+-	script	關卡_01怪物#pri	-1,{
+OnEnable:
+	donpcevent "特羅科#aco2::On01_Start";
+	areamonster "force_5-1",13,9,38,41,"腐屍",1394,10,"關卡_01怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_01怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_01怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco2::On01_End";
+		donpcevent "競技場_服事2::OnReset_01";
+	}
+	end;
+}
+
+force_5-1,25,69,0	script	關卡_02起點#pri	-1,1,1,{
+OnTouch_:
+	if (BaseLevel < 70) {
+		donpcevent "關卡_02怪物#pri::OnOn1";
+	}
+	else {
+		donpcevent "關卡_02怪物#pri::OnOn2";
+	}
+	disablenpc "關卡_02起點#pri";
+	end;
+}
+
+-	script	關卡_02怪物#pri	-1,{
+OnOn1:
+	donpcevent "特羅科#aco2::On02_Start";
+	areamonster "force_5-1",22,69,29,130,"邪骸獸人",1462,5,"關卡_02怪物#pri::OnMyMobDead";
+	end;
+
+OnOn2:
+	donpcevent "特羅科#aco2::On02_Start";
+	areamonster "force_5-1",22,69,29,130,"食屍鬼",1423,5,"關卡_02怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_02怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_02怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco2::On02_End";
+		donpcevent "競技場_服事2::OnReset_02";
+	}
+	end;
+}
+
+force_5-1,25,159,0	script	關卡_03起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_03怪物#pri::OnEnable";
+	disablenpc "關卡_03起點#pri";
+	end;
+}
+
+-	script	關卡_03怪物#pri	-1,{
+OnEnable:
+	donpcevent "特羅科#aco2::On03_Start";
+	areamonster "force_5-1",14,163,37,185,"紅色草",1078,5,"關卡_03怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_03怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_03怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco2::On03_End";
+		donpcevent "競技場_服事2::OnReset_03";
+	}
+	end;
+}
+
+force_5-1,69,174,0	script	關卡_04起點#pri	-1,1,1,{
+OnTouch_:
+	if (BaseLevel < 90) {
+		donpcevent "關卡_04怪物#pri::OnOn1";
+	}
+	else {
+		donpcevent "關卡_04怪物#pri::OnOn2";
+	}
+	disablenpc "關卡_04起點#pri";
+	end;
+}
+
+-	script	關卡_04怪物#pri	-1,{
+OnOn1:
+	donpcevent "特羅科#aco2::On04_Start";
+	monster "force_5-1",rand(71,130),rand(170,178),"惡靈司祭",1435,1,"關卡_04怪物#pri::OnMyMobDead";
+	monster "force_5-1",rand(71,130),rand(170,178),"惡靈",1475,1,"關卡_04怪物#pri::OnMyMobDead";
+	monster "force_5-1",rand(71,130),rand(170,178),"腐屍戰俘",1480,1,"關卡_04怪物#pri::OnMyMobDead";
+	monster "force_5-1",rand(71,130),rand(170,178),"邪骸戰俘",1479,1,"關卡_04怪物#pri::OnMyMobDead";
+	end;
+
+OnOn2:
+	donpcevent "特羅科#aco2::On04_Start";
+	areamonster "force_5-1",71,170,130,178,"惡靈司祭",1435,2,"關卡_04怪物#pri::OnMyMobDead";
+	areamonster "force_5-1",71,170,130,178,"惡靈",1475,2,"關卡_04怪物#pri::OnMyMobDead";
+	areamonster "force_5-1",71,170,130,178,"腐屍戰俘",1480,2,"關卡_04怪物#pri::OnMyMobDead";
+	monster "force_5-1",rand(71,130),rand(170,178),"邪骸戰俘",1479,1,"關卡_04怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_04怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_04怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco2::On04_End";
+		donpcevent "競技場_服事2::OnReset_04";
+	}
+	end;
+}
+
+force_5-1,159,174,0	script	關卡_05起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_05怪物#pri::OnEnable";
+	if (BaseLevel < 70) {
+		donpcevent "關卡_05ex#pri::OnOn1";
+	}
+	else {
+		donpcevent "關卡_05ex#pri::OnOn2";
+	}
+	disablenpc "關卡_05起點#pri";
+	end;
+}
+
+-	script	關卡_05ex#pri	-1,{
+OnOn1:
+	areamonster "force_5-1",161,159,187,190,"海葵",1579,10,"關卡_05ex#pri::OnMyMobDead";
+	end;
+
+OnOn2:
+	areamonster "force_5-1",161,159,187,190,"梅納海葵",1441,10,"關卡_05ex#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_05ex#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_05怪物#pri	-1,{
+OnEnable:
+	donpcevent "特羅科#aco2::On05_Start";
+	areamonster "force_5-1",161,159,187,190,"石像鬼",1597,4,"關卡_05怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_05怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_05怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "關卡_05ex#pri::OnReset";
+		donpcevent "特羅科#aco2::On05_End";
+		donpcevent "競技場_服事2::OnReset_05";
+	}
+	end;
+}
+
+force_5-1,174,130,0	script	關卡_06起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_06ex#pri::OnEnable";
+	if (BaseLevel < 70) {
+		donpcevent "關卡_06怪物#pri::OnOn1";
+	}
+	else if (BaseLevel < 80) {
+		donpcevent "關卡_06怪物#pri::OnOn2";
+	}
+	else {
+		donpcevent "關卡_06怪物#pri::OnOn3";
+	}
+	disablenpc "關卡_06起點#pri";
+	end;
+}
+
+-	script	關卡_06ex#pri	-1,{
+OnEnable:
+	areamonster "force_5-1",170,67,178,131,"帕瑞梅特",1314,5,"關卡_06ex#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_06ex#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+-	script	關卡_06怪物#pri	-1,{
+OnOn1:
+	donpcevent "特羅科#aco2::On06_Start";
+	monster "force_5-1",rand(170,178),rand(67,131),"卡利斯格",1438,1,"關卡_06怪物#pri::OnMyMobDead";
+	end;
+
+OnOn2:
+	donpcevent "特羅科#aco2::On06_Start";
+	areamonster "force_5-1",170,67,178,131,"卡利斯格",1438,2,"關卡_06怪物#pri::OnMyMobDead";
+	end;
+
+OnOn3:
+	donpcevent "特羅科#aco2::On06_Start";
+	areamonster "force_5-1",170,67,178,131,"卡利斯格",1438,4,"關卡_06怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_06怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_06怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "關卡_06ex#pri::OnReset";
+		donpcevent "特羅科#aco2::On06_End";
+		donpcevent "競技場_服事2::OnReset_06";
+	}
+	end;
+}
+
+force_5-1,174,40,0	script	關卡_07起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "關卡_07怪物#pri::OnEnable";
+	disablenpc "關卡_07起點#pri";
+	end;
+}
+
+-	script	關卡_07怪物#pri	-1,{
+OnEnable:
+	donpcevent "特羅科#aco2::On07_Start";
+	monster "force_5-1",rand(160,188),rand(9,42),"狂暴木乃伊",1522,1,"關卡_07怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_07怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_07怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco2::On07_End";
+		donpcevent "競技場_服事2::OnReset_07";
+	}
+	end;
+}
+
+force_5-1,132,26,0	script	關卡_08起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "特羅科#aco2::On08_Start";
+	donpcevent "競技場_服事2::OnReset_08";
+	disablenpc "關卡_08起點#pri";
+	end;
+}
+
+force_5-1,99,82,0	script	關卡_09起點#pri	-1,1,1,{
+OnTouch_:
+	donpcevent "特羅科#aco2::On09_Start";
+	if (BaseLevel < 70) {
+		donpcevent "關卡_09怪物#pri::OnOn4";
+	}
+	else if (BaseLevel < 80) {
+		donpcevent "關卡_09怪物#pri::OnOn1";
+	}
+	else if (BaseLevel < 90) {
+		donpcevent "關卡_09怪物#pri::OnOn2";
+	}
+	else {
+		donpcevent "關卡_09怪物#pri::OnOn3";
+	}
+	disablenpc "關卡_09起點#pri";
+	end;
+}
+
+-	script	關卡_09怪物#pri	-1,{
+OnOn1:
+	monster "force_5-1",rand(88,111),rand(89,110),"裘卡",1474,1,"關卡_09怪物#pri::OnMyMobDead";
+	end;
+
+OnOn2:
+	monster "force_5-1",rand(88,111),rand(89,110),"狂暴惡靈",1566,1,"關卡_09怪物#pri::OnMyMobDead";
+	end;
+
+OnOn3:
+	monster "force_5-1",rand(88,111),rand(89,110),"黑暗幻影",1605,1,"關卡_09怪物#pri::OnMyMobDead";
+	end;
+
+OnOn4:
+	monster "force_5-1",rand(88,111),rand(89,110),"腐屍戰俘",1480,1,"關卡_09怪物#pri::OnMyMobDead";
+	monster "force_5-1",rand(88,111),rand(89,110),"邪骸戰俘",1479,1,"關卡_09怪物#pri::OnMyMobDead";
+	areamonster "force_5-1",88,89,111,110,"腐屍",1394,4,"關卡_09怪物#pri::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "force_5-1","關卡_09怪物#pri::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount("force_5-1","關卡_09怪物#pri::OnMyMobDead") < 1) {
+		donpcevent "特羅科#aco2::On09_End";
+		set $@arn_2,gettimetick(2);
+		donpcevent "競技場_服事2::OnReset_09";
+	}
+	end;
+}
+
+force_5-1,62,26,0	script	關卡_08_01#aco	45,1,1,{
+OnTouch_:
+	warp "force_5-1",40,26;
+	if (BaseJob == Job_Acolyte) {
+		enablenpc "關卡_01起點#aco";
+	}
+	else {
+		enablenpc "關卡_01起點#pri";
+	}
+	end;
+}
+
+force_5-1,99,124,0	script	關卡_出口#aco	45,1,1,{
+OnTouch_:
+	donpcevent "特羅科#aco1::OnTimerOff";
+	donpcevent "#arn_timer_aco::OnEnable";
+	mapwarp "force_5-1","prt_are_in",21,35;
+	end;
+}
+
+prt_are_in,181,83,3	script	員工#aco-1	67,{
+	mes "[員工]";
+	mes "幹得好！";
+	mes "你或許未能在";
+	mes "限時挑戰中獲勝，";
+	mes "但你仍然獲得了少量的";
+	mes "競技場點數獎勵?";
+	next;
+	if (arena_point == 30000) {
+		mes "[員工]";
+		mes "等等，抱歉，你的";
+		mes "競技場點數太多了。";
+		mes "因為你已經達到了點數";
+		mes "上限，在你消耗掉一些競技場點數之前，我無法給你任何點數獎勵。";
+		next;
+	}
+	else {
+		set arena_point,arena_point+1;
+	}
+	mes "[員工]";
+	mes "那麼，讓我引導";
+	mes "你到外面去吧。";
+	mes "希望你享受";
+	mes "在競技場的戰鬥?";
+	close2;
+	specialeffect2 EF_EXIT;
+	warp "arena_room",100,75;
+	end;
+}
+
+prt_are_in,25,31,3	script	員工#aco-2	67,{
+	set .@start_timeaco, $@arn_1;
+	set .@hour_startaco, .@start_timeaco / 10000;
+	set .@min_startaco, ((.@start_timeaco % 10000) / 100);
+	set .@sec_startaco, .@start_timeaco % 100;
+	set .@end_timeaco, $@arn_2;
+	set .@hour_endaco, .@end_timeaco / 10000;
+	set .@min_endaco, ((.@end_timeaco % 10000) / 100);
+	set .@sec_endaco, .@end_timeaco % 100;
+
+	if ((.@hour_startaco == 23) && (.@hour_endaco == 0)) {
+		set .@hour_endaco,24;
+	}
+	set .@st_to_secaco, ((.@hour_startaco * 3600) + (.@min_startaco * 60) + (.@sec_startaco));
+	set .@et_to_secaco, ((.@hour_endaco * 3600) + (.@min_endaco * 60) + (.@sec_endaco));
+	set .@record_timeaco, (.@et_to_secaco - .@st_to_secaco);
+
+	set .@record_houraco, .@record_timeaco / 3600;
+	set .@record_minaco, ((.@record_timeaco % 3600) / 60);
+	set .@record_secaco, .@record_timeaco % 60;
+
+	if ((.@record_timeaco < 0 ) || (.@record_houraco < 0) || (.@record_minaco < 0 ) || (.@record_secaco < 0)) {
+		emotion ET_HUK;
+		mes "[員工]";
+		mes "你怎麼……？";
+		mes "根據這些紀——";
+		mes "糟糕。這些紀錄";
+		mes "不知為何被搞砸了。";
+		mes "這……這太不妙了！";
+		mes "現在我該怎麼辦？";
+		next;
+		mes "[員工]";
+		mes "好吧，我就相信你，";
+		mes "假設你在時間限制內";
+		mes "完成了競技場戰鬥。";
+		mes "那麼，讓我給你標準的";
+		mes "競技場點數獎勵。";
+		next;
+		mes "[員工]";
+		mes "對此我感到非常抱歉，";
+		mes "特別是如果你打破了";
+		mes "某項紀錄的話。但";
+		mes "我能做的只有為你恢復";
+		mes "HP 和 SP，"+strcharinfo(0)+"。";
+		percentheal 100,100;
+		next;
+		mes "[員工]";
+		emotion ET_FLAG;
+		mes "謝謝你。";
+		mes "希望你享受";
+		mes "在競技場的時光?";
+		close2;
+		if (arena_point < 29981) {
+			set arena_point,arena_point+20;
+			warp "arena_room",100,75;
+			donpcevent "#arn_timer_aco::OnStop";
+			donpcevent "服事等候室::OnStart";
+		}
+		else {
+			warp "arena_room",100,75;
+			donpcevent "#arn_timer_aco::OnStop";
+			donpcevent "服事等候室::OnStart";
+		}
+		end;
+	}
+	else {
+		if (BaseJob == Job_Acolyte) {
+			set .@acotop_t,$arn_acotop;
+			set .@acotop_n$,$arn_acotopn$;
+		}
+		else {
+			if (BaseLevel < 70) {
+				set .@acotop_t,$arn_pritop60;
+				set .@acotop_n$,$arn_pritopn60$;
+			}
+			else if (BaseLevel < 80) {
+				set .@acotop_t,$arn_pritop70;
+				set .@acotop_n$,$arn_pritopn70$;
+			}
+			else if (BaseLevel < 90) {
+				set .@acotop_t,$arn_pritop80;
+				set .@acotop_n$,$arn_pritopn80$;
+			}
+			else {
+				set .@acotop_t,$arn_pritop90;
+				set .@acotop_n$,$arn_pritopn90$;
+			}
+		}
+		set .@topbunaco, ((.@acotop_t % 3600) / 60);
+		set .@topchoaco, .@acotop_t % 60;
+		set .@gapaco, .@acotop_t - .@record_timeaco;
+		mes "[員工]";
+		mes "^3131FF"+strcharinfo(0)+"^000000，對吧？";
+		mes "嘿，你做得太棒了！你";
+		mes "在 "+.@record_minaco+" 分 "+.@record_secaco+" 秒內完成了這場競技場戰鬥！";
+		next;
+		mes "[員工]";
+		mes "目前，^3131FF"+.@acotop_n$+"^000000";
+		mes "是最高分的玩家，在服事系限時挑戰中保持著";
+		mes "^3131FF"+.@topbunaco+"^000000 分 ^3131FF"+.@topchoaco+"^000000 秒的紀錄。";
+		next;
+		if ((.@acotop_t < 0) || (.@topbunaco < 0 ) || (.@topchoaco < 0)) {
+			emotion ET_HUK;
+			mes "[員工]";
+			mes "等一下……";
+			mes "你的時間比那個";
+			mes "還要好。那麼。";
+			mes "現在是我稍微修正";
+			mes "紀錄的時候了。";
+			next;
+			emotion ET_BEST;
+			mes "[員工]";
+			mes "哇！新紀錄！";
+			mes "太優秀了！";
+			next;
+			mes "[員工]";
+			mes "^333333*咳咳*^000000 哇哦！";
+			mes "新紀錄！你的";
+			mes "名字現在將被列入";
+			mes "限時挑戰競技場 - 服事系紀錄中！";
+			if (BaseJob == Job_Acolyte) {
+				set $arn_acotop,.@record_timeaco;
+				set $arn_acotopn$, strcharinfo(0);
+				donpcevent "凡迪戈斯::OnLineRec_aco";
+			}
+			else {
+				if (BaseLevel < 70) {
+					set $arn_pritop60,.@record_timeaco;
+					set $arn_pritopn60$, strcharinfo(0);
+				}
+				else if (BaseLevel < 80) {
+					set $arn_pritop70,.@record_timeaco;
+					set $arn_pritopn70$, strcharinfo(0);
+				}
+				else if (BaseLevel < 90) {
+					set $arn_pritop80,.@record_timeaco;
+					set $arn_pritopn80$, strcharinfo(0);
+				}
+				else {
+					set $arn_pritop90,.@record_timeaco;
+					set $arn_pritopn90$, strcharinfo(0);
+				}
+				donpcevent "凡迪戈斯::OnLineRec_pri";
+			}
+			next;
+			if (arena_point == 30000) {
+				mes "[員工]";
+				mes "好了，讓我用一些競技場點數";
+				mes "來獎勵你——等等。";
+				mes "我不能這麼做。你的競技場點數已經";
+				mes "達到上限了。很抱歉，";
+				mes "你必須先花費一些點數才能獲得更多。";
+				next;
+				mes "[員工]";
+				mes "總之，你可以和";
+				mes "競技場大廳的";
+				mes "凡迪戈斯確認你目前";
+				mes "的競技場點數總額。嗯，希望你";
+				mes "享受這場戰鬥。現在，讓我引導你出去……";
+				close2;
+			}
+			else if (arena_point > 29950) {
+				mes "[員工]";
+				mes "讓我用一些競技場點數";
+				mes "來獎勵你吧。這次你會";
+				mes "得到更多的點數，因為";
+				mes "你創下了新紀錄。請在大廳";
+				mes "與 ^3131FF凡迪戈斯^000000 對話，";
+				mes "查看你的新點數總額。";
+				next;
+				mes "[員工]";
+				mes "希望你喜歡";
+				mes "這場戰鬥。";
+				mes "現在讓我引導你";
+				mes "回到競技場大廳……";
+				close2;
+				set arena_point,30000;
+			}
+			else {
+				mes "[員工]";
+				mes "讓我用一些競技場點數";
+				mes "來獎勵你吧。這次你會";
+				mes "得到更多的點數，因為";
+				mes "你創下了新紀錄。請在大廳";
+				mes "與 ^3131FF凡迪戈斯^000000 對話，";
+				mes "查看你的新點數總額。";
+				next;
+				mes "[員工]";
+				mes "希望你喜歡";
+				mes "這場戰鬥。";
+				mes "現在讓我引導你";
+				mes "回到競技場大廳……";
+				close2;
+				set arena_point,arena_point+50;
+			}
+			specialeffect2 EF_EXIT;
+			warp "arena_room",100,75;
+			donpcevent "#arn_timer_aco::OnStop";
+			donpcevent "全滅#aco::OnEnable";
+			donpcevent "服事等候室::OnStart";
+			end;
+		}
+		if (gapaco < 0) {
+			mes "[員工]";
+			mes "你這次沒有打破";
+			mes "目前的紀錄，";
+			mes "但你仍然表現得非常出色。";
+			mes "幹得好！";
+			next;
+			if (arena_point == 30000) {
+				mes "[員工]";
+				mes "好了，讓我用一些競技場點數";
+				mes "來獎勵你——等等。";
+				mes "我不能這麼做。你的競技場點數已經";
+				mes "達到上限了。很抱歉，";
+				mes "你必須先花費一些點數才能獲得更多。";
+				next;
+				mes "[員工]";
+				mes "總之，你可以和";
+				mes "競技場大廳的";
+				mes "凡迪戈斯確認你目前";
+				mes "的競技場點數總額。嗯，希望你";
+				mes "享受這場戰鬥。現在，讓我引導你出去……";
+				close2;
+			}
+			else if (arena_point > 29980) {
+				mes "[員工]";
+				mes "讓我用一些競技場點數";
+				mes "來獎勵你吧。";
+				mes "請在大廳與親切的";
+				mes "^3131FF凡迪戈斯^000000";
+				mes "交談，查看你的";
+				mes "新競技場點數總額。";
+				next;
+				mes "[員工]";
+				mes "希望你喜歡";
+				mes "這場戰鬥。";
+				mes "現在讓我引導你";
+				mes "回到競技場大廳……";
+				close2;
+				set arena_point,30000;
+			}
+			else {
+				mes "[員工]";
+				mes "讓我用一些競技場點數";
+				mes "來獎勵你吧。";
+				mes "請在大廳與親切的";
+				mes "^3131FF凡迪戈斯^000000";
+				mes "交談，查看你的";
+				mes "新競技場點數總額。";
+				next;
+				mes "[員工]";
+				mes "希望你喜歡";
+				mes "這場戰鬥。";
+				mes "現在讓我引導你";
+				mes "回到競技場大廳……";
+				close2;
+				set arena_point,arena_point+20;
+			}
+			specialeffect2 EF_EXIT;
+			warp "arena_room",100,75;
+			donpcevent "#arn_timer_aco::OnStop";
+			donpcevent "全滅#aco::OnEnable";
+			donpcevent "服事等候室::OnStart";
+			end;
+		}
+		else {
+			emotion ET_HUK;
+			mes "[員工]";
+			mes "哇！新紀錄！";
+			mes "這太棒了！";
+			next;
+			mes "[員工]";
+			mes "哦哦……一個全新的";
+			mes "紀錄。^3131FF"+ strcharinfo(0)+"^000000，你的";
+			mes "名字現在將被列入";
+			mes "限時挑戰競技場";
+			mes "服事系紀錄中。";
+			mes "恭喜?";
+			if (BaseJob == Job_Acolyte) {
+				set $arn_acotop,.@record_timeaco;
+				set $arn_acotopn$, strcharinfo(0);
+				donpcevent "#Vendigos::OnLineRec_aco";
+			}
+			else {
+				if (BaseLevel < 70) {
+					set $arn_pritop60,.@record_timeaco;
+					set $arn_pritopn60$, strcharinfo(0);
+					donpcevent "#Vendigos::OnLineRec_pri60";
+				}
+				else if (BaseLevel < 80) {
+					set $arn_pritop70,.@record_timeaco;
+					set $arn_pritopn70$, strcharinfo(0);
+					donpcevent "#Vendigos::OnLineRec_pri70";
+				}
+				else if (BaseLevel < 90) {
+					set $arn_pritop80,.@record_timeaco;
+					set $arn_pritopn80$, strcharinfo(0);
+					donpcevent "#Vendigos::OnLineRec_pri80";
+				}
+				else {
+					set $arn_pritop90,.@record_timeaco;
+					set $arn_pritopn90$, strcharinfo(0);
+					donpcevent "#Vendigos::OnLineRec_pri90";
+				}
+			}
+			next;
+			if (arena_point == 30000) {
+				mes "[員工]";
+				mes "好了，讓我用一些競技場點數";
+				mes "來獎勵你——等等。";
+				mes "我不能這麼做。你的競技場點數已經";
+				mes "達到上限了。很抱歉，";
+				mes "你必須先花費一些點數才能獲得更多。";
+				next;
+				mes "[員工]";
+				mes "總之，你可以和";
+				mes "競技場大廳的";
+				mes "凡迪戈斯確認你目前";
+				mes "的競技場點數總額。嗯，希望你";
+				mes "享受這場戰鬥。現在，讓我引導你出去……";
+				close2;
+			}
+			else if (arena_point > 29980) {
+				mes "[員工]";
+				mes "讓我用一些競技場點數";
+				mes "來獎勵你吧。這次你會";
+				mes "得到更多的點數，因為";
+				mes "你創下了新紀錄。請在大廳";
+				mes "與 ^3131FF凡迪戈斯^000000 對話，";
+				mes "查看你的新點數總額。";
+				next;
+				mes "[員工]";
+				mes "希望你喜歡";
+				mes "這場戰鬥。";
+				mes "現在讓我引導你";
+				mes "回到競技場大廳……";
+				close2;
+				set arena_point,30000;
+			}
+			else {
+				mes "[員工]";
+				mes "讓我用一些競技場點數";
+				mes "來獎勵你吧。這次你會";
+				mes "得到更多的點數，因為";
+				mes "你創下了新紀錄。請在大廳";
+				mes "與 ^3131FF凡迪戈斯^000000 對話，";
+				mes "查看你的新點數總額。";
+				next;
+				mes "[員工]";
+				mes "希望你喜歡";
+				mes "這場戰鬥。";
+				mes "現在讓我引導你";
+				mes "回到競技場大廳……";
+				close2;
+				set arena_point,arena_point+20;
+			}
+			specialeffect2 EF_EXIT;
+			warp "arena_room",100,75;
+			donpcevent "#arn_timer_aco::OnStop";
+			donpcevent "全滅#aco::OnEnable";
+			donpcevent "服事等候室::OnStart";
+		}
+		end;
+	}
+}
+
+-	script	#arn_timer_aco	-1,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer2000:
+	mapannounce "prt_are_in","此廣播旨在為您提供有關服事系競技場的資訊。",bc_map,"0xFFCE00";
+	end;
+
+OnTimer3000:
+	mapannounce "prt_are_in","為了讓遊戲進行更順暢，最終等候室的傳送陣將在 1 分鐘後啟動。",bc_map,"0xFFCE00";
+	end;
+
+OnTimer4000:
+	mapannounce "prt_are_in","謝謝。",bc_map,"0xFFCE00";
+	end;
+
+OnTimer60000:
+	donpcevent "競技場_傳送_服事::OnOut";
+	donpcevent "#arn_timer_aco::OnStop";
+	//donpcevent "alloff#aco::OnEnable";
+	donpcevent "服事等候室::OnStart";
+	end;
+
+OnStop:
+	stopnpctimer;
+	end;
+}
+
+prt_are_in,22,29,0	script	競技場_傳送_服事	-1,20,20,{
+OnInit:
+	disablenpc "競技場_傳送_服事";
+	end;
+
+OnOut:
+	enablenpc "競技場_傳送_服事";
+	end;
+
+OnHide:
+	disablenpc "競技場_傳送_服事";
+	end;
+
+OnTouch_:
+	warp "arena_room",100,75;
+	donpcevent "競技場_傳送_服事::OnHide";
+	end;
+}
+
+-	script	計時器_服事2	-1,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnStop:
+	stopnpctimer;
+	end;
+}
+
+-	script	全滅#aco	-1,{
+OnEnable:
+	donpcevent "關卡_01怪物#aco::OnReset";
+	donpcevent "關卡_02怪物#aco::OnReset";
+	donpcevent "關卡_03怪物#aco::OnReset";
+	donpcevent "關卡_05怪物#aco::OnReset";
+	donpcevent "關卡_06怪物#aco::OnReset";
+	donpcevent "關卡_07怪物#aco::OnReset";
+	donpcevent "關卡_09怪物#aco::OnReset";
+	donpcevent "關卡_01怪物#pri::OnReset";
+	donpcevent "關卡_02怪物#pri::OnReset";
+	donpcevent "關卡_03怪物#pri::OnReset";
+	donpcevent "關卡_04怪物#pri::OnReset";
+	donpcevent "關卡_05怪物#pri::OnReset";
+	donpcevent "關卡_06怪物#pri::OnReset";
+	donpcevent "關卡_07怪物#pri::OnReset";
+	donpcevent "關卡_09怪物#pri::OnReset";
+	donpcevent "關卡_05ex#pri::OnReset";
+	disablenpc "關卡_01起點#aco";
+	disablenpc "關卡_02起點#aco";
+	disablenpc "關卡_03起點#aco";
+	disablenpc "關卡_04起點#aco";
+	disablenpc "關卡_05起點#aco";
+	disablenpc "關卡_06起點#aco";
+	disablenpc "關卡_07起點#aco";
+	disablenpc "關卡_08起點#aco";
+	disablenpc "關卡_09起點#aco";
+	disablenpc "關卡_01起點#pri";
+	disablenpc "關卡_02起點#pri";
+	disablenpc "關卡_03起點#pri";
+	disablenpc "關卡_04起點#pri";
+	disablenpc "關卡_05起點#pri";
+	disablenpc "關卡_06起點#pri";
+	disablenpc "關卡_07起點#pri";
+	disablenpc "關卡_08起點#pri";
+	disablenpc "關卡_09起點#pri";
+	disablenpc "關卡_01_02#aco";
+	disablenpc "關卡_02_03#aco";
+	disablenpc "關卡_03_04#aco";
+	disablenpc "關卡_04_05#aco";
+	disablenpc "關卡_05_06#aco";
+	disablenpc "關卡_06_07#aco";
+	disablenpc "關卡_07_08#aco";
+	disablenpc "關卡_08_09#aco";
+	disablenpc "關卡_出口#aco";
+	disablenpc "競技場_傳送_服事"; //050630
+	donpcevent "特羅科#aco1::OnTimerOff";
+	donpcevent "特羅科#aco2::OnTimerOff";
+	donpcevent "#arn_timer_aco::OnStop";
+	end;
+}
+
+arena_room,94,82,7	script	競技場紀錄員工#aco	79,{
+	mes "[瑪西亞]";
+	mes "你好，我負責管理競技場";
+	mes "的服事系紀錄。如果你想查看";
+	mes "其他紀錄，請與競技場紀錄員工";
+	mes "歐文·科伊夫交談，他會幫你的。";
+	next;
+	mes "[瑪西亞]";
+	mes "你想看看誰是服事系";
+	mes "競技場挑戰中的頂尖玩家嗎？";
+	mes "請從選單中選擇。";
+	next;
+	switch(select("服事模式:祭司 - 70 級或以下:祭司 - 80 級或以下:祭司 - 90 級或以下:祭司 - 91 級 ~ "+(checkre(0)?"160":"99"))) {
+	case 1:
+		set .@acotop_t,$arn_acotop;
+		set .@acotop_n$,$arn_acotopn$;
+		set .@acotopbun, ((.@acotop_t % 3600) / 60 );
+		set .@acotopcho, (.@acotop_t % 60);
+		mes "[瑪西亞]";
+		mes "^3131FF"+.@acotop_n$+"^000000";
+		mes "是服事模式的頂尖玩家，";
+		mes "完成時間為 ^3131FF"+.@acotopbun+"^000000 分鐘";
+		mes "與 ^3131FF"+.@acotopcho+"^000000 秒。感謝您";
+		mes "參與競技場挑戰。";
+		close;
+	case 2:
+		set .@pritop_t,$arn_pritop60;
+		set .@pritop_n$,$arn_pritopn60$;
+		break;
+	case 3:
+		set .@pritop_t,$arn_pritop70;
+		set .@pritop_n$,$arn_pritopn70$;
+		break;
+	case 4:
+		set .@pritop_t,$arn_pritop80;
+		set .@pritop_n$,$arn_pritopn80$;
+		break;
+	case 5:
+		set .@pritop_t,$arn_pritop90;
+		set .@pritop_n$,$arn_pritopn90$;
+		break;
+	}
+	set .@pritopbun, ((.@pritop_t % 3600) / 60 );
+	set .@pritopcho, (.@pritop_t % 60);
+	mes "[瑪西亞]";
+	mes "^3131FF"+.@pritop_n$+"^000000";
+	mes "是這個祭司模式的";
+	mes "頂尖玩家，";
+	mes "完成時間為 ^3131FF"+.@pritopbun+" 分鐘";
+	mes "與 ^3131FF"+.@pritopcho+" 秒。感謝您";
+	mes "參與競技場挑戰。";
+	close;
+
+OnInit:
+	if ($arn_acotopn$ == "") {
+		set $arn_pritop60, 480;
+		set $arn_pritop70, 480;
+		set $arn_pritop80, 480;
+		set $arn_pritop90, 480;
+		set $arn_acotop, 480;
+		set $arn_pritopn60$, "Default";
+		set $arn_pritopn70$, "Default";
+		set $arn_pritopn80$, "Default";
+		set $arn_pritopn90$, "Default";
+		set $arn_acotopn$, "Default";
+	}
+	end;
+}
+
+-	script	#Vendigos	-1,{
+OnLineRec_aco:
+	mapannounce "arena_room","凡迪戈斯："+$arn_acotopn$+" 在競技場限時挑戰 - 服事模式中創下了新紀錄。恭喜！",bc_map,"0xFFFF00";
+	end;
+
+OnLineRec_pri60:
+	mapannounce "arena_room","凡迪戈斯："+$arn_pritopn60$+" 在競技場限時挑戰 - 祭司：70 級或以下中創下了新紀錄。恭喜！",bc_map,"0xFFFF00";
+	end;
+
+OnLineRec_pri70:
+	mapannounce "arena_room","凡迪戈斯："+$arn_pritopn70$+" 在競技場限時挑戰 - 祭司：80 級或以下中創下了新紀錄。恭喜！",bc_map,"0xFFFF00";
+	end;
+
+OnLineRec_pri80:
+	mapannounce "arena_room","凡迪戈斯："+$arn_pritopn80$+" 在競技場限時挑戰 - 祭司：90 級或以下中創下了新紀錄。恭喜！",bc_map,"0xFFFF00";
+	end;
+
+OnLineRec_pri90:
+	mapannounce "arena_room","凡迪戈斯："+$arn_pritopn90$+" 在競技場限時挑戰 - 祭司：91 級 ~ "+(checkre(0)?"160":"99")+" 中創下了新紀錄。恭喜！",bc_map,"0xFFFF00";
+	end;
+}
+
+arena_room,140,136,3	script	嚮導 艾利亞斯	729,{
+	mes "[艾利亞斯]";
+	mes "你好，我來為你";
+	mes "介紹伊斯魯得競技場的";
+	mes "服事系模式。";
+	mes "我的名字是艾利亞斯，";
+	mes "你的競技場嚮導。";
+	next;
+	mes "[艾利亞斯]";
+	mes "目前，服事系模式下";
+	mes "有兩種模式。分別是 ^3131FF服事模式^000000 和";
+	mes "^3131FF祭司模式^000000。這兩種模式，";
+	mes "你都需要在 ^3131FF服事系等候室^000000 內等待。";
+	next;
+	mes "[艾利亞斯]";
+	mes "輪到你時，";
+	mes "你將被送出等候室，並被引導至";
+	mes "競技場地。哦，入場費是 1,000 Zeny。";
+	next;
+	mes "[艾利亞斯]";
+	mes "順帶一提，";
+	mes "在服事系模式中，紅色草和";
+	mes "帕瑞梅特會掉落物品";
+	mes "並提供經驗值。不過，";
+	mes "其他的魔物則不會。";
+	next;
+	mes "[艾利亞斯]";
+	mes "當你被引導到";
+	mes "實際的競技場地後，";
+	mes "請聆聽 ^3131FF特羅科^000000 說明的任務目標，你必須在";
+	mes "時間限制 ^3131FF8 分鐘^000000 內完成。別忘了?";
+	next;
+	mes "[艾利亞斯]";
+	mes "完成整個關卡後，";
+	mes "你將被傳送到 ^3131DD最終等候室^000000，";
+	mes "在那裡你將獲得競技場點數作為獎勵。";
+	mes "但你必須在 1 分鐘內領取點數。";
+	next;
+	mes "[艾利亞斯]";
+	mes "一旦你自動";
+	mes "被送出最終等候室，";
+	mes "如果你在那裡沒有領取競技場點數，";
+	mes "就沒有機會再領取了，";
+	mes "所以要小心?";
+	next;
+	mes "[艾利亞斯]";
+	mes "希望你喜歡";
+	mes "服事模式的競技場！";
+	mes "祝你好運，戰鬥順利！";
+	close;
+}
+
+arena_room,195,5,3	script	登入紀錄_服事#arena	802,{
+	set .@i, callfunc("F_GM_NPC",1357,0);
+	if (.@i == -1) {
+		mes "^3355FF密碼錯誤。^000000";
+		close;
+	} else if (.@i == 0) {
+		end;
+	} else {
+		mes "[!!警告!!]";
+		mes "^3355FF下列選單將會重置";
+		mes "在競技場服事系模式中";
+		mes "特定模式的";
+		mes "通關紀錄。^000000";
+		next;
+		switch(select("取消:服事:~70 級:~80 級:~90 級:~"+(checkre(0)?"160":"99")+" 級")) {
+		case 1:
+			mes "^3355FF指令已";
+			mes "取消。^000000";
+			close;
+		case 2:
+			set $arn_acotop, 480;
+			set $arn_acotopn$, "Default";
+			break;
+		case 3:
+			set $arn_pritop60, 480;
+			set $arn_pritopn60$, "Default";
+			break;
+		case 4:
+			set $arn_pritop70, 480;
+			set $arn_pritopn70$, "Default";
+			break;
+		case 5:
+			set $arn_pritop80, 480;
+			set $arn_pritopn80$, "Default";
+			break;
+		case 6:
+			set $arn_pritop90, 480;
+			set $arn_pritopn90$, "Default";
+			break;
+		}
+		close;
+	}
+}
+
+arena_room,195,10,3	script	服事連結#arena	802,{
+	set .@i, callfunc("F_GM_NPC",1357,0);
+	if (.@i == -1) {
+		mes "指令已";
+		mes "取消。";
+		close;
+	} else if (.@i == 0) {
+		end;
+	} else {
+		mes "此 NPC 負責開啟與";
+		mes "關閉前往競技場";
+		mes "服事系模式的傳送陣。";
+		mes "請從選單中選擇";
+		mes "一個選項。";
+		next;
+		switch(select("取消:開啟傳送陣:關閉傳送陣")) {
+		case 1:
+			mes "指令已";
+			mes "取消。";
+			close;
+		case 2:
+			enablenpc "限定服事#arena";
+			mes "傳送陣";
+			mes "即將開啟。";
+			close;
+		case 3:
+			disablenpc "限定服事#arena";
+			mes "傳送陣";
+			mes "即將關閉。";
+			close;
+		}
+	}
+}

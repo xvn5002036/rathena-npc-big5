@@ -1,0 +1,427 @@
+//===== rAthena Script ======================================= 
+//= Sorcerer Job Quest
+//===== By: ================================================== 
+//= Muad_Dib
+//===== Current Version: ===================================== 
+//= 1.3
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job change Quest from Sage / Professor -> Sorcerer.
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. [Masao]
+//= 1.1 Cleaning. [Euphy]
+//= 1.2 Updated script, optimized. [Euphy]
+//= 1.3 Added VIP features. [Euphy]
+//============================================================
+
+gef_tower,102,34,5	script	梅里托	742,{
+	mes "[梅里托]";
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 1000) {
+		mes "你的包包裝了太多東西了。清空一些再來吧。";
+		close;
+	}
+	if (Class == Job_Sorcerer || Class == Job_Sorcerer_T || Class == Job_Baby_Sorcerer) {
+		mes "請和精靈們好好相處喔~ 一定要喔~！";
+		close;
+	}
+	if (BaseLevel < 99 || JobLevel < 50 || SkillPoint != 0) {
+		mes "哇~ 你是個年輕的冒險者呢。真羨慕你。";
+		close;
+	}
+	if (BaseJob != Job_Sage) {
+		mes "啊~ 我想你不需要跟我談話。";
+		close;
+	}
+	if (job_soc == 0) {
+		mes "歡迎。有什麼我可以幫忙的嗎？";
+		next;
+		select("你知道關於妖術師的事嗎？");
+		mes "[梅里托]";
+		mes "當個學者舒舒服服地過日子不是更好嗎？妖術師忙著和精靈溝通，都沒什麼時間看書了...";
+		next;
+		mes "[梅里托]";
+		mes "是什麼讓你想要成為一名妖術師呢？";
+		next;
+		if(select("火之精靈引導我來此。:水之精靈引導我來此。:地之精靈引導我來此。:肉之精靈引導我來此。") == 4) {
+			mes "[梅里托]";
+			mes "根本沒有那種精靈！";
+			close;
+		}
+		mes "[梅里托]";
+		mes "喔，原來如此。";
+		mes "你必定是天生就擁有能看見精靈並與之溝通的能力，不然你就是個撒謊高手。";
+		next;
+		mes "[梅里托]";
+		mes "嗯... 那麼首先，你能把名字寫在這份名單上嗎？";
+		next;
+		if(select("寫下名字。:我不要。") == 2) {
+			mes "[梅里托]";
+			mes "嗯，好吧。有機會再見。";
+			close;
+		}
+		mes "[梅里托]";
+		mes "所以，你是 [" + strcharinfo(0) + "]。";
+		next;
+		mes "[梅里托]";
+		mes "給我一點時間登記你的名字。";
+		mes "稍後再跟我說話。";
+		set job_soc,1;
+		close;
+	} else if (job_soc == 1) {
+		mes "很好，那我就簡單為你解說一下妖術師。";
+		next;
+		mes "[梅里托]";
+		mes "[" + strcharinfo(0) + "]，你能熟練地使用魔法嗎？";
+		next;
+		if(select("是的，我可以。:不，我不太擅長。") == 2) {
+			mes "[梅里托]";
+			mes "什麼！？你不知道怎麼使用魔法？";
+			mes "那你來這裡做什麼？滾出去。立刻！";
+			close;
+		}
+		mes "[梅里托]";
+		mes "好，這應該是顯而易見的。";
+		mes "當然，妖術師也使用魔法。但是，你知道妖術師與其他魔法職業最大的差別是什麼嗎？";
+		next;
+		switch(select("他們懂得如何唱歌。:他們都是些老骨董。:他們能與精靈打交道。")) {
+		case 1:
+			mes "[梅里托]";
+			mes "也許有些人會，但那不是主要的差別。";
+			close;
+		case 2:
+			mes "[梅里托]";
+			mes "什麼！你怎麼敢這樣說！？";
+			close;
+		case 3:
+			break;
+		}
+		mes "[梅里托]";
+		mes "沒錯。那就是妖術師最與眾不同的特徵。";
+		next;
+		mes "[梅里托]";
+		mes "當想要成為妖術師的人來訪時，我們做的第一件事就是確認他們是否能與精靈溝通。";
+		next;
+		mes "[梅里托]";
+		mes "這就是基本的介紹，所以你只需要決定是否要參加資格測驗。";
+		next;
+		mes "[梅里托]";
+		mes "嗯，一切由你決定。你打算怎麼做？";
+		next;
+		switch(select("我要參加測驗。:我晚點再說。")) {
+		case 1:
+			if (VIP_SCRIPT) {
+				callfunc "VIP_Third_Class";
+				set job_soc,2;
+				setquest 12096;
+				next;
+			}
+			mes "[梅里托]";
+			mes "好的。";
+			mes "那麼我會將這件事交給在 4 樓的卡拉卡斯。他會引導你完成測驗的流程。";
+			set job_soc,2;
+			setquest 12096;
+			close;
+		case 2:
+			mes "[梅里托]";
+			mes "什麼？我很肯定你想要成為一名妖術師的說。";
+			close;
+		}
+	} else {
+		mes "你的測驗進行得如何？嗯，卡拉卡斯有點懶散，所以這可能會帶給你一些麻煩... 呵呵";
+		close;
+	}
+}
+
+gef_tower,113,161,5	script	卡拉卡斯	754,{
+	mes "[卡拉卡斯]";
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 1000) {
+		mes "喔，看來你的負重太高了。清空一下包包再來吧。";
+		close;
+	}
+	if (Class == Job_Sorcerer || Class == Job_Sorcerer_T || Class == Job_Baby_Sorcerer) {
+		mes "你看起來很高興。祝你有個美好的旅程。";
+		close;
+	}
+	if (BaseLevel < 99 || JobLevel < 50 || SkillPoint != 0) {
+		mes "有什麼我可以幫你的嗎？";
+		close;
+	}
+	if (BaseJob != Job_Sage) {
+		mes "我屬於妖術師協會。我不認為你找我有什麼事。";
+		close;
+	}
+	if (job_soc < 2) {
+		mes "最近拜訪吉芬塔的人變多了。";
+		close;
+	} else if (job_soc == 2) {
+		mes "....";
+		next;
+		select("啊... 打擾一下~");
+		mes "[卡拉卡斯]";
+		mes "... (Z z z~)";
+		next;
+		select("咳咳！！！~");
+		mes "[卡拉卡斯]";
+		mes "哇啊！！ ";
+		mes "我的天... ";
+		next;
+		mes "[卡拉卡斯]";
+		mes "你... 你從哪裡來的？";
+		next;
+		select("梅里托叫我來找你的。");
+		mes "[卡拉卡斯]";
+		mes "我明白了，給我一點時間。";
+		mes "名單... 已經送到了。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "所以，你就是 [" + strcharinfo(0) + "]... 對吧？";
+		next;
+		if(select("是的，我是。:不，我不是！") == 2) {
+			mes "[卡拉卡斯]";
+			mes "喔，我想名單一定出了什麼錯。你可以晚點再來嗎？";
+			close;
+		}
+		mes "[卡拉卡斯]";
+		mes "在你參加妖術師測驗之前，讓我給你一些基本資訊。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "取得妖術師註冊憑證的方法非常簡單。你只需要去尋找散佈在世界各地的每一種精靈，然後將它們的力量轉換成某種物質的形狀。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "聽起來很簡單，對吧？";
+		next;
+		select("啊... 先生。那真的可能嗎？");
+		mes "[卡拉卡斯]";
+		mes "嗯，要親自遇見每一種精靈是不可能的。你必須非常刻苦地訓練自己，才能賦予精靈形體並親眼清楚地看見它們。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "所以，通常我們會朝著能感覺到精靈的地方進行某種儀式遊行。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "我會告訴你該怎麼做。所以仔細聽好。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "通常我們無法用肉眼看見精靈，但有一種方法可以透過特殊的媒介來具現化精靈的一部分。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "舉例來說，如果你帶著一定數量的風靈礦石前往風之精靈停留的地方，精靈的反應就會被放大。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "同樣地，如果你帶著一定數量的火靈礦石接近火之精靈似乎停留的地方，精靈就會產生反作用。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "妖術師就是利用這個基本原理，這是妖術師接觸精靈所需具備的必要知識。";
+		next;
+		select("所以與精靈溝通...");
+		mes "[卡拉卡斯]";
+		mes "沒錯~";
+		mes "這個職業是建立在精靈力量的基礎上的。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "嗯，但這對像你這樣只專注於讀書的人來說可能有點困難...";
+		next;
+		mes "[卡拉卡斯]";
+		mes "首先，你必須帶來測驗所需的下列材料。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "3 個風靈礦石。";
+		mes "3 個冰靈礦石。";
+		mes "3 個火靈礦石。";
+		mes "3 個地靈礦石。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "當你帶來這些材料時，我會告訴你下一步。";
+		set job_soc,3;
+		changequest 12096,12097;
+		close;
+	} else if (job_soc == 3) {
+		if (countitem(992) > 2 && countitem(991) > 2 && countitem(990) > 2 && countitem(993) > 2) {
+			mes "喔，你把材料都收集齊了。";
+			next;
+			select("接下來我該做什麼？");
+			mes "[卡拉卡斯]";
+			mes "我現在就告訴你。首先，我會告訴你測驗的地點。你最好把它們記下來。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "1. 冰洞 1樓";
+			mes "2. 托爾火山 1樓";
+			mes "3. 妙勒尼廢棄礦坑 3樓";
+			mes "4. 崑崙密穴 2樓";
+			next;
+			mes "[卡拉卡斯]";
+			mes "我們在這四個地方設置了探測柱，讓普通人也能夠與精靈溝通。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "請注意，這些探測柱只有在你攜帶超過一定數量的屬性礦石時才會被啟動。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "你必須為每種屬性準備至少 3 個小礦石。舉例來說，你需要風靈礦石，而不是風靈原石。";
+			next;
+			select("所以我需要屬性礦石...");
+			mes "[卡拉卡斯]";
+			mes "是的，你反應很快！";
+			next;
+			mes "[卡拉卡斯]";
+			mes "當你帶著礦石來到探測柱時，把它們放進連接在柱子上的屬性分解機。探測柱就會被啟動，你就可以和精靈溝通了。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "如果成功，你就可以提取一部分的精靈作為試劑。如果失敗，屬性礦石就會破碎。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "當然如果你夠幸運的話，如果失敗了，風靈礦石有可能會變成風靈原石... 嗯，那是不常見的狀況，所以我們暫時不討論這個。";
+			next;
+			select("如果我的礦石用完了怎麼辦？");
+			mes "[卡拉卡斯]";
+			mes "啊哈哈哈... 如果你的屬性礦石用完了，你只能再去多弄一些來。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "所以參加這個測驗的人通常會盡可能帶上他們能帶的屬性礦石。我告訴你的數量只是最低限度而已。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "如果你是一名進階的妖術師，你就能夠不經過這個過程直接與精靈對話。但初學者必須使用這類媒介才能與它們交談。";
+			next;
+			select("所以試劑是...？");
+			mes "[卡拉卡斯]";
+			mes "我們不知道精靈會製造出哪種試劑。這會根據精靈的狀態而有所不同。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "當你成功取得 3 種不同的試劑時，你就可以回來了。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "一隻精靈製造出來的試劑不會超過 2 種，所以如果你要收集 3 種試劑，我建議你多去幾個地方轉轉。";
+			next;
+			mes "[卡拉卡斯]";
+			mes "有任何問題嗎？";
+			next;
+			if(select("沒有。:請再解釋一次。") == 2) {
+				mes "[卡拉卡斯]";
+				mes "哈哈，那我能先喝口水嗎？請晚點再來找我。";
+				next;
+			}
+			mes "[卡拉卡斯]";
+			mes "那我會寫下我剛才簡短總結的流程。等一下...";
+			next;
+			mes "^000099你獲得了一張寫著與精靈溝通方式的紙條。欲了解更多資訊請開啟你的任務視窗^000000。";
+			set job_soc,4;
+			changequest 12097,12098;
+			close;
+		}
+		mes "在告訴你接下來的流程之前，你必須先帶來一些必需的材料。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "3 個風靈礦石。";
+		mes "3 個冰靈礦石。";
+		mes "3 個火靈礦石。";
+		mes "3 個地靈礦石。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "當你帶來這些基本物品時，我會引導你進行下一步。";
+		close;
+	} else if (job_soc == 4) {
+		if (countitem(6276) && countitem(6278) && countitem(6277)) {
+			mes "哇~ 你的技術不錯。";
+			mes "我還以為你會被精靈們壓倒呢，沒想到你竟然成功取得了這特效藥！";
+			next;
+			select("這就是我需要做的全部嗎？");
+			mes "[卡拉卡斯]";
+			mes "做得好。首先，我會將這神奇的藥劑整理一下，所以請稍等片刻。";
+			delitem 6276,1; //Clear_Reagent
+			delitem 6278,1; //Black_Reagent
+			delitem 6277,1; //Red_Reagent
+			set job_soc,5;
+			completequest 12098;
+			close;
+		}
+		mes "透過與精靈溝通來達到預期效果並不是一件容易的事。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "別放棄，繼續嘗試吧~";
+		close;
+	} else if (job_soc == 5) {
+		mes "本來我的老師需要親自審核妖術師的轉職，但在他出門去尋找魚之精靈後，我就再也沒見過他了。所以我只好自己來審核了。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "親愛的 [" + strcharinfo(0) + "]，";
+		mes "你走遍了荒郊野外，為了開啟成為妖術師的大門，並且通過了我們學院所給予的所有要求。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "當然這只是一個開始，我們不知道你將會與哪種精靈交流，或者有什麼樣的艱難困苦在等著你。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "但憑著你至今所展現的能力，從今以後你將有能力完成任何事情。親愛的 [" + strcharinfo(0) + "]。";
+		next;
+		mes "[卡拉卡斯]";
+		if (BaseLevel < 99 || JobLevel < 50 || SkillPoint) {
+			mes "在我任命你新職業之前，請先檢查一下你自身的狀態。 ";
+			next;
+			mes "[卡拉卡斯]";
+			mes "在你接受新職業之前，你必須先具備你現在職業的禮儀！ ";
+			close;
+		}
+		if (ismounting()) {
+			mes "很好，在我們開始之前...";
+			mes "請解除裝備你的騎乘寵物~";
+			close;
+		}
+		mes "此外，我正式承認你已經完成了妖術師學院所有的轉職測驗。";
+		next;
+		mes "[卡拉卡斯]";
+		mes "恭喜你，[" + strcharinfo(0) + "]。";
+		jobchange roclass(eaclass()|EAJL_THIRD);
+		getitem 5756,1; //Wind_Whisper
+		getitem 2795,1; //Green_Apple_Ring
+		next;
+		mes "[卡拉卡斯]";
+		mes "我希望你今後能與精靈有更多的交流。";
+		close;
+	}
+}
+-	script	精靈探測杖#0	-1,{
+
+	if (strnpcinfo(4) == "thor_v01") setarray .@id[0],990,994,6276,6278;
+	else if (strnpcinfo(4) == "ice_dun01") setarray .@id[0],991,995,6278,6276;
+	else if (strnpcinfo(4) == "mjo_dun03") setarray .@id[0],993,997,6277,6276;
+	else if (strnpcinfo(4) == "gon_dun02") setarray .@id[0],992,996,6277,6278;
+	if (job_soc == 4 && countitem(.@id[0]) > 2) {
+		progressbar "ffff00",5;
+		delitem .@id[0],3; //Boody_Red,Crystal_Blue,Yellow_Live,Wind_Of_Verdure
+		set .@soc_ran, rand(1,70);
+		if (.@soc_ran < 10) {
+			if (countitem(.@id[2]) == 0) {
+				mes "你透過與看不見的精靈溝通，獲得了一份試劑。";
+				getitem .@id[2],1; //Clear_Reagent,Black_Reagent,Red_Reagent
+				close;
+			}
+			mes "看來你並沒有從精靈那裡得到什麼特別的東西。";
+			close;
+		} else if (.@soc_ran > 9 && .@soc_ran < 16) {
+			if (countitem(.@id[3]) == 0) {
+				mes "你透過與看不見的精靈溝通，獲得了一份試劑。";
+				getitem .@id[3],1; //Clear_Reagent,Black_Reagent,Red_Reagent
+				close;
+			}
+			mes "看來你並沒有從精靈那裡得到什麼特別的東西。";
+			close;
+		} else if (.@soc_ran == 56) {
+			mes "精靈將屬性礦石組合成了一塊巨大的屬性原石。";
+			getitem .@id[1],1;
+			//Flame_Heart,Mistic_Frozen,Great_Nature,Rough_Wind
+			close;
+		} else {
+			mes "你使用了屬性礦石，但看來你與精靈的溝通失敗了。";
+			close;
+		}
+	}
+	mes "我看到了妖術師公會為了與精靈溝通所安裝的探測杖。";
+	if (job_soc == 4 && countitem(.@id[0]) < 3) {
+		next;
+		mes "如果你有合適的屬性礦石，你應該就能與精靈交流。";
+	}
+	close;
+}
+thor_v01,64,252,0	duplicate(精靈探測杖#0)	精靈探測杖#1	836
+ice_dun01,274,274,0	duplicate(精靈探測杖#0)	精靈探測杖#2	836
+mjo_dun03,200,141,0	duplicate(精靈探測杖#0)	精靈探測杖#3	836
+gon_dun02,195,190,0	duplicate(精靈探測杖#0)	精靈探測杖#4	836

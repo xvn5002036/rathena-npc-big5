@@ -1,0 +1,252 @@
+//===== rAthena Script =======================================
+//= Buying Shop Scripts
+//===== By: ==================================================
+//= Kisuka
+//===== Current Version: =====================================
+//= 1.1b
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Buying Shop licenses.
+//===== Additional Comments: =================================
+//= 1.0 First version. [Kisuka]
+//= 1.1 Added Catalog Magician. [Euphy]
+//= 1.1a Moved Catalog Magician to Renewal path. [Euphy]
+//= 1.1b Added missing weight checks. [Euphy]
+//============================================================ 
+
+// Black Marketeer (Buy Licenses - Non-Merchant Classes) :: qskill_buy_store
+//============================================================ 
+que_job01,68,84,1	script	黑市商人#Buying	881,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2400) {
+		mes "[傑斯先生]";
+		mes "就算和像我這樣的人比起來，你也太貪心了吧！";
+		mes "你怎麼不先去減輕一下包包的重量呢？";
+		close;
+	}
+	if (getskilllv("ALL_BUYING_STORE") == 1) {
+		mes "[傑斯先生]";
+		mes "嘿，你已經和休簽訂契約了。";
+		mes "我跟你沒什麼好談的。";
+		close;
+	}
+	mes "[傑斯先生]";
+	mes "你一定是急需什麼東西才來找我的吧。";
+	mes "你想要什麼？";
+	next;
+	switch(select("露天收購許可證:你是誰？:沒事，沒事！")) {
+	case 1:
+		mes "[傑斯先生]";
+		mes "我就知道！";
+		mes "當然，我可以幫你做。";
+		mes "我做的看起來和商人們從那個混蛋休先生那裡拿到的正版貨一模一樣！";
+		next;
+		mes "[傑斯先生]";
+		mes "而且我的許可證更好用，因為你不需要學任何技能。";
+		mes "你想要幾張？";
+		next;
+		mes "[傑斯先生]";
+		mes "先讓你知道，我一次只能少量製作，最多 10 張。";
+		mes "每張收費 500 zeny。";
+		next;
+		while(1) {
+			input .@input;
+			mes "[傑斯先生]";
+			if (.@input == 0) {
+				mes "你不需要這些許可證嗎？";
+				close;
+			} else if (.@input > 10) {
+				mes "你知道的，我一次最多只能做 10 張。";
+				next;
+			} else {
+				mes "這將會花費 "+(.@input*500)+" zeny。";
+				if (Zeny < (.@input*500)) {
+					mes "但你沒有足夠的錢。";
+					next;
+					mes "[傑斯先生]";
+					mes "你連做生意的基本常識都不懂嗎？凡事都有代價的。";
+					mes "想要什麼，就得付錢。";
+				} else {
+					mes "哈... 哈哈哈！";
+					mes "休先生，我會接管你的許可證生意的。走著瞧吧！";
+					mes "*咯咯笑*";
+					getitem 12548,.@input; //Buy_Market_Permit2
+					set Zeny,Zeny-(.@input*500);
+				}
+				close;
+			}
+		}
+	case 2:
+		mes "[傑斯先生]";
+		mes "我很久以前就離開家鄉了。";
+		mes "問我是誰毫無意義，因為我現在剩下的只有仇恨。";
+		next;
+		mes "[傑斯先生]";
+		mes "...";
+		mes "休是個毫無商業道德的貪腐商人。";
+		mes "我人生的唯一目的就是毀滅休。";
+		next;
+		mes "[傑斯先生]";
+		mes "呃，我喝太多了... (*嗝*)";
+		mes "那只是酒精在作祟。";
+		mes "請忘記我說過的話吧。";
+		close;
+	case 3:
+		mes "[傑斯先生]";
+		mes "好了，好了！你不用大吼大叫的。";
+		mes "如果你沒事的話，就離我遠點。";
+		close;
+	}
+}
+
+// Purchasing Team (Learn Skill - Merchant Classes)
+//============================================================ 
+alberta_in,58,52,4	script	採購團隊#Buying	59,{
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2400) {
+		mes "- 因為你攜帶了太多物品，所以無法對話或進行任務。 -";
+		close;
+	}
+	mes "[休先生]";
+	if (BaseClass == Job_Merchant && getskilllv("MC_VENDING") >= 1) {
+		if (getskilllv("ALL_BUYING_STORE") == 1) {
+			mes "我是採購團隊的休。";
+			mes "今天有什麼我可以幫忙的嗎？";
+			next;
+			if(select("購買露天收購許可證:離開") == 2) {
+				mes "[休先生]";
+				mes "如果你需要任何露天收購許可證，請隨時來找我。";
+				mes "歡迎再來~";
+				close;
+			}
+			mes "[休先生]";
+			mes "每張露天收購許可證 200 zeny，你一次最多可以購買 50 張。";
+			mes "你需要幾張許可證？";
+			next;
+			while(1) {
+				input .@input;
+				mes "[休先生]";
+				if (.@input == 0) {
+					mes "你已取消交易。";
+					mes "祝你有個美好的一天。";
+					close;
+				} else if (.@input > 50) {
+					mes "請輸入 50 或以下的數值。";
+					next;
+				} else {
+					mes "購買 "+.@input+" 張許可證需要 "+(.@input*200)+" zeny。";
+					if (Zeny < (.@input*200)) {
+						mes "但你似乎沒有足夠的錢。";
+					} else {
+						mes "感謝你的惠顧。";
+						getitem 6377,.@input; //Buy_Market_Permit
+						set Zeny,Zeny-(.@input*200);
+					}
+					close;
+				}
+			}
+		} else {
+			mes "我是艾爾貝塔商人公會採購團隊的休。";
+			mes "你是...";
+			next;
+			mes "[休先生]";
+			mes "你知道嗎？我們公會發行了一種許可證，允許個人向他人收購商品。";
+			next;
+			select("我買東西從來沒遇到過問題...");
+			mes "[休先生]";
+			mes "你說得對，但你想想看：";
+			mes "你在大量收購時難道沒有覺得很辛苦嗎？";
+			mes "你必須找到並與每個擁有你想要物品的人交談。";
+			mes "這很不方便，對吧？";
+			next;
+			mes "[休先生]";
+			mes "由於大量收購對我們商人來說是個重要的課題，";
+			mes "基於我 10 年的採購經驗，我向公會提出了一個創新的計劃。";
+			next;
+			mes "[休先生]";
+			mes "『讓個人開設";
+			mes "露天收購商店！』";
+			mes "這是我提案的標題。";
+			mes "你看看就知道了，當你讀它的時候...";
+			next;
+			mes "[休先生]";
+			mes "...";
+			mes "...(休先生喋喋不休地講著所有的細節。)";
+			next;
+			select("好了，你的重點是什麼？");
+			mes "[休先生]";
+			mes "哦，是的。總而言之，";
+			mes "你可以透過露天系統來大量收購特定的物品。";
+			next;
+			mes "[休先生]";
+			mes "為了開設露天收購商店，你需要商人公會核發的許可證。";
+			next;
+			mes "[休先生]";
+			mes "你每次開店都需要它。我們期望透過這種新型許可證帶來可觀的利潤增長。";
+			next;
+			mes "[休先生]";
+			mes "這就是我提案的重點！";
+			mes "我們的會長聽到我們要賺大錢了，高興極了！";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "請快點說重點好嗎！";
+			next;
+			mes "[休先生]";
+			mes "別這麼不耐煩嘛，好嗎？";
+			mes "我的重點是，如果你學過露天商店，我們就可以讓你開設露天收購商店。";
+			next;
+			mes "[休先生]";
+			mes "當然，我們會收取 10,000 zeny 作為一次性註冊費。";
+			mes "你每次開店時都會需要 ^4A4AFF露天收購許可證^000000。";
+			next;
+			mes "[休先生]";
+			mes "說吧，你想現在註冊嗎？";
+			mes "如果想的話，我會教你如何開設露天收購商店。";
+			next;
+			if(select("學習如何開設露天收購商店:取消") == 2) {
+				mes "[休先生]";
+				mes "哎呀，真令人失望！";
+				mes "使用這種大量收購選項可以在很多方面為你的生意帶來好處，但這取決於你。";
+				mes "我隨時歡迎你來諮詢！";
+				close;
+			}
+			mes "[休先生]";
+			if (Zeny < 10000) {
+				mes "註冊費是 10,000 zeny。";
+				mes "請先準備好這筆費用。";
+				close;
+			} else {
+				mes "你做了個好決定。";
+				mes "請把註冊費交給我，然後在這裡簽名....";
+				next;
+				input .@name$;
+				mes "[休先生]";
+				mes .@name$+"....";
+				mes "我喜歡你的字跡。";
+				mes "好的，你現在已被批准開設露天收購商店了。";
+				set Zeny,Zeny-10000;
+				getitem 6377,5; //Buy_Stall_Permit
+				skill "ALL_BUYING_STORE",1,SKILL_PERM_GRANT;
+				next;
+				mes "[休先生]";
+				mes "目前，^8C2121除了^000000 裝備、特定藥水和手工製作的物品外，只有一般物品可以被大量收購，但這仍然對你非常有幫助，取決於你如何使用它。";
+				next;
+				mes "[休先生]";
+				mes "喔，還有你的物品欄裡至少需要有一個你想收購的物品，因為你必須透過你的商店把它展示給其他人看。";
+				next;
+				mes "[休先生]";
+				mes "你的技能現在應該已經登錄在你的技能視窗中了。如果你沒看到，你可能需要縮小你的技能列表並檢查三轉職業分頁。";
+				next;
+				mes "[休先生]";
+				mes "我已經給了你 5 張露天收購許可證讓你試用。";
+				mes "祝你購物愉快！";
+				close;
+			}
+		}
+	}
+	mes "我是艾爾貝塔商人公會採購團隊的休。";
+	mes "我很想和你聊天，但我現在太忙了。";
+	next;
+	mes "[休先生]";
+	mes "我的時間完全只獻給我們商業領域的顧客。";
+	close;
+}

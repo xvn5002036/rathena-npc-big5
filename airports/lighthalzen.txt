@@ -1,0 +1,85 @@
+//===== rAthena Script ======================================= 
+//= Lighthalzen 機場服務員
+//===== By: ================================================== 
+//= L0ne_W0lf, Muad_Dib
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Lighthalzen 機場服務員
+//===== Additional Comments: ================================= 
+//= 1.0 First version.
+//============================================================ 
+
+lhz_airport,143,43,5	script	機場服務員#lhz_air1a::lhz_airport1	90,{
+	mes "[機場服務員]";
+	mes "歡迎來到";
+	mes "里希塔樂鎮機場，";
+	mes "我們提供直達";
+	mes "艾因布羅克、尤諾和毀葛的航班。";
+	next;
+	if (select("搭乘飛空艇。:取消。") == 1) {
+		mes "[機場服務員]";
+		mes "搭乘費用是";
+		mes "1,200 zeny，但如果您";
+		mes "使用免費飛空艇搭乘券，";
+		mes "就可以免費搭乘。";
+		next;
+		if (select("是:否") == 1) {
+			if (countitem(7311) > 0) {
+				delitem 7311,1; //Free_Flying_Ship_Ticket
+				warp "lhz_airport",148,51;
+				end;
+			}
+			if (Zeny >= 1200) {
+				set Zeny, Zeny - 1200;
+				warp "lhz_airport",148,51;
+				end;
+			}
+			mes "[飛空艇服務員]";
+			mes "很抱歉，但您身上";
+			mes "沒有足夠的 1,200 zeny";
+			mes "來支付搭乘費用。";
+			close;
+		}
+	}
+	mes "[機場服務員]";
+	mes "謝謝您，";
+	mes "歡迎下次光臨。";
+	mes "祝您有美好的一天?";
+	close;
+}
+
+lhz_airport,158,43,5	duplicate(lhz_airport1)	機場服務員#lhz_air1b	90
+lhz_airport,126,43,5	duplicate(lhz_airport1)	機場服務員#lhz_air1c	90
+
+lhz_airport,143,49,3	script	入境服務員#lhz_air2a::lhz_airport2	90,{
+	mes "[入境服務員]";
+	mes "歡迎來到里希塔樂鎮機場。";
+	mes "如果您是剛下飛機的旅客，";
+	mes "請讓我引導您前往主航廈。否則，請";
+	mes "搭乘準備起飛的飛空艇前往您的目的地。";
+	next;
+	if (select("前往主航廈。:取消。") == 1) {
+		mes "[入境服務員]";
+		mes "一旦您進入主航廈，若要再次搭乘飛空艇";
+		mes "就必須重新支付費用。只有當";
+		mes "里希塔樂鎮是您的目的地時，您才應該離開。";
+		mes "我們要前往主航廈嗎？";
+		next;
+		if (select("是:否") == 1) {
+			warp "lhz_airport",142,40;
+			end;
+		}
+	}
+	mes "[入境服務員]";
+	mes "好的，感謝您";
+	mes "的惠顧，";
+	mes "希望您有一趟";
+	mes "愉快的飛行?";
+	close;
+}
+
+lhz_airport,126,51,3	duplicate(lhz_airport2)	入境服務員#lhz_air2b	90
+lhz_airport,158,50,3	duplicate(lhz_airport2)	入境服務員#lhz_air2c	90

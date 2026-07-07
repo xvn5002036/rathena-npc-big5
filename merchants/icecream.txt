@@ -1,0 +1,89 @@
+//===== rAthena Script =======================================
+//= Ice Cream Maker
+//===== By: ==================================================
+//= KOOK SWU, Kisuka
+//===== Current Version: =====================================
+//= 1.5
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= A man makes you ice-cream
+//===== Additional Comments: =================================
+//= 1.1 Optimized, changed overlapping coords in Alberta [Lupus]
+//= 1.2 According to the patch, IceCream seller has been removed from Morocc [Lupus]
+//= 1.3 No more label menu and updated to match AEGIS script.
+//= [Kisuka]
+//= 1.4 Duplicates now spawn from floating NPCs. [L0ne_W0lf]
+//= 1.5 Fixed small checkweight issue. [Kisuka]
+//============================================================
+
+-	script	冰淇淋小販::IceCreamer	-1,{
+	mes "[冰淇淋小販]";
+	mes "用露蒂的雪製作的新鮮冰淇淋！";
+	mes "現在就好好享受吧，這可是限時販售的！";
+	mes "^3355FF100 Zeny^000000 冰淇淋，";
+	mes "冰淇淋！";
+	next;
+	if(select("給我冰淇淋！:取消交易") == 2) {
+		mes "你確定不要來一點嗎？";
+		mes "我不會賣太久的，";
+		mes "一旦賣光了，";
+		mes "就再也沒有了！！！";
+		close;
+	}
+	mes "[冰淇淋小販]";
+	mes "用露蒂的雪製作的新鮮冰淇淋！";
+	mes "大家都想要我們美味的冰淇淋，";
+	mes "但我們的數量有限，";
+	mes "所以你一次最多只能買 5 個！！";
+	next;
+	while(true) {
+		input .@input;
+		if(.@input < 1) {
+			mes "[冰淇淋小販]";
+			mes "如果你不想買的話，";
+			mes "能不能請你讓下一位客人";
+			mes "購買呢？";
+			mes "謝謝你。";
+			close;
+		}
+		if(.@input > 5) {
+			mes "[冰淇淋小販]";
+			mes "哎呀，";
+			mes "你太貪心了。";
+			mes "親愛的顧客，";
+			mes "如果你吃超過 5 個冰淇淋，";
+			mes "你今晚可能要跑好幾趟";
+			mes "廁所喔。";
+			next;
+			continue;
+		}
+		break;
+	}
+	if(Zeny<.@input*100) {
+		mes "[冰淇淋小販]";
+		mes "親愛的顧客，你的錢包似乎有點扁。";
+		mes "冰淇淋每個售價是 ^3355FF100 Zeny^000000。";
+		close;
+	}
+	if(checkweight(536,.@input) == 0) {
+		mes "[冰淇淋小販]";
+		mes "親愛的顧客，你看起來身上帶了太多東西了。";
+		mes "吃冰淇淋是不錯，";
+		mes "但你在購買前";
+		mes "必須考慮一下你的負重量。";
+		close;
+	}
+	set Zeny,Zeny-100*.@input;
+	getitem 536,.@input;	// Ice_Cream
+	close;
+}
+
+// Alberta
+alberta,120,45,2	duplicate(IceCreamer)	冰淇淋小販#1	85
+
+// Morocc Field
+moc_fild16,88,304,4	duplicate(IceCreamer)	冰淇淋小販#2	85
+
+// Morocc
+//morocc,160,144,4	duplicate(IceCreamer)	Ice Cream Maker#3	85

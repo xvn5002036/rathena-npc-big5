@@ -1,0 +1,958 @@
+//===== rAthena Script ======================================= 
+//= Player Marriage
+//===== By: ================================================== 
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.5
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Official Marriage script.
+//= Added isloggedin() check, even though Aegis doesn't do it.
+//= Currently does not support same-Sex marriages.
+//= Old script located in: npc/custom/marriage.txt
+//= - Variable in use: wedding_sign (max 1)
+//= - Variable in use: $@wedding (max 1) 
+//= - Variable in use: $@wed_groom$ $@wed_bride$
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [L0ne_W0lf]
+//= 1.1 Fixed a missing ")" [L0ne_W0lf]
+//= 1.2 Corrected duration of Wedding status. [L0ne_W0lf]
+//= 1.3 Changed permanent global variables to temporary ones. [Euphy]
+//=     Added GM NPCs (commented).
+//= 1.4 Added GM management function. [Euphy]
+//= 1.5 Added Marriage Covenant item and VIP features. [Euphy]
+//============================================================
+
+prt_church,97,100,4	script	婚禮人員#w	71,{
+	cutin "wedding_marry01",2;
+	if (countitem(6026) == 0) {
+
+		// If the VIP system is enabled:
+		// - Non-VIP players must use a Marriage Covenant to get married.
+		// - VIP players may either pay the Zeny fee or use a Marriage Covenant.
+		if (VIP_SCRIPT && !vip_status(VIP_STATUS_ACTIVE)) {
+			mes "[幸福滿點]";
+			mes "抱歉，您現在還不能結婚。";
+			mes "婚禮僅限包月玩家使用。";
+			mes "但如果您有^FF0000結婚誓約書^000000，就能夠結婚喔！";
+			goto L_End;
+		}
+
+	} else
+		set .@covenant,1;
+	if (Upper == 2) {
+		mes "[幸福滿點]";
+		mes "你好?";
+		mes "我的名字叫幸福滿點，";
+		mes "我在這裡為您提供";
+		mes "關於結婚的相關資訊。";
+		mes "那麼，您有";
+		mes "什麼問題嗎？";
+		next;
+		if (select("我想要結婚。:我不需要妳的幫忙！") == 1) {
+			mes "[幸福滿點]";
+			mes "噢，很抱歉，但是";
+			mes "領養的角色";
+			mes "是不允許結婚的。";
+			mes "現在，你為什麼不";
+			mes "好好享受童年的單純快樂呢？";
+			goto L_End;
+		}
+		mes "[幸福滿點]";
+		mes "噢，你當然不需要！";
+		mes "小孩子是不能結婚的——有";
+		mes "太多法律禁止這種事了?";
+		mes "你難道不是最可愛的小傢伙嗎？";
+		goto L_End;
+	}
+	mes "[幸福滿點]";
+	mes "婚姻是兩個選擇";
+	mes "永遠在一起的靈魂的美麗結合，";
+	mes "共同分享他們的喜悅和生活。";
+	mes "在你的生命中有這樣一個特別的人嗎？";
+	next;
+	switch(select("詢問婚禮儀式:詢問婚禮程序:申請結婚:我們是無敵的單身軍團！")) {
+	case 1:
+		mes "[幸福滿點]";
+		mes "英明仁慈的";
+		mes "特里斯坦三世國王過去常";
+		mes "主持婚禮儀式，";
+		mes "但他現在因為繁重的皇家職務";
+		mes "和快節奏的日程安排而無法再這麼做了。";
+		next;
+		mes "[幸福滿點]";
+		mes "維瑪斯主教，愛的";
+		mes "主教，現在是";
+		mes "婚禮儀式的主持人。";
+		mes "他真的是盧恩米德加茲王國的瑰寶。";
+		next;
+		mes "[幸福滿點]";
+		mes "當你和某人結婚時，";
+		mes "這是一輩子的事，所以在求婚或";
+		mes "接受求婚之前要仔細考慮。";
+		mes "請記住，男人只能";
+		mes "和女人結婚，反之亦然。";
+		next;
+		mes "[幸福滿點]";
+		mes "如果你夠幸運能";
+		mes "找到一個你真正想";
+		mes "共度餘生的人，";
+		mes "你可能會想求婚。我希望每個人";
+		mes "都能找到他們完美的另一半?";
+		break;
+	case 2:
+		mes "[幸福滿點]";
+		mes "婚禮程序的第一部分";
+		mes "是完成申請。";
+		mes "一旦新娘和新郎";
+		mes "完成申請，他們";
+		mes "必須組成兩人的隊伍。";
+		next;
+		mes "[幸福滿點]";
+		mes "組成兩人隊伍後，";
+		mes "這對伴侶接著必須與";
+		mes "維瑪斯主教交談。新郎";
+		mes "先說話，並且必須向主教說出";
+		mes "他新娘的正確名稱。否則，儀式將會中止。";
+		next;
+		mes "[幸福滿點]";
+		mes "之後，新娘將";
+		mes "與主教交談，並告訴";
+		mes "他她新郎的名字。";
+		mes "如果這些名字都正確地";
+		mes "告訴了主教，他們將";
+		mes "能夠交換戒指。";
+		next;
+		mes "[幸福滿點]";
+		mes "一旦交換了結婚戒指，";
+		mes "這對伴侶便永遠結為連理。當然，";
+		mes "在此之前，還有很多機會可以改變心意，所以...";
+		next;
+		mes "[幸福滿點]";
+		mes "如果同時有太多";
+		mes "想結婚的伴侶，請";
+		mes "排隊並依序與";
+		mes "維瑪斯主教交談，因為一次只能有一對伴侶結婚。";
+		next;
+		mes "[幸福滿點]";
+		mes "最後，請務必在不要浪費太多時間的情況下";
+		mes "告訴維瑪斯主教你伴侶的正確名字。";
+		mes "如果你花太長時間，";
+		mes "儀式會自動中止，你將必須重試。";
+		next;
+		mes "[幸福滿點]";
+		mes "新娘需要記住，";
+		mes "在新郎結束與";
+		mes "維瑪斯主教的交談後，她們只有3分鐘的時間";
+		mes "來完成與他的交談。";
+		next;
+		if (select("謝謝，這非常有幫助！:說出我伴侶名字最簡單的方法是？") == 1) {
+			mes "[幸福滿點]";
+			mes "嗯，我在這裡是為了幫助";
+			mes "婚禮盡可能順利地";
+			mes "進行。";
+			mes "如果有什麼";
+			mes "你不明白的地方，";
+			mes "隨時可以再問我。";
+			goto L_End;
+		}
+		mes "[幸福滿點]";
+		mes "向主教寫下";
+		mes "你伴侶名字最簡單的方法";
+		mes "是發送悄悄話";
+		mes "給你的伴侶，然後";
+		mes "左鍵點擊聊天提示框左側的名字區塊。";
+		next;
+		mes "[幸福滿點]";
+		mes "按下『Ctrl』和『C』";
+		mes "鍵來複製名字。然後，";
+		mes "你可以藉由按下";
+		mes "『Insert』和『Shift』鍵將名字貼上";
+		mes "輸入框。聽起來很簡單吧？";
+		next;
+		mes "[幸福滿點]";
+		mes "好的，現在讓我們來試試看。";
+		mes "練習用我剛才描述的";
+		mes "方法，給我";
+		mes "你伴侶的名字。";
+		next;
+		input .@partner$;
+		mes "[幸福滿點]";
+		mes "好的，在你";
+		mes "決定結婚之後，";
+		mes "回到我這裡並";
+		mes "提交你的申請。";
+		mes "晚點見，冒險者?";
+		break;
+	case 3:
+		cutin "wedding_marry02",2;
+		if (VIP_SCRIPT) {
+			mes "[幸福滿點]";
+			mes "^FF0000等等！^000000";
+			mes "^FF0000如果您的帳號不是VIP，您必須擁有結婚誓約書才能結婚。^000000";
+			mes "^FF0000在登記結婚之前，請確認您和您愛人的帳號狀態。^000000";
+			next;
+		}
+		if (Sex == SEX_MALE) {
+			mes "[幸福滿點]";
+			mes "所以你想結婚嗎？";
+			mes "身為新郎，你需要準備";
+			if (.@covenant) {
+				mes "^3377FF1件 燕尾服^000000 並給我你的 ^3377FF1張 結婚誓約書^000000。";
+				mes "新娘必須自己準備婚紗並支付";
+				mes "1,200,000 Zeny的費用，或也攜帶結婚誓約書。";
+			} else {
+				mes "^3377FF1件 燕尾服^000000 並支付 ^3377FF1,300,000 Zeny^000000。";
+				mes "新娘必須自己準備婚紗並支付";
+				mes "1,200,000 Zeny的費用。";
+			}
+		} else {
+			mes "[幸福滿點]";
+			mes "所以你想結婚嗎？";
+			mes "身為新娘，你需要準備";
+			if (.@covenant) {
+				mes "^3377FF1件 婚紗^000000 並給我你的 ^3377FF結婚誓約書^000000。";
+				mes "新郎必須攜帶燕尾服並支付";
+				mes "1,300,000 Zeny，或也攜帶結婚誓約書。";
+			} else {
+				mes "^3377FF1件 婚紗^000000 並支付1,200,000 Zeny的費用。新郎必須";
+				mes "攜帶燕尾服並支付1,300,000 Zeny才能結婚。";
+			}
+		}
+		next;
+		mes "[幸福滿點]";
+		mes "新娘和新郎也需要";
+		mes "有 ^3377FF1只 鑽石戒指^000000 來與";
+		mes "他們的伴侶交換。";
+		mes "當你提交你的";
+		mes "婚禮儀式申請時，";
+		mes "你需要準備好所有這些物品。";
+		next;
+		mes "[幸福滿點]";
+		mes "準新娘和";
+		mes "新郎都必須完成";
+		mes "申請程序才能";
+		mes "舉行婚禮。";
+		mes "現在，你想";
+		mes "申請結婚嗎？";
+		next;
+		if (select("是:否") == 1) {
+			if (getpartnerid()) {
+				cutin "wedding_marry02",2;
+				mes "[幸福滿點]";
+				mes "很抱歉，但是你不能";
+				mes "申請另一次婚姻！";
+				mes "我不能允許你這樣背叛";
+				mes "你的配偶，而且";
+				mes "再說，一夫多妻制";
+				mes "在盧恩米德加茲是不合法的。";
+				break;
+			}
+			else if (wedding_sign == 1) {
+				mes "[幸福滿點]";
+				mes "你不是已經";
+				mes "完成申請了嗎？";
+				mes "嗯，請確保你的";
+				mes "伴侶也完成了";
+				mes "申請程序，然後";
+				mes "去和維瑪斯主教交談。";
+				break;
+			}
+			else if (BaseLevel < 45) {
+				mes "[幸福滿點]";
+				mes "嗯，你需要夠";
+				mes "強大，以保護";
+				mes "你所愛的人，然後";
+				mes "你才能考慮結婚。";
+				mes "等你變得更強後，";
+				mes "再來和我談談吧。";
+				goto L_End;
+			}
+			else if (countitem(2613) < 1) {
+				mes "[幸福滿點]";
+				mes "嗯？你忘了";
+				mes "帶鑽石戒指來";
+				mes "在婚禮儀式中";
+				mes "和你的伴侶交換嗎？";
+				mes "仔細找找，找到後";
+				mes "再回來，好嗎？";
+				goto L_End;
+			}
+			else if (Sex == SEX_FEMALE) {
+				if (countitem(6026) == 0 && Zeny < 1200000) {
+					mes "[幸福滿點]";
+					mes "很抱歉，但是所有新娘";
+					mes "必須支付1,200,000";
+					mes "Zeny的費用或帶來結婚";
+					mes "誓約書才能進行";
+					mes "婚禮儀式。也許";
+					mes "你可以請你的伴侶";
+					mes "幫忙籌措資金？";
+					goto L_End;
+				}
+				else if (countitem(2338) < 1) {
+					mes "[幸福滿點]";
+					mes "噢親愛的，你忘了";
+					mes "你的婚紗嗎？";
+					mes "快點找到它，然後";
+					mes "帶過來給我——你";
+					mes "的婚禮絕對不能";
+					mes "沒有它！";
+					goto L_End;
+				}
+			}
+			else if (Sex == SEX_MALE) {
+				if (countitem(6026) == 0 && Zeny < 1300000) {
+					mes "[幸福滿點]";
+					mes "很抱歉，但是你沒有";
+					mes "所有新郎必須支付";
+					mes "用於婚禮儀式的";
+					mes "1,300,000 Zeny或結婚誓約書。";
+					mes "你把錢弄丟了嗎？";
+					goto L_End;
+				}
+				else if (countitem(7170) < 1) {
+					mes "[幸福滿點]";
+					mes "你的燕尾服呢？";
+					mes "在婚禮儀式中你";
+					mes "絕對必須穿著它！";
+					mes "找到它，帶過來";
+					mes "給我，然後我們終於可以";
+					mes "開始婚禮了，好嗎？";
+					goto L_End;
+				}
+			}
+			mes "[幸福滿點]";
+			mes "嗯，看起來你";
+			mes "已經把一切都準備好了。";
+			mes "雖然我不確定誰是";
+			mes "你的伴侶，但請讓我第一個";
+			mes "恭喜你們即將舉行的婚禮?";
+			next;
+			mes "[幸福滿點]";
+			mes "現在，讓我們開始";
+			mes "申請。請在這裡寫下";
+			mes "你正確的名字。";
+			next;
+			while(1) {
+				input .@name$;
+				if (.@name$ != strcharinfo(0)) {
+					mes "[幸福滿點]";
+					mes "嗯，你必須寫下";
+					mes "你名字顯示的確切";
+					mes "樣子。也許你";
+					mes "需要複製並貼上它？";
+					mes "總之，讓我們再試一次。";
+					next;
+				}
+				else 
+					break;
+			}
+			mes "[幸福滿點]";
+			mes "太棒了，看起來我們";
+			mes "完成了你的申請。";
+			mes "記住，稍後你和維瑪斯主教";
+			mes "交談時，你需要告訴他你";
+			mes "伴侶的正確名字，好嗎？";
+			next;
+			mes "[幸福滿點]";
+			mes "當你的伴侶";
+			mes "完成申請";
+			mes "程序時，你們兩人都應該";
+			mes "去和主教交談來開始";
+			mes "婚禮儀式。";
+			emotion ET_THROB;
+			next;
+			mes "[幸福滿點]";
+			if (Sex == SEX_FEMALE) {
+				mes "因為你是新娘，";
+				mes "你需要等待";
+				mes "新郎先和維瑪斯";
+				mes "主教交談。當他";
+				mes "完成後，就輪到你";
+				mes "和維瑪斯主教交談了。";
+				if (.@covenant)
+					delitem 6026,1; //Marriage_Covenant
+				else
+					set Zeny, Zeny-1200000;
+				delitem 2338,1; //Wedding_Dress
+			}
+			else {
+				mes "因為你是新郎，";
+				mes "你需要先和";
+				mes "主教交談。當你";
+				mes "完成後，將會輪到你";
+				mes "的新娘和維瑪斯";
+				mes "主教交談。";
+				if (.@covenant)
+					delitem 6026,1; //Marriage_Covenant
+				else
+					set Zeny, Zeny-1300000;
+				delitem 7170,1; //Tuxedo
+			}
+			delitem 2613,1;
+			//Diamond_Ring
+			set wedding_sign,1;
+			goto L_End;
+		}
+		mes "[幸福滿點]";
+		mes "不...？";
+		mes "好吧，當你";
+		mes "準備好要結婚時，";
+		mes "隨時歡迎回到";
+		mes "我這裡來申請，";
+		mes "好嗎？祝你有美好的一天?";
+		break;
+	case 4:
+		cutin "wedding_marry02",2;
+		donpcevent "單身軍團#Prontera::OnEnable";
+		donpcevent "單身軍團#Geffen::OnEnable";
+		donpcevent "單身軍團#Morocc::OnEnable";
+		donpcevent "單身軍團#Payon::OnEnable";
+		donpcevent "單身軍團#Amatsu::OnEnable";
+		donpcevent "單身軍團#Kunlun::OnEnable";
+		emotion ET_HUK;
+		mes "[單身軍團]";
+		mes "^CC9933你要靠自己精煉裝備來打造神裝！^000000";
+		emotion ET_ROCK, getnpcid(0, "單身軍團#Prontera");
+		next;
+		mes "[單身軍團]";
+		mes "^330099在地下城組隊太浪費了！我一個人就能搞定！^000000";
+		emotion ET_ROCK, getnpcid(0, "單身軍團#Geffen");
+		next;
+		mes "[單身軍團]";
+		mes "^666666見鬼，我從出生開始就一直自己一個人練功，一路練到轉職！^000000";
+		emotion ET_ROCK, getnpcid(0, "單身軍團#Morocc");
+		next;
+		mes "[單身軍團]";
+		mes "^666600我選擇一個人過聖誕節... 玩接龍和做填字遊戲！^000000";
+		emotion ET_ROCK, getnpcid(0, "單身軍團#Payon");
+		next;
+		mes "[單身軍團]";
+		mes "^CC9966女人可能會擊潰我的意志，但她們永遠無法奪走... 我的自由！^000000";
+		emotion ET_ROCK, getnpcid(0, "單身軍團#Amatsu");
+		next;
+		mes "[單身軍團]";
+		mes "^669900...我們是自由的！我們是無敵的單身軍團！^000000";
+		emotion ET_ROCK, getnpcid(0, "單身軍團#Kunlun");
+		close2;
+		cutin "wedding_marry01",255;
+		emotion ET_SWEAT;
+		donpcevent "單身軍團#Prontera::OnInit";
+		donpcevent "單身軍團#Geffen::OnInit";
+		donpcevent "單身軍團#Morocc::OnInit";
+		donpcevent "單身軍團#Payon::OnInit";
+		donpcevent "單身軍團#Amatsu::OnInit";
+		donpcevent "單身軍團#Kunlun::OnInit";
+		end;
+	}
+	close2;
+	cutin "wedding_marry01",255;
+	end;
+
+L_End:
+	close2;
+	cutin "",255;
+	end;
+}
+
+prt_church,97,102,0	script	單身軍團#Prontera	105,{
+	mes "[單身軍團]";
+	mes "^CC9933你要靠自己精煉裝備來打造神裝！^000000";
+	close;
+
+OnInit:
+	hideonnpc "單身軍團#Prontera";
+	end;
+
+OnEnable:
+	hideoffnpc "單身軍團#Prontera";
+	emotion ET_GO;
+	end;
+}
+
+prt_church,98,102,0	script	單身軍團#Geffen	705,{
+	mes "[單身軍團]";
+	mes "^330099在地下城組隊太浪費了！我一個人就能搞定！^000000";
+	close;
+
+OnInit:
+	hideonnpc "單身軍團#Geffen";
+	end;
+
+OnEnable:
+	hideoffnpc "單身軍團#Geffen";
+	emotion ET_GO;
+	end;
+}
+
+prt_church,99,102,0	script	單身軍團#Morocc	707,{
+	mes "[單身軍團]";
+	mes "^666666見鬼，我從出生開始就一直自己一個人練功，一路練到轉職！^000000";
+	close;
+
+OnInit:
+	hideonnpc "單身軍團#Morocc";
+	end;
+
+OnEnable:
+	hideoffnpc "單身軍團#Morocc";
+	emotion ET_GO;
+	end;
+}
+
+prt_church,100,102,0	script	單身軍團#Payon	708,{
+	mes "[單身軍團]";
+	mes "^666600我選擇一個人過聖誕節... 玩接龍和做填字遊戲！^000000";
+	close;
+
+OnInit:
+	hideonnpc "單身軍團#Payon";
+	end;
+
+OnEnable:
+	hideoffnpc "單身軍團#Payon";
+	emotion ET_GO;
+	end;
+}
+
+prt_church,101,102,0	script	單身軍團#Amatsu	767,{
+	mes "[單身軍團]";
+	mes "^CC9966女人可能會擊潰我的意志，但她們永遠無法奪走... 我的自由！^000000";
+	close;
+
+OnInit:
+	hideonnpc "單身軍團#Amatsu";
+	end;
+
+OnEnable:
+	hideoffnpc "單身軍團#Amatsu";
+	emotion ET_GO;
+	end;
+}
+
+prt_church,102,102,0	script	單身軍團#Kunlun	780,{
+	mes "[單身軍團]";
+	mes "^669900...我們是自由的！我們是無敵的單身軍團！^000000";
+	close;
+
+OnInit:
+	hideonnpc "單身軍團#Kunlun";
+	end;
+
+OnEnable:
+	hideoffnpc "單身軍團#Kunlun";
+	emotion ET_GO;
+	end;
+}
+
+prt_church,100,128,4	script	主教#w	60,{
+	cutin "wedding_bomars01",2;
+	if (Upper == 2) {
+		mes "[維瑪斯]";
+		mes "你好，孩子。";
+		mes "你迷路了嗎？嗯。";
+		mes "你知道你的";
+		mes "爸爸媽媽在哪裡嗎？";
+		close2;
+		cutin "wedding_bomars01",255;
+		end;
+	}
+
+	if (!getpartnerid()) {
+		if (!$@wedding) {
+			if (wedding_sign == 1) {
+				getpartymember(getcharid(1));
+				set .@partymembercount,$@partymembercount;
+				if (.@partymembercount == 2) {
+					if (Sex == SEX_MALE) {
+						set $@wedding,1;
+						initnpctimer;
+						mes "[維瑪斯]";
+						mes "年輕的愛侶啊，請";
+						mes "在你們的餘生中";
+						mes "牢記這個時刻。願你們的未來充滿了平靜";
+						mes "與喜悅。願你們共享的愛";
+						mes "與日俱增。";
+						next;
+						mapannounce "prt_church","這是來自新郎 " + strcharinfo(0) + " 先生的求婚...",bc_map;
+						mes "[維瑪斯]";
+						mes "直到世界的";
+						mes "盡頭，願你都站在";
+						mes "你所愛的人身邊，";
+						mes "支持她並保護她。現在，能";
+						mes "讓我知道你新娘的名字嗎？";
+						next;
+						input $@wed_bride$;
+						mes "[維瑪斯]";
+						mes strcharinfo(0) + " 先生...";
+						mes "你是否用你的生命發誓";
+						mes "你將永遠珍惜並";
+						mes "照顧你的新娘，";
+						mes $@wed_bride$ + " 小姐？";
+						next;
+						select("我願意。");
+						set $@wed_groom$,strcharinfo(0);
+						mes "[維瑪斯]";
+						mes "現在，是時候讓";
+						mes "你的新娘宣讀";
+						mes "她的結婚誓言了。";
+						mes "請她上前來...";
+						close2;
+						mapannounce "prt_church","新郎 " + strcharinfo(0) + " 先生，已經向 " + $@wed_bride$ + " 小姐宣讀了他的誓言...",bc_map;
+						cutin "",255;
+						end;
+					}
+					mes "[維瑪斯]";
+					mes "我很抱歉，但新郎";
+					mes "必須先跟我說話";
+					mes "才能開始婚禮。";
+					mes "這是老式的禮節，";
+					mes "但我得承認它確實";
+					mes "能讓事情順利進行。";
+					goto L_End;
+				}
+				mes "[維瑪斯]";
+				mes "在你們能夠";
+				mes "結婚之前，你們必須";
+				mes "先與你的伴侶組成";
+				mes "兩人的隊伍。";
+				mes "然後，我們才能繼續";
+				mes "舉行儀式。";
+				goto L_End;
+			}
+			mes "[維瑪斯]";
+			mes "在你能結婚之前，";
+			mes "你必須先向幸福滿點";
+			mes "申請結婚。";
+			mes "幸福滿點會讓你知道";
+			mes "為了準備結婚，你還需要做些什麼。";
+			goto L_End;
+		}
+		else if ($@wedding == 1) {
+			if (wedding_sign == 1) {
+				getpartymember(getcharid(1));
+				set .@partymembercount,$@partymembercount;
+				if (.@partymembercount == 2) {
+					if (Sex == SEX_FEMALE) {
+						if (strcharinfo(0) == $@wed_bride$) {
+							mes "[維瑪斯]";
+							mes "年輕的愛侶啊，請";
+							mes "在你們的餘生中";
+							mes "牢記這個時刻。願你們的未來充滿了平靜";
+							mes "與喜悅。願你們共享的愛";
+							mes "與日俱增。";
+							next;
+							mapannounce "prt_church","讓我們來聽聽新娘 "+$@wed_bride$+" 小姐怎麼說...",bc_map;
+							mes "[維瑪斯]";
+							mes $@wed_bride$+" 小姐...";
+							mes "你是否發誓要對";
+							mes $@wed_groom$+" 忠誠，";
+							mes "無論有多麼危險，";
+							mes "都會留在他身邊？";
+							next;
+							if (select("^FF0000不。^000000:我願意。") == 1) {
+								cutin "wedding_bomars03",2;
+								mapannounce "prt_church","下一對伴侶，請上前...",bc_map;
+								mes "[維瑪斯]";
+								mes "所以 "+$@wed_groom$;
+								mes "不是你";
+								mes "想嫁的人？嗯。";
+								mes "我對這個";
+								mes "誤會感到非常抱歉...";
+								set $@wedding,0;
+								close2;
+								stopnpctimer;
+								cutin "",255;
+								end;
+							}
+							mes "[維瑪斯]";
+							mes "你是否真的發誓";
+							mes "忠誠與耐心？";
+							mes "你願意嫁給 "+$@wed_groom$+" 嗎？";
+							next;
+							if (select("是的，我願意。:^FF0000不。^000000") == 1) {
+								if (isloggedin(getcharid(3,$@wed_groom$))) {
+									if (marriage($@wed_groom$)) {
+										//Call Wedding effect
+										wedding;
+										//Give ring to Bride, and change to wedding sprite.
+										sc_start SC_Wedding,3600000,1;
+										getitem 2635,1;
+										//Bride_Ring
+										//Give ring to Groom, and change to wedding sprite.
+										attachrid(getcharid(3,$@wed_groom$));
+										sc_start SC_Wedding,3600000,1;
+										getitem 2634,1; //Bridegroom_Ring
+										detachrid;
+										//Switch Script progression back to Bride
+										attachrid(getcharid(3,$@wed_bride$));
+										cutin "wedding_bomars02",2;
+										mapannounce "prt_church","我現在宣布你們，"+$@wed_groom$+" 和 "+$@wed_bride$+"，正式結為夫妻。",bc_map;
+										mes "[維瑪斯]";
+										mes "藉由身為盧恩米德加茲王國";
+										mes "皇家主教賦予我的權力，";
+										mes "我現在宣布你們結為";
+										mes "夫妻。願你們的未來";
+										mes "獲得許多巨大的喜悅祝福。";
+										next;
+										mes "[維瑪斯]";
+										mes "最後...";
+										mes "要永遠幸福喔，";
+										mes "親愛的 "+$@wed_bride$+"...";
+										set $@wed_groom$,"";
+										set $@wed_bride$,"";
+										set $@wedding,0;
+										close2;
+										stopnpctimer;
+										cutin "",255;
+										detachrid;
+										end;
+									}
+								}
+								cutin "wedding_bomars03",2;
+								mes "[維瑪斯]";
+								mes "嗯。看來";
+								mes "你的新郎在儀式";
+								mes "結束前離開了。";
+								mes "請等他";
+								mes "回來後再試一次。";
+								goto L_End;
+							}
+							else {
+								cutin "wedding_bomars03",2;
+								mapannounce "prt_church","哎呀！ "+$@wed_bride$+" 拒絕了 "+$@wed_groom$+" 的求婚！",bc_map;
+								mes "[維瑪斯]";
+								mes "嗯。看來";
+								mes "你改變心意了。";
+								mes "雖然我為";
+								mes "新郎感到難過，但你";
+								mes "必須聽從你的心，做";
+								mes "你認為正確的事。現在，快跑！";
+							}
+							set $@wed_groom$,"";
+							set $@wed_bride$,"";
+							set $@wedding,0;
+							close2;
+							stopnpctimer;
+							cutin "",255;
+							end;
+						}
+						callsub S_Busy;
+					}
+					callsub S_Busy;
+				}
+				callsub S_Busy;
+			}
+			if (strcharinfo(0) == $@wed_bride$) {
+				mes "[維瑪斯]";
+				mes "嗯？看來";
+				mes "幸福滿點還沒有";
+				mes "收到你的結婚";
+				mes "申請。請去和她";
+				mes "交談，這樣我們才能開始";
+				mes "婚禮儀式。";
+				goto L_End;
+			}
+			callsub S_Busy;
+		}
+		callsub S_Busy;
+	}
+	mes "[維瑪斯]";
+	mes "我祝你們永遠";
+	mes "幸福。無論";
+	mes "現在有多麼黑暗，";
+	mes "永遠站在你";
+	mes "愛人的身邊，帶著";
+	mes "希望展望未來。";
+
+L_End:
+	close2;
+	cutin  "",255;
+	end;
+
+S_Busy:
+	if ($@wed_groom$ != "" && $@wed_bride$ != "") {
+		mes "[維瑪斯]";
+		mes ""+ $@wed_bride$ +" 小姐和";
+		mes ""+ $@wed_groom$ +" 先生";
+		mes "的婚禮正在進行中。";
+		mes "請降低您的音量。";
+		goto L_End;
+	}
+	mes "[維瑪斯]";
+	mes "我現在正在為另一對";
+	mes "伴侶主持婚禮，所以";
+	mes "請耐心等待輪到你。";
+	mes "謝謝你的體諒...";
+	goto L_End;
+
+OnStop:
+	stopnpctimer;
+	end;
+
+OnReset:
+	set $@wed_groom$,"";
+	set $@wed_bride$,"";
+	set $@wedding,0;
+	end;
+
+OnTimer180000:
+	mapannounce "prt_church","您回應得太慢了... 下一對伴侶，請上前。",bc_map;
+	donpcevent "主教#w::OnReset";
+	stopnpctimer;
+	end;
+}
+
+prt_church,28,178,4	script	盧恩米德加茲國王	108,{
+	callfunc "F_GM_NPC";
+	mes "[維瑪斯]";
+	mes "你-你是誰？";
+	mes "你必須知道";
+	mes "密碼才能喚醒";
+	mes "我驚人的力量。";
+	next;
+	if (callfunc("F_GM_NPC",1854,0) < 1) {
+		mes "[維瑪斯]";
+		mes "這裡";
+		mes "不是給你";
+		mes "胡鬧的地方。";
+		close2;
+		warp "prt_church",101,102;
+		end;
+	}
+	mes "[婚禮開關]";
+	mes "婚禮儀式";
+	mes "有什麼問題嗎？";
+	mes "如果你需要，我可以重置";
+	mes "維瑪斯主教 NPC。";
+	next;
+	switch(select("不用了，謝謝:重置")) {
+	case 1:
+		mes "[婚禮開關]";
+		mes "那好吧。";
+		mes "但是，如果";
+		mes "維瑪斯主教";
+		mes "NPC 卡住了，最好";
+		mes "還是重置它。";
+		close;
+	case 2:
+		donpcevent "主教#w::OnStop";
+		donpcevent "主教#w::OnReset";
+		mapannounce "prt_church","您回應得太慢了... 下一對伴侶，請上前。",bc_map;
+		mes "[婚禮開關]";
+		mes "維瑪斯主教 NPC";
+		mes "現在已經重新啟動。";
+		mes "現在應該可以";
+		mes "繼續進行婚禮了。";
+		close;
+	}
+}
+
+prt_church,20,179,4	script	離婚人員	71,{
+	callfunc "F_GM_NPC";
+	mes "[壞結局]";
+	mes "哎喲...";
+	mes "你知道我不能";
+	mes "為你做任何事。";
+	next;
+	if (callfunc("F_GM_NPC",1854,0) < 1) {
+		mes "[壞結局]";
+		mes "嗯...";
+		mes "你真的";
+		mes "不應該";
+		mes "在這個地方...";
+		close;
+	}
+	mes "[壞結局]";
+	mes "太好了，你知道";
+	mes "密碼！現在，你";
+	mes "要我移除你";
+	mes "物品欄裡的結婚戒指嗎？";
+	next;
+	switch(select("丟棄1個結婚戒指。:保留它。")) {
+	case 1:
+		set .@ring, (Sex == SEX_MALE)?2634:2635;
+		//Bridegroom_Ring, Bride_Ring
+		if (countitem(.@ring)) {
+			delitem .@ring,1;
+			mes "[壞結局]";
+			mes "完成了！";
+		} else {
+			mes "[壞結局]";
+			mes "我找不到";
+			mes "結婚戒指...";
+			mes "請確保";
+			mes "你沒有裝備著它。";
+		}
+		close;
+	case 2:
+		mes "[壞結局]";
+		mes "你確定你想要";
+		mes "保留那枚戒指嗎？";
+		mes "好吧，但如果它變成";
+		mes "一個麻煩，就來找我。";
+		close;
+	}
+}
+
+prt_church,22,179,4	script	再婚人員	71,{
+	callfunc "F_GM_NPC";
+	mes "[再次結婚]";
+	mes "嗯...？";
+	mes "你到底在";
+	mes "這裡做什麼？";
+	next;
+	if (callfunc("F_GM_NPC",1854,0) < 1) {
+		mes "[再次結婚]";
+		mes "啊！";
+		mes "像你這樣的冒險者";
+		mes "不應該";
+		mes "在這個地方！";
+		close;
+	}
+	if (getpartnerid()) {
+		mes "[再次結婚]";
+		mes "嗯...";
+		mes "我只能在角色";
+		mes "已婚的情況下";
+		mes "製造結婚戒指。";
+		close;
+	}
+	mes "[再次結婚]";
+	mes "啊，我看你";
+	mes "知道密碼。";
+	mes "好吧，如果你因為某種原因";
+	mes "弄丟了你的結婚戒指，";
+	mes "我可以幫你做個新的。";
+	next;
+	switch(select("製作新的結婚戒指。:取消。")) {
+	case 1:
+		set .@ring, (Sex == SEX_MALE)?2634:2635;
+		//Bridegroom_Ring, Bride_Ring
+		if (countitem(.@ring) || isequipped(.@ring)) {
+			mes "[再次結婚]";
+			mes "等等，等等...";
+			mes "你正戴著你的";
+			mes "結婚戒指。我最好";
+			mes "不要再幫你做一個，因為";
+			mes "你不需要超過一個。";
+		} else {
+			getitem .@ring,1;
+			mes "[再次結婚]";
+			mes "給你?";
+			mes "這是你嶄新";
+			mes "的結婚戒指！";
+		}
+		close;
+	case 2:
+		mes "[再次結婚]";
+		mes "好吧。如果你不小心";
+		mes "弄丟了你的結婚戒指，";
+		mes "剛好需要一個新的，";
+		mes "就來找我，好嗎？";
+		close;
+	}
+}

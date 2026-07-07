@@ -1,0 +1,2026 @@
+//===== rAthena Script ======================================= 
+//= Rogue Job Quest
+//===== By: ================================================== 
+//= kobra_k88
+//===== Current Version: ===================================== 
+//= 2.9
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Rogue classes
+//===== Additional Comments: ================================= 
+//= 2.4 Rescripted to Aegis 10.3 stadards. [L0ne_W0lf]
+//=     No longer uses function "F_BlockHigh"
+//= 2.4a Deleted unused variables. [Samuray22]
+//= 2.4b Changed a Problem with JobLevel what made 
+//=     impossible get a Gladius [3]. (bugreport:481) [Samuray22]
+//= 2.4c Corrected a Typo error ";;" and a typo error with "rouge". (bugreport:909) [Samuray22]
+//= 2.5 Added dummy "OnMyMobDead" labels. (bugreport:1100) [L0ne_W0lf]
+//= 2.6 Fixed a few bugs in the Rogue Guildsman. [L0ne_W0lf]
+//= 2.7 Fixed a bug on Markie question 5, bugreport:1600 [Brainstorm]
+//= 2.8 Moved "Thug" to Morocc Ruins. [L0ne_W0lf]
+//= 2.9 Added Quest Log commands. [Kisuka]
+//============================================================ 
+
+moc_ruins,86,103,1	script	暴徒#rg	118,{
+	mes "[暴徒]";
+	mes "唉...";
+	mes "人生是什麼？";
+	mes "錢又有什麼";
+	mes "用？...該死。";
+	mes "該死這毫無價值的人生！";
+	next;
+	mes "[暴徒]";
+	mes "喂，小鬼。";
+	mes "你他媽的";
+	mes "在看什麼？";
+	next;
+	if (select("我？沒-沒什麼！:........") == 1) {
+		mes "[暴徒]";
+		mes "那他媽的";
+		mes "從我面前消失！";
+		mes "你沒聽見嗎？";
+		mes "滾開！";
+		close;
+	}
+	mes "[暴徒]";
+	mes "嗯...";
+	mes "也許我該去^0000FF發樂斯燈塔^000000的^0000FF流氓公會^000000晃晃...";
+	next;
+	mes "[暴徒]";
+	mes "我需要我的錢，";
+	mes "他們最好給我準備好...";
+	close;
+}
+
+in_rogue,363,122,4	script	流氓公會人員#rg	747,{
+	if (Upper == 1) {
+		mes "[馬奇]";
+		mes "咦？你...你...？！";
+		mes "嘿，我們以前見過面嗎？";
+		next;
+		mes "[馬奇]";
+		mes "..............";
+		mes "啊，^FF0000非常抱歉^000000！我想我把你誤認成我認識的某個人了。";
+		next;
+		mes "[馬奇]";
+		mes ".......";
+		mes "........不過還真奇怪。嗯。";
+		next;
+		mes "[馬奇]";
+		mes "我從來不會認錯人的...算了，總之祝你平安！";
+		close;
+	}
+	if (BaseJob == Job_Thief) {
+		if (SkillPoint) {
+			mes "[流氓公會人員]";
+			mes "喲，你在做什麼？！";
+			mes "如果你還有未使用的技能點數，是不能轉職的，所以把點數都用光吧。在你搞砸之前最好先檢查一下自己。";
+			close;
+		}
+		if (JobLevel > 39) {
+			if (ROGUE_Q == 0) {
+				mes "[流氓公會人員]";
+				mes "所以像你這樣的孩子";
+				mes "來這裡做什麼？";
+				if (Sex == SEX_MALE) {
+					mes "哦，我現在懂了...";
+					mes "這個小男生想";
+				}
+				else {
+					mes "哦，我明白了...";
+					mes "小可愛想 ";
+				}
+				mes "成為一名^800000流氓^000000。";
+				next;
+				mes "[流氓公會人員]";
+				mes "呃，很高興認識你吧，我想。我是馬奇，我在流氓公會工作，一個慈善——咳咳，一個『慈散』團體，如你所見。那麼你叫什麼名字？";
+				next;
+				mes "[馬奇]";
+				mes "..." + strcharinfo(0) + "？";
+				mes "嘿嘿！很酷的名字。";
+				mes "如果名字太蠢，我們";
+				mes "會叫你改掉，";
+				mes "所以你算走運的。";
+				next;
+				mes "[馬奇]";
+				mes "所以你為什麼想加入流氓？我想你告訴了我你的真名，所以你會是個誠實的流氓。這種人可不多見，嘿嘿?";
+				next;
+				mes "[馬奇]";
+				mes "流氓的第一守則...";
+				mes "在大多數時間裡，絕對不要向大多數人透露你的真實身分。這只是我們喜歡用的一點防備措施。";
+				next;
+				mes "[馬奇]";
+				mes "好了。我正式接受你的申請，所以現在你得接受一個測驗。別緊張，這第一個測驗非常簡單。";
+				next;
+				mes "[馬奇]";
+				mes "好吧...";
+				mes "我們開始吧！";
+				next;
+			}
+			else if (ROGUE_Q == 1) {
+				mes "[馬奇]";
+				mes "又是你？";
+				mes "好吧，你上次可能搞砸了，因為你太緊張了。所以放輕鬆，通過";
+				mes "這個測驗，好嗎？";
+				next;
+			}
+			else if (ROGUE_Q == 2) {
+				mes "[馬奇]";
+				mes "去找史密斯談談。他的測驗可能滿難的。他是負責確保別人向我們還清債務的人之一。所以沒錯，他可能會有點難搞。";
+				next;
+				mes "[馬奇]";
+				mes "對...";
+				mes "那傢伙可能會非常龜毛，但我們公會需要像他這樣的人。總之，小心點。祝你好運，兄弟。";
+				close;
+			}
+			else if (ROGUE_Q > 2 && ROGUE_Q < 16) {
+				mes "[馬奇]";
+				mes "嘿喲...";
+				mes "盡力而為。";
+				next;
+				mes "[馬奇]";
+				mes "嘿嘿...";
+				mes "菜鳥。這簡直";
+				mes "小菜一碟——等等！呃，我不是在說你！我是說另一個菜鳥?";
+				close;
+			}
+			else if (ROGUE_Q == 16 || ROGUE_Q == 17) {
+				changequest 2026,2027;
+				mes "[馬奇]";
+				if (ROGUE_Q == 16) {
+					mes "哦嘿，是你啊！";
+					mes "你做得很好，兄弟。";
+					mes "現在，讓我把你的";
+					mes "職業轉為流氓。這是你應得的！";
+					next;
+					mes "[馬奇]";
+					mes "恭喜?！";
+					mes "你看起來";
+					mes "太帥了！";
+				}
+				else {
+					mes "哦！是你！";
+					mes "你竟然能忍受那個傢伙？做得好！收集那些物品一定很辛苦吧？";
+					next;
+					mes "[馬奇]";
+					mes "嘿嘿?";
+					mes "恭喜！";
+					mes "你";
+					mes "做得非常好?";
+				}
+				set .@jlevel,JobLevel;
+				callfunc "Job_Change",Job_Rogue;
+				callfunc "F_ClearJobVar";
+				completequest 2027;
+				next;
+				mes "[馬奇]";
+				mes "現在...";
+				mes "該是時候";
+				mes "讓我發表";
+				mes "一場演說了? *咳咳*";
+				next;
+				mes "[馬奇]";
+				mes "享受你身為流氓的自由吧。只要記住，你必須同時自由且負責任。所以己所不欲，勿施於人，懂嗎？好了，回頭見。";
+				close2;
+				if (.@jlevel == 50) {
+					getitem 1220,1; //Gladius_
+				} else {
+					getitem 1219,1; //Gladius
+				}
+				end;
+			}
+			if (select("我準備好了。:等等，我需要準備一下！") == 2) {
+				mes "[馬奇]";
+				mes "準備一下...？";
+				mes "好吧，好吧。";
+				mes "你就慢慢";
+				mes "摸吧，如何？";
+				mes "但快點";
+				mes "回來，懂嗎？";
+				close;
+			}
+			next;
+			mes "[馬奇]";
+			mes "仔細聽，並且";
+			mes "選出正確的答案。";
+			mes "懂嗎？現在，讓我";
+			mes "唸出這些問題...";
+			next;
+			switch(rand(1,3)) {
+			case 1:
+				mes "[馬奇]";
+				mes "1. 請選擇學習^880000潛遁^000000所必須的技能。";
+				next;
+				if (select("^880000隱匿^000000:^880000偷竊^000000:^880000殘影^000000:^880000狂擊^000000") == 1)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "2. 與商人的等級10^880000低價買進^000000技能相比，流氓使用等級10^880000強奪^000000技能在折扣百分比上可以多獲得多少？";
+				next;
+				if (select("3 %:2 %:1 %:0 %") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "3. 關於技能^880000偷錢^000000的正確描述是哪個？";
+				next;
+				if (select("從玩家身上偷取物品:從魔物身上偷取物品:從魔物身上偷取Zeny:從玩家身上偷取Zeny") == 3)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "4. 需要多少個流氓才能發動技能^880000流氓天國^000000？";
+				next;
+				if (select("1名流氓 + 2名刺客:1名盜賊 + 2名流氓:4名盜賊:2名流氓") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "5. 選擇在^880000卸除頭盔^000000等級5時可以學習的技能。";
+				next;
+				if (select("^880000施毒^000000:^880000卸除全部裝備^000000:^880000毒性感染^000000:^880000卸除盾牌^000000") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "6. 選擇允許使用者在隱匿狀態下移動的技能。";
+				next;
+				if (select("^880000隱匿^000000:^880000後退迴避^000000:^880000潛遁^000000:^880000撒沙^000000") == 3)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "7. 選擇可以增加裝備者命中率的卡片。";
+				next;
+				if (select("安德列卡片。:吸血蝙蝠卡片。:木乃伊卡片。:瑪麗娜卡片。") == 3)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "8. 選擇當被插有螃蟹卡片的武器（對火屬性造成20%更多傷害）攻擊時，會受到更多傷害的魔物。";
+				next;
+				if (select("螃蟹:小惡魔:長老樹精:巴風特") == 3)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "9. 當裝備短劍時，使用技能^880000二刀連擊^000000需要消耗多少SP？";
+				next;
+				if (select("15:被動技能，不需SP。:被動技能，10 SP:54") == 2)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "10. 選擇在海底洞穴最有效的短劍。";
+				next;
+				if (select("風屬性 笨拙短劍:冰屬性 笨拙短劍:地屬性 笨拙短劍:火屬性 笨拙短劍") == 1)
+					set .@assassin_t,.@assassin_t+10;
+				break;
+			case 2:
+				mes "[馬奇]";
+				mes "1. 哪種魔物會掉落有洞的大馬士革短劍？";
+				next;
+				if (select("盜蟲:大嘴鳥:沙漠之狼:犬妖") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "2. 哪種魔物會掉落有洞的笨拙短劍？";
+				next;
+				if (select("黃蜂:沙漠之狼:傀儡娃娃:迷幻之王") == 1)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "3. 選擇能夠製造特殊藥水的職業。";
+				next;
+				if (select("商人:鍊金術師:鐵匠:祭司") == 2)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "4. 選擇流氓不被允許使用的武器。";
+				next;
+				if (select("角弓:十字弓:羅馬短劍:拳刃") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "5. 選擇魔物蚯蚓所擁有的屬性。";
+				next;
+				if (select("水:火:風:地") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "6. 選擇無法被馴服為寵物的魔物。";
+				next;
+				if (select("波波利:克瑞米:獸人:毒魔菇") == 2)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "7. 選擇會從火屬性短劍受到更多傷害的魔物。";
+				next;
+				if (select("哥布靈(短劍):哥布靈(大錘):哥布靈(流星錘):哥布靈(鏈錘)") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "8. 選擇沒有任何公會城池的城鎮。";
+				next;
+				if (select("普隆德拉:艾爾帕蘭:艾爾貝塔:斐揚") == 3)
+					set .@assassin_t,.@assassin_t+10;
+				mes "[馬奇]";
+				mes "9. 選擇會掉落藍色藥草的植物。";
+				next;
+				switch(select("綠色草:黃色草:藍色草:光芒草")) {
+				default:
+					break;
+				case 3:
+					set .@assassin_t,.@assassin_t+10;
+					break;
+				case 4:
+					set .@assassin_t,.@assassin_t+10;
+					break;
+				}
+				mes "[馬奇]";
+				mes "10. 選擇不具備不死屬性的魔物。";
+				next;
+				if (select("腐屍:邪惡食人魚:吸血蝙蝠:卡利斯格") == 3)
+					set .@assassin_t,.@assassin_t+10;
+				break;
+			case 3:
+				mes "[馬奇]";
+				mes "1. 當盜賊精通^880000殘影^000000時，迴避率會增加多少百分比？";
+				next;
+				if (select("30:40:160:20") == 1)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "2. 選擇能偵測到使用隱匿或偽裝技能的角色的魔物。";
+				next;
+				if (select("綠綿蟲:阿爾格斯:木乃伊:邪骨骷髏") == 2)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "3. 選擇盜賊可以轉職為流氓的地點。";
+				next;
+				if (select("克魔島:可可摩海灘:發樂斯燈塔:夢羅克") == 3)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "4. 初心者可以在哪個城鎮轉職為盜賊？";
+				next;
+				if (select("克魔島:姜餅城 露緹:艾爾貝塔:夢羅克") == 4)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "5. 選擇不會影響DEX素質的卡片。";
+				next;
+				if (select("搖滾蝗蟲卡片:木乃伊卡片:傑洛米卡片:土波利卡片") == 2)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "6. 所以成為流氓有什麼酷的地方？";
+				next;
+				select("完全是個狠角色。:衣服、風格。:可以叫其他人『菜鳥』:優秀的攻擊強度");
+				set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "7. 什麼時候可以從盜賊轉職為流氓？";
+				next;
+				switch(select("在職業等級 30:在職業等級 35:在職業等級 40:在職業等級 50")) {
+				default:
+					break;
+				case 3:
+					set .@assassin_t,.@assassin_t+10;
+					break;
+				case 4:
+					set .@assassin_t,.@assassin_t+10;
+					break;
+				}
+				mes "[馬奇]";
+				mes "8. 你想把頭髮染成藍色。你要去哪個城鎮，在哪個方向，假設12點鐘方向是北方。";
+				next;
+				if (select("夢羅克，7點鐘方向:普隆德拉，7點鐘方向:夢羅克，5點鐘方向:普隆德拉，1點鐘方向") == 2)
+					set .@assassin_t,.@assassin_t+10;
+
+				mes "[馬奇]";
+				mes "9. 選擇盜賊轉職任務所需的香菇。";
+				next;
+				switch(select("毒香菇:紅色毛香菇:毒魔菇:橘色黏性香菇")) {
+				default:
+					break;
+				case 1:
+				case 3:
+					set .@assassin_t,.@assassin_t+10;
+					break;
+				}
+				mes "[馬奇]";
+				mes "10. 選擇對流氓職業幫助最小的卡片。";
+				next;
+				if (select("白幽靈卡片:長老樹精卡片:傑洛米卡片:瑪特卡片") == 2)
+					set .@assassin_t,.@assassin_t+10;
+			}
+			mes "[馬奇]";
+			mes "*呼?*";
+			mes "終於。";
+			mes "我們搞定了。";
+			next;
+			mes "[馬奇]";
+			mes "讓我看看。";
+			mes "你得到了...";
+			mes "" + .@assassin_t + " 分。";
+			if (.@assassin_t > 80) {
+				set ROGUE_Q,2;
+				setquest 2017;
+				mes "很好。你及格了。";
+				mes "我們不需要";
+				mes "重來一次了。";
+				next;
+				mes "[馬奇]";
+				mes "但先別高興得太早，你還有更多這種測驗。你的下一個測驗將由史密斯負責。";
+				next;
+				mes "[馬奇]";
+				mes "所以...";
+				mes "去找史密斯完成這個測驗，好嗎？不過要小心，史密斯是個非常龜毛的人。";
+				close;
+			}
+			else {
+				set ROGUE_Q,1;
+				mes "糟糕... 你不及格！";
+				next;
+				mes "[馬奇]";
+				mes "老兄，你當初有機會的時候就該多學點。謝謝你浪費我的時間。";
+				next;
+				mes "[馬奇]";
+				mes "*嘆氣...* 讓我給你一些提示，好嗎？我本來應該要告訴你一些關於什麼 ^990000iro.ragnarokonline.com^000000 的事，來幫助你學習你需要知道的東西。";
+				next;
+				mes "[馬奇]";
+				mes "當然，我不知道這到底是什麼鬼意思，但如果你了解的話，它可能會對你有很大的幫助。";
+				close;
+			}
+		}
+		else if (JobLevel < 40) {
+			mes "[流氓公會人員]";
+			mes "哇哦，慢著點，菜鳥。我們只接受盜賊職業等級至少達到40的人。我可不想在你準備好之前讓你加入而讓自己承擔風險。懂嗎？";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Assassin) {
+		mes "[流氓公會人員]";
+		mes "咦...？";
+		mes "一個十字刺客在這裡做什麼？呃，你不是被派來流氓公會暗殺某人的吧？";
+		next;
+		mes "[流氓公會人員]";
+		mes "無論如何，別惹我們！你抓不到我的... 我可是個滑頭的罪犯！";
+		next;
+		mes "[流氓公會人員]";
+		mes "聽不懂，是嗎？這是我以前常對休伊說的話。如果你在刺客公會，你應該見過他...";
+		close;
+	}
+	else if (BaseJob == Job_Rogue) {
+		mes "[馬奇]";
+		mes "嘿嘿?";
+		mes "好久不見。";
+		mes "呃，現在公會這裡沒有";
+		mes "什麼要求要給你，所以";
+		mes "晚點再過來看看吧。";
+		close;
+	}
+	else {
+		mes "[流氓公會人員]";
+		mes "喂你...";
+		mes "把你那難看的";
+		mes "屁股滾出這裡，";
+		mes "否則我就重新裝潢";
+		mes "你那張臉！";
+		close;
+	}
+}
+
+in_rogue,376,23,1	script	史密斯先生#rg	57,{
+	if (ROGUE_Q == 2) {
+		mes "[史密斯先生]";
+		mes "歡迎來到";
+		mes "流氓公會。";
+		mes "從現在起，我將";
+		mes "驗證你的資格。";
+		next;
+		mes "[史密斯先生]";
+		mes "在我們開始之前，";
+		mes "我想讓你知道";
+		mes "一些事情...";
+		next;
+		mes "[史密斯先生]";
+		mes "所有新進流氓都必須支付報名費，所以我希望你先處理好這件事。";
+		next;
+		mes "[史密斯先生]";
+		mes "你必須了解的是，流氓公會經營許多生意，^666666有時候是非法的^000000，這些都需要資金的支援。";
+		next;
+		set .@item_need,rand(1,15);
+		if (.@item_need > 0 && .@item_need < 6) callsub S_Req,"10 亡者遺骨","6 藍色藥草","10 腐爛指甲","10 恐怖的嘴巴",3;
+		else if (.@item_need > 5 && .@item_need < 11) callsub S_Req,"10 綠色藥草","10 蟹殼","10 蛇鱗","10 加勒結晶",4;
+		else if (.@item_need > 10 && .@item_need < 15) callsub S_Req,"10 黃色藥草","10 外殼","10 蝗蟲後腿","10 熊掌",5;
+		else if (.@item_need == 15) {
+			mes "[史密斯先生]";
+			mes "我會讓你知道...";
+			set ROGUE_Q,6;
+			changequest 2017,2021;
+			next;
+			mes "[史密斯先生]";
+			mes "我會讓你知道......";
+			next;
+			mes "[史密斯先生]";
+			mes "我會讓你知道........";
+			mes "順帶一提.....";
+			next;
+			mes "[史密斯先生]";
+			mes "老天...";
+			mes "這真是...";
+			mes "該死...";
+			mes "太煩人了！";
+			next;
+			mes "[史密斯先生]";
+			mes "...";
+			next;
+			mes "[史密斯先生]";
+			mes "...";
+			mes "......";
+			next;
+			mes "[史密斯先生]";
+			mes "...";
+			mes "......";
+			mes ".........";
+			next;
+			mes "[史密斯先生]";
+			mes "今天老子心情很不爽，你知道為什麼嗎？！老子一毛錢都沒收回來！天啊！一群白痴盜賊整天跑來找我，說想當什麼流氓！";
+			next;
+			mes "[史密斯先生]";
+			mes "天啊！現在我總算明白為什麼我們的會長告訴我們，做客服支援工作爛透了。";
+			next;
+			mes "[史密斯先生]";
+			mes "那個該死的公會會長把我派來做這爛工作。老子才不稀罕這他媽的工作！";
+			mapannounce "in_rogue","那個該死的公會會長把我派來做這爛工作！那混蛋！",bc_map;
+			mes "那混蛋真該下他媽的地獄，老子要去踹爆那狗娘養的屁股！操！操！操！！！";
+			mapannounce "in_rogue","那混蛋真該下他媽的地獄，老子要去踹爆那狗娘養的屁股！操！操！操！！！",bc_map;
+			next;
+			mes "[史密斯先生]";
+			mes "那個剛剛想轉職的蠢貨，就是排在你前面的那個...";
+			mapannounce "in_rogue","那個剛剛想轉職的蠢貨，就是排在你前面的那個...",bc_map;
+			mes "你知道他他媽的跟我說了什麼鬼嗎？！";
+			mapannounce "in_rogue","你知道他他媽的跟我說了什麼鬼嗎？！",bc_map;
+			mes "嗶嗶嗶嗶嗶！！";
+			mapannounce "in_rogue","嗶嗶嗶嗶嗶！！",bc_map;
+			next;
+			mes "[史密斯先生]";
+			mes "搞什麼——？！這文字過濾系統是怎麼回事？！別再嗶嗶嗶了！你這愚蠢的嗶——！讓我說話！！！";
+			mapannounce "in_rogue","搞什麼——？！這文字過濾系統是怎麼回事？！別再嗶嗶嗶了！你這愚蠢的嗶——！讓我說話！！！",bc_map;
+			next;
+			mes "[史密斯先生]";
+			mes "你他媽的在看什麼...？" + strcharinfo(0) + "？那是你的名字！？";
+			mapannounce "in_rogue","你他媽的在看什麼...？" + strcharinfo(0) + "？那是你的名字！？",bc_map;
+			mes " ";
+			mes "[" + strcharinfo(0) + "]";
+			mes "呃...";
+			mes "先生...？";
+			mes "我不是故意惹您生氣的。我來這裡只是為了成為一名流氓。";
+			next;
+			mes "[史密斯先生]";
+			mes "我的老天鵝啊，我他媽的剛才到底在講什麼鬼，你這白痴！";
+			mapannounce "in_rogue","我的老天鵝啊，我他媽的剛才到底在講什麼鬼，你這白痴！",bc_map;
+			next;
+			mes "[史密斯先生]";
+			mes "別管我！別管我！別管我！";
+			mapannounce "in_rogue","別管我！別管我！別管我！",bc_map;
+			next;
+			mes "[史密斯先生]";
+			mes "你想做什麼就去做，好嗎？你想做什麼他媽的鬼事都行...！！";
+			mapannounce "in_rogue","你想做什麼就去做，好嗎？你想做什麼他媽的鬼事都行...！！",bc_map;
+			next;
+			mes "[史密斯先生]";
+			mes "你的報名費... ^FF000010,000 zeny^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 蛹殼^000000！";
+			mes "^FF00005 空瓶^000000！";
+			mes "^FF00005 鐵礦石^000000！";
+			mes "^FF00005 石頭的心^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 紅色藥草^000000！";
+			mes "^FF00005 動物外皮^000000！！";
+			mes "^FF00005 黃色魔力礦石^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 蝙蝠牙齒^000000！";
+			mes "^FF00005 蠍子尾巴^000000！！";
+			mes "^FF00005 溜溜猴尾巴^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 魔物飼料^000000！";
+			mes "^FF00005 柔毛^000000！！";
+			mes "^FF00005 幸運草^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 鳥毛^000000！";
+			mes "^FF00005 猛禽爪子^000000！！";
+			mes "^FF00005 蛙卵^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "在你湊齊所有這些東西之前，想都別想回來，否則我會把你當場宰了。";
+			next;
+			mes "[史密斯先生]";
+			mes "搞什麼鬼？你剛才說我煩人嗎？閉嘴，你這忘恩負義的混蛋！";
+			next;
+			mes "[史密斯先生]";
+			mes "我剛剛把^FF000010 狸貓樹葉^000000加到清單上了。你最好去給我找來！";
+			next;
+			mes "[史密斯先生]";
+			mes "嗶嗶嗶嗶嗶嗶嗶嗶嗶！你難道就沒有想過當個NPC有多難嗎！？";
+			mapannounce "in_rogue","嗶嗶嗶嗶嗶嗶嗶嗶嗶！你難道就沒有想過當個NPC有多難嗎！？",bc_map;
+			close;
+		}
+	}
+	else if (ROGUE_Q < 2) {
+		mes "[史密斯先生]";
+		mes "三千二百七十二。三千二百七十三。三千二百七十四...";
+		next;
+		mes "[史密斯先生]";
+		mes "呃...";
+		mes "頭痛...";
+		mes "這Zeny";
+		mes "多得數不清。";
+		next;
+		mes "[史密斯先生]";
+		mes "呃...？";
+		mes "你在這裡做什麼？如果你要談轉職的事，你必須先跟另一個人談談。";
+		next;
+		mes "[史密斯先生]";
+		mes "...媽的！";
+		mes "我數錯了！";
+		close;
+	}
+	else if (ROGUE_Q > 2) {
+		if (ROGUE_Q == 3) callsub S_CheckItems,510,6,932,10,957,10,958,10;
+		else if (ROGUE_Q == 4) callsub S_CheckItems,511,10,910,10,926,10,964,10;
+		else if (ROGUE_Q == 5) callsub S_CheckItems,508,10,948,10,935,10,940,10;
+		else if (ROGUE_Q == 6) {
+			if (Zeny > 9999 && countitem(915) > 4 && countitem(713) > 4 && countitem(1002) > 4 &&
+			countitem(953) > 4 && countitem(507) > 4 && countitem(919) > 4 && countitem(715) > 4 &&
+			countitem(913) > 4 && countitem(904) > 4 && countitem(942) > 4 && countitem(528) > 4 &&
+			countitem(914) > 4 && countitem(705) > 4 && countitem(916) > 4 && countitem(917) > 4 &&
+			countitem(908) > 4 && countitem(945) > 4) {
+				mes "[史密斯先生]";
+				mes "嗯...讓我看看...";
+				set Zeny, Zeny-10000;
+				delitem 915,5; //Chrysalis
+				delitem 713,5; //Empty_Bottle
+				delitem 1002,5; //Iron_Ore
+				delitem 953,5; //Stone_Heart
+				delitem 507,5; //Red_Herb
+				delitem 919,5; //Animal's_Skin
+				delitem 715,5;
+				//Yellow_Gemstone
+				delitem 913,5; //Tooth_Of_Bat
+				delitem 904,5; //Scorpion's_Tail
+				delitem 942,5; //Yoyo_Tail
+				delitem 528,5; //Monster's_Feed
+				delitem 914,5; //Fluff
+				delitem 705,5; //Clover
+				delitem 916,5; //Feather_Of_Birds
+				delitem 917,5; //Talon
+				delitem 908,5; //Spawn
+				delitem 945,5;
+				//Raccoon_Leaf
+				set ROGUE_Q,8;
+				next;
+				mes "[史密斯先生]";
+				mes "哇，我要求的每一樣東西你都帶來了。做得好... 我向你致敬。";
+				next;
+				mes "^CCCCCC- 豎起中指 -^000000'";
+				mes "*咧嘴笑*";
+				set ROGUE_Q,8;
+				changequest 2021,2025;
+				next;
+				mes "[史密斯先生]";
+				mes "既然你表現出這麼大的努力，我將為你寫一封推薦信。要知道，我通常是不做這種事的。";
+				next;
+				mes "[史密斯先生]";
+				mes "但我相信你會是流氓公會的一大資產。嗯，我現在沒有空白的紙，所以拿這個代替吧...";
+				getitem 1097,1; //Worn_Out_Page
+				next;
+				mes "[史密斯先生]";
+				mes "*嘆氣...*";
+				mes "我知道，我知道。我應該在工作場所控制好自己的情緒。發脾氣是個壞習慣...";
+				next;
+				mes "[史密斯先生]";
+				mes "*喃喃自語...*";
+				mes "我剛才是怎麼... *喃喃...*";
+				mes "怎麼會... 我記得...";
+				mes "*嘆氣* 這都是因為我的壞脾氣！";
+				next;
+				mes "[史密斯先生]";
+				mes "哇....！！！";
+				next;
+				mes "^3355FF晚點再來可能會比較好。^000000";
+				close;
+			}
+			mes "[史密斯先生]";
+			mes "這次給我聽好了！";
+			mes "報名費：";
+			mes "^FF000010000 zeny^000000，";
+			mes "^FF00005 蛹殼^000000！";
+			mes "^FF00005 空瓶^000000！";
+			mes "^FF00005 鐵礦石^000000！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 石頭的心^000000！！";
+			mes "^FF00005 紅色藥草^000000！";
+			mes "^FF00005 動物外皮^000000！！";
+			mes "^FF00005 黃色魔力礦石^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 蝙蝠牙齒^000000！";
+			mes "^FF00005 蠍子尾巴^000000！！";
+			mes "^FF00005 溜溜猴尾巴^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 魔物飼料^000000！";
+			mes "^FF00005 柔毛^000000！！";
+			mes "^FF00005 幸運草^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "^FF00005 鳥毛^000000！";
+			mes "^FF00005 猛禽爪子^000000！！";
+			mes "^FF00005 蛙卵^000000！！";
+			mes "^FF000010 狸貓樹葉^000000！！";
+			next;
+			mes "[史密斯先生]";
+			mes "別想著";
+			mes "不帶齊這些東西";
+			mes "就跑回來！";
+			close;
+		}
+		else if (ROGUE_Q == 7) {
+			mes "[史密斯先生]";
+			mes "讓我想想...";
+			mes "我該把你";
+			mes "送到誰那裡去呢...？";
+			switch(rand(1,3)) {
+			case 1:
+				set ROGUE_Q,9;
+				if(checkquest(2018) != -1) {
+					changequest 2018,2022;
+				}
+				else if(checkquest(2019) != -1) {
+					changequest 2019,2022;
+				}
+				else {
+					changequest 2020,2022;
+				}
+				next;
+				mes "[史密斯先生]";
+				mes "對了！我知道";
+				mes "有一個合適的人選?！";
+				next;
+				mes "[史密斯先生]";
+				mes "去拜訪住在蘇克拉特沙漠南部（夢羅克往東一張地圖）的小阿拉漢。";
+				next;
+				mes "[史密斯先生]";
+				mes "他是一個挺好的人。他工作認真，而且非常擅長討債。";
+				next;
+				mes "[史密斯先生]";
+				mes "在他加入流氓公會之前，人們一直試圖殺他，因為他父親過去做過的一些事。所以，他成了一個逃亡者。";
+				next;
+				mes "[史密斯先生]";
+				mes "不管怎樣，這就是他一直待在我們這裡的原因。我們一直在幫助他躲避敵人的追殺。";
+				next;
+				mes "[史密斯先生]";
+				mes "啊，如果你想見他，最好記住密碼。沒有密碼，他不會讓任何人進入他的房子。";
+				next;
+				mes "[史密斯先生]";
+				mes "密碼是 ^0000FF阿拉漢從未私藏過升級物品^000000。";
+				next;
+				mes "[史密斯先生]";
+				mes "那麼，祝你好運。他住的地方離這裡不遠，盡快回來吧。身手敏捷... 這就是流氓的精神。";
+				close;
+			case 2:
+				set ROGUE_Q,10;
+				if(checkquest(2018) != -1) {
+					changequest 2018,2023;
+				}
+				else if(checkquest(2019) != -1) {
+					changequest 2019,2023;
+				}
+				else {
+					changequest 2020,2023;
+				}
+				next;
+				mes "[史密斯先生]";
+				mes "嗯...";
+				mes "這個人可能";
+				mes "很適合你，但是...";
+				mes "他有點危險。";
+				next;
+				mes "[史密斯先生]";
+				mes "我希望你去見小安東尼奧，第一代安東尼奧的兒子。出於某種原因，人們一直試圖殺他，因為他父親過去做過的一些事。";
+				next;
+				mes "[史密斯先生]";
+				mes "他是在斐揚長大的，但他目前待在靠近可可摩海灘的一間空屋裡。";
+				next;
+				mes "[史密斯先生]";
+				mes "我最近聽說，他經常抱怨屋外太吵，而且他很害怕遭到暗殺。總之...";
+				next;
+				mes "[史密斯先生]";
+				mes "他神經有點緊繃，所以他會對任何靠近他房子的人丟飛刀。他有暴力的性格。";
+				next;
+				mes "[史密斯先生]";
+				mes "然而，他確實擁有出色的商業頭腦。而且他也熱愛賭博。一旦你認識了他，他會把你的流氓訓練照顧得很好。";
+				next;
+				mes "[史密斯先生]";
+				mes "啊，你最好記住親自見他的密碼。密碼是 ^0000FF安東尼奧不喜歡破壞升級物品^000000。";
+				close;
+			case 3:
+				set ROGUE_Q,11;
+				if(checkquest(2018) != -1) {
+					changequest 2018,2024;
+				}
+				else if(checkquest(2019) != -1) {
+					changequest 2019,2024;
+				}
+				else {
+					changequest 2020,2024;
+				}
+				next;
+				mes "[史密斯先生]";
+				mes "嗯...";
+				mes "這個人可能";
+				mes "很適合你，但是...";
+				mes "他有點危險。";
+				next;
+				mes "[史密斯先生]";
+				mes "他的名字是";
+				mes "小忽克連，";
+				mes "一個操縱天才。";
+				next;
+				mes "[史密斯先生]";
+				mes "然而，因為他父親很久以前做過的一些事，人們一直試圖殺他。因此，他非常神經質，會對他不信任的人丟飛刀。";
+				next;
+				mes "[史密斯先生]";
+				mes "我們的會長成功讓他加入了我們的公會，他聰明的頭腦一直都是我們的資產。一旦你認識了他，他會把你的流氓訓練照顧得很好。";
+				next;
+				mes "[史密斯先生]";
+				mes "啊，你最好記住親自見他的密碼。密碼是 ^0000FF我父親從未私藏過升級物品^000000。";
+				close;
+			}
+		}
+		else if (ROGUE_Q == 8) {
+			mes "[史密斯先生]";
+			mes "好了...既然我已經冷靜下來了，我可以告訴你下一個目的地了。*呼*";
+			next;
+			mes "[史密斯先生]";
+			mes "去尋找住在^0000FF發樂斯燈塔檢查站^000000附近的小赫曼波恩，那裡是夢羅克和克魔島的交界處。";
+			next;
+			mes "[史密斯先生]";
+			mes "啊...差點忘了，記住不要提到任何關於升級物品的事情。這非常重要。";
+			close;
+		}
+		else if (ROGUE_Q == 9) {
+			mes "[史密斯先生]";
+			mes "什麼...？";
+			mes "你剛才說";
+			mes "你忘了";
+			mes "該去哪裡？";
+			next;
+			mes "[史密斯先生]";
+			mes "往東邊走一張地圖，進入蘇克拉特沙漠南部的建築物去見小阿拉漢。";
+			next;
+			mes "[史密斯先生]";
+			mes "密碼是 ^0000FF阿拉漢從未私藏過升級物品^000000。";
+			close;
+		}
+		else if (ROGUE_Q == 10) {
+			mes "[史密斯先生]";
+			mes "什麼...？";
+			mes "你剛才說";
+			mes "你忘了";
+			mes "該去哪裡？";
+			next;
+			mes "[史密斯先生]";
+			mes "去可可摩海灘的建築物，";
+			mes "那是在前往克魔島的路上，";
+			mes "去見小安東尼奧。";
+			next;
+			mes "[史密斯先生]";
+			mes "密碼是 ^0000FF安東尼奧不喜歡破壞升級物品^000000。";
+			close;
+		}
+		else if (ROGUE_Q == 11) {
+			mes "[史密斯先生]";
+			mes "什麼...？";
+			mes "你剛才說";
+			mes "你忘了";
+			mes "該去哪裡？";
+			next;
+			mes "[史密斯先生]";
+			mes "去蘇克拉特沙漠南部的原野，也就是從這裡前往夢羅克的路上，去見小忽克連。";
+			next;
+			mes "[史密斯先生]";
+			mes "密碼是 ^0000FF我父親從未私藏過升級物品^000000。";
+			close;
+		}
+		else if (ROGUE_Q > 11) {
+			mes "[史密斯先生]";
+			mes "嗯...？";
+			mes "你不是";
+			mes "還要去別的地方";
+			mes "完成你的";
+			mes "流氓訓練嗎？";
+			close;
+		}
+	}
+
+
+S_Req:
+	mes "[史密斯先生]";
+	mes "首先，";
+	mes "報名費：";
+	mes "^FF000010,000 zeny^000000。";
+	next;
+	mes "[史密斯先生]";
+	mes "我們還需要";
+	mes "你帶來";
+	mes "^FF0000"+getarg(0)+"^000000，";
+	mes "^FF0000"+getarg(1)+"^000000，";
+	mes "^FF0000"+getarg(2)+"^000000 還有";
+	mes "^FF0000"+getarg(3)+"^000000。";
+	.@var = getarg(4);
+	ROGUE_Q = .@var;
+	if (.@var == 3) {
+		changequest 2017,2018;
+	}
+	else if (.@var == 4) {
+		changequest 2017,2019;
+	}
+	else {
+		changequest 2017,2020;
+	}
+	next;
+	mes "[史密斯先生]";
+	mes "嗯...？";
+	mes "那是什麼？";
+	mes "你剛才說";
+	mes "你願意為公會捐出";
+	mes "更多的錢？";
+	next;
+	mes "[史密斯先生]";
+	mes "聽起來真貼心，";
+	mes "我很感激。";
+	mes "但等你準備好了";
+	mes "再來吧。";
+	close;
+S_CheckItems:
+	setarray .@item_req[0], getarg(0), getarg(2), getarg(4), getarg(6);
+	setarray .@amount[0], getarg(1), getarg(3), getarg(5), getarg(7);
+	if (Zeny > 9999 && countitem(.@item_req[0]) >= .@amount[0] && countitem(.@item_req[1]) >= .@amount[1] && countitem(.@item_req[2]) >= .@amount[2] && countitem(.@item_req[3]) >= .@amount[3]) {
+		mes "[史密斯先生]";
+		mes "好的，我們收到了報名費，^FF000010,000 zeny^000000，"+ .@amount[0] +" 個 "+ getitemname(.@item_req[0]) +"，"+ .@amount[1] +" 個 "+ getitemname(.@item_req[1]) +"，"+ .@amount[2] +" 個 "+ getitemname(.@item_req[2]) +" 以及 "+ .@amount[3] +" 個 "+ getitemname(.@item_req[3]) +"...";
+		set Zeny, Zeny-10000;
+		delitem .@item_req[0],.@amount[0];
+		delitem .@item_req[1],.@amount[1];
+		delitem .@item_req[2],.@amount[2];
+		delitem .@item_req[3],.@amount[3];
+		set ROGUE_Q,7;
+		next;
+		mes "[史密斯先生]";
+		mes "太棒了，太棒了...";
+		mes "我想你";
+		mes "都帶齊了。";
+		set ROGUE_Q,7;
+		next;
+		mes "[史密斯先生]";
+		mes "好吧，稍等片刻，我來";
+		mes "準備一下這些東西。讓我看看... 你的下一個測驗是...";
+		close;
+	}
+	mes "[史密斯先生]";
+	mes "搞什麼鬼！？你沒有把要求的物品全部帶來？！你這是在告訴我你需要再確認一次需求嗎！？";
+	next;
+	mes "[史密斯先生]";
+	mes "現在聽好...！";
+	mes "帶來 ^FF000010,000 zeny^000000，";
+	mes "以及下列物品...";
+	next;
+	mes "[史密斯先生]";
+	mes "^FF0000 "+ .@amount[0] +" 個 "+ getitemname(.@item_req[0]) +"^000000，";
+	mes "^FF0000 "+ .@amount[1] +" 個 "+ getitemname(.@item_req[1]) +"^000000，";
+	mes "^FF0000 "+ .@amount[2] +" 個 "+ getitemname(.@item_req[2]) +"^000000，";
+	mes "^FF0000 "+ .@amount[3] +" 個 "+ getitemname(.@item_req[3]) +"^000000，";
+	mes "這次你懂了嗎？";
+	close;
+}
+
+cmd_fild09,106,195,0	script	傳送陣#1	45,1,1,{
+OnTouch_:
+	mes "[???]";
+	mes "是誰在外面？！";
+	mes "是誰膽敢";
+	mes "闖入我的領地？";
+	next;
+	switch(select("我父親:阿拉漢:亞拉岡:勒苟拉斯")) {
+	case 1:
+		mes "[" + strcharinfo(0) + "]";
+		mes "我父親";
+		break;
+	case 2:
+		mes "[" + strcharinfo(0) + "]";
+		mes "阿拉漢";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 3:
+		mes "[" + strcharinfo(0) + "]";
+		mes "亞拉岡";
+		break;
+	case 4:
+		mes "[" + strcharinfo(0) + "]";
+		mes "勒苟拉斯";
+		break;
+	}
+	switch(select("不曾:沒有:從未:曾經")) {
+	case 1: mes "不曾";
+		break;
+	case 2: mes "沒有"; break;
+	case 3:
+		mes "從未";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 4: mes "曾經"; break;
+	}
+	switch(select("囤積:私藏:隱藏:拿走:拿")) {
+	case 1: mes "囤積"; break;
+	case 2:
+		mes "私藏";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 3: mes "隱藏"; break;
+	case 4: mes "拿走"; break;
+	case 5: mes "拿"; break;
+	}
+	switch(select("升級物品。:鍛造物品。:精煉物品。:升級道具。")) {
+	case 1:
+		mes "升級物品。";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 2: mes "鍛造物品。"; break;
+	case 3: mes "精煉物品。"; break;
+	case 4: mes "升級道具。";
+		break;
+	}
+	next;
+	if (.@rogue_t > 30) {
+		mes "^3355FF*依呀*";
+		mes "門緩緩打開了。^000000";
+		close2;
+		warp "in_rogue",246,25;
+		end;
+	}
+	else {
+		mes "[???]";
+		mes "什麼鬼...？";
+		mes "滾開！";
+		close;
+	}
+}
+
+cmd_fild09,335,143,0	script	傳送陣#2	45,1,1,{
+OnTouch_:
+	mes "[???]";
+	mes "是誰在外面？！";
+	mes "是誰膽敢";
+	mes "闖入我的領地？";
+	next;
+	switch(select("我父親:阿拉漢:亞拉岡:勒苟拉斯")) {
+	case 1:
+		mes "[" + strcharinfo(0) + "]";
+		mes "我父親";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 2:
+		mes "[" + strcharinfo(0) + "]";
+		mes "阿拉漢";
+		break;
+	case 3:
+		mes "[" + strcharinfo(0) + "]";
+		mes "亞拉岡";
+		break;
+	case 4:
+		mes "[" + strcharinfo(0) + "]";
+		mes "勒苟拉斯";
+		break;
+	}
+	switch(select("不曾:沒有:從未:曾經")) {
+	case 1: mes "不曾"; break;
+	case 2: mes "沒有"; break;
+	case 3:
+		mes "從未";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 4: mes "曾經"; break;
+	}
+	switch(select("囤積:拿:隱藏:拿走:私藏")) {
+	case 1: mes "囤積"; break;
+	case 2: mes "拿"; break;
+	case 3: mes "隱藏"; break;
+	case 4: mes "拿走";
+		break;
+	case 5:
+		mes "私藏";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	}
+	switch(select("升級物品。:鍛造物品。:精煉物品。:升級道具。")) {
+	case 1:
+		mes "升級物品。";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 2: mes "鍛造物品。"; break;
+	case 3: mes "精煉物品。"; break;
+	case 4: mes "升級道具。"; break;
+	}
+	next;
+	if (.@rogue_t > 30) {
+		mes "^3355FF*依呀*";
+		mes "門緩緩打開了。^000000";
+		close2;
+		warp "in_rogue",169,34;
+		end;
+	}
+	else {
+		mes "[???]";
+		mes "什麼鬼...？";
+		mes "滾開！";
+		close;
+	}
+}
+
+cmd_fild04,304,180,0	script	傳送陣#3	45,1,1,{
+OnTouch_:
+	mes "[???]";
+	mes "是誰在外面？！";
+	mes "是誰膽敢";
+	mes "闖入我的領地？";
+	next;
+	switch(select("安東尼奧:阿拉漢:安東尼奧:忽克連")) {
+	case 1:
+		mes "[" + strcharinfo(0) + "]";
+		mes "安東尼奧";
+		break;
+	case 2:
+		mes "[" + strcharinfo(0) + "]";
+		mes "阿拉漢";
+		break;
+	case 3:
+		mes "[" + strcharinfo(0) + "]";
+		mes "安東尼奧";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 4:
+		mes "[" + strcharinfo(0) + "]";
+		mes "忽克連"; 
+		break;
+	}
+	switch(select("喜歡:不喜歡:愛:不愛")) {
+	case 1: mes "喜歡"; break;
+	case 2:
+		mes "不喜歡";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 3: mes "愛"; break;
+	case 4: mes "不愛"; break;
+	}
+	switch(select("損壞:破壞:修理:鍛造")) {
+	case 1: mes "損壞"; break;
+	case 2:
+		mes "破壞";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 3: mes "修理"; break;
+	case 4: mes "鍛造"; break;
+	}
+	switch(select("鍛造物品。:精煉物品。:升級物品。:已精煉物品。:已升級物品。:已鍛造物品。")) {
+	case 1: mes "鍛造物品。"; break;
+	case 2: mes "精煉物品。"; break;
+	case 3:
+		mes "升級物品。";
+		set .@rogue_t,.@rogue_t+10;
+		break;
+	case 4: mes "已精煉物品。"; break;
+	case 5: mes "已升級物品。"; break;
+	case 6: mes "已鍛造物品。"; break;
+	}
+	next;
+	if (.@rogue_t > 30) {
+		mes "^3355FF*依呀*";
+		mes "門緩緩打開了。^000000";
+		close2;
+		warp "in_rogue",164,106;
+		end;
+	}
+	else {
+		mes "[???]";
+		mes ".....滾開！";
+		close;
+	}
+}
+
+in_rogue,272,135,1	script	小赫曼波恩#rg	85,{
+	if (ROGUE_Q == 8) {
+		mes "[小赫曼波恩]";
+		mes "原來如此...";
+		mes "你一定是來自";
+		mes "流氓公會的吧。";
+		mes "你肯定是被";
+		mes "史密斯先生刁難的";
+		mes "其中一人...";
+		next;
+		mes "[小赫曼波恩]";
+		mes "他大發脾氣，然後你把所有他要求的物品都帶來了，對吧？看來你還真是相當天真啊。哈哈哈?";
+		next;
+		mes "[小赫曼波恩]";
+		mes "我想他騙你去收集那些物品，然後又把你推給我。真是悲哀啊。";
+		next;
+		mes "[小赫曼波恩]";
+		mes "好吧，既然你被他折磨過了，我會試著對你特別寬容一點。我的測驗對你來說會很簡單，非常簡單。";
+		next;
+		mes "[小赫曼波恩]";
+		mes "你所要做的就是穿過一條地下隧道，然後一路走回流氓公會。";
+		next;
+		mes "[小赫曼波恩]";
+		mes "不過有一件事我得告訴你。你在裡面最好小心一點，好嗎？";
+		next;
+		mes "[小赫曼波恩]";
+		mes "有一群混蛋一直在到處丟枯樹枝和施放魔法迷惑...";
+		next;
+		mes "[小赫曼波恩]";
+		mes "總之...";
+		mes "只要活著回到流氓公會。這就是你該做的事！";
+		set ROGUE_Q,12;
+		changequest 2025,2026;
+		close;
+	}
+	else if (ROGUE_Q == 12) {
+		mes "[小赫曼波恩]";
+		mes "對了。這非常重要。進入隧道需要密碼。解開門鎖的四個數字組合是 ^0000FF3019^000000。";
+		close;
+	}
+	else {
+		mes "[小赫曼波恩]";
+		mes "咦...？";
+		mes "你這傢伙在這裡";
+		mes "做什麼鬼。";
+		mes "滾開，好嗎？";
+		close;
+	}
+}
+
+in_rogue,270,130,0	script	前往流氓公會#rg	45,1,1,{
+OnTouch_:
+	mes "^3355FF門鎖上了。你需要輸入四個數字組合才能打開它。^000000";
+	next;
+	input .@input;
+	if (.@input < 1 || .@input > 10000) {
+		if (ROGUE_Q == 12)
+			mes "^3355FF密碼無效。請重新輸入四個數字的組合。^000000";
+		else 
+			mes "^3355FF請輸入四個數字的組合。^000000";
+		close;
+	}
+	else if (.@input == 3019) {
+		if (ROGUE_Q == 12) {
+			mes "^3355FF門";
+			mes "已經打開了。^000000";
+			close2;
+			warp "in_rogue",10,21;
+			set ROGUE_Q,12;
+			end;
+		}
+		else {
+			mes "[小赫曼波恩]";
+			mes "那麼...";
+			mes "我沒告訴過你";
+			mes "我已經更改了";
+			mes "密碼嗎？*眨眼眨眼*";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF門";
+		mes "仍然是鎖著的。^000000";
+		close;
+	}
+}
+
+in_rogue,200,389,0	script	gen_ro#1	-1,3,3,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",200,389,"腐屍",1015,1,"gen_ro#1::OnMyMobDead";
+		monster "in_rogue",201,389,"腐屍",1015,1,"gen_ro#1::OnMyMobDead";
+		donpcevent "gen_ro#2::OnDisable";
+		donpcevent "gen_ro#3::OnDisable";
+		donpcevent "gen_ro#4::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","gen_ro#1::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,100,389,0	script	gen_ro#2	-1,3,3,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",100,389,"木乃伊",1041,1,"gen_ro#2::OnMyMobDead";
+		donpcevent "gen_ro#1::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","gen_ro#2::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,150,389,0	script	gen_ro#3	-1,3,3,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",145,389,"腐屍",1015,1,"gen_ro#3::OnMyMobDead";
+		monster "in_rogue",143,389,"木乃伊",1041,1,"gen_ro#3::OnMyMobDead";
+		donpcevent "gen_ro#2::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+OnDisable:
+	killmonster "in_rogue","gen_ro#3::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,250,389,0	script	gen_ro#4	-1,3,3,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",200,389,"深淵騎士",1219,1,"gen_ro#4::OnMyMobDead";
+		donpcevent "gen_ro#3::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","gen_ro#4::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,9,389,0	script	oneway_to_gu	45,1,1,{
+OnTouch_:
+	donpcevent "gen_ro#4::OnDisable";
+	set ROGUE_Q,17;
+	warp "in_rogue",367,10;
+	end;
+}
+
+in_rogue,244,39,1	script	小阿拉漢#rg	99,{
+	if (ROGUE_Q == 9) {
+		mes "[小阿拉漢]";
+		mes "哦，你一定是來自";
+		mes "流氓公會的吧...";
+		next;
+		mes "[小阿拉漢]";
+		mes "我的名字是";
+		mes "小阿拉漢，";
+		mes "沙漠的流氓。";
+		mes "你準備好學習";
+		mes "如何成為流氓了嗎？";
+		next;
+		mes "[小阿拉漢]";
+		mes "看吧，身為一個流氓，我們的座右銘是：『^0000FF避開強者！欺凌弱者！^000000』這條規則特別適用於對付魔物。";
+		next;
+		mes "[小阿拉漢]";
+		mes "避開強者！";
+		mes "欺凌弱者！";
+		mes "這是個很簡單的規則...";
+		next;
+		mes "[小阿拉漢]";
+		mes "現在，當你穿過^0000FF地下隧道^000000時，好好記住這一點。試著一路走回流氓公會。";
+		next;
+		mes "[小阿拉漢]";
+		mes "裡面會有一些魔物，但別擔心。我知道你很強。好了，你準備好出發了嗎？";
+		next;
+		if (select("是的，我們走吧。:還沒?") == 1) {
+			mes "[小阿拉漢]";
+			mes "好的...";
+			mes "那麼，祝你好運。";
+			close2;
+			warp "in_rogue",15,105;
+			set ROGUE_Q,13;
+			changequest 2022,2026;
+			end;
+		}
+		mes "[小阿拉漢]";
+		mes "好吧，好吧。";
+		mes "慢慢來，";
+		mes "等你準備好了";
+		mes "再來找我。";
+		close;
+	}
+	else if (ROGUE_Q == 13) {
+		mes "[小阿拉漢]";
+		mes "哦，你回來了。";
+		mes "我想你這次會做得很好。流氓的另一個座右銘是『^0000FF失敗乃成功之母^000000』。不過話說回來...";
+		next;
+		if (select("重新測驗:取消") == 1) {
+			mes "[小阿拉漢]";
+			mes "祝你好運。";
+			close2;
+			warp "in_rogue",15,105;
+			end;
+		}
+		mes "[小阿拉漢]";
+		mes "好吧，好吧。";
+		mes "慢慢來，";
+		mes "等你準備好了";
+		mes "再來找我。";
+		close;
+	}
+	else if (BaseJob != Job_Rogue) {
+		mes "[小阿拉漢]";
+		mes "咦...？";
+		mes "你是誰？！";
+		mes "你不是來自";
+		mes "流氓公會的！！";
+		next;
+		mes "[小阿拉漢]";
+		mes "你來這裡是為了殺我的，對吧？不！我還不能死！滾開！否則我會先殺了你！";
+		close;
+	}
+	else {
+		mes "[小阿拉漢]";
+		mes "嘿...";
+		mes "什麼風";
+		mes "把你吹回來了？";
+		mes "離開前";
+		mes "何不先";
+		mes "休息一下？";
+		close;
+	}
+}
+
+in_rogue,160,34,1	script	小忽克連#rg	85,{
+	if (ROGUE_Q == 11) {
+		mes "[小忽克連]";
+		mes "哼...";
+		mes "來自";
+		mes "流氓公會的，是嗎？";
+		next;
+		mes "[小忽克連]";
+		mes "我是小忽克連。我處理很多地下業務。那麼你準備好接受我的測驗了嗎？";
+		next;
+		mes "[小忽克連]";
+		mes "我們流氓有共同的座右銘：^0000FF避開強者！欺凌弱者！^000000這條規則適用於任何威脅，尤其是魔物。";
+		next;
+		mes "[小忽克連]";
+		mes "很容易記住吧。";
+		mes "只要別忘了付諸實行。你懂嗎？";
+		next;
+		mes "[小忽克連]";
+		mes "我的測驗是，你要穿過^0000FF地下隧道^000000。沿著路一直走回流氓公會。";
+		next;
+		mes "[小忽克連]";
+		mes "那裡有一些魔物，但那將是你訓練的一部分。現在，你準備好出發了嗎？";
+		next;
+		if (select("是的，我準備好了。:還沒?") == 1) {
+			mes "[小忽克連]";
+			mes "祝你好運。";
+			close2;
+			warp "in_rogue",15,105;
+			set ROGUE_Q,15;
+			changequest 2024,2026;
+			end;
+		}
+		mes "[小忽克連]";
+		mes "慢慢來。";
+		mes "等你準備好了";
+		mes "再回來找我。";
+		close;
+	}
+	else if (ROGUE_Q == 15) {
+		mes "[小忽克連]";
+		mes "哼。";
+		mes "你失敗了。";
+		mes "要再試一次嗎？";
+		next;
+		if (select("重新測驗:取消。") == 1) {
+			mes "[小忽克連]";
+			mes "祝你好運。";
+			close2;
+			warp "in_rogue",15,105;
+			end;
+		}
+		mes "[小忽克連]";
+		mes "慢慢來。";
+		mes "等你準備好了";
+		mes "再回來找我。";
+		close;
+	}
+	else if (BaseJob != Job_Rogue) {
+		mes "[小忽克連]";
+		mes "咦...？";
+		mes "你不是來自";
+		mes "流氓公會的...";
+		next;
+		mes "[小忽克連]";
+		mes "如果你知道";
+		mes "對你來說什麼才是好的，";
+		mes "你最好現在就";
+		mes "給我滾出這裡...";
+		next;
+		mes "[小忽克連]";
+		mes "現在...";
+		mes "在我改變主意";
+		mes "殺了你之前";
+		mes "滾蛋吧。";
+		close;
+	}
+	else {
+		mes "[小忽克連]";
+		mes "嘿...";
+		mes "來拜訪我？";
+		mes "我們流氓必須";
+		mes "團結在一起，是吧？";
+		close;
+	}
+}
+
+in_rogue,177,109,1	script	小安東尼奧#rg	88,{
+	if (ROGUE_Q == 10) {
+		mes "[小安東尼奧]";
+		mes "你是來自";
+		mes "流氓公會的嗎？";
+		mes "如果你想學習";
+		mes "如何成為一名流氓，";
+		mes "那就閉嘴待著。";
+		next;
+		mes "[小安東尼奧]";
+		mes "^0000FF避開強者！欺凌弱者！^000000 那是我們對抗魔物的座右銘。";
+		next;
+		mes "[小安東尼奧]";
+		mes "與較弱的魔物戰鬥時絕不留情，並盡量遠離較強的魔物。";
+		next;
+		mes "[小安東尼奧]";
+		mes "現在，我要你穿過這條^0000FF地下隧道^000000，一路走回流氓公會。";
+		next;
+		mes "[小安東尼奧]";
+		mes "那裡有魔物，但只要你避開強者並欺凌弱者，你就會沒事的。";
+		next;
+		if (select("出發吧！:等-等等?") == 1) {
+			mes "[小安東尼奧]";
+			mes "希望你不會";
+			mes "搞砸這個測驗";
+			mes "只有通過了，你才能";
+			mes "成為一名流氓...";
+			close2;
+			warp "in_rogue",15,105;
+			set ROGUE_Q,14;
+			changequest 2023,2026;
+			end;
+		}
+		mes "[小安東尼奧]";
+		mes "我沒時間";
+		mes "陪你瞎混。";
+		mes "快點準備好，";
+		mes "然後去接受測驗。";
+		close;
+	}
+	else if (ROGUE_Q == 14) {
+		mes "[小安東尼奧]";
+		mes "你失敗了...？";
+		mes "我想人生就是這樣。";
+		mes "你還要";
+		mes "再試一次嗎？";
+		next;
+		if (select("重新測驗:取消") == 1) {
+			mes "[小安東尼奧]";
+			mes "記住，我這是在";
+			mes "幫你的忙...";
+			mes "聽著，除非你成了";
+			mes "一名流氓，否則別回來。";
+			close2;
+			warp "in_rogue",15,105;
+			end;
+		}
+		mes "[小安東尼奧]";
+		mes "我沒時間";
+		mes "陪你瞎混。";
+		mes "快點準備好，";
+		mes "然後去接受測驗。";
+		close;
+	}
+	else if (BaseJob != Job_Rogue) {
+		mes "咦...？";
+		mes "你是誰？！";
+		mes "你不是來自";
+		mes "流氓公會的！！";
+		next;
+		mes "[小安東尼奧]";
+		mes "你來這裡是為了殺我的？！我絕不允許！！來吧，讓我看看你的本事！如果我把你的眼睛挖出來，你就沒辦法打架了！";
+		close;
+	}
+	else {
+		mes "[小安東尼奧]";
+		mes "嘿，最近過得好嗎？";
+		mes "放輕鬆，離開前";
+		mes "好好休息一下。";
+		close;
+	}
+}
+
+in_rogue,370,320,0	script	quest_out	45,1,1,{
+OnTouch_:
+	set ROGUE_Q,16;
+	warp "in_rogue",378,113;
+	end;
+}
+
+in_rogue,15,184,0	script	mob_rogue#1	-1,8,1,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",14,187,"腐屍",1015,1,"mob_rogue#1::OnMyMobDead";
+		monster "in_rogue",15,188,"腐屍",1015,1,"mob_rogue#1::OnMyMobDead";
+		monster "in_rogue",16,189,"腐屍",1015,1,"mob_rogue#1::OnMyMobDead";
+		monster "in_rogue",17,187,"腐屍",1015,1,"mob_rogue#1::OnMyMobDead";
+		monster "in_rogue",18,188,"腐屍",1015,1,"mob_rogue#1::OnMyMobDead";
+		monster "in_rogue",19,189,"腐屍",1015,1,"mob_rogue#1::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#1::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,15,273,0	script	mob_rogue#2	-1,8,1,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",15,276,"木乃伊",1041,1,"mob_rogue#2::OnMyMobDead";
+		monster "in_rogue",13,276,"木乃伊",1041,1,"mob_rogue#2::OnMyMobDead";
+		monster "in_rogue",11,276,"木乃伊",1041,1,"mob_rogue#2::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#2::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,15,333,0	script	mob_rogue#3	-1,8,1,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",15,336,"腐屍",1015,1,"mob_rogue#3::OnMyMobDead";
+		monster "in_rogue",15,336,"腐屍",1015,1,"mob_rogue#3::OnMyMobDead";
+		monster "in_rogue",15,336,"腐屍",1015,1,"mob_rogue#3::OnMyMobDead";
+		monster "in_rogue",15,336,"腐屍",1015,1,"mob_rogue#3::OnMyMobDead";
+		donpcevent "mob_rogue#4::OnDisable";
+		donpcevent "mob_rogue#7::OnDisable";
+		donpcevent "mob_rogue#8::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#3::OnMyMObDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,39,341,0	script	mob_rogue#4	-1,1,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",39,341,"木乃伊",1041,1,"mob_rogue#4::OnMyMobDead";
+		monster "in_rogue",40,341,"食屍鬼",1036,1,"mob_rogue#4::OnMyMobDead";
+		monster "in_rogue",41,341,"深淵騎士",1219,1,"mob_rogue#4::OnMyMobDead";
+		monster "in_rogue",42,341,"木乃伊",1041,1,"mob_rogue#4::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#4::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,102,334,0	script	mob_rogue#5	-1,1,4,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",92,334,"卡利斯格",1132,1,"mob_rogue#5::OnMyMobDead";
+		donpcevent "mob_rogue#1::OnDisable";
+		donpcevent "mob_rogue#2::OnDisable";
+		donpcevent "mob_rogue#3::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+OnDisable:
+	killmonster "in_rogue","mob_rogue#5::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,58,309,0	script	mob_rogue#6	-1,4,1,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",57,301,"卡利斯格",1132,1,"mob_rogue#6::OnMyMobDead";
+		donpcevent "mob_rogue#1::OnDisable";
+		donpcevent "mob_rogue#2::OnDisable";
+		donpcevent "mob_rogue#3::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+OnDisable:
+	killmonster "in_rogue","mob_rogue#6::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,101,264,0	script	mob_rogue#7	-1,5,5,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",101,264,"深淵騎士",1219,1,"mob_rogue#7::OnMyMobDead";
+		monster "in_rogue",102,264,"深淵騎士",1219,1,"mob_rogue#7::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#7::OnMyMobDead";
+	end;
+OnMyMobDead:
+	end;
+}
+
+in_rogue,140,312,0	script	mob_rogue#8	-1,5,5,{
+OnTouch_:
+	if (BaseJob == Job_Thief)
+		monster "in_rogue",140,312,"深淵騎士",1219,1,"mob_rogue#8::OnMyMobDead";
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#8::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,139,246,0	script	mob_rogue#9	-1,4,4,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",139,246,"腐屍",1015,1,"mob_rogue#9::OnMyMobDead";
+		monster "in_rogue",149,246,"腐屍",1015,1,"mob_rogue#9::OnMyMobDead";
+		monster "in_rogue",140,246,"腐屍",1015,1,"mob_rogue#9::OnMyMobDead";
+		monster "in_rogue",141,246,"腐屍",1015,1,"mob_rogue#9::OnMyMobDead";
+		monster "in_rogue",150,246,"腐屍",1015,1,"mob_rogue#9::OnMyMobDead";
+		monster "in_rogue",151,246,"腐屍",1015,1,"mob_rogue#9::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#9::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,197,249,0	script	mob_rogue#10	-1,1,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",176,211,"食屍鬼",1036,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",176,212,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",176,213,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",177,214,"深淵騎士",1219,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",177,211,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",177,212,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",177,213,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",177,214,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",178,211,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",178,212,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",178,213,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",178,214,"邪骸弓箭手",1016,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",179,211,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",179,212,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",179,213,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		monster "in_rogue",179,214,"腐屍",1015,1,"mob_rogue#10::OnMyMobDead";
+		donpcevent "mob_rogue#4::OnDisable";
+		donpcevent "mob_rogue#5::OnDisable";
+		donpcevent "mob_rogue#6::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#10::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,96,205,0	script	mob_rogue#11	-1,1,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		donpcevent "mob_rogue#7::OnDisable";
+		donpcevent "mob_rogue#8::OnDisable";
+		donpcevent "mob_rogue#9::OnDisable";
+		donpcevent "mob_rogue#10::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+}
+
+in_rogue,86,187,0	script	mob_rogue#12	-1,1,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",90,187,"木乃伊",1041,1,"mob_rogue#12::OnMyMobDead";
+		monster "in_rogue",90,183,"木乃伊",1041,1,"mob_rogue#12::OnMyMobDead";
+		monster "in_rogue",90,190,"木乃伊",1041,1,"mob_rogue#12::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#12::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,223,187,0	script	mob_rogue#13	-1,1,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",236,186,"深淵騎士",1219,1,"mob_rogue#13::OnMyMobDead";
+		monster "in_rogue",238,186,"深淵騎士",1219,1,"mob_rogue#13::OnMyMobDead";
+		monster "in_rogue",234,186,"深淵騎士",1219,1,"mob_rogue#13::OnMyMobDead";
+		donpcevent "mob_rogue#12::OnDisable";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#13::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,233,207,0	script	mob_rogue#14	-1,8,3,{
+OnTouch_:
+	if (BaseJob == Job_Thief)
+		donpcevent "mob_rogue#13::OnDisable";
+	else
+		warp "mag_dun02",181,176;
+	end;
+}
+
+in_rogue,244,319,0	script	mob_rogue#15	-1,1,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief) {
+		monster "in_rogue",240,319,"木乃伊",1041,1,"mob_rogue#15::OnMyMobDead";
+		monster "in_rogue",259,319,"邪骸弓箭手",1016,1,"mob_rogue#15::OnMyMobDead";
+		monster "in_rogue",259,320,"食屍鬼",1036,1,"mob_rogue#15::OnMyMobDead";
+		monster "in_rogue",240,319,"木乃伊",1041,1,"mob_rogue#15::OnMyMobDead";
+		monster "in_rogue",259,319,"邪骸弓箭手",1016,1,"mob_rogue#15::OnMyMobDead";
+		monster "in_rogue",259,320,"食屍鬼",1036,1,"mob_rogue#15::OnMyMobDead";
+	}
+	else
+		warp "mag_dun02",181,176;
+	end;
+
+OnDisable:
+	killmonster "in_rogue","mob_rogue#15::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	end;
+}
+
+in_rogue,334,319,0	script	mob_rogue#16	-1,8,8,{
+OnTouch_:
+	if (BaseJob == Job_Thief)
+		donpcevent "mob_rogue#15::OnDisable";
+	else
+		warp "mag_dun02",181,176;
+	end;
+}
+
+in_rogue,3,3,0	script	重置者#rogue	-1,{
+OnTimer500000:
+	donpcevent "mob_rogue#1::OnDisable";
+	donpcevent "mob_rogue#2::OnDisable";
+	donpcevent "mob_rogue#3::OnDisable";
+	donpcevent "mob_rogue#4::OnDisable";
+	donpcevent "mob_rogue#5::OnDisable";
+	donpcevent "mob_rogue#6::OnDisable";
+	donpcevent "mob_rogue#7::OnDisable";
+	donpcevent "mob_rogue#8::OnDisable";
+	donpcevent "mob_rogue#9::OnDisable";
+	donpcevent "mob_rogue#10::OnDisable";
+	donpcevent "mob_rogue#12::OnDisable";
+	donpcevent "mob_rogue#13::OnDisable";
+	donpcevent "mob_rogue#15::OnDisable";
+	initnpctimer;
+	end;
+
+OnEnable:
+	initnpctimer;
+	end;
+
+OnInit:
+	donpcevent "重置者#rogue::OnEnable";
+	end;
+}
+
+in_rogue,399,286,1	script	開關#rogreset	88,{
+	mes "^F08080搭啦?";
+	mes "流氓轉職的";
+	mes "所有魔物";
+	mes "已經重置囉^000000。";
+	donpcevent "mob_rogue#1::OnDisable";
+	donpcevent "mob_rogue#2::OnDisable";
+	donpcevent "mob_rogue#3::OnDisable";
+	donpcevent "mob_rogue#4::OnDisable";
+	donpcevent "mob_rogue#5::OnDisable";
+	donpcevent "mob_rogue#6::OnDisable";
+	donpcevent "mob_rogue#7::OnDisable";
+	donpcevent "mob_rogue#8::OnDisable";
+	donpcevent "mob_rogue#9::OnDisable";
+	donpcevent "mob_rogue#10::OnDisable";
+	donpcevent "mob_rogue#12::OnDisable";
+	donpcevent "mob_rogue#13::OnDisable";
+	donpcevent "mob_rogue#15::OnDisable";
+	donpcevent "重置者#rogue::OnEnable";
+	close;
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= 1.1 fixed 3 wrong questions, added missing lines [Lupus]
+//= 1.3 Baby Class Support + 40/50 JobLevel Item fix [Lupus]
+//= 1.5 Fixed possible EXP abuse [Lupus]
+//= 1.6 Added a func which prevent advanced classes passing
+//=     2nd Job Quests again. It also guides adv classes where
+//=     to go. [Lupus]
+//= 2.0 Changed numbers to constants. [Vicious]
+//= 2.1 Removed Duplicates [Silent]
+//= 2.2 Merged JFunc [Lupus]
+//= 2.3 Added a possibility for players doing Meginjyard quest
+//=     to enter Rogue guild as there's a NPC inside [SinSloth]
+//= 2.3a fixed test4 person interaction, let BABY thieves pass
+//=     the test, too [Lupus]
+//============================================================

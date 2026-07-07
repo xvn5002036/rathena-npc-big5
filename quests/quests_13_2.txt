@@ -1,0 +1,7397 @@
+//===== rAthena Script =======================================
+//= Collection of episode 13.2 quests.
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 2.9
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Cat Paw Addition.
+//= Two Tribes
+//= Monster Suppression
+//= Daily Quests:
+//= - Bradium Collection
+//= - Laphine Craftsman
+//= - Draco Egg Collection (npc includes 'Wanted' quest)
+//= Otherworld language
+//= Daily Quests:
+//= - Midgard Ore
+//= - Alfheim Perfume
+//= Secret note of Bazett
+//= Yggdrasil Dungeon Floor 2 puzzle.
+//===== Additional Comments: =================================
+//= 1.0 First version
+//= 1.1 Fixed unidentified_coin -> unidentified_mineral. (bugreport:4086)
+//= 1.2 Fixed Half-buried Gem#1 not re-enabling.
+//= 1.3 Moved misc NPCs to the their respective city file. [L0ne_W0lf]
+//= 1.3 Added the "Two Tribes" quest.
+//= 1.4 Corrected issues with Otherworld Language. (Bugreport:4147)
+//= 1.5 Added daily quests: Midgard Ore, and Alfheim Perfume.
+//= 1.6 Added the Yggdrasil Dungeon floor 2 puzzle.
+//= 1.7 Added daily quest 'Dragon Egg collection.'
+//= 1.7a Fixed a translation typo. Tabb -> Taab.
+//= 1.8 Added a missing " in the GM only NPC.
+//= 1.9 Added Monster Suppression, Bradium Collection, and 
+//=     Laphine Craftsman quests.
+//= 2.0 Added missing global var check in Yggdrasil Dungeon
+//=     floor 2 puzzle. Fixed a typo. Commented out untranslated
+//=     line. [Gepard]
+//= 2.1 Fixed Myterious Rock 31, and Cart Hand Agents.
+//= 2.2 Added a missing close. (bugreport:4520) [L0ne_W0lf]
+//= 2.3 Fixed EF_Wind not showing. (bugreport:5149) [Masao]
+//= 2.4 Optimized (6000+ lines reduced!). [Euphy]
+//= 2.4a Fixed an invisible NPC clashing with a 
+//= 2.5 Updated EXP rewards.
+//= 2.6 Fixed incorrect use of 'close'. [Joseph]
+//= 2.6a Disabled GM NPC. [Euphy]
+//= 2.7 Updated RE/Pre-RE EXP. [Euphy]
+//= 2.7a Added Izlude RE coordinates. [Euphy]
+//= 2.8 Added GM management function. [Euphy]
+//= 2.9 Added custom weight check. Fixes issue #910. [Jeybla]
+//= 2.9a Added custom weight check. To overcome failure to get gems. [Mazvi]
+//============================================================ 
+
+// Cat Paw Addition :: cat_enhance
+//============================================================ 
+spl_fild02,25,211,4	script	貓咪手商隊人員#spl	421,{
+	function Catwarp;
+	if (ep13_yong1 < 3) {
+		mes "[貓咪手商隊人員]";
+		mes "歡迎來到貓咪手商隊。";
+		mes "我看你是第一次光顧的客人吧？";
+		next;
+		mes "[貓咪手商隊人員]";
+		mes "關於合約的詳細內容，你需要先和我們的人員談談。";
+		close;
+	}
+	else if ((ep13_yong1 > 2) && (ep13_yong1 < 20)) {
+		mes "[貓咪手商隊人員]";
+		mes "貓咪手商隊提供的服務如下。";
+		mes "如需額外服務，請洽詢蓋陸克專員。";
+		next;
+		switch(select("儲存位置:取消")) {
+		case 1:
+			savepoint "mid_camp",62,127,1,1;
+			mes "[貓咪手商隊人員]";
+			mes "事實上，這個村莊的居民仍在持續抵抗。為了你的安全，我會將你的位置儲存在米德加爾特聯合軍營地。";
+			close;
+		case 2:
+			mes "[貓咪手商隊人員]";
+			mes "感謝你使用我們的服務。";
+			close;
+		}
+	}
+	else if ((ep13_yong1 > 19) && (ep13_yong1 < 40)) {
+		mes "[貓咪手商隊人員]";
+		mes "貓咪手商隊提供的服務如下。";
+		mes "如需額外服務，請洽詢蓋陸克專員。";
+		next;
+		switch(select("儲存位置:使用倉庫:取消")) {
+		case 1:
+			savepoint "mid_camp",62,127,1,1;
+			mes "[貓咪手商隊人員]";
+			mes "事實上，這個村莊的居民仍在持續抵抗。為了你的安全，我會將你的位置儲存在米德加爾特聯合軍營地。";
+			close;
+		case 2:
+			if(!callfunc("F_CanOpenStorage")){
+				mes "[貓咪手商隊人員]";
+				mes "很抱歉，你";
+				mes "需要初學者";
+				mes "基本技能 Lv 6 才能";
+				mes "使用倉庫服務。";
+				close;
+			}
+			else if (Zeny >= 60) {
+				set Zeny, Zeny-60;
+				mes "[貓咪手商隊人員]";
+				mes "謝謝。";
+				mes "你的倉庫馬上就會開啟。";
+				close2;
+				openstorage;
+				end;
+			}
+			else {
+				mes "[貓咪手商隊人員]";
+				mes "抱歉，你的";
+				mes "錢不夠？";
+				mes "貓咪手商隊的倉庫";
+				mes "服務是 60 Zeny。";
+				mes "很便宜吧？";
+				close;
+			}
+		case 3:
+			mes "[貓咪手商隊人員]";
+			mes "感謝你使用我們的服務。";
+			close;
+		}
+	}
+	else if ((ep13_yong1 > 39) && (ep13_yong1 < 100)) {
+		mes "[貓咪手商隊人員]";
+		mes "貓咪手商隊提供的服務如下。";
+		mes "如需額外服務，請洽詢蓋陸克專員。";
+		next;
+		switch(select("儲存位置:使用倉庫:使用貓咪傳送 (米德加爾特):取消")) {
+		case 1:
+			savepoint "mid_camp",62,127,1,1;
+			mes "[貓咪手商隊人員]";
+			mes "事實上，這個村莊的居民仍在持續抵抗。為了你的安全，我會將你的位置儲存在米德加爾特聯合軍營地。";
+			close;
+		case 2:
+			if(!callfunc("F_CanOpenStorage")){
+				mes "[貓咪手商隊人員]";
+				mes "很抱歉，你";
+				mes "需要初學者";
+				mes "基本技能 Lv 6 才能";
+				mes "使用倉庫服務。";
+				close;
+			}
+			else if (Zeny >= 60) {
+				set Zeny, Zeny-60;
+				mes "[貓咪手商隊人員]";
+				mes "謝謝。";
+				mes "你的倉庫馬上就會開啟。";
+				close2;
+				openstorage;
+				end;
+			}
+			else {
+				mes "[貓咪手商隊人員]";
+				mes "抱歉，你的";
+				mes "錢不夠？";
+				mes "貓咪手商隊的倉庫";
+				mes "服務是 60 Zeny。";
+				mes "很便宜吧？";
+				close;
+			}
+		case 3:
+			mes "[貓咪手商隊人員]";
+			mes "傳送服務只";
+			mes "提供給擁有";
+			mes ep13_yong1 + " 點以上貓咪手信用點數的客戶。";
+			mes "請記住，一旦你前往米德加爾特，就無法輕易回來。";
+			next;
+			if ((ep13_yong1 > 39) && (ep13_yong1 < 50)) {
+				switch(select("普隆德拉 -> 5500z:取消")) {
+					case 1: Catwarp(5500,2);
+					case 2: close;
+				}
+			}
+			else if ((ep13_yong1 > 49) && (ep13_yong1 < 60)) {
+				switch(select("艾爾貝塔 -> 5500z:普隆德拉 -> 5500z:取消")) {
+					case 1: Catwarp(5500,1);
+					case 2: Catwarp(5500,2);
+					case 3: close;
+				}
+			}
+			else if ((ep13_yong1 > 59) && (ep13_yong1 < 70)) {
+				switch(select("艾爾貝塔 -> 5025z:普隆德拉 -> 5025z:伊斯魯得島 -> 5025z:取消")) {
+					case 1: Catwarp(5025,1);
+					case 2: Catwarp(5025,2);
+					case 3: Catwarp(5025,3);
+					case 4: close;
+				}
+			}
+			else if ((ep13_yong1 > 69) && (ep13_yong1 < 80)) {
+				switch(select("艾爾貝塔 -> 5025z:普隆德拉 -> 5025z:伊斯魯得島 -> 5025z:吉芬 -> 5025z:取消")) {
+					case 1: Catwarp(5025,1);
+					case 2: Catwarp(5025,2);
+					case 3: Catwarp(5025,3);
+					case 4: Catwarp(5025,4);
+					case 5: close;
+				}
+			}
+			else if ((ep13_yong1 > 79) && (ep13_yong1 < 90)) {
+				switch(select("艾爾貝塔 -> 4765z:普隆德拉 -> 4765z:伊斯魯得島 -> 4765z:吉芬 -> 4765z:斐揚 -> 4765z:取消")) {
+					case 1: Catwarp(4765,1);
+					case 2: Catwarp(4765,2);
+					case 3: Catwarp(4765,3);
+					case 4: Catwarp(4765,4);
+					case 5: Catwarp(4765,5);
+					case 6: close;
+				}
+			}
+			else if ((ep13_yong1 > 89) && (ep13_yong1 < 100)) {
+				switch(select("艾爾貝塔 -> 4765z:普隆德拉 -> 4765z:伊斯魯得島 -> 4765z:吉芬 -> 4765z:斐揚 -> 4765z:夢羅克 -> 4765z:取消")) {
+					case 1: Catwarp(4765,1);
+					case 2: Catwarp(4765,2);
+					case 3: Catwarp(4765,3);
+					case 4: Catwarp(4765,4);
+					case 5: Catwarp(4765,5);
+					case 6: Catwarp(4765,6);
+					case 7: close;
+				}
+			}
+			else if (ep13_yong1 > 99) {
+				switch(select("艾爾貝塔 -> 4590z:普隆德拉 -> 4590z:伊斯魯得島 -> 4590z:吉芬 -> 4590z:斐揚 -> 4590z:夢羅克 -> 4590z:艾爾帕蘭 -> 4590z:取消")) {
+					case 1: Catwarp(4590,1);
+					case 2: Catwarp(4590,2);
+					case 3: Catwarp(4590,3);
+					case 4: Catwarp(4590,4);
+					case 5: Catwarp(4590,5);
+					case 6: Catwarp(4590,6);
+					case 7: Catwarp(4590,7);
+					case 8: close;
+				}
+			}
+			else {
+				mes "[貓咪手商隊人員]";
+				mes "很抱歉，你沒有";
+				mes "資格使用傳送服務。";
+				mes "請檢查你的點數，";
+				mes "然後再來。";
+				close;
+			}
+		case 4:
+			mes "[貓咪手商隊人員]";
+			mes "感謝你使用我們的服務。";
+			close;
+		}
+	}
+	else if (ep13_yong1 > 99) {
+		mes "[貓咪手商隊人員]";
+		mes "貓咪手商隊提供的服務如下。";
+		mes "如需額外服務，請洽詢蓋陸克專員。";
+		next;
+		switch(select("儲存位置:使用倉庫:使用貓咪傳送 (米德加爾特):使用貓咪傳送 (約頓海姆):取消")) {
+		case 1:
+			savepoint "mid_camp",62,127,1,1;
+			mes "[貓咪手商隊人員]";
+			mes "事實上，這個村莊的居民仍在持續抵抗。為了你的安全，我會將你的位置儲存在米德加爾特聯合軍營地。";
+			close;
+		case 2:
+			if(!callfunc("F_CanOpenStorage")){
+				mes "[貓咪手商隊人員]";
+				mes "很抱歉，你";
+				mes "需要初學者";
+				mes "基本技能 Lv 6 才能";
+				mes "使用倉庫服務。";
+				close;
+			}
+			else if (Zeny >= 60) {
+				set Zeny, Zeny-60;
+				mes "[貓咪手商隊人員]";
+				mes "謝謝。";
+				mes "你的倉庫馬上就會開啟。";
+				close2;
+				openstorage;
+				end;
+			}
+			else {
+				mes "[貓咪手商隊人員]";
+				mes "抱歉，你的";
+				mes "錢不夠？";
+				mes "貓咪手商隊的倉庫";
+				mes "服務是 60 Zeny。";
+				mes "很便宜吧？";
+				close;
+			}
+		case 3:
+			mes "[貓咪手商隊人員]";
+			mes "傳送服務只";
+			mes "提供給擁有";
+			mes ep13_yong1 + " 點以上貓咪手信用點數的客戶。";
+			mes "請記住，一旦你前往米德加爾特，就無法輕易回來。";
+			next;
+			if ((ep13_yong1 > 99) && (ep13_yong1 < 200)) {
+				switch(select("艾爾貝塔 -> 4590z:普隆德拉 -> 4590z:伊斯魯得島 -> 4590z:吉芬 -> 4590z:斐揚 -> 4590z:夢羅克 -> 4590z:艾爾帕蘭 -> 4590z:取消")) {
+					case 1: Catwarp(4590,1);
+					case 2: Catwarp(4590,2);
+					case 3: Catwarp(4590,3);
+					case 4: Catwarp(4590,4);
+					case 5: Catwarp(4590,5);
+					case 6: Catwarp(4590,6);
+					case 7: Catwarp(4590,7);
+					case 8: close;
+				}
+			}
+			else if ((ep13_yong1 > 199) && (ep13_yong1 < 250)) {
+				switch(select("艾爾貝塔 -> 4170z:普隆德拉 -> 4170z:伊斯魯得島 -> 4170z:吉芬 -> 4170z:斐揚 -> 4170z:夢羅克 -> 4170z:艾爾帕蘭 -> 4170z:朱諾 -> 4170z:取消")) {
+					case 1: Catwarp(4170,1);
+					case 2: Catwarp(4170,2);
+					case 3: Catwarp(4170,3);
+					case 4: Catwarp(4170,4);
+					case 5: Catwarp(4170,5);
+					case 6: Catwarp(4170,6);
+					case 7: Catwarp(4170,7);
+					case 8: Catwarp(4170,8);
+					case 9: close;
+				}
+				close;
+			}
+			else if ((ep13_yong1 > 249) && (ep13_yong1 < 300)) {
+				switch(select("艾爾貝塔 -> 4025z:普隆德拉 -> 4025z:伊斯魯得島 -> 4025z:吉芬 -> 4025z:斐揚 -> 4025z:夢羅克 -> 4025z:艾爾帕蘭 -> 4025z:朱諾 -> 4025z:艾因布羅克 -> 4025z:取消")) {
+					case 1: Catwarp(4025,1);
+					case 2: Catwarp(4025,2);
+					case 3: Catwarp(4025,3);
+					case 4: Catwarp(4025,4);
+					case 5: Catwarp(4025,5);
+					case 6: Catwarp(4025,6);
+					case 7: Catwarp(4025,7);
+					case 8: Catwarp(4025,8);
+					case 9: Catwarp(4025,9);
+					case 10: close;
+				}
+				close;
+			}
+			else if (ep13_yong1 > 299) {
+				switch(select("艾爾貝塔 -> 3970z:普隆德拉 -> 3970z:伊斯魯得島 -> 3970z:吉芬 -> 3970z:斐揚 -> 3970z:夢羅克 -> 3970z:艾爾帕蘭 -> 3970z:朱諾 -> 3970z:艾因布羅克 -> 3970z:里希塔樂鎮 -> 3970z:取消")) {
+					case 1: Catwarp(3970,1);
+					case 2: Catwarp(3970,2);
+					case 3: Catwarp(3970,3);
+					case 4: Catwarp(3970,4);
+					case 5: Catwarp(3970,5);
+					case 6: Catwarp(3970,6);
+					case 7: Catwarp(3970,7);
+					case 8: Catwarp(3970,8);
+					case 9: Catwarp(3970,9);
+					case 10: Catwarp(3970,10);
+					case 11: close;
+				}
+				close;
+			}
+			else {
+				mes "[貓咪手商隊人員]";
+				mes "很抱歉，你沒有";
+				mes "資格使用傳送服務。";
+				mes "請檢查你的點數，";
+				mes "然後再來。";
+				close;
+			}
+		case 4:
+			if (strnpcinfo(2) == "spl") switch(select("聯合軍營地 -> 5500z:瑪努克營地 -> 7500z:取消")) {
+				case 1: Catwarp(5500,13);
+				case 2: Catwarp(5500,12);
+				case 3:
+					mes "[貓咪手商隊人員]";
+					mes "感謝你使用我們的服務。";
+					close;
+				}
+			else switch(select("聯合軍營地 -> 5500z:史波浪壯麗營地 -> 7500z:取消")) {
+				case 1: Catwarp(5500,13);
+				case 2: Catwarp(5500,11);
+				case 3:
+					mes "[貓咪手商隊人員]";
+					mes "感謝你使用我們的服務。";
+					close;
+				}
+		case 5:
+			mes "[貓咪手商隊人員]";
+			mes "感謝你使用我們的服務。";
+			close;
+		}
+	}
+	else {
+		mes "[貓咪手商隊人員]";
+		mes "…… …… …… ……";
+		mes "請給我一些魚塊。";
+		close;
+	}
+function Catwarp {
+	if (Zeny < getarg(0)) {
+		mes "[貓咪手商隊人員]";
+		mes "別拿錢開玩笑。";
+		close;
+	}
+	close2;
+	set Zeny, Zeny-getarg(0);
+	switch(getarg(1)) {
+		case 1: warp "alberta",117,56; end;
+		case 2: warp "prontera",116,72; end;
+		case 3: if (checkre(0)) warp "izlude",128,98; else warp "izlude",91,105; end;
+		case 4: warp "geffen",120,39; end;
+		case 5: warp "payon",161,58; end;
+		case 6: warp "morocc",156,46; end;
+		case 7: warp "aldebaran",168,112; end;
+		case 8: warp "yuno",158,125; end;
+		case 9: warp "einbroch",158,301; end;
+		case 10: warp "lighthalzen",163,64; end;
+		case 11: warp "spl_fild02",32,225; end;
+		case 12: warp "man_fild02",129,61; end;
+		case 13: warp "mid_camp",62,127; end;
+	}
+}
+}
+man_fild02,132,47,4	duplicate(貓咪手商隊人員#spl)	貓咪手商隊人員#man	421
+
+-	script	神秘的石頭#30::manukrock2	-1,{
+	if ((countitem(6048) < 3) && (checkquest(12062,PLAYTIME) == -1)) {
+		specialeffect2 EF_REPAIRWEAPON;
+		progressbar "ffff00",10;
+		set .@rhea_ran,rand(1,20);
+		if (.@rhea_ran < 13) getitem 7049,1; //Stone
+		else if (.@rhea_ran == 13) getitem 990,1; //Boody_Red
+		else if (.@rhea_ran == 14) getitem 991,1;
+		//Crystal_Blue
+		else if (.@rhea_ran == 15) getitem 992,1; //Wind_Of_Verdure
+		else if (.@rhea_ran == 16) getitem 993,1;
+		//Yellow_Live
+		else if (.@rhea_ran == 17) getitem 6080,1; //Manuk_Coin
+		else getitem 6048,1; //Unidentified_Mineral
+		initnpctimer;
+		disablenpc();
+		end;
+	}
+	else {
+		mes "這塊石頭含有未鑑定的礦石。";
+		mes "無法開採超過限制的數量。";
+		close;
+	}
+	end;
+
+OnTimer120000:
+	enablenpc();
+	stopnpctimer;
+	end;
+}
+
+man_fild02,146,81,0	duplicate(manukrock2)	神秘的石頭#31	844
+man_fild02,140,148,0	duplicate(manukrock2)	神秘的石頭#32	844
+man_fild02,88,263,0	duplicate(manukrock2)	神秘的石頭#33	844
+man_fild02,146,365,0	duplicate(manukrock2)	神秘的石頭#34	844
+man_fild02,336,305,0	duplicate(manukrock2)	神秘的石頭#35	844
+man_fild02,248,124,0	duplicate(manukrock2)	神秘的石頭#36	844
+man_fild02,285,115,0	duplicate(manukrock2)	神秘的石頭#37	844
+man_fild02,346,116,0	duplicate(manukrock2)	神秘的石頭#38	844
+man_fild02,358,174,0	duplicate(manukrock2)	神秘的石頭#39	844
+man_fild02,241,227,0	duplicate(manukrock2)	神秘的石頭#40	844
+
+spl_fild03,226,151,0	script	魚群#5::FishingHole_spl3	844,{
+	if ((checkquest(12060,PLAYTIME) == -1) && (countitem(6039) < 20)) {
+		specialeffect2 EF_BUBBLE;
+		specialeffect2 EF_INVENOM;
+		set .@fcast,15;
+		if (isequipped(2550)) //Fisher's_Muffler
+			set .@fcast,.@fcast - 2;
+		if (isequipped(2443)) //Fish_Shoes
+			set .@fcast,.@fcast - 2;
+		if (isequipped(2764)) //Small_Fishing_Rod
+			set .@fcast,.@fcast - 3;
+		if (isequipped(2775)) //Lure
+			set .@fcast,.@fcast - 1;
+		if (isequipped(1599)) //Ahura_Mazda
+			set .@fcast,.@fcast - 3;
+		if (isequipped(2199)) //Angra_Manyu
+			set .@fcast,.@fcast - 4;
+		progressbar "ffff00",.@fcast;
+		if (ep13_1_rhea == 13) {
+			if (rand(1,20) == 2) {
+				getitem 6037,1; //Rough_File
+				set ep13_1_rhea,14;
+				specialeffect2 EF_BUBBLE;
+				mapannounce strcharinfo(3),strcharinfo(0) + " 釣到了一把粗糙的銼刀。",bc_map,"0xff77ff";
+			}
+		}
+		set .@rhea_ran,rand(1,70);
+		if (.@rhea_ran < 20) getitem 6039,1;
+		//Piece_Of_Fish
+		else if (.@rhea_ran == 20) getitem 908,1; //Spawn
+		else if (.@rhea_ran == 21) getitem 909,1;
+		//Jellopy
+		else if (.@rhea_ran == 22) getitem 963,1; //Sharp_Scale
+		else if (.@rhea_ran == 23) getitem 956,1;
+		//Gill
+		else if (.@rhea_ran == 24) getitem 6049,1; //Marlin
+		else if (.@rhea_ran == 25) getitem 918,1;
+		//Sticky_Webfoot
+		else if (.@rhea_ran == 26) getitem 960,1; //Nipper
+		else if (.@rhea_ran == 27) getitem 910,1;
+		//Garlet
+		else if (.@rhea_ran == 28) getitem 6081,1; //Splendide_Coin
+		else if ((.@rhea_ran > 28) && (.@rhea_ran < 40)) getitem 7049,1;
+		//Stone
+		else {
+			mes "什麼也沒釣到。";
+			close;
+		}
+		set .@rhea_ran5,rand(1,200);
+		if (.@rhea_ran5 == 3) {
+			getitem 644,1;
+			//Gift_Box
+			mapannounce strcharinfo(3),strcharinfo(0) + " 釣到了一個禮物箱。",bc_map,"0x00ffff";
+		}
+		set .@rhea_ran3,rand(1,500);
+		if (.@rhea_ran3 == 3) {
+			getitem 603,1;
+			//Old_Blue_Box
+			mapannounce strcharinfo(3),strcharinfo(0) + " 釣到了一個老舊收集冊。",bc_map,"0x00ffff";
+		}
+		set .@rhea_ran4,rand(1,3000);
+		if (.@rhea_ran4 == 3) {
+			getitem 617,1;
+			//Old_Violet_Box
+			mapannounce strcharinfo(3),strcharinfo(0) + " 釣到了一個神秘紫箱。",bc_map,"0x44ff44";
+		}
+	}
+	else {
+		mes "魚兒在水裡游來游去。";
+		close;
+	}
+	end;
+}
+spl_fild03,268,230,0	duplicate(FishingHole_spl3)	魚群#6	844
+spl_fild03,293,253,0	duplicate(FishingHole_spl3)	魚群#7	844
+spl_fild03,165,100,0	duplicate(FishingHole_spl3)	魚群#8	844
+spl_fild03,317,190,0	duplicate(FishingHole_spl3)	魚群#9	844
+spl_fild01,41,118,0	duplicate(FishingHole_spl3)	魚群#10	844
+spl_fild01,317,361,0	duplicate(FishingHole_spl3)	魚群#11	844
+spl_fild01,55,269,0	duplicate(FishingHole_spl3)	魚群#12	844
+spl_fild01,332,131,0	duplicate(FishingHole_spl3)	魚群#13	844
+spl_fild01,170,74,0	duplicate(FishingHole_spl3)	魚群#14	844
+
+// Two Tribes :: ep13_2_msg
+//============================================================
+spl_in01,32,306,3	script	史波浪壯麗守衛#ep13md01	447,2,2,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if ((isequipped(2782) == 1) && (ep13_2_rhea > 99)) {
+		if (ep13_mdrama == 0) {
+			mes "[史波浪壯麗守衛]";
+			mes "外來者？";
+			mes "最近外來者越來越頻繁地出現了。";
+			next;
+			mes "[史波浪壯麗守衛]";
+			mes "看來上級已經允許你進入了，所以我也就不攔你了。";
+			next;
+			mes "[亞克]";
+			mes "我的名字是亞克。";
+			mes "對了，嗯……你聽得懂我在說什麼嗎？";
+			next;
+			switch(select("聽得懂。:搖頭")) {
+			case 1:
+				mes "[亞克]";
+				mes "什麼？你剛才是說『聽得懂』嗎？";
+				mes "真不敢相信我們能溝通！";
+				mes "你什麼時候學會我們的語言的？";
+				mes "你們的種族叫什麼？";
+				next;
+				mes "- 我把戒指拿給亞克看，並解釋了一切，包括我是怎麼來到這裡的…… -";
+				next;
+				mes "[亞克]";
+				mes "所以……嗯，原來是這樣……";
+				mes "那就是巨大震動和神秘爆炸的來源……";
+				next;
+				mes "[亞克]";
+				mes "非常有趣的故事。";
+				mes "這就是為什麼你們人類會在這裡到處探索……";
+				next;
+				mes "[亞克]";
+				mes "現在我清楚明白你不是瑪努克巨人派來的了。";
+				mes "謝謝你告訴我這些有趣的故事。";
+				set ep13_mdrama,1;
+				close;
+			case 2:
+				mes "[亞克]";
+				mes "哦？是這樣嗎？";
+				mes "我們果然使用不同的語言……";
+				mes "這真有點讓人氣餒。";
+				close;
+			}
+		}
+		else if (ep13_mdrama == 1) {
+			mes "[亞克]";
+			mes "對了，你……";
+			mes "不，沒事……";
+			mes "你的名字是？";
+			next;
+			select("" + strcharinfo(0) + "");
+			mes "[亞克]";
+			mes "啊，對了。" + strcharinfo(0) +"！";
+			mes "這發音真奇特。";
+			mes "我可能會發錯音，請見諒……";
+			next;
+			mes "[亞克]";
+			mes "總之，我有個請求想拜託你。可以嗎？";
+			next;
+			switch(select("什麼請求？:現在不行。")) {
+			case 1:
+				mes "[亞克]";
+				mes "嗯……啊……這是……";
+				mes "有點……複雜……";
+				next;
+				mes "- 亞克環顧四周，確認沒有其他人。確定只有你們兩人後，他壓低聲音繼續說著。 -";
+				next;
+				mes "[亞克]";
+				mes "坦白說，我很擔心我的一個朋友，她未經許可就離開，說要去查看你們的營地。從那之後她就沒回來過了。";
+				next;
+				mes "[亞克]";
+				mes "但是，我不能離開崗位去找她，因為我有職責守護存放在這裡的研究資料。";
+				next;
+				mes "[亞克]";
+				mes "既然她是擅自離開，我甚至不能向上級報告……那只會惹出更大的麻煩。";
+				next;
+				mes "[亞克]";
+				mes "光是想到這點就讓我很擔心……";
+				mes "事實上，我們正盡量避免與瑪努克的巨人接觸，所以我們都遠離彼此的領地。";
+				next;
+				mes "[亞克]";
+				mes "你們的營地位於我們兩個種族之間的緩衝區……";
+				next;
+				mes "[亞克]";
+				mes "如果她靠近了他們那邊，那她可能已經前往雪地了……";
+				mes "那會讓我們更難找到她……";
+				next;
+				mes "[亞克]";
+				mes "瑪努克巨人可能會把這誤解為挑釁……不是嗎？";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "所以……重點是，你想讓我去找你的朋友。對吧？";
+				mes "因為在這些複雜的狀況下，你無法親自去找？";
+				next;
+				mes "[亞克]";
+				mes "沒錯！";
+				mes "你觀察力真敏銳。";
+				next;
+				switch(select("沒問題，交給我吧。:抱歉，我幫不上忙。")) {
+				case 1:
+					mes "[" + strcharinfo(0) + "]";
+					mes "但是，如果我要去找她，我需要更多線索。";
+					next;
+					mes "[亞克]";
+					mes "你不用擔心那個……";
+					mes "^4d4dff泰拉^000000 習慣把植物打結來標記她前往的方向。";
+					next;
+					mes "[亞克]";
+					mes "她這麼做是為了避免迷路。";
+					mes "如果你發現打結植物的痕跡，應該就能找到她在哪裡。";
+					next;
+					mes "[亞克]";
+					mes "尋找這些標記可能有些困難，但總比什麼都不做來得好……";
+					mes "拜託了，我懇求你。";
+					next;
+					mes "[亞克]";
+					mes "啊，還有請對其他拉菲尼族保密。";
+					next;
+					mes "[亞克]";
+					mes "記住，" + strcharinfo(0) + "……你一定要保守秘密……";
+					mes "拜託了，找到她。";
+					set ep13_mdrama,2;
+					setquest 7056;
+					close;
+				case 2:
+					mes "[亞克]";
+					mes "這的確是個強人所難的請求……";
+					mes "你也是被派來這裡執行任務的……";
+					mes "是我考慮不周……";
+					close;
+				}
+			case 2:
+				mes "[亞克]";
+				mes "是這樣嗎？當然。";
+				mes "你被派來這裡是為了執行你自己的任務……";
+				close;
+			}
+		}
+		else if (ep13_mdrama == 2) {
+			mes "[亞克]";
+			mes "^4d4dff泰拉^000000 習慣把植物打結來標記她前往的方向。";
+			mes "尋找她時請記住這一點。而且千萬別告訴其他拉菲尼族她失蹤的事。";
+			next;
+			mes "[亞克]";
+			mes "" + strcharinfo(0) + " 你是我唯一能尋求幫助的人了……";
+			mes "請幫幫我。";
+			close;
+		}
+		else if ((ep13_mdrama > 3) && (ep13_mdrama < 7)) {
+			mes "[亞克]";
+			mes "你發現什麼了嗎？";
+			mes "你有找到任何打結的植物嗎？";
+			mes "對，那就是";
+			mes "泰拉留下的標記。";
+			next;
+			mes "[亞克]";
+			mes "繼續保持，";
+			mes "幫我找到她。";
+			close;
+		}
+		else if (ep13_mdrama == 7) {
+			mes "[亞克]";
+			mes "啊，來得正好！";
+			mes "我現在該怎麼辦？！";
+			next;
+			select("什麼？發生了什麼事？");
+			mes "- 亞克看起來似乎因為某件事而陷入了混亂。 -";
+			next;
+			mes "[亞克]";
+			mes "泰拉……";
+			next;
+			mes "[亞克]";
+			mes "泰拉回來了！！！";
+			mes "但是，她渾身是傷……";
+			next;
+			select("渾身是傷？");
+			mes "[亞克]";
+			mes "她甚至沒有接受治療！";
+			mes "就拖著疲憊的身體把鈽鐳帶走了！";
+			next;
+			mes "[亞克]";
+			mes "連理由都沒告訴我！";
+			mes "我叫她不要去，但她根本不聽我的！";
+			mes "這一切發生得太突然了。";
+			next;
+			mes "[亞克]";
+			mes "" + strcharinfo(0) + "！";
+			mes "我現在該怎麼辦？";
+			mes "我必須做什麼？";
+			mes "泰拉受著傷又離開了……";
+			next;
+			mes "[亞克]";
+			mes "而我只能站在這裡……什麼也做不了。";
+			next;
+			select("你有很強的責任感。");
+			mes "[亞克]";
+			mes "……總之。";
+			mes "我既無法阻止她，也無法跟蹤她……";
+			mes "現在該怎麼辦……？";
+			mes "她為什麼要拿走鈽鐳……？";
+			next;
+			mes "- 你告訴亞克關於洞穴裡巨人的事。 -";
+			next;
+			mes "[亞克]";
+			mes "什麼？原來發生了這樣的事嗎？";
+			mes "鈽鐳……對薩法族來說確實是珍貴的礦石。";
+			mes "他們會使用精煉過的鈽鐳礦……";
+			next;
+			mes "[亞克]";
+			mes "你說有個薩法族受傷了？";
+			mes "而且他的身體已經僵硬了？";
+			mes "不可能！";
+			mes "泰拉！！";
+			next;
+			mes "- 亞克突然開始收拾他的裝備。 -";
+			set ep13_mdrama,8;
+			close;
+		}
+		else if (ep13_mdrama == 8) {
+			mes "[亞克]";
+			mes "你發現那個薩法族的洞穴在哪裡？";
+			mes "我們之前檢查周邊地區時，並沒有這樣的洞穴。";
+			next;
+			select("你想做什麼？");
+			mes "[亞克]";
+			mes "這還看不出來嗎？";
+			mes "我要出去找泰拉。她帶走了鈽鐳，這一定和那個薩法族有關。";
+			next;
+			select("你擅離崗位沒關係嗎？");
+			mes "[亞克]";
+			mes "這…… ……";
+			mes "……不行……";
+			mes "可惡，那我該怎麼辦！！";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "我去吧。只有我確切知道那個洞穴在哪裡。";
+			mes "我會去把她帶回來。";
+			mes "如果泰拉前往那個洞穴，我應該能找到她。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "剩下的事情等找到泰拉再聽她說吧。";
+			mes "你守衛這個地方也很重要，不是嗎？";
+			mes "如果泰拉真的未經許可拿走了鈽鐳……";
+			next;
+			mes "[亞克]";
+			mes "上級絕對不會坐視不管的……";
+			mes "很抱歉又拜託你……";
+			mes "請去把她帶回來……";
+			set ep13_mdrama,9;
+			changequest 7058,7059;
+			close;
+		}
+		else if ((ep13_mdrama > 8) && (ep13_mdrama < 13)) {
+			mes "[亞克]";
+			mes "真的很抱歉把你捲進這個麻煩……";
+			mes "……拜託，找到泰拉。";
+			close;
+		}
+		else if (ep13_mdrama == 13) {
+			mes "[亞克]";
+			mes "什麼？薩法村莊裡有一個受傷的拉菲尼族？";
+			mes "是泰拉嗎？！她被那些薩法混蛋抓住了嗎？！";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "冷靜點。我無法確認被抓的拉菲尼族到底是誰。";
+			mes "而且他們似乎沒有傷害那名拉菲尼族的意圖。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "而且，他們正在尋找能治療受傷拉菲尼族的東西……";
+			mes "如果我們帶一些藥過去給他們，或許就有機會見到那名拉菲尼族是誰。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "我能理解你焦急的心情……但這是我能想到唯一確認身分的方法。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "我會帶一些治療傷口的東西過去，如果證實被抓的拉菲尼族就是泰拉，我會把她帶回來。";
+			next;
+			mes "[亞克]";
+			mes "…………";
+			mes "好吧，看來這是目前這種情況下我們能做的最好辦法了……";
+			next;
+			mes "[亞克]";
+			mes "你偶然聽說過『天地樹』嗎？";
+			mes "沒有什麼比天地樹果實更適合用來治療傷口了……";
+			mes "尤其是對我們拉菲尼族來說……";
+			next;
+			mes "[亞克]";
+			mes "如果你有天地樹果實，你就可以用它來治療那名拉菲尼族……";
+			mes "天地樹是生命之樹……它的樹根與這個世界上的一切相連。";
+			next;
+			mes "[亞克]";
+			mes "我有……";
+			mes "……只有三顆天地樹果實……";
+			next;
+			mes "[亞克]";
+			mes "我把這些給你，但這還不夠……";
+			mes "外面……有一棵巨大的樹……那裡有天地樹裸露出來的樹根……應該就在那裡。";
+			next;
+			mes "[亞克]";
+			mes "有時候你可以在那附近找到天地樹果實。";
+			mes "去找幾個帶在身上。快去！";
+			set ep13_mdrama,14;
+			getitem 607,3; //Yggdrasilberry
+			changequest 7062,7063;
+			close;
+		}
+		else if ((ep13_mdrama > 13) && (ep13_mdrama < 18)) {
+			mes "[亞克]";
+			mes "在這片區域郊外的沼澤附近，有一根巨大的樹根。";
+			mes "那裡就是生命之樹的樹根裸露出來的地方。";
+			next;
+			mes "[亞克]";
+			mes "你應該能在那裡找到一些天地樹果實。";
+			next;
+			mes "[亞克]";
+			mes "你至少需要 6~7 顆……";
+			mes "…… ……希望她平安無事……";
+			next;
+			mes "[亞克]";
+			mes "一收集完果實，就馬上帶去薩法村莊！！！";
+			mes "泰拉……拜託一定要平安無事。";
+			close;
+		}
+		else if ((ep13_mdrama > 17) && (ep13_mdrama < 25)) {
+			mes "[亞克]";
+			mes "……哦，泰拉在哪裡……？";
+			close;
+		}
+		else if (ep13_mdrama == 25) {
+			mes "[亞克]";
+			mes "" + strcharinfo(0) + "！！";
+			mes "泰拉回來了！！！";
+			mes "她平安無事地回來了！";
+			mes "……她回來後一句話也沒說，我叫她去亞伊休息了……";
+			next;
+			mes "[亞克]";
+			mes "如果你不介意的話，請過來一趟……";
+			mes "泰拉的亞伊。";
+			mes "也就是她的私人住宅……它位於這裡的東南方向。";
+			mes "我想聽聽事情的詳細經過。";
+			set ep13_mdrama,26;
+			changequest 7070,7071;
+			close;
+		}
+		else if (ep13_mdrama == 26) {
+			mes "[亞克]";
+			mes "她離開的這段期間……到底發生了什麼事？";
+			mes "我想聽聽事情的詳細經過……";
+			mes "請稍後去泰拉的亞伊一趟。";
+			close;
+		}
+		else if (ep13_mdrama > 26) {
+			mes "[亞克]";
+			mes "我非常感謝你為我們做的一切。";
+			mes "但是，我很擔心泰拉。";
+			mes "希望她能恢復以前的樣子……";
+			close;
+		}
+		else {
+			mes "[亞克]";
+			mes "啊?啊?停在那裡……";
+			mes "未經授權的人員禁止進入此區域。";
+			close;
+		}
+	}
+	else {
+		if (ep13_mdrama > 0) {
+			mes "[亞克]";
+			mes "Yur,Dur AnoVa？";
+			mes "Wha? Dieb OsaDur .. ";
+			mes "ah..RuffThus NeAsh. man nesAsh OdesAlah ？";
+			next;
+			mes "- 我聽不懂他在說什麼……天啊，真令人氣餒。 -";
+			close;
+		}
+		else {
+			mes "[史波浪壯麗守衛]";
+			mes "NeiVil ！";
+			mes "narNoth nesMush。";
+			mes "AnuDur AmanDana Goth nar！";
+			next;
+			mes "- 我們似乎無法溝通。 -";
+			close;
+		}
+	}
+	end;
+OnTouch:
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama < 1) {
+			mes "[史波浪壯麗守衛]";
+			mes "站住。";
+			mes "除非有獲得許可，否則此區域是限制進入的。";
+			mes "尤其是像你這樣的外來者。";
+			close;
+		}
+	}
+	else {
+		mes "[史波浪壯麗守衛]";
+		mes "Tal-！";
+		mes "AnuDur AmanDana Goth nar！";
+		mes "Agoltas Me...";
+		next;
+		mes "- 看來我們無法溝通。這下麻煩了…… -";
+		close;
+	}
+	end;
+}
+
+spl_fild02,45,214,0	script	????#ep13_mdplant01	844,{
+	if (ep13_mdrama == 2) {
+		cutin "ep13_plant01",2;
+		mes "這附近很容易看到雜草……";
+		mes "仔細一看，發現有一根被打結的莖……";
+		mes "看來這就是亞克告訴我的泰拉的標記。";
+		next;
+		mes "打結的葉子指向^4d4dff南方^000000。";
+		set ep13_mdrama,3;
+		changequest 7056,7057;
+		close2;
+	}
+	else if (ep13_mdrama > 2) {
+		mes "這是泰拉留下的標記，用來記住回家的路。";
+		mes "打結的葉子指向^4d4dff南方^000000。";
+		close2;
+	}
+	else {
+		mes "這附近很容易看到雜草……";
+		mes "沒有什麼特別的。";
+		close2;
+	}
+	cutin "ep13_plant01",255;
+	end;
+}
+
+spl_fild02,122,106,0	script	????#ep13_mdplant02	844,{
+	if (ep13_mdrama > 2) {
+		cutin "ep13_plant01",2;
+		mes "這附近很容易看到雜草……";
+		mes "仔細一看，發現有一根被打結的莖……";
+		mes "看來這就是亞克告訴我的泰拉的標記。";
+		next;
+		mes "打結的葉子指向^4d4dff東方^000000。";
+		close2;
+	}
+	else {
+		mes "這附近很容易看到雜草……";
+		mes "沒有什麼特別的。";
+		close2;
+	}
+	cutin "ep13_plant01",255;
+	end;
+}
+
+spl_fild02,329,191,0	script	????#ep13_mdplant03	844,{
+	if (ep13_mdrama > 2) {
+	cutin "ep13_plant01",2;
+		mes "這附近很容易看到雜草……";
+		mes "仔細一看，發現有一根被打結的莖……";
+		mes "看來這就是亞克告訴我的泰拉的標記。";
+		next;
+		mes "打結的葉子指向^4d4dff北方^000000。";
+		close2;
+	}
+	else {
+		mes "這附近很容易看到雜草……";
+		mes "沒有什麼特別的。";
+		close2;
+	}
+	cutin "ep13_plant01",255;
+	end;
+}
+
+spl_fild02,328,323,0	script	????#ep13_mdplant04	844,{
+	if (ep13_mdrama == 3) {
+		mes "這裡有腳印，還有跌倒的痕跡。";
+		mes "看來有人在這裡打鬥過？";
+		mes "但是誰呢？";
+		next;
+		mes "有腳印朝著^4d4dff北方^000000前進。";
+		set ep13_mdrama,4;
+		close;
+	}
+	else if (ep13_mdrama > 3) {
+		mes "肯定有人在這裡打鬥過。";
+		mes "有腳印朝著^4d4dff北方^000000前進。";
+		close;
+	}
+	else {
+		mes "這裡的腳印似乎通往某個地方。";
+		close;
+	}
+}
+
+spl_fild01,341,109,0	script	????#ep13_mdplant05	844,{
+	if (ep13_mdrama == 4) {
+		mes "這裡也有發生過戰鬥的痕跡。";
+		mes "這些腳印不可能是拉菲尼族的……";
+		next;
+		mes "這些腳印通往^4d4dff巨大樹木的樹根^000000。";
+		set ep13_mdrama,5;
+		close;
+	}
+	else if (ep13_mdrama > 4) {
+		mes "這些腳印通往^4d4dff巨大樹木的樹根^000000。";
+		close;
+	}
+	else {
+		mes "這裡的腳印似乎通往某個地方。";
+		close;
+	}
+}
+
+spl_fild01,375,109,0	script	to_dun01#ep13_2	-1,2,2,{
+OnTouch:
+	if (ep13_mdrama == 5) {
+		mes "在巨大樹根的開口處纏繞著一根莖……";
+		mes "看起來像是有什麼東西滑進去了。";
+		next;
+		mes "一陣冷風從樹木深處吹出來。";
+		next;
+		switch(select("跟隨痕跡。:看起來很危險……先回去吧。")) {
+		case 1:
+			mes "你小心翼翼地穿過泥濘的樹根向前邁出一步，結果滑倒了。";
+			set ep13_mdrama,6;
+			close2;
+			percentheal -30,0;
+			warp "nyd_dun01",72,125;
+			end;
+		case 2:
+			mes "裡面太暗了什麼也看不見……但感覺底部有個大洞。";
+			mes "我最好退後……看起來很危險。";
+			close;
+		}
+	}
+	else if (ep13_mdrama > 5) {
+		mes "在巨大的樹根之間，有一個通往地下洞穴的洞。";
+		next;
+		switch(select("進去。:我才不進去。")) {
+		case 1:
+			mes "你再次從泥濘的樹根中滑了進去。";
+			close2;
+			percentheal -30,0;
+			warp "nyd_dun01",72,125;
+			end;
+		case 2:
+			mes "你決定晚點再來。";
+			close;
+		}
+	}
+	else {
+		mes "形狀奇特的莖纏繞在巨大樹根的開口處。";
+		mes "表面看起來很不穩定……我應該在滑倒之前離開這裡。";
+		close;
+	}
+}
+
+nyd_dun01,58,223,0	script	石化的薩法族#ep13md03	844,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (ep13_mdrama == 6) {
+		mes "這是唯一一個能讓陽光從天花板上的洞口照下來的地方。";
+		next;
+		mes "抬頭一看，我看到樹根和莖幹挖開了泥巴糊成的牆，所以陽光才能照進來……地上有一尊巨人的雕像。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "這種地方竟然會有雕像……";
+		mes "真有趣。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "嗯，這個看起來很像……瑪努克的那個巨人族……";
+		mes "咦？他戴著圍巾……";
+		mes "……不可能吧！";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "上面有很多傷痕……好像經歷過一場激烈的戰鬥……";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "而且他懷裡好像抱著什麼東西……";
+		mes "這裡到底發生了什麼事？";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "我無法想像這裡發生了什麼事，但我沒再看到泰拉的標記了……";
+		mes "而且這個洞穴看起來不安全……我最好先回去找亞克。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "難道……泰拉在和這個巨人戰鬥？";
+		set ep13_mdrama,7;
+		changequest 7057,7058;
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "總之……我該怎麼離開這裡？";
+		mes "我進來的那個洞太滑了，爬不出去……";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "上面天花板有光照進來……也許我應該沿著這裡的莖幹爬上去……";
+		close;
+	}
+	else if ((ep13_mdrama == 7) || (ep13_mdrama == 8)) {
+		mes "[" + strcharinfo(0) + "]";
+		mes "我在這裡的事情辦完了。";
+		mes "我該回去找亞克了……";
+		mes "來找出口吧。";
+		close;
+	}
+	else if (ep13_mdrama == 9) {
+		mes "我回到這裡，但沒發現泰拉的蹤跡……";
+		mes "只有一件事和上次不一樣……薩法族屍體周圍撒落著礦石的微小碎屑。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "所以……泰拉來過這裡……";
+		mes "粉末狀的鈽鐳……";
+		mes "她想對這個薩法族做什麼？";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "我不能就這樣兩手空空回去找亞克……他會很失望的……";
+		mes "嗯，我是不是該去薩法族的村莊看看？";
+		set ep13_mdrama,10;
+		changequest 7059,7060;
+		close;
+	}
+	else if (ep13_mdrama == 10) {
+		mes "[" + strcharinfo(0) + "]";
+		mes "我再也找不到任何泰拉的蹤跡了。";
+		mes "唯一讓我掛心的是……這些礦石碎屑。";
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "我應該回去問問亞克，或者去薩法族村莊再調查一下。";
+		close;
+	}
+	else if ((ep13_mdrama > 10) && (ep13_mdrama < 21)) {
+		mes "一個被稱為薩法族的巨人石化在這裡。";
+		mes "看起來已經死了……";
+		close;
+	}
+	else if (ep13_mdrama == 21) {
+		mes "我需要帶點關於這個洞穴裡巨人的證據回去。";
+		mes "我該帶什麼回去呢？";
+		next;
+		switch(select("頭髮:圍巾:褲子:鈽鐳碎片")) {
+		case 1:
+			mes "拔不下來。簡直就像是在岩石上生根的樹一樣。";
+			close;
+		case 2:
+			mes "你小心翼翼地從薩法族的脖子上解下一條破舊的圍巾。";
+			mes "我們來看看這條圍巾是不是歐根的。";
+			next;
+			mes "還有……我還該帶什麼？";
+			next;
+			switch(select("頭髮:褲子:鈽鐳碎片")) {
+			case 1:
+				mes "拔不下來。簡直就像是在岩石上生根的樹一樣。";
+				close;
+			case 2:
+				mes "……我不想脫下一個死「人」的褲子……";
+				close;
+			case 3:
+				mes "你撿起散落在地上的鈽鐳碎片。";
+				mes "這樣應該夠了。";
+				set ep13_mdrama,22;
+				getitem 6085,1; //Shaggy_Muffler
+				getitem 6084,1; //Bradium_Fragments
+				changequest 7066,7067;
+				close;
+			}
+		case 3:
+			mes "……我不想脫下一個死「人」的褲子……";
+			close;
+		case 4:
+			mes "你撿起散落在地上的鈽鐳碎片。";
+			mes "這能證明泰拉的努力……";
+			mes "還有……我還該帶什麼？";
+			next;
+			switch(select("頭髮:圍巾:褲子")) {
+			case 1:
+				mes "拔不下來。簡直就像是在岩石上生根的樹一樣。";
+				close;
+			case 2:
+				mes "你小心翼翼地從薩法族的脖子上解下一條破舊的圍巾。";
+				mes "我們來看看這條圍巾是不是歐根的……";
+				mes "這樣應該夠了。";
+				set ep13_mdrama,22;
+				getitem 6085,1; //Shaggy_Muffler
+				getitem 6084,1; //Bradium_Fragments
+				changequest 7066,7067;
+				close;
+			case 3:
+				mes "……我不想脫下一個死「人」的褲子……";
+				close;
+			}
+		}
+	}
+	else if (ep13_mdrama == 22) {
+		mes "石化的薩法族。";
+		mes "現在拿到了圍巾，我們回去找路伊克和斯諾倫吧。";
+		close;
+	}
+	else if (ep13_mdrama == 23) {
+		if (isequipped(2782) == 1) {
+			donpcevent "斯諾倫#ep13md17::OnEnable";
+			mes "[斯諾倫]";
+			mes "歐根！！！！！！";
+			mes "……歐根……歐根……";
+			mes "……歐根…………";
+			next;
+			select("你該不會是指……？");
+			mes "[斯諾倫]";
+			mes "這……這比我想像的還要糟……";
+			mes "歐根……這看起來已經無法挽回了……";
+			next;
+			mes "[斯諾倫]";
+			mes "不管我們注入多少鈽鐳原液……歐根都活不過來了……";
+			next;
+			mes "[斯諾倫]";
+			mes "歐根……真的是鐵了心……要保護那個拉菲尼族……保護泰拉……";
+			mes "他堅持到了最後一刻……";
+			next;
+			mes "[斯諾倫]";
+			mes "你看這個，" + strcharinfo(0) + "……";
+			mes "他石化的身體……";
+			mes "就這樣……保護著泰拉。";
+			next;
+			mes "[斯諾倫]";
+			mes "歐根……讓自己成為了堅不可摧的盾牌……";
+			next;
+			mes "[斯諾倫]";
+			mes "歐根……你現在可以回到大地母親的懷抱了……";
+			mes "這座雕像將是你勇氣的紀念碑……";
+			next;
+			mes "- 失去摯友的悲痛，我無法用言語來形容…… -";
+			next;
+			mes "- 我唯一能做的就是不斷拍著他的肩膀……看著他靜靜地啜泣…… -";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "我們……回去吧……";
+			mes "歐根不會希望你這麼悲傷沮喪的。";
+			next;
+			mes "[斯諾倫]";
+			mes "我想你說得對……";
+			mes "這裡……有陽光照耀著……";
+			mes "這……對歐根來說一定是個舒適的安息之地。";
+			next;
+			mes "[斯諾倫]";
+			mes "我應該去把這件事告訴路伊克和村民們……";
+			mes "我先走一步了。";
+			next;
+			donpcevent "斯諾倫#ep13md17::OnDisable";
+			mes "- 斯諾倫帶著苦笑站了起來……";
+			mes "……我也該回去了……我很擔心泰拉。 -";
+			set ep13_mdrama,24;
+			changequest 7068,7069;
+			close;
+		}
+		else {
+			mes "[" + strcharinfo(0) + "]";
+			mes "哇，差點忘了戒指。";
+			close;
+		}
+	}
+	else if (ep13_mdrama > 23) {
+		mes "歐根……在掩護泰拉時被石化了……";
+		mes "他們之間到底發生了什麼，能讓他們拋下種族的隔閡……？";
+		close;
+	}
+	else {
+		// custom translation
+		mes "在你面前的是一座由石頭和木頭製成的雕像。它逼真得令人毛骨悚然。";
+		close;
+	}
+}
+
+nyd_dun01,55,223,5	script	斯諾倫#ep13md17	454,{
+	disablenpc "斯諾倫#ep13md17";
+	end;
+
+OnInit:
+OnDisable:
+	disablenpc "斯諾倫#ep13md17";
+	end;
+
+OnEnable:
+	enablenpc "斯諾倫#ep13md17";
+	end;
+}
+
+nyd_dun01,62,233,0	script	樹幹#ep13	844,2,2,{
+	mes "一根適度向上延伸的樹幹。";
+	mes "這裡有巨大的刺，應該足以當作往上爬的落腳處。";
+	close;
+OnTouch:
+	mes "這是一根朝著天花板洞口延伸的樹幹。";
+	mes "巨大的刺可以當作落腳處。";
+	next;
+	switch(select("爬上去。:算了。")) {
+		case 1:
+			warp "spl_fild01",376,65;
+			end;
+		case 2:
+			mes "我晚點再來。";
+			close;
+	}
+}
+manuk,278,177,5	script	村民#ep13_11	454,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama == 10) {
+			mes "[村民 拉威涅]";
+			mes "話說回來，那個妖精是怎麼來到這裡的？";
+			mes "她被抓了嗎？";
+			next;
+			mes "[村民 里比埃]";
+			mes "不，她沒有。";
+			mes "那個妖精是自己跑來的。";
+			mes "真是不知好歹。她來到這裡時受了很嚴重的傷。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "(嗯？妖精？受傷了？";
+			mes "他們在說的是泰拉嗎……？！)";
+			next;
+			switch(select("插話。:保持安靜聽他們說。")) {
+			case 1:
+				mes "[" + strcharinfo(0) + "]";
+				mes "抱歉打擾你們的談話。";
+				mes "你們剛才在談論一個妖精，能好心告訴我詳細情況嗎？";
+				next;
+				mes "[村民 拉威涅]";
+				mes "外來者！！";
+				mes "他為什麼會在這裡？";
+				next;
+				mes "[村民 里比埃]";
+				mes "我們什麼也沒說。";
+				mes "沒什麼好告訴你的。";
+				mes "拉威涅，晚點跟我去精煉廠。";
+				next;
+				mes "- 薩法族人什麼都不願告訴你。但那個";
+				mes "被抓的妖精可能就是泰拉。 -";
+				set ep13_mdrama,11;
+				changequest 7060,7061;
+				close;
+			case 2:
+				// Custom Translation
+				mes "[村民 拉威涅]";
+				mes "我聽說有個妖精在哭著乞求，她傷得很重。";
+				next;
+				mes "[村民 里比埃]";
+				mes "沒有人聽得懂妖精的話……";
+				mes "最後我們根本不知道該怎麼辦。";
+				next;
+				mes "[村民 里比埃]";
+				mes "總之，那個妖精現在被關在監獄裡。";
+				mes "順帶一提，";
+				mes "我們今天還得去精煉廠，";
+				mes "別忘了。";
+				next;
+				mes "[村民 拉威涅]";
+				mes "你知道的吧？";
+				mes "啊！是外來的訪客！";
+				next;
+				mes "[村民 里比埃]";
+				mes "別理他，他聽不懂我們的話。";
+				next;
+				mes "- 幸好，薩法族以為我聽不懂他們的話，";
+				mes "但他們說的肯定就是泰拉…… -";
+				set ep13_mdrama,11;
+				changequest 7060,7061;
+				close;
+			}
+		}
+		else if (ep13_mdrama > 10) {
+			mes "- 薩法族正在交談，沒有注意我的舉動。 -";
+			next;
+			mes "- 他們主要在談論鎮上的日常瑣事，沒什麼有用的資訊。 -";
+			next;
+			mes "- 在他們對我的存在起疑之前，我最好離他們遠一點。 -";
+			close;
+		}
+		else {
+			mes "[村民]";
+			mes "……外來者？";
+			mes "你有許可進入我們的村莊嗎？";
+			mes "也對……你聽得懂我在說什麼嗎？";
+			close;
+		}
+	}
+	else {
+		mes "[村民]";
+		mes "Das?";
+		mes "idh sd!";
+		mes "Dh apa sd!-is Das idh.";
+		close;
+	}
+}
+
+manuk,281,177,3	script	村民#ep13_12	449,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama == 10) {
+			mes "[村民 拉威涅]";
+			mes "話說回來，那個妖精是怎麼來到這裡的？";
+			mes "她被抓了嗎？";
+			next;
+			mes "[村民 里比埃]";
+			mes "不，她沒有。";
+			mes "那個妖精是自己跑來的。";
+			mes "真是不知好歹。她來到這裡時受了很嚴重的傷。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "(嗯？妖精？受傷了？";
+			mes "他們在說的是泰拉嗎……？！)";
+			next;
+			switch(select("插話。:保持安靜聽他們說。")) {
+			case 1:
+				mes "[" + strcharinfo(0) + "]";
+				mes "抱歉打擾你們的談話。";
+				mes "你們剛才在談論一個妖精，能好心告訴我詳細情況嗎？";
+				next;
+				mes "[村民 拉威涅]";
+				mes "外來者！！";
+				mes "他為什麼會在這裡？";
+				next;
+				mes "[村民 里比埃]";
+				mes "我們什麼也沒說。";
+				mes "沒什麼好告訴你的。";
+				mes "拉威涅，晚點跟我去精煉廠。";
+				next;
+				mes "- 薩法族人什麼都不願告訴你。但那個";
+				mes "被抓的妖精可能就是泰拉。 -";
+				set ep13_mdrama,11;
+				changequest 7060,7061;
+				close;
+			case 2:
+				// Custom Translation
+				mes "[村民 拉威涅]";
+				mes "我聽說有個妖精在哭著乞求，她傷得很重。";
+				next;
+				mes "[村民 里比埃]";
+				mes "沒有人聽得懂妖精的話……";
+				mes "最後我們根本不知道該怎麼辦。";
+				next;
+				mes "[村民 里比埃]";
+				mes "總之，那個妖精現在被關在監獄裡。";
+				mes "順帶一提，";
+				mes "我們今天還得去精煉廠，";
+				mes "別忘了。";
+				next;
+				mes "[村民 拉威涅]";
+				mes "你知道的吧？";
+				mes "啊！是外來的訪客！";
+				next;
+				mes "[村民 里比埃]";
+				mes "別理他，他聽不懂我們的話。";
+				next;
+				mes "- 幸好，薩法族以為我聽不懂他們的話，";
+				mes "但他們說的肯定就是泰拉…… -";
+				set ep13_mdrama,11;
+				changequest 7060,7061;
+				close;
+			}
+		}
+		else if (ep13_mdrama > 10) {
+			mes "- 薩法族正在交談，沒有注意我的舉動。 -";
+			next;
+			mes "- 他們主要在談論鎮上的日常瑣事，沒什麼有用的資訊。 -";
+			next;
+			mes "- 在他們對我的存在起疑之前，我最好離他們遠一點。 -";
+			close;
+		}
+		else {
+			mes "[村民]";
+			mes "……外來者啊……";
+			mes "我們什麼時候允許外來者來參觀了？";
+			mes "也對……你聽得懂我在說什麼嗎？";
+			next;
+			mes "[村民]";
+			mes "……我想這無所謂了……";
+			mes "啊，我們能聽懂彼此的話嗎？";
+			close;
+		}
+	}
+	else {
+		mes "[村民]";
+		mes "Fsd a idh as?";
+		mes "Nsf iu ai sd a sd!";
+		mes "Asd fo sdj fso df.";
+		close;
+	}
+}
+
+man_in01,175,59,5	script	斯諾倫#ep13_13	454,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama == 11) {
+			mes "他在那裡來回踱步，看起來很焦慮……";
+			mes "他是這座監獄的守衛嗎？";
+			next;
+			mes "[斯諾倫]";
+			mes "……啊……為什麼不行？！";
+			mes "真是個木頭腦袋……";
+			mes "嗯？";
+			mes "你是誰？！";
+			mes "外來者怎麼會在這裡……？";
+			next;
+			switch(select("關於被抓住的妖精。:這裡是什麼地方？")) {
+			case 1:
+				mes "[斯諾倫]";
+				mes "你這樣的外來者怎麼會知道？";
+				mes "然後……？什麼？你怎麼能聽懂我在說什麼？";
+				next;
+				mes "[斯諾倫]";
+				mes "喂……？";
+				mes "你聽得懂我嘴裡說出來的話嗎？";
+				next;
+				mes "- 我把戒指拿給斯諾倫看。 -";
+				next;
+				mes "[斯諾倫]";
+				mes "啊哈！我明白了……";
+				mes "真神奇。一枚能翻譯不同語言的戒指……難怪你能一路來到這裡。";
+				next;
+				mes "[斯諾倫]";
+				mes "我聽說有外來者在幫助我們的人。";
+				mes "你一定是其中之一！";
+				next;
+				mes "[斯諾倫]";
+				mes "但你是從哪裡聽說那個妖精的事的？";
+				mes "坦白說，我想和那個妖精說幾句話。";
+				mes "但我聽不懂他們的語言。";
+				next;
+				switch(select("你為什麼想和她談話？:你需要翻譯嗎？")) {
+				case 1:
+					break;
+				case 2:
+					mes "[斯諾倫]";
+					mes "翻譯？當然需要！";
+					mes "但我不能就這樣擅自行動……";
+					mes "我之所以想和那個妖精，我是說拉菲尼族談話……";
+					next;
+					break;
+				}
+				mes "[斯諾倫]";
+				mes "我……想查清楚她是否和我的朋友有關係……";
+				next;
+				select("你的朋友？");
+				mes "[斯諾倫]";
+				mes "是啊，歐根失蹤了。";
+				mes "他說對你們居住的地方很好奇，就跑去查看了。真是太傻了。";
+				next;
+				mes "[斯諾倫]";
+				mes "然後他就再也沒回來。";
+				mes "過了一陣子，那個妖精就來了。";
+				next;
+				mes "[斯諾倫]";
+				mes "我不知道她哪來的膽子，竟然直接飛進我們的領地。";
+				mes "那個妖精一直大喊著『鈽鐳！』『鈽鐳！』";
+				next;
+				mes "[斯諾倫]";
+				mes "我們村裡的守衛隊說，那個妖精是受了鈽鐳力量的影響發瘋了。";
+				mes "拉菲尼族都是這副德性！";
+				next;
+				mes "[斯諾倫]";
+				mes "他們只想把我們生命之源的礦石做成飾品。";
+				mes "他們會收集任何具有魔力的東西。";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "你應該冷靜一點……告訴我關於那個被抓的拉菲尼族的事。";
+				next;
+				mes "[斯諾倫]";
+				mes "對了，抱歉。";
+				mes "總之，歐根失蹤後沒多久那個妖精就出現了……這太可疑了……";
+				mes "而且那個妖精也受了重傷。";
+				next;
+				mes "[斯諾倫]";
+				mes "我認為……";
+				next;
+				mes "[斯諾倫]";
+				mes "那個妖精在歐根試圖偷窺你們營地時攻擊了他。";
+				mes "而且她是被歐根的鈽鐳吸引，才大老遠跑來這裡尋找更多鈽鐳！";
+				next;
+				switch(select("這有可能是對的……:我不這麼認為……")) {
+				case 1:
+					mes "[" + strcharinfo(0) + "]";
+					mes "但是那種叫做鈽鐳的礦石真的具有壓倒性的魔力嗎？";
+					mes "看起來並不像……";
+					next;
+					mes "[斯諾倫]";
+					mes "真的嗎？可是，我們薩法族沒有鈽鐳就活不下去。";
+					mes "這場與拉菲尼族的戰爭……就是為了保護鈽鐳不被他們奪走……";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "我明白了……";
+					mes "你們的人和他們的人正在爭奪鈽鐳……";
+					next;
+					break;
+				case 2:
+					mes "[斯諾倫]";
+					mes "是……是這樣嗎？";
+					mes "那你怎麼看現在的情況？";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "我突然想到……";
+					mes "感覺就像是某種禁地……";
+					next;
+					break;
+				}
+				mes "[" + strcharinfo(0) + "]";
+				mes "總之，你是要向那個妖精打聽歐根的事，對吧？";
+				mes "既然如此，我可以為你們兩個翻譯……";
+				next;
+				mes "[斯諾倫]";
+				mes "真的嗎？！";
+				mes "那就在這裡等一下！";
+				mes "我去問問路伊克這件事！";
+				set ep13_mdrama,12;
+				close;
+			case 2:
+				mes "[斯諾倫]";
+				mes "呃，啊?！";
+				mes "這裡是監獄。";
+				mes "你需要遵守規定來維持和平的群體生活。";
+				next;
+				mes "[斯諾倫]";
+				mes "這裡是關押違反規定的人過夜的地方。";
+				next;
+				mes "[斯諾倫]";
+				mes "喔，我不是他們其中之一。";
+				mes "我只是來這裡辦點事。";
+				mes "斯諾倫是個好薩法。";
+				close;
+			}
+		}
+		else if (ep13_mdrama == 12) {
+			mes "[斯諾倫]";
+			mes "嗯……等一下……";
+			mes "路伊克。是我。斯諾倫。";
+			next;
+			mes "[門後的聲音]";
+			mes "啊，我說過這是不可能的，斯諾倫！";
+			mes "我只能把你關進牢房一晚！";
+			next;
+			mes "[斯諾倫]";
+			mes "哎呀！路伊克，不是那樣的！";
+			mes "我帶了個能翻譯那個妖精語言的人來！";
+			mes "真的，我不能進去嗎？";
+			next;
+			mes "[路伊克的聲音]";
+			mes "閉嘴！總之，我們還有更多事要煩惱。這個拉菲尼族，我們必須治療她的傷口……";
+			next;
+			mes "[路伊克的聲音]";
+			mes "她的身體構造和我們完全不同。我們該怎麼辦？";
+			mes "喂，斯諾倫！隨便拿點什麼來。藥草之類的都行！";
+			next;
+			mes "[斯諾倫]";
+			mes "藥草？她的狀況有那麼糟嗎？";
+			mes "我們不能用鈽鐳治好她嗎？";
+			mes "喔對了，她不是薩法族，對吧？";
+			next;
+			select("什麼都瞞不過你……");
+			mes "[斯諾倫]";
+			mes "你有什麼想法嗎？";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "她是拉菲尼族，對吧？那我們應該去問問拉菲尼族……";
+			mes "像是我們需要用什麼來治療她……";
+			mes "這件事包在我身上。";
+			next;
+			mes "[斯諾倫]";
+			mes "真的嗎？";
+			mes "那趕快帶些東西回來……";
+			mes "我們會等你的。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "(看來我別無選擇，只能回去問亞克了……)";
+			set ep13_mdrama,13;
+			changequest 7061,7062;
+			close;
+		}
+		else if ((ep13_mdrama > 12) && (ep13_mdrama < 17)) {
+			mes "[斯諾倫]";
+			mes "趕快去找治好這個拉菲尼族的方法……";
+			mes "那樣路伊克或許就會讓我們進去了。";
+			close;
+		}
+		else if (ep13_mdrama == 17) {
+			if (countitem(607) > 5) {
+				mes "[斯諾倫]";
+				mes "你找到治療方法了嗎？";
+				mes "這……這果實長得真奇怪。";
+				mes "我偶爾會看到這種果實，但沒想到這竟然能治病……？";
+				next;
+				mes "[斯諾倫]";
+				mes "你帶來的這些我就全收下了！";
+				set .@temp_ig,countitem(607);
+				delitem 607,.@temp_ig; //Yggdrasilberry
+				set ep13_mdrama,18;
+				next;
+				mes "[斯諾倫]";
+				mes "好了，我們進去吧！";
+				close;
+			}
+			else {
+				mes "[" + strcharinfo(0) + "]";
+				mes "嗯……這些還不夠……";
+				mes "我至少需要 6~7 個……";
+				next;
+				mes "[斯諾倫]";
+				mes "有什麼問題嗎？";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "咦？啊，我想我們還需要更多……我會再回來的。";
+				close;
+			}
+		}
+		else if (ep13_mdrama == 18) {
+			mes "[斯諾倫]";
+			mes "我已經把你的一切都告訴路伊克了……";
+			mes "我們進去吧。";
+			close;
+		}
+		else if (((ep13_mdrama > 18) && (ep13_mdrama < 21)) || (ep13_mdrama == 22)) {
+			mes "[斯諾倫]";
+			mes "我一直在等你……";
+			mes "我們得快點。";
+			close;
+		}
+		else if (ep13_mdrama == 21) {
+			mes "[斯諾倫]";
+			mes "我現在真的很混亂……我該不該相信你的話。";
+			mes "如果那個洞穴真的存在，而且歐根也受傷了……";
+			close;
+		}
+		else if (ep13_mdrama == 23) {
+			mes "[斯諾倫]";
+			mes "大概的位置是……";
+			mes "大樹的巨大根部。知道了。";
+			mes "你先走。我會去精煉廠一趟，馬上就跟上。";
+			next;
+			mes "[斯諾倫]";
+			mes "既然那裡是拉菲尼族的領地，我會悄悄地過去，以免被他們發現。";
+			mes "你先走吧，我馬上跟在後面。";
+			close;
+		}
+		else if (ep13_mdrama == 24) {
+			mes "[斯諾倫]";
+			mes "你回來了。……路伊克要我告訴你這件事……";
+			mes "泰拉，那個拉菲尼族，現在自由了。";
+			next;
+			mes "[斯諾倫]";
+			mes "我們厭倦了戰鬥。我們甚至不想開戰……";
+			mes "而且在一切之前，我們看見了她真正的意圖。";
+			next;
+			mes "[斯諾倫]";
+			mes "去看看泰拉是否安全回家了……";
+			mes "歐根……他回歸大自然了。";
+			next;
+			mes "[斯諾倫]";
+			mes "我真的不認為歐根做的是對的……";
+			mes "但那就是……歐根……";
+			next;
+			mes "[斯諾倫]";
+			mes "原諒我，我有點沮喪……";
+			mes "我想就在這裡休息一下。";
+			mes "我非常感謝你所做的一切。";
+			next;
+			mes "[斯諾倫]";
+			mes "隨時歡迎回來……";
+			mes "好嗎？";
+			set ep13_mdrama,25;
+			getitem 6080,15; //Manuk_Coin
+			changequest 7069,7070;
+			close;
+		}
+		else if (ep13_mdrama > 24) {
+			mes "[斯諾倫]";
+			mes "你覺得這條圍巾怎麼樣？";
+			mes "這是歐根的……";
+			mes "我戴起來好看嗎？";
+			close;
+		}
+		else {
+			mes "[斯諾倫]";
+			mes "未經許可，外來者不該出現在這裡。";
+			mes "請離開這裡。";
+			close;
+		}
+	}
+	else {
+		mes "[斯諾倫]";
+		mes "Ids ad?";
+		mes "Ns ai dha si asd!";
+		mes "Ms dfaa sd a.";
+		close;
+	}
+}
+
+man_in01,183,58,0	script	to_in013ep13mdwarp01	45,1,1,{
+OnTouch:
+	if ((ep13_mdrama > 17) && (ep13_mdrama < 24)) {
+		warp "man_in01",13,125;
+		end;
+	}
+	else if (ep13_mdrama > 23) {
+		warp "man_in01",68,125;
+		end;
+	}
+	else {
+		mes "門被鎖上了……我進不去。";
+		close;
+	}
+	end;
+}
+
+man_in01,10,125,0	warp	to_out1#ep13mdwarp02	1,1,man_in01,179,58
+man_in01,65,125,0	warp	to_out2#ep13mdwarp03	1,1,man_in01,179,58
+
+man_in01,22,126,3	script	被抓住的拉菲尼族#ep13md	441,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama < 19) {
+			mes "她昏迷不醒。";
+			mes "我看到用來止血的繃帶……";
+			mes "看來是路伊克包紮的。";
+			close;
+		}
+		else if (ep13_mdrama == 19) {
+			mes "路伊克和斯諾倫想盡辦法擠出天地樹果實的汁液，";
+			mes "切碎後塞進她嘴裡，並敷在身體上……";
+			next;
+			mes "[受傷的拉菲尼族]";
+			mes "嗯……";
+			next;
+			mes "[路伊克]";
+			mes "她總算醒了。";
+			mes "好了，"+ strcharinfo(0) + "，現在看你的了。";
+			mes "你最好別亂翻譯她的話。";
+			next;
+			mes "- 我向路伊克點頭，開始和拉菲尼族對話。 -";
+			next;
+			mes "- 拉菲尼族完全清醒後，環顧四周，用顫抖的聲音說道。 -";
+			next;
+			mes "[受傷的拉菲尼族]";
+			mes "我……在哪裡？";
+			mes "天啊！對了！我需要鈽鐳！";
+			mes "放我出去！";
+			next;
+			mes "[受傷的拉菲尼族]";
+			mes "如果我不趕快回到他身邊，他……他會死的！！";
+			next;
+			switch(select("「他」是誰？:妳的名字是泰拉嗎？")) {
+			case 1:
+				mes "[受傷的拉菲尼族]";
+				mes "一個巨人……洞穴裡的一個巨人……";
+				mes "他……他為了保護我受了傷……";
+				mes "他一動也不動！";
+				mes "他的身體越來越冷。";
+				next;
+				mes "[受傷的拉菲尼族]";
+				mes "我們互為敵人……";
+				mes "但他救了我……";
+				mes "我聽說他們需要鈽鐳才能活下去！";
+				next;
+				mes "[受傷的拉菲尼族]";
+				mes "給我一些鈽鐳。快點！";
+				mes "我不能遲到！";
+				next;
+				select("妳是泰拉，對吧？");
+				mes "[泰拉]";
+				mes "你……你怎麼知道我的名字？";
+				mes "你是誰？";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "亞克請我來找妳。所以我來了。";
+				mes "話說回來……妳說的巨人，是指薩法族嗎？";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "洞穴裡的薩法族……";
+				mes "我到那裡時，他的身體已經石化了。";
+				next;
+				mes "[泰拉]";
+				mes "巨人……據說薩法族受到詛咒，會被石化。";
+				mes "而鈽鐳就是防止他們石化的關鍵。";
+				next;
+				mes "[泰拉]";
+				mes "所以我試圖帶鈽鐳給他……";
+				mes "但他……嗚嗚……";
+				next;
+				mes "- 泰拉因傷痛的折磨而無法繼續說下去。 -";
+				next;
+				mes "[路伊克]";
+				mes "她怎麼崩潰了？她說了什麼？";
+				mes "告訴我她說了什麼！！！";
+				set ep13_mdrama,20;
+				close;
+			case 2:
+				mes "[泰拉]";
+				mes "你……你怎麼知道我的名字？";
+				mes "你是誰？";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "我是代表亞克來找妳的。";
+				mes "妳到底是怎麼跑到這裡來的？";
+				next;
+				mes "[泰拉]";
+				mes "為了找……鈽……鐳。";
+				mes "沒錯。鈽鐳！給我鈽鐳！！";
+				next;
+				mes "[泰拉]";
+				mes "一個巨人……洞穴裡的一個巨人……";
+				mes "他……他為了保護我受了傷……";
+				mes "他一動也不動！";
+				mes "他的身體越來越冷。";
+				next;
+				mes "[泰拉]";
+				mes "我們互為敵人……";
+				mes "但他救了我……";
+				mes "我聽說他們需要鈽鐳才能活下去！";
+				next;
+				mes "[泰拉]";
+				mes "給我一些鈽鐳。快點！";
+				mes "我不能遲到！";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "洞穴裡的薩法族……";
+				mes "我到那裡時，他的身體已經石化了。";
+				next;
+				mes "[泰拉]";
+				mes "巨人……據說薩法族受到詛咒，會被石化。";
+				mes "而鈽鐳就是防止他們石化的關鍵。";
+				next;
+				mes "[泰拉]";
+				mes "所以我試圖帶鈽鐳給他……";
+				mes "但他……嗚嗚……";
+				next;
+				mes "- 泰拉因傷痛的折磨而無法繼續說下去。 -";
+				next;
+				mes "[路伊克]";
+				mes "她怎麼崩潰了？她說了什麼？";
+				mes "告訴我她說了什麼！！！";
+				set ep13_mdrama,20;
+				close;
+			}
+		}
+		else if (ep13_mdrama == 20) {
+			mes "[路伊克]";
+			mes "讓那個妖精休息一下，現在告訴我你們剛才在說什麼。";
+			close;
+		}
+		else if ((ep13_mdrama > 20) && (ep13_mdrama < 24)) {
+			mes "[路伊克]";
+			mes "她太累了，睡著了……";
+			mes "別打擾她。";
+			close;
+		}
+		else {
+			// custom translation
+			mes "[路伊克]";
+			mes "她想什麼時候離開都可以。";
+			mes "這裡感覺好乾燥。";
+			mes "喔，這很正常。";
+			close;
+		}
+	}
+	else {
+		if (ep13_mdrama < 19) {
+			mes "她昏迷不醒。";
+			mes "我看到用來止血的繃帶……";
+			mes "看來是路伊克包紮的。";
+			close;
+		}
+		else {
+			mes "[路伊克]";
+			mes "Ier er ee ras d?";
+			mes "Ye ada sd?";
+			mes "Nffd..?";
+			next;
+			mes "[受傷的拉菲尼族]";
+			mes "...Riveh...AshIman Or mah...";
+			mes "..ah..Thor..ThorOsa Yee Lu..ung...";
+			close;
+		}
+	}
+}
+
+man_in01,17,128,5	script	斯諾倫#ep13md_15	454,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama == 18) {
+			mes "[斯諾倫]";
+			mes "拿去，路伊克。他說這是拉菲尼族的解藥。";
+			mes "我們就這樣讓她吃下去嗎？";
+			next;
+			mes "[斯諾倫]";
+			mes "呃……你的名字是……？";
+			next;
+			select("" + strcharinfo(0) + "");
+			mes "[斯諾倫]";
+			mes "對，沒錯。";
+			mes "" + strcharinfo(0) + "，你試著和那個拉菲尼族談談吧……";
+			mes "我們來聽聽她的故事。";
+			set ep13_mdrama,19;
+			changequest 7064,7065;
+			close;
+		}
+		else if (ep13_mdrama == 19) {
+			// custom translation
+			mes "[斯諾倫]";
+			mes "請幫我翻譯。";
+			mes "我們會在旁邊看著你和她說話。";
+			mes "對吧，路伊克？";
+			next;
+			mes "[路伊克]";
+			mes "也許吧。";
+			mes "趁還來得及，問問她到底發生了什麼事。";
+			close;
+		}
+		else if (ep13_mdrama == 20) {
+			mes "[斯諾倫]";
+			mes "來聽聽她的故事吧。";
+			mes "我們何不從……她為什麼想要鈽鐳開始問起？";
+			next;
+			mes "[斯諾倫]";
+			mes "這部分必須一字不漏地告訴路伊克。";
+			close;
+		}
+		else if (ep13_mdrama == 21) {
+			mes "[斯諾倫]";
+			mes "如果洞穴裡的薩法族真的是歐根，我該怎麼辦……？";
+			mes "歐根……如果他出了什麼事，我該怎麼辦……？";
+			close;
+		}
+		else if (ep13_mdrama == 22) {
+			if ((countitem(6085) > 0) && (countitem(6084) > 0)) {
+				mes "[路伊克]";
+				mes "……這個鈽鐳沒有經過適當的精煉……";
+				mes "這根本毫無幫助……";
+				mes "還有，這條圍巾……";
+				next;
+				mes "[斯諾倫]";
+				mes "這是歐根的！歐根的圍巾！";
+				mes "路伊克！歐根！這是歐根的！";
+				mes "未精煉的鈽鐳！";
+				next;
+				mes "[斯諾倫]";
+				mes "路……路伊克。歐根……歐根……？！";
+				mes "我要去找歐根！";
+				mes "那個洞穴在哪裡？！在哪！";
+				next;
+				select("冷靜點！");
+				mes "[路伊克]";
+				mes "對。聽他的，冷靜點，斯諾倫。";
+				mes "如果真的是歐根……我們動作快點，也許還能救他。";
+				next;
+				mes "[路伊克]";
+				mes "斯諾倫。去精煉廠拿最好的鈽鐳……";
+				mes "救救他。";
+				next;
+				mes "[路伊克]";
+				mes "" + strcharinfo(0) + "……呃……？";
+				mes "請幫忙照看斯諾倫……還有歐根。";
+				mes "這個拉菲尼族，我是說泰拉……";
+				mes "她是真心想救歐根的……";
+				next;
+				mes "[路伊克]";
+				mes "我會去跟上級談談，盡量平息這件事……";
+				mes "請一定要救回歐根。";
+				delitem 6085,1;
+				//Shaggy_Muffler
+				delitem 6084,1; //Bradium_Fragments
+				set ep13_mdrama,23;
+				changequest 7067,7068;
+				close;
+			}
+			else {
+				// custom translation
+				mes "[路伊克]";
+				mes "你應該帶點什麼能證明的東西來吧？";
+				mes "……我們和他們戰鬥了這麼久，實在很難相信你。";
+				next;
+				mes "[斯諾倫]";
+				mes "……沒錯……不管怎樣，只要能證明你說的是真的就行。";
+				close;
+			}
+		}
+		else if (ep13_mdrama == 23) {
+			mes "[斯諾倫]";
+			mes "快點帶路！";
+			mes "我們現在該走哪條路？";
+			close;
+		}
+		else {
+			// custom translation
+			mes "[斯諾倫]";
+			mes "你是怎麼進來的？！";
+			mes "滾出去！";
+			close;
+		}
+	}
+	else {
+		mes "[斯諾倫]";
+		mes "We rs...";
+		mes "F as d dd ";
+		mes "Tb ds dfw we!";
+		mes "Nd fs asd as...!";
+		close;
+	}
+}
+
+man_in01,19,126,3	script	路伊克#ep13md16	450,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama < 20) {
+			mes "[路伊克]";
+			mes "……我真的很期待能從她那裡套出些有用的情報。";
+			mes "你的翻譯值得信任，對吧？";
+			close;
+		}
+		else if (ep13_mdrama == 20) {
+			mes "[路伊克]";
+			mes "首先，那個拉菲尼族為什麼會來這裡？";
+			mes "她為什麼需要鈽鐳？";
+			next;
+			select("為了把它交給洞穴裡的一個薩法族……");
+			mes "[路伊克]";
+			mes "洞穴裡的薩法族？什麼洞穴？";
+			mes "算了……斯諾倫。你一定知道那個洞穴的一些事，對吧？";
+			next;
+			mes "[路伊克]";
+			mes "等等……";
+			mes "拉菲尼族為什麼要把鈽鐳給我們的同胞？";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "他們在洞穴裡戰鬥，你的朋友受了傷並開始石化。";
+			mes "所以她來這裡拿鈽鐳，試圖救他的命……";
+			next;
+			mes "[路伊克]";
+			mes "他們戰鬥了？";
+			mes "斯諾倫！你那是什麼表情？";
+			mes "有話就直說。";
+			next;
+			mes "[斯諾倫]";
+			mes "坦白說，路伊克。我……跟你說過……歐根失蹤了。";
+			mes "歐根的失蹤和那個拉菲尼族的到來時間吻合……";
+			next;
+			mes "[路伊克]";
+			mes "然後呢？";
+			next;
+			mes "[斯諾倫]";
+			mes "也許那個拉菲尼族說的薩法族就是歐根。";
+			mes "難道我們還有其他同胞會跑到奇怪的洞穴裡嗎？";
+			next;
+			mes "[路伊克]";
+			mes "沒有，因為這裡根本沒有那種洞穴。";
+			mes "首先，我們應該查清楚他們說的那個洞穴。";
+			next;
+			mes "[路伊克]";
+			mes "你們這些外來者和拉菲尼族有接觸，對吧？";
+			mes "萬一這是他們的邪惡陰謀呢？";
+			next;
+			select("這不是真的！");
+			mes "[路伊克]";
+			mes "那你怎麼證明？";
+			mes "我們和他們戰鬥了很長一段時間。";
+			mes "我們沒有任何理由相信你或他們說的話。";
+			next;
+			mes "[路伊克]";
+			mes "更何況是在說一個根本不存在的洞穴。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "那個洞穴真的存在，我發誓！";
+			mes "我……沒錯。我在那個洞穴裡看到了一個石化的薩法族。";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "我會帶一些能讓你們相信的東西回來。";
+			mes "我不確定那個薩法族是不是你們在找的歐根……";
+			mes "但我會回來的……";
+			next;
+			mes "[" + strcharinfo(0) + "]";
+			mes "你們敢……敢對泰拉造成任何傷害試試看。";
+			set ep13_mdrama,21;
+			changequest 7065,7066;
+			close;
+		}
+		else if (ep13_mdrama == 21) {
+			mes "[路伊克]";
+			mes "……什麼都行。試著讓我相信你這個外來者和那個拉菲尼族。";
+			mes "我們薩法族可不是愚蠢的人。";
+			next;
+			mes "[路伊克]";
+			mes "我向你保證，我們會像之前一樣對待那個拉菲尼族，不會傷害她。";
+			next;
+			mes "[路伊克]";
+			mes "因此，你只要專心找方法讓我們相信你就好。";
+			close;
+		}
+		else if (ep13_mdrama == 22) {
+			if ((countitem(6085) > 0) && (countitem(6084) > 0)) {
+				mes "[路伊克]";
+				mes "……這個鈽鐳沒有經過適當的精煉……";
+				mes "這根本毫無幫助……";
+				mes "還有，這條圍巾……";
+				next;
+				mes "[斯諾倫]";
+				mes "這是歐根的！歐根的圍巾！";
+				mes "路伊克！歐根！這是歐根的！";
+				mes "未精煉的鈽鐳！";
+				next;
+				mes "[斯諾倫]";
+				mes "路……路伊克。歐根……歐根……？！";
+				mes "我要去找歐根！";
+				mes "那個洞穴在哪裡？！在哪！";
+				next;
+				select("冷靜點！");
+				mes "[路伊克]";
+				mes "對。聽他的，冷靜點，斯諾倫。";
+				mes "如果真的是歐根……我們動作快點，也許還能救他。";
+				next;
+				mes "[路伊克]";
+				mes "斯諾倫。去精煉廠拿最好的鈽鐳……";
+				mes "救救他。";
+				next;
+				mes "[路伊克]";
+				mes "" + strcharinfo(0) + "……呃……？";
+				mes "請幫忙照看斯諾倫……還有歐根。";
+				mes "這個拉菲尼族，我是說泰拉……";
+				mes "她是真心想救歐根的……";
+				next;
+				mes "[路伊克]";
+				mes "我會去跟上級談談，盡量平息這件事……";
+				mes "請一定要救回歐根。";
+				delitem 6085,1; //Shaggy_Muffler
+				delitem 6084,1; //Bradium_Fragments
+				set ep13_mdrama,23;
+				changequest 7067,7068;
+				close;
+			}
+			else {
+				// custom translation
+				mes "[路伊克]";
+				mes "你應該帶點什麼能證明的東西來吧？";
+				mes "……我們和他們戰鬥了這麼久，實在很難相信你。";
+				next;
+				mes "[斯諾倫]";
+				mes "……沒錯……不管怎樣，只要能證明你說的是真的就行。";
+				close;
+			}
+		}
+		else if (ep13_mdrama == 23) {
+			mes "[路伊克]";
+			mes "拜託……救救歐根。";
+			close;
+		}
+		else {
+			// custom translation
+			mes "[路伊克]";
+			mes "你是怎麼進來的？";
+			mes "你不該在這裡。";
+			close;
+		}
+	}
+	else {
+		mes "[路伊克]";
+		mes "Na w ewe w";
+		mes "Aewrf sd fsd iyu. ";
+		mes "Ou uur?";
+		next;
+		mes "看來路伊克正用輕蔑的眼神看著我。";
+		close;
+	}
+}
+
+man_in01,71,125,0	script	Terra gone	-1,3,3,{
+OnTouch:
+	mes "這裡沒有其他東西。";
+	mes "只留下曾關押過什麼東西的籠子痕跡。";
+	close;
+}
+
+spl_in02,236,92,5	script	亞克#ep13md_l02	447,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (isequipped(2782) == 1) {
+		if (ep13_mdrama == 26) {
+			mes "[泰拉]";
+			mes "………";
+			next;
+			mes "[亞克]";
+			mes "我明白了。原來發生了這樣的事。";
+			mes "但是……那個薩法族……在這麼短的時間內，他對妳來說成了什麼？";
+			next;
+			select("亞克？");
+			mes "[亞克]";
+			mes "啊，終於來了。在等你來的時候，我一直在和泰拉說話。";
+			mes "泰拉。這就是救了妳的人……";
+			mes "妳應該好好謝謝"+((Sex == SEX_MALE)?"他。":"她。");
+			next;
+			mes "[泰拉]";
+			mes "謝謝……";
+			mes "對不起，亞克……對不起……";
+			mes "……";
+			next;
+			mes "[亞克]";
+			mes "所以，事情是這樣的。";
+			mes "泰拉在你們的營地附近徘徊，發現了一個當時也在你們營地附近徘徊的薩法族。";
+			next;
+			mes "[亞克]";
+			mes "他們都小心翼翼地不想被你們人類發現，但他們看見了彼此，並開始戰鬥。";
+			next;
+			mes "[亞克]";
+			mes "然後他們最終掉進了沼澤裡的那個洞，最後到了那個洞穴。";
+			next;
+			mes "[泰拉]";
+			mes "對……我們都昏迷了一段時間……";
+			mes "等我們醒來能看清周圍時……我們已經被包圍了。";
+			next;
+			mes "[泰拉]";
+			mes "我們主要擔心的是如何離開那裡……";
+			mes "雖然我們聽不懂彼此的語言……但我們達成了暫時的休戰協議。";
+			next;
+			mes "[泰拉]";
+			mes "然後……";
+			mes "………";
+			next;
+			select("原來發生了這樣的事。");
+			mes "[" + strcharinfo(0) + "]";
+			mes "你們寡不敵眾，在最後一刻歐根犧牲了自己來保護妳。";
+			next;
+			mes "[泰拉]";
+			mes "所以……我想救他……";
+			mes "我只是想報答他……";
+			next;
+			mes "[泰拉]";
+			mes "我錯了嗎……？";
+			mes "我的想法錯了嗎？";
+			next;
+			mes "[亞克]";
+			mes "報恩是一件好事。";
+			mes "尤其是對驕傲的拉菲尼族來說，更是如此。";
+			next;
+			mes "[亞克]";
+			mes "但是泰拉……";
+			mes "妳犯了兩個嚴重的錯誤。";
+			mes "第一，妳未經許可就擅自離開……";
+			mes "第二……";
+			next;
+			mes "[亞克]";
+			mes "妳沒有尋求幫助。";
+			mes "如果發生了那種事……我當然會幫忙……";
+			next;
+			mes "[泰拉]";
+			mes "對不起，亞克……對不起……";
+			mes "我不會再做傻事了。";
+			next;
+			mes "[亞克]";
+			mes "好好休息吧。";
+			mes "我會向上級替妳說好話的……";
+			mes "還有 " + strcharinfo(0) + "……";
+			mes "謝謝你。";
+			next;
+			mes "[亞克]";
+			mes "這些給你，以表達我的感謝。";
+			mes "雖然不多，但你可以用這些在史波浪壯麗買東西。";
+			next;
+			mes "[亞克]";
+			mes "很抱歉，我現在只能給你這些。";
+			set ep13_mdrama,27;
+			getitem 6081,25; //Splendide_Coin
+			if (checkre(3))
+				getexp 120000,10000;
+			else
+				getexp 1200000,100000;
+			completequest 7071;
+			close;
+		}
+		else if (ep13_mdrama == 27) {
+			if (strnpcinfo(1) == "Arc") {
+				mes "[亞克]";
+				mes "泰拉。好好休息……";
+				mes "安心休息吧……";
+				mes "還有……";
+			}
+			else {
+				mes "[泰拉]";
+				mes "亞克……我會好好休息的……";
+				mes "對不起……還有。你……";
+			}
+			next;
+			mes "["+strnpcinfo(1)+"]";
+			mes "本來……我們拉菲尼族非常不願意讓外人進入我們的領地。";
+			mes strcharinfo(0) + "，你將會是個特例。";
+			next;
+			mes "["+strnpcinfo(1)+"]";
+			if (strnpcinfo(1) == "Arc") mes "這也是泰拉的願望。";
+			mes "雖然這裡可能有點窄，但隨時歡迎你來拜訪我們。";
+			set ep13_mdrama,28;
+			close;
+		}
+		else if (ep13_mdrama > 27) {
+			if (strnpcinfo(1) == "Arc") {
+				mes "[亞克]";
+				mes "你在史波浪壯麗適應得如何？";
+				mes "泰拉還沒有完全康復，請記住這一點。";
+			}
+			else {
+				mes "[泰拉]";
+				mes "對不起……";
+				mes "我的身體還沒有完全康復……";
+			}
+			close;
+		}
+		else {
+			// custom translation
+			if (strnpcinfo(1) == "Arc") {
+				mes "[亞克]";
+				mes "右邊的後面…… ";
+				mes "……";
+			}
+			else {
+				mes "[泰拉]";
+				mes "對不起……我好睏……";
+				mes "……我想睡覺……";
+			}
+			close;
+		}
+	}
+	else {
+		if (strnpcinfo(1) == "Arc") {
+			mes "[亞克]";
+			mes "HirWosWeh. Yee DiebVilFar U manTalVil.";
+			mes "LarsNeiser...??";
+			mes "VeldTiTal Ko SharDurYur Di ?";
+		}
+		else {
+			mes "[泰拉]";
+			mes "ModBurDana...? Mu AnduWehFus Yee OsaLoLars...";
+			mes "eoFusser....";
+			mes "maurNohser Ur...... ThorNuffLars So ";
+		}
+		close;
+	}
+}
+spl_in02,239,93,3	duplicate(亞克#ep13md_l02)	泰拉#ep13md_l03	441
+
+splendide,287,140,0	script	terrashome_in	45,1,1,{
+OnTouch_:
+	if (ep13_mdrama > 25) {
+		warp "spl_in02",237,89;
+		end;
+	}
+	else {
+		mes "門鎖上了。";
+		close;
+	}
+}
+
+spl_in02,236,86,0	warp	terrashome_out	1,1,splendide,285,139
+
+spl_fild01,357,44,0	script	???#ep13mdf01	844,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (ep13_mdrama == 14) {
+		mes "地上躺著某種果實。";
+		mes "我看到一個巨大的外殼裡有一顆小漿果……";
+		mes "是天地樹果實！";
+		set ep13_mdrama,15;
+		getitem 607,1; //Yggdrasilberry
+		getitem 522,1; //Fruit_Of_Mastela
+		close;
+	}
+	else if (ep13_mdrama == 15) {
+		mes "我已經拔出了一顆天地樹果實……但還有其他東西嗎……？";
+		next;
+		set .@apple,rand(1,100);
+		if (.@apple < 50) {
+			mes "我被一隻不知名的昆蟲咬了。";
+			mes "好痛！";
+			percentheal -30,0;
+			close;
+		}
+		else if (.@apple == 50) {
+			mes "我找到了一顆蘋果。";
+			getitem 512,1; //Apple
+			close;
+		}
+		else {
+			mes "這裡沒有其他東西。";
+			close;
+		}
+	}
+	else if (ep13_mdrama > 15) {
+		mes "只剩下一個空殼了。";
+		close;
+	}
+	else {
+		mes "這裡有一顆巨大的果實。";
+		mes "我不知道這是什麼水果。";
+		close;
+	}
+}
+
+spl_fild01,312,79,0	script	???#ep13mdf02	844,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (ep13_mdrama == 15) {
+		mes "地上躺著某種果實。";
+		mes "我看到一個巨大的外殼裡有一顆小漿果……";
+		mes "是天地樹果實！";
+		set ep13_mdrama,16;
+		getitem 607,1; //Yggdrasilberry
+		getitem 522,1; //Fruit_Of_Mastela
+		close;
+	}
+	else if (ep13_mdrama == 16) {
+		mes "我已經拔出了一顆天地樹果實……但還有其他東西嗎……？";
+		next;
+		set .@apple,rand(1,100);
+		if (.@apple < 50) {
+			mes "我被一隻不知名的昆蟲咬了。";
+			mes "好痛！";
+			percentheal -30,0;
+			close;
+		}
+		else if (.@apple == 50) {
+			mes "我找到了一顆蘋果。";
+			getitem 512,1; //Apple
+			close;
+		}
+		else {
+			mes "這裡沒有其他東西。";
+			close;
+		}
+	}
+	else if (ep13_mdrama > 16) {
+		mes "只剩下一個空殼了。";
+		close;
+	}
+	else {
+		mes "這裡有一顆巨大的果實。";
+		mes "我不知道這是什麼水果。";
+		close;
+	}
+}
+
+spl_fild01,329,29,0	script	???#ep13mdf03	844,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (ep13_mdrama == 16) {
+		mes "地上躺著某種果實。";
+		mes "我看到一個巨大的外殼裡有一顆小漿果……";
+		mes "是天地樹果實！";
+		set ep13_mdrama,17;
+		getitem 607,1; //Yggdrasilberry
+		getitem 522,1; //Fruit_Of_Mastela
+		changequest 7063,7064;
+		next;
+		mes "[" + strcharinfo(0) + "]";
+		mes "亞克給了我三顆天地樹果實，而且……";
+		mes "我發現了……三顆。六顆應該夠了。";
+		mes "我們回去找斯諾倫吧。";
+		close;
+	}
+	else if (ep13_mdrama == 17) {
+		mes "我已經拔出了一顆天地樹果實……但還有其他東西嗎……？";
+		next;
+		set .@apple,rand(1,100);
+		if (.@apple < 50) {
+			mes "我被一隻不知名的昆蟲咬了。";
+			mes "好痛！";
+			percentheal -30,0;
+			close;
+		}
+		else if (.@apple == 50) {
+			mes "我找到了一顆蘋果。";
+			getitem 512,1; //Apple
+			close;
+		}
+		else {
+			mes "這裡沒有其他東西。";
+			close;
+		}
+	}
+	else if (ep13_mdrama > 17) {
+		mes "只剩下一個空殼了。";
+		close;
+	}
+	else {
+		mes "這裡有一顆巨大的果實。";
+		mes "我不知道這是什麼水果。";
+		close;
+	}
+}
+
+// Monster Suppression :: ep13_2_dayquest
+//============================================================
+manuk,252,116,3	script	瑪努克迦爾屯#ep13_2day	450,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if ((isequipped(2782) == 1) && (ep13_2_rhea > 99)) {
+		if (ep13_2_days01 == 0) {
+			mes "[史特羅姆]";
+			mes "你好。";
+			mes "你是人類，對吧？";
+			mes "我的名字是史特羅姆。";
+			next;
+			mes "[史特羅姆]";
+			mes "但是，你們看起來好弱。";
+			mes "你們既沒有堅硬的皮膚，也沒有足夠的力量。";
+			next;
+			mes "[史特羅姆]";
+			mes "你們是怎麼來到這裡的？";
+			next;
+			mes "[史特羅姆]";
+			mes "你的言語聽起來很溫和，但看起來你們來這裡會製造更多緊張局勢。";
+			next;
+			switch(select("維持和平。:...")) {
+			case 1:
+				mes "[" + strcharinfo(0) + "]";
+				mes "沒錯，我們人類比你們嬌小……但是……";
+				mes "我們一直不斷鍛鍊自己變得更強大。";
+				next;
+				mes "[" + strcharinfo(0) + "]";
+				mes "現在讓我證明給你看看";
+				mes "我們的力量可以和你們匹敵！";
+				next;
+				if (ep13_mdrama > 5) {
+					mes "[史特羅姆]";
+					mes "總之……";
+					mes "你最近發現的那個洞穴裡，我的一位同僚遭遇了不幸。";
+					next;
+					mes "[史特羅姆]";
+					mes "那裡有被稱為 ^4d4dff拉塔^000000 和 ^4d4dff杜尼爾^000000 的魔物。";
+					mes "如果你能消滅牠們，我也會把你當作一個體面且強大的人。";
+					set ep13_2_days01,1;
+					setquest 7074;
+					setquest 7075;
+					close;
+				}
+				else {
+					mes "[史特羅姆]";
+					mes "……就這樣嗎？";
+					mes "讓我想想。";
+					mes "既然你對你們的能力這麼有自信……";
+					mes "我會給你找個值得挑戰的任務來證明這點。";
+					close;
+				}
+			case 2:
+				mes "[" + strcharinfo(0) + "]";
+				mes "是的，但是當人類團結一致時，會變得更加強大。";
+				close;
+			}
+		}
+		else if (ep13_2_days01 == 1) {
+			set .@qst_cpl01,checkquest(7074,HUNTING);
+			set .@qst_cpl02,checkquest(7075,HUNTING);
+			if ((.@qst_cpl01 == 2) && (.@qst_cpl02 == 2)) {
+				mes "[史特羅姆]";
+				mes "果然……我，薩法族的迦爾屯，史特羅姆，向你道歉。我不應該這麼輕易地看不起你。";
+				mes "我承認你是一名勇敢的戰士，請隨時歡迎來瑪努克拜訪。";
+				next;
+				mes "[史特羅姆]";
+				mes "雖然我沒有什麼好東西可以給你，但請收下這些硬幣。";
+				mes "如果你需要買什麼東西，你可以使用它們。";
+				completequest 7074;
+				completequest 7075;
+				set ep13_2_days01,2;
+				if (checkre(3))
+					getexp 50000,30000;
+				else
+					getexp 500000,300000;
+				getitem 6080,10; //Manuk_Coin
+				close;
+			}
+			else {
+				mes "[史特羅姆]";
+				mes "如果你想證明你很強……";
+				mes "請找到並擊敗洞穴裡的拉塔和杜尼爾。";
+				close;
+			}
+		}
+		else {
+			mes "[史特羅姆]";
+			mes "這裡冰冷的氣候不適合生物生存，但我們感覺不到寒冷，";
+			mes "所以我們不太擔心這個。";
+			next;
+			mes "[史特羅姆]";
+			mes "但是……你們不一樣。";
+			mes "在這麼冷的天氣裡，你們最好穿上希爾斯里昂的毛皮……";
+			close;
+		}
+	}
+	else {
+		mes "[瑪努克迦爾屯]";
+		mes "Arpe? Yu osp sad?";
+		mes "EW pisdn psa?";
+		mes "We psis?";
+	}
+	close;
+}
+
+// Daily Quests :: ep13_2_dayquest
+// - Bradium Collection
+// - Laphine Craftsman
+// - Draco Egg Collection (NPC includes 'Wanted' quest)
+//============================================================
+man_in01,378,276,3	script	瑪努克工程師#ep13_2	453,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if ((isequipped(2782) == 1) && (ep13_2_rhea > 99)) {
+		set .@alba,checkquest(7080);
+		if ((.@alba == 0) || (.@alba == 1)) {
+			set .@time_chek,checkquest(7080,PLAYTIME);
+			if (.@time_chek != 2) {
+				mes "[瑪努克工程師]";
+				mes "謝謝你幫我收集濃縮鈽鐳，這非常有幫助。";
+				mes "不過我們現在已經有足夠的數量了。";
+				close;
+			}
+			else {
+				mes "[瑪努克工程師]";
+				mes "謝謝你幫我收集濃縮鈽鐳，這非常有幫助。";
+				mes "希望你能再次幫助我。";
+				erasequest 7080;
+				close;
+			}
+		}
+		else {
+			set .@alba2,checkquest(7079);
+			if ((.@alba2 == 0) || (.@alba2 == 1)) {
+				if (countitem(6090) > 19) {
+					mes "[瑪努克工程師]";
+					mes "喔，這真是太好了。";
+					mes "我代表薩法族，向你表達我們的感謝。";
+					mes "希望你能再次幫助我們。";
+					delitem 6090,20; //Purified_Bradium
+					erasequest 7079;
+					setquest 7080;
+					getexp 40000,40000;
+					getitem 6080,3; //Manuk_Coin
+					close;
+				}
+				else {
+					mes "[瑪努克工程師]";
+					mes "怎麼了？";
+					mes "你還沒準備好。";
+					close;
+				}
+			}
+			else {
+				mes "[瑪努克工程師]";
+				mes "你好。";
+				mes "這是我們精煉石頭的地方。";
+				next;
+				switch(select("關於收集石頭。:關於石頭的用途。")) {
+				case 1:
+					mes "[瑪努克工程師]";
+					mes "為了防止我們的身體變得麻木，我們需要鈽鐳。";
+					mes "我們可以從鈽鐳中提取出我們生存所需的特殊元素。";
+					next;
+					mes "[瑪努克工程師]";
+					mes "採礦業是這裡的主要產業，因為我們的生命依賴於它。";
+					mes "但是礦坑已經被堵塞了。";
+					next;
+					mes "[瑪努克工程師]";
+					mes "我已經聽說你們是優秀的戰士。";
+					mes "你介意去消滅鈽鐳巨石怪，並幫我帶回一些鈽鐳嗎？";
+					next;
+					switch(select("當然，我不介意。:不行，我做不到。")) {
+					case 1:
+						mes "[瑪努克工程師]";
+						mes "那就接受這個任務吧。";
+						mes "請狩獵鈽鐳巨石怪並幫我帶回 20 個純淨的鈽鐳。";
+						setquest 7079;
+						close;
+					case 2:
+						mes "[瑪努克工程師]";
+						mes "喔，這就是我們的命運。";
+						mes "我怎麼會天真到去依賴別人呢？";
+						close;
+					}
+				case 2:
+					mes "[瑪努克工程師]";
+					mes "我們精煉鈽鐳並從中提取特殊的東西。";
+					mes "然後將其製成注射液。";
+					mes "精煉後，它被用來維持我們的身體循環。";
+					next;
+					mes "[瑪努克工程師]";
+					mes "這就是為什麼我們在這個產業相當發達。";
+					mes "其他產業也很發達……但是……";
+					next;
+					mes "[瑪努克工程師]";
+					mes "這是我們的首要任務，因為它對我們的生存至關重要。";
+					close;
+				}
+			}
+		}
+	}
+	else {
+		mes "[瑪努克工程師]";
+		mes "Aweo wpe?";
+		mes "Sdd psiem!";
+		mes "Awq ouwn ksudh bud ds.";
+		close;
+	}
+}
+
+spl_in01,97,313,3	script	拉菲尼工匠#ep13	446,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if ((isequipped(2782) == 1) && (ep13_2_rhea > 99)) {
+		if (ep13_mdrama > 5) {
+			set .@alba,checkquest(7082);
+			if (.@alba == 1) {
+				set .@time_chek,checkquest(7082,PLAYTIME);
+				if ((.@time_chek == 0) || (.@time_chek == 1)) {
+					mes "[拉菲尼工匠]";
+					mes "謝謝你幫我收集那些物品。";
+					mes "目前這些應該足夠了。";
+					close;
+				}
+				mes "[拉菲尼工匠]";
+				mes "謝謝你幫我收集那些物品。";
+				mes "希望你能再次幫助我們。";
+				erasequest 7082;
+				close;
+			}
+			set .@alba2,checkquest(7081);
+			if ((.@alba2 == 0) || (.@alba2 == 1)) {
+				if ((countitem(7326) > 14) && (countitem(6075) > 14)) {
+					mes "[拉菲尼工匠]";
+					mes "喔，太棒了。";
+					mes "這些就是今天的足夠材料了。";
+					mes "如果還需要更多，我會通知你的。";
+					delitem 7326,15; //Fluorescent_Liquid
+					delitem 6075,15; //Crystalized_Teardrop
+					erasequest 7081;
+					setquest 7082;
+					getexp 30000,30000;
+					getitem 6081,3; //Splendide_Coin
+					close;
+				}
+				else {
+					mes "[拉菲尼工匠]";
+					mes "有什麼我可以幫忙的嗎？";
+					mes "還沒完成我的請求嗎？";
+					close;
+				}
+			}
+			mes "[拉菲尼工匠]";
+			mes "嗯？喔，你沒看見我很忙嗎？";
+			mes "我需要為亞伊製作更多裝飾品。";
+			next;
+			if (select("我可以幫你嗎？:什麼是亞伊？") == 1) {
+				mes "[拉菲尼工匠]";
+				mes "你想幫忙？";
+				mes "這個地方被用作戰鬥基地，但這也是我們的家。";
+				next;
+				mes "[拉菲尼工匠]";
+				mes "我們喜歡獨處，所以我們每個人都必須有自己的亞伊。";
+				mes "雖然我們身處軍事基地，但我們應該照顧好每個亞伊。";
+				next;
+				mes "[拉菲尼工匠]";
+				mes "我不是士兵，但我們希望我們所有人都能像他們一樣充滿自信。";
+				mes "我想用我的技能來支持所有的拉菲尼族。";
+				next;
+				mes "[拉菲尼工匠]";
+				mes "所以我想幫忙製作大家亞伊的裝飾品。";
+				mes "我需要更多材料來製作它們。";
+				next;
+				mes "[拉菲尼工匠]";
+				mes "我聽說洞穴裡出現了水鬼。";
+				mes "你能幫我帶 15 個結晶化眼淚和 15 個螢光液體來嗎？";
+				next;
+				if (select("可以。:抱歉。") == 1) {
+					mes "[拉菲尼工匠]";
+					mes "請接受我的請求。";
+					mes "你能幫我帶 15 個結晶化眼淚和 15 個螢光液體來嗎？";
+					setquest 7081;
+					close;
+				}
+				mes "[拉菲尼工匠]";
+				mes "是的，我相信你有你自己的事情要處理。";
+				mes "身為一個拉菲尼族，向你尋求幫助讓我感到很尷尬。";
+				next;
+				mes "[拉菲尼工匠]";
+				mes "但是，你為什麼試圖介入我們的事，卻不願接受我們的請求呢？";
+				close;
+			}
+			mes "[拉菲尼工匠]";
+			mes "亞伊……";
+			mes "所有成年的拉菲尼族都有一個。";
+			mes "這對所有拉菲尼族的生活來說是不可或缺的，因為我們是非常注重隱私的人。";
+			next;
+			select("是一間房子……？");
+			mes "[拉菲尼工匠]";
+			mes "是的……";
+			mes "沒錯。我們有時會邀請朋友或客人到我們的亞伊。";
+			mes "而亞伊的裝飾對我們來說非常重要……";
+			next;
+			mes "[拉菲尼工匠]";
+			mes "我們拉菲尼族很注重自己，也很注重我們的亞伊。";
+			next;
+			mes "[拉菲尼工匠]";
+			mes "我們現在遠離故鄉……";
+			mes "如果我們沒有這種愛好，這裡就沒有什麼可以享受的了。";
+			close;
+		}
+		mes "[拉菲尼工匠]";
+		mes "嗯？喔，你沒看見我很忙嗎？";
+		mes "如果你一定要知道的話，我正在製作裝飾品。";
+		close;
+	}
+	mes "[拉菲尼工匠]";
+	mes "Yur,Dur AnoVa?";
+	mes "Wha? Dieb OsaDur .. ";
+	mes "ah..RuffThus NeAsh. man nesAsh OdesAlah ?";
+	close;
+}
+
+mid_camp,146,306,3	script	寵物培育員#ep13_eden01	982,{
+	if (checkweight(1201,2) == 0) {
+		mes "等一下！！";
+		mes "你身上的物品太多了。";
+		mes "你無法接收這個。";
+		mes "請減輕重量後";
+		mes "再試一次。";
+		close;
+	}
+	if (ep13_mdrama < 6) {
+		mes "[皮內德爾]";
+		mes "為什麼沒用，塔布？";
+		mes "這應該要有用的。";
+		next;
+		mes "[塔布]";
+		mes "那非常危險。你想死嗎……？！";
+		next;
+		mes "[皮內德爾]";
+		mes "你無視了可愛的寵物嗎？？";
+		mes "我們已經能抓到小雞，甚至狂暴女妖了！";
+		next;
+		mes "[塔布]";
+		mes "不可能，就算你拜託我……";
+		mes "希爾斯里昂非常可愛……";
+		mes "但你不能這麼做。";
+		next;
+		mes "[皮內德爾]";
+		mes "那就告訴我你為什麼反對這個。";
+		next;
+		mes "[塔布]";
+		mes "太危險了。我以前訓練過魔物。";
+		mes "希爾斯里昂看起來既可愛又討喜，但這不太現實。";
+		next;
+		mes "[塔布]";
+		mes "你看不出來嗎？";
+		mes "我試著訓練過牠們……但我辦不到。";
+		mes "我們怎麼能把牠們訓練成可愛的寵物……？";
+		next;
+		mes "[塔布]";
+		mes "牠絕對會試圖從我們身邊逃跑……";
+		mes "然後牠就會變得非常可怕。";
+		mes "我不贊成這件事。";
+		next;
+		mes "[皮內德爾]";
+		mes "不……";
+		mes "我們不能用魔法力量控制牠們嗎？";
+		mes "我們以前也這樣做過……";
+		next;
+		mes "- 他們繼續爭吵著 -";
+		close;
+	}
+	mes "[皮內德爾]";
+	mes "啊，塔布真是不懂變通。";
+	mes "嘿，你好！有什麼事嗎？？";
+	next;
+	if (select("罪犯懸賞通告:可愛寵物調查。") == 1) {
+		if (ep13_2_wanted == 1) {
+			if (checkquest(7076,HUNTING) == 2) {
+				mes "[皮內德爾]";
+				mes "你已經狩獵了逃跑的蒲公英嗎？";
+				mes "好，我認可你。";
+				mes "這是琳寄放在這裡的東西。";
+				next;
+				mes "[皮內德爾]";
+				mes "這是琳珍藏的寶箱……";
+				mes "這份報酬夠了吧？";
+				completequest 7076;
+				set ep13_2_wanted,2;
+				getitem 7444,1; //Treasure_Box
+				close;
+			}
+			mes "[皮內德爾]";
+			mes "我知道你還沒有消滅逃跑的蒲公英。";
+			mes "別把我當傻瓜。";
+			close;
+		}
+		else if (ep13_2_wanted == 2) {
+			mes "[皮內德爾]";
+			mes "我會把一切都轉達給琳。";
+			mes "她會很高興的。";
+			mes "只要告訴她你的名字是 " + strcharinfo(0) + "。";
+			next;
+			mes "[皮內德爾]";
+			mes "我記得我曾聽琳提起過你。";
+			mes "但琳很喜歡你，這表示你一定是個好人。";
+			close;
+		}
+		mes "[皮內德爾]";
+		mes "尋找罪犯？";
+		mes "我不確定你是否有牽涉其中。";
+		close;
+	}
+	if (ep13_2_dayegg == 1) {
+		if (countitem(6093) > 9) {
+			mes "[皮內德爾]";
+			mes "喔！太好了！";
+			mes "有了你的協助，我可以更深入地進行這項研究。";
+			next;
+			mes "[皮內德爾]";
+			mes "我會試著把這些龍蛋變成可愛的寵物。";
+			mes "別抱太大期望！";
+			mes "一天後再回來確認進度吧。";
+			delitem 6093,10; //Egg_Of_Draco
+			erasequest 7077;
+			setquest 7078;
+			set ep13_2_dayegg,2;
+			getexp 40000,40000;
+			getitem 6081,1; //Splendide_Coin
+			getitem 6080,1; //Manuk_Coin
+			close;
+		}
+		mes "[皮內德爾]";
+		mes "德拉科在孵化前都會被保存在巢穴裡。請幫我收集 10 顆龍蛋。";
+		mes "你知道的，那些很難在人工飼養的環境下孵化。";
+		close;
+	}
+	else if (ep13_2_dayegg == 2) {
+		mes "[皮內德爾]";
+		mes "那些蛋現在快要孵化了。";
+		mes "我會帶回家研究的。";
+		set .@alba_check,checkquest(7078,PLAYTIME);
+		if (.@alba_check == -1) {
+			close2;
+			erasequest 7078;
+			set ep13_2_dayegg,3;
+			end;
+		}
+		else if ((.@alba_check == 0) || (.@alba_check == 1)) {
+			mes "目前我還需要更多時間。";
+			next;
+			mes "[皮內德爾]";
+			mes "你明天能再來這裡嗎？";
+			close;
+		}
+		close2;
+		erasequest 7078;
+		set ep13_2_dayegg,3;
+		end;
+	}
+	else if (ep13_2_dayegg == 3) {
+		mes "[皮內德爾]";
+		mes "你今天想幫我收集更多龍蛋嗎？";
+		mes "我想用這些蛋嘗試很多事情。";
+		next;
+		if (select("可以。:抱歉，我沒辦法。") == 1) {
+			mes "[皮內德爾]";
+			mes "請收集 10 顆龍蛋。";
+			set ep13_2_dayegg,1;
+			setquest 7077;
+			close;
+		}
+		mes "[皮內德爾]";
+		mes "好吧。你有你自己的事情要忙。";
+		mes "去忙吧。";
+		close;
+	}
+	mes "[皮內德爾]";
+	mes "我正在調查可愛的寵物。";
+	mes "異世界有幾種魔物，我認為可以成為可愛的寵物。";
+	next;
+	mes "[皮內德爾]";
+	mes "目標是一顆龍蛋！";
+	mes "你能幫我帶一顆龍蛋來嗎？";
+	next;
+	if (select("可以。:不行。") == 1) {
+		mes "[皮內德爾]";
+		mes "在你發現的那個洞穴裡應該有龍的巢穴。";
+		mes "那裡應該有很棒的龍蛋。";
+		next;
+		mes "[皮內德爾]";
+		mes "請收集 10 顆龍蛋。";
+		mes "我們一起合作把它們變成寵物吧。";
+		set ep13_2_dayegg,1;
+		setquest 7077;
+		close;
+	}
+	mes "[皮內德爾]";
+	mes "我知道這不是件容易的事。";
+	mes "但我拒絕放棄。";
+	mes "總有一天我會把它變成可愛的寵物。";
+	next;
+	mes "[塔布]";
+	mes "你就不能放棄把異類變成可愛寵物嗎……";
+	mes " ";
+	mes "[皮內德爾]";
+	mes "塔布一點膽量都沒有！";
+	close;
+}
+
+mid_camp,192,239,4	script	懸賞告示牌#ep13_2ect01	857,{
+	if (ep13_mdrama > 5) {
+		mes "[懸賞]";
+		mes " ";
+		mes "懸賞：蒲公英";
+		mes "委託人：琳";
+		mes "報酬：寶箱。";
+		mes " ";
+		mes "注意：我們原本以為蒲公英集團已經全軍覆沒了。";
+		mes "但並沒有。";
+		mes "我聽說在異世界發現了蒲公英的黑色衣服。";
+		mes "出現了一些問題……";
+		mes "我需要有人找到蒲公英並消滅他們。";
+		mes "我可以提供一個我珍藏的寶箱。";
+		mes "我聽到傳聞說他在某個洞穴裡……！";
+		mes " ";
+		mes "PS> 他們的名聲很臭……";
+		mes "所以你可能不想獨自前往……";
+		mes " ";
+		mes "PPS> 我無法直接給你報酬……";
+		mes "一旦完成任務，『皮內德爾』會給你報酬的……！";
+		mes " ";
+		next;
+		if (ep13_2_wanted == 0) {
+			mes "你接受琳的委託嗎？";
+			if (select("我接受委託。:不，我無法接受。") == 1) {
+				mes "我接受了琳的委託。";
+				set ep13_2_wanted,1;
+				setquest 7076;
+				close;
+			}
+			mes "不，我不想牽涉其中。";
+			close;
+		}
+		mes "我已經決定接受委託了。";
+		close;
+	}
+	mes "肯定有人撕掉了懸賞通告單。";
+	close;
+}
+
+-	script	龍蛋#ep13_degg_0	-1,{
+	if (checkweight(1201,2) == 0) {
+		mes "- 你身上攜帶了太多物品。 -";
+		close;
+	}
+	if ((ep13_2_dayegg == 1) && (countitem(6093) < 10)) {
+		mes "我們剛從龍巢裡拿到新鮮的蛋。";
+		getitem 6093,1; //Egg_Of_Draco
+		disablenpc();
+		initnpctimer;
+		close;
+	}
+	end;
+
+OnTimer420000:
+	enablenpc();
+	stopnpctimer;
+	end;
+
+OnEnable:
+	enablenpc();
+	end;
+
+OnDisable:
+	disablenpc();
+	end;
+}
+
+nyd_dun01,258,134,0	duplicate(龍蛋#ep13_degg_0)	龍蛋#ep13_degg01	463
+nyd_dun01,100,210,0	duplicate(龍蛋#ep13_degg_0)	龍蛋#ep13_degg02	463
+nyd_dun01,74,68,0	duplicate(龍蛋#ep13_degg_0)	龍蛋#ep13_degg03	463
+nyd_dun01,98,142,0	duplicate(龍蛋#ep13_degg_0)	龍蛋#ep13_degg04	463
+nyd_dun01,244,157,0	duplicate(龍蛋#ep13_degg_0)	龍蛋#ep13_degg05	463
+nyd_dun01,59,185,0	duplicate(龍蛋#ep13_degg_0)	龍蛋#ep13_degg06	463
+
+nyd_dun02,68,256,0	script	龍蛋#ep13_degg_1	463,{
+	if (checkweight(1201,2) == 0) {
+		mes "- 你身上攜帶了太多物品。 -";
+		close;
+	}
+	if ((ep13_2_dayegg == 1) && (countitem(6093) < 10)) {
+		mes "我們剛從龍巢裡拿到新鮮的蛋。";
+		getitem 6093,1; //Egg_Of_Draco
+		disablenpc();
+		initnpctimer;
+		close;
+	}
+	end;
+
+OnTimer240000:
+	enablenpc();
+	stopnpctimer;
+	end;
+
+OnEnable:
+	enablenpc();
+	end;
+
+OnDisable:
+	disablenpc();
+	end;
+}
+nyd_dun02,68,256,0	duplicate(龍蛋#ep13_degg_1)	龍蛋#ep13_degg11	463
+nyd_dun02,202,166,0	duplicate(龍蛋#ep13_degg_1)	龍蛋#ep13_degg12	463
+nyd_dun02,200,165,0	duplicate(龍蛋#ep13_degg_1)	龍蛋#ep13_degg13	463
+
+nyd_dun02,201,166,0	script	龍蛋#ep13_degg_2	463,{
+	if (checkweight(1201,2) == 0) {
+		mes "- 你身上攜帶了太多物品。 -";
+		close;
+	}
+	if ((ep13_2_dayegg == 1) && (countitem(6093) < 10)) {
+		mes "我們剛從龍巢裡拿到新鮮的蛋。";
+		getitem 6093,1; //Egg_Of_Draco
+		disablenpc();
+		initnpctimer;
+		close;
+	}
+	end;
+
+OnTimer120000:
+	enablenpc();
+	stopnpctimer;
+	end;
+
+OnEnable:
+	enablenpc();
+	end;
+
+OnDisable:
+	disablenpc();
+	end;
+}
+nyd_dun02,201,166,0	duplicate(龍蛋#ep13_degg_2)	龍蛋#ep13_degg16	463
+nyd_dun02,203,167,0	duplicate(龍蛋#ep13_degg_2)	龍蛋#ep13_degg17	463
+nyd_dun02,201,164,0	duplicate(龍蛋#ep13_degg_2)	龍蛋#ep13_degg18	463
+
+nyd_dun02,201,157,5	script	護蛋德拉科#13_1	2013,3,3,{
+
+OnEnable:
+	enablenpc "護蛋德拉科#13_1";
+	end;
+
+OnDisable:
+	disablenpc "護蛋德拉科#13_1";
+	end;
+
+OnTouch_:
+	disablenpc "護蛋德拉科#13_1";
+	monster "nyd_dun02",201,157,"護蛋德拉科",2013,1,"護蛋德拉科#13_3::OnMyMobDead";
+	end;
+}
+
+nyd_dun02,206,157,3	script	護蛋德拉科#13_2	2013,3,3,{
+	end;
+
+OnEnable:
+	enablenpc "護蛋德拉科#13_2";
+	end;
+
+OnDisable:
+	disablenpc "護蛋德拉科#13_2";
+	end;
+
+OnTouch_:
+	disablenpc "護蛋德拉科#13_2";
+	monster "nyd_dun02",206,157,"護蛋德拉科",2013,1,"護蛋德拉科#13_4::OnMyMobDead";
+	end;
+}
+
+nyd_dun02,201,157,5	script	護蛋德拉科#13_3	-1,{
+	end;
+
+OnMyMobDead:
+	initnpctimer;
+	end;
+
+OnTimer180000:
+	enablenpc "護蛋德拉科#13_1";
+	stopnpctimer;
+	end;
+}
+
+nyd_dun02,206,157,3	script	護蛋德拉科#13_4	-1,{
+	end;
+
+OnMyMobDead:
+	initnpctimer;
+	end;
+
+OnTimer180000:
+	enablenpc "護蛋德拉科#13_2";
+	stopnpctimer;
+	end;
+}
+
+nyd_dun02,144,103,3	script	陌生人#ep13_2_dan01	456,3,3,{
+	end;
+
+OnEnable:
+	enablenpc "陌生人#ep13_2_dan01";
+	end;
+
+OnDisable:
+	disablenpc "陌生人#ep13_2_dan01";
+	end;
+
+OnCall:
+	monster "nyd_dun02",144,103,"逃跑的蒲公英",2026,1,"陌生人#ep13_2_dan03::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "nyd_dun02","陌生人#ep13_2_dan03::OnMyMobDead";
+	end;
+
+OnTouch_:
+	emotion ET_SURPRISE, playerattached();
+	emotion ET_HUK;
+	disablenpc "陌生人#ep13_2_dan01";
+	donpcevent "陌生人#ep13_2_dan02::OnCall";
+	end;
+}
+
+nyd_dun02,206,114,5	script	陌生人#ep13_2_dan02	456,3,3,{
+	end;
+
+OnInit:
+OnDisable:
+	disablenpc "陌生人#ep13_2_dan02";
+	end;
+
+OnEnable:
+	enablenpc "陌生人#ep13_2_dan02";
+	end;
+
+OnCall:
+	monster "nyd_dun02",206,114,"逃跑的蒲公英",2026,1,"陌生人#ep13_2_dan04::OnMyMobDead";
+	end;
+
+OnReset:
+	killmonster "nyd_dun02","陌生人#ep13_2_dan04::OnMyMobDead";
+	end;
+
+OnTouch_:
+	emotion ET_SURPRISE, playerattached();
+	emotion ET_HUK;
+	disablenpc "陌生人#ep13_2_dan02";
+	donpcevent "陌生人#ep13_2_dan01::OnCall";
+	end;
+}
+
+nyd_dun02,144,103,0	script	陌生人#ep13_2_dan03	-1,{
+	end;
+
+OnMyMobDead:
+	initnpctimer;
+	end;
+
+OnTimer300000:
+	if (rand(2)) enablenpc "陌生人#ep13_2_dan01";
+	else donpcevent "陌生人#ep13_2_dan02::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+nyd_dun02,206,114,0	script	陌生人#ep13_2_dan04	-1,{
+	end;
+
+OnMyMobDead:
+	initnpctimer;
+	end;
+
+OnTimer300000:
+	if (rand(2)) enablenpc "陌生人#ep13_2_dan02";
+	else donpcevent "陌生人#ep13_2_dan01::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+// Otherworld language :: ep13_2_rhea
+//============================================================ 
+mid_camp,197,237,3	script	秀發茲發德機械學者#1	869,{
+	if( !checkweight(2782,1)) { // Custom weight check.
+		mes "[機械學者 鐸嵐斯]";
+		mes "看起來你身上帶了太多東西。";
+		mes "何不把一些物品放進倉庫後再來？";
+		close;
+	}
+	if (ep13_1_edq > 2 || ep13_start == 100) {
+		if (ep13_2_rhea < 1) {
+			mes "[機械學者 鐸嵐斯]";
+			mes "你知道智慧王戒指嗎？如果你戴上那枚戒指，你就可以和動物說話。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我不知道這是不是基於事實的傳說……但那樣的東西會非常方便。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "在遠征隊營地外面，有一個動物種族，牠們使用的是米德加爾特未曾使用過的神秘語言。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我們不知道他們是敵是友，但如果能弄清楚，對我們在這裡的研究會有很大的幫助。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "所以，三國聯合研究團隊正在合作調查。我想知道^0000ff阿盧納貝茲語言學家^000000的解碼進度到哪裡了。你願意幫我去看看嗎？";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "^0000ff阿盧納貝茲語言學家^000000應該在聯合軍總部的二樓。";
+			setquest 8243;
+			set ep13_2_rhea,1;
+			close;
+		}
+		else if ((ep13_2_rhea > 0) && (ep13_2_rhea < 7)) {
+			mes "[機械學者 鐸嵐斯]";
+			mes "在遠征隊營地外面，有一個種族，他們使用的是米德加爾特未曾使用過的神秘語言。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我們不知道他們是敵是友，但可以肯定的是，這會讓我們在這裡的研究變得更容易。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "所以，三國聯合研究團隊正在合作調查。我想知道^0000ff阿盧納貝茲語言學家^000000的解碼進度到哪裡了。你願意幫我去看看嗎？";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "去遠征隊營地中央的一棟大建築，在裡面找到^0000ff阿盧納貝茲語言學家^000000，問問他的進度如何。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "^0000ff阿盧納貝茲語言學家^000000應該在聯合軍總部的二樓。";
+			close;
+		}
+		else if (ep13_2_rhea == 7) {
+			mes "- 他面對著堆積如山的研究文件，露出苦瓜臉。 -";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "啊，你來了。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "看來你為我們做了很多。我很感謝你。";
+			mes "但是……唉……";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "你看到了嗎？這些研究文件的數量？";
+			mes "我們終於解碼了異世界的語言是件好事……但這實在太多了。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我們不能總是帶著語言學家來翻譯……我們需要與這些異世界的種族溝通，才能探索這個世界……";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "要儲存這麼多的資訊，需要一台和這個總部一樣大的超級電腦，而且處理速度會非常非常慢。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "唉……總之，如果有任何方法可以儲存大量的數據，我應該就能做出一個非常小的便攜式翻譯機。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我聽說透過使用盧恩米德加茲的魔法，你可以將數據轉化為魔力並將其鎖定在寶石中……我想聽聽盧恩米德加茲魔法師的建議。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "你能幫忙去向他們尋求幫助嗎？";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "你不在的時候，我會在這裡整理這些文件。";
+			completequest 8248;
+			setquest 8249;
+			set ep13_2_rhea,8;
+			close;
+		}
+		else if ((ep13_2_rhea > 7) && (ep13_2_rhea < 11)) {
+			mes "[機械學者 鐸嵐斯]";
+			mes "要儲存這麼多的資訊，需要一台和這個總部一樣大的超級電腦。而且處理速度會非常非常慢……";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "唉……總之，如果有任何方法可以儲存大量的數據，我應該就能做出一個非常小的便攜式翻譯機。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我聽說透過使用盧恩米德加茲的魔法，你可以將數據轉化為魔力並將其鎖定在寶石中……我想聽聽盧恩米德加茲魔法師的建議。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "你能幫忙去向他們尋求幫助嗎？";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "你不在的時候，我會在這裡整理這些文件。";
+			close;
+		}
+		else if (ep13_2_rhea == 11) {
+			mes "[機械學者 鐸嵐斯]";
+			mes "進展如何？";
+			next;
+			select("把寶石交給他。");
+			mes "[機械學者 鐸嵐斯]";
+			mes "啊，看來你成功了。";
+			mes "用魔力將數據輸入到寶石中……這是科技做不到的……雖然有點不甘心承認，但這真的很了不起。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "那麼，我該開始著手製作一台機器來讀取這顆寶石中的魔法數據，這樣我們就能馬上使用了。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "嗯……";
+			mes "幸運的是，這不會像我們想像的那麼難。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "如果我們將魔力波轉換為電信號並將其連接到人體，然後將數據直接傳輸到大腦。這將使我們能夠接收並理解數據，而無需任何讀取過程。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我沒有時間解釋一切了。我必須馬上開始工作。";
+			mes "所有的準備工作都完成了，請給我大約一個小時來完成這個東西。";
+			completequest 8252;
+			setquest 8253;
+			set ep13_2_rhea,12;
+			close;
+		}
+		else if (ep13_2_rhea == 12) {
+			set .@trs_time01,checkquest(8253,PLAYTIME);
+			if (.@trs_time01 == 2) {
+				mes "[機械學者 鐸嵐斯]";
+				mes "唉，我現在該怎麼辦？！";
+				next;
+				mes "- 鐸嵐斯焦躁不安地走來走去 -";
+				mes "- 神色慌張。 -";
+				next;
+				mes "["+ strcharinfo(0) +"]";
+				mes "有什麼問題嗎？！";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "我該怎麼辦？！我難道真的是個天才嗎？！";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "我做到了！！！";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "方便攜帶的尺寸！";
+				mes "時尚且實用的設計！";
+				mes "包含了異世界的詞彙 / 習語 / 文法 / 短語！！";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "你體驗過那種讀取速度嗎？";
+				mes "如果沒有，你連提都不用提。";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "不僅如此！";
+				mes "為了健康生活，它還會提升你的力量和智力！！！！";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "具備所有這些奇妙的功能，只要 39,900 zeny……！！！";
+				next;
+				mes "["+ strcharinfo(0) +"]";
+				mes "……你到底在模仿什麼……";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "重要的是，我做到了！！";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "嗯，百聞不如一見。";
+				mes "看看吧。";
+				next;
+				mes "- 他遞過來一枚小戒指。 -";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "它的名字是『智慧王戒指』。我是根據古代國王用來與動物交流的戒指設計的。";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "不要把它當成普通的戒指。你看到這裡的這顆小寶石了嗎？這個固定寶石的插槽和戒指部分是精密製作的，它會將魔力波轉換為電信號並直接傳輸到我們的大腦。";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "由於這種電信號與我們身體神經系統使用的信號相同，它將使我們能夠理解並流利地使用該語言。";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "一旦這種翻譯機普及，我們進入異世界就只是時間問題了。嗯，問題是……我們的數量還不夠……";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "嗯……";
+				mes "總之，既然我們有了成果，我會把這第一件作品送給你。";
+				next;
+				mes "[機械學者 鐸嵐斯]";
+				mes "謝謝你的幫忙。";
+				mes "我希望這枚戒指能為你在異世界的旅程提供很大的幫助。";
+				completequest 8253;
+				set ep13_2_rhea,100;
+				if (checkre(3))
+					getexp 200000,5000;
+				else
+					getexp 1000000,300000;
+				getitem 2782,1; //Ring_Of_Wise_King
+				close;
+			}
+			else {
+				mes "- 他把機械零件散落 -";
+				mes "- 在房間的各個角落，如此全神貫注 -";
+				mes "- 於他的工作中 -";
+				next;
+				mes "- 如果我打擾他，可能會被咬 -";
+				mes "- 還是別管他了 -";
+				close;
+			}
+		}
+		else {
+			mes "[機械學者 鐸嵐斯]";
+			mes "感謝你的幫助。";
+			next;
+			mes "[機械學者 鐸嵐斯]";
+			mes "我希望這枚戒指能為你在異世界的旅程提供很大的幫助。";
+			close;
+		}
+	}
+	else {
+		mes "[機械學者 鐸嵐斯]";
+		mes "你知道智慧王戒指嗎？如果你戴上那枚戒指，你就可以和動物說話。";
+		next;
+		mes "[機械學者 鐸嵐斯]";
+		mes "我不知道這是不是基於事實的傳說……這樣的功能會很方便。";
+		next;
+		mes "[機械學者 鐸嵐斯]";
+		mes "對了，你是誰？這棟建築在指揮官的控制之下。這個地方不能隨便進入……你認識我們的指揮官嗎？";
+		next;
+		mes "[機械學者 鐸嵐斯]";
+		mes "你在找事做嗎？也許我需要一些幫助……嗯，我還不知道你是否值得信任。";
+		next;
+		mes "[機械學者 鐸嵐斯]";
+		mes "如果你有能力解決遠征隊營地內的一些問題，並執行指揮官交代的任務……那麼我想我可以信任你。";
+		close;
+	}
+}
+
+mid_campin,168,82,3	script	阿盧納貝茲語言學家#1	935,{
+	if (ep13_2_rhea < 1) {
+		mes "[語言學家 迪克夏內利]";
+		mes "語言是人類與動物的區別特徵。每一個智慧生命體都有自己的語言。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "語言是一種透過聲音或文字來傳達感受或思想的方法與系統。無論如何，它的目的是溝通。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "語言和聲音的差別在於，語言是一種社會暗示的承諾，透過建立共同的溝通系統來達到相互理解。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "那種社會暗示的承諾，如果我們能掌握系統和結構的意義，我們就能理解其他智慧生命體的語言……";
+		mes "……………………………………那麼你是哪位？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "這是在我們指揮官控制下的限制區域。沒有適當的批准，任何人都不准進入……你認識我們的指揮官嗎？";
+		close;
+	}
+	else if (ep13_2_rhea == 1) {
+		mes "[語言學家 迪克夏內利]";
+		mes "語言是人類與動物的區別特徵。每一個智慧生命體都有自己的語言。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "語言是一種透過聲音或文字來傳達感受或思想的方法與系統。無論如何，它的目的是溝通。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "語言和聲音的差別在於，語言是一種社會暗示的承諾，透過建立共同的溝通系統來達到相互理解。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "那種社會暗示的承諾，如果我們能掌握系統和結構的意義，我們就能理解其他智慧生命體的語言……";
+		mes "……………………………………那麼你是哪位？";
+		next;
+		switch(select("我是我！:我沒有名字可以告訴你！")) {
+		case 1:
+			break;
+		case 2:
+			mes "[語言學家 迪克夏內利]";
+			mes "搞什麼？";
+			mes "如果你這麼無聊，為什麼不去釣魚？";
+			close;
+		}
+		mes "[語言學家 迪克夏內利]";
+		mes "啊?我聽我們的指揮官提起過你。你為米德加爾特聯合軍營地做了很多。總之，是什麼風把你吹來了？";
+		next;
+		switch(select("我以為我讓你有點困惑……:你在做什麼？")) {
+		case 1:
+			mes "[語言學家 迪克夏內利]";
+			mes "困惑是一種因為發生了無法預測的事情而導致心煩意亂的感覺。我不是一個容易感到困惑的人。";
+			next;
+			break;
+		case 2:
+			break;
+		}
+		mes "[語言學家 迪克夏內利]";
+		mes "我是來自阿盧納貝茲的語言學家。我是一位研究世界上各種語言系統和結構的學者。";
+		mes "而且……你不認為像我這樣的人在這裡，是有個可預測的原因嗎？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "據我所知，你為米德加爾特聯合軍研究團隊做了很多。";
+		mes "而且在你幫助我們的期間，我相信你已經看到並造訪了異世界這裡的很多地方。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "你偶然遇到過異世界的人嗎？";
+		next;
+		set .@check_splque00,checkquest(2158);
+		set .@check_manque00,checkquest(2159);
+		if ((.@check_splque00 == 0) && (.@check_manque00 == 0)) {
+			// custom translation
+			mes "[語言學家 迪克夏內利]";
+			mes "看來你還沒有遇到他們。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "這裡的傳聞說，在我們營地旁邊的區域，住著長得像妖精和巨大的木頭人的種族。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "顯然這些人說著一種我們人類無法理解的奇怪語言……但似乎沒有人能記住他們的語言聽起來像什麼。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "一種新的語言！！對於像我這樣的語言學家來說，這是一個令人興奮的發現，但如你所知，外面有危險的魔物……一個純粹的學者是不可能在外面亂跑的。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "我話都說到這份上了，我想你應該能猜到我要請你做什麼了。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "聯合軍研究團隊對其他智慧生命非常感興趣。各國的特工都在盡一切努力與這兩個種族交流，只是資訊不夠。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "幫我一個忙，到營地外面去，找到那些妖精和木頭巨人，並一字不漏地記住他們說的每一句話，這樣我就能聽到他們的語言聽起來像什麼了。";
+			completequest 8243;
+			setquest 8244;
+			set ep13_2_rhea,2;
+			close;
+		}
+		else {
+			mes "[語言學家 迪克夏內利]";
+			mes "從你的表情來看，我想你心裡已經有底了。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "這裡的傳聞說，在我們營地旁邊的區域，住著長得像妖精和巨大的木頭人的種族。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "顯然這些人說著一種我們人類無法理解的奇怪語言……但似乎沒有人能記住他們的語言聽起來像什麼。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "一種新的語言！！對於像我這樣的語言學家來說，這是一個令人興奮的發現，但如你所知，外面有危險的魔物……一個純粹的學者是不可能在外面亂跑的。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "我話都說到這份上了，我想你應該能猜到我要請你做什麼了。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "聯合軍研究團隊對其他智慧生命非常感興趣。各國的特工都在盡一切努力與這兩個種族交流，只是資訊不夠。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "幫我一個忙，到營地外面去，找到那些妖精和木頭巨人，並一字不漏地記住他們說的每一句話，這樣我就能聽到他們的語言聽起來像什麼了。";
+			completequest 8243;
+			setquest 8244;
+			set ep13_2_rhea,2;
+			close;
+		}
+	}
+	else if (ep13_2_rhea == 2) {
+		set .@check_splque00,checkquest(2158);
+		set .@check_manque00,checkquest(2159);
+		if ((.@check_splque00 > 0) && (.@check_manque00 > 0)) {
+			mes "[語言學家 迪克夏內利]";
+			mes "你回來了！";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "那麼，他們說了什麼？";
+			mes "你當然確切地記住他們說的話了，對吧？";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "現在，讓我們從妖精開始！妖精的語言是怎樣的？請在這裡逐句寫下來！";
+			next;
+			set .@spl_score00,0;
+			input .@input$;
+			if (.@input$ == "RLGHLRXLA TKANTLFDMS") {
+				mes "[語言學家 迪克夏內利]";
+				mes ""+ .@input$ +"....";
+				mes "然後呢？";
+				set .@spl_score01,.@spl_score00+1;
+				next;
+			}
+			else {
+				mes ""+ .@input$ +"....";
+				mes "嗯……嗯……？";
+				set .@spl_score01,.@spl_score00;
+				next;
+			}
+			input .@input$;
+			if (.@input$ == "WJACK TNAHRDNJSDMFH") {
+				mes ""+ .@input$ +"....";
+				mes "然後呢？";
+				set .@spl_score02,.@spl_score01+1;
+				next;
+			}
+			else {
+				mes ""+ .@input$ +"....";
+				mes "我明白了……？";
+				set .@spl_score02,.@spl_score01;
+				next;
+			}
+			input .@input$;
+			if ((.@input$ == "WLSGHKWND !!") || (.@input$ == "WLSGHKWND")) {
+				mes ""+ .@input$ +"....";
+				mes "就這些嗎？";
+				set .@spl_score03,.@spl_score02+1;
+				next;
+			}
+			else {
+				mes ""+ .@input$ +"....";
+				mes "就這些嗎？";
+				set .@spl_score03,.@spl_score02;
+				next;
+			}
+			if (.@spl_score03 > 2) {
+				mes "[語言學家 迪克夏內利]";
+				mes "所以……如果我們把它們拼在一起，";
+				mes "RLGHLRXLA TKANTLFDMS";
+				mes "WJACK TNAHRDNJSDMFH";
+				mes "WLSGHKWND !!";
+				mes "就像這樣。";
+				next;
+			}
+			else {
+				mes "[語言學家 迪克夏內利]";
+				mes "嗯……？";
+				next;
+				mes "[語言學家 迪克夏內利]";
+				mes "你確定這正是他們說的話嗎？";
+				mes "我完全看不懂這寫的是什麼……";
+				next;
+				mes "[語言學家 迪克夏內利]";
+				mes "你能再回去確認一下這是不是他們的原話嗎？";
+				close;
+			}
+			mes "[語言學家 迪克夏內利]";
+			mes "很好。接下來是木頭巨人！他們的語言是怎樣的？像妖精那樣逐句寫下來。";
+			next;
+			set .@man_score00,0;
+			input .@input$;
+			if (.@input$ == "TJDTMFJDNS CJFDI") {
+				mes "[語言學家 迪克夏內利]";
+				mes ""+ .@input$ +"....";
+				mes "然後呢？";
+				set .@man_score01,.@man_score00+1;
+				next;
+			}
+			else {
+				mes ""+ .@input$ +"....";
+				mes "然後呢？";
+				set .@man_score01,.@man_score00;
+				next;
+			}
+			input .@input$;
+			if (.@input$ == "TKADLFDMF QKATOS") {
+				mes ""+ .@input$ +"....";
+				mes "然後呢？";
+				set .@man_score02,.@man_score01+1;
+				next;
+			}
+			else {
+				mes ""+ .@input$ +"....";
+				mes "然後呢？";
+				set .@man_score02,.@man_score01;
+				next;
+			}
+			input .@input$;
+			if ((.@input$ == "EKDTLSDML DLFMADMS..") || (.@input$ == "EKDTLSDML DLFMADMS")) {
+				mes ""+ .@input$ +"....";
+				mes "就是這個嗎？";
+				set .@man_score03,.@man_score02+1;
+				next;
+			}
+			else {
+				mes ""+ .@input$ +"....";
+				mes "就這些嗎？";
+				set .@man_score03,.@man_score02;
+				next;
+			}
+			if (.@man_score03 > 2) {
+				mes "[語言學家 迪克夏內利]";
+				mes "所以，如果我們把它們拼在一起，";
+				mes "TJDTMFJDNS CJFDI";
+				mes "TKADLFDMF QKATOS";
+				mes "EKDTLSDML DLFMADMS..";
+				mes "就會像這樣。";
+				next;
+			}
+			else {
+				mes "[語言學家 迪克夏內利]";
+				mes "嗯……？";
+				next;
+				mes "[語言學家 迪克夏內利]";
+				mes "你確定這正是他們說的話嗎？";
+				mes "嗯……我不明白……";
+				next;
+				mes "[語言學家 迪克夏內利]";
+				mes "你能再回去確認一下這是不是他們的原話嗎？";
+				close;
+			}
+			mes "[語言學家 迪克夏內利]";
+			mes ".嗯……嗯……我明白了……";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "……嗯……";
+			next;
+			mes "- 迪克夏內利目不轉睛地盯著紙張。 -";
+			set ep13_2_rhea,3;
+			close;
+		}
+		else {
+			// custom translation
+			mes "[語言學家 迪克夏內利]";
+			mes "根據遠征隊營地的調查，有一種長得像妖精的不同種族，還有一種長得像巨人的不同種族。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "據說他們使用的是一種米德加爾特人無法理解的語言……雖然我們都這麼說，但沒有人能記住他們的對話或字詞。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "一種新的語言！！！身為語言學家，我不能就這樣坐在這裡。但在外面，有許多不同的魔物，作為一個學者，去外面太危險了。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "既然我們的話題已經到了這個地步，你應該知道我的請求了吧？";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "三國聯合研究團隊對其他智慧生命非常感興趣。為了嘗試與他們交談，國家官員們已經用盡了一切可能的方法進行秘密努力。然而，由於缺乏資訊，他們面臨著困難。";
+			next;
+			mes "[語言學家 迪克夏內利]";
+			mes "如果你在遠征隊營地附近遇到那些種族，你必須記住他們的對話！然後回來向我報告！";
+			close;
+		}
+	}
+	else if (ep13_2_rhea == 3) {
+		mes "[語言學家 迪克夏內利]";
+		mes "………………………………";
+		next;
+		mes "- 迪克夏內利目不轉睛地盯著紙張。 -";
+		next;
+		switch(select("他看起來很嚴肅，我們還是別打擾他了:跟他說話")) {
+		case 1:
+			mes "[語言學家 迪克夏內利]";
+			mes "………………………………";
+			close;
+		case 2:
+			break;
+		}
+		mes "[語言學家 迪克夏內利]";
+		mes "啊啊啊啊啊啊！！！！！！！！";
+		next;
+		select("你發現了什麼嗎？");
+		mes "[語言學家 迪克夏內利]";
+		mes "我……看不懂！！！";
+		mes "這??是??什??麼?? 這到底要怎麼讀???我完全看不懂這上面的任何規則???咦？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "………………………………………………";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "哼！";
+		mes "什麼事？";
+		next;
+		switch(select("他看起來很嚴肅。我們還是別打擾他了。:問他發生了什麼事。")) {
+		case 1:
+			mes "[語言學家 迪克夏內利]";
+			mes "………………………………";
+			mes "………………………哼……";
+			close;
+		case 2:
+			break;
+		}
+		mes "[語言學家 迪克夏內利]";
+		mes "啊！嗯，這沒有我想像的那麼簡單。在米德加爾特大陸的任何地方都聽不到這些語言。這裡似乎不適用任何已知的語音規則。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "很難掌握他們的規則或系統，最重要的是，我甚至不知道這個發音是否正確。我從來沒聽過這種發音。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "啊，對了，我聽說^0000ff盧恩米德加茲魔法師^000000知道一種根據語言樣本進行研究的方法，你能去請他幫忙嗎？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "^0000ff盧恩米德加茲魔法師^000000在遠征隊營地裡徘徊。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "如果沒有更多的語言樣本，就很難繼續研究。請幫我這個忙。";
+		completequest 8244;
+		setquest 8245;
+		set ep13_2_rhea,4;
+		close;
+	}
+	else if ((ep13_2_rhea > 3) && (ep13_2_rhea < 6)) {
+		mes "[語言學家 迪克夏內利]";
+		mes "我聽說^0000ff盧恩米德加茲魔法師^000000知道一種從語言樣本中進行研究的方法，你能去見他並請他幫忙嗎？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "^0000ff盧恩米德加茲魔法師^000000在遠征隊營地裡徘徊。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "如果沒有更多的語言樣本，就很難繼續這項研究。請幫我這個忙。";
+		close;
+	}
+	else if (ep13_2_rhea == 6) {
+		mes "- 語言學家正在紙上寫字，彷彿被什麼東西迷住了一樣 -";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "……喔，你好。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "我聽說你給我們帶來了一顆記錄著異世界語言的寶石。多虧了你的幫助，解碼過程進行得很順利。";
+		mes "實際上，進行得太順利了……";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "說來也奇妙，當我親耳聽到那種語言的瞬間，我竟然不由自主地完美解碼了它。這一定是女神弗蕾亞的祝福。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "但問題是……";
+		mes "我們要怎麼把這些龐大的數據整合在一起，做成一個便攜式的翻譯機呢……我就是想不出來。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "我想知道來自秀發茲發德共和國的機械學者會怎麼想……你能去問問他嗎？";
+		completequest 8247;
+		setquest 8248;
+		set ep13_2_rhea,7;
+		close;
+	}
+	else if ((ep13_2_rhea > 6) && (ep13_2_rhea < 13)) {
+		mes "[語言學家 迪克夏內利]";
+		mes "我們到底要怎麼把這些龐大的數據整合在一起，做成一個便攜式的翻譯機呢……我就是想不出來。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "我想知道來自秀發茲發德共和國的機械學者會怎麼想……你能去問問他嗎？";
+		close;
+	}
+	else if (ep13_2_rhea > 12) {
+		mes "[語言學家 迪克夏內利]";
+		mes "所以，我們終於做出了翻譯機！";
+		mes "運作得如何？沒有什麼問題吧？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "我希望這個翻譯機能對你的旅程有所幫助。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "然而，雖然使用翻譯機很重要，但語言和溝通的基礎在於你應該嘗試去理解他人。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "你不應該把一切都依賴在一台機器上……別忘了要相互理解。帶著那個翻譯機享受你在異世界的旅程吧。";
+		close;
+	}
+	else {
+		mes "[語言學家 迪克夏內利]";
+		mes "所以，我們終於做出了翻譯機！";
+		mes "運作得如何？沒有什麼問題吧？";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "我希望這個翻譯機能對你的旅程有所幫助。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "然而，雖然使用翻譯機很重要，但語言和溝通的基礎在於你應該嘗試去理解他人。";
+		next;
+		mes "[語言學家 迪克夏內利]";
+		mes "你不應該把一切都依賴在一台機器上……別忘了要相互理解。帶著那個翻譯機享受你在異世界的旅程吧。";
+		close;
+	}
+}
+
+mid_camp,147,256,3	script	盧恩米德加茲魔法師#1	735,{
+	if (ep13_2_rhea < 4) {
+		mes "[魔法師 威斯柏]";
+		mes "要儲存大量的資訊，嗯，以現有的技術是不可能的。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "古代盧恩米德加茲王國在魔法寶石上使用某種魔法來儲存大量的資訊……將寶石作為儲存裝置……";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "喔，抱歉，你散發著一種舒適的氛圍，讓我情不自禁地對你說話。你是哪位？";
+		close;
+	}
+	else if (ep13_2_rhea == 4) {
+		mes "[魔法師 威斯柏]";
+		mes "要儲存大量的資訊，嗯，以現有的技術是不可能的。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "古代盧恩米德加茲王國在魔法寶石上使用某種魔法來儲存大量的資訊……將寶石作為儲存裝置……";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "喔，抱歉，你散發著一種舒適的氛圍，讓我情不自禁地對你說話。你是哪位？";
+		next;
+		select("呃，迪克夏內利先生派我來的……");
+		mes "[魔法師 威斯柏]";
+		mes "喔？你是說那個來自阿盧納貝茲的語言學家。這意味著我們需要一個記錄的語言樣本。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "嗯……實際上，我已經在他們的領地附近埋下了能用魔力記錄聲波的魔法寶石……用來收集關於他們語言的資訊。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "但是，負責埋下這些寶石的刺客們……他們正在執行其他任務，所以無法去回收這些寶石。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "如果沒有人幫我們把寶石找回來，我就沒辦法把樣本交給你了。";
+		next;
+		switch(select("那我晚點再來嗎？:如果我去把它們找回來呢？")) {
+		case 1:
+			mes "[魔法師 威斯柏]";
+			mes "………………當然，你可以等上一百年……";
+			next;
+			mes "["+ strcharinfo(0) +"]";
+			mes "什麼？";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "啊，沒事，沒事，沒什麼。";
+			next;
+			break;
+		case 2:
+			break;
+		}
+		mes "[魔法師 威斯柏]";
+		mes "如果你能那樣做，那將為我們節省很多時間，對我們也有好處！不是嗎？你不覺得嗎？";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "我相信你已經見過外面的那兩個外星種族了吧？";
+		mes "刺客們在神不知鬼不覺的情況下，將魔法寶石埋在了他們村莊的附近。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "第一顆寶石埋在妖精村莊附近蘑菇狀結構的下方。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "而第二顆寶石則埋在巨人村莊附近的樹下。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "把這兩顆寶石帶回來，這會對我有很大的幫助。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "嗯，如果你忙於其他事情，我不能強迫你去做……";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "俗話說得好，口渴的人會自己挖井……";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "我差點忘了！你挖寶石的時候要小心。";
+		mes "刺客們在埋下寶石時，安裝了陷阱來保護它們。";
+		completequest 8245;
+		setquest 8246;
+		set ep13_2_rhea,5;
+		close;
+	}
+	else if (ep13_2_rhea == 5) {
+		set .@check_spljew00,checkquest(8241);
+		set .@check_manjew00,checkquest(8242);
+		if ((.@check_spljew00 > 0) && (.@check_manjew00 > 0)) {
+			if (countitem(7575) > 0) && (countitem(7576) > 0) {
+				mes "[魔法師 威斯柏]";
+				mes "哇，你這麼快就回來了！";
+				mes "那麼，讓我看看它們！";
+				next;
+				mes "- 當你遞過寶石時，-";
+				mes "- 他仔細地檢查了它們-";
+				next;
+				mes "[魔法師 威斯柏]";
+				mes "嗯……";
+				mes "裡面夾雜著很多噪音，但我想我很快就能提取出聲音。";
+				next;
+				mes "[魔法師 威斯柏]";
+				mes "我會提取記錄在這顆寶石中的聲音，然後寄給來自阿盧納貝茲的語言學家。";
+				next;
+				mes "[魔法師 威斯柏]";
+				mes "看來有很多種方便的機器。透過使用這台錄音機，我提取的聲音可以直接傳送給來自阿盧納貝茲的語言學家。";
+				next;
+				mes "[魔法師 威斯柏]";
+				mes "所以我自己一個人就可以處理了。謝謝你的幫忙。";
+				completequest 8241;
+				completequest 8242;
+				completequest 8246;
+				setquest 8247;
+				delitem 7575,1; //Red_Jewel_
+				delitem 7576,1; //Blue_Jewel_
+				set ep13_2_rhea,6;
+				close;
+			}
+			else {
+				// custom translation
+				mes "[魔法師 威斯柏]";
+				mes "啊，真快。";
+				next;
+				mes "[魔法師 威斯柏]";
+				mes "請把寶石交給我。我會提取寶石裡的錄音，然後交給來自阿盧納貝茲的語言學家。";
+				next;
+				mes "[魔法師 威斯柏]";
+				mes "……可是……寶石在哪裡？";
+				close;
+			}
+		}
+		else {
+			mes "[魔法師 威斯柏]";
+			mes "第一顆寶石埋在妖精村莊附近蘑菇狀結構的下方。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "而第二顆寶石則埋在巨人村莊附近的樹下。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "把這兩顆寶石帶回來，這會對我有很大的幫助。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "嗯，如果你忙於其他事情，我不能強迫你去做……";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "俗話說得好，口渴的人會自己挖井……";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "我差點忘了！你挖寶石的時候要小心。";
+			mes "刺客們在埋下寶石時，安裝了陷阱來保護它們。";
+			close;
+		}
+	}
+	else if ((ep13_2_rhea > 5) && (ep13_2_rhea < 8)) {
+		mes "[魔法師 威斯柏]";
+		mes "嗯，如果你現在不忙，請去看看來自阿盧納貝茲的語言學家的研究進度如何。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "我該開始提取語音數據，並將它們發送給來自阿盧納貝茲的語言學家了。";
+		close;
+	}
+	else if (ep13_2_rhea == 8) {
+		mes "[魔法師 威斯柏]";
+		mes "嗯……數據比我們想像的還要多……";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "把數據轉化為魔力並放入寶石中當然是小菜一碟……最重要的是，我不知道有沒有寶石有足夠的儲存空間來儲存這麼多的數據……";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "我聽說在遠征隊營地外面寒冷的區域，有^0000ff在米德加爾特找不到的神秘礦石。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "如果我們能找到那種礦石，這項工作就會容易得多……你覺得呢？你認為你能去幫我找一塊來嗎？";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "你不在的時候，我會整理要放進寶石裡的數據。";
+		completequest 8249;
+		setquest 8250;
+		set ep13_2_rhea,9;
+		close;
+	}
+	else if (ep13_2_rhea == 9) {
+		if (countitem(6048) > 0) {
+			mes "[魔法師 威斯柏]";
+			mes "喔！這就是那種礦石嗎？";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "這確實很有趣。它還沒有被精煉過，但我能從這塊礦石中感受到神秘的力量。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "這就像……帶有生命力的特殊波。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "讓我們測試一下，看看它能儲存多少魔力。";
+			next;
+			mes "- 他閉上眼睛念誦著咒語 -";
+			mes "- 手裡拿著那塊礦石。 -";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "Lumos Nox Densaugeo Dissendium Diffindo Engorgio Mobiliarbus Expecto patronum!!!!";
+			next;
+			specialeffect EF_FLASHER;
+			// 99 : "Rune-Midgarts Magician#ep132_rhea03" EF_FLASHER
+			emotion ET_SURPRISE;
+			mes "[魔法師 威斯柏]";
+			mes "哇！！！這、這太不可思議了！";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "一顆擁有這麼大儲存空間的礦石，只有指甲般大小，卻能儲存兩種語言！";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "你能稍等一下嗎？";
+			mes "你先休息一下，我來把這塊礦石加工成寶石，然後把魔法數據輸入進去。你看起來累壞了……";
+			completequest 8250;
+			setquest 8251;
+			delitem 6048,1; //Unidentified_Mineral
+			set ep13_2_rhea,10;
+			close;
+		}
+		else {
+			mes "[魔法師 威斯柏]";
+			mes "我聽說在遠征隊營地外面寒冷的區域，有一種在米德加爾特找不到的未鑑定礦石。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "如果我們能找到那種礦石，這項工作就會容易得多……你覺得呢？你認為你能去幫我找一塊來嗎？";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "你不在的時候，我會整理要放進寶石裡的數據。";
+			close;
+		}
+	}
+	else if (ep13_2_rhea == 10) {
+		if (rand(1,5) == 3) {
+			mes "- 他臉色有點蒼白，-";
+			mes "- 看到你時，他看起來很高興 -";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "啊！正是時候！";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "我剛完成魔力的注入。";
+			mes "從現在開始，就看秀發茲發德的機械學者如何將這顆寶石與機器結合，使其成為實時翻譯機了。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "我想請你幫最後一個忙。";
+			mes "請將這顆加工過的寶石交給秀發茲發德的機械學者。";
+			next;
+			mes "[魔法師 威斯柏]";
+			mes "真的很抱歉拜託你這麼多事……啊……我消耗了太多的魔力……我該休息一會兒了。";
+			next;
+			mes "- ^0000ff 獲得了加工過的寶石 ^000000 -";
+			mes "- ^0000ff 來自威斯柏！！^000000 -";
+			completequest 8251;
+			setquest 8252;
+			set ep13_2_rhea,11;
+			close;
+		}
+		else {
+			mes "[魔法師 威斯柏]";
+			mes "你能稍等一下嗎？";
+			mes "你先休息一下，我來把這塊礦石加工成寶石，然後把魔法數據輸入進去。你看起來累壞了……";
+			close;
+		}
+	}
+	else if (ep13_2_rhea == 11) {
+		mes "[魔法師 威斯柏]";
+		mes "請將這顆加工過的寶石交給秀發茲發德的機械學者。";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "真的很抱歉拜託你這麼多事……啊……我消耗了太多的魔力……我該休息一會兒了。";
+		next;
+		mes "- 他看起來很睏，一邊說著 -";
+		mes "- 一邊揉著快要閉上的眼睛。 -";
+		close;
+	}
+	else if (ep13_2_rhea == 12) {
+		mes "[魔法師 威斯柏]";
+		mes "翻譯機的製作過程進展如何？";
+		close;
+	}
+	else if (ep13_2_rhea > 12) {
+		mes "[魔法師 威斯柏]";
+		mes "我剛收到消息說翻譯機完成了！";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "雖然我們現在數量還不夠，但它將使我們進入異世界的過程變得更容易！";
+		close;
+	}
+	else {
+		mes "[魔法師 威斯柏]";
+		mes "我剛收到消息說翻譯機完成了！";
+		next;
+		mes "[魔法師 威斯柏]";
+		mes "雖然我們現在數量還不夠，但它將使我們進入異世界的過程變得更容易！";
+		close;
+	}
+}
+
+function	script	jewel_13_2	{
+	.@color$ = getarg(0);
+	if (ep13_2_rhea < 5) {
+		mes "- 在一個圓形的土堆下，-";
+		mes "- 有一顆"+ .@color$ +"寶石 -";
+		mes "- 半埋在裡面。 -";
+		close;
+	}
+	else if (ep13_2_rhea == 5) {
+		//Custom Weight Check
+		if (!checkweight(7575,2)) {
+		    mes "抱歉，你的物品欄已滿！";
+		    close;
+		}
+		.@num = getarg(1);
+		if (checkquest(8240+.@num) == -1) {
+			mes "- 在一個圓形的土堆下，-";
+			mes "- 有一顆"+ .@color$ +"寶石 -";
+			mes "- 半埋在裡面。 -";
+			next;
+			if(select("挖出寶石:不去動它")==2) {
+				mes "- 你在寶石上覆蓋了一些泥土 -";
+				mes "- 並讓寶石保持原樣。 -";
+				next;
+				mes "["+ strcharinfo(0) +"]";
+				mes "……我到底在幹嘛……";
+				close;
+			}
+			if (rand(1,4) == 2) {
+				mes "- 你挖開了土堆 -";
+				mes "- 並拿出了"+ .@color$ +"寶石 -";
+				setquest 8240+.@num;
+				getitem 7574+.@num,1;
+				close;
+			}
+			else {
+				mes "- 當你挖開土堆時，-";
+				mes "- 一隻盜蟲攻擊了你！ -";
+				donpcevent "半埋的寶石#"+ .@num +"::OnDisable";
+				next;
+				mes "["+ strcharinfo(0) +"]";
+				mes "這到底是什麼東西?!?!?!";
+				close;
+			}
+		}
+		else {
+			mes "- 小土堆 -";
+			mes "- 你之前在這裡挖出了"+ .@color$ +"寶石 -";
+			close;
+		}
+	}
+	else {
+		mes "- 小土堆 -";
+		mes "- 你之前在這裡挖出了"+ .@color$ +"寶石 -";
+		close;
+	}
+	end;
+}
+
+spl_fild02,27,218,0	script	半埋的寶石#1	844,{
+	callfunc "jewel_13_2","Red",1;
+
+OnInit:
+	hideoffnpc "半埋的寶石#1";
+	end;
+
+OnEnable:
+	hideoffnpc "半埋的寶石#1";
+	stopnpctimer;
+	end;
+
+OnDisable:
+	initnpctimer;
+	monster "spl_fild02",25,220,"盜蟲",1051,10,"半埋的寶石#1::OnMyMobDead";
+	hideonnpc "半埋的寶石#1";
+	end;
+
+OnMyMobDead:
+	if (mobcount("spl_fild02","半埋的寶石#1::OnMyMobDead") < 1) {
+		donpcevent "半埋的寶石#1::OnEnable";
+		stopnpctimer;
+	}
+	end;
+
+OnTimer300000:
+	killmonster "spl_fild02","半埋的寶石#1::OnMyMobDead";
+	donpcevent "半埋的寶石#1::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+man_fild03,227,109,0	script	半埋的寶石#2	844,{
+	callfunc "jewel_13_2","Blue",2;
+
+OnInit:
+	hideoffnpc "半埋的寶石#2";
+	end;
+
+OnEnable:
+	hideoffnpc "半埋的寶石#2";
+	stopnpctimer;
+	end;
+
+OnDisable:
+	initnpctimer;
+	monster "man_fild03",227,109,"盜蟲",1051,10,"半埋的寶石#2::OnMyMobDead";
+	hideonnpc "半埋的寶石#2";
+	end;
+
+OnMyMobDead:
+	if (mobcount("man_fild03","半埋的寶石#2::OnMyMobDead") < 1) {
+		donpcevent "半埋的寶石#2::OnEnable";
+		stopnpctimer;
+	}
+	end;
+
+OnTimer300000:
+	killmonster "man_fild03","半埋的寶石#2::OnMyMobDead";
+	donpcevent "半埋的寶石#2::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+mid_camp,7,3,0	script	翻譯機準備#1	708,{
+	callfunc "F_GM_NPC";
+	mes "[EP13 翻譯機任務準備]";
+	mes "首先，你必須確認你是我的主人。";
+	next;
+	set .@i, callfunc("F_GM_NPC",1854,0);
+	if (.@i == -1) {
+		mes "[EP 13 翻譯機任務準備]";
+		mes "已取消";
+		close;
+	} else if (.@i == 0) {
+		mes "[EP 13 翻譯機任務準備]";
+		mes "請再試一次。";
+		close;
+	} else {
+		mes "[EP 13 翻譯機任務準備]";
+		mes "我是發放 Episode 13.2 翻譯機任務的關聯任務道具的 NPC。";
+		next;
+		mes "你想做什麼？";
+		next;
+		switch(select("領取 EP13.1 任務:領取任務視窗 - 與妖精和巨人的相遇")) {
+		case 1:
+			mes "[EP 13 翻譯機任務準備]";
+			mes "Episode 13.1 - 已領取報告任務獎勵道具。";
+			next;
+			mes "[EP 13 翻譯機任務準備]";
+			mes "目前報告任務的設定道具是 "+ep13_1_edq+"。";
+			mes "你要繼續嗎？";
+			next;
+			if(select("否:是") == 1) {
+				mes "[EP 13 翻譯機任務準備]";
+				mes "已取消";
+				close;
+			}
+			mes "[EP 13 翻譯機任務準備]";
+			mes "Episode 13.1 - 已領取報告任務獎勵道具。";
+			set ep13_1_edq,14;
+			close;
+		case 2:
+			mes "[EP 13 翻譯機任務準備]";
+			mes "Episode 13.1 - 正在領取任務視窗 - 與妖精和巨人的相遇。";
+			next;
+			mes "[EP 13 翻譯機任務準備]";
+			mes "你要繼續嗎？";
+			next;
+			if(select("否:是") == 1) {
+				mes "[EP 13 翻譯機任務準備]";
+				mes "已取消";
+				close;
+			}
+			mes "[EP 13 翻譯機任務準備]";
+			mes "Episode 13.1 - 已領取報告任務獎勵道具。";
+			setquest 2158;
+			setquest 2159;
+			close;
+		}
+	}
+}
+
+// Daily Quests :: ep13_2_tre
+// - Midgard Ore
+// - Alfheim Perfume
+//============================================================ 
+man_in01,372,221,5	script	科學家#lifeguard	449,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		mes "[萊福加德博士]";
+		if (ep13_2_tre == 0) {
+			mes "最近，我的皮膚好像變得很乾燥。";
+			next;
+			mes "[萊福加德博士]";
+			mes "我不知道是因為天氣冷，還是我們的慢性病惡化了。";
+			mes "距離我們使用鈽鐳還沒過多久，怎麼會這樣。";
+			next;
+			mes "[萊福加德博士]";
+			mes "唉……你看，我們就是害怕這種事……生活真艱難。";
+			next;
+			select("慢性病？:鈽鐳？");
+			mes "[萊福加德博士]";
+			mes "我們薩法族是赫瓦格密爾的後裔，在伊美爾之血的洪水中倖存下來，並重建了巨人部落。";
+			next;
+			mes "[萊福加德博士]";
+			mes "不知為何，我們得了一種慢性病，會讓我們的身體隨著時間變得像老樹一樣乾燥僵硬。";
+			next;
+			mes "[萊福加德博士]";
+			mes "我想這難道是被眾神放血的伊美爾的詛咒嗎？";
+			next;
+			mes "[萊福加德博士]";
+			mes "但我們不能只是坐以待斃，眼睜睜看著死亡慢慢向我們逼近，讓整個種族滅絕。";
+			next;
+			mes "[萊福加德博士]";
+			mes "為了治癒這種罕見的疾病，最聰明的薩法族人不斷地研究。";
+			next;
+			mes "[萊福加德博士]";
+			mes "他們發現，藉由注射埋藏在約頓海姆周圍的精煉鈽鐳，可以延緩疾病的惡化。";
+			next;
+			mes "[萊福加德博士]";
+			mes "因此，所有薩法族巨人都在礦坑周圍建立城鎮，以便更容易取得鈽鐳。";
+			next;
+			mes "[萊福加德博士]";
+			mes "看起來埋藏的鈽鐳數量是夠的。";
+			mes "但為了我們部落的永遠繁榮，也為了製造治療這種不治之症的疫苗，我們必須不斷地研究。";
+			next;
+			mes "[萊福加德博士]";
+			mes "鈽鐳是我們生命的根本。";
+			mes "但埋藏的鈽鐳總有一天會耗盡，所以我們科學家必須為後代尋找替代品。";
+			next;
+			mes "[萊福加德博士]";
+			mes "最近，我們了解到人類世界米德加爾特有各種礦物。";
+			next;
+			mes "[萊福加德博士]";
+			mes "現在被稱為米德加爾特的世界";
+			mes "對我們來說就像個聖地，";
+			mes "它可以為我們帶來";
+			mes "革命之風。";
+			next;
+			mes "[萊福加德博士]";
+			mes "與米德加爾特的接觸";
+			mes "一定也是赫瓦格密爾的指引";
+			mes "對我們這個封閉的";
+			mes "薩法族社會來說。";
+			next;
+			mes "[萊福加德博士]";
+			mes "我一定會得出一個可以";
+			mes "回報他指引的結果！";
+			set ep13_2_tre,1;
+			close;
+		}
+		else if ((ep13_2_tre == 1) || (ep13_2_tre == 100)) {
+			if (checkweight(1201,1) == 0) {
+				mes "你看起來帶了太多東西。";
+				mes "何不把一些物品放進倉庫後再來？";
+				close;
+			}
+			set .@dayq_chk,checkquest(2182,PLAYTIME);
+			if ((.@dayq_chk == 0) || (.@dayq_chk == 1)) {
+				mes "薩法族的未來就靠你了。";
+				mes "我現在不需要你的幫忙。";
+				close;
+			}
+			else {
+				erasequest 2182;
+				switch(rand(1,3)) {
+					case 1: setarray .@rand_dayq$[0],"妙勒尼山脈","10","2"; break;
+					case 2: setarray .@rand_dayq$[0],"深淵之湖","5","3"; break;
+					case 3: setarray .@rand_dayq$[0],"托爾火山","5","4"; break;
+				}
+				mes "最近，一位來自秀發茲發德的人看到我們對鈽鐳的研究後，送了我一小塊他家鄉的礦物作為禮物。";
+				next;
+				mes "[萊福加德博士]";
+				mes "我現在還不能肯定地說，";
+				mes "但這塊礦物似乎有";
+				mes "許多有趣的特性。";
+				next;
+				mes "[萊福加德博士]";
+				mes "當我越是研究這塊礦物";
+				mes "就越發現它與約頓海姆的礦物不同。";
+				mes "這礦物一定對";
+				mes "製作新疫苗很有幫助！";
+				next;
+				mes "[萊福加德博士]";
+				mes "但是這礦物的數量";
+				mes "實在太少了，無法";
+				mes "進行接下來的";
+				mes "檢查。";
+				next;
+				mes "[萊福加德博士]";
+				mes "你說過你來自米德加爾特，對吧？你覺得你能幫我多帶一點那種礦物來嗎……";
+				next;
+				mes "[萊福加德博士]";
+				mes "他說這礦物來自";
+				mes "^FF0000"+.@rand_dayq$[0]+"^000000。";
+				mes "我想 ^FF0000"+.@rand_dayq$[1]+"^000000 個應該就夠了。";
+				next;
+				mes "[萊福加德博士]";
+				mes "我會給你這個攜帶用工具箱。";
+				mes "用來探測和開採礦物的小錘子等物品都包含在這個工具箱裡。";
+				next;
+				mes "[萊福加德博士]";
+				mes "拿著吧，它應該會對";
+				mes "收集我需要的礦物";
+				mes "很有幫助。";
+				set ep13_2_tre,atoi(.@rand_dayq$[2]);
+				setquest 2179+(atoi(.@rand_dayq$[2])-2);
+				getitem 6076,1; //Portable_Toolbox
+				close;
+			}
+		}
+		else if (ep13_2_tre == 2 || ep13_2_tre == 3 || ep13_2_tre == 4) {
+			if ((ep13_2_tre == 2 && countitem(6077) > 9) || (ep13_2_tre != 2 && countitem(6077) > 4)) {
+				mes "喔！對，就是這個！";
+				mes "這麼多應該足夠了！";
+				next;
+				mes "[萊福加德博士]";
+				mes "我真的很感謝你的幫忙。";
+				next;
+				mes "[萊福加德博士]";
+				mes "這些是瑪努克的硬幣。";
+				mes "這可能不多，但如果你收集更多，可以用來向我們的商人購買一些物品。";
+				next;
+				mes "[萊福加德博士]";
+				mes "如果你願意為了薩法族來幫助我的研究，隨時都可以來找我。";
+				mes "我會非常高興能得到你的任何幫助。";
+				set .@stone_chk,countitem(6077);
+				set .@stoneelse_chk,countitem(6078);
+				delitem 6077,.@stone_chk; //Rough_Mineral
+				delitem 6078,.@stoneelse_chk;
+				//Stone_Fragments
+				delitem 6076,1; //Portable_Toolbox
+				getitem 6080,3; //Manuk_Coin
+				//getexp 0,(checkre(3))?70000:700000; //iRO only
+				changequest 2179+(ep13_2_tre-2),2182;
+				set ep13_2_tre,100;
+				close;
+			}
+			else {
+				mes "薩法族的未來就靠你了。";
+				mes "祝你好運。";
+				close;
+			}
+		}
+		else {
+			mes "嗯……";
+			close;
+		}
+	}
+	else {
+		mes "[科學家]";
+		mes "Pdh doud pjfdd";
+		mes "fo pdi Wrdpp doff";
+		mes "WosNuffremu Ha TurAshTi";
+		mes "SeGothShar An AshDur";
+		mes "UorVeLars No Ador";
+		close;
+	}
+}
+
+function	script	find_13_2	{
+	switch (getarg(0)) {
+		case 0: setarray .@Check[0],2,10; set .@str$,"妙勒尼山脈"; break;
+		case 1: setarray .@Check[0],3,5; set .@str$,"深淵之湖"; break;
+		case 2: setarray .@Check[0],4,5; set .@str$,"托爾火山"; break;
+	}
+	if (ep13_2_tre != .@Check[0] || countitem(6076) != 1 || countitem(6077) >= .@Check[1]) end;
+	mes "- 剛抵達"+.@str$+"。我想我可以使用攜帶用工具箱裡的礦石探測器來尋找礦石。 -";
+	next;
+	switch(select("檢查目前位置。:什麼都不做。")) {
+		case 1:
+			mes "- 你按下了探測器的按鈕。 -";
+			next;
+			mes "[礦石探測器]";
+			mes "嗶 嗶 -";
+			if (getarg(1)) return;
+			next;
+			mes "- 什麼都沒發現。 -";
+			close;
+		case 2:
+			mes "- 你決定什麼都不做。 -";
+			close;
+	}
+}
+
+-	script	mjo_no_find	-1,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,0;
+	end;
+}
+
+mjolnir_03,76,258,0	duplicate(mjo_no_find)	#mj03_find_1	-1,5,5
+mjolnir_03,227,204,0	duplicate(mjo_no_find)	#mj03_find_2	-1,5,5
+mjolnir_05,82,171,0	duplicate(mjo_no_find)	#mj05_find_1	-1,5,5
+mjolnir_05,219,375,0	duplicate(mjo_no_find)	#mj05_find_2	-1,5,5
+mjolnir_06,28,332,0	duplicate(mjo_no_find)	#mj06_find_1	-1,5,5
+mjolnir_06,275,50,0	duplicate(mjo_no_find)	#mj06_find_2	-1,5,5
+mjolnir_06,371,78,0	duplicate(mjo_no_find)	#mj06_find_3	-1,5,5
+mjolnir_07,26,373,0	duplicate(mjo_no_find)	#mj07_find_1	-1,5,5
+mjolnir_07,214,373,0	duplicate(mjo_no_find)	#mj07_find_2	-1,5,5
+mjolnir_07,372,355,0	duplicate(mjo_no_find)	#mj07_find_3	-1,5,5
+mjolnir_07,375,233,0	duplicate(mjo_no_find)	#mj07_find_4	-1,5,5
+mjolnir_07,26,78,0	duplicate(mjo_no_find)	#mj07_find_5	-1,5,5
+mjolnir_07,157,25,0	duplicate(mjo_no_find)	#mj07_find_6	-1,5,5
+mjolnir_08,39,239,0	duplicate(mjo_no_find)	#mj08_find_1	-1,5,5
+mjolnir_08,36,344,0	duplicate(mjo_no_find)	#mj08_find_2	-1,5,5
+mjolnir_08,160,349,0	duplicate(mjo_no_find)	#mj08_find_3	-1,5,5
+mjolnir_08,359,258,0	duplicate(mjo_no_find)	#mj08_find_4	-1,5,5
+mjolnir_08,193,62,0	duplicate(mjo_no_find)	#mj08_find_5	-1,5,5
+mjolnir_11,29,220,0	duplicate(mjo_no_find)	#mj11_find_1	-1,5,5
+mjolnir_11,175,29,0	duplicate(mjo_no_find)	#mj11_find_2	-1,5,5
+mjolnir_12,199,370,0	duplicate(mjo_no_find)	#mj12_find_1	-1,5,5
+mjolnir_12,44,25,0	duplicate(mjo_no_find)	#mj12_find_2	-1,5,5
+mjolnir_12,220,37,0	duplicate(mjo_no_find)	#mj12_find_3	-1,5,5
+
+-	script	mjo_find	-1,{
+	if ((ep13_2_tre == 2) && (countitem(6076) == 1)) {
+		if (countitem(6077) < 10) {
+			mes "- 我可以看到探測器指向的地方有一些不同顏色的礦石。這一定就是萊福加德博士告訴我的礦石。 -";
+			next;
+			switch(select("開採礦石。:什麼都不做。")) {
+			case 1:
+				mes "鏘！鏘！鏘！鏘！";
+				close2;
+				progressbar "ffff00",4;
+				if (rand(1,6) < 4) {
+					mes "- 你開採礦石失敗了。-";
+					getitem 6078,1; //Stone_Fragments
+					close;
+				}
+				else {
+					mes "- 你成功開採了礦石。-";
+					emotion ET_AHA, playerattached();
+					set .@stst,rand(1,5);
+					if (.@stst == 5) getitem 6077,5; //Rough_Mineral
+					else if (.@stst == 1) getitem 6077,1; //Rough_Mineral
+					else getitem 6077,2; //Rough_Mineral
+					close2;
+					donpcevent strnpcinfo(0)+"_t::OnEnable";
+					disablenpc();
+					end;
+				}
+			case 2:
+				mes "- 你決定什麼都不做。-";
+				close;
+			}
+		}
+		else {
+			mes "- 我想我已經有足夠的礦石了。 -";
+			close;
+		}
+	}
+	end;
+
+OnInit:
+	enablenpc();
+	end;
+
+OnTouch_:
+	if (ep13_2_tre == 2 && countitem(6076) == 1 && countitem(6077) < 10)
+		specialeffect EF_COUPLECASTING;
+	end;
+}
+
+mjolnir_01,32,309,3	duplicate(mjo_find)	#mj01_01	111,7,7
+mjolnir_01,217,34,3	duplicate(mjo_find)	#mj01_02	111,7,7
+mjolnir_02,90,195,3	duplicate(mjo_find)	#mj02_01	111,5,10
+mjolnir_02,206,187,3	duplicate(mjo_find)	#mj02_02	111,7,7
+mjolnir_04,125,380,3	duplicate(mjo_find)	#mj04_01	111,7,7
+mjolnir_04,220,130,3	duplicate(mjo_find)	#mj04_02	111,7,7
+mjolnir_09,229,214,3	duplicate(mjo_find)	#mj09_01	111,10,10
+mjolnir_10,188,260,3	duplicate(mjo_find)	#mj10_01	111,10,10
+
+mjolnir_01,364,256,0	script	#mj01_find	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,32,309,1,0x00FF00;
+	viewpoint 1,217,34,2,0x00FF00;
+	close;
+}
+
+mjolnir_01,1,1,3	script	#mj01_01_t	111,{
+	end;
+
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#mj01_01";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_01,1,1,3	script	#mj01_02_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#mj01_02";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_02,313,289,0	script	#mj02_find_1	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,90,195,1,0x00FF00;
+	viewpoint 1,206,187,2,0x00FF00;
+	close;
+}
+
+mjolnir_02,78,258,0	script	#mj02_find_2	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,90,195,1,0x00FF00;
+	viewpoint 1,206,187,2,0x00FF00;
+	close;
+}
+
+
+mjolnir_02,1,1,3	script	#mj02_01_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#mj02_01";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_02,1,1,3	script	#mj02_02_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#mj02_02";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_04,147,208,0	script	#mj04_find_1	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,125,380,1,0x00FF00;
+	viewpoint 1,220,130,2,0x00FF00;
+	close;
+}
+
+mjolnir_04,160,77,0	script	#mj04_find_2	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,125,380,1,0x00FF00;
+	viewpoint 1,220,130,2,0x00FF00;
+	close;
+}
+
+mjolnir_04,361,174,0	script	#mj04_find_3	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,125,380,1,0x00FF00;
+	viewpoint 1,220,130,2,0x00FF00;
+	close;
+}
+
+mjolnir_04,1,1,3	script	#mj04_01_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+OnTimer60000:
+	enablenpc "#mj04_01";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_04,1,1,3	script	#mj04_02_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#mj04_02";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_09,201,355,0	script	#mj09_find_1	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,229,214,1,0x00FF00;
+	close;
+}
+
+mjolnir_09,38,243,0	script	#mj09_find_2	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,229,214,1,0x00FF00;
+	close;
+}
+
+mjolnir_09,106,36,0	script	#mj09_find_3	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,229,214,1,0x00FF00;
+	close;
+}
+
+mjolnir_09,306,36,0	script	#mj09_find_4	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,229,214,1,0x00FF00;
+	close;
+}
+
+mjolnir_09,369,279,0	script	#mj09_find_5	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,229,214,1,0x00FF00;
+	close;
+}
+
+mjolnir_09,1,1,3	script	#mj09_01_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#mj09_01";
+	stopnpctimer;
+	end;
+}
+
+mjolnir_10,201,355,0	script	#mj10_find_1	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,188,260,1,0x00FF00;
+	close;
+}
+
+mjolnir_10,374,215,0	script	#mj10_find_2	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,188,260,1,0x00FF00;
+	close;
+}
+
+mjolnir_10,272,20,0	script	#mj10_find_3	-1,5,5,{
+	end;
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,188,260,1,0x00FF00;
+	close;
+}
+
+mjolnir_10,75,22,0	script	#mj10_find_4	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,188,260,1,0x00FF00;
+	close;
+}
+
+mjolnir_10,27,258,0	script	#mj10_find_5	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",0,1;
+	viewpoint 1,229,214,1,0x00FF00;
+	close;
+}
+
+mjolnir_10,1,1,3	script	#mj10_01_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+OnTimer60000:
+	enablenpc "#mj10_01";
+	stopnpctimer;
+	end;
+}
+
+hu_fild05,335,152,0	script	#hu_find_1	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",1,1;
+	viewpoint 1,251,345,1,0x00FF00;
+	viewpoint 1,134,322,2,0x00FF00;
+	viewpoint 1,72,104,3,0x00FF00;
+	viewpoint 1,65,99,4,0x00FF00;
+	viewpoint 1,323,84,5,0x00FF00;
+	close;
+}
+
+hu_fild05,89,52,0	script	#hu_find_2	-1,5,5,{
+	end;
+OnTouch_:
+	callfunc "find_13_2",1,1;
+	viewpoint 1,251,345,1,0x00FF00;
+	viewpoint 1,134,322,2,0x00FF00;
+	viewpoint 1,72,104,3,0x00FF00;
+	viewpoint 1,65,99,4,0x00FF00;
+	viewpoint 1,323,84,5,0x00FF00;
+	close;
+}
+
+hu_fild05,42,205,0	script	#hu_find_3	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",1,1;
+	viewpoint 1,251,345,1,0x00FF00;
+	viewpoint 1,134,322,2,0x00FF00;
+	viewpoint 1,72,104,3,0x00FF00;
+	viewpoint 1,65,99,4,0x00FF00;
+	viewpoint 1,323,84,5,0x00FF00;
+	close;
+}
+
+hu_fild05,276,349,0	script	#hu_find_4	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",1,1;
+	viewpoint 1,251,345,1,0x00FF00;
+	viewpoint 1,134,322,2,0x00FF00;
+	viewpoint 1,72,104,3,0x00FF00;
+	viewpoint 1,65,99,4,0x00FF00;
+	viewpoint 1,323,84,5,0x00FF00;
+	close;
+}
+
+-	script	hu_find	-1,{
+	if ((ep13_2_tre == 3) && (countitem(6076) == 1)) {
+		if (countitem(6077) < 5) {
+			mes "- 我可以看到探測器指向的地方有一些不同顏色的礦石。這一定就是萊福加德博士告訴我的礦石。 -";
+			next;
+			switch(select("開採礦石。:什麼都不做。")) {
+			case 1:
+				mes "鏘！鏘！鏘！鏘！";
+				close2;
+				progressbar "ffff00",4;
+				if (rand(1,6) < 4) {
+					mes "- 你開採礦石失敗了。 -";
+					getitem 6078,1; //Stone_Fragments
+					close;
+				}
+				else {
+					mes "- 你成功開採了礦石。 -";
+					emotion ET_AHA, playerattached();
+					set .@stst,rand(1,5);
+					if (.@stst == 5) getitem 6077,5; //Rough_Mineral
+					else if (.@stst == 1) getitem 6077,2; //Rough_Mineral
+					else getitem 6077,1; //Rough_Mineral
+					donpcevent strnpcinfo(0)+"_t::OnEnable";
+					disablenpc();
+					close;
+				}
+			case 2:
+				mes "- 你決定什麼都不做。 -";
+				close;
+			}
+		}
+		else {
+			mes "- 我想我已經有足夠的礦石了。 -";
+			close;
+		}
+	}
+	end;
+
+OnInit:
+	enablenpc();
+	end;
+
+OnTouch_:
+	if (ep13_2_tre == 3 && countitem(6076) == 1 && countitem(6077) < 5)
+		specialeffect EF_COUPLECASTING;
+	end;
+}
+
+hu_fild05,251,345,3	duplicate(hu_find)	#hu_01	111,10,10
+hu_fild05,134,322,3	duplicate(hu_find)	#hu_02	111,10,10
+hu_fild05,72,104,3	duplicate(hu_find)	#hu_03	111,10,10
+hu_fild05,65,99,3	duplicate(hu_find)	#hu_04	111,10,10
+hu_fild05,323,84,3	duplicate(hu_find)	#hu_05	111,10,10
+
+hu_fild05,1,1,3	script	#hu_01_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+OnTimer60000:
+	enablenpc "#hu_01";
+	stopnpctimer;
+	end;
+}
+
+hu_fild05,1,1,3	script	#hu_02_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#hu_02";
+	stopnpctimer;
+	end;
+}
+
+hu_fild05,1,1,3	script	#hu_03_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#hu_03";
+	stopnpctimer;
+	end;
+}
+
+hu_fild05,1,1,3	script	#hu_04_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#hu_04";
+	stopnpctimer;
+	end;
+}
+
+hu_fild05,1,1,3	script	#hu_05_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "#hu_05";
+	stopnpctimer;
+	end;
+}
+
+ve_fild03,351,219,0	script	#ve_find_1	-1,3,3,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",2,1;
+	viewpoint 1,152,134,1,0x00FF00;
+	viewpoint 1,256,228,2,0x00FF00;
+	viewpoint 1,85,189,3,0x00FF00;
+	viewpoint 1,282,268,4,0x00FF00;
+	close;
+}
+
+ve_fild03,223,51,0	script	#ve_find_2	-1,5,5,{
+	end;
+
+OnTouch_:
+	callfunc "find_13_2",2,1;
+	viewpoint 1,152,134,1,0x00FF00;
+	viewpoint 1,256,228,2,0x00FF00;
+	viewpoint 1,85,189,3,0x00FF00;
+	viewpoint 1,282,268,4,0x00FF00;
+	close;
+}
+
+-	script	ve_find	-1,{
+	if ((ep13_2_tre == 4) && (countitem(6076) == 1)) {
+		if (countitem(6077) < 5) {
+			mes "- 我可以看到探測器指向的地方有一些不同顏色的礦石。這一定就是萊福加德博士告訴我的礦石。 -";
+			next;
+			switch(select("開採礦石。:什麼都不做。")) {
+			case 1:
+				mes "鏘！鏘！鏘！鏘！";
+				close2;
+				progressbar "ffff00",4;
+				if (rand(1,6) < 4) {
+					mes "- 你開採礦石失敗了。 -";
+					getitem 6078,1; //Stone_Fragments
+					close;
+				}
+				else {
+					mes "- 你成功開採了礦石。 -";
+					emotion ET_AHA, playerattached();
+					set .@stst,rand(1,5);
+					if (.@stst == 5) getitem 6077,5; //Rough_Mineral
+					else if (.@stst == 1) getitem 6077,2; //Rough_Mineral
+					else getitem 6077,1; //Rough_Mineral
+					donpcevent strnpcinfo(0)+"_t::OnEnable";
+					disablenpc();
+					close;
+				}
+			case 2:
+				mes "- 你決定什麼都不做。 -";
+				close;
+			}
+		}
+		else {
+			mes "- 我想我已經有足夠的礦石了。 -";
+			close;
+		}
+	}
+	end;
+
+OnInit:
+	enablenpc();
+	end;
+
+OnTouch_:
+	if (ep13_2_tre == 4 && countitem(6076) == 1 && countitem(6077) < 5)
+		specialeffect EF_COUPLECASTING;
+	end;
+}
+
+ve_fild03,152,134,3	duplicate(ve_find)	#ve_01	111,10,10
+ve_fild03,256,228,3	duplicate(ve_find)	#ve_02	111,10,10
+ve_fild03,85,189,3	duplicate(ve_find)	#ve_03	111,10,10
+ve_fild03,282,268,3	duplicate(ve_find)	#ve_04	111,10,10
+
+ve_fild03,1,1,3	script	#ve_01_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+OnTimer40000:
+	enablenpc "#ve_01";
+	stopnpctimer;
+	end;
+}
+
+ve_fild03,1,1,3	script	#ve_02_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer40000:
+	enablenpc "#ve_02";
+	stopnpctimer;
+	end;
+}
+
+ve_fild03,1,1,3	script	#ve_03_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer40000:
+	enablenpc "#ve_03";
+	stopnpctimer;
+	end;
+}
+
+ve_fild03,1,1,3	script	#ve_04_t	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer40000:
+	enablenpc "#ve_04";
+	stopnpctimer;
+	end;
+}
+
+spl_in01,30,324,3	script	高級拉菲尼族#grenouille	446,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (checkweight(1201,1) == 0) {
+			mes "[格雷努耶]";
+			mes "看來你帶了太多東西。";
+			mes "何不把一些物品放進倉庫後再來？";
+			close;
+		}
+		set .@dayq_chk,checkquest(2186,PLAYTIME);
+		if ((.@dayq_chk == -1) || (.@dayq_chk == 2)) {
+			if ((ep13_2_tre1 < 1) || (ep13_2_tre1 == 6)) {
+				if (.@dayq_chk == 2)
+					erasequest 2186;
+				set ep13_2_tre1,0;
+				mes "[格雷努耶]";
+				mes "我聽說有來自米德加爾特的陌生人在這附近，一定就是你了。";
+				mes "我是格雷努耶，一名科學家。";
+				next;
+				mes "[格雷努耶]";
+				mes "拉菲尼族在這裡建立史波浪壯麗營地";
+				mes "並相互對峙";
+				mes "已經有很長一段時間了。";
+				next;
+				mes "[格雷努耶]";
+				mes "許多離開家鄉亞爾夫海姆的";
+				mes "士兵們，";
+				mes "為了神聖的職責和信仰，";
+				mes "正與約頓海姆的嚴寒抗爭，";
+				mes "以阻止使天地樹";
+				mes "生病的邪惡企圖。";
+				next;
+				mes "[格雷努耶]";
+				mes "他們是訓練有素的士兵，";
+				mes "他們的隊長對他們評價很高，";
+				mes "所以他們在那裡";
+				mes "過著舒適的生活。";
+				next;
+				mes "[格雷努耶]";
+				mes "但俗話說，";
+				mes "滴水穿石。";
+				next;
+				mes "[格雷努耶]";
+				mes "沒有重大進展的持續小型戰鬥";
+				mes "讓史波浪壯麗的士兵們筋疲力盡。";
+				next;
+				mes "[格雷努耶]";
+				mes "有一天，有人開始唱起";
+				mes "亞爾夫海姆的歌，並迅速傳開……";
+				mes "現在他們非常";
+				mes "思念他們的家鄉。";
+				next;
+				mes "[格雷努耶]";
+				mes "我非常擔心他們，";
+				mes "我終於找到了一個方法";
+				mes "將他們從深深的悲傷中拯救出來。";
+				mes "我希望你能幫助我完成這件事。";
+				next;
+				mes "[格雷努耶]";
+				mes "在史波浪壯麗有一位";
+				mes "名叫芙蘿萊的";
+				mes "拉菲尼族將軍。";
+				next;
+				mes "[格雷努耶]";
+				mes "她是個收集狂，";
+				mes "所以她的房子總是";
+				mes "堆滿了各種雜物，亂七八糟。";
+				mes "芙蘿萊一定有";
+				mes "亞爾夫海姆花朵的種子。";
+				next;
+				mes "[格雷努耶]";
+				mes "我會用那顆種子讓亞爾夫海姆的";
+				mes "花朵綻放。";
+				mes "那是他們家鄉的花。";
+				next;
+				mes "[格雷努耶]";
+				mes "有一些設備可以淨化";
+				mes "環境，並具有";
+				mes "加速植物生長的功能。";
+				next;
+				mes "[格雷努耶]";
+				mes "請把藉由該設備綻放的亞爾夫海姆花朵帶給我。";
+				next;
+				mes "[格雷努耶]";
+				mes "亞爾夫海姆的花朵";
+				mes "不夠強壯，無法依靠史波浪壯麗的設備";
+				mes "來維持生命，";
+				mes "但^FF0000某種方法^000000可以讓史波浪壯麗";
+				mes "充滿它的香氣，彷彿它永不凋謝！";
+				set ep13_2_tre1,1;
+				setquest 2183;
+				close;
+			}
+			else if ((ep13_2_tre1 == 1) || (ep13_2_tre1 == 2)) {
+				mes "[格雷努耶]";
+				mes "從芙蘿萊那裡拿到種子，";
+				mes "然後使用淨化器";
+				mes "讓種子開花。";
+				close;
+			}
+			else if (ep13_2_tre1 == 3) {
+				if (countitem(6079) == 1) {
+					emotion ET_SWEAT;
+					emotion ET_SWEAT, playerattached();
+					mes "[格雷努耶]";
+					mes "呼，這是一種";
+					mes "最常見的花。";
+					next;
+					emotion ET_SMILE;
+					mes "[格雷努耶]";
+					mes "哈哈，別擔心。";
+					mes "像這樣常見的花朵能為士兵們帶來家鄉的親切感。";
+					next;
+					mes "[格雷努耶]";
+					mes "現在，我要用蒸餾器提取一種";
+					mes "含有這種花香的液體。";
+					mes "製作成^3131FF香水^000000。";
+					next;
+					mes "[格雷努耶]";
+					mes "可以請你稍等一下嗎？";
+					changequest 2183,2184;
+					set ep13_2_tre1,4;
+					delitem 6079,1; //Flower_Of_Alfheim
+					close;
+				}
+				else {
+					mes "[格雷努耶]";
+					mes "花在哪裡？";
+					close;
+				}
+			}
+			else if (ep13_2_tre1 == 4) {
+				set .@ttalk,rand(1,10);
+				if (.@ttalk < 8) {
+					mes "- 喀啦喀啦 -";
+					next;
+					mes "- 喀啦喀啦 -";
+					mes "- 喀啦喀啦 -";
+					next;
+					mes "- 喀啦喀啦 -";
+					mes "- 喀啦喀啦 -";
+					mes "- 噴灑的聲音 -";
+					next;
+					mes "[格雷努耶]";
+					mes "還沒好。";
+					mes "請等一下。";
+					close;
+				}
+				else {
+					mes "- 喀啦喀啦 -";
+					next;
+					mes "- 喀啦喀啦 -";
+					mes "- 喀啦喀啦 -";
+					next;
+					mes "- 喀啦喀啦 -";
+					mes "- 喀啦喀啦 -";
+					mes "- 噴灑的聲音 -";
+					next;
+					mes "[格雷努耶]";
+					mes "哇，完成了！";
+					next;
+					mes "[格雷努耶]";
+					mes "我想我會把這香水叫做";
+					mes "^3131FF亞爾夫海姆之魂^000000！";
+					next;
+					mes "[格雷努耶]";
+					mes "這香水可以利用他們家鄉亞爾夫海姆的香氣";
+					mes "來舒緩他們的心情。";
+					mes "雖然這不是永久的解決方案，但我相信這能讓他們暫時感到舒適。";
+					next;
+					mes "[格雷努耶]";
+					mes "來，我把這香水給你，";
+					mes "去幫助那些疲憊的士兵，";
+					mes "然後請告訴我結果！";
+					set ep13_2_tre1,5;
+					getitem 6082,5; //Spirit_Of_Alfheim
+					changequest 2184,2185;
+					close;
+				}
+			}
+			else if (ep13_2_tre1 == 5) {
+				if (countitem(6082) < 1) {
+					mes "[格雷努耶]";
+					mes "喔！士兵們的反應如何？";
+					next;
+					mes "["+ strcharinfo(0) +"]";
+					mes "是的，他們看起來很高興。";
+					mes "但是，它還是讓某個人哭了，可能是因為他太想念亞爾夫海姆了。";
+					next;
+					mes "[格雷努耶]";
+					mes "喔！那表示它有效！";
+					mes "謝謝你。";
+					next;
+					mes "[格雷努耶]";
+					mes "謝謝你的幫忙。";
+					mes "這是給你的報酬。";
+					mes "希望這對你有幫助。";
+					mes "如果你有什麼事想跟我說，隨時來找我。很高興認識你，來自米德加爾特的人類。";
+					set ep13_2_tre1,6;
+					changequest 2185,2186;
+					getitem 6081,3; //Splendide_Coin
+					//getexp 0,(checkre(3))?70000:700000; //iRO only
+					close;
+				}
+				else {
+					mes "[格雷努耶]";
+					mes "去為史波浪壯麗裡疲憊的士兵噴灑這香水吧！";
+					close;
+				}
+			}
+			else {
+				mes "[格雷努耶]";
+				mes "我希望這場漫長的戰鬥能盡快結束。";
+				close;
+			}
+		}
+		else {
+			mes "[格雷努耶]";
+			mes "我希望這場漫長的戰鬥能盡快結束。";
+			close;
+		}
+	}
+	else {
+		mes "[高級拉菲尼族]";
+		mes "BurYurDath Ee NeKoIyaz er ModRuAlah Yee VeldDuDur Yee SeYurOsa U ReNudNud Ra ";
+		next;
+		mes "[高級拉菲尼族]";
+		mes "DiebVrumDana er TingNothDim No RasVilHir Yu YurAdorShar Yu DanaVeldDur Ha VilModMe O SharThus";
+		close;
+	}
+}
+
+spl_in02,139,65,3	script	中級拉菲尼族#la	438,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (checkweight(1201,1) == 0) {
+			mes "[芙蘿萊]";
+			mes "看來你帶了太多東西。";
+			mes "何不把一些物品放進倉庫後再來？";
+			close;
+		}
+		if (ep13_2_tre1 == 1) {
+			mes "[芙蘿萊]";
+			mes "咦？亞爾夫海姆花朵的種子？";
+			mes "我有那東西嗎？嗯?";
+			next;
+			mes "[芙蘿萊]";
+			mes "如你所見，我的房間裡";
+			mes "有太多東西了，所以我也不太清楚";
+			mes "房間裡到底有什麼。";
+			next;
+			mes "[芙蘿萊]";
+			mes "但我會試著找找看，因為你是來";
+			mes "幫格雷努耶的。";
+			mes "他總是裝作很固執的樣子，";
+			mes "但有時候他也挺樂於助人的！呵呵！";
+			next;
+			mes "- 翻找中 -";
+			emotion ET_THINK;
+			next;
+			mes "- 翻找中 -";
+			mes "- 翻找中 -";
+			emotion ET_THINK;
+			next;
+			mes "- 翻找中 -";
+			mes "- 翻找中 -";
+			mes "- 翻找中 -";
+			emotion ET_AHA;
+			next;
+			mes "[芙蘿萊]";
+			mes "哇！過來這裡！";
+			mes "我找到一顆種子了！";
+			next;
+			mes "[芙蘿萊]";
+			mes "嗯……但這顆是";
+			mes "亞爾夫海姆最常見、最微不足道的";
+			mes "品種，你在任何地方";
+			mes "都能找到這種野花……";
+			mes "這個可以嗎？";
+			next;
+			mes "[芙蘿萊]";
+			mes "嗯……但我沒有";
+			mes "其他花的種子了……";
+			mes "所以，就拿這個吧，給你?";
+			set ep13_2_tre1,2;
+			getitem 7193,1; //Germinating_Sprout
+			close;
+		}
+		else if (ep13_2_tre1 == 2) {
+			mes "[芙蘿萊]";
+			mes "我已經把種子給你了，所以你要拿它做什麼就隨便你了。";
+			mes "看著我的房間我就覺得頭暈。";
+			close;
+		}
+		else {
+			mes "[芙蘿萊]";
+			mes "哈欠?";
+			mes "你能相信我們正前方就是戰場嗎？雖然現在非常安靜祥和。我也是?";
+			close;
+		}
+		
+	}
+	else {
+		mes "[中級拉菲尼族]";
+		mes "NeiKoFulo An DielOdesMush Or KoDanaOsa Ir FarBurnes Ir ";
+		mes "NeOsaVa Mu BurVeTi Ra OsaDeh";
+		close;
+	}
+}
+
+-	script	淨化器	-1,{
+	if (ep13_2_tre1 == 2) {
+		if (countitem(7193) > 0) {
+			mes "- 你按照格雷努耶說的，";
+			mes "將種子放進設備中";
+			mes "並注視著它。 -";
+			next;
+			mes "- 嗡嗡嗡 -";
+			specialeffect2 EF_HEALSP;
+			next;
+			mes "- 當光芒消失時，";
+			mes "一朵巨大的亞爾夫海姆花朵";
+			mes "取代了種子，躺在你的手中。 -";
+			delitem 7193,1; //Germinating_Sprout
+			set ep13_2_tre1,3;
+			getitem 6079,1; //Flower_Of_Alfheim
+			close;
+		}
+		else {
+			mes "["+ strcharinfo(0) +"]";
+			mes "種子在哪裡？";
+			close;
+		}
+	}
+	end;
+}
+
+splendide,160,265,3	duplicate(淨化器)	淨化器#1	844
+splendide,262,262,3	duplicate(淨化器)	淨化器#2	844
+splendide,262,187,3	duplicate(淨化器)	淨化器#3	844
+splendide,164,82,3	duplicate(淨化器)	淨化器#4	844
+splendide,171,116,3	duplicate(淨化器)	淨化器#5	844
+splendide,134,280,3	duplicate(淨化器)	淨化器#6	844
+
+splendide,205,139,5	script	疲憊的士兵#1	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "喔，我的家鄉……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "嗯……這是……";
+					mes "我能聞到亞爾夫海姆的香氣。";
+					mes "我的家鄉亞爾夫海姆！";
+					next;
+					mes "[疲憊的士兵]";
+					mes "啊！感覺好多了！";
+					emotion ET_SMILE;
+					delitem 6082,1; //Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_1::OnEnable";
+					disablenpc "疲憊的士兵#1";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "喔，我的家鄉……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#1";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_1	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#1";
+	stopnpctimer;
+	end;
+}
+
+splendide,181,135,5	script	疲憊的士兵#2	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "好想休息一下……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "發生什麼事了？";
+					mes "突然感覺好多了！我現在好開心！";
+					mes "去工作吧！";
+					emotion ET_SMILE;
+					delitem 6082,1;
+					//Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_2::OnEnable";
+					disablenpc "疲憊的士兵#2";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "好想休息一下……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#2";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_2	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#2";
+	stopnpctimer;
+	end;
+}
+
+splendide,139,178,5	script	疲憊的士兵#3	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "我的家鄉亞爾夫海姆……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "嗯……這是……";
+					mes "我能聞到亞爾夫海姆的香氣。";
+					mes "我的家鄉亞爾夫海姆！";
+					next;
+					mes "[疲憊的士兵]";
+					mes "讓我們打敗薩法族，然後回家吧！";
+					emotion ET_SMILE;
+					delitem 6082,1; //Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_3::OnEnable";
+					disablenpc "疲憊的士兵#3";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "我的家鄉亞爾夫海姆……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#3";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_3	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#3";
+	stopnpctimer;
+	end;
+}
+
+splendide,164,188,5	script	疲憊的士兵#4	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "呼……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "嗯……這是……";
+					mes "我能聞到亞爾夫海姆的香氣。";
+					mes "我的家鄉亞爾夫海姆！";
+					next;
+					mes "[疲憊的士兵]";
+					mes "啊！感覺就像在家一樣！！";
+					emotion ET_CRY;
+					delitem 6082,1; //Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_4::OnEnable";
+					disablenpc "疲憊的士兵#4";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "呼……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#4";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_4	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#4";
+	stopnpctimer;
+	end;
+}
+
+splendide,177,257,5	script	疲憊的士兵#5	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "喔，我的家鄉……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "嗯……這是……";
+					mes "我能聞到亞爾夫海姆的香氣。";
+					mes "我的家鄉亞爾夫海姆！";
+					next;
+					mes "[疲憊的士兵]";
+					mes "啊！感覺好多了！";
+					emotion ET_SMILE;
+					delitem 6082,1; //Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_5::OnEnable";
+					disablenpc "疲憊的士兵#5";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "喔，我的家鄉……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#5";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_5	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#5";
+	stopnpctimer;
+	end;
+}
+
+splendide,124,212,5	script	疲憊的士兵#6	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "呼……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "我能聞到亞爾夫海姆的香氣。";
+					mes "我的家鄉亞爾夫海姆！";
+					next;
+					mes "[疲憊的士兵]";
+					mes "沒錯，史波浪壯麗也是亞爾夫海姆的一部分！";
+					mes "拉菲尼族加油！";
+					emotion ET_SMILE;
+					delitem 6082,1; //Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_6::OnEnable";
+					disablenpc "疲憊的士兵#6";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "呼……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#6";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_6	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#6";
+	stopnpctimer;
+	end;
+}
+
+splendide,196,153,5	script	疲憊的士兵#7	447,{
+	if ((isequipped(2782) == 1) && (ep13_2_rhea == 100)) {
+		if (ep13_2_tre1 == 5) {
+			if (countitem(6082) > 0) {
+				mes "[疲憊的士兵]";
+				mes "喔，我的家鄉……";
+				next;
+				switch(select("使用香水。:不使用香水。")) {
+				case 1:
+					mes "(噴灑-)";
+					specialeffect EF_SANCTUARY;
+					next;
+					mes "[疲憊的士兵]";
+					mes "嗯……這是……";
+					mes "我能聞到亞爾夫海姆的香氣。";
+					mes "我的家鄉亞爾夫海姆！";
+					next;
+					mes "[疲憊的士兵]";
+					mes "啊！感覺好多了！";
+					emotion ET_SMILE;
+					delitem 6082,1; //Spirit_Of_Alfheim
+					close2;
+					donpcevent "#tukare_7::OnEnable";
+					disablenpc "疲憊的士兵#7";
+					end;
+				case 2:
+					mes "- 你決定什麼都不做。 -";
+					close;
+				}
+			}
+			end;
+		}
+		else {
+			mes "[疲憊的士兵]";
+			mes "喔，我的家鄉……";
+			close;
+		}
+	}
+	else {
+		mes "[疲憊的士兵]";
+		mes "CyaResehr";
+		close;
+	}
+
+OnInit:
+	enablenpc "疲憊的士兵#7";
+	end;
+}
+
+splendide,1,1,1	script	#tukare_7	111,{
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	enablenpc "疲憊的士兵#7";
+	stopnpctimer;
+	end;
+}
+
+// Secret note of Bazett :: ep13_2_dailybs
+//============================================================ 
+mid_camp,283,198,5	script	巴澤特 提布萊克#ep13bs	883,{
+	if (checkweight(1201,1) == 0) {
+		mes " - 等一下！！ -";
+		mes " - 你身上攜帶了太多不同的物品 - ";
+		mes " - 你無法領取獎勵 - ";
+		mes " - 請使用卡普拉服務人員 - ";
+		mes " - 並再試一次。 - ";
+		close;
+	}
+	if (ep13_2_rhea < 100) {
+		mes "[勤奮的男子]";
+		mes "呼??";
+		mes "這挺有趣的……";
+		mes "我會把它記在我的研究報告裡。";
+		emotion ET_AHA;
+		next;
+		mes "[勤奮的男子]";
+		mes "寫……寫……";
+		mes "沙沙……沙沙……";
+		next;
+		mes " - 他似乎沒注意到我站在他旁邊，繼續寫著東西。 -";
+		next;
+		mes "[勤奮的男子]";
+		mes "寫……寫……";
+		mes "沙沙……沙沙……";
+		mes "……";
+		close;
+	}
+	if (ep13_2_busut < 1) {
+		if (isequipped(2782) == 1) {
+			mes "[勤奮的男子]";
+			mes "呼??";
+			mes "這挺有趣的……";
+			mes "我會把它記在我的研究報告裡。";
+			emotion ET_AHA;
+			next;
+			mes "[勤奮的男子]";
+			mes "寫……寫……";
+			mes "沙沙……沙沙……";
+			next;
+			mes " - 他似乎沒注意到我站在他旁邊，繼續寫著東西。 -";
+			next;
+			mes "[勤奮的男子]";
+			mes "寫……寫……";
+			mes "沙沙……沙沙……";
+			mes "……";
+			next;
+			mes "[勤奮的男子]";
+			mes "哎喲！！！";
+			mes "你……你是誰？！";
+			mes "你站在那裡多久了？";
+			emotion ET_HUK;
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "呃，我只是路過。";
+			mes "你看起來好像在忙什麼。";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "再見?！！";
+			emotion ET_PROFUSELY_SWEAT, playerattached();
+			next;
+			mes "[勤奮的男子]";
+			mes "呃！！等等！！";
+			mes "你的手指……那是……？！";
+			next;
+			mes " - 他用驚訝的表情抓住你的手 -";
+			next;
+			mes "[勤奮的男子]";
+			mes "這是^0000FF智慧王戒指^000000！！！！！";
+			mes "能遇見你一定是命運的安排！";
+			next;
+			mes "[勤奮的男子]";
+			mes "我的研究進展得不太順利。一定是命運之神把你送到我身邊的。我確信！！";
+			emotion ET_BEST;
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "……";
+			mes "……什麼？！";
+			emotion ET_HUK, playerattached();
+			next;
+			mes "[勤奮的男子]";
+			mes "你願意幫我進行調查嗎？";
+			next;
+			switch(select("什麼樣的調查？:好啊。:無???聊。")) {
+			case 1:
+				mes "[勤奮的男子]";
+				mes "簡單來說，我正在尋找住在這附近的妖精和巨人。";
+				next;
+				mes "[勤奮的男子]";
+				mes "雖然我相信他們都住在同一個地方，但他們肯定有不同的文化。";
+				mes "……首要任務是證明他們的存在。";
+				next;
+				mes "[勤奮的男子]";
+				mes "你覺得怎麼樣？";
+				mes "你有興趣嗎？";
+				next;
+				switch(select("好啊。:沒什麼興趣。")) {
+				case 1:
+					mes "[勤奮的男子]";
+					mes "哈哈……我就知道我是對的！";
+					mes "哈哈哈哈！！";
+					next;
+					mes "[勤奮的男子]";
+					mes "那我們從現在開始合作吧。讓我自我介紹一下。";
+					mes "正如你從我的名牌上看到的，我的名字是^0000FF巴澤特 提布萊克^000000。";
+					next;
+					mes "["+strcharinfo(0)+"]";
+					mes "我是"+strcharinfo(0)+"。";
+					next;
+					select("好，那我能為你做什麼？");
+					mes "[巴澤特]";
+					mes ""+strcharinfo(0)+" 讓我想想……！！";
+					mes "每天在瑪努克和史波浪壯麗原野尋找妖精或巨人的蹤跡。";
+					next;
+					mes "[巴澤特]";
+					mes "這並不難。";
+					mes "所以請分享你在那些地區旅行時能收集到的任何資訊。";
+					next;
+					mes "[巴澤特]";
+					mes "希望我能用你找到的資訊找到我正在尋找的東西。";
+					set ep13_2_busut,2;
+					setquest 11101;
+					close;
+				case 2:
+					mes "[勤奮的男子]";
+					mes "……………";
+					mes "……………";
+					mes "……………";
+					mes "……………";
+					mes "………為什麼！！！！！";
+					emotion ET_CRY;
+					next;
+					mes "[勤奮的男子]";
+					mes "好吧，如果你改變主意了，再來找我。";
+					set ep13_2_busut,1;
+					close;
+				}
+				break;
+			case 2:
+				mes "[勤奮的男子]";
+				mes "哈哈……我就知道我是對的！";
+				mes "哈哈哈哈！！";
+				next;
+				mes "[勤奮的男子]";
+				mes "那我們從現在開始合作吧。讓我自我介紹一下。";
+				mes "正如你從我的名牌上看到的，我的名字是^0000FF巴澤特 提布萊克^000000。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "我是"+strcharinfo(0)+"。";
+				next;
+				select("好，那我能為你做什麼？");
+				mes "[巴澤特]";
+				mes ""+strcharinfo(0)+" 讓我想想……！！";
+				mes "每天在瑪努克和史波浪壯麗原野尋找妖精或巨人的蹤跡。";
+				next;
+				mes "[巴澤特]";
+				mes "這並不難。";
+				mes "所以請分享你在那些地區旅行時能收集到的任何資訊。";
+				next;
+				mes "[巴澤特]";
+				mes "希望我能用你找到的資訊找到我正在尋找的東西。";
+				set ep13_2_busut,2;
+				setquest 11101;
+				close;
+			case 3:
+				mes "[勤奮的男子]";
+				mes "……………";
+				next;
+				mes "[勤奮的男子]";
+				mes "……………";
+				mes "……………";
+				next;
+				mes "[勤奮的男子]";
+				mes "……………";
+				mes "……………";
+				mes "……………";
+				next;
+				mes "[勤奮的男子]";
+				mes "……………";
+				mes "……………";
+				mes "……………";
+				mes "……………";
+				next;
+				mes "[勤奮的男子]";
+				mes "……………";
+				mes "……………";
+				mes "……………";
+				mes "……………";
+				mes "………為什麼！！！！！";
+				emotion ET_CRY;
+				next;
+				mes "[勤奮的男子]";
+				mes "好吧，如果你改變主意了，再來找我。";
+				set ep13_2_busut,1;
+				close;
+			}
+		}
+		else {
+			if (rand(1,2) == 1) {
+				mes "[勤奮的男子]";
+				mes "Gthgh sdsWryi";
+				mes "Apeu hjsu opuer ";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "?????";
+				mes "你說什麼？";
+				next;
+				mes "[勤奮的男子]";
+				mes "喔！抱歉，我想我說錯了……";
+				mes "我只是太沉迷於我的研究了……";
+				next;
+				mes "[勤奮的男子]";
+				mes "你應該找個方法來理解我在此異世界發現的這種奇怪語言。";
+				next;
+				mes "[勤奮的男子]";
+				mes "如果無法溝通，在這裡行動會非常困難，你不覺得嗎？";
+				close;
+			}
+			else {
+				mes "[勤奮的男子]";
+				mes "TalDathMush Di nahDeh";
+				mes "ReAnduDu So sehr";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "?????";
+				mes "蛤？";
+				next;
+				mes "[勤奮的男子]";
+				mes "喔！我一定是說錯了……";
+				mes "我最近的研究進展得不太順利。";
+				next;
+				mes "[勤奮的男子]";
+				mes "你應該有辦法理解這裡這種奇怪的語言。";
+				next;
+				mes "[勤奮的男子]";
+				mes "如果無法溝通，在這裡行動會非常困難，你不覺得嗎？";
+				close;
+			}
+		}
+	}
+	if (ep13_2_busut == 1) {
+		mes "[勤奮的男子]";
+		mes "啊！你回來了！";
+		mes "現在你對我的研究有興趣了嗎？";
+		next;
+		switch(select("是的。:沒有。")) {
+		case 1:
+			mes "[勤奮的男子]";
+			mes "哈哈……我就知道我是對的！";
+			mes "哈哈哈哈！！";
+			next;
+			mes "[勤奮的男子]";
+			mes "那我們從現在開始合作吧。讓我自我介紹一下。";
+			mes "正如你從我的名牌上看到的，我的名字是^0000FF巴澤特 提布萊克^000000。";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "我是"+strcharinfo(0)+"。";
+			next;
+			select("好，那我能為你做什麼？");
+			mes "[巴澤特]";
+			mes ""+strcharinfo(0)+" 讓我想想……！！";
+			mes "每天在瑪努克和史波浪壯麗原野尋找妖精或巨人的蹤跡。";
+			next;
+			mes "[巴澤特]";
+			mes "這並不難。";
+			mes "所以請分享你在那些地區旅行時能收集到的任何資訊。";
+			next;
+			mes "[巴澤特]";
+			mes "希望我能用你找到的資訊找到我正在尋找的東西。";
+			set ep13_2_busut,2;
+			setquest 11101;
+			close;
+		case 2:
+			mes "[勤奮的男子]";
+			mes "……………";
+			mes "好吧，如果你改變主意了，再來找我。";
+			emotion ET_CRY;
+			close;
+		}
+	}
+	if (ep13_2_busut == 2) {
+		mes "[巴澤特]";
+		mes "嗯……今天你能去瑪努克原野尋找巨人的蹤跡嗎？";
+		mes "那地方挺冷的，你可能需要一件外套。";
+		next;
+		mes "[巴澤特]";
+		mes "我用過這本筆記，所以它應該還有用。拿去吧……";
+		mes "啊……別在意筆記的標題。";
+		next;
+		mes "[巴澤特]";
+		mes "你調查完後，把筆記帶回來給我。";
+		next;
+		mes "[巴澤特]";
+		mes "懂了嗎？好，保重，待會見。";
+		set ep13_2_busut,3;
+		set ep13_2_bs1,1;
+		set ep13_2_bs2,1;
+		set ep13_2_bs3,1;
+		set ep13_2_bs4,1;
+		getitem 6074,1; //Bazett's_Order
+		changequest 11101,11102;
+		close;
+	}
+	if (ep13_2_busut == 3) {
+		mes "[巴澤特]";
+		mes "調查進展如何？";
+		next;
+		if (countitem(6074) < 1) {
+			mes "[巴澤特]";
+			mes "！！！！！！！";
+			mes "你把筆記弄丟了！！？";
+			mes "唉……";
+			next;
+			mes "[巴澤特]";
+			mes "事情已經發生了。";
+			mes "我再給你一本新的。";
+			getitem 6074,1; //Bazett's_Order
+			close;
+		}
+		else {
+			mes "[巴澤特]";
+			mes "別著急……";
+			close;
+		}
+	}
+	if (ep13_2_busut == 4) {
+		mes "[巴澤特]";
+		mes "喔！你完成調查了？";
+		next;
+		switch(select("是的。:還沒……")) {
+		case 1:
+			if (countitem(6074) < 1) {
+				mes "[巴澤特]";
+				mes "！！！！！！！";
+				mes "你把筆記弄丟了！！？";
+				mes "唉……";
+				next;
+				mes "[巴澤特]";
+				mes "事情已經發生了。";
+				mes "你一定累了，去休息吧。";
+				mes "我去準備新的筆記。";
+				mes "你再幫我調查一次就行了。";
+				set ep13_2_busut,7;
+				erasequest 11102;
+				setquest 11104;
+				close;
+			}
+			else {
+				mes "[巴澤特]";
+				mes "我可以先看一下筆記嗎？";
+				mes "喔！！";
+				next;
+				mes " - 巴澤特正在閱讀詳細內容 - ";
+				mes " - 他似乎被吸引住了。 - ";
+				mes " - 我最好別打擾他。 - ";
+				mes " - 讓他看完。 - ";
+				next;
+				mes "[巴澤特]";
+				mes "嗯……居然有這種事？！";
+				next;
+				mes "[巴澤特]";
+				mes "嗯……我明白了，我明白了。";
+				next;
+				mes "[巴澤特]";
+				mes "雖然內容很簡單，但整理得很好，也很有趣。";
+				mes "不愧是"+strcharinfo(0)+"！！";
+				next;
+				mes "[巴澤特]";
+				mes "你做得很好。";
+				mes "你一定累壞了。去休息吧。我們明天繼續。";
+				next;
+				mes "[巴澤特]";
+				mes "啊……這不算什麼，這是巨人使用的硬幣。";
+				mes "也許你可以用這個向他們買點東西。";
+				delitem 6074,1; //Bazett's_Order
+				set ep13_2_busut,7;
+				if (ep13_2_bs1 == 3) getitem 6080,1; //Manuk_Coin
+				if (ep13_2_bs2 == 3) getitem 6080,1; //Manuk_Coin
+				if (ep13_2_bs3 == 3) getitem 6080,1; //Manuk_Coin
+				if (ep13_2_bs4 == 3) getitem 6080,1; //Manuk_Coin
+				erasequest 11102;
+				setquest 11104;
+				close;
+			}
+			break;
+		case 2:
+			mes "[巴澤特]";
+			mes "別著急……";
+			close;
+		}
+	}
+	else {
+		mes "[巴澤特]";
+		mes "你做得很好。";
+		mes "你一定累壞了。去休息吧，我們明天繼續。";
+		close;
+	}
+}
+
+manuk,193,135,0	script	工人#ep13bs	454,{
+	if (isequipped(2782) == 1) {
+		if (ep13_2_busut == 3) {
+			if (ep13_2_bs1 == 1) {
+				mes "[工人]";
+				mes "糟了，好危險，差點就斷了。";
+				mes "我得趕快換掉它……不然的話。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "怎麼了？";
+				next;
+				mes "[工人]";
+				mes "啊……這裡……嗯……";
+				mes "……";
+				mes "………";
+				mes "沒事！！";
+				emotion ET_HUK;
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "怎麼啦？";
+				next;
+				mes "[工人]";
+				mes "你是一個外來者。";
+				mes "……";
+				mes "我被你的聲音嚇了一跳。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "是的，抱歉嚇到你了。";
+				emotion ET_SMILE, playerattached();
+				next;
+				mes "[工人]";
+				mes "哈哈，沒關係。";
+				mes "最近我聽說過像你這樣的人，但這是我第一次真正見到一個。";
+				next;
+				mes "[工人]";
+				mes "你說我們的語言說得真好。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "啊……總之……你看起來好像遇到了點麻煩。發生什麼事了？";
+				next;
+				mes "[工人]";
+				mes "沒事！！";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "你確定嗎？命運讓我們相遇一定是有原因的。";
+				mes "告訴我吧?";
+				next;
+				mes "[工人]";
+				mes "……";
+				mes "坦白說……";
+				next;
+				mes "[工人]";
+				mes "固定帳篷的螺絲太舊了，我必須在它斷掉之前換掉。";
+				next;
+				mes "[工人]";
+				mes "我無法離開這裡，所以我正在等我的朋友路過來幫我。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "我可以幫你嗎？";
+				next;
+				mes "[工人]";
+				mes "不?沒關係的。我們才剛認識，我不能要求你幫忙。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "沒關係！我們可以互相幫助！";
+				next;
+				mes "- 突然發出一聲刺耳的聲音，螺絲斷了 -";
+				next;
+				mes "[工人]";
+				mes "呃！！！";
+				mes "**嘆氣**";
+				emotion ET_CRY;
+				emotion ET_CRY, playerattached();
+				next;
+				mes "[工人]";
+				mes "這下可好了！";
+				mes "總之我的名字是^0000FF基爾^000000。";
+				next;
+				mes "[基爾]";
+				mes "我需要一些東西來固定帳篷，如果你能拿到^0000FF 30個希爾斯里昂之角^000000，我就能把它們做成足夠堅固的螺絲。";
+				next;
+				mes "[基爾]";
+				mes "很抱歉又要麻煩你做這件事，但我會在這裡等你。";
+				set ep13_2_bs1,2;
+				setquest 11105;
+				close;
+			}
+			else if (ep13_2_bs1 == 2) {
+				if (countitem(6032) > 29) {
+					mes "[基爾]";
+					mes "你幫我收集了所有的希爾斯里昂之角？";
+					mes "非常感謝你。";
+					next;
+					mes "[基爾]";
+					mes "這都是因為你，我們才得以避免任何災難。";
+					mes "^0000FF雖然你也是外來種族，但跟那些邪惡的妖精比起來^000000，我很高興能遇到像"+strcharinfo(0)+"這樣的人。";
+					delitem 6032,30; //Horn_Of_Hilsrion
+					set ep13_2_bs1,3;
+					set ep13_2_busut,4;
+					completequest 11105;
+					close;
+				}
+				else {
+					mes "[基爾]";
+					mes "很抱歉又要麻煩你做這件事，但我會在這裡等你帶回^0000FF 30個希爾斯里昂之角。^000000。";
+					close;
+				}
+			}
+			else if (ep13_2_bs1 == 3) {
+				mes "[基爾]";
+				mes "謝謝你幫我。";
+				mes "^0000FF雖然你也是外來種族，但跟那些邪惡的妖精比起來^000000，我很高興能遇到像"+strcharinfo(0)+"這樣的人。";
+				close;
+			}
+			else {
+				mes "[工人]";
+				mes "這太危險了，它變得太鬆了……";
+				mes "必須盡快更換……";
+				close;
+			}
+		}
+		else if (ep13_2_busut == 4) {
+			if (ep13_2_bs1 == 1) {
+				mes "[工人]";
+				mes "這太危險了，它變得太鬆了……";
+				mes "必須盡快更換……";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "有什麼不對勁嗎？";
+				next;
+				mes "[工人]";
+				mes "啊……你看這裡……";
+				mes "……";
+				mes "………";
+				mes "算了。沒事。";
+				emotion ET_HUK;
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "你不必這樣。";
+				next;
+				mes "[工人]";
+				mes "你是那些奇怪種族的人之一，對吧？";
+				mes "……";
+				mes "突然聽到你說我們的語言，讓我有點震驚。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "既然我要在這裡旅行，我想我會需要它的……";
+				emotion ET_SMILE, playerattached();
+				next;
+				mes "[工人]";
+				mes "哈哈，是這樣嗎？";
+				mes "我聽說過關於你們種族存在的傳聞，但我以前從沒見過。";
+				next;
+				mes "[工人]";
+				mes "想想你竟然能說我們的語言。真有趣。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "啊……但是剛才，你看起來好像為什麼事情而苦惱。發生什麼事了嗎？";
+				next;
+				mes "[工人]";
+				mes "沒什麼。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "啊?我們能相遇一定是命運的安排?";
+				mes "你可以直接告訴我。";
+				next;
+				mes "[工人]";
+				mes "……";
+				mes "嗯……";
+				next;
+				mes "[工人]";
+				mes "用來固定我們帳篷的螺絲生鏽了……我們必須換一個新的。";
+				next;
+				mes "[工人]";
+				mes "但我無法離開這個地方，所以我正在等有人路過。";
+				mes "而你剛好跟我說話。我還以為你是我們部落的人。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "我可以幫你。";
+				next;
+				mes "[工人]";
+				mes "不，沒關係的。我們才剛認識，我不想麻煩你。";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "別擔心！生活就是要互相幫助，你不覺得嗎？";
+				next;
+				mes " - 就在雙方爭執不休時， - ";
+				mes " - 一直堅持到現在的螺絲 - ";
+				mes " - 終於撐不住，斷成了兩半。 - ";
+				next;
+				mes "[工人]";
+				mes "啊！！！";
+				emotion ET_CRY;
+				emotion ET_CRY, playerattached();
+				next;
+				mes "[工人]";
+				mes "我現在顧不了面子了。";
+				mes "讓我自我介紹一下，我是 ^0000FF基爾^000000。";
+				next;
+				mes "[基爾]";
+				mes "我需要一個螺絲來穩定我們的帳篷，它可以從 ^0000FF希爾斯里昂^000000 怪物身上找到。";
+				mes "請幫我收集 ^0000FF30個希爾斯里昂之角^000000，現在這樣應該就夠了。";
+				next;
+				mes "[基爾]";
+				mes "真的很抱歉，請盡快。";
+				set ep13_2_bs1,2;
+				setquest 11105;
+				close;
+			}
+			else if (ep13_2_bs1 == 2) {
+				if (countitem(6032) > 29) {
+					mes "[基爾]";
+					mes "你幫我收集了所有的希爾斯里昂之角？";
+					mes "非常感謝你。";
+					next;
+					mes "[基爾]";
+					mes "這都是因為你，我們才得以避免任何災難。";
+					mes "^0000FF雖然你也是外來種族，但跟那些邪惡的妖精比起來^000000，我很高興能遇到像"+strcharinfo(0)+"這樣的人。";
+					delitem 6032,30; //Horn_Of_Hilsrion
+					set ep13_2_bs1,3;
+					completequest 11105;
+					close;
+				}
+				else {
+					mes "[基爾]";
+					mes "讓你做這種事，我感到很慚愧。";
+					close;
+				}
+			}
+			else if (ep13_2_bs1 == 3) {
+				mes "[基爾]";
+				mes "謝謝你幫我。";
+				mes "^0000FF雖然你也是外來種族，但跟那些邪惡的妖精比起來^000000，我很高興能遇到像"+strcharinfo(0)+"這樣的人。";
+				close;
+			}
+			else {
+				mes "[工人]";
+				mes "這太危險了，它變得太鬆了……";
+				mes "必須盡快更換……";
+				close;
+			}
+		}
+		else {
+			mes "[基爾]";
+			mes "你又來了？";
+			mes "偶爾跟別人聊聊天也挺放鬆的。";
+			close;
+		}
+	}
+	else {
+		mes "[工人]";
+		mes "Ehahdie O Ehai";
+		mes "Ohek Hekdh I dkek";
+		mes "Ohehp Qe Tehdhah";
+		next;
+		mes "[工人]";
+		mes "Ehaodke Thdieqak Khehdi";
+		mes "PHhdkel";
+		mes "Thhdqdcczk U dheagelokd dok";
+		next;
+		mes "- 你聽不懂他在說什麼。 - ";
+		close;
+	}
+}
+
+// Yggdrasil Dungeon Floor 2 puzzle :: ny_dun02_puzzle
+//============================================================ 
+nyd_dun02,178,255,0	script	奇怪的裝置#ep13_out	844,3,3,{
+	mes "這裡有奇怪的東西。";
+	mes "也許從這裡可以控制那個裝置。";
+	next;
+	switch(select("嘗試控制。:不要嘗試控制它。")) {
+		case 1:
+			mes "你按下了裝置的按鈕，四周突然變暗了。";
+			close2;
+			warp "nyd_dun02",139,268;
+			end;
+
+		case 2:
+			mes "你決定不去管它。";
+			close;
+	}
+
+OnTouch_:
+	specialeffect EF_LEVEL99_4;
+	end;
+}
+
+nyd_dun02,139,274,0	script	奇怪的裝置#ep13_in	844,3,3,{
+	if ($@08_ep13nydun02_in == 1) {
+		mes "裝置已經啟動。";
+		mes "你必須等待控制重置。";
+		close;
+	}
+	else {
+		mes "這裡有一個可控制的裝置。";
+		mes "你或許能從這裡控制那個裝置。";
+		next;
+		switch(select("控制。:離開。")) {
+		case 1:
+			if ($@08_ep13nydun02_in == 1) {
+				mes "似乎已經開始了。";
+				close;
+			}
+			else {
+				set $@08_ep13nydun02_in,1;
+				set .@way_loot,rand(1,2);
+				if (.@way_loot == 1) {
+					donpcevent "ep13_warp_s1::OnEnable";
+					donpcevent "ep13_warp_11::OnEnable";
+					donpcevent "ep13_warp_21::OnEnable";
+					donpcevent "ep13_warp_22::OnEnable";
+					donpcevent "ep13_warp_22_2::OnEnable";
+				}
+				else {
+					donpcevent "ep13_warp_s3::OnEnable";
+					donpcevent "ep13_warp_13::OnEnable";
+					donpcevent "ep13_warp_14::OnEnable";
+					donpcevent "ep13_warp_24::OnEnable";
+					donpcevent "ep13_warp_24_2::OnEnable";
+				}
+				initnpctimer;
+				mes "裝置現在開啟了。";
+				mes "岩架上出現了面板。";
+				close;
+			}
+		case 2:
+			mes "你決定不控制裝置。";
+			close;
+		}
+	}
+	end;
+
+OnTimer70000:
+	donpcevent "ep13_nd2f_mng::OnReset";
+	set $@08_ep13nydun02_in,0;
+	stopnpctimer;
+	end;
+
+OnTouch_:
+	specialeffect EF_LEVEL99_4;
+	end;
+}
+
+-	script	ep13_warp_s_0	-1,{
+OnEnable:
+	enablenpc();
+	initnpctimer;
+OnTimer2000:
+OnTimer4000:
+OnTimer6000:
+	specialeffect EF_WIND;
+	end;
+
+OnTimer8000:
+	specialeffect EF_STEAL;
+	end;
+
+OnTimer10000:
+	specialeffect EF_STEAL;
+	disablenpc();
+	end;
+
+OnDisable:
+	specialeffect EF_WIND;
+	disablenpc();
+	end;
+}
+
+-	script	ep13_warp_s_1	-1,{
+OnEnable:
+	enablenpc();
+	initnpctimer;
+OnTimer2000:
+OnTimer4000:
+OnTimer6000:
+	specialeffect EF_WIND;
+	end;
+
+OnTimer8000:
+OnTimer10000:
+	specialeffect EF_STEAL;
+	end;
+
+OnTimer12000:
+	specialeffect EF_STEAL;
+	disablenpc();
+	end;
+
+OnDisable:
+	specialeffect EF_WIND;
+	disablenpc();
+	end;
+}
+
+-	script	ep13_warp_s_2	-1,{
+OnEnable:
+	enablenpc();
+	initnpctimer;
+OnTimer2000:
+OnTimer4000:
+OnTimer6000:
+OnTimer8000:
+	specialeffect EF_WIND;
+	end;
+OnTimer10000:
+OnTimer12000:
+	specialeffect EF_STEAL;
+	end;
+
+OnTimer15000:
+	specialeffect EF_STEAL;
+	disablenpc();
+	end;
+
+OnDisable:
+	specialeffect EF_WIND;
+	disablenpc();
+	end;
+}
+
+-	script	ep13_warp_w_0	-1,{
+OnTouch_:
+	warp "nyd_dun01",214,68;
+	end;
+}
+
+nyd_dun02,143,272,0	duplicate(ep13_warp_s_0)	ep13_warp_s1	139
+nyd_dun02,143,266,0	duplicate(ep13_warp_s_0)	ep13_warp_s3	139
+nyd_dun02,146,272,0	duplicate(ep13_warp_s_0)	ep13_warp_11	139
+nyd_dun02,146,266,0	duplicate(ep13_warp_s_0)	ep13_warp_13	139
+nyd_dun02,149,260,0	duplicate(ep13_warp_s_0)	ep13_warp_25	139
+nyd_dun02,149,257,0	duplicate(ep13_warp_s_0)	ep13_warp_26	139
+nyd_dun02,152,270,0	duplicate(ep13_warp_s_0)	ep13_warp_31	139
+nyd_dun02,152,264,0	duplicate(ep13_warp_s_0)	ep13_warp_33	139
+nyd_dun02,155,269,0	duplicate(ep13_warp_s_0)	ep13_warp_41	139
+nyd_dun02,155,254,0	duplicate(ep13_warp_s_0)	ep13_warp_46	139
+nyd_dun02,158,263,0	duplicate(ep13_warp_s_0)	ep13_warp_52	139
+nyd_dun02,158,254,0	duplicate(ep13_warp_s_0)	ep13_warp_55	139
+nyd_dun02,161,261,0	duplicate(ep13_warp_s_0)	ep13_warp_62	139
+nyd_dun02,161,255,0	duplicate(ep13_warp_s_0)	ep13_warp_64	139
+nyd_dun02,161,249,0	duplicate(ep13_warp_s_0)	ep13_warp_66	139
+nyd_dun02,164,261,0	duplicate(ep13_warp_s_0)	ep13_warp_71	139
+nyd_dun02,164,255,0	duplicate(ep13_warp_s_0)	ep13_warp_73	139
+nyd_dun02,164,249,0	duplicate(ep13_warp_s_0)	ep13_warp_75	139
+nyd_dun02,167,249,0	duplicate(ep13_warp_s_0)	ep13_warp_84	139
+nyd_dun02,170,257,0	duplicate(ep13_warp_s_0)	ep13_warp_91	139
+nyd_dun02,170,254,0	duplicate(ep13_warp_s_0)	ep13_warp_92	139
+nyd_dun02,170,248,0	duplicate(ep13_warp_s_0)	ep13_warp_94	139
+nyd_dun02,170,245,0	duplicate(ep13_warp_s_0)	ep13_warp_95	139
+
+nyd_dun02,146,263,0	duplicate(ep13_warp_s_1)	ep13_warp_14	139
+nyd_dun02,149,272,0	duplicate(ep13_warp_s_1)	ep13_warp_21	139
+nyd_dun02,152,258,0	duplicate(ep13_warp_s_1)	ep13_warp_35	139
+nyd_dun02,155,266,0	duplicate(ep13_warp_s_1)	ep13_warp_42	139
+nyd_dun02,158,251,0	duplicate(ep13_warp_s_1)	ep13_warp_56	139
+nyd_dun02,164,258,0	duplicate(ep13_warp_s_1)	ep13_warp_72	139
+nyd_dun02,164,246,0	duplicate(ep13_warp_s_1)	ep13_warp_76	139
+nyd_dun02,167,255,0	duplicate(ep13_warp_s_1)	ep13_warp_82	139
+nyd_dun02,170,251,0	duplicate(ep13_warp_s_1)	ep13_warp_93	139
+
+nyd_dun02,149,269,0	duplicate(ep13_warp_s_2)	ep13_warp_22	139
+nyd_dun02,149,263,0	duplicate(ep13_warp_s_2)	ep13_warp_24	139
+nyd_dun02,155,263,0	duplicate(ep13_warp_s_2)	ep13_warp_43	139
+nyd_dun02,155,257,0	duplicate(ep13_warp_s_2)	ep13_warp_45	139
+nyd_dun02,161,264,0	duplicate(ep13_warp_s_2)	ep13_warp_61	139
+nyd_dun02,161,252,0	duplicate(ep13_warp_s_2)	ep13_warp_65	139
+nyd_dun02,167,258,0	duplicate(ep13_warp_s_2)	ep13_warp_81	139
+nyd_dun02,167,252,0	duplicate(ep13_warp_s_2)	ep13_warp_83	139
+nyd_dun02,167,246,0	duplicate(ep13_warp_s_2)	ep13_warp_85	139
+nyd_dun02,173,251,0	duplicate(ep13_warp_s_2)	ep13_warp_e1	139
+nyd_dun02,173,248,0	duplicate(ep13_warp_s_2)	ep13_warp_e2	139
+nyd_dun02,173,245,0	duplicate(ep13_warp_s_2)	ep13_warp_e3	139
+
+nyd_dun02,143,269,0	duplicate(ep13_warp_w_0)	ep13_warp_s2	139,1,1
+nyd_dun02,143,263,0	duplicate(ep13_warp_w_0)	ep13_warp_s4	139,1,1
+nyd_dun02,146,269,0	duplicate(ep13_warp_w_0)	ep13_warp_12	139,1,1
+nyd_dun02,146,260,0	duplicate(ep13_warp_w_0)	ep13_warp_15	139,1,1
+nyd_dun02,149,266,0	duplicate(ep13_warp_w_0)	ep13_warp_23	139,1,1
+nyd_dun02,152,267,0	duplicate(ep13_warp_w_0)	ep13_warp_32	139,1,1
+nyd_dun02,152,261,0	duplicate(ep13_warp_w_0)	ep13_warp_34	139,1,1
+nyd_dun02,155,260,0	duplicate(ep13_warp_w_0)	ep13_warp_44	139,1,1
+nyd_dun02,158,266,0	duplicate(ep13_warp_w_0)	ep13_warp_51	139,1,1
+nyd_dun02,158,260,0	duplicate(ep13_warp_w_0)	ep13_warp_53	139,1,1
+nyd_dun02,158,257,0	duplicate(ep13_warp_w_0)	ep13_warp_54	139,1,1
+nyd_dun02,161,258,0	duplicate(ep13_warp_w_0)	ep13_warp_63	139,1,1
+nyd_dun02,164,252,0	duplicate(ep13_warp_w_0)	ep13_warp_74	139,1,1
+nyd_dun02,173,242,0	duplicate(ep13_warp_w_0)	ep13_warp_e4	139,1,1
+
+nyd_dun02,149,269,0	script	ep13_warp_22_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_22_2";
+	end;
+
+OnEnable:
+	enablenpc "ep13_warp_22_2";
+	end;
+OnTouch_:
+	donpcevent "ep13_warp_31::OnEnable";
+	donpcevent "ep13_warp_41::OnEnable";
+	donpcevent "ep13_warp_42::OnEnable";
+	donpcevent "ep13_warp_43::OnEnable";
+	donpcevent "ep13_warp_43_2::OnEnable";
+	donpcevent "ep13_warp_22_2::OnDisable";
+	end;
+}
+
+nyd_dun02,149,263,0	script	ep13_warp_24_2	139,1,1,{
+OnEnable:
+	enablenpc "ep13_warp_24_2";
+	end;
+
+OnTouch_:
+	if (rand(2)) {
+		donpcevent "ep13_warp_33::OnEnable";
+		donpcevent "ep13_warp_43::OnEnable";
+		donpcevent "ep13_warp_43_2::OnEnable";
+	}
+	else {
+		donpcevent "ep13_warp_25::OnEnable";
+		donpcevent "ep13_warp_26::OnEnable";
+		donpcevent "ep13_warp_35::OnEnable";
+		donpcevent "ep13_warp_45::OnEnable";
+		donpcevent "ep13_warp_45_2::OnEnable";
+	}
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_24_2";
+	end;
+}
+
+nyd_dun02,155,263,0	script	ep13_warp_43_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_43_2";
+end;
+
+OnEnable:
+	enablenpc "ep13_warp_43_2";
+	end;
+
+OnTouch_:
+	donpcevent "ep13_warp_52::OnEnable";
+	donpcevent "ep13_warp_61::OnEnable";
+	donpcevent "ep13_warp_61_2::OnEnable";
+	donpcevent "ep13_warp_43_2::OnDisable";
+	end;
+}
+
+nyd_dun02,155,257,0	script	ep13_warp_45_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_45_2";
+	end;
+
+OnEnable:
+	enablenpc "ep13_warp_45_2";
+	end;
+OnTouch_:
+	donpcevent "ep13_warp_46::OnEnable";
+	donpcevent "ep13_warp_55::OnEnable";
+	donpcevent "ep13_warp_56::OnEnable";
+	donpcevent "ep13_warp_65::OnEnable";
+	donpcevent "ep13_warp_65_2::OnEnable";
+	donpcevent "ep13_warp_45_2::OnDisable";
+	end;
+}
+
+nyd_dun02,161,264,0	script	ep13_warp_61_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_61_2";
+	end;
+
+OnEnable:
+	enablenpc "ep13_warp_61_2";
+	end;
+OnTouch_:
+	donpcevent "ep13_warp_62::OnEnable";
+	donpcevent "ep13_warp_71::OnEnable";
+	donpcevent "ep13_warp_72::OnEnable";
+	donpcevent "ep13_warp_81::OnEnable";
+	donpcevent "ep13_warp_81_2::OnEnable";
+	donpcevent "ep13_warp_61_2::OnDisable";
+	end;
+}
+
+nyd_dun02,161,252,0	script	ep13_warp_65_2	139,1,1,{
+OnEnable:
+	enablenpc "ep13_warp_65_2";
+	end;
+
+OnTouch_:
+	if (rand(2)) {
+		donpcevent "ep13_warp_64::OnEnable";
+		donpcevent "ep13_warp_73::OnEnable";
+		donpcevent "ep13_warp_82::OnEnable";
+		donpcevent "ep13_warp_83::OnEnable";
+		donpcevent "ep13_warp_83_2::OnEnable";
+	}
+	else {
+		donpcevent "ep13_warp_66::OnEnable";
+		donpcevent "ep13_warp_75::OnEnable";
+		donpcevent "ep13_warp_76::OnEnable";
+		donpcevent "ep13_warp_85::OnEnable";
+		donpcevent "ep13_warp_85_2::OnEnable";
+}
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_65_2";
+	end;
+}
+
+nyd_dun02,167,258,0	script	ep13_warp_81_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_81_2";
+	end;
+
+OnEnable:
+	enablenpc "ep13_warp_81_2";
+	end;
+
+OnTouch_:
+	donpcevent "ep13_warp_91::OnEnable";
+	donpcevent "ep13_warp_92::OnEnable";
+	donpcevent "ep13_warp_93::OnEnable";
+	donpcevent "ep13_warp_e1::OnEnable";
+	donpcevent "ep13_warp_81_2::OnDisable";
+	end;
+}
+
+nyd_dun02,167,252,0	script	ep13_warp_83_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_83_2";
+	end;
+
+OnEnable:
+	enablenpc "ep13_warp_83_2";
+	end;
+
+OnTouch_:
+	donpcevent "ep13_warp_84::OnEnable";
+	donpcevent "ep13_warp_94::OnEnable";
+	donpcevent "ep13_warp_e2::OnEnable";
+	donpcevent "ep13_warp_83_2::OnDisable";
+	end;
+}
+
+nyd_dun02,167,246,0	script	ep13_warp_85_2	139,1,1,{
+OnInit:
+OnDisable:
+	disablenpc "ep13_warp_85_2";
+	end;
+
+OnEnable:
+	enablenpc "ep13_warp_85_2";
+end;
+
+OnTouch_:
+	donpcevent "ep13_warp_95::OnEnable";
+	donpcevent "ep13_warp_e3::OnEnable";
+	donpcevent "ep13_warp_85_2::OnEnable";
+	end;
+}
+
+nyd_dun01,255,142,0	warp	nynm_dun1f_to_2f	1,1,nyd_dun02,61,265
+nyd_dun02,56,264,0	warp	nynm_dun2f_to_1f	1,1,nyd_dun01,249,143
+
+nyd_dun02,1,1,0	script	ep13_nd2f_mng	844,{
+	callfunc "F_GM_NPC";
+	mes "輸入密碼。";
+	next;
+	if (callfunc("F_GM_NPC",1854,0) == 1) {
+		mes "重置控制裝置？";
+		next;
+		switch(select("是:否")) {
+		case 1:
+			donpcevent "ep13_nd2f_mng::OnReset";
+			set $@08_ep13nydun02_in,0;
+			mes "完成。";
+			close;
+		case 2:
+			mes "已取消。";
+			close;
+		}
+	} else {
+		mes "無效。";
+		close;
+	}
+
+OnReset:
+	donpcevent "ep13_warp_s1::OnEnable";
+	donpcevent "ep13_warp_s3::OnEnable";
+
+	donpcevent "ep13_warp_11::OnEnable";
+	donpcevent "ep13_warp_13::OnEnable";
+	donpcevent "ep13_warp_14::OnEnable";
+	donpcevent "ep13_warp_21::OnEnable";
+	donpcevent "ep13_warp_22::OnEnable";
+	donpcevent "ep13_warp_24::OnEnable";
+	donpcevent "ep13_warp_25::OnEnable";
+	donpcevent "ep13_warp_26::OnEnable";
+
+	donpcevent "ep13_warp_31::OnEnable";
+	donpcevent "ep13_warp_33::OnEnable";
+	donpcevent "ep13_warp_35::OnEnable";
+
+	donpcevent "ep13_warp_41::OnEnable";
+	donpcevent "ep13_warp_42::OnEnable";
+	donpcevent "ep13_warp_43::OnEnable";
+	donpcevent "ep13_warp_45::OnEnable";
+	donpcevent "ep13_warp_46::OnEnable";
+
+	donpcevent "ep13_warp_52::OnEnable";
+	donpcevent "ep13_warp_55::OnEnable";
+	donpcevent "ep13_warp_56::OnEnable";
+
+	donpcevent "ep13_warp_61::OnEnable";
+	donpcevent "ep13_warp_62::OnEnable";
+	donpcevent "ep13_warp_64::OnEnable";
+	donpcevent "ep13_warp_65::OnEnable";
+	donpcevent "ep13_warp_66::OnEnable";
+
+	donpcevent "ep13_warp_71::OnEnable";
+	donpcevent "ep13_warp_72::OnEnable";
+	donpcevent "ep13_warp_73::OnEnable";
+	donpcevent "ep13_warp_75::OnEnable";
+	donpcevent "ep13_warp_76::OnEnable";
+
+	donpcevent "ep13_warp_81::OnEnable";
+	donpcevent "ep13_warp_82::OnEnable";
+	donpcevent "ep13_warp_83::OnEnable";
+	donpcevent "ep13_warp_84::OnEnable";
+	donpcevent "ep13_warp_85::OnEnable";
+
+	donpcevent "ep13_warp_91::OnEnable";
+	donpcevent "ep13_warp_92::OnEnable";
+	donpcevent "ep13_warp_93::OnEnable";
+	donpcevent "ep13_warp_94::OnEnable";
+	donpcevent "ep13_warp_95::OnEnable";
+
+	donpcevent "ep13_warp_e1::OnEnable";
+	donpcevent "ep13_warp_e2::OnEnable";
+	donpcevent "ep13_warp_e3::OnEnable";
+
+	donpcevent "ep13_warp_22_2::OnDisable";
+	donpcevent "ep13_warp_24_2::OnDisable";
+	donpcevent "ep13_warp_43_2::OnDisable";
+	donpcevent "ep13_warp_45_2::OnDisable";
+	donpcevent "ep13_warp_61_2::OnDisable";
+	donpcevent "ep13_warp_65_2::OnDisable";
+	donpcevent "ep13_warp_81_2::OnDisable";
+	donpcevent "ep13_warp_83_2::OnDisable";
+	donpcevent "ep13_warp_85_2::OnDisable";
+	end;
+}

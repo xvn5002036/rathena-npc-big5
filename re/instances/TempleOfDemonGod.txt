@@ -1,0 +1,2291 @@
+//===== rAthena Script =======================================
+//= Temple of Demon God
+//===== Description: =========================================
+//= [Official Conversion]
+//= Temple of Demon God Instance (part of episode 14.3)
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//============================================================
+
+moro_cav,41,73,4	script	守護者 尼德霍格#epeom01	4_F_NYDHOG,{
+	if (checkquest(7605,PLAYTIME) == 2)
+		erasequest 7605;
+	if (getcharid(1) < 1) {
+		mes "[尼德霍格]";
+		mes "你自己一個人在這裡探險太危險了。";
+		mes "請組隊並與你的同伴一起來。";
+		cutin "ep14_nyd01.bmp",2;
+		close3;
+	}
+	if (is_party_leader() == false) {
+		mes "[尼德霍格]";
+		mes "只有隊長才能決定是否進入魔神殿。";
+		mes "這是為了確保整個遠征隊的安全。請讓你的隊長來跟我說話。";
+		cutin "ep14_nyd01.bmp",2;
+		close3;
+	}
+	switch( checkquest(7593,HUNTING) ) {
+	case -1:
+		mes "[尼德霍格]";
+		mes "很抱歉，沒有指揮官的允許，你無法進入這個地方。";
+		mes "你必須接取討伐魔神的任務才能進入此處。";
+		cutin "ep14_nyd01.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "請去找指揮官 希巴 艾伊夫接取魔神討伐任務。";
+		close3;
+	case 0:
+	case 1:
+		mes "[尼德霍格]";
+		mes "我一直在等你，未來的英雄。 ";
+		mes "讓我引導你前往夢羅克潛伏的魔神殿深處。";
+		cutin "ep14_nyd03.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "這棵樹跟天地樹長得一模一樣。";
+		mes "我只希望夢羅克的意圖不是我最擔心的那個。";
+		mes "透過這棵樹可以打開大門。";
+		next;
+		mes "[尼德霍格]";
+		mes "我能感覺到";
+		mes "這棵樹如同呼吸一般，正在以一定的規律產生魔力。";
+		mes "我打算抓住它呼吸的空隙為你開啟一條通道。你準備好了嗎？";
+		cutin "ep14_nyd04.bmp",2;
+		next;
+		if (select( "現在進入。", "不要進入。" ) == 2) {
+			mes "[尼德霍格]";
+			mes "好的。";
+			mes "如果你需要時間，我能理解。";
+			mes "慢慢來。無論你需要多久我都可以等。";
+			cutin "ep14_nyd04.bmp",2;
+			close3;
+		}
+		if (instance_create("Temple of the Demon God") < 1) {	// todo, custom text
+			mes "隊伍名稱： " + getpartyname(.@party_id);
+			mes "隊長： " + strcharinfo(0);
+			mes "^0000ff" + .@md_name$ + " ^000000 - 預約失敗。";
+			close;
+		}
+		if (isbegin_quest(7596) == 1)
+			erasequest 7596;
+		mes "[尼德霍格]";
+		mes "稍等片刻，入口就會開啟。";
+		mes "穿過這棵樹進入吧。";
+		mes "別害怕，即使這不是一棵普通的樹。";
+		cutin "ep14_nyd04.bmp",2;
+		close3;
+	case 2:	// todo, custom text
+		mes "[尼德霍格]";
+		mes "你消滅了絕望之神！？";
+		mes "我只能說他的野心太大了...";
+		mes "總是說著要創造新世界並成為神...";
+		cutin "ep14_nyd03.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "但說真的，他根本什麼都沒創造出來！";
+		mes "拋棄了過去作為魔王的肉體，重生後的樣貌也只是在模仿神...";
+		next;
+		mes "[尼德霍格]";
+		mes "結果就只是一副人類的模樣，";
+		mes "他無法逃脫所謂神的框架，";
+		mes "...只能說你真是自找苦吃！";
+		cutin "ep14_nyd02.bmp",2;
+		next;
+		cutin "ep14_nyd04.bmp",2;
+		mes "[尼德霍格]";
+		mes "我會給你任務的許可，你可以去向指揮官報告了。";
+		mes "謝謝你！";
+		setquest 7597;
+		erasequest 7593;
+		for ( .@quest = 7601; .@quest < 7605; .@quest++ ) {
+			if (isbegin_quest(.@quest))
+				erasequest .@quest;
+		}
+		if (isbegin_quest(7596))
+			erasequest 7596;
+		close3;
+	}
+}
+
+moro_cav,45,75,0	script	長得像天地樹的樹#eom_gate	CLEAR_NPC,{
+	switch( checkquest(7593,HUNTING) ) {
+	case -1:
+		mes "[尼德霍格]";
+		mes "很抱歉，沒有指揮官的允許，你無法進入這個地方。";
+		mes "你必須接取討伐魔神的任務才能進入此處。";
+		cutin "ep14_nyd01.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "請去找指揮官 希巴 艾伊夫接取「魔神討伐」任務。";
+		close3;
+	case 0:
+	case 1:
+		mes "你觸摸了這棵樹，感覺到一股奇異的魔力流動。";
+		mes "也許這股魔力流動會引導你前往魔神殿深處。";
+		next;
+		if (select( "進入。", "離開。" ) == 2) {
+			mes "[尼德霍格]";
+			mes "好的。";
+			mes "如果你需要時間，我能理解。";
+			mes "慢慢來。無論你需要多久我都可以等。";
+			cutin "ep14_nyd04.bmp",2;
+			close3;
+		}
+		switch( instance_enter("Temple of the Demon God") ) {
+		case IE_NOMEMBER:
+			mes "[尼德霍格]";
+			mes "你自己一個人在這裡探險太危險了。";
+			mes "請組隊並與你的同伴一起來。";
+			cutin "ep14_nyd01.bmp",2;
+			close3;
+		case IE_NOINSTANCE:
+			mes "[尼德霍格]";
+			mes "你的隊伍還沒有獲得進入的許可。";
+			mes "請讓你的隊長提出進入申請，我就會為你們開啟前往魔神殿的大門。";
+			cutin "ep14_nyd01.bmp",2;
+			next;
+			mes "[尼德霍格]";
+			mes "你們必須遵守遠征隊訂下的規定。";
+			mes "這是為了大家的安全。";
+			close3;
+		case IE_OTHER:	// todo, custom text
+			mes "[尼德霍格]";
+			mes "嗯...怎麼會這樣...魔力的流動變得不穩定了，";
+			mes "真讓人頭痛，這是我好不容易才製造出的空隙...";
+			mes "目前可能無法進入...";
+			cutin "ep14_nyd01.bmp",2;
+			close3;
+		case IE_OK:
+			mapannounce "moro_cav", "隊伍 " + getpartyname( getcharid(1) ) + " 的 " + strcharinfo(0) + " 正在進入魔神殿。",bc_map;
+// warp "1@eom",101,16;
+			end;
+		}
+	case 2:	// todo, custom text
+		mes "[尼德霍格]";
+		mes "你消滅了絕望之神！？";
+		mes "我只能說他的野心太大了...";
+		mes "總是說著要創造新世界並成為神...";
+		cutin "ep14_nyd01.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "但說真的，他根本什麼都沒創造出來！";
+		mes "拋棄了過去作為魔王的肉體，重生後的樣貌也只是在模仿神...";
+		cutin "ep14_nyd02.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "結果就只是一副人類的模樣，";
+		mes "他無法逃脫所謂神的框架，";
+		mes "...只能說你真是自找苦吃！";
+		cutin "ep14_nyd03.bmp",2;
+		next;
+		cutin "ep14_nyd04.bmp",2;
+		mes "[尼德霍格]";
+		mes "我會給你任務的許可，你可以去向指揮官報告了。";
+		mes "謝謝你！";
+		setquest 7597;
+		erasequest 7593;
+		for ( .@quest = 7601; .@quest < 7605; .@quest++ ) {
+			if (isbegin_quest(.@quest))
+				erasequest .@quest;
+		}
+		if (isbegin_quest(7596))
+			erasequest 7596;
+		close3;
+	}
+}
+
+1@eom,1,1,0	script	#demon_god_variables	-1,{
+	end;
+OnVariableReset:
+	'boss_id = 0;
+	'boss_hp = 0;
+	'bossx = 'bossy = 0;
+	'boss_phase = 0;
+	'icestunami = false;
+	'spawn = false;
+	'miniboss_id[0] = 'miniboss_id[1] = 0;
+	'combo_is_allowed = false;
+	'flowing_lava_deactivate[0] = 'flowing_lava_deactivate[1] = false;
+	end;
+OnMyMobDead:
+	if (!playerattached())	// shouldn't happen
+		end;
+	.@mob_id = killedrid;
+	sleep 5000;
+	monster 'map_eom$,0,0,"--ja--", .@mob_id,1, instance_npcname("#demon_god_variables") + "::OnMyMobDead";
+	end;
+OnInstanceInit:
+	donpcevent instance_npcname("#demon_god_variables") + "::OnVariableReset";
+	'map_eom$ = instance_mapname("1@eom");
+	'step = 0;
+	'inject_soul = 0;
+
+	// Entrance
+	disablenpc instance_npcname("#door_mobmaster");
+	disablenpc instance_npcname("空的靈魂球#ahat01");
+	disablenpc instance_npcname("空的靈魂球#shnaim01");
+	disablenpc instance_npcname("裝滿的靈魂球#ahat02");
+	disablenpc instance_npcname("裝滿的靈魂球#shnaim02");
+	disablenpc instance_npcname("#gate_to_center");
+
+	// Center to Ice
+	disablenpc instance_npcname("神祕少年#mockid01");
+	disablenpc instance_npcname("#gate_to_ice");
+	disablenpc instance_npcname("洛基#eomloki01");
+	disablenpc instance_npcname("尼德霍格#eomnyd01");
+	disablenpc instance_npcname("布里納萊涅#brinpc01");
+	disablenpc instance_npcname("#ice_hpcheck");
+	disablenpc instance_npcname("尼德霍格#eomnyd02");
+	disablenpc instance_npcname("#ice_to_center");
+
+	// Center to Fire
+	disablenpc instance_npcname("夢羅克#mockid02");
+	disablenpc instance_npcname("#gate_to_fire");
+	disablenpc instance_npcname("#fire_event01");
+	disablenpc instance_npcname("#skollmaster");
+	disablenpc instance_npcname("#loco_call");
+	disablenpc instance_npcname("#fire_combo");
+	disablenpc instance_npcname("流動的熔岩#lavapond01");
+	disablenpc instance_npcname("流動的熔岩#lavapond02");
+	disablenpc instance_npcname("硬化的熔岩#lavaseal01");
+	disablenpc instance_npcname("硬化的熔岩#lavaseal02");
+	disablenpc instance_npcname("#lavazone11");
+	disablenpc instance_npcname("#lavazone12");
+	disablenpc instance_npcname("#lavazone21");
+	disablenpc instance_npcname("#lavazone22");
+	disablenpc instance_npcname("尼德霍格#eomnyd03");
+	disablenpc instance_npcname("#fire_to_center");
+
+	// Center to Last
+	disablenpc instance_npcname("#gate_to_last");
+	disablenpc instance_npcname("神祕青年#mocadt01");
+	disablenpc instance_npcname("#moc_master");
+	disablenpc instance_npcname("#despair_god_main");
+	disablenpc instance_npcname("#mk_hpcheck");
+	disablenpc instance_npcname("#moc_origin");
+	disablenpc instance_npcname("#morocc_god");
+	disablenpc instance_npcname("#despair_main");
+	disablenpc instance_npcname("尼德霍格#eomnyd04");
+// mimic permanent spawn
+	.@event$ = instance_npcname("#demon_god_variables") + "::OnMyMobDead";
+	monster 'map_eom$,0,0,"--ja--", 3101,3, .@event$;	// MM_MANA_WHITE
+	monster 'map_eom$,0,0,"--ja--", 3102,3, .@event$;
+// MM_MANA_RED
+	monster 'map_eom$,0,0,"--ja--", 3103,3, .@event$;	// MM_MANA_YELLOW
+	end;
+}
+
+1@eom,101,43,3	script	魔神使徒 阿哈#ahat	4_HUMAN_GERUTOO,{
+	cutin "ep13_ahat_" + (Sex ? "f" : "m") + ".bmp",2;
+// note: cutin f for male, m for female
+	// if (is_party_leader() == false || checkquest(7593,HUNTING) != 1 || isbegin_quest(7596) != 0) {	// quest to 'var for reload
+	if (is_party_leader() == false || checkquest(7593,HUNTING) != 1 || 'step != 0) {
+		mes "[阿哈]";
+		mes "歡迎";
+		mes "來到魔神殿。";
+		mes "今天很榮幸能成為你們的主人。";
+		close3;
+	}
+	.@ahat$ = instance_npcname("魔神使徒 阿哈#ahat");
+	mes "[阿哈]";
+	mes "那麼，你們來了。";
+	mes "哎呀，你們還真是執著。";
+	mes "哈哈，在這裡看到我很驚訝嗎？";
+	npctalk "阿哈：那麼，你們來了。", .@ahat$;
+	next;
+	mes "[阿哈]";
+	mes "你們完全沒料到吧？";
+	mes "不如我正式自我介紹一下吧？";
+	mes "我是阿哈，魔神的第一個僕人。";
+	npctalk "阿哈：不如我正式自我介紹一下吧？我是阿哈，魔神的第一個僕人。", .@ahat$;
+	next;
+	mes "[阿哈]";
+	mes "好吧好吧，也許今天我會賠上我的性命。";
+	mes "別那樣看著我。一切都在計畫之中。";
+	npctalk "阿哈：好吧好吧，也許今天我會賠上我的性命。別那樣看著我。一切都在計畫之中。", .@ahat$;
+	next;
+	mes "[阿哈]";
+	mes "我的主人希望許奈姆和我來測試你們。";
+	mes "看看你們是否夠格成為我們的客人。";
+	npctalk "阿哈：我的主人希望許奈姆和我來測試你們。看看你們是否夠格成為我們的客人。", .@ahat$;
+	next;
+	mes "[阿哈]";
+	mes "如果你們認為能走到這裡是靠你們自己的力量，";
+	mes "那你們就錯了。";
+	npctalk "阿哈：如果你們認為能走到這裡是靠你們自己的力量，那你們就錯了。", .@ahat$;
+	next;
+	mes "[阿哈]";
+	mes "一切都在主人的計畫之中。";
+	mes "現在，讓我們看看你們能不能打開這扇門。";
+	npctalk "阿哈：一切都在主人的計畫之中。現在，讓我們看看你們能不能打開這扇門。", .@ahat$;
+	if (isbegin_quest(7596) == 0)
+		setquest 7596;
+	if ('step != 0)
+		close3;
+	'step = 1;
+	close2;
+	cutin "",255;
+	setpcblock PCBLOCK_NPC, true;
+	sleep2 1000;
+	setpcblock PCBLOCK_NPC, false;
+	disablenpc .@ahat$;
+	warpparty 'map_eom$,101,16,getcharid(1),'map_eom$,2,2;
+	donpcevent instance_npcname("#door_mobmaster") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#door_mobmaster	CLEAR_NPC,{
+	end;
+OnStart:
+	'apostle = 10;
+	enablenpc instance_npcname("#door_mobmaster");
+	.@label$ = instance_npcname("#door_mobmaster") + "::OnMyMobDead";
+	monster 'map_eom$,102,30, "魔神使徒 阿哈",3105,1, .@label$;	// MM_GB_MOROCC_1
+	setunitdata $@mobid[0], UMOB_HP, 5000000;
+	monster 'map_eom$, 98,30, "魔神碎片",1918,1, .@label$;
+	monster 'map_eom$,100,30, "魔神碎片",1918,1, .@label$;
+	monster 'map_eom$,104,30, "魔神碎片",1918,1, .@label$;
+	monster 'map_eom$,106,30, "魔神碎片",1918,1, .@label$;
+	sleep 2000;
+	mapannounce 'map_eom$, "消滅魔神使徒阿哈和許奈姆，並收集他們的靈魂。", bc_map, 0x00ff00;
+	monster 'map_eom$,102,40, "魔神使徒 許奈姆",3106,1, .@label$;	// MM_GB_MOROCC_4
+	setunitdata $@mobid[0], UMOB_HP, 5000000;
+	monster 'map_eom$, 98,40, "魔神碎片",1921,1, .@label$;
+	monster 'map_eom$,100,40, "魔神碎片",1921,1, .@label$;
+	monster 'map_eom$,104,40, "魔神碎片",1921,1, .@label$;
+	monster 'map_eom$,106,40, "魔神碎片",1921,1, .@label$;
+	sleep 3000;
+	mapannounce 'map_eom$, "使徒的靈魂是開啟魔神殿的鑰匙。", bc_map, 0x00ff00;
+	end;
+OnMyMobDead:
+	'apostle -= 1;
+	if ('apostle == 0) {
+		'step = 2;
+		disablenpc instance_npcname("#door_mobmaster");
+		enablenpc instance_npcname("空的靈魂球#shnaim01");
+		enablenpc instance_npcname("空的靈魂球#ahat01");
+		mapannounce 'map_eom$, "啟動了用來開啟魔神殿的靈魂球。", bc_map, 0x00ff00;
+	}
+	end;
+}
+
+1@eom,104,56,0	script	空的靈魂球#ahat01	CLEAR_NPC,{
+	if ('step == 2) {
+		if (strnpcinfo(2) == "ahat01")
+			callsub( S_Globe, 1, "阿哈", 6713, "ahat02" );
+		else
+			callsub( S_Globe, 2, "許奈姆", 6714, "shnaim02" );
+	}
+	end;
+S_Globe:
+	.@bit = getarg(0);
+	.@item_id = getarg(2);
+	.@visible_npc_name$ = getarg(1);
+	.@hidden_npc_name$ = getarg(3);
+	disable_items;
+	if (is_party_leader() == false || isbegin_quest(7596) != 1 || 'step != 2) {
+		mes "只有隊長才能執行此事件。";
+		close;
+	}
+	if (countitem(.@item_id) < 1) {
+		mes "如果你想要啟動靈魂球，你需要許奈姆的靈魂。";
+		close;
+	}
+	mes "將" + .@visible_npc_name$ + "的靈魂注入空的靈魂球中。";
+	next;
+	specialeffect EF_SPHERE;
+	progressbar "000000",10;
+	if (!('inject_soul & .@bit) && countitem(.@item_id) > 0) {
+		'inject_soul |= .@bit;
+		delitem .@item_id,1;
+		specialeffect EF_ENTRY;
+		disablenpc instance_npcname( strnpcinfo(0) );
+		enablenpc instance_npcname("裝滿的靈魂球#" + .@hidden_npc_name$);
+		specialeffect EF_ENTRY,AREA, instance_npcname("裝滿的靈魂球#" + .@hidden_npc_name$);
+		specialeffect EF_LEVEL99_3,AREA, instance_npcname("裝滿的靈魂球#" + .@hidden_npc_name$);
+		mes "成功啟動了" + .@visible_npc_name$ + "的靈魂球。";
+		if ('inject_soul == 3 && 'step == 2) {
+			'step = 3;
+			if (isbegin_quest(7596) == 1)
+				erasequest 7596;// Qualifications of the Guests
+			enablenpc instance_npcname("#gate_to_center");
+			enablenpc instance_npcname("神祕少年#mockid01");
+			specialeffect EF_MAPPILLAR,AREA, instance_npcname("#gate_to_center");
+			specialeffect EF_LEVEL99_3,AREA, instance_npcname("#gate_to_center");
+		}
+	}
+	close;
+}
+1@eom,98,56,0	duplicate(空的靈魂球#ahat01)	空的靈魂球#shnaim01	CLEAR_NPC
+
+1@eom,104,56,0	duplicate(dummy_npc)	裝滿的靈魂球#ahat02	CLEAR_NPC
+1@eom,98,56,0	duplicate(dummy_npc)	裝滿的靈魂球#shnaim02	CLEAR_NPC
+
+1@eom,101,58,0	script	#gate_to_center	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	if (isbegin_quest(7596) == 1)
+		erasequest 7596;
+	warp 'map_eom$,98,115;
+	end;
+}
+
+1@eom,100,122,3	script	神祕少年#mockid01	4_F_MOCBOY,{
+	if ('step != 3)
+		end;
+	if (is_party_leader() == false || checkquest(7593,HUNTING) != 1) {
+		mes "[少年]";
+		mes "你這微不足道的生物。";
+		mes "竟敢對未來的神動手？！";
+		close;
+	}
+	cutin "morocc_kid.bmp",2;
+	mes "[少年]";
+	mes "首先，讓我為你能走到這裡鼓掌。";
+	mes "你是一個很好的棋子。";
+	next;
+	select("你在說什麼？");
+	unittalk getcharid(3), "" + strcharinfo(0) + " : 你在說什麼？";
+	mes "[少年]";
+	mes "我一直在等待這一天。";
+	mes "為了走出魔界的那個角落，並統治整個宇宙。";
+	npctalk "少年：我一直在等待這一天。為了走出魔界的那個角落，並統治整個宇宙。";
+	sleep2 2000;
+	next;
+	mes "[少年]";
+	mes "為了達成這個目標，我意識到我必須拋棄我舊的肉體。";
+	mes "所以我死了——其實，是我讓你們殺了我的。";
+	npctalk "少年：為了達成這個目標，我意識到我必須拋棄我舊的肉體。所以我死了——其實，是我讓你們殺了我的。";
+	sleep2 2000;
+	next;
+	mes "[少年]";
+	mes "死亡是重生前不可避免的一步。";
+	mes "所以我重生了——同樣地，是你們把我帶回來的。";
+	npctalk "少年：死亡是重生前不可避免的一步。所以我重生了——同樣地，是你們把我帶回來的。";
+	sleep2 2000;
+	next;
+	mes "[少年]";
+	mes "這一切的安排都是為了讓我能以神的姿態重生。";
+	npctalk "少年：這一切的安排都是為了讓我能以神的姿態重生。";
+	sleep2 2000;
+	next;
+	mes "[夢羅克]";
+	mes "沒錯，你們這些愚蠢的人類！";
+	mes "我死了一次，是為了能環繞世界並將其擁入懷中。";
+	mes "我的重生是為了吞噬這個世界。";
+	npctalk "夢羅克：沒錯，你們這些愚蠢的人類！我死了一次，是為了能環繞世界並將其擁入懷中。我的重生是為了吞噬這個世界。";
+	sleep2 2000;
+	next;
+	mes "[夢羅克]";
+	mes "我將創造一個新世界並成為它的造物主。";
+	mes "讓我問問你們，這批踏入我新生土地的第一批生物。";
+	npctalk "夢羅克：我將創造一個新世界並成為它的造物主。讓我問問你們，這批踏入我新生土地的第一批生物。";
+	sleep2 2000;
+	next;
+	mes "[夢羅克]";
+	mes "你們願不願意追隨我，見證新世界的誕生？";
+	npctalk "夢羅克：你們願不願意追隨我，見證新世界的誕生？";
+	close2;
+	setpcblock PCBLOCK_NPC, true;
+	cutin "",255;
+	sleep2 1000;
+	.@loki$ = instance_npcname("洛基#eomloki01");
+	.@nidhogg$ = instance_npcname("尼德霍格#eomnyd01");
+	enablenpc .@loki$;
+	enablenpc .@nidhogg$;
+	npctalk "洛基：廢話少說。直說你就是喜歡破壞東西吧。", .@loki$;
+	sleep2 5000;
+	npctalk "洛基：創造新世界並成為造物主？如果這就是你所說的新世界，那還真讓我失望。", .@loki$;
+	sleep2 5000;
+	npctalk "洛基：即使你燃燒自己的肉體，你的力量也不及創世的伊美樂。", .@loki$;
+	sleep2 5000;
+	npctalk "洛基：光是你必須偷走天地樹這一點，就顯示了你缺乏創造力。", .@loki$;
+	sleep2 5000;
+	npctalk "洛基：好好看看你自己吧。如果你認為自己看起來像什麼造物主，那你真的是妄想症發作了。", .@loki$;
+	sleep2 5000;
+	npctalk "尼德霍格：我同意。這個世界不需要你。你不屬於這裡。", .@nidhogg$;
+	sleep2 4000;
+	npctalk "尼德霍格：就連天地樹也否定你的存在！", .@nidhogg$;
+	sleep2 4000;
+	npctalk "尼德霍格：身為天地樹的守護者，我必須將你從這個世界上清除。", .@nidhogg$;
+	sleep2 2000;
+	npctalk "夢羅克：呸！";
+	sleep2 2000;
+	npctalk "夢羅克：凡人，你們這樣衝著我來，一定是活得不耐煩了。";
+	sleep2 3000;
+	npctalk "夢羅克：我會拿你們的血肉當作我新世界的喬遷之禮。";
+	sleep2 3000;
+	npctalk "夢羅克：你們見過創世的黑暗嗎？";
+	sleep2 3000;
+	npctalk "夢羅克：你們見過生命的起源，那片冰霜嗎？";
+	sleep2 6000;
+	npctalk "夢羅克：見識一下我帶回這個世界的，重獲新生的歐德姆布拉的冰霜吧。";
+	sleep2 3000;
+	specialeffect EF_ENTRY;
+	if ('step == 3) {
+		'step = 4;
+		disablenpc instance_npcname("神祕少年#mockid01");
+		donpcevent instance_npcname("#gate_to_ice") + "::OnEnable";
+		enablenpc instance_npcname("尼德霍格#eomnyd01");
+		enablenpc instance_npcname("布里納萊涅#brinpc01");
+		npctalk "洛基：想逃嗎？", .@loki$;
+		sleep2 2000;
+		disablenpc .@loki$;
+	}
+	setpcblock PCBLOCK_NPC, false;
+	end;
+}
+
+1@eom,91,120,0	script	#gate_to_ice	WARPNPC,1,1,{
+	end;
+OnEnable:
+	.@gate_to_ice = instance_npcname("#gate_to_ice");
+	enablenpc instance_npcname("#gate_to_ice");
+	specialeffect EF_ICECRASH;
+	sleep 1000;
+	specialeffect EF_MAPPILLAR;
+	end;
+OnTouch_:
+	if (isbegin_quest(7601) == 0 && isbegin_quest(7602) == 0)
+		setquest 7601;
+	warp 'map_eom$,61,88;
+	end;
+}
+
+1@eom,95,122,5	script	洛基#eomloki01	4_M_ROKI2,{
+	mes "[洛基]";
+	mes "你真是無可救藥。";
+	mes "而且令人作嘔。";
+	close;
+}
+
+1@eom,94,120,5	script	尼德霍格#eomnyd01	4_F_NYDHOG,2,2,{
+	if ('step < 4 || is_party_leader() == false)
+		end;
+	if (getmercinfo(0) > 0) {
+		mes "[尼德霍格]";
+		mes "你帶著傭兵。";
+		mes "你能解散目前的傭兵並改雇用我嗎？";
+		close;
+	}
+	switch( checkquest(7605,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "[尼德霍格]";
+		mes "我已經協助過你一次了。";
+		mes "請小心！";
+		close;
+	case 2:
+		erasequest 7605;
+		break;
+	}
+	setnpcdisplay instance_npcname("尼德霍格#eomnyd01"), 3087;
+	mes "[尼德霍格]";
+	mes "" + strcharinfo(0) + "，";
+	mes "請允許我在此戰鬥中協助你。";
+	npctalk "尼德霍格：請允許我在此戰鬥中協助你。";
+	specialeffect EF_SPHERE;
+	next;
+	mes "[尼德霍格]";
+	mes "身為守護者的職責還沒結束。";
+	npctalk "尼德霍格：身為守護者的職責還沒結束。";
+	next;
+	mercenary_create 3087,1800000;// M_NYDHOG
+	mes "^4d4dff守護者 尼德霍格已加入你的隊伍。^000000";
+	setquest 7605;// Guardian's Blessing
+	disablenpc instance_npcname("尼德霍格#eomnyd01");
+	close;
+OnTouch:
+	if ('step >= 4 && is_party_leader())
+		npctalk "尼德霍格：等等！";
+	end;
+}
+
+// Center -> Ice
+1@eom,48,88,0	script	冰冷魔力結晶#eom01	4_ENERGY_BLUE,{
+	getitem 22566,1;// Frost_Crystal
+	specialeffect EF_LEVEL99_4;
+	disablenpc instance_npcname( strnpcinfo(0) );
+	end;
+}
+1@eom,51,103,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom02	4_ENERGY_BLUE
+1@eom,24,109,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom03	4_ENERGY_BLUE
+1@eom,26,128,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom04	4_ENERGY_BLUE
+1@eom,40,140,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom05	4_ENERGY_BLUE
+1@eom,38,139,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom06	4_ENERGY_BLUE
+1@eom,51,149,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom07	4_ENERGY_BLUE
+1@eom,49,148,0	duplicate(冰冷魔力結晶#eom01)	冰冷魔力結晶#eom08	4_ENERGY_BLUE
+
+1@eom,61,88,0	script	#icemob01	HIDDEN_WARP_NPC,2,1,{
+	end;
+OnTouch_:
+	if ('step >= 4) {
+		disablenpc instance_npcname("#icemob01");
+		areamonster 'map_eom$,40,93,48,101, "冰霜蜘蛛",3088,4;	// MM_BRINARANEA_BABY
+	}
+	end;
+}
+
+1@eom,22,116,3	script	冰霜蜘蛛#icemob02	3088,3,3,{
+	end;
+OnTouch_:
+	if ('step >= 4) {
+		disablenpc instance_npcname("冰霜蜘蛛#icemob02");
+		monster 'map_eom$,22,116, "冰霜蜘蛛",3088,1;	// MM_BRINARANEA_BABY
+		areamonster 'map_eom$,22,113,28,119, "冰霜蜘蛛",3088,3;
+	}
+	end;
+}
+
+1@eom,53,134,3	script	冰霜蜘蛛#icemob03	3088,3,3,{
+	end;
+OnTouch_:
+	if ('step >= 4) {
+		disablenpc instance_npcname("冰霜蜘蛛#icemob03");
+		monster 'map_eom$,53,134, "冰霜蜘蛛",3088,1;	// MM_BRINARANEA_BABY
+		areamonster 'map_eom$,47,133,53,139, "冰霜蜘蛛",3088,3;
+	}
+	end;
+}
+
+1@eom,38,129,3	script	布里納萊涅#brinpc01	3091,10,10,{
+	end;
+OnTouch_:
+	if ('step == 4) {
+		'step = 5;
+		npctalk "布里納萊涅：哦，食物自己走進我的巢穴了。";
+		initnpctimer;
+	}
+	end;
+OnTimer3000:
+	npctalk "布里納萊涅：我的孩子們今晚有大餐可吃了。呵呵呵！";
+	disablenpc instance_npcname("布里納萊涅#brinpc01");
+	donpcevent instance_npcname("#ice_hpcheck") + "::OnSpawn";
+	end;
+OnTimer5000:
+	stopnpctimer;
+	unittalk 'boss_id, "該來烹飪了！*咯咯笑*";
+	donpcevent instance_npcname("#ice_combo") + "::OnStart";
+	donpcevent instance_npcname("#ice_hpcheck") + "::OnStart";
+	end;
+}
+
+1@eom,2,3,0	script	#ice_hpcheck	CLEAR_NPC,{
+	end;
+OnSpawn:
+	enablenpc instance_npcname("#ice_hpcheck");
+	monster 'map_eom$,38,123, "布里納萊涅",3091,1, instance_npcname("#ice_hpcheck") + "::OnMyMobDead";	// MM_BRINARANEA
+	'boss_id = $@mobid[0];
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_MAXHP];
+	unitskilluseid 'boss_id, "NPC_WIDEFREEZE",5;
+	end;
+OnStart:
+	initnpctimer;
+	end;
+
+OnTimer3000:
+	getunitdata 'boss_id, .@data;
+	.@hp = .@data[UMOB_HP];
+	if ('boss_hp < .@hp) {
+		'boss_hp = .@hp;
+		initnpctimer;
+		end;
+	}
+	if (('boss_hp - .@hp) > 2000000) {
+		'boss_hp = .@hp;
+		donpcevent instance_npcname("#super_heal") + "::OnStart";
+		initnpctimer;
+		end;
+	}
+	'boss_hp = .@hp;
+	if (.@hp > 69500000 && .@hp < 70000000) {
+		unittalk 'boss_id, "出來吧，孩子們。一頓精緻的饗宴親自送上門來了！";
+		donpcevent instance_npcname("#ice_hpcheck") + "::OnCallBaby";
+	}
+	else if (.@hp > 59500000 && .@hp < 60000000) {
+		unittalk 'boss_id, "孩子們，晚餐時間到了！";
+		donpcevent instance_npcname("#ice_hpcheck") + "::OnCallBaby";
+	}
+	else if (.@hp > 49500000 && .@hp < 50000000) {
+		unittalk 'boss_id, "你們都吃飽了嗎？現在出來吧！";
+		donpcevent instance_npcname("#ice_hpcheck") + "::OnCallBaby";
+	}
+	else if (.@hp < 22200000 && 'icestunami == false)
+		donpcevent instance_npcname("#icestunami") + "::OnStart";
+	initnpctimer;
+	end;
+OnMyMobDead:
+	donpcevent instance_npcname("#ice_hpcheck") + "::OnEnd";
+	disablenpc instance_npcname("布里納萊涅#brinpc01");
+	stopnpctimer instance_npcname("#ice_combo");
+	stopnpctimer instance_npcname("#brinaranea_event_1");
+	stopnpctimer instance_npcname("#brinaranea_event_2");
+	stopnpctimer instance_npcname("#brinaranea_event_3");
+	stopnpctimer instance_npcname("#brinaranea_event_4");
+	stopnpctimer instance_npcname("布里納萊涅#brinpc01");
+	stopnpctimer instance_npcname("#super_heal");
+// stopnpctimer instance_npcname("#icestunami");
+
+	enablenpc instance_npcname("尼德霍格#eomnyd02");
+	enablenpc instance_npcname("#ice_to_center");
+	enablenpc instance_npcname("夢羅克#mockid02");
+	mapannounce 'map_eom$, "尼德霍格：布里納萊涅的影響力已經消散，一個新的傳送門出現了。", bc_map, 0x00ff00;
+	'step = 6;
+
+	donpcevent instance_npcname("#demon_god_variables") + "::OnVariableReset";
+	end;
+
+OnEnd:
+	stopnpctimer;
+	disablenpc instance_npcname("#ice_hpcheck");
+	killmonster 'map_eom$, instance_npcname("#ice_hpcheck") + "::OnMyMobDead";
+	end;
+
+OnCallBaby:
+	sleep 500;
+	if ('boss_id == 0)
+		end;
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	killmonster 'map_eom$, instance_npcname("#ice_hpcheck") + "::OnMyMobDead";
+	monster 'map_eom$,38,123, "布里納萊涅",3091,1, instance_npcname("#ice_hpcheck") + "::OnMyMobDead";	// MM_BRINARANEA
+	'boss_id = $@mobid[0];
+	setunitdata 'boss_id, UMOB_HP, 'boss_hp;
+	if ('spawn == true)
+		end;
+	'spawn = true;
+	unitskilluseid 'boss_id, "NPC_WIDEFREEZE",5;
+	sleep 1000;
+	if ('boss_id == 0)
+		end;
+	getunitdata 'boss_id, .@data;
+	areamonster 'map_eom$,(.@data[UMOB_X]-5),(.@data[UMOB_Y]-5),(.@data[UMOB_X]+5),(.@data[UMOB_Y]+5), " ",3088,5;
+// MM_BRINARANEA_BABY
+	sleep 15000;
+	'spawn = false;
+	end;
+
+OnTest_hp:
+	if ('boss_id && mobcount( 'map_eom$, instance_npcname("#ice_hpcheck") + "::OnMyMobDead" ) > 0)
+		setunitdata 'boss_id, UMOB_HP, 2000000;
+	end;
+}
+
+1@eom,2,6,0	script	#ice_combo	CLEAR_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer10000:
+	donpcevent instance_npcname("#brinaranea_event_" + rand(1,4)) + "::OnStart";
+	stopnpctimer;
+	end;
+}
+
+1@eom,1,1,0	script	#brinaranea_event_1	-1,{
+	end;
+OnStart:
+	initnpctimer;
+	unittalk 'boss_id, "表演時間！";
+	end;
+OnTimer1000:
+	unitskilluseid 'boss_id, "NPC_WIDEFREEZE",5;
+	end;
+OnTimer2500:
+	getunitdata 'boss_id, .@data;
+	'bossx = .@data[UMOB_X];
+	'bossy = .@data[UMOB_Y];
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-3),('bossy+3),-50;
+	end;
+OnTimer4000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+3),('bossy+3),-50;
+	end;
+OnTimer5500:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+3),('bossy-3),-50;
+	end;
+OnTimer7000:
+	stopnpctimer;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-3),('bossy-3),-50;
+	donpcevent instance_npcname("#ice_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#brinaranea_event_2	-1,{
+	end;
+OnStart:
+	initnpctimer;
+	unittalk 'boss_id, "哦，獵物。看起來真好吃！";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEFREEZE",5;
+	end;
+OnTimer4000:
+	stopnpctimer;
+	getunitdata 'boss_id, .@data;
+	if (.@data[UMOB_TARGETID] > 0)
+		if (getunittype(.@data[UMOB_TARGETID]) == BL_PC)
+			unitskilluseid 'boss_id,"WZ_JUPITEL",28, .@data[UMOB_TARGETID], -50;
+	donpcevent instance_npcname("#ice_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#brinaranea_event_3	-1,{
+	end;
+OnStart:
+	initnpctimer;
+	unittalk 'boss_id, "想玩玩嗎？";
+	end;
+OnTimer1000:
+	unitskilluseid 'boss_id, "NPC_WIDEFREEZE",5;
+	end;
+OnTimer2500:
+	getunitdata 'boss_id, .@data;
+	'bossx = .@data[UMOB_X];
+	'bossy = .@data[UMOB_Y];
+	unitskillusepos 'boss_id,"WZ_VERMILION",5,'bossx,'bossy,-50;
+	end;
+OnTimer3500:
+	callsub( S_Skill,3 );
+	end;
+OnTimer4500:
+	callsub( S_Skill,4 );
+	end;
+OnTimer5500:
+	callsub( S_Skill,5 );
+	end;
+OnTimer6500:
+	callsub( S_Skill,6 );
+	end;
+OnTimer7500:
+	callsub( S_Skill,7 );
+	stopnpctimer;
+	donpcevent instance_npcname("#ice_combo") + "::OnStart";
+	end;
+S_Skill:
+	.@d = getarg(0);
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20, ('bossx - .@d), ('bossy + .@d),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20, ('bossx + .@d), ('bossy + .@d),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20, ('bossx + .@d), ('bossy - .@d),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20, ('bossx - .@d), ('bossy - .@d),-50;
+	return;
+}
+
+1@eom,1,1,0	script	#brinaranea_event_4	-1,{
+	end;
+OnStart:
+	initnpctimer;
+	unittalk 'boss_id, "哈哈...";
+	end;
+OnTimer1000:
+	unitskilluseid 'boss_id,"AL_HEAL",11;
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id,"AL_HEAL",11;
+	end;
+OnTimer3000:
+	stopnpctimer;
+	unitskilluseid 'boss_id,"AL_HEAL",11;
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	donpcevent instance_npcname("#ice_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#super_heal	-1,{
+	end;
+OnStart:
+	initnpctimer;
+	unittalk 'boss_id, "你真煩人！別惹歐德姆布拉的冰霜！";
+	unitskilluseid 'boss_id, "NPC_ALLHEAL",1;
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	end;
+OnTimer2000:
+	stopnpctimer;
+	mapannounce 'map_eom$, "尼德霍格：不...她已經完全恢復了。", bc_map, 0x00ff00;
+	end;
+}
+
+1@eom,2,4,0	script	#icestunami	CLEAR_NPC,{
+	end;
+OnStart:
+	'icestunami = true;
+	initnpctimer;
+	unittalk 'boss_id, "你們這些地獄犬，這招你們也接得下嗎？";
+	getunitdata 'boss_id, .@data;
+	'x_icemine = .@data[UMOB_X];
+	'y_icemine = .@data[UMOB_Y];
+	callsub( S_Spawn,6 );
+OnTimer2000: callsub( S_Spawn,3 );
+OnTimer4000: callsub( S_Spawn,0 );
+OnTimer6000: callsub( S_Spawn,-3 );
+OnTimer8000: callsub( S_Spawn,-6 );
+OnTimer13000:
+	killmonster 'map_eom$, instance_npcname("#icestunami") + "::OnMobDead";
+	end;
+OnTimer23000:
+	'icestunami = false;
+	'x_icemine = 0;
+	'y_icemine = 0;
+	stopnpctimer;
+	end;
+S_Spawn:
+	.@y = 'y_icemine + getarg(0);
+	.@label$ = instance_npcname("#icestunami") + "::OnMobDead";
+	monster 'map_eom$,('x_icemine-6),.@y," ",2943,1, .@label$;// MM_ICE_MINE
+	monster 'map_eom$,('x_icemine-3),.@y," ",2943,1, .@label$;
+	monster 'map_eom$,  ('x_icemine),.@y," ",2943,1, .@label$;
+	monster 'map_eom$,('x_icemine+3),.@y," ",2943,1, .@label$;
+	monster 'map_eom$,('x_icemine+6),.@y," ",2943,1, .@label$;
+	end;
+OnMobDead:
+	end;
+}
+
+1@eom,59,147,3	script	尼德霍格#eomnyd02	4_F_NYDHOG,{
+	if ('step < 6)
+		end;
+	if (isbegin_quest(7602) == 0 && checkquest(7601,HUNTING) == 2) {
+		mes "[尼德霍格]";
+		mes "這是一場艱難的戰鬥。";
+		mes "這可能還不夠好，但我希望它對你的成長有幫助。";
+		next;
+		mes "^4d4dff守護者 尼德霍格給予你大量的經驗值，作為擊敗布里納萊涅的獎勵。^000000";
+		erasequest 7601;// Temple of the Demon God Phase 1
+		setquest 7602;// Temple of the Demon God Phase 1 Completed
+		getexp 1000000,500000;
+		close;
+	}
+	mes "[尼德霍格]";
+	mes "這個可怕的地方能跟創世的冰霜相提並論嗎？";
+	mes "我很難說。";
+	mes "他自己什麼都沒創造出來。他到底是如何說服自己，認為自己能成為造物主的？";
+	close;
+}
+
+1@eom,67,149,0	script	#ice_to_center	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	if (isbegin_quest(7602) == 0 && checkquest(7601,HUNTING) == 2) {
+		mes "[尼德霍格]";
+		mes "這是一場艱難的戰鬥。";
+		mes "這可能還不夠好，但我希望它對你的成長有幫助。";
+		next;
+		mes "^4d4dff守護者 尼德霍格給予你大量的經驗值，作為擊敗布里納萊涅的獎勵。^000000";
+		setquest 7602;
+		erasequest 7601;
+		getexp 1000000,500000;
+		close;
+	}
+	warp 'map_eom$,98,115;
+	end;
+}
+
+// Center to Fire
+1@eom,100,122,3	script	夢羅克#mockid02	4_F_MOCBOY,{
+	if ('step != 6 || is_party_leader() == false || checkquest(7593,HUNTING) != 1)
+		end;
+	cutin "morocc_kid.bmp",2;
+	mes "[夢羅克]";
+	mes "你不賴嘛。";
+	mes "你能對付那隻吞噬了太陽的狼嗎？";
+	npctalk "夢羅克：你不賴嘛。你能對付那隻吞噬了太陽的狼嗎？";
+	next;
+	mes "[夢羅克]";
+	mes "如果你連他都對付不了，那你現在就更不可能對付神了，不是嗎？";
+	npctalk "夢羅克：如果你連他都對付不了，那你現在就更不可能對付神了，不是嗎？";
+	next;
+	mes "[夢羅克]";
+	mes "我會看著你的。哇哈哈哈！";
+	npctalk "夢羅克：我會看著你的。哇哈哈哈！";
+	close2;
+	cutin "",255;
+	if ('step == 6) {
+		'step = 7;
+		setpcblock PCBLOCK_NPC, true;
+		enablenpc instance_npcname("#fire_event01");
+		donpcevent instance_npcname("#gate_to_fire") + "::OnEnable";
+		sleep2 2000;
+		setpcblock PCBLOCK_NPC, false;
+		specialeffect EF_ENTRY;
+		cloakonnpc instance_npcname("夢羅克#mockid02");	// cloakonnpc to properly display the previous effect
+	}
+	end;
+}
+
+1@eom,104,120,0	script	#gate_to_fire	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	if (isbegin_quest(7603) == 0 && isbegin_quest(7604) == 0)
+		setquest 7603;
+	warp 'map_eom$,132,93;
+	end;
+OnEnable:
+	enablenpc instance_npcname("#gate_to_fire");
+	specialeffect EF_METEORSTORM;
+	sleep 1000;
+	specialeffect EF_MAPPILLAR;
+	end;
+}
+
+1@eom,132,93,0	script	#fire_event01	HIDDEN_WARP_NPC,1,1,{
+	end;
+OnTouch_:
+	disablenpc instance_npcname("#fire_event01");
+	sleep 1000;
+	mapannounce 'map_eom$, "吼...", bc_map, 0xff0000;
+	sleep 3000;
+	mapannounce 'map_eom$, "我聞到人類的味道... 吼...", bc_map, 0xff0000;
+	monster 'map_eom$,139,101, "狂暴卡薩",3089,1;	// MM_LOCO_KASA
+	sleep 1000;
+	monster 'map_eom$,142, 98, "狂暴卡薩",3089,1;
+	sleep 1000;
+	monster 'map_eom$,144, 92, "狂暴卡薩",3089,1;
+	sleep 3000;
+	monster 'map_eom$,145,104, "狂暴卡薩",3089,1;
+	sleep 1000;
+	monster 'map_eom$,148, 98, "狂暴卡薩",3089,1;
+	sleep 1000;
+	monster 'map_eom$,150, 93, "狂暴卡薩",3089,1;
+	sleep 3000;
+	monster 'map_eom$,151,106, "狂暴卡薩",3089,1;
+	sleep 1000;
+	monster 'map_eom$,153,100, "狂暴卡薩",3089,1;
+	sleep 1000;
+	monster 'map_eom$,156, 95, "狂暴卡薩",3089,1;
+	mapannounce 'map_eom$, "...燃燒吧！", bc_map, 0xff0000;
+	donpcevent instance_npcname("#skollmaster") + "::OnStart";
+	end;
+}
+
+1@eom,3,1,0	script	#skollmaster	CLEAR_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#skollmaster");
+	enablenpc instance_npcname("流動的熔岩#lavapond01");
+	enablenpc instance_npcname("流動的熔岩#lavapond02");
+	enablenpc instance_npcname("#lavazone11");
+	enablenpc instance_npcname("#lavazone12");
+	enablenpc instance_npcname("#lavazone21");
+	enablenpc instance_npcname("#lavazone22");
+	'flowing_lava_deactivate[0] = 'flowing_lava_deactivate[1] = false;
+
+	monster 'map_eom$,148,98, "穆斯貝爾斯可可",3092,1, instance_npcname("#skollmaster") + "::OnMobDead";	// MM_MUSPELLSKOLL
+	'boss_id = $@mobid[0];
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_MAXHP];
+	sleep 1000;
+	if ('boss_id)
+		unittalk 'boss_id, "是你們... 吼... 很好，我會把你們的骨頭捏碎！吼...";
+	sleep 4000;
+	if ('boss_id)
+		donpcevent instance_npcname("#skollmaster") + "::OnLava_heal";
+	end;
+
+OnLava_heal:
+	'lava_heal = true;
+	donpcevent instance_npcname("#fire_combo") + "::OnEnd";
+	stopnpctimer instance_npcname("#fire_hpcheck");
+	callsub S_Event, 0, 156,117;
+	initnpctimer;
+	end;
+OnTimer2000:
+	callsub S_Event, 1, 180,129;
+	end;
+OnTimer4000:
+	callsub S_ReSpawn, 168,121;
+	unitskilluseid 'boss_id, "CR_REFLECTSHIELD",1;
+	unittalk 'boss_id, "我們再來一次。來吧！";
+	donpcevent instance_npcname("#loco_call") + "::OnSpawn";
+	end;
+OnTimer6000:
+	stopnpctimer;
+	'lava_heal = false;
+	donpcevent instance_npcname("#fire_hpcheck") + "::OnStart";
+	donpcevent instance_npcname("#fire_combo") + "::OnEvent";
+	end;
+S_ReSpawn:
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	killmonster 'map_eom$, instance_npcname("#skollmaster") + "::OnMobDead";
+	monster 'map_eom$,getarg(0),getarg(1), "穆斯貝爾斯可可",3092,1, instance_npcname("#skollmaster") + "::OnMobDead";
+// MM_MUSPELLSKOLL
+	'boss_id = $@mobid[0];
+	setunitdata 'boss_id, UMOB_HP, 'boss_hp;
+	return;
+S_Event:
+	callsub S_ReSpawn, getarg(1),getarg(2);
+	if ('flowing_lava_deactivate[ getarg(0) ] == false) {
+		for ( .@i = 0; .@i < 8; .@i++ ) {
+			unitskilluseid 'boss_id, "AL_HEAL",11;
+			sleep 100;
+			if ('boss_id == 0)
+				end;
+		}
+		unitskilluseid 'boss_id, "AL_HEAL",11;
+	}
+	mapannounce 'map_eom$, "尼德霍格：穆斯貝爾斯可可正試圖利用熔岩讓自己重生！", bc_map, 0x00ff00;
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	donpcevent instance_npcname("#loco_call") + "::OnSpawn";
+	return;
+
+OnMobDead:
+	stopnpctimer instance_npcname("#fire_hpcheck");
+	stopnpctimer instance_npcname("#muspellskoll_event_1");
+	stopnpctimer instance_npcname("#muspellskoll_event_2");
+	stopnpctimer instance_npcname("#muspellskoll_event_3");
+	donpcevent instance_npcname("#fire_combo") + "::OnEnd";
+	donpcevent instance_npcname("#loco_call") + "::OnEnd";
+
+	killmonster 'map_eom$, instance_npcname("#skollmaster") + "::OnMobDead";
+	mapannounce 'map_eom$, "尼德霍格：穆斯貝爾斯可可的影響力已經消散，一個新的傳送門出現了。", bc_map, 0x00ff00;
+
+	enablenpc instance_npcname("尼德霍格#eomnyd03");
+	enablenpc instance_npcname("#fire_to_center");
+	enablenpc instance_npcname("神祕青年#mocadt01");
+
+	'step = 8;
+	donpcevent instance_npcname("#demon_god_variables") + "::OnVariableReset";
+	end;
+OnTest_hp:
+	if ('boss_id && mobcount( 'map_eom$, instance_npcname("#skollmaster") + "::OnMobDead" ) > 0)
+		setunitdata 'boss_id, UMOB_HP, 2000000;
+	end;
+}
+
+1@eom,3,7,0	script	#fire_hpcheck	CLEAR_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer3000:
+	getunitdata 'boss_id, .@data;
+	.@hp = .@data[UMOB_HP];
+	if ('boss_hp < .@hp) {
+		initnpctimer;
+		end;
+	}
+	if (('boss_hp - .@hp) > 1000000) {
+		'boss_hp = .@hp;
+		donpcevent instance_npcname("#fire_hpcheck") + "::OnHeal";
+// the event can stack and the boss can stay in this state until it demise
+		initnpctimer;
+		end;
+	}
+	'boss_hp = .@hp;
+	if ('lava_heal == false) {
+		if (.@hp > 29500000 && .@hp < 30000000 || .@hp > 35500000 && .@hp < 36000000 || .@hp > 39500000 && .@hp < 40000000 || .@hp > 44500000 && .@hp < 45000000) {
+			unittalk 'boss_id, "我不會不戰而降的！";
+			donpcevent instance_npcname("#skollmaster") + "::OnLava_heal";
+		}
+	}
+	initnpctimer;
+	end;
+
+OnHeal:
+	if ('fire_combo)
+		donpcevent instance_npcname("#fire_combo") + "::OnEnd";
+	unittalk 'boss_id, "你覺得我很好對付嗎？我會把你燒成灰燼！";
+	sleep 2000;
+	if ('boss_id == 0)
+		end;
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_METEOR",11,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	sleep 1000;
+	if ('boss_id == 0)
+		end;
+	for ( .@i = 0; .@i < 18; .@i++ ) {
+		unitskilluseid 'boss_id, "AL_HEAL",11;
+		sleep 200;
+		if ('boss_id == 0)
+			end;
+	}
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_METEOR",11,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	for ( .@i = 0; .@i < 18; .@i++ ) {
+		unitskilluseid 'boss_id, "AL_HEAL",11;
+		sleep 200;
+		if ('boss_id == 0)
+			end;
+	}
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	if (!'fire_combo)
+		donpcevent instance_npcname("#fire_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,3,5,0	script	#loco_call	CLEAR_NPC,{
+	end;
+OnSpawn:
+	enablenpc instance_npcname("#loco_call");
+	initnpctimer;
+	getunitdata 'boss_id, .@data;
+	'x_loco = .@data[UMOB_X];
+	'y_loco = .@data[UMOB_Y];
+	end;
+OnTimer1000:
+	.@label$ = instance_npcname("#loco_call") + "::OnMobDead";
+	if (mobcount( 'map_eom$, .@label$ ) < 6)
+		areamonster 'map_eom$,('x_loco-5),('y_loco-5),('x_loco+5),('y_loco+5)," ",3089,3, .@label$;	// MM_LOCO_KASA
+	end;
+OnTimer16000:
+	stopnpctimer;
+	disablenpc instance_npcname("#loco_call");
+	end;
+OnMobDead:
+	end;
+OnEnd:
+	stopnpctimer;
+	disablenpc instance_npcname("#loco_call");
+	end;
+}
+
+1@eom,1,1,0	script	#muspellskoll_event_1	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "粉身碎骨然後燃燒殆盡吧！";
+	end;
+OnTimer1000:
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer3000:
+	stopnpctimer;
+	unitskilluseid 'boss_id, "WZ_SIGHTRASHER",10;
+	if ('fire_combo)
+		donpcevent instance_npcname("#fire_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,1,1,0	script	#muspellskoll_event_2	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "吼...";
+	end;
+OnTimer1000:
+	getunitdata 'boss_id, .@data;
+	'bossx = .@data[UMOB_X];
+	'bossy = .@data[UMOB_Y];
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer3000:
+	unitskillusepos 'boss_id,"WZ_FIREPILLAR",1,('bossx-3),('bossy+3),-50;
+	end;
+OnTimer5000:
+	unitskillusepos 'boss_id,"WZ_FIREPILLAR",1,('bossx+3),('bossy+3),-50;
+	end;
+OnTimer7000:
+	unitskillusepos 'boss_id,"WZ_FIREPILLAR",1,('bossx-3),('bossy-3),-50;
+	end;
+OnTimer9000:
+	unitskillusepos 'boss_id,"WZ_FIREPILLAR",1,('bossx+3),('bossy-3),-50;
+	end;
+OnTimer19000:
+	stopnpctimer;
+	if ('fire_combo)
+		donpcevent instance_npcname("#fire_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,1,1,0	script	#muspellskoll_event_3	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "我的火焰會將你們完全吞噬！";
+	end;
+OnTimer1000:
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer2000:
+	donpcevent instance_npcname("#flamecross") + "::OnStart";
+	end;
+OnTimer7000:
+	getunitdata 'boss_id, .@data;
+	'bossx = .@data[UMOB_X];
+	'bossy = .@data[UMOB_Y];
+	unitskillusepos 'boss_id,"WZ_METEOR",5,('bossx),('bossy+5),-50;
+	end;
+OnTimer9000:
+	unitskillusepos 'boss_id,"WZ_METEOR",5,('bossx),('bossy-5),-50;
+	end;
+OnTimer11000:
+	unitskillusepos 'boss_id,"WZ_METEOR",5,('bossx),('bossy+10),-50;
+	end;
+OnTimer13000:
+	stopnpctimer;
+	unitskillusepos 'boss_id,"WZ_METEOR",5,'bossx,('bossy-10),-50;
+	if ('fire_combo)
+		donpcevent instance_npcname("#fire_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,3,3,0	script	#fire_combo	CLEAR_NPC,{
+	end;
+OnEvent:
+	initnpctimer;
+	'fire_combo = true;
+	end;
+OnTimer10000:
+	stopnpctimer;
+	.@r = rand(1,4);
+	if (.@r == 1)
+		donpcevent instance_npcname("#muspellskoll_event_1") + "::OnEvent";
+	else if (.@r == 2)
+		donpcevent instance_npcname("#muspellskoll_event_2") + "::OnEvent";
+	else if (.@r == 3)
+		donpcevent instance_npcname("#muspellskoll_event_3") + "::OnEvent";
+	else
+		donpcevent instance_npcname("#flamecross") + "::OnSpawn";
+	end;
+OnEnd:
+	stopnpctimer;
+	'fire_combo = false;
+	disablenpc instance_npcname("#fire_combo");
+	end;
+}
+
+1@eom,3,8,0	script	#flamecross	CLEAR_NPC,{
+	end;
+OnStart:
+	getunitdata 'boss_id, .@data;
+	.@x = .@data[UMOB_X];
+	.@y = .@data[UMOB_Y];
+	callsub( S_Spawn,.@x,.@y,3 );
+	sleep 300;
+	callsub( S_Spawn,.@x,.@y,6 );
+	sleep 300;
+	callsub( S_Spawn,.@x,.@y,9 );
+	sleep 300;
+	callsub( S_Spawn,.@x,.@y,13 );
+	sleep 5000;
+	killmonster 'map_eom$, instance_npcname("#flamecross") + "::OnMobDead";
+	end;
+S_Spawn:
+	if (!'boss_id) {
+		killmonster 'map_eom$, instance_npcname("#flamecross") + "::OnMobDead";
+		end;
+	}
+	.@x = getarg(0);
+	.@y = getarg(1);
+	.@dxy = getarg(2);
+	.@label$ = instance_npcname("#flamecross") + "::OnMobDead";
+	monster 'map_eom$,(.@x+.@dxy),(.@y+.@dxy)," ",2960,1, .@label$;// MM_FLAMECROSS
+	monster 'map_eom$,(.@x-.@dxy),(.@y-.@dxy)," ",2960,1, .@label$;
+	monster 'map_eom$,(.@x+.@dxy),(.@y-.@dxy)," ",2960,1, .@label$;
+	monster 'map_eom$,(.@x-.@dxy),(.@y+.@dxy)," ",2960,1, .@label$;
+	return;
+
+OnSpawn:
+	getunitdata 'boss_id, .@data;
+	.@label$ = instance_npcname("#flamecross") + "::OnMobDead";	// same OnMobDead than OnStart?
+	if (mobcount( 'map_eom$, .@label$ ) < 2)
+		areamonster 'map_eom$,(.@data[UMOB_X]-1),(.@data[UMOB_Y]-1),(.@data[UMOB_X]+1),(.@data[UMOB_Y]+1)," ",3090,2, .@label$;	// MM_LOCO_SALAMANDER
+	if ('fire_combo)
+		donpcevent instance_npcname("#fire_combo") + "::OnEvent";
+	end;
+
+OnMobDead:
+	end;
+}
+
+1@eom,154,119,0	script	流動的熔岩#lavapond01	CLEAR_NPC,{	// todo, custom text
+	if (countitem(22566) < 1)
+		end;
+	mes "可以使用冰冷魔力結晶來阻斷流動的熔岩。";
+	next;
+	if (select( "使用冰冷魔力結晶", "不使用冰冷魔力結晶" ) == 2)
+		end;
+	if ('flowing_lava_deactivate[0] == true)
+		end;
+	'flowing_lava_deactivate[0] = true;
+	delitem 22566,1;// Frost_Crystal
+	disablenpc instance_npcname("流動的熔岩#lavapond01");
+	donpcevent instance_npcname("硬化的熔岩#lavaseal01") + "::OnEnable";
+	initnpctimer;
+	end;
+OnTimer300:
+	donpcevent instance_npcname("硬化的熔岩#lavaseal01") + "::OnEffect";
+	end;
+OnTimer120000:
+	'flowing_lava_deactivate[0] = false;
+	donpcevent instance_npcname("硬化的熔岩#lavaseal01") + "::OnDisable";
+	enablenpc instance_npcname("流動的熔岩#lavapond01");
+	mapannounce 'map_eom$, "尼德霍格：冰霜已經融化。熔岩又開始流動了！", bc_map, 0x00ff00;
+	stopnpctimer;
+	end;
+}
+
+1@eom,182,129,0	script	流動的熔岩#lavapond02	CLEAR_NPC,{	// todo, custom text
+	if (countitem(22566) < 1)
+		end;
+	mes "可以使用冰冷魔力結晶來阻斷流動的熔岩。";
+	next;
+	if (select( "使用冰冷魔力結晶", "不使用冰冷魔力結晶" ) == 2)
+		end;
+	if ('flowing_lava_deactivate[1] == true)
+		end;
+	'flowing_lava_deactivate[1] = true;
+	delitem 22566,1;// Frost_Crystal
+	disablenpc instance_npcname("流動的熔岩#lavapond02");
+	donpcevent instance_npcname("硬化的熔岩#lavaseal02") + "::OnEnable";
+	initnpctimer;
+	end;
+OnTimer300:
+	donpcevent instance_npcname("硬化的熔岩#lavaseal02") + "::OnEffect";
+	end;
+OnTimer120000:
+	'flowing_lava_deactivate[1] = false;
+	donpcevent instance_npcname("硬化的熔岩#lavaseal02") + "::OnDisable";
+	enablenpc instance_npcname("流動的熔岩#lavapond02");
+	mapannounce 'map_eom$, "尼德霍格：冰霜已經融化。熔岩又開始流動了！", bc_map, 0x00ff00;
+	stopnpctimer;
+	end;
+}
+
+1@eom,154,119,0	script	硬化的熔岩#lavaseal01	CLEAR_NPC,{
+	end;
+OnEnable:
+	enablenpc instance_npcname("硬化的熔岩#lavaseal01");
+	disablenpc instance_npcname("#lavazone11");
+	disablenpc instance_npcname("#lavazone12");
+	end;
+OnDisable:
+	stopnpctimer;
+	disablenpc instance_npcname("硬化的熔岩#lavaseal01");
+	enablenpc instance_npcname("#lavazone11");
+	enablenpc instance_npcname("#lavazone12");
+	end;
+OnEffect:
+	initnpctimer;
+	specialeffect EF_LIGHTNINGLOADER;
+	end;
+OnTimer3000:
+	initnpctimer;
+	end;
+}
+
+1@eom,182,129,0	script	硬化的熔岩#lavaseal02	CLEAR_NPC,{
+	end;
+OnEnable:
+	enablenpc instance_npcname("硬化的熔岩#lavaseal02");
+	disablenpc instance_npcname("#lavazone21");
+	disablenpc instance_npcname("#lavazone22");
+	end;
+OnDisable:
+	stopnpctimer;
+	disablenpc instance_npcname("硬化的熔岩#lavaseal02");
+	enablenpc instance_npcname("#lavazone21");
+	enablenpc instance_npcname("#lavazone22");
+	end;
+OnEffect:
+	initnpctimer;
+	specialeffect EF_LIGHTNINGLOADER;
+	end;
+OnTimer3000:
+	initnpctimer;
+	end;
+}
+
+1@eom,161,122,0	script	#lavazone11	HIDDEN_WARP_NPC,10,10,{
+	end;
+OnTouch:
+	percentheal -3,0;
+	specialeffect2 EF_SPRINKLESAND;
+	end;
+}
+1@eom,161,102,0	duplicate(#lavazone11)	#lavazone12	HIDDEN_WARP_NPC,10,10
+1@eom,163,150,0	duplicate(#lavazone11)	#lavazone21	HIDDEN_WARP_NPC,10,10
+1@eom,163,150,0	duplicate(#lavazone11)	#lavazone22	HIDDEN_WARP_NPC,10,10
+
+1@eom,151,155,3	script	尼德霍格#eomnyd03	4_F_NYDHOG,{
+	if (checkquest(7603,HUNTING) == 2 && isbegin_quest(7604) == 0) {
+		mes "[尼德霍格]";
+		mes "又一次，做得好。";
+		mes "這可能還不夠好，但我希望它對你的成長有幫助。";
+		next;
+		mes "^4d4dff守護者 尼德霍格給予你大量的經驗值，作為擊敗穆斯貝爾斯可可的獎勵。^000000";
+		erasequest 7603;// Temple of the Demon God Phase 2
+		setquest 7604;// Temple of the Demon God Phase 2 Completed
+		getexp 1000000,500000;
+		close;
+	}
+	mes "[尼德霍格]";
+	mes "斯可可...斯可可與哈提...";
+	mes "這裡的一切都只是外部世界的複製品而已。";
+	mes "他不是什麼造物主。";
+	close;
+}
+
+1@eom,147,156,0	script	#fire_to_center	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	if (checkquest(7603,HUNTING) == 2 && isbegin_quest(7604) == 0) {
+		mes "[尼德霍格]";
+		mes "又一次，做得好。";
+		mes "這可能還不夠好，但我希望它對你的成長有幫助。";
+		next;
+		mes "^4d4dff守護者 尼德霍格給予你大量的經驗值，作為擊敗穆斯貝爾斯可可的獎勵。^000000";
+		setquest 7604;
+		erasequest 7603;
+		getexp 1000000,500000;
+		close;
+	}
+	warp 'map_eom$,98,115;
+	end;
+}
+
+// Center to Last
+1@eom,98,123,5	script	神祕青年#mocadt01	3097,5,5,{	// MM_MOROCC_ADT
+	end;
+OnTouch_:
+	if ('step == 8 && is_party_leader()) {
+		'step = 9;
+		initnpctimer;
+	}
+	end;
+OnTimer1000:
+	npctalk "你超出了我的預期。";
+	end;
+OnTimer4000:
+	npctalk "我接受你的挑戰。";
+	end;
+OnTimer7000:
+	npctalk "我將用你流淌的鮮血浸透大地，用你撕裂的血肉滋養它。";
+	end;
+OnTimer8000:
+	specialeffect EF_BEGINSPELL5;
+	enablenpc instance_npcname("#gate_to_last");
+	enablenpc instance_npcname("#moc_master");
+	specialeffect EF_READYPORTAL2,AREA, instance_npcname("#gate_to_last");
+	end;
+OnTimer10000:
+	npctalk "我會讓你見識真正的絕望深淵。";
+	end;
+OnTimer12000:
+	stopnpctimer;
+	specialeffect EF_ENTRY;
+	disablenpc instance_npcname("神祕青年#mocadt01");
+	end;
+}
+
+1@eom,98,127,0	warp	#gate_to_last	1,1,1@eom,102,186
+
+1@eom,101,194,3	script	#moc_master	3096,10,10,{
+	end;
+OnTouch_:
+	if ('step != 9)
+		end;
+	'step = 10;
+	npctalk "夢羅克：你們都已經到這裡了，我們就別浪費時間廢話了。";
+	initnpctimer;
+	end;
+OnTimer2000:
+	stopnpctimer;
+	npctalk "夢羅克：來吧，凡人！";
+	disablenpc instance_npcname("#moc_master");
+	donpcevent instance_npcname("#despair_god_main") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#despair_god_main	-1,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#despair_god_main");
+	'boss_phase = 1;
+	monster 'map_eom$,101,194, "半神",3096,1, instance_npcname("#despair_god_main") + "::OnMobDead";	// MM_MOROCC_KID
+	'boss_id = $@mobid[0];
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_MAXHP];
+
+	unitskillusepos 'boss_id,"WZ_METEOR",11,101,194,-50;
+
+	enablenpc instance_npcname("#mk_trap");
+	donpcevent instance_npcname("#mk_hpcheck") + "::OnStart";
+	donpcevent instance_npcname("#mk_combo") + "::OnEvent";
+	end;
+
+OnPhase02:
+	if ('boss_phase != 1)
+		end;
+	'boss_phase = 2;
+	stopnpctimer instance_npcname("#demigod_event_1");
+	stopnpctimer instance_npcname("#demigod_event_2");
+	stopnpctimer instance_npcname("#demigod_event_3");
+	stopnpctimer instance_npcname("#mk_hpcheck");
+	stopnpctimer instance_npcname("#mk_combo");
+	unittalk 'boss_id, "你得表現得比這更好才行！";
+	sleep 2000;
+	if ('boss_id == 0)
+		end;
+	getunitdata 'boss_id, .@data;
+	'boss_hp = .@data[UMOB_HP];
+	killmonster 'map_eom$, instance_npcname("#despair_god_main") + "::OnMobDead";
+	monster 'map_eom$,101,207, "半神",3096,1, instance_npcname("#despair_god_main") + "::OnMobDead";	// MM_MOROCC_KID
+	'boss_id = $@mobid[0];
+	setunitdata 'boss_id, UMOB_HP, 'boss_hp;
+	setunitdata 'boss_id, UMOB_MODE, (MD_MVP|MD_STATUSIMMUNE|MD_KNOCKBACKIMMUNE|MD_MVP|MD_DETECTOR);
+// todo: MD_SKILL_IMMUNE ?
+	sleep 2000;
+	if ('boss_id == 0)
+		end;
+	donpcevent instance_npcname("#moc_origin") + "::OnEnable";
+	end;
+
+OnPhase03:
+	if ('boss_phase != 2)
+		end;
+	'boss_phase = 3;
+	getunitdata 'boss_id, .@data;
+	.@hp = .@data[UMOB_HP] + ('boss_hp - .@data[UMOB_HP]) * 10;
+	'boss_hp = min(80000000,.@hp);
+	killmonster 'map_eom$, instance_npcname("#despair_god_main") + "::OnMobDead";
+	monster 'map_eom$,101,194, "半神",3096,1, instance_npcname("#despair_god_main") + "::OnMobDead";	// MM_MOROCC_KID
+	'boss_id = $@mobid[0];
+	setunitdata 'boss_id, UMOB_HP, 'boss_hp;
+	unittalk 'boss_id, "別再這麼固執了！";
+	sleep 2000;
+	if ('boss_id == 0)
+		end;
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	sleep 1000;
+	if ('boss_id == 0)
+		end;
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	sleep 1000;
+	if ('boss_id == 0)
+		end;
+	unitskilluseid 'boss_id, "MG_FIREBALL",1;
+	donpcevent instance_npcname("#mk_hpcheck") + "::OnStart";
+	donpcevent instance_npcname("#mk_combo") + "::OnEvent";
+	end;
+
+OnTest_hp:
+	if ('boss_id && mobcount( 'map_eom$, instance_npcname("#despair_god_main") + "::OnMobDead" ) > 0)
+		setunitdata 'boss_id, UMOB_HP, 2000000;
+	end;
+OnMobDead:
+	disablenpc instance_npcname("#despair_god_main");
+	killmonster 'map_eom$, instance_npcname("#despair_god_main") + "::OnMobDead";
+	stopnpctimer instance_npcname("#mk_combo");
+	stopnpctimer instance_npcname("#demigod_event_1");
+	stopnpctimer instance_npcname("#demigod_event_2");
+	stopnpctimer instance_npcname("#demigod_event_3");
+	stopnpctimer instance_npcname("#moc_meddling");
+	stopnpctimer instance_npcname("#mk_hpcheck");
+	donpcevent instance_npcname("#moc_origin") + "::OnEnd";
+
+	donpcevent instance_npcname("#demon_god_variables") + "::OnVariableReset";
+	donpcevent instance_npcname("#morocc_god") + "::OnStart";
+	end;
+}
+
+1@eom,4,2,0	script	#mk_combo	CLEAR_NPC,{
+	end;
+OnEvent:
+	initnpctimer;
+	'combo_is_allowed = true;
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer10000:
+	donpcevent instance_npcname("#demigod_event_" + rand(1,3)) + "::OnEvent";
+	stopnpctimer;
+	end;
+OnEnd:
+	stopnpctimer;
+	'combo_is_allowed = false;
+	end;
+}
+
+1@eom,4,1,0	script	#mk_hpcheck	CLEAR_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer6000:
+	getunitdata 'boss_id, .@data;
+	.@hp = .@data[UMOB_HP];
+	if ('boss_hp < .@hp) {
+		initnpctimer;
+		end;
+	}
+	.@hp_a = 'boss_hp - .@hp;
+	if (.@hp_a > 1000000) {
+		if (.@hp_a > 200000) {
+			.@hp_b = .@hp + (.@hp_a - 200000) * 3;
+			.@hp_b = min(80000000, .@hp_b);
+			setunitdata 'boss_id, UMOB_HP, .@hp_b;
+			mapannounce 'map_eom$, "尼德霍格：哇，他的再生能力前所未聞！別讓他再重生了！", bc_map, 0x00ff00;
+		}
+		unitskilluseid 'boss_id, "AL_HEAL",11;
+		getunitdata 'boss_id, .@data;
+		'boss_hp = .@data[UMOB_HP];
+		initnpctimer;
+		end;
+	}
+	'boss_hp = .@hp;
+	switch( 'boss_phase ) {	// process by phase instead of (officially) hp, just in case
+	case 1:
+		if (.@hp < 40000000)
+			donpcevent instance_npcname("#despair_god_main") + "::OnPhase02";
+		break;
+	case 2:
+		break;
+	case 3:
+		if (.@hp > 100000 && .@hp < 30000000)
+			donpcevent instance_npcname("#mk_trap") + "::OnTrap";
+		break;
+	}
+	initnpctimer;
+	end;
+}
+
+1@eom,1,1,0	script	#demigod_event_1	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "哇哈哈，有本事就躲開這招！";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer3000:
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer5000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_VERMILION",21,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	end;
+OnTimer7000:
+	stopnpctimer;
+	unitskilluseid 'boss_id, "CR_REFLECTSHIELD",1;
+	if ('combo_is_allowed)
+		donpcevent instance_npcname("#mk_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,1,1,0	script	#demigod_event_2	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "獻給懦弱靈魂的狂想曲...";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer3000:
+	getunitdata 'boss_id, .@data;
+	'bossx = .@data[UMOB_X];
+	'bossy = .@data[UMOB_Y];
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-2),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+2),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+2),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-2),-50;
+	end;
+OnTimer4000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-6),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+6),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+6),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-6),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-4),('bossy+4),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-4),('bossy-4),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+4),('bossy+4),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+4),('bossy-4),-50;
+	end;
+OnTimer5000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-10),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+10),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+10),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-10),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-8),('bossy+8),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-8),('bossy-8),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+8),('bossy+8),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+8),('bossy-8),-50;
+	end;
+OnTimer6000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-16),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+16),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+16),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-16),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-12),('bossy+12),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-12),('bossy-12),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+12),('bossy+12),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+12),('bossy-12),-50;
+	end;
+OnTimer7000:
+	stopnpctimer;
+	if ('combo_is_allowed)
+		donpcevent instance_npcname("#mk_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,1,1,0	script	#demigod_event_3	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "賦格曲為誰而奏？安魂曲為誰而鳴？";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer3000:
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer5000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_METEOR",5,(.@data[UMOB_X]-5),.@data[UMOB_Y],-50;
+	unitskillusepos 'boss_id,"WZ_METEOR",5,(.@data[UMOB_X]+5),.@data[UMOB_Y],-50;
+	unitskillusepos 'boss_id,"WZ_METEOR",5,.@data[UMOB_X],(.@data[UMOB_Y]+5),-50;
+	unitskillusepos 'boss_id,"WZ_METEOR",5,.@data[UMOB_X],(.@data[UMOB_Y]-5),-50;
+	end;
+OnTimer9000:
+	unittalk 'boss_id, "燒成灰燼吧！";
+	end;
+OnTimer11000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_VERMILION",21,.@data[UMOB_X],.@data[UMOB_Y],-50;	// assuming position on (0,0) is self
+	end;
+OnTimer13000:
+	stopnpctimer;
+	if ('combo_is_allowed)
+		donpcevent instance_npcname("#mk_combo") + "::OnEvent";
+	end;
+}
+
+1@eom,4,3,0	script	#moc_origin	CLEAR_NPC,{
+	end;
+OnEnable:
+	enablenpc instance_npcname("#moc_origin");
+	monster 'map_eom$,114,198, "創世之夢羅克", 3098,1, instance_npcname("#moc_origin") + "::OnMobDead1";
+// MM_MOROCC_ORIGIN
+	'miniboss_id[0] = $@mobid[0];
+	'miniboss_id[1] = 0;
+	initnpctimer;
+	end;
+OnTimer1000:
+	donpcevent instance_npcname("#moc_origin") + "::OnOriginheal";
+	if ('miniboss_id[0] < 1)
+		end;
+	getunitdata 'miniboss_id[0], .@data;
+	if (.@data[UMOB_HP] < 2200000) {
+		if ('miniboss_id[1] == 0) {
+			monster 'map_eom$,86,199, "安息之夢羅克", 3099,1, instance_npcname("#moc_origin") + "::OnMobDead2";
+// MM_MOROCC_REST
+			'miniboss_id[1] = $@mobid[0];
+		}
+	}
+	end;
+OnTimer2000:
+	initnpctimer;
+	end;
+
+OnOriginheal:
+	for ( .@i = 0; .@i < 11; .@i++ ) {
+		unitskilluseid 'boss_id, "AL_HEAL",11;
+		sleep 200;
+		if ('boss_id == 0)
+			end;
+	}
+	end;
+
+OnMobDead1:
+	'miniboss_id[0] = 0;
+	callsub S_Dead;
+OnMobDead2:
+	'miniboss_id[1] = 0;
+	callsub S_Dead;
+S_Dead:
+	if ('miniboss_id[1] == 0 && 'miniboss_id[0] > 0) {	// todo, custom text
+		unittalk 'miniboss_id[0], "---!!!";
+		setunitdata 'miniboss_id[0], UMOB_HP, 3000000;
+		stopnpctimer instance_npcname("#moc_meddling");
+	}
+	else if ('miniboss_id[1] == 0 && 'miniboss_id[0] == 0) {
+		donpcevent instance_npcname("#moc_origin") + "::OnEnd";
+		stopnpctimer instance_npcname("#moc_meddling");
+		donpcevent instance_npcname("#despair_god_main") + "::OnPhase03";
+	}
+	else {
+		unittalk 'miniboss_id[1], "我會讓你安息。這就是我的慈悲！！！"; // todo, custom text
+		setunitdata 'miniboss_id[1], UMOB_HP, 1000000;
+		donpcevent instance_npcname("#moc_meddling") + "::OnStart";
+	}
+	end;
+
+OnEnd:
+	stopnpctimer;
+	disablenpc instance_npcname("#moc_origin");
+	killmonster 'map_eom$, instance_npcname("#moc_origin") + "::OnMobDead1";
+	killmonster 'map_eom$, instance_npcname("#moc_origin") + "::OnMobDead2";
+	end;
+}
+
+1@eom,1,1,0	script	#moc_meddling	-1,{
+	end;
+OnStart:
+	initnpctimer;
+	getunitdata 'miniboss_id[1], .@data;
+	if (.@data[UMOB_HP] > 100000)
+		unitskillusepos 'miniboss_id[1],"WZ_METEOR",9,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	end;
+OnTimer5000:
+	initnpctimer;
+	end;
+}
+
+1@eom,4,6,0	script	#mk_trap	CLEAR_NPC,{
+	end;
+OnTrap:
+	.@label$ = instance_npcname("#mk_trap") + "::OnMobDead";
+	if (mobcount( 'map_eom$, .@label$ ) < 3) {
+		getunitdata 'boss_id, .@data;
+		monster 'map_eom$,.@data[UMOB_X]-4,.@data[UMOB_Y], "狂暴卡薩", 3089,1, .@label$;
+// MM_LOCO_KASA
+		monster 'map_eom$,.@data[UMOB_X],.@data[UMOB_Y]-4, "狂暴卡薩", 3089,1, .@label$;
+		monster 'map_eom$,.@data[UMOB_X]+4,.@data[UMOB_Y], "狂暴卡薩", 3089,1, .@label$;
+		monster 'map_eom$,.@data[UMOB_X],.@data[UMOB_Y]+4, "狂暴卡薩", 3089,1, .@label$;
+	}
+	end;
+OnMobDead:
+	end;
+}
+
+1@eom,102,222,3	script	#morocc_god	3097,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#morocc_god");
+	initnpctimer;
+	end;
+OnTimer2000:
+	mapannounce 'map_eom$, "這越來越有趣了。*竊笑*", bc_map, 0xff0000;
+	end;
+OnTimer6000:
+	mapannounce 'map_eom$, "喂，你該不會以為這就結束了吧？", bc_map, 0xff0000;
+	end;
+OnTimer10000:
+	disablenpc instance_npcname("#morocc_god");
+	end;
+OnTimer12000:
+	donpcevent instance_npcname("#despair_main") + "::OnStart";
+	end;
+OnTimer13000:
+	unittalk 'boss_id, "你還在等什麼？！";
+	end;
+OnTimer14000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer16000:
+	mapannounce 'map_eom$, "我要吸乾你的血！", bc_map, 0xff0000;
+	end;
+OnTimer17000:
+	stopnpctimer;
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"NPC_WIDESUCK",1,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	donpcevent instance_npcname("#ma_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#despair_main	-1,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#despair_main");
+	monster 'map_eom$,101,194, "絕望之神 夢羅克",3097,1, instance_npcname("#despair_main") + "::OnMobDead";	// MM_MOROCC_ADT
+	'boss_id = $@mobid[0];
+	end;
+OnMobDead:
+	disablenpc instance_npcname("#despair_main");
+	killmonster 'map_eom$, instance_npcname("#despair_main") + "::OnMobDead";
+	stopnpctimer instance_npcname("#morocc_god");
+	stopnpctimer instance_npcname("#ma_combo");
+	stopnpctimer instance_npcname("#despair_event_1");
+	stopnpctimer instance_npcname("#despair_event_2");
+	stopnpctimer instance_npcname("#despair_event_3");
+	stopnpctimer instance_npcname("#despair_event_4");
+	stopnpctimer instance_npcname("#despair_event_5");
+	mapannounce 'map_eom$, "別...別以為...這...就結束了...你們的...時間...已經...", bc_map, 0xff0000;
+	initnpctimer;
+
+	'step = 11;
+	donpcevent instance_npcname("#demon_god_variables") + "::OnVariableReset";
+	end;
+OnTimer2000:
+	stopnpctimer;
+	enablenpc instance_npcname("尼德霍格#eomnyd04");
+	end;
+
+OnTest_hp:
+	if ('boss_id && mobcount( 'map_eom$, instance_npcname("#despair_main") + "::OnMobDead" ) > 0)
+		setunitdata 'boss_id, UMOB_HP, 2000000;
+	end;
+}
+
+1@eom,4,8,0	script	#ma_combo	CLEAR_NPC,{
+	end;
+OnStart:
+	initnpctimer;
+	end;
+OnTimer10000:
+	donpcevent instance_npcname("#despair_event_" + rand(1,5)) + "::OnEvent";
+	stopnpctimer;
+	end;
+}
+
+1@eom,1,1,0	script	#despair_event_1	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "我會慢慢地、痛苦地將你燒死。";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer3000:
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer5000:
+	stopnpctimer;
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_METEOR",11,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	donpcevent instance_npcname("#ma_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#despair_event_2	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "你聽見這狂想曲了嗎？那是你的靈魂在痛苦中掙扎與尖叫的聲音！";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer3000:
+	getunitdata 'boss_id, .@data;
+	'bossx = .@data[UMOB_X];
+	'bossy = .@data[UMOB_Y];
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-2),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+2),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+2),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-2),-50;
+	end;
+OnTimer4000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-6),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+6),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+6),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-6),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-4),('bossy+4),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-4),('bossy-4),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+4),('bossy+4),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+4),('bossy-4),-50;
+	end;
+OnTimer5000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-10),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+10),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+10),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-10),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-8),('bossy+8),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-8),('bossy-8),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+8),('bossy+8),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+8),('bossy-8),-50;
+	end;
+OnTimer6000:
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-16),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+16),'bossy,-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy+16),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,'bossx,('bossy-16),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-12),('bossy+12),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx-12),('bossy-12),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+12),('bossy+12),-50;
+	unitskillusepos 'boss_id,"MG_THUNDERSTORM",20,('bossx+12),('bossy-12),-50;
+	end;
+OnTimer7000:
+	stopnpctimer;
+	donpcevent instance_npcname("#ma_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#despair_event_3	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "這就是死亡之雷！";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_WIDEWEB",1;
+	end;
+OnTimer4000:
+	unitskilluseid 'boss_id, "NPC_WIDEFREEZE",5;
+	end;
+OnTimer6000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_VERMILION",5,(.@data[UMOB_X]-7),.@data[UMOB_Y],-50;
+	unitskillusepos 'boss_id,"WZ_VERMILION",5,(.@data[UMOB_X]+7),.@data[UMOB_Y],-50;
+	unitskillusepos 'boss_id,"WZ_VERMILION",5,.@data[UMOB_X],(.@data[UMOB_Y]+7),-50;
+	unitskillusepos 'boss_id,"WZ_VERMILION",5,.@data[UMOB_X],(.@data[UMOB_Y]-7),-50;
+	end;
+OnTimer10000:
+	unittalk 'boss_id, "燃燒並化為美麗的火焰吧！";
+	end;
+OnTimer12000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_VERMILION",21,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	end;
+OnTimer14000:
+	stopnpctimer;
+	donpcevent instance_npcname("#ma_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#despair_event_4	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "我會取走你的性命。";
+	unitskilluseid 'boss_id, "NPC_FLAMECROSS",1;
+	end;
+OnTimer1000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"NPC_WIDESUCK",1,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	end;
+OnTimer5000:
+	stopnpctimer;
+	donpcevent instance_npcname("#ma_combo") + "::OnStart";
+	end;
+}
+
+1@eom,1,1,0	script	#despair_event_5	-1,{
+	end;
+OnEvent:
+	initnpctimer;
+	unittalk 'boss_id, "*輕笑*";
+	end;
+OnTimer2000:
+	unitskilluseid 'boss_id, "NPC_FIRESTORM",3;
+	end;
+OnTimer4000:
+	getunitdata 'boss_id, .@data;
+	unitskillusepos 'boss_id,"WZ_FIREPILLAR",10,.@data[UMOB_X],.@data[UMOB_Y],-50;
+	end;
+OnTimer8000:
+	stopnpctimer;
+	donpcevent instance_npcname("#ma_combo") + "::OnStart";
+	end;
+}
+
+1@eom,103,194,3	script	尼德霍格#eomnyd04	4_F_NYDHOG,{
+	if ('step < 11)
+		end;
+	if (isbegin_quest(7597) == 0 && checkquest(7593,HUNTING) == 2) {
+		mes "[尼德霍格]";
+		mes "我不知道該說些什麼。";
+		mes "我們阻止了那個想成為神的傢伙。";
+		mes "我們達成了目標。";
+		mes "但我仍然感到不安。";
+		cutin "ep14_nyd03.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "這個世界是在夢羅克的腦海中創造出來的。";
+		mes "他將永遠活在這個他無法完成的花園裡。";
+		cutin "ep14_nyd02.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "他可能還不知道自己的肉體已經被永遠毀滅了。";
+		mes "他的野心太大了，即便對他而言也是如此。";
+		mes "他想創造一個新世界並成為它的造物主，";
+		next;
+		mes "[尼德霍格]";
+		mes "但他自己什麼也創造不出來。";
+		mes "他拋棄了他身為魔王的肉體，只為了成為一個現存神祇的仿製品。";
+		cutin "ep14_nyd03.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "他化為了人類的形體。";
+		mes "他沒有足夠的創造力去重新定義神的概念。";
+		mes "他本身就是個矛盾。";
+		next;
+		mes "[尼德霍格]";
+		mes "現在我們需要及時逃出這個陷阱，回到現實。";
+		mes "這個世界只存在於魔神的腦海中。同一天將會永遠輪迴。";
+		next;
+		mes "[尼德霍格]";
+		mes "每個進入這個世界的人都會被拖入同一個輪迴之中。";
+		mes "從這個意義上來說，他成功地創造了自己的世界。";
+		cutin "ep14_nyd02.bmp",2;
+		next;
+		mes "[尼德霍格]";
+		mes "今天的絕望將會日復一日地重演。";
+		mes "即使我們知道這一點，我們還是會回來再次走上同樣的道路。我希望我每次都能在你身邊並肩作戰...";
+		cutin "ep14_nyd03.bmp",2;
+		next;
+		cutin "ep14_nyd04.bmp",2;
+		mes "[尼德霍格]";
+		mes "我說太多了。指揮官一定在等。讓我來驗證你的壯舉，好讓你去向他報告。";
+		mes "你今天做得很好。";
+		if (isbegin_quest(7593) == 1) {
+			erasequest 7593;// Demon God Subjugation
+			setquest 7597;// Fall of the False God
+		}
+		if (checkquest(7601,HUNTING) == 1)
+			erasequest 7601;
+		if (isbegin_quest(7602) > 0)
+			erasequest 7602;// Temple of the Demon God Phase 1 Completed
+		if (isbegin_quest(7603) == 1)
+			erasequest 7603;
+		if (isbegin_quest(7604) > 0)
+			erasequest 7604;// Temple of the Demon God Phase 2 Completed
+		if (isbegin_quest(7596) == 1)
+			erasequest 7596;
+	}
+	else {	// todo, custom text
+		mes "[尼德霍格]";
+		mes "...感覺事情好像還沒結束，";
+		mes "這裡非常接近夢羅克的精神世界，";
+		mes "他應該會在這裡繼續緬懷過去吧！";
+		cutin "ep14_nyd03.bmp",2;
+	}
+	next;
+	select("離開。");
+	mes "[尼德霍格]";
+	mes "當然。你一定累壞了。";
+	mes "讓我免費把你送到遠征隊的其他成員那裡吧。";
+	close2;
+	warp "moro_vol",91,87;
+	end;
+}
+
+1@eom,5,1,0	script	小幫手#eomtest	4_ENERGY_BLUE,{
+	mes "什麼事？";
+	next;
+	if (callfunc("F_GM_NPC",1854,0) < 1) {
+		mes "錯了。";
+		close;
+	}
+	mes "哪一隻首領？";
+	next;
+	switch( select( "布里納萊涅", "穆斯貝爾斯可可", "半神", "絕望之神" ) ) {
+	case 1:
+		mes "布里納萊涅的生命值已被設定為 2,000,000。";
+		donpcevent instance_npcname("布里納萊涅#brinpc01") + "::OnTest_hp";
+		close;
+	case 2:
+		mes "穆斯貝爾斯可可的生命值已被設定為 2,000,000。";
+		donpcevent instance_npcname("#skollmaster") + "::OnTest_hp";
+		close;
+	case 3:
+		mes "半神的生命值已被設定為 2,000,000。";
+		donpcevent instance_npcname("#despair_god_main") + "::OnTest_hp";
+		close;
+	case 4:
+		mes "絕望之神的生命值已被設定為 2,000,000。";
+		donpcevent instance_npcname("#despair_main") + "::OnTest_hp";
+		close;
+	}
+	end;
+}

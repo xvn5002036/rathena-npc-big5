@@ -1,0 +1,1959 @@
+//===== rAthena Script ======================================= 
+//= Wizard Job Quest
+//===== By: ================================================== 
+//= (Aegis) Translated by yoshiki, converted by kobra_k88
+//= Further bugfixed and tested by Lupus
+//===== Current Version: ===================================== 
+//= 3.3
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job Change quest for Wizard class.
+//===== Additional Comments: ================================= 
+//= 2.4 Rescripted to Aegis 10.3 standards. [L0ne_W0lf]
+//= 2.5 Several bugfixes with the help of Barron-Monster. [L0ne_W0lf]
+//= 2.5a More bugfixes care of Barron-Monster. [L0ne_W0lf]
+//= 2.5b Fixed tests calling on a non-existant label in "Room of x#Failed" npcs. [L0ne_W0lf]
+//= 2.5c Bug fixes. Cleaned up some NPCs slightly. [L0ne_W0lf]
+//= 2.6 Fixed Water Room not warping on time-up. [L0ne_W0lf]
+//= 2.7 Now uses enable and disable waitingroomevent. [L0ne_W0lf]
+//=     Other minor fixes to various NPCs.
+//= 2.7a Added end; :D (bugreport:2038) [Yommy]
+//= 2.8 Fixed donpcevent to doevent. (bugreport:2311) [SoulBlaker]
+//= 2.9 Reverted the change of donpcevent to doevent. [L0ne_W0lf]
+//=     Was probably cuased by a warp BEFORE a percentheal
+//= 3.0 Added Quest Log commands. [Kisuka]
+//= 3.1 Removed the need for use of 'goto.' [L0ne_W0lf]
+//= 3.2 Modified the quest to renewal. [Vali] (Thanks to Muad_Dib for the necessary info).
+//= 3.3 Fixed waitingroom bug. [Euphy]
+//============================================================ 
+
+gef_tower,111,37,4	script	巫師公會人員	70,{
+	if (Upper == 1) {
+		mes "[凱瑟琳]";
+		mes "？請問，我們以前見過面嗎...？";
+		mes "嘿?你變了好多！所以，發生了什麼事？";
+		next;
+		mes "[凱瑟琳]";
+		mes "我感覺你變得非常強大，是吧？";
+		mes "恭喜你，祝你生活好運！";
+		close;
+	}
+	if (BaseJob != Job_Mage) {
+		if (BaseJob == Job_Wizard) {
+			mes "[凱瑟琳]";
+			mes "既然你已經是巫師了，你跟我應該沒什麼事了吧...？";
+			mes "現在，失陪了。";
+			next;
+			mes "[凱瑟琳]";
+			if (Sex == SEX_MALE)
+				mes "嗯，如果你是想約我出去... 我很感激...呵呵呵。";
+			else
+				mes "嗯，如果你能給我介紹個帥哥... 我會很感激的...呵呵呵！";
+			close;
+		}
+		else if (BaseClass == Job_Novice) {
+			mes "[巫師公會人員]";
+			mes "我的天啊，是個初心者?你真是個可愛的小傢伙。";
+			mes "順帶一提，親愛的，這裡是巫師的地方。";
+			next;
+			mes "[巫師公會人員]";
+			mes "如果你對魔法感興趣，";
+			mes "去拜訪 ^0000FF魔法師^000000 公會吧。";
+		}
+		else {
+			mes "[巫師公會人員]";
+			mes "咦？是什麼風把你吹到這麼高的地方...？";
+			mes "如果你沒有什麼特別的事，請立刻離開。";
+			mes "你知道的，這裡是巫師的地方。";
+		}
+		next;
+		mes "[巫師公會人員]";
+		mes "那麼，再見了。";
+		close;
+	}
+	if (WIZ_Q == 0) {
+		mes "[巫師公會人員]";
+		mes "咦？你在這麼高的地方做什麼...？";
+		mes "所以是什麼風把你吹來的？";
+		next;
+		if (select("我想成為巫師。:...沒事。") == 1) {
+			mes "[巫師公會人員]";
+			mes "我明白了...嗯，你當然是想成為巫師，不然你也不會爬這麼多樓梯上來，對吧？";
+			mes "總之，我非常歡迎你。我將協助你成為一名巫師。";
+			next;
+			mes "[巫師公會人員]";
+			mes "我的名字是凱瑟琳·梅迪奇。只在你我之間說，我也是剛成為巫師的喔！";
+			mes "你可以叫我凱西。呵呵呵呵?";
+			next;
+			mes "[凱瑟琳]";
+			mes "很多人想成為巫師，但只有耐心和堅強的人最終能達成目標。";
+			mes "為了成為巫師，必須經歷艱難的測驗。";
+			next;
+			mes "[凱瑟琳]";
+			mes "而且只有 Job 等級達到 40 或以上的魔法師才有資格參加這些測驗。";
+			mes "低等級的魔法師對魔法的經驗還不足以成為巫師...";
+			next;
+			mes "[凱瑟琳]";
+			mes "好吧，當你申請轉職時，我會告訴你更多資訊。";
+			mes "所以！你現在要申請嗎？";
+			next;
+			if (select("是的，我要申請。:我再考慮一下。") == 1) {
+				if (JobLevel < 40) {
+					mes "[凱瑟琳]";
+					mes "嘿嘿，你剛才沒在聽我說話嗎？";
+					mes "我告訴過你，你需要至少達到 Job 等級 40 才能報名參加測驗...";
+					next;
+					mes "[凱瑟琳]";
+					mes "不用急，去體驗並更多地思考魔法的世界吧。";
+					mes "當我認為你符合資格時，我就會接受你的申請。";
+					close;
+				}
+				if (SkillPoint) {
+					mes "[凱瑟琳]";
+					mes "嗯...你很符合資格，但你還有一些未使用的技能點數。";
+					mes "你最好在再次申請前學習更多技能。";
+					close;
+				}
+				mes "[凱瑟琳]";
+				mes "那好吧，我接受你的申請。";
+				mes "你的名字是..." + strcharinfo(0) + "，對吧？我不確定我發音對不對？";
+				next;
+				mes "[凱瑟琳]";
+				mes "巫師轉職測驗分為 3 個部分。";
+				mes "第 1 部分，收集魔法物品。";
+				mes "第 2 部分，筆試。";
+				mes "最後一部分是魔法實戰測驗。";
+				next;
+				mes "[凱瑟琳]";
+				mes "在這些測驗中，我們免除 Job 等級 50 者的部分測驗。";
+				mes "如果一個魔法師已經學了這麼多，這足以向我們證明他為了成為巫師所付出的努力。";
+				next;
+				if (JobLevel == 50) {
+					mes "[凱瑟琳]";
+					mes "嗯，想想看，你已經 Job 等級 50 了！？";
+					mes "你一定非常努力。你將成為一名非常強大的巫師，我能在你身上感覺到。";
+					next;
+					mes "[凱瑟琳]";
+					mes "好的。那你已經通過第 1 項測驗了。";
+					mes "不過別太放鬆，還有 2 項測驗等著你。";
+					next;
+					mes "[凱瑟琳]";
+					mes "去跟角落裡的男人談談，他會給你剩下的測驗。";
+					mes "要小心。由於測驗的困難度，我們已經失去了很多魔法師。";
+					set WIZ_Q,3;
+					setquest 9015;
+					close;
+				}
+				mes "[凱瑟琳]";
+				mes "那麼，既然我已經有了你的申請和我需要的一切，我會給你一些關於第一項測驗的資訊。";
+				mes "你可以記在腦海裡或寫下來，都沒關係。但請務必記住它。";
+				next;
+				mes "[凱瑟琳]";
+				mes "第一項測驗是收集魔法物品。";
+				mes "最重要的是，你必須自己收集這些物品。";
+				next;
+				set wizard_m1,rand(1,2);
+				mes "[凱瑟琳]";
+				mes "你必須收集的物品是...";
+				if (rand(2)) {
+					set WIZ_Q,1;
+					setquest 9013;
+					mes "^3355FF紅色魔力礦石^000000 10 個，";
+					mes "^3355FF藍色魔力礦石^000000 10 個，";
+					mes "^3355FF黃色魔力礦石^000000 10 個，";
+				}
+				else {
+					set WIZ_Q,2;
+					setquest 9014;
+					mes "^3355FF藍色冰塊^000000 5 個，";
+					mes "^3355FF碎塊^000000 5 個，";
+					mes "^3355FF碎紅寶石^000000 5 個，";
+					mes "^3355FF風靈原石^000000 5 個，";
+				}
+				mes "...這太難了嗎？不，任何想成為巫師的人都應該至少能拿到這些物品。";
+				next;
+				mes "[凱瑟琳]";
+				mes "好吧，祝你好運。";
+				mes "我會很高興地等著。?呵呵。";
+				close;
+			}
+			mes "[凱瑟琳]";
+			mes "喔，那好吧，慢慢來。";
+			mes "反正我會一直待在這裡，接受申請...*嘆氣*...總之！?呵呵呵呵。";
+			close;
+		}
+		mes "[巫師公會人員]";
+		mes "天啊，真是個無趣的人。";
+		mes "你在這裡沒事做了，希望你別介意，現在快走吧！";
+		close;
+	}
+	else if (WIZ_Q == 1) {
+		mes "[凱瑟琳]";
+		mes "讓我看看，你把所有的物品都拿來了嗎？";
+		mes "那我們來檢查一下...";
+		next;
+		if (countitem(716) > 9 && countitem(717) > 9 && countitem(715) > 9) {
+			mes "[凱瑟琳]";
+			mes "完美！你拿到了所有的物品。我喜歡！?";
+			mes "這些物品將在我們公會派上大用場。?呵呵呵。";
+			next;
+			delitem 716,10; //Red_Gemstone
+			delitem 717,10; //Blue_Gemstone
+			delitem 715,10; //Yellow_Gemstone
+			set WIZ_Q,3;
+			changequest 9013,9015;
+			mes "[凱瑟琳]";
+			mes "太好了！你通過了第一項測驗。";
+			mes "但還有兩項測驗，所以別太放鬆。";
+			next;
+			mes "[凱瑟琳]";
+			mes "去跟角落裡的傢伙談談剩下的測驗。";
+			mes "可能會有點難，所以要小心，我可不希望你的下場和大多數來參加這些測驗的魔法師一樣...真是可憐的靈魂，願他們安息。?呵呵呵。";
+			close;
+		}
+		mes "[凱瑟琳]";
+		mes "嘿，這是什麼？嗯...我不認為你把東西都拿齊了！";
+		next;
+		mes "[凱瑟琳]";
+		mes "跑到這麼高的地方可能很辛苦，畢竟這裡海拔這麼高，但你還是得回去收集物品。";
+		mes "生命已經夠短暫了，別再浪費時間，去收集我之前告訴你的物品吧。";
+		next;
+		mes "[凱瑟琳]";
+		mes "^3355FF紅色魔力礦石^000000 10 個，";
+		mes "^3355FF藍色魔力礦石^000000 10 個，";
+		mes "^3355FF黃色魔力礦石^000000 10 個，";
+		mes "這次別忘了，把所有的物品都帶來，好嗎？...";
+		close;
+	}
+	else if (WIZ_Q == 2) {
+		mes "[凱瑟琳]";
+		mes "你把所有的物品都拿來了嗎？";
+		mes "讓我看看... 你拿對了嗎？...";
+		next;
+		if (countitem(991) > 4 && countitem(993) > 4 && countitem(990) > 4 && countitem(992) > 4) {
+			mes "[凱瑟琳]";
+			mes "完美！做得好...我很滿意！?呵呵";
+			mes "我們公會非常感謝這些物品，並會明智地使用它們。";
+			next;
+			delitem 991,5; //Crystal_Blue
+			delitem 993,5; //Yellow_Live
+			delitem 990,5; //Boody_Red
+			delitem 992,5; //Wind_Of_Verdure
+			set WIZ_Q,3;
+			changequest 9014,9015;
+			mes "[凱瑟琳]";
+			mes "很好。你現在通過第一項測驗了。";
+			mes "但你還有兩項測驗要完成，所以別太放鬆，因為接下來只會越來越難。?呵呵呵";
+			next;
+			mes "[凱瑟琳]";
+			mes "去跟角落裡的那個傢伙談談，參加剩下的測驗。";
+			mes "可能會有點難，所以要小心，我可不希望你的下場和大多數來參加這些測驗的魔法師一樣...真是可憐的靈魂，願他們安息。?呵呵呵。";
+			close;
+		}
+		mes "[凱瑟琳]";
+		mes "咦，這是什麼？我不認為你把東西都拿齊了？";
+		next;
+		mes "[凱瑟琳]";
+		mes "我很遺憾你大老遠跑上來，但請再去拿正確的物品。";
+		mes "別浪費時間了，去拿我一開始要求的物品。看在老天的份上...這是測驗中最簡單的部分。";
+		next;
+		mes "[凱瑟琳]";
+		mes "^3355FF藍色冰塊^000000 5 個，";
+		mes "^3355FF碎塊^000000 5 個，";
+		mes "^3355FF碎紅寶石^000000 5 個，";
+		mes "^3355FF風靈原石^000000 5 個，";
+		mes "這次別忘了，去收集正確的物品，好嗎？回頭見...";
+		close;
+	}
+	else if (WIZ_Q == 3) {
+		mes "[凱瑟琳]";
+		mes "怎麼了？你沒去跟角落裡的傢伙說話嗎？";
+		mes "你不能只靠帶來我要求的物品就成為巫師，不不，那樣是不行的...";
+		next;
+		mes "[凱瑟琳]";
+		mes "只有參加剩下的兩項測驗，你才能證明自己是當巫師的料。";
+		mes "我會等著的，快去吧。";
+		close;
+	}
+	else if (WIZ_Q == 4) {
+		mes "[凱瑟琳]";
+		mes "*嘆氣*...可憐的東西，真遺憾。";
+		mes "當你連那些簡單的問題都答不出來時，你怎麼會覺得自己能成為巫師？";
+		next;
+		mes "[凱瑟琳]";
+		mes "讓我看看... 我應該以學姊的身分給你一些提示嗎？";
+		mes "但我有點渴了，所以給我 1 瓶蘋果汁，我們就成交。?呵呵";
+		next;
+		switch(select("請給我一些提示。:我想自己再試一次！")) {
+		case 1:
+			if (countitem(531) > 0) {
+				delitem 531,1;
+				//Apple_Juice
+				mes "[凱瑟琳]";
+				mes "真好吃，蘋果汁最棒了...";
+				mes "咕嚕咕嚕咕嚕... 哈啊... ?呵呵";
+				next;
+				mes "[凱瑟琳]";
+				mes "那好吧，我給你第二項測驗的提示。";
+				next;
+				mes "[凱瑟琳]";
+				mes "他會問三種類型的問題。";
+				mes "關於魔法、怪物的問題...";
+				mes "以及魔法師...也就是法師的問題。";
+				next;
+				mes "[凱瑟琳]";
+				mes "要問哪些問題由他決定。";
+				mes "*嘆氣*...如果他剪個頭髮刮個鬍子，看起來會好得多...";
+				mes "他總是因為不打理自己而看起來髒兮兮的...*嘆氣*...真可惜，他本來可以成為少女殺手的。?呵呵呵呵";
+				next;
+				mes "[凱瑟琳]";
+				mes "總之，關於魔法的問題...";
+				mes "通常是關於你學過的法術。";
+				next;
+				mes "[凱瑟琳]";
+				mes "如果那是你還沒學過、沒經歷過，或是類似的事情...";
+				mes "我聽說有個很好的地方你可以參考，那裡整理得非常有條理。";
+				next;
+				mes "[凱瑟琳]";
+				mes "你只需要施放法術，你知道的...就是那個看起來像個粗體 *e* 符號的那個。";
+				mes "魔法咒語是... iro.ragnarokonline.com ?他們是這麼說的！";
+				mes "很奇怪的法術，你不覺得嗎？我自己也不知道怎麼讓它生效。";
+				next;
+				mes "[凱瑟琳]";
+				mes "還有關於怪物的問題。";
+				mes "自己去和牠們戰鬥並從中學習是最好的方法。";
+				next;
+				mes "[凱瑟琳]";
+				mes "但你知道在普隆德拉，有一個大圖書館。";
+				mes "你可以在那個圖書館找到大部分怪物的資訊。";
+				mes "去那裡多學習一下也會有用的。";
+				next;
+				mes "[凱瑟琳]";
+				mes "最後但同樣重要的是，關於魔法師的問題。";
+				mes "這是大多數其他人都無法教你的事...";
+				mes "因為你就是一名魔法師。";
+				next;
+				mes "[凱瑟琳]";
+				mes "當你連自己都不了解時，很難去了解別人，對吧？";
+				mes "所以如果你遇到這類問題，請仔細思考後再回答。";
+			}
+			else {
+				mes "[凱瑟琳]";
+				mes "就像我說的，如果你給我 1 瓶蘋果汁，我會考慮的。";
+				mes "如果不給... 嗯，你可以自己想想。嘿，這裡的規矩不是我定的，我只是遵守而已！不過這點倒是無法反駁。?呵呵呵呵";
+			}
+			break;
+		case 2:
+			mes "[凱瑟琳]";
+			mes "沒錯，當你自己解決問題時，你會獲得最大的成就感。";
+			mes "帶著這種精神去完成剩下的測驗吧！";
+		}
+		next;
+		mes "[凱瑟琳]";
+		mes "那好吧，回頭見！*祈禱手勢* 希望你別落得和之前那些人一樣的下場！願神安息他們的靈魂...咦？喔，沒事！?呵呵呵呵";
+		mes "快點，他在等你呢！";
+		close;
+	}
+	else if (WIZ_Q == 5) {
+		mes "[凱瑟琳]";
+		mes "呵呵呵呵?我一直都在聽。";
+		mes "答對那些問題做得很好。我想給你些東西，當作禮物...";
+		next;
+		mes "[凱瑟琳]";
+		mes "你還有一項測驗要過，對吧？";
+		mes "再一點點你就有資格成為巫師了，到時候我再把禮物給你。?呵呵";
+		next;
+		mes "[凱瑟琳]";
+		mes "再見啦，嗯...希望還能見面！";
+		mes "他在等你！";
+		close;
+	}
+	else if (WIZ_Q == 6) {
+		mes "[凱瑟琳]";
+		mes "咦，你測驗中途離開了嗎？";
+		mes "你...*嘆氣*...我沒想到你會做出這種不光彩的事。";
+		next;
+		mes "[凱瑟琳]";
+		if (Sex == SEX_MALE) {
+			mes "就算你是個魔法師，但一個男人怎麼能這麼軟弱？！";
+			mes "嗯，至少你還活著。回去這次再努力點吧。?呵呵呵呵";
+		}
+		else {
+			mes "別因為你是個女孩就裝弱。看看我！我做到了，你也可以。你不能奢求同情。";
+			mes "你大老遠跑來這裡就是為了成為巫師！來吧，你做得到的！！";
+			next;
+			mes "[凱瑟琳]";
+			mes "我同意這很困難，但還不到放棄的地步。";
+			mes "你才最應該找到力量和耐心來完成這項測驗！";
+		}
+		next;
+		mes "[凱瑟琳]";
+		mes "所以，這次再努力點...";
+		mes "他在等你！";
+		close;
+	}
+	else if (WIZ_Q == 7) {
+		if (JobLevel < 40) {
+			set WIZ_Q,0;
+			mes "[凱瑟琳]";
+			mes "嘿，你怎麼還不懂？";
+			mes "我說過你必須至少 Job 等級 40 才能轉職，懂嗎？";
+			next;
+			mes "[凱瑟琳]";
+			mes "沒什麼好急的，你何不花點時間學習呢？";
+			mes "時機成熟時，我會張開雙臂歡迎你。";
+			close;
+		}
+		if (SkillPoint) {
+			mes "[凱瑟琳]";
+			mes "你完成所有的測驗了嗎？喔，糟糕，看來你還有剩餘的技能點數。";
+			mes "用你剩下的點數學習其他技能，然後再來跟我說話。";
+			close;
+		}
+		mes "[凱瑟琳]";
+		mes "哇喔喔喔喔喔喔...你完成了所有的測驗？！";
+		mes "恭喜，恭喜，恭喜！萬歲！?呵呵呵呵呵呵";
+		next;
+		mes "[凱瑟琳]";
+		mes "嗯，不用等了，我恭喜你。我特此任命你為巫師。";
+		next;
+		completequest 9018;
+		callfunc "Job_Change",Job_Wizard;
+		callfunc "F_ClearJobVar";		// clears all job variables for the current player
+		mes "[凱瑟琳]";
+		mes "既然你現在是巫師了，就要表現得像個巫師，懂嗎？";
+		mes "我們巫師必須小心，因為我們擁有魔法的終極力量。";
+		next;
+		mes "[凱瑟琳]";
+		mes "不要在城鎮裡無故施放法術，也不要用法術打擾其他正在戰鬥的人。";
+		mes "巫師的魔法是用在自己與怪物的戰鬥中的。";
+		next;
+		mes "[凱瑟琳]";
+		mes "去加入其他人的隊伍並繼續訓練吧。";
+		mes "還有...喔，等等，我為你準備了一份禮物，等一下。";
+		next;
+		mes "[凱瑟琳]";
+		mes "*翻找 翻找*...";
+		mes "*沙沙 沙沙*...";
+		next;
+		getitem 505,6; //Blue_Potion
+		mes "[凱瑟琳]";
+		mes "給你。希望你在需要的時候能好好利用它。?呵呵";
+		mes "這是我送你的禮物，所以不要拿去賣掉。自己留著用，好嗎？";
+		next;
+		mes "[凱瑟琳]";
+		mes "那麼...*嘆氣*...作為一名巫師過著美好的生活吧，成為最強的巫師！";
+		close;
+	}
+}
+
+gef_tower,102,24,2	script	陰沉的巫師#wiz	735,{
+	if (BaseJob != Job_Mage) {
+		if (BaseJob == Job_Wizard) {
+			mes "[勞雷爾]";
+			mes "*咳* *咳咳* 你想要什麼？";
+			mes "如果你是個使用魔法的人，那你就需要確保自己對此有充分的了解。";
+			next;
+			mes "[勞雷爾]";
+			mes "不要不誠實或沒禮貌地生活，否則總有一天你會被無法控制的法術困住，然後「砰」的一聲，你就死了！";
+			if (Sex == SEX_MALE) {
+				mes "如果你不希望那種事發生，那就學學怎麼正確使用法術吧！";
+				next;
+				mes "[勞雷爾]";
+				mes "如果你沉迷於對高等魔法的熱愛，你可能會過著殘廢的生活。?哈哈";
+			}
+			else {
+				mes "所以學著正確使用魔法吧，否則你還不如放棄使用魔法。";
+				next;
+				mes "[勞雷爾]";
+				mes "如果你不想那樣，那就去搭訕男人什麼的！?哈哈哈哈";
+				mes "如果你不注意自己，總有一天你會被魔法吞噬...";
+			}
+			close;
+		}
+		else if (BaseJob == Job_Priest) {
+			mes "[勞雷爾]";
+			mes "走開，為教會工作的人！";
+			mes "魔法排斥神聖力量，天啊...你弄亂了我的氣場。";
+			next;
+			mes "[勞雷爾]";
+			mes "而且，*咳咳* *咳咳* 我現在的健康狀況也不是很好...";
+			mes "不要再靠近了，快離開！";
+			close;
+		}
+		else if (BaseClass == Job_Novice) {
+			mes "[勞雷爾]";
+			mes "為什麼像你這樣的小傢伙會來這裡？！";
+			mes "滾開！?哈哈哈哈";
+			close2;
+			warp "geffen",120,110;
+			end;
+		}
+		mes "[勞雷爾]";
+		mes "*哈啾* *咳咳* 嗚嗚...我全身都在痛。我感覺像是被困在冰水浴缸裡！";
+		next;
+		mes "[勞雷爾]";
+		mes "你想要什麼？天啊...快滾開好嗎？";
+		close;
+	}
+	if (WIZ_Q == 0) {
+		mes "[勞雷爾]";
+		mes "*咳咳* *咳咳* *哈啾* 我不知道你是誰，也不知道你做什麼的，但我跟你沒什麼好談的。";
+		next;
+		mes "[勞雷爾]";
+		mes "走開！滾開！";
+		close;
+	}
+	else if (WIZ_Q == 1 || WIZ_Q  == 2) {
+		mes "[勞雷爾]";
+		mes "哈哈哈哈?你就是那個想成為巫師的人？！";
+		next;
+		mes "[勞雷爾]";
+		mes "*哈啾* 如果你就像以前那樣生活，你所要做的就是稍微打點怪，過著輕鬆的日子...";
+		next;
+		mes "[勞雷爾]";
+		mes "*咳咳* *咳咳* 讓我們看看你作為巫師能過得多好。?哈哈哈哈";
+		close;
+	}
+	else if ((WIZ_Q == 3) || (WIZ_Q == 4)) {
+		if (WIZ_Q == 3) {
+			mes "[勞雷爾]";
+			mes "*咳咳* *咳咳*...你一定通過了第一項測驗。";
+			mes "好吧，從現在起我是負責你測驗的巫師。我的名字是『勞雷爾·阿斯帕拉古斯』。";
+			next;
+			mes "[勞雷爾]";
+			mes "*哈啾* 現在還不算太晚，你難道不想回城鎮享受平靜的生活嗎？";
+			next;
+			mes "[勞雷爾]";
+			mes "哈哈哈哈?你不知道這有多危險...去接觸高等魔法。";
+			next;
+			if (select("我想作為一名普通的魔法師生活。:我想繼續參加測驗。") == 1) {
+				mes "[勞雷爾]";
+				mes "哈哈哈哈? *哈啾* 明智的選擇...*咳咳* *咳咳*?";
+				mes "最好連想都別想作為一名巫師的生活。高...高...*哈啾* 高等魔法根本不是給人類使用的！";
+				next;
+				mes "[勞雷爾]";
+				mes "安靜地離開這座塔頂，永遠不要回頭。";
+				mes "就用你現在擁有的力量平靜地生活吧。";
+				close;
+			}
+			mes "[勞雷爾]";
+			mes "*哈啾* 哈哈哈哈?這裡有個蠢貨！";
+			mes "那麼，就讓我們看看你有多厲害。*咳咳* 我想親眼看看！";
+			next;
+			mes "[勞雷爾]";
+			mes "*哈啾* 那麼我們開始測驗吧！";
+			mes "如果你沒有全部答對，你就失敗了。哈哈哈哈哈哈哈哈哈?";
+			next;
+			mes "[勞雷爾]";
+			mes "我會問你 10 個問題，所以給我正確的答案。";
+			mes "如果你答錯了，我不會告訴你錯在哪！";
+			if(checkquest(9016) == -1) {
+				changequest 9015,9016;
+			}
+			next;
+			mes "[勞雷爾]";
+			mes "*咳咳* *咳咳* 那麼問題來了！";
+		}
+		else if (WIZ_Q == 4) {
+			mes "[勞雷爾]";
+			mes "哈哈哈哈?你那麼絕望嗎？*哈啾* 真是個麻煩精...";
+			next;
+			mes "[勞雷爾]";
+			mes "既然你不甘於穩定平靜的生活，我就再給你一次機會...";
+			next;
+			mes "[勞雷爾]";
+			mes "如果你答錯任何一題，那就放棄吧。你不會有成為巫師的天賦的！?哈哈哈哈";
+			next;
+			if (select("因為你，我現在想作為一名普通的魔法師生活了。:我想繼續參加測驗。") == 1) {
+				mes "[勞雷爾]";
+				mes "哈哈哈哈?真讓人驚訝，從你口中說出這話，這是個非常明智的選擇...*咳咳* *咳咳*";
+				mes "如果我是你，我永遠、永遠不會再夢想成為巫師了。高...高...*哈啾* 高等魔法根本不是給人類使用的。";
+				next;
+				mes "[勞雷爾]";
+				mes "就安靜地離開這座塔頂，永遠不要回頭。";
+				mes "用你現在擁有的力量平靜地生活吧。";
+				close;
+			}
+			mes "[勞雷爾]";
+			mes "哈哈哈哈哈哈哈?這裡有個蠢貨！";
+			mes "那麼，讓我們看看你能有多厲害！*哈啾* 我想親眼看看。";
+			next;
+			mes "[勞雷爾]";
+			mes "那麼我們開始測驗吧！";
+		}
+		next;
+		switch(rand(1,3)) {
+		case 1:
+			mes "[勞雷爾]";
+			mes "1. 以下哪一個不是學習火之獵殺的先決條件？";
+			next;
+			if (select("火箭術 Lv 4:火球術 Lv 5:光獵 Lv 1:聖靈召喚 Lv 4") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "2. 不論怪物先前的屬性為何，當你對牠施放冰凍術時，牠的屬性會變成什麼？";
+			next;
+			if (select("水:地:火:風") == 1)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "3. 當你完全精通聖靈召喚時，使用該法術增加的 MATK 比例是多少？";
+			next;
+			if (select("1.6 倍:1.7 倍:2 倍:20 倍") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "4. 施放石化術時你需要什麼物品？";
+			next;
+			if (select("碎紅寶石:藍色魔力礦石:黃色魔力礦石:紅色魔力礦石") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "5. 以下哪個不是精通暗之障壁所需要的？";
+			next;
+			if (select("聖靈召喚 Lv 4:靈魂打擊 Lv 5:禪心 Lv 6:暗之障壁 Lv 7") == 3)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "6. 不計算 INT 加成，當你學習了禪心 Lv 7 時，每 10 秒會恢復多少 SP？";
+			next;
+			if (select("14:21:28:35") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "7. 使用能量外套時，當你剩餘 50% 的 SP，受到攻擊時會消耗多少 SP，且傷害減少多少百分比？";
+			next;
+			if (select("減少傷害 18%，消耗 SP 1.5%:減少傷害 18%，消耗 SP 2%:減少傷害 24%，消耗 SP 1.5%:減少傷害 24%，消耗 SP 2%") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "8. 使用暗之障壁 Lv 6 時會消耗多少 SP，且可以抵擋幾次攻擊？";
+			next;
+			if (select("SP 40，6 次:SP 35，6 次:SP 40，7 次:SP 35，7 次") == 3)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "9. 使用雷爆術 Lv 10 需要多少 SP？";
+			next;
+			if (select("84:74:64:54") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "10. 哪一個技能在伊斯魯得海底洞穴訓練時最有用？";
+			next;
+			if (select("雷擊術:火箭術:冰箭術:光獵") == 1)
+				set .@wizard_t,.@wizard_t+10;
+			break;
+		case 2:
+			mes "[勞雷爾]";
+			mes "1. 你可以從哪個怪物身上獲得有洞的圓盾？";
+			next;
+			if (select("盜蟲:大嘴鳥:蟲蛹:犬妖 (鐵鎚)") == 3)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "2. 以下哪個怪物對低等級的魔法師來說最容易狩獵？";
+			next;
+			if (select("食人花:基爾瑟:巨石怪:迷幻之王") == 1)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "3. 哪個怪物不會受到石化術的影響？";
+			next;
+			if (select("長老樹精:惡靈:麥加:馬克") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "4. 當使用風屬性武器攻擊 Lv 3 的水屬性怪物時，傷害百分比是多少？";
+			next;
+			if (select("125%:150%:175%:200%") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "5. 如果沙漠之狼寶寶和吸血蝙蝠打架，哪個會贏？";
+			next;
+			if (select("沙漠之狼寶寶:吸血蝙蝠:都不會:我不知道") == 1)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "6. 以下哪個不能成為寵物？";
+			next;
+			if (select("波波利:羅達蛙:溜溜猴:毒魔菇") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "7. 選擇對火屬性攻擊較弱的怪物。";
+			next;
+			if (select("短劍哥布靈:鏈錘哥布靈:流星錘哥布靈:鐵鎚哥布靈") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "8. 以下哪個的防禦力最高？";
+			next;
+			if (select("角蠅:蒼蠅:安德列:焦糖") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "9. 選擇不同種族的怪物。";
+			next;
+			if (select("波利:波利之王:幽靈波利:蘑菇") == 3)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "10. 以下哪個不是不死屬性的怪物？";
+			next;
+			if (select("海盜之王:邪骨戰士:人魚:卡利斯格") == 3)
+				set .@wizard_t,.@wizard_t+10;
+			break;
+		case 3:
+			mes "[勞雷爾]";
+			mes "1. 哪個素質對魔法師來說最重要？";
+			next;
+			if (select("INT:AGI:DEX:VIT") == 1)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "2. 哪個屬性沒有「箭術」類型的攻擊？";
+			next;
+			if (select("水:地:火:風") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "3. 選擇與魔法師無關的敘述。";
+			next;
+			if (select("低落的體力。:遠距離攻擊。:擅長賣東西。:魔法防禦力高。") == 3)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "4. 哪個城鎮是魔法師的故鄉？";
+			next;
+			if (select("普隆德拉:夢羅克:艾爾貝塔:吉芬") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "5. 以下哪張卡片與 INT 無關？";
+			next;
+			if (select("安德列蟲卵卡片:兵蟻卡片:沙漠之狼寶寶卡片:長老樹精卡片") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "6. 與其他職業相比，魔法師擅長什麼？";
+			next;
+			if (select("優秀的歌唱能力:優秀的演戲能力:優秀的舞蹈技巧:優秀的魔法技能") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "7. 魔法師在 Job Lv 40 時的 INT 加成是多少？";
+			next;
+			if (select("8:7:6:5") == 4)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "8. 魔法師不能裝備哪件物品？";
+			next;
+			if (select("笨拙短劍:學生帽:涼鞋:無頭騾的眼球") == 2)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "9. 製作魔法師轉職測驗的 3 號混合液時，需要什麼觸媒？";
+			next;
+			if (select("藍色魔力礦石:紅色魔力礦石:黃色魔力礦石:碎紅寶石") == 1)
+				set .@wizard_t,.@wizard_t+10;
+			mes "[勞雷爾]";
+			mes "10. 哪張卡片與魔法無關？";
+			next;
+			if (select("馬爾杜克卡片:麥加卡片:樹精卡片:瑪雅卡片") == 2)
+				set .@wizard_t,.@wizard_t+10;
+		}
+		mes "[勞雷爾]";
+		if (WIZ_Q == 4) {
+			mes "做得好，你回答完了所有的問題...如果你有 Zeny，去給自己買些藥水什麼的吧。哈哈...";
+			next;
+			mes "[勞雷爾]";
+			mes "你的分數是... " + .@wizard_t + " 分.....";
+			if (.@wizard_t == 100) {
+				set WIZ_Q,5;
+				changequest 9016,9017;
+				mes "哈哈哈哈哈哈哈?做得好，你通過了第二項測驗。";
+				mes "雖然不像我當初一次就過，但我會讓你過關的...";
+				next;
+				mes "[勞雷爾]";
+				mes "*哈啾* 先別放鬆，還有第三項也是最後一項測驗。";
+				mes "我建議你在準備最後測驗時休息一下。你會需要它的。哈哈哈哈?";
+				close;
+			}
+			else if (.@wizard_t == 90) {
+				set WIZ_Q,5;
+				changequest 9016,9017;
+				mes "哈哈哈?因為你只錯了一題，你通過了第二項測驗。";
+				mes "雖然不像我當初一次就過，但我會讓你過關的...";
+				next;
+				mes "[勞雷爾]";
+				mes "*哈啾* 先別放鬆，還有第三項也是最後一項測驗。";
+				mes "我建議你在準備最後測驗時休息一下。你會需要它的。哈哈哈哈?";
+				close;
+			}
+			else if (.@wizard_t == 80) {
+				set WIZ_Q,5;
+				changequest 9016,9017;
+				mes "天啊...你考得不是很好，但你通過了第二項測驗。";
+				mes "雖然不像我當初一次就過，但我會讓你過關的...";
+				next;
+				mes "[勞雷爾]";
+				mes "*哈啾* 先別放鬆，還有第三項也是最後一項測驗。";
+				mes "我建議你在準備最後測驗時休息一下。你會需要它的。哈哈哈哈?";
+				close;
+			}
+			else {
+				mes "你失敗了。去多讀點書吧！";
+				next;
+				mes "[勞雷爾]";
+				mes "*咳咳* *咳咳* 你真的認為以你這種平庸的水準能成為巫師嗎？";
+				mes "滾開！如果你現在是巫師，我對付的那些怪物立刻就會把你吃掉！";
+				close;
+			}
+		}
+		mes "嗯...做得好，你回答完了所有的問題，去給自己買些藥水什麼的吧，前提是如果你有 Zeny 的話。哈哈哈哈哈哈哈?";
+		next;
+		mes "[勞雷爾]";
+		mes "你的分數是... " + .@wizard_t + " 分！";
+		if (.@wizard_t == 100) {
+			set WIZ_Q,5;
+			changequest 9016,9017;
+			mes "*咳咳* *咳咳* 做得好，你通過了第二項測驗。";
+			next;
+			mes "[勞雷爾]";
+			mes "哈哈哈哈?先別放鬆，還有第三項測驗。";
+			mes "*哈啾* 我建議你在準備最後測驗時休息一下...哈哈哈哈哈?";
+			close;
+		}
+		else if (.@wizard_t == 90) {
+			set WIZ_Q,5;
+			changequest 9016,9017;
+			mes "哈哈哈哈?既然你只錯了一題，我就讓你過關吧。你通過了第二項測驗。";
+			next;
+			mes "[勞雷爾]";
+			mes "哈哈哈哈?先別放鬆，還有第三項測驗。";
+			mes "*哈啾* 我建議你在準備最後測驗時休息一下...哈哈哈哈哈?";
+			close;
+		}
+		else {
+			set WIZ_Q,4;
+			mes "你失敗了。我會讓你再回來考一次的...在你學到更多關於我問你的問題的知識之後。";
+			next;
+			mes "[勞雷爾]";
+			mes "嘖...不夠，不夠！你真的認為憑你這點知識就能成為巫師嗎？";
+			mes "滾開！如果你現在是巫師，我對付的那些怪物立刻就會把你吃掉！";
+			close;
+		}
+	}
+	else if (WIZ_Q == 5) {
+		mes "[勞雷爾]";
+		mes "好的，希望你休息夠了。哈哈哈哈哈?";
+		mes "那麼我們開始最後一項測驗。";
+		next;
+		mes "[勞雷爾]";
+		mes "我應該解釋一下這最後一項測驗嗎？這很難，我不會對你隱瞞這點...";
+		next;
+		if (select("不，沒關係，我準備好了。:我想聽聽看。") == 1) {
+			mes "[勞雷爾]";
+			mes "真是個魯莽的人。你是那種不經大腦就衝進戰鬥的類型，你到底在這裡做什麼，怎麼不去普隆德拉騎士團？去吧，放手去做吧！*咳咳* 如果你最後死了可不是我的錯。";
+			mes "就把自己當成玻璃大砲吧...因為怪物們會把你撕成碎片的。哈哈哈哈哈哈哈哈哈?";
+			next;
+			set WIZ_Q,6;
+			savepoint "geffen",120,107,1,1;
+			mes "[勞雷爾]";
+			mes "那麼，如你所願。我現在就把你送過去。";
+			mes "喔，如果你在隧道盡頭看到一道白光，那就代表你很可悲，因為你失敗了！哈哈哈哈哈?";
+			close2;
+			warp "job_wiz",57,154;
+			end;
+		}
+		mes "[勞雷爾]";
+		mes "真是個投入的人。很好，我會解釋。";
+		mes "無論這最後一項測驗看起來有多難，只要你照我說的做，你就能快速且輕鬆地完成它。";
+		next;
+		mes "[勞雷爾]";
+		mes "最終測驗總共有 3 個部分。";
+		mes "順序是水之房間、地之房間、火之房間。在每個房間裡，都有該特定屬性的怪物。";
+		next;
+		mes "[勞雷爾]";
+		mes "一旦你進去，你就會知道那裡有什麼怪物。如果你使用帶有 *哈啾*";
+		mes "正確屬性的攻擊，這應該不會太難。哈哈?";
+		next;
+		mes "[勞雷爾]";
+		mes "一旦你在規定時間內擊敗任何一個房間裡的所有怪物...";
+		mes "你就會被傳送到下一個房間。";
+		next;
+		mes "[勞雷爾]";
+		mes "在這三個房間都通關後，測驗就結束了。";
+		mes "你將成為一名受高等魔法力量控制的巫師！要知道...再也回不去輕鬆的生活了。";
+		next;
+		mes "[勞雷爾]";
+		mes "哈哈哈?你看起來被嚇到了。你知道，現在回頭過著輕鬆的生活還不算太晚。";
+		mes "如果你願意，我現在就可以送你回城鎮...你想怎麼做？";
+		next;
+		if (select("繼續測驗。:我想回去，因為我心裡七上八下的。") == 1) {
+			set WIZ_Q,6;
+			savepoint "geffen",120,107,1,1;
+			mes "[勞雷爾]";
+			mes "你確實非常有決心。好吧！哈哈哈哈哈哈哈?";
+			mes "*咳咳* *咳咳* 如你所願，我們開始最終測驗！";
+			close2;
+			warp "job_wiz",57,154;
+			end;
+		}
+		set WIZ_Q,6;
+		mes "[勞雷爾]";
+		mes "好主意。這對你來說是更好的選擇。哈哈哈哈哈?";
+		mes "回去過輕鬆的日子吧，高等魔法可不是你這種人該掌握的力量。";
+		close2;
+		warp "geffen",120,110;
+		end;
+	}
+	else if (WIZ_Q == 6) {
+		if (WIZ_Q2 == 6) {
+			mes "[勞雷爾]";
+			mes "哈哈哈哈哈哈哈?我從沒見過像你這麼...這麼...*哈啾* 固執的人。";
+			mes "所以你想再試一次，是嗎？即使我之前嘲笑過你的失敗？？";
+			next;
+			mes "[勞雷爾]";
+			mes "那好吧，我有個提議。既然你可能已經筋疲力盡了，而且我清楚地看到你眼中燃燒著對高等魔法的渴望...";
+			mes "哈哈哈哈哈?沒錯！去幫我拿一張 ^3355FF老舊魔法圖^000000 來。";
+			next;
+			set WIZ_Q2,WIZ_Q2+1;
+			mes "[勞雷爾]";
+			mes "如果不行的話，你可以再考一次測驗...";
+			mes "好吧，我現在先送你去參加測驗。哈哈哈哈?";
+			close2;
+			warp "job_wiz",57,154;
+			end;
+		}
+		else if (WIZ_Q2 > 6) {
+			mes "[勞雷爾]";
+			mes "喔！所以你回來了？哈哈哈哈哈?";
+			mes "*咳咳* *咳咳* 你想再考一次測驗嗎？還是你帶了 ^3355FF老舊魔法圖^000000 來了？";
+			next;
+			if (select("繼續測驗。:老舊魔法圖...") == 1) {
+				savepoint "geffen",120,107,1,1;
+				mes "[勞雷爾]";
+				mes "哈哈哈?好吧，至少你還有些精神。";
+				mes "我會再把你送進去，再試著死一次好嗎？哈哈哈哈哈哈哈哈哈?";
+				close2;
+				warp "job_wiz",57,154;
+				end;
+			}
+			if (countitem(618) > 0) {
+				delitem 618,1; //Worn_Out_Scroll
+				mes "[勞雷爾]";
+				mes "哈哈哈哈哈哈哈哈哈? *咳咳* *咳咳* 所以你最後帶了一張這個來，是嗎？做得好...";
+				mes "我想有了這個我就可以繼續我的研究了...";
+				next;
+				set WIZ_Q2,0;
+				set WIZ_Q,7;
+				mes "[勞雷爾]";
+				mes "雖然你不是頂級巫師的料，但我看得出來你很認真想要高等魔法。我會告訴凱瑟琳你通過了。哈哈哈哈哈哈哈哈哈?";
+				mes "你在這裡經歷了很多麻煩，而這正是我們挑選巫師的真正目的。只有那些致力於這門藝術的人才能成為巫師。祝你好運。變得更強大吧。哈哈哈哈哈?";
+				close;
+			}
+		}
+		mes "[勞雷爾]";
+		mes "*哈啾* 什麼？你想再考一次測驗？";
+		mes "天啊...你已經在戰鬥測驗中失敗了！哈哈哈哈哈哈哈哈哈?你就那麼喜歡魔法嗎？";
+		next;
+		mes "[勞雷爾]";
+		mes "既然你這麼弱，無法自己完成這最終測驗...你需要一個獨立的測驗來幫你一把。";
+		mes "*咳咳* 如果你通不過戰鬥測驗，那就在這個測驗中好好表現吧。哈哈哈哈哈哈哈?";
+		next;
+		mes "[勞雷爾]";
+		mes "好吧，如果你打算成為巫師，最好回答這些問題。哈哈哈哈哈哈哈?";
+		next;
+		mes "[勞雷爾]";
+		mes "1. 選擇屬性與其他怪物不同的怪物。";
+		next;
+		if (select("螳螂:庫克雷:基爾瑟:焦糖") == 2)
+			set .@wizard_t,.@wizard_t+20;
+		mes "[勞雷爾]";
+		mes "2. 選擇不會撿拾物品的怪物。";
+		next;
+		if (select("溜溜猴:麥加:金屬波利:傑洛米") == 4)
+			set .@wizard_t,.@wizard_t+20;
+		mes "[勞雷爾]";
+		mes "3. 這些怪物中哪一個不會感知法術詠唱？";
+		next;
+		if (select("瑪麗娜:兵蟻:蠍子:基爾瑟") == 1)
+			set .@wizard_t,.@wizard_t+20;
+		mes "[勞雷爾]";
+		mes "4. 選擇對氣泡蟲最有效的法術。";
+		next;
+		if (select("冰箭術:火箭術:雷擊術:石化術") == 3)
+			set .@wizard_t,.@wizard_t+20;
+		mes "[勞雷爾]";
+		mes "5. 選擇可以移動的怪物。";
+		next;
+		if (select("海葵:曼陀羅魔花:將軍魔碑:傘蜥") == 4)
+			set .@wizard_t,.@wizard_t+20;
+		mes "[勞雷爾]";
+		mes "*噗* 答對它，這樣我就不用再問一次了。";
+		next;
+		mes "[勞雷爾]";
+		mes "你得到了 " + .@wizard_t + " 分。";
+		if (.@wizard_t == 100) {
+			mes "哈哈哈哈哈哈哈? *咳咳* *咳咳* 如果你能正確回答所有這些問題，你怎麼會在戰鬥中表現不好？？";
+			next;
+		}
+		else if (.@wizard_t == 80) {
+			mes "呃，馬馬虎虎...";
+			mes "我會讓你重考測驗的。";
+			next;
+		}
+		else {
+			mes "你失敗了！去多讀點書吧！";
+			next;
+			mes "[勞雷爾]";
+			mes "你缺少一些東西...*哈啾*...比如智力。這就是為什麼你一直失敗。哈哈哈哈哈哈哈哈哈?";
+			close;
+		}
+		if (select("請開始測驗。:可以再給我解釋一次嗎？") == 1) {
+			mes "[勞雷爾]";
+			mes "沒有人會幫你成為巫師的。哈哈哈哈哈哈哈哈哈?";
+			mes "*咳咳* *咳咳* 死後哭泣是沒有用的...";
+			next;
+			percentheal 100,100;
+			mes "[勞雷爾]";
+			mes "那麼，如你所願。我會送你去戰鬥。";
+			mes "喔！如果你看到一些高大的珍珠大門，並聽到後面傳來隆隆的低沉聲音，那就意味著在魔法方面你是個失敗者。哈哈哈哈哈哈哈哈哈?";
+			close2;
+			warp "job_wiz",57,154;
+			end;
+		}
+		mes "[勞雷爾]";
+		mes "*咳咳* *咳咳* 那麼我來解釋。";
+		mes "測驗可能很難，但只要照我說的做就不會有問題。";
+		next;
+		mes "[勞雷爾]";
+		mes "這個最終測驗有 3 個部分。";
+		mes "順序是...*哈啾*...水之房間、地之房間，然後是火之房間。每個房間都有該屬性的怪物。";
+		next;
+		mes "[勞雷爾]";
+		mes "你進去時就會看到牠們是什麼怪物。";
+		mes "如果你對牠們使用合適的法術，這應該不會太困難。哈哈哈哈哈哈哈?";
+		next;
+		mes "[勞雷爾]";
+		mes "在規定的時間內，如果你擊敗所有的怪物...";
+		mes "你將會被傳送到下一個房間。";
+		next;
+		mes "[勞雷爾]";
+		mes "之後，測驗就結束了。";
+		mes "然後你將成為一名受高等魔法力量控制的巫師！再也回不去你目前為止所知的輕鬆生活了。";
+		next;
+		mes "[勞雷爾]";
+		mes "哈哈哈哈哈?你看起來被嚇到了。你知道現在還不算太晚。";
+		mes "*咳咳* *咳咳* 你可以放棄並回城鎮去！忘了高等魔法，過著正常的生活吧。你覺得呢？";
+		next;
+		if (select("繼續測驗。:我太害怕了，我想退出。") == 1) {
+			percentheal 100,100;
+			mes "[勞雷爾]";
+			mes "這次當你死掉時，不要哭著回來。哈哈哈哈哈哈哈哈哈? *咳咳* *咳咳*";
+			mes "如你所願，我們開始最終測驗！";
+			close2;
+			warp "job_wiz",57,154;
+			end;
+		}
+		mes "[勞雷爾]";
+		mes "從你口中說出這話，這真是個非常好的想法。反正那更適合你。哈哈哈哈哈哈哈哈哈?";
+		mes "回去過著安靜平穩的生活吧！";
+		close2;
+		warp "geffen",120,110;
+		end;
+	}
+	else if (WIZ_Q == 7) {
+		mes "[勞雷爾]";
+		mes "就我而言，你跟我應該沒什麼事了。";
+		mes "但是，既然你這麼固執，我就讓你再考一次測驗。哈哈哈哈哈?";
+		next;
+		mes "[勞雷爾]";
+		mes "去吧！去成為你真正想成為的巫師。";
+		mes "而且要小心！高等魔法會一直追著你的...";
+		close;
+	}
+}
+
+job_wiz,50,165,4	script	競技場助手#wiz	700,{
+	mes "[競技場助手]";
+	mes "歡迎來到巫師轉職競技場。";
+	mes "如果您想參加最終測驗，請進入待機室。";
+	next;
+	mes "[競技場助手]";
+	mes "如果已經有人在進行測驗，請等待。";
+	mes "所有的測驗狀態都會廣播，而且只要前一位測驗者通過就會立刻開始。";
+	next;
+	mes "[競技場助手]";
+	mes "每個人大約需要 5 到 10 分鐘。";
+	mes "如果您想離開競技場，請隨時登出。";
+	close;
+
+OnInit:
+	waitingroom "待機室",20,"競技場助手#wiz::OnStartArena",1;
+	enablewaitingroomevent;
+	end;
+OnStartArena:
+	killmonsterall "job_wiz";
+	warpwaitingpc "job_wiz",114,169;
+	donpcevent "水之房間#wiz::OnEnable";
+	disablewaitingroomevent;
+	end;
+
+OnStart:
+	enablewaitingroomevent;
+	end;
+}
+
+// Water Room (Test 2 part 1)
+//==========================================================
+job_wiz,1,1,1	script	水之房間#wiz	66,{
+OnInit:
+	disablenpc "水之房間#wiz";
+	end;
+
+OnEnable:
+	enablenpc "水之房間#wiz";
+	if (!checkre(0)) {
+		set .MyMobs,8;
+		monster "job_wiz",129,170,"人魚",1044,1,"水之房間#wiz::OnMyMobDead";
+	}
+	else
+		set .MyMobs,7;
+	monster "job_wiz",109,174,"劍魚",1158,1,"水之房間#wiz::OnMyMobDead";
+	monster "job_wiz",118,174,"海神",1074,1,"水之房間#wiz::OnMyMobDead";
+	monster "job_wiz",109,165,"螃蟹",1066,1,"水之房間#wiz::OnMyMobDead";
+	monster "job_wiz",118,165,"庫克雷",1067,1,"水之房間#wiz::OnMyMobDead";
+	monster "job_wiz",101,157,"瑪麗娜",1141,1,"水之房間#wiz::OnMyMobDead";
+	monster "job_wiz",126,157,"水波利",1242,1,"水之房間#wiz::OnMyMobDead";
+	monster "job_wiz",98,170,"麥加",1138,1,"水之房間#wiz::OnMyMobDead";
+	initnpctimer;
+	end;
+
+OnDisable:
+	killmonsterall "job_wiz";
+	disablenpc "水之房間#wiz";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		set WIZ_Q2,WIZ_Q2+1;
+		mapannounce "job_wiz",strcharinfo(0)+" 成功消滅了怪物。",bc_map;
+		donpcevent "水之房間#Door::OnEnable";
+		stopnpctimer;
+	}
+	end;
+OnTimer1000:
+	mapannounce "job_wiz","水之房間：轉職測驗現在開始。",bc_map;
+	end;
+OnTimer2000:
+	mapannounce "job_wiz","時間限制為 3 分鐘。我們現在開始測驗。",bc_map;
+	end;
+OnTimer3000:
+	mapannounce "job_wiz","請在時間限制內消滅所有的怪物。",bc_map;
+	end;
+
+OnTimer33000:
+	mapannounce "job_wiz","剩下 2 分 30 秒。",bc_map;
+	end;
+OnTimer63000:
+	mapannounce "job_wiz","剩下 2 分鐘。",bc_map;
+	end;
+
+OnTimer93000:
+	mapannounce "job_wiz","剩下 1 分 30 秒。",bc_map;
+	end;
+
+OnTimer123000:
+	mapannounce "job_wiz","剩下 1 分鐘。",bc_map;
+	end;
+OnTimer153000:
+	mapannounce "job_wiz","剩下 30 秒。",bc_map;
+	end;
+
+OnTimer173000:
+	mapannounce "job_wiz","剩下 10 秒。",bc_map;
+	end;
+
+OnTimer183000:
+	mapannounce "job_wiz","時間到。",bc_map;
+	donpcevent "水之房間#wiz::OnDisable";
+	end;
+OnTimer184000:
+	enablenpc "水之房間#Failed";
+	end;
+
+OnTimer185000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+
+OnTimer186000:
+	disablenpc "水之房間#Failed";
+	donpcevent "水之房間#wiz::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+	end;
+}
+
+job_wiz,1,2,1	script	水之房間#Door	66,{
+OnInit:
+	disablenpc "水之房間#Door";
+	end;
+
+OnEnable:
+	enablenpc "水之房間#Door";
+	donpcevent "水之房間#wiz::OnDisable";
+	set .MyMobs,5;
+	monster "job_wiz",114,169,"氣泡蟲",1142,1,"水之房間#Door::OnMyMobDead";
+	monster "job_wiz",112,169,"海葵",1068,1,"水之房間#Door::OnMyMobDead";
+	monster "job_wiz",116,169,"海葵",1068,1,"水之房間#Door::OnMyMobDead";
+	monster "job_wiz",114,171,"海葵",1068,1,"水之房間#Door::OnMyMobDead";
+	monster "job_wiz",114,167,"海葵",1068,1,"水之房間#Door::OnMyMobDead";
+	initnpctimer;
+	end;
+
+OnDisable:
+	killmonsterall "job_wiz";
+	disablenpc "水之房間#Door";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "job_wiz",strcharinfo(0)+" 成功消滅了怪物。",bc_map;
+		percentheal 100,100;
+		warp "job_wiz",116,97;
+		donpcevent "水之房間#Door::OnDisable";
+		donpcevent "地之房間#wiz::OnEnable";
+		stopnpctimer;
+	}
+	end;
+
+OnTimer1000:
+	mapannounce "job_wiz","守衛怪物出現了。你有 1 分鐘。",bc_map;
+	end;
+OnTimer30000:
+	mapannounce "job_wiz","剩下 30 秒。",bc_map;
+	end;
+
+OnTimer50000:
+	mapannounce "job_wiz","剩下 10 秒。",bc_map;
+	end;
+
+OnTimer60000:
+	mapannounce "job_wiz","時間到。",bc_map;
+	donpcevent "水之房間#Door::OnDisable";
+	end;
+OnTimer61000:
+	enablenpc "水之房間#Failed";
+	end;
+
+OnTimer62000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+
+OnTimer63000:
+	disablenpc "水之房間#Failed";
+	donpcevent "水之房間#Door::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+	end;
+}
+
+job_wiz,114,169,0	script	水之房間#Failed	-1,16,16,{
+OnInit:
+	disablenpc "水之房間#Failed";
+	end;
+
+OnTouch_:
+	mapannounce "job_wiz",strcharinfo(0)+" 未能成功。",bc_map;
+	warp "geffen",120,110;
+	end;
+}
+
+// Earth Room (Test 2 part 2)
+//==========================================================
+job_wiz,1,3,1	script	地之房間#wiz	66,{
+OnInit:
+	disablenpc "地之房間#wiz";
+	end;
+
+OnEnable:
+	enablenpc "地之房間#wiz";
+	if (!checkre(0)) {
+		set .MyMobs,10;
+		monster "job_wiz",120,102,"蚯蚓",1127,1,"地之房間#wiz::OnMyMobDead";
+		monster "job_wiz",111,93,"野豬",1166,1,"地之房間#wiz::OnMyMobDead";
+		monster "job_wiz",127,86,"螳螂",1139,1,"地之房間#wiz::OnMyMobDead";
+	}
+	else
+		set .MyMobs,7;
+	monster "job_wiz",111,102,"溜溜猴",1057,1,"地之房間#wiz::OnMyMobDead";
+	monster "job_wiz",120,102,"丹尼爾",1105,1,"地之房間#wiz::OnMyMobDead";
+	monster "job_wiz",111,102,"焦糖",1103,1,"地之房間#wiz::OnMyMobDead";
+	monster "job_wiz",120,93,"基爾瑟",1121,1,"地之房間#wiz::OnMyMobDead";
+	monster "job_wiz",107,98,"大腳熊",1060,1,"地之房間#wiz::OnMyMobDead";
+	monster "job_wiz",124,98,"獸人戰士",1023,1,"地之房間#wiz::OnMyMobDead";
+	monster "job_wiz",104,86,"兵蟻",1176,1,"地之房間#wiz::OnMyMobDead";
+	initnpctimer;
+	end;
+
+OnDisable:
+	killmonsterall "job_wiz";
+	disablenpc "地之房間#wiz";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "job_wiz",strcharinfo(0) + " 成功消滅了怪物。",bc_map;
+		donpcevent "地之房間#Door::OnEnable";
+		stopnpctimer;
+	}
+	end;
+OnTimer1000:
+	mapannounce "job_wiz","地之房間：轉職測驗現在開始。",bc_map;
+	end;
+
+OnTimer2000:
+	mapannounce "job_wiz","時間限制為 3 分鐘。",bc_map;
+	end;
+OnTimer3000:
+	mapannounce "job_wiz","在時間限制內消滅所有的怪物。",bc_map;
+	end;
+
+OnTimer33000:
+	mapannounce "job_wiz","剩下 2 分 30 秒。",bc_map;
+	end;
+OnTimer63000:
+	mapannounce "job_wiz","剩下 2 分鐘。",bc_map;
+	end;
+
+OnTimer93000:
+	mapannounce "job_wiz","剩下 1 分 30 秒。",bc_map;
+	end;
+
+OnTimer123000:
+	mapannounce "job_wiz","剩下 1 分鐘。",bc_map;
+	end;
+OnTimer153000:
+	mapannounce "job_wiz","剩下 30 秒。",bc_map;
+	end;
+
+OnTimer173000:
+	mapannounce "job_wiz","剩下 10 秒。",bc_map;
+	end;
+
+OnTimer183000:
+	mapannounce "job_wiz","時間到。",bc_map;
+	donpcevent "地之房間#wiz::OnDisable";
+	end;
+OnTimer184000:
+	enablenpc "地之房間#Failed";
+	end;
+
+OnTimer185000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+
+OnTimer186000:
+	disablenpc "地之房間#Failed";
+	donpcevent "地之房間#wiz::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+	end;
+}
+
+job_wiz,1,4,1	script	地之房間#Door	66,{
+OnInit:
+	disablenpc "地之房間#Door";
+	end;
+
+OnEnable:
+	enablenpc "地之房間#Door";
+	donpcevent "地之房間#wiz::OnDisable";
+	if (!checkre(0)) {
+		set .MyMobs,7;
+		monster "job_wiz",116,97,"食人花",1118,1,"地之房間#Door::OnMyMobDead";
+	}
+	else
+		set .MyMobs,6;
+	monster "job_wiz",114,95,"曼陀羅魔花",1020,1,"地之房間#Door::OnMyMobDead";
+	monster "job_wiz",118,95,"曼陀羅魔花",1020,1,"地之房間#Door::OnMyMobDead";
+	monster "job_wiz",114,99,"曼陀羅魔花",1020,1,"地之房間#Door::OnMyMobDead";
+	monster "job_wiz",118,99,"曼陀羅魔花",1020,1,"地之房間#Door::OnMyMobDead";
+	monster "job_wiz",116,94,"曼陀羅魔花",1020,1,"地之房間#Door::OnMyMobDead";
+	monster "job_wiz",116,100,"曼陀羅魔花",1020,1,"地之房間#Door::OnMyMobDead";
+	initnpctimer;
+	end;
+
+OnDisable:
+	killmonsterall "job_wiz";
+	disablenpc "地之房間#Door";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "job_wiz",strcharinfo(0) + " 成功消滅了怪物。",bc_map;
+		percentheal 100,100;
+		warp "job_wiz",46,99;
+		donpcevent "地之房間#Door::OnDisable";
+		donpcevent "火之房間#wiz::OnEnable";
+		stopnpctimer;
+	}
+	end;
+OnTimer1000:
+	mapannounce "job_wiz","守衛怪物出現了。你有 1 分鐘。",bc_map;
+	end;
+
+OnTimer30000:
+	mapannounce "job_wiz","剩下 30 秒。",bc_map;
+	end;
+
+OnTimer50000:
+	mapannounce "job_wiz","剩下 10 秒。",bc_map;
+	end;
+
+OnTimer60000:
+	mapannounce "job_wiz","時間結束。",bc_map;
+	donpcevent "地之房間#Door::OnDisable";
+	end;
+
+OnTimer61000:
+	enablenpc "地之房間#Failed";
+	end;
+
+OnTimer62000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+OnTimer63000:
+	disablenpc "地之房間#Failed";
+	donpcevent "地之房間#Door::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+	end;
+}
+
+job_wiz,116,97,0	script	地之房間#Failed	-1,16,16,{
+OnInit:
+	disablenpc "地之房間#Failed";
+	end;
+OnTouch_:
+	mapannounce "job_wiz",strcharinfo(0) + " 未能成功。",bc_map;
+	warp "geffen",120,110;
+	end;
+}
+
+// Fire Room (Test 2 part 3)
+//==========================================================
+job_wiz,1,5,1	script	火之房間#wiz	66,{
+OnInit:
+	disablenpc "火之房間#wiz";
+	end;
+
+OnEnable:
+	enablenpc "火之房間#wiz";
+	if (!checkre(0)) {
+		set .MyMobs,8;
+		monster "job_wiz",58,110,"傑洛米",1178,1,"火之房間#wiz::OnMyMobDead";
+		monster "job_wiz",54,89,"沙漠之狼",1106,1,"火之房間#wiz::OnMyMobDead";
+	}
+	else
+		set .MyMobs,6;
+	monster "job_wiz",33,110,"哥布靈",1123,1,"火之房間#wiz::OnMyMobDead";
+	monster "job_wiz",40,103,"蠍子",1001,1,"火之房間#wiz::OnMyMobDead";
+	monster "job_wiz",51,103,"傘蜥",1119,1,"火之房間#wiz::OnMyMobDead";
+	monster "job_wiz",40,92,"大嘴鳥",1019,1,"火之房間#wiz::OnMyMobDead";
+	monster "job_wiz",51,92,"長老樹精",1033,1,"火之房間#wiz::OnMyMobDead";
+	monster "job_wiz",37,89,"金屬波利",1058,1,"火之房間#wiz::OnMyMobDead";
+	initnpctimer;
+	end;
+
+OnDisable:
+	killmonsterall "job_wiz";
+	disablenpc "火之房間#wiz";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "job_wiz",strcharinfo(0) + " 成功消滅了怪物。",bc_map;
+		donpcevent "火之房間#Door::OnEnable";
+		stopnpctimer;
+	}
+	end;
+OnTimer1000:
+	mapannounce "job_wiz","火之房間：轉職測驗現在開始。",bc_map;
+	end;
+OnTimer2000:
+	mapannounce "job_wiz","時間限制為 3 分鐘。我們現在開始測驗。",bc_map;
+	end;
+OnTimer3000:
+	mapannounce "job_wiz","請在時間限制內消滅所有的怪物。",bc_map;
+	end;
+
+OnTimer33000:
+	mapannounce "job_wiz","剩下 2 分 30 秒。",bc_map;
+	end;
+OnTimer63000:
+	mapannounce "job_wiz","剩下 2 分鐘。",bc_map;
+	end;
+
+OnTimer93000:
+	mapannounce "job_wiz","剩下 1 分 30 秒。",bc_map;
+	end;
+
+OnTimer123000:
+	mapannounce "job_wiz","剩下 1 分鐘。",bc_map;
+	end;
+OnTimer153000:
+	mapannounce "job_wiz","剩下 30 秒。",bc_map;
+	end;
+
+OnTimer173000:
+	mapannounce "job_wiz","剩下 10 秒。",bc_map;
+	end;
+
+OnTimer183000:
+	mapannounce "job_wiz","時間到。",bc_map;
+	donpcevent "火之房間#wiz::OnDisable";
+	end;
+OnTimer184000:
+	enablenpc "火之房間#Failed";
+	end;
+
+OnTimer185000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+
+OnTimer186000:
+	disablenpc "火之房間#Failed";
+	donpcevent "火之房間#wiz::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+	end;
+}
+
+job_wiz,1,6,1	script	火之房間#Door	66,{
+OnInit:
+	disablenpc "火之房間#Door";
+	end;
+
+OnEnable:
+	enablenpc "火之房間#Door";
+	donpcevent "火之房間#wiz::OnDisable";
+	set .MyMobs,3;
+	monster "job_wiz",44,99,"將軍魔碑",1277,1,"火之房間#Door::OnMyMobDead";
+	if (checkre(0)) {
+		monster "job_wiz",43,99,"將軍魔碑",1277,1,"火之房間#Door::OnMyMobDead";
+		monster "job_wiz",45,99,"將軍魔碑",1277,1,"火之房間#Door::OnMyMobDead";
+	}
+	else {
+		monster "job_wiz",43,99,"鬼火",1129,1,"火之房間#Door::OnMyMobDead";
+		monster "job_wiz",45,99,"鬼火",1129,1,"火之房間#Door::OnMyMobDead";
+	}
+	initnpctimer;
+	end;
+
+OnDisable:
+	killmonsterall "job_wiz";
+	disablenpc "火之房間#Door";
+	end;
+
+OnMyMobDead:
+	set .MyMobs,.MyMobs-1;
+	if (.MyMobs < 1) {
+		mapannounce "job_wiz","恭喜你，" + strcharinfo(0) + "。你已經通過了轉職測驗。",bc_map;
+		set WIZ_Q,7;
+		changequest 9017,9018;
+		donpcevent "火之房間#Door::OnDisable";
+		donpcevent "測驗助手#wiz::OnEnable";
+		stopnpctimer;
+	}
+	end;
+OnTimer1000:
+	mapannounce "job_wiz","守衛怪物出現了。你有 2 分鐘。",bc_map;
+	end;
+
+OnTimer30000:
+	mapannounce "job_wiz","剩下 1 分 30 秒。",bc_map;
+	end;
+OnTimer60000:
+	mapannounce "job_wiz","剩下 1 分鐘。",bc_map;
+	end;
+
+OnTimer90000:
+	mapannounce "job_wiz","剩下 30 秒。",bc_map;
+	end;
+
+OnTimer110000:
+	mapannounce "job_wiz","剩下 10 秒。",bc_map;
+	end;
+
+OnTimer120000:
+	mapannounce "job_wiz","時間到。",bc_map;
+	donpcevent "火之房間#Door::OnDisable";
+	end;
+
+OnTimer121000:
+	enablenpc "火之房間#Failed";
+	end;
+
+OnTimer122000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+
+OnTimer123000:
+	disablenpc "火之房間#Failed";
+	donpcevent "火之房間#Door::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+}
+
+job_wiz,46,99,0	script	火之房間#Failed	-1,16,16,{
+OnInit:
+	disablenpc "火之房間#Failed";
+	end;
+
+OnTouch_:
+	warp "geffen",120,110;
+	end;
+}
+
+job_wiz,1,7,1	script	測驗助手#wiz	66,{
+	end;
+OnInit:
+	disablenpc "測驗助手#wiz";
+	end;
+
+OnEnable:
+	initnpctimer;
+	end;
+
+OnDisable:
+	disablenpc "測驗助手#wiz";
+	end;
+OnTimer2000:
+	mapannounce "job_wiz","請返回並完成剩下的轉職程序。",bc_map;
+	end;
+OnTimer4000:
+	mapannounce "job_wiz","測驗結束。下一位測驗者，請準備。",bc_map;
+	end;
+
+OnTimer5000:
+	areawarp "job_wiz",33,82,57,113,"gef_tower",110,30;
+	end;
+OnTimer7000:
+	mapannounce "job_wiz","下一位測驗者，請進入。",bc_map;
+	end;
+
+OnTimer9000:
+	donpcevent "測驗助手#wiz::OnDisable";
+	donpcevent "競技場助手#wiz::OnStart";
+	stopnpctimer;
+	end;
+}
+
+gef_tower,107,36,4	script	白狗#wiz	81,{
+	if (BaseJob != Job_Mage) {
+		if (BaseJob == Job_Wizard) {
+			cutin "job_wizard_maria01",2;
+			mes "[瑪麗亞]";
+			mes "與其一直待在這裡，不如出去測試一下你變得有多強了？";
+			next;
+			mes "[瑪麗亞]";
+			mes "別忘了巫師的力量每天都在成長和進步。";
+			close2;
+			cutin "job_wizard_maria01",255;
+			end;
+		}
+		else if (BaseClass == Job_Novice) {
+			cutin "job_wizard_maria01",2;
+			mes "[狗]";
+			mes "什麼？小鬼！";
+			mes "一隻狗說話對你來說這麼有趣嗎？";
+		}
+		else {
+			cutin "job_wizard_maria02",2;
+			mes "[狗]";
+			mes "天啊...為什麼一個連法術都不會施放的人會來到這裡？";
+			mes "*噗* 如果你真的那麼無聊，幫這個世界一個忙，從外面爬到這棟建築物的頂端，如果你到了那裡，就去表演一些特技吧。";
+		}
+		next;
+		mes "[狗]";
+		mes "*汪* 滾開！";
+		mes "我沒時間理你這種人！";
+		close2;
+		cutin "job_wizard_maria02",255;
+		end;
+	}
+	if (WIZ_Q == 0) {
+		cutin "job_wizard_maria01",2;
+		mes "[狗]";
+		mes "啊...我知道你要說什麼。你想轉職成巫師，對吧？";
+		next;
+		mes "[狗]";
+		mes "去跟凱瑟琳談談。她會幫你的。";
+		next;
+		mes "[狗]";
+		mes "此外，如果你想了解關於轉職過程的任何事，我可以解釋。";
+		next;
+		if (select(".......:一隻狗在跟我說話...") == 1) {
+			mes "[狗]";
+			mes "...*汪*...？怎麼了？？你為什麼那樣看著我？！";
+			mes "這是你第一次看到狗說話嗎？";
+			next;
+			mes "[狗]";
+			mes "*汪* 我想看到一隻會說話的狗並不常見。汪?";
+			mes "...是的，我想這的確是很罕見的景象...*低吼*...看在老天的份上，別再盯著看了！";
+			next;
+			mes "[狗]";
+			mes "我的名字是『瑪麗亞·斯普洛多夫斯卡』。叫我『瑪麗亞』就好。";
+			mes "我正在幫助那些希望成為巫師的測驗者。";
+			next;
+			cutin "job_wizard_maria03",2;
+			mes "[瑪麗亞]";
+			mes "*汪* 嗯，我變成一隻狗的原因是...我在幫我男朋友做實驗，準備他的魔法學位期末考。嗯，*低吼* 他不小心把我變成了一隻狗。";
+			mes "理論上，幾個月後化學物質就會失效，我應該就能恢復正常。確切是什麼時候，我也不知道？";
+			next;
+			cutin "job_wizard_maria01",2;
+			mes "[瑪麗亞]";
+			mes "嗯...反正這不關你的事。";
+			mes "好了，我們剛才說到哪了。";
+			next;
+		} else {
+			cutin "job_wizard_maria02",2;
+			mes "[狗]";
+			mes "*汪* *汪* *汪* 別說些廢話！好吧，我知道我是一隻狗！";
+			next;
+			cutin "job_wizard_maria01",2;
+			mes "[狗]";
+			mes "我的名字是『瑪麗亞·斯普洛多夫斯卡』。人們叫我『瑪麗亞』。";
+			mes "我正在幫助像你這樣希望成為巫師的小傢伙。";
+			next;
+			cutin "job_wizard_maria03",2;
+			mes "[叫做『瑪麗亞』的狗]";
+			mes "我變成狗的原因是...我那個正在為了準備魔法學位做實驗的男朋友，不小心把我變成了一隻狗。";
+			mes "理論上，幾個月後，化學物質就會失效，我應該就能恢復正常。確切是什麼時候，我也不知道？";
+			next;
+			cutin "job_wizard_maria02",2;
+			mes "[叫做『瑪麗亞』的狗]";
+			mes "我不是一隻叫做『瑪麗亞』的『狗』！！喂！！聽我說！！";
+			next;
+			mes "[狗...『瑪麗亞』...]";
+			mes "..........";
+			next;
+			mes "[瑪麗亞]";
+			mes "...*汪* *汪* *汪*...我很生氣，但隨便啦！！你看起來很忙，那就算了。";
+			next;
+		}
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "就像我之前說的，要轉職，去跟凱瑟琳談談。";
+		mes "她也是個新晉的巫師。";
+		next;
+		mes "[瑪麗亞]";
+		mes "我可以告訴你更多關於轉職的過程，但我總不能攔著一個大忙人，對吧？";
+		mes "你覺得呢？我應該解釋一下那些希望成為巫師的魔法師會面臨什麼嗎？";
+		next;
+		switch(select("是的，拜託！我很樂意。:不，沒關係。:一隻會說話的狗...")) {
+		case 1:
+			cutin "job_wizard_maria01",2;
+			mes "[瑪麗亞]";
+			mes "好的，我會為你解釋這個過程。";
+			next;
+			mes "[瑪麗亞]";
+			mes "轉職過程中有三項測驗。";
+			mes "第一項測驗是收集魔法物品。";
+			next;
+			mes "[瑪麗亞]";
+			mes "當你向凱瑟琳提交申請時，那一項就開始了。";
+			mes "她會告訴你去收集所有類型的魔力礦石，或者是去收集有屬性的原石。";
+			next;
+			mes "[瑪麗亞]";
+			mes "第二項測驗是魔法測驗，";
+			mes "角落裡陰沉的勞雷爾負責那部分。";
+			next;
+			mes "[瑪麗亞]";
+			mes "有關於魔法、怪物和魔法師的問題。";
+			mes "在 10 個問題中，如果你沒有全部答對，他就不會讓你通過。換句話說，你就失敗了...";
+			next;
+			mes "[瑪麗亞]";
+			mes "說也奇怪，他也負責第三項測驗。";
+			mes "第三項測驗是消滅怪物。";
+			next;
+			mes "[瑪麗亞]";
+			mes "在每個房間裡，都有特定屬性的怪物。";
+			mes "你必須用合適的法術攻擊牠們。";
+			next;
+			mes "[瑪麗亞]";
+			mes "嗯，這就是我能說的全部了。現在去申請吧。";
+			next;
+			mes "[瑪麗亞]";
+			mes "與其聽我的描述，不如自己去試試看。";
+			close2;
+			cutin "job_wizard_maria01",255;
+			warp "gef_dun00",116,102;
+			end;
+		case 2:
+			mes "[瑪麗亞]";
+			mes "真的嗎？好吧，那就去申請，並盡你所能吧。";
+			close2;
+			cutin "job_wizard_maria01",255;
+			end;
+		case 3:
+			cutin "job_wizard_maria02",2;
+			mes "[瑪麗亞]";
+			mes "我不是狗！！嗷嗚嗚嗚嗚嗚嗚嗚?";
+			next;
+			mes "[瑪麗亞]";
+			mes "可惡！我希望你失敗！！滾開！！";
+			close2;
+			cutin "job_wizard_maria01",255;
+			warp "gef_dun00",116,102;
+			end;
+		}
+	}
+	else if (WIZ_Q == 1) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "你看起來迷路了...";
+		mes "你已經申請了，現在你正在尋找物品，對吧？";
+		next;
+		mes "[瑪麗亞]";
+		mes "但既然這只是第一項測驗，不要依賴別人。";
+		mes "自己完成它。這是最好的方法。";
+		next;
+		mes "[瑪麗亞]";
+		mes "據我所知，你必須收集魔力礦石...";
+		mes "我無法直接幫助你，但我可以給你一些建議。";
+		next;
+		mes "[瑪麗亞]";
+		mes "首先，要獲得紅色魔力礦石，去普隆德拉的地下水道。";
+		mes "你可以從那裡大量的盜蟲和盜蟲卵身上獲得。";
+		next;
+		mes "[瑪麗亞]";
+		mes "黃色魔力礦石在沙漠裡很容易找到。";
+		mes "大嘴鳥、大嘴鳥寶寶，有時候像巨石怪那樣的怪物也會掉落。";
+		next;
+		mes "[瑪麗亞]";
+		mes "還有...*汪* 要獲得藍色魔力礦石。試著去伊斯魯得海底洞穴。";
+		mes "庫克雷、螃蟹，以及像海神那樣的怪物會掉落那些寶石。";
+		next;
+		mes "[瑪麗亞]";
+		mes "當然你可以在這裡城鎮的魔法商店買到藍色魔力礦石...";
+		mes "但是，自己找到它們會更有成就感，而且對後面的測驗也更有幫助。";
+		next;
+		mes "[瑪麗亞]";
+		mes "總之，盡力而為。";
+		mes "這是作為一名巫師的基礎。";
+		close2;
+		cutin "job_wizard_maria01",255;
+		end;
+	}
+	else if (WIZ_Q == 2) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "你看起來迷路了...";
+		mes "你已經申請了，現在你正在尋找物品，對吧？";
+		next;
+		mes "[瑪麗亞]";
+		mes "但既然這只是第一項測驗，不要依賴別人。";
+		mes "自己完成它。這是最好的方法。";
+		next;
+		mes "[瑪麗亞]";
+		mes "據我所知，你必須收集屬性原石...";
+		mes "我無法直接幫助你，但我可以給你一些建議。";
+		next;
+		mes "[瑪麗亞]";
+		mes "嗯，你可以在伊斯魯得海底洞穴找到藍色冰塊。";
+		mes "庫克雷、達拉蛙、瑪麗娜、螃蟹...這些怪物經常會掉落。";
+		next;
+		mes "[瑪麗亞]";
+		mes "你可以從昆蟲系怪物身上獲得碎塊。";
+		mes "試著狩獵像角蠅、螳螂或兵蟻那樣的怪物。";
+		next;
+		mes "[瑪麗亞]";
+		mes "喔還有 *汪*，碎紅寶石。我聽說你可以從...那裡得到很多。";
+		mes "長老樹精、金屬波利或是沙漠中找到的蠍子也都不錯。";
+		next;
+		mes "[瑪麗亞]";
+		mes "至於風靈原石。黑蟻、綠棉蟲、鋼鐵蒼蠅。";
+		mes "如果你稍微努力一點，就能很容易地拿到。";
+		next;
+		mes "[瑪麗亞]";
+		mes "總之，盡力而為。";
+		mes "這是作為一名巫師的基礎。";
+		close2;
+		cutin "job_wizard_maria01",255;
+		end;
+	}
+	else if (WIZ_Q == 3) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "別在第一項測驗後就太過放鬆。";
+		mes "盡力而為，因為你還有兩項測驗要完成。";
+		close2;
+		cutin "job_wizard_maria01",255;
+		end;
+	}
+	else if (WIZ_Q == 4) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "ZzzzZzzzZzzz...";
+		next;
+		cutin "job_wizard_maria02",2;
+		mes "[瑪麗亞]";
+		mes "*嗚咽*...布里扎德里斯...你爛透了...Zzz...";
+		close2;
+		cutin "job_wizard_maria02",255;
+		end;
+	}
+	else if (WIZ_Q == 5) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "喔，你做得很好，對吧？";
+		next;
+		mes "[瑪麗亞]";
+		mes "嗯，盡力堅持到最後。";
+		mes "勞雷爾在等你。";
+		close2;
+		cutin "job_wizard_maria01",255;
+		end;
+	}
+	else if (WIZ_Q == 6) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "*汪*...你放棄了？";
+		mes "*嘆氣*...有著這麼脆弱的心，你怎麼能成為巫師呢？";
+		next;
+		mes "[瑪麗亞]";
+		mes "你知道每個房間都有相同屬性的怪物...";
+		mes "如果你是個使用魔法的人，你需要了解各種不同的法術。";
+		next;
+		mes "[瑪麗亞]";
+		mes "你也需要學習如何反擊使用技能的怪物。";
+		mes "你最好的辦法是先殺死正在攻擊你的怪物。";
+		next;
+		mes "[瑪麗亞]";
+		mes "*低吼* 總之，繼續測驗。";
+		mes "不要有軟弱的想法，*汪* 然後回去！*汪* *汪* 就是現在！*汪*";
+		close2;
+		cutin "job_wizard_maria01",255;
+		end;
+	}
+	else if (WIZ_Q == 7) {
+		cutin "job_wizard_maria01",2;
+		mes "[瑪麗亞]";
+		mes "果然不出我所料，我就知道你能做到，我在你身上聞到了！*汪*";
+		mes "現在我可以稱你為巫師了。";
+		next;
+		mes "[瑪麗亞]";
+		mes "恭喜。無論如何，做任何事都要全力以赴。";
+		close2;
+		cutin "job_wizard_maria01",255;
+		end;
+	}
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= 1.1 Now using the initnpctimer command, donpcevent,
+//= and new waitingroom event commands.
+//= No more addtimer spamming.
+//= No longer have to talk to the npc to take the test.
+//= Just enter the chat room.
+//= 1.2 Changed global variable names to unique ones.
+//= 1.2a Rollback from the wrong Kashy's fix
+//= 1.2b Fixed issue with duplicating monsters thx to Bison.[kobra_k88]
+//= 1.2c changed one Horong to Frilldora (now 3rd room contains 1 agressive mob.)
+//= 1.2d more simplified fire room - removed agressive Desert Wolf [Lupus]
+//= 1.3 Added Baby Class support.
+//= 1.5 Fixed possible EXP abuse [Lupus]
+//= 1.6 Added a func which prevent advanced classes passing
+//= 2nd Job Quests again.
+//= It also guides adv classes where to go. [Lupus]
+//= 1.7 Replaced 2 Hodes with 2 Horong's (according to the official guide) [Lupus]
+//= 1.8 Removed callfunc Is_####_Class in favor of baseClass [Silentdragon]
+//= 2.1 Changed numbers to constants.
+//= [Vicious]
+//= 2.2 Merged back JFunc [Lupus] 2.2a Removed extra MES, added missing NEXT
+//= 2.3 Bigfoot monster summon corrected [Zairik]

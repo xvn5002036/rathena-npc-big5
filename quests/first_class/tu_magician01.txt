@@ -1,0 +1,785 @@
+//===== rAthena Script =======================================
+//= Magician Class Tutorial and Job Specific Quest
+//===== By: ==================================================
+//= Fix up by Jukka
+//===== Current Version: =====================================
+//= 2.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Magician training quest.
+//===== Additional Comments: =================================
+//= 1.0 Fully working
+//= 1.1 Optimized [Lupus]
+//= 1.2 Fixed experience gains to match upcoming rate adjustments.
+//= 1.3 Misc. updates. [L0ne_W0lf]
+//= 1.4 Updated to match the official script. [Euphy]
+//= 2.0 Replaced occurrence of PcName and clean-up.
+//============================================================
+
+// Sign
+//============================================================
+geffen,61,174,4	script	告示牌#M	HIDDEN_NPC,{
+	mes "- 魔法師轉職 -";
+	close;
+}
+
+// New Mage Manager
+//============================================================
+geffen,67,180,4	script	新進魔法師管理員#M	8_F,{
+	mes "[瑪娜]";
+	if(Class == Job_Novice){
+		mes "你還沒有準備好接受";
+		mes "我所提供的任何訓練。";
+		mes "你必須再多加訓練，";
+		mes "並先成為一名魔法師。";
+		mes "知道嗎，親愛的？";
+		close;
+	}
+	if(BaseClass != Job_Mage || (eaclass()&EAJL_BABY)){
+		mes "你知道嗎，有時候";
+		mes "其他職業在某些戰鬥情況下";
+		mes "看起來可能會好一點，";
+		mes "但請永遠對自己保持自信。";
+		mes "你所能做的事情，";
+		mes "可不是隨便什麼人都能做到的唷?";
+		close;
+	}
+	if(Class != Job_Mage && tu_magician01 < 7){
+		mes "雖然我提供魔法訓練，";
+		mes "但如果你已經對魔法的使用";
+		mes "很有經驗的話，這對你幫助不大。";
+		mes "很抱歉，";
+		mes "你必須依靠你自己";
+		mes "來磨練你的技能了。";
+		close;
+	}
+	switch(tu_magician01){
+	case 0:
+		mes "啊，歡迎?";
+		mes "我的名字是瑪娜，";
+		mes "是魔法師公會裡";
+		mes "負責指導新進人員的訓練員。";
+		mes "也就是說，";
+		mes "我是負責指導你的喔?";
+		next;
+		mes "[瑪娜]";
+		mes "雖然我做這份工作";
+		mes "才一小段時間而已，";
+		mes "但如果你想了解更多";
+		mes "關於魔法師的基礎知識，";
+		mes "我會在這裡協助你的。";
+		next;
+		switch(select("妳願意教我嗎？:也許晚點再說...")) {
+		case 1:
+			mes "[瑪娜]";
+			mes "當然！";
+			mes "別擔心，";
+			mes "每個人都曾經";
+			mes "是個初學者。";
+			mes "你只會變得越來越強！";
+			next;
+			break;
+		case 2:
+			mes "[瑪娜]";
+			mes "好吧，我想";
+			mes "一切都會順利的。";
+			mes "但如果你決定";
+			mes "想要接受一些指導，";
+			mes "我會很期待";
+			mes "再次見到你的?";
+			close;
+		}
+		mes "[瑪娜]";
+		mes "好了，讓我們先從";
+		mes "我們職業的概要";
+		mes "開始說起吧，好嗎？";
+		mes "究竟什麼是魔法師呢？";
+		next;
+		mes "[瑪娜]";
+		mes "與其使用物理力量，";
+		mes "魔法師在戰鬥中使用的是";
+		mes "元素的力量。這些元素有";
+		mes "^ff0000火^000000、^5C4033地^000000、^93DB70風^000000、^0000FF水^000000。";
+		mes "我們也能夠使用";
+		mes "帶有^CFB53B念^000000屬性的法術。";
+		next;
+		mes "[瑪娜]";
+		mes "當敵人帶有";
+		mes "某種元素屬性時，它將會";
+		mes "抵抗該元素，但會對其他元素較為脆弱。";
+		mes "這就是為什麼了解元素屬性對我們來說如此重要。";
+		next;
+		mes "[瑪娜]";
+		mes "請仔細聽好這些";
+		mes "元素之間的相剋關係。";
+		mes "^FF0000火^000000剋地，";
+		mes "但被水所剋。";
+		mes "^5C4033地^000000剋風，";
+		mes "但被火所剋。";
+		next;
+		mes "[瑪娜]";
+		mes "^0000FF水^000000剋";
+		mes "火，但被風所剋。";
+		mes "最後，^93DB70風^000000剋";
+		mes "水，但被地所剋。";
+		next;
+		mes "[瑪娜]";
+		mes "我不記得了";
+		mes "上一次我";
+		mes "一口氣說這麼多話";
+		mes "是什麼時候了！我累壞了，所以";
+		mes "該休息一下了。但我們";
+		mes "稍後再繼續，好嗎？";
+		tu_magician01 = 1;
+		if (checkre(3))
+			getexp BaseLevel*3,BaseLevel*2;
+		else
+			getexp BaseLevel*30,BaseLevel*15;
+		specialeffect2 EF_HIT5;
+		close;
+	case 1:
+		mes "你準備好";
+		mes "繼續我們";
+		mes "關於元素屬性的";
+		mes "討論了嗎？";
+		next;
+		mes "[瑪娜]";
+		mes "你應該要知道";
+		mes "每種魔物都有其";
+		mes "元素屬性，而且";
+		mes "所有這些元素都有";
+		mes "不同的等級。";
+		mes "了解這一點很重要......";
+		next;
+		mes "[瑪娜]";
+		mes "讓我為你解釋";
+		mes "每個元素的";
+		mes "所有細微差別。只需告訴我";
+		mes "你想進一步了解";
+		mes "哪一個特定元素即可。";
+		next;
+		mes "[瑪娜]";
+		mes "換句話說，即便是相同的屬性";
+		mes "也有必須考量的不同特徵。";
+		mes "我現在將解釋這些屬性。";
+		while((1)){
+			next;
+			switch(select("^ff0000火屬性^000000", "^5C4033地屬性^000000", "^93DB70風屬性^000000", "^0000FF水屬性^000000", "^CFB53B念屬性^000000", "離開。")){
+			case 1:
+				mes "[瑪娜]";
+				mes "帶有^ff0000火^000000屬性的魔物";
+				mes "通常具有強大的攻擊力。";
+				mes "由於我們魔法師";
+				mes "在物理上較為脆弱，即使只是";
+				mes "被這些魔物輕輕擊中，";
+				mes "也會對我們造成極大的傷害。";
+				next;
+				mes "[瑪娜]";
+				mes "因此，如果我們必須";
+				mes "獨自對抗帶有^FF0000火^000000屬性的魔物時，";
+				mes "我們";
+				mes "可以使用冰凍術來";
+				mes "將牠們凍結在原地。";
+				next;
+				mes "[瑪娜]";
+				mes "但是，如果我們對火屬性魔物";
+				mes "使用火屬性技能，";
+				mes "我們幾乎無法造成傷害，";
+				mes "這可不是件好事。";
+				next;
+				mes "[瑪娜]";
+				mes "作為參考，我們的火屬性技能";
+				mes "包含火狩、";
+				mes "火箭術、火球術以及";
+				mes "火焰之牆。噢，讓我多告訴你";
+				mes "一點關於火焰之牆的事。";
+				next;
+				mes "[瑪娜]";
+				mes "火焰之牆非常特別，";
+				mes "它在同一個畫面上";
+				mes "最多可以施放 3 次。任何";
+				mes "撞上它的魔物都會";
+				mes "受到傷害，然後";
+				mes "往反方向彈開。";
+				next;
+				mes "[瑪娜]";
+				mes "但如果不死屬性魔物";
+				mes "撞上火焰之牆，它";
+				mes "只會受到輕微傷害，且";
+				mes "火焰之牆不一定能";
+				mes "阻擋它的靠近。所以要小心！";
+				.@eread_1 = 1;
+				break;
+			case 2:
+				mes "[瑪娜]";
+				mes "好的，^5C4033地^000000屬性魔物";
+				mes "通常具有";
+				mes "很高的命中率，所以即使";
+				mes "你的迴避率很高，";
+				mes "你可能會發現很難";
+				mes "避開牠們所有的攻擊。";
+				next;
+				mes "[瑪娜]";
+				mes "在對付這些魔物時，";
+				mes "請使用火屬性法術。";
+				mes "火焰之牆通常";
+				mes "非常有效，因為它";
+				mes "不僅能阻止魔物，還能";
+				mes "造成不錯的傷害。";
+				next;
+				mes "[瑪娜]";
+				mes "另外要知道一件很方便的事，";
+				mes "當你對魔物使用";
+				mes "石化術時，在法術生效期間，";
+				mes "該魔物會變成";
+				mes "地屬性。";
+				mes "很酷吧？";
+				next;
+				mes "[瑪娜]";
+				mes "所以如果你使用了石化術，";
+				mes "一個好的策略是";
+				mes "隨後立刻使用火屬性技能，";
+				mes "像是火箭術和";
+				mes "火球術，以利用";
+				mes "魔物變成地屬性的優勢。";
+				.@eread_2 = 1;
+				break;
+			case 3:
+				mes "[瑪娜]";
+				mes "現在，當你攻擊";
+				mes "如果一直未命中，請不要太驚訝。";
+				mes "^93DB70風^000000屬性魔物時，";
+				mes "因為牠們擁有高迴避率，";
+				mes "大多數都能輕易避開";
+				mes "物理攻擊。";
+				next;
+				mes "[瑪娜]";
+				mes "但由於我們魔法師";
+				mes "主要使用法術攻擊，";
+				mes "我們不需要";
+				mes "太過擔心這一點。";
+				mes "不過，風屬性魔物通常";
+				mes "非常敏捷，所以還是要小心。";
+				next;
+				mes "[瑪娜]";
+				mes "說到攻擊";
+				mes "風屬性魔物，最理想的是";
+				mes "使用地屬性技能。";
+				mes "但由於只有巫師";
+				mes "能夠使用地屬性攻擊，";
+				mes "我們應該退而求其次使用火屬性技能。";
+				next;
+				mes "[瑪娜]";
+				mes "火屬性技能可能";
+				mes "無法造成巨大的傷害，";
+				mes "但效果會比風屬性或水屬性技能更好，因為後者對風屬性魔物幾乎無法造成傷害。";
+				next;
+				mes "[瑪娜]";
+				mes "讓你知道一下，";
+				mes "我們魔法師可以使用的";
+				mes "^93DB70風^000000屬性技能";
+				mes "有雷擊術和雷爆術。";
+				.@eread_3 = 1;
+				break;
+			case 4:
+				mes "[瑪娜]";
+				mes "^0000FF水^000000屬性魔物";
+				mes "通常擁有大量的生命值，";
+				mes "所以牠們比其他魔物";
+				mes "能承受更多的傷害，使得";
+				mes "與牠們的戰鬥時間更長。";
+				next;
+				mes "[瑪娜]";
+				mes "現在，還記得我說過";
+				mes "屬性有";
+				mes "不同的等級嗎？較高等級的水屬性魔物，實際上";
+				mes "對相剋元素造成的傷害會更加敏感。";
+				next;
+				mes "[瑪娜]";
+				mes "換句話說，";
+				mes "水屬性等級";
+				mes "較高的魔物，";
+				mes "在受到風屬性攻擊時";
+				mes "將會承受更多的傷害。";
+				next;
+				mes "[瑪娜]";
+				mes "魔法師所掌握的";
+				mes "水屬性技能";
+				mes "包括冰箭術和冰凍術。";
+				mes "這些技能對抗";
+				mes "火屬性魔物非常有效。";
+				next;
+				mes "[瑪娜]";
+				mes "冰凍術很特別，";
+				mes "因為它有機會";
+				mes "能將魔物凍結。";
+				mes "當魔物被冰凍術凍結時，";
+				mes "牠們會被視為水屬性魔物。很有趣吧？";
+				.@eread_4 = 1;
+				break;
+			case 5:
+				mes "[瑪娜]";
+				mes "那麼，周遭並沒有太多";
+				mes "^CFB53B念^000000屬性魔物。";
+				mes "但如果你真的遇到了";
+				mes "牠們，就儘管使用你的";
+				mes "念屬性技能吧，這";
+				mes "應該會很有效的。";
+				next;
+				mes "[瑪娜]";
+				mes "我們魔法師能使用的";
+				mes "念屬性攻擊";
+				mes "有心靈爆破和聖靈召喚。";
+				mes "這些技能通常";
+				mes "效果都相當不錯，除了對上";
+				mes "高等級聖屬性魔物以外。";
+				next;
+				mes "[瑪娜]";
+				mes "現在，暗之障壁法術";
+				mes "算是一種念屬性";
+				mes "技能，但很難分類。施放暗之障壁會產生";
+				mes "一個能抵擋";
+				mes "近距離物理攻擊的屏障。";
+				next;
+				mes "[瑪娜]";
+				mes "然而，這個屏障只";
+				mes "容得下一人，並且無法";
+				mes "防禦遠距離";
+				mes "攻擊或強大的屬性";
+				mes "攻擊，所以要非常小心！";
+				.@eread_5 = 1;
+				break;
+			case 6:
+				mes "[瑪娜]";
+				mes "你確定你已經";
+				mes "聽夠關於元素屬性";
+				mes "的細微差別了嗎？";
+				mes "因為如果你";
+				mes "準備好了，我們將涵蓋一些你";
+				mes "需要學習的新教材。";
+				next;
+				if(select("等、等等，還沒！:我準備好繼續了。") == 2) {
+					mes "[瑪娜]";
+					mes "好的，我們將";
+					mes "進入下一個";
+					mes "主題。呵呵呵?！";
+					tu_magician01 = 2;
+					specialeffect2 EF_HIT5;
+					.@total = .@eread_1 + .@eread_2 + .@eread_3 + .@eread_4 + .@eread_5;
+					if (.@total) getexp (.@total*150),(.@total*70);
+					close;
+				}
+				break;
+			}
+		}
+	case 2:
+		mes "我知道屬性的概念";
+		mes "現在可能";
+		mes "令人困惑，但隨著";
+		mes "時間推移，你會掌握";
+		mes "訣竅的。現在是時候深入探討";
+		mes "魔法技能了?";
+		next;
+		mes "[瑪娜]";
+		mes "現在，最基礎的魔法";
+		mes "攻擊法術有火箭術、";
+		mes "冰箭術、雷擊術和";
+		mes "心靈爆破。學習這些";
+		mes "能讓魔法師學習";
+		mes "更進階的技能。";
+		specialeffect2 EF_NAPALMBEAT;
+		next;
+		mes "[瑪娜]";
+		mes "提高這些";
+		mes "技能的等級，不僅能解鎖";
+		mes "其他法術，而且";
+		mes "那些基礎攻擊技能的";
+		mes "傷害也會隨之增加。";
+		specialeffect2 EF_LIGHTBOLT;
+		next;
+		mes "[瑪娜]";
+		mes "魔法師職業的";
+		mes "其他基礎技能";
+		mes "還有火狩、石化術和";
+		mes "禪心。它們";
+		mes "不完全是攻擊法術，但在某些情況下非常有用。";
+		next;
+		specialeffect2 EF_SIGHT;
+		mes "[瑪娜]";
+		mes "火狩是用來";
+		mes "識破隱藏中的";
+		mes "敵人。請記住";
+		mes "這個技能的";
+		mes "範圍並不是很大。";
+		next;
+		specialeffect2 EF_STONECURSE;
+		mes "[瑪娜]";
+		mes "石化術有機會";
+		mes "詛咒目標，暫時";
+		mes "使其無法移動，並使其變成";
+		mes "^5C4033地^000000屬性。然而，每次";
+		mes "嘗試施放石化術時，";
+		mes "都需要消耗 1 顆紅色魔力礦石。";
+		next;
+		mes "[瑪娜]";
+		mes "禪心是";
+		mes "一項被動技能，能幫助你在";
+		mes "坐下休息時恢復更多的 SP。它不直接影響戰鬥，但擁有更多的 SP 總是比較好。";
+		next;
+		mes "[瑪娜]";
+		mes "嗯，我覺得我已經";
+		mes "充分解釋了基礎法術。";
+		mes "現在，在我談論";
+		mes "我們的進階技能之前，";
+		mes "我有一項訓練任務";
+		mes "想讓你去完成。";
+		next;
+		mes "[瑪娜]";
+		mes "如果你從這裡往西走，";
+		mes "你會找到一座大橋，";
+		mes "在那裡你會遇到";
+		mes "被稱為蟲蛹的魔物。";
+		mes "蟲蛹不會移動，也不能";
+		mes "攻擊來保衛自己的生命。";
+		next;
+		mes "[瑪娜]";
+		mes "去狩獵這些蟲蛹，";
+		mes "直到你從牠們身上收集到";
+		mes "10 個蛹殼。";
+		mes "然後帶回來給我，好嗎？";
+		tu_magician01 = 3;
+		getexp 400,200;
+		specialeffect2 EF_HIT5;
+		close;
+	case 3:
+	case 4:
+		if (tu_magician01 == 3) {
+			mes "啊，你回來了？";
+			mes "讓我看看你是否";
+			mes "從狩獵蟲蛹中收集齊了";
+			mes "10 個蛹殼。嗯......";
+		}
+		else {
+			mes "所以...";
+			mes "你拿到";
+			mes "我要求的 10 個";
+			mes "蛹殼";
+			mes "了嗎？希望如此...";
+			mes "因為我要檢查囉?";
+		}
+		next;
+		mes "[瑪娜]";
+		if (countitem(915) < 10){// Chrysalis
+			if (tu_magician01 == 3) {
+				mes "噢，你收集的數量";
+				mes "還不夠喔。";
+				mes "從這裡往西走，";
+				mes "去狩獵蟲蛹";
+				mes "以獲得更多蛹殼，好嗎？";
+				mes "現在，我先為你恢復體力。";
+				tu_magician01 = 4;
+				percentheal 100,100;
+			}
+			else {
+				mes "哇，你需要";
+				mes "的不只這些。";
+				mes "我知道你能做到的...";
+				mes "蟲蛹可是完全沒有";
+				mes "防禦能力的魔物喔！";
+			}
+		}
+		else {
+			mes "...九、十。";
+			mes "很好，你通過了！";
+			mes "現在，你一定對";
+			mes "使用技能更加熟悉了吧？";
+			mes "總之，當你準備好進行下一課時請告訴我，好嗎？";
+			tu_magician01 = 5;
+			getexp 400,200;
+			specialeffect2 EF_HIT5;
+		}
+		close;
+	case 5:
+		mes "現在我來告訴你";
+		mes "我所知道的";
+		mes "更進階的魔法師";
+		mes "技能。你想讓我";
+		mes "解釋哪一個呢？";
+		while(1){
+			next;
+			switch(select("聖靈召喚:暗之障壁:火球術:冰凍術:雷爆術:火焰之牆:能量外套:離開。")) {
+			case 1:
+				mes "[瑪娜]";
+				mes "聖靈召喚是一種^CFB53B念^000000";
+				mes "屬性技能，你可以";
+				mes "在將心靈爆破";
+				mes "技能提升到";
+				mes "一定等級後學習。它使用";
+				mes "古老的精神力量進行攻擊?";
+				next;
+				specialeffect2 EF_SOULSTRIKE;
+				next;
+				mes "[瑪娜]";
+				mes "隨著你訓練使用";
+				mes "聖靈召喚並提高";
+				mes "該技能的等級，它的威力將會增強，且你將能夠";
+				mes "更快速地施放它。";
+				.@skill_e1 = 1;
+				break;
+			case 2:
+				mes "[瑪娜]";
+				mes "你可以學習暗之障壁";
+				mes "在受過心靈爆破和";
+				mes "聖靈召喚的訓練之後。";
+				mes "暗之障壁能防禦";
+				mes "大多數近距離攻擊。";
+				next;
+				specialeffect2 EF_GLASSWALL;
+				next;
+				mes "[瑪娜]";
+				mes "然而，暗之障壁";
+				mes "有持續時間限制，且";
+				mes "只能防禦";
+				mes "一定次數的攻擊，";
+				mes "取決於你使用的";
+				mes "暗之障壁技能等級。";
+				.@skill_e2 = 1;
+				break;
+			case 3:
+				mes "[瑪娜]";
+				mes "火球術是一種^FF0000火^000000";
+				mes "屬性技能，你可以";
+				mes "在接受火箭術的訓練後";
+				mes "學習。";
+				next;
+				specialeffect2 EF_FIREBALL;
+				next;
+				mes "[瑪娜]";
+				mes "火球術實際上可以";
+				mes "對技能範圍內的";
+				mes "多個敵人";
+				mes "造成傷害。請好好";
+				mes "利用火球術的";
+				mes "破壞力吧！";
+				.@skill_e3 = 1;
+				break;
+			case 4:
+				mes "[瑪娜]";
+				mes "冰凍術是一種^0000FF水^000000";
+				mes "屬性技能，可以";
+				mes "在將冰箭術";
+				mes "提升到一定等級後";
+				mes "學習。";
+				specialeffect2 EF_FROSTDIVER;
+				next;
+				specialeffect2 EF_FROSTDIVER2;
+				mes "[瑪娜]";
+				mes "冰凍術會傷害";
+				mes "敵人，並有機會";
+				mes "將其凍結。一旦";
+				mes "被凍結，魔物就會被";
+				mes "視為水屬性";
+				mes "生物。";
+				next;
+				mes "[瑪娜]";
+				mes "現在，隨著你提高";
+				mes "冰凍術技能的等級，";
+				mes "它的傷害和凍結";
+				mes "魔物的機率也會";
+				mes "增加。相當危險，是吧？^FFFFFFkamenriderblack^000000";
+				.@skill_e4 = 1;
+				break;
+			case 5:
+				mes "[瑪娜]";
+				mes "雷爆術是一種";
+				mes "^93DB70風^000000屬性技能，";
+				mes "你可以";
+				mes "在將雷擊術";
+				mes "提升到一定等級後學習。";
+				next;
+				specialeffect2 EF_THUNDERSTORM;
+				mes "[瑪娜]";
+				mes "雷爆術與火球術類似，";
+				mes "它可以攻擊";
+				mes "一定範圍內的";
+				mes "多個敵人。";
+				mes "它是一種極其強效的";
+				mes "地面目標攻擊。";
+				.@skill_e5 = 1;
+				break;
+			case 6:
+				mes "[瑪娜]";
+				mes "火焰之牆是一種^FF0000火^000000";
+				mes "屬性技能，可以";
+				mes "在接受火球術和";
+				mes "火狩的訓練後學習。";
+				mes "與其他技能不同，";
+				mes "火焰之牆的目標是一個區域。";
+				next;
+				specialeffect2 EF_FIREWALL;
+				mes "[瑪娜]";
+				mes "因此你可以將";
+				mes "火焰之牆放置在";
+				mes "你認為敵人會";
+				mes "朝向移動的位置。而且當";
+				mes "魔物靠近你時，";
+				mes "它特別有用！";
+				next;
+				mes "[瑪娜]";
+				mes "所以如果你能";
+				mes "有策略且有效地使用";
+				mes "火焰之牆，它可以";
+				mes "成為一個非常強大的技能?";
+				.@skill_e6 = 1;
+				break;
+			case 7:
+				mes "[瑪娜]";
+				mes "能量外套，嗯，";
+				mes "是一個你無法自行學會的";
+				mes "獨特技能。";
+				mes "你必須向魔法師公會內的";
+				mes "布力查德";
+				mes "請教如何使用它。";
+				next;
+				specialeffect2 EF_ENERGYCOAT;
+				next;
+				mes "[瑪娜]";
+				mes "如果你決定";
+				mes "學習能量外套，我";
+				mes "相信布力查德會告訴你";
+				mes "你需要知道的一切。";
+				.@skill_e7 = 1;
+				break;
+			case 8:
+				mes "[瑪娜]";
+				mes "你都明白";
+				mes "了嗎？很好，因為";
+				mes "現在我有一個任務要";
+				mes "代表魔法師公會交給你。";
+				mes "當你準備好聽取";
+				mes "簡報時，就來找我，好嗎？";
+				next;
+				mes "[瑪娜]";
+				mes "噢，請收下";
+				mes "這個。這是一份送給你的";
+				mes "禮物，希望能幫助你的";
+				mes "訓練。我希望它能在";
+				mes "戰鬥時派上用場...";
+				tu_magician01 = 6;
+				getitem 1604,1; //Wand
+				specialeffect2 EF_HIT5;
+				.@total = .@skill_e1 + .@skill_e2 + .@skill_e3 + .@skill_e4 + .@skill_e5;
+				if (.@total) getexp (.@total*300),(.@total*100);
+				close;
+			}
+		}
+		close;
+	case 6:
+		mes "噢很好，你回來了。";
+		mes "讓我來告訴你";
+		mes "你的任務。最近，";
+		mes "夢羅克發生了一些事情，";
+		mes "盜賊公會";
+		mes "正在請求我們的協助。";
+		next;
+		mes "[瑪娜]";
+		mes "這項任務並非強制性的，";
+		mes "但如果你願意做，";
+		mes "你將獲得報酬，";
+		mes "我們也會提供你";
+		mes "一些支援。";
+		mes "所以你覺得如何呢？";
+		next;
+		switch(select("我願意做。:抱歉，但是...")) {
+		case 1:
+			mes "[瑪娜]";
+			mes "太好了！那麼，";
+			mes "我會直接送你";
+			mes "去夢羅克。一旦你";
+			mes "到達那裡，請前往";
+			mes "夢羅克金字塔前方，並";
+			mes "與伊爾漢交談。謝謝?";
+			next;
+			mes "[瑪娜]";
+			mes "噢，當你完成";
+			mes "伊爾漢要你做的事情後，";
+			mes "請回來";
+			mes "向我回報，好嗎？";
+			tu_magician01 = 7;
+			emotion ET_SMILE;
+			warp "morocc",182,286;
+			close;
+		case 2:
+			mes "[瑪娜]";
+			mes "嗯...？";
+			mes "噢，我明白了。好吧，如果";
+			mes "你改變了";
+			mes "主意，就回來";
+			mes "晚點再來找我，好嗎？";
+			close;
+		}
+	case 7:
+		mes "我不知道";
+		mes "伊爾漢為你準備了";
+		mes "什麼樣的工作，";
+		mes "但希望";
+		mes "不會太困難。";
+		close;
+	case 27:
+		mes "伊爾漢剛傳了";
+		mes "訊息給我，說";
+		mes "你在完成任務方面";
+		mes "做得非常出色。";
+		mes "做得好，"+strcharinfo(0)+"?";
+		next;
+		mes "[瑪娜]";
+		mes "似乎有";
+		mes "兩個祕密組織";
+		mes "牽涉到這些骯髒的勾當裡。";
+		mes "為什麼他們會";
+		mes "一起合作呢？";
+		next;
+		mes "[瑪娜]";
+		mes "嗯，無論如何...";
+		mes "這是一件相當";
+		mes "重大的事情，";
+		mes "我想上層";
+		mes "會去處理，所以你現在";
+		mes "不需要擔心這個。";
+		next;
+		mes "[瑪娜]";
+		mes "請收下這個作為";
+		mes "協助我們兩個公會的";
+		mes "一點小獎勵。";
+		mes "再次非常感謝你?";
+		tu_magician01 = 28;
+		getitem 2321,1; //Silk_Robe
+		Zeny = Zeny + 3000;
+		getexp 3000,1000;
+		close;
+	default:
+		if(tu_magician01 < 27){
+			mes "所以...";
+			mes "看來盧恩米德加茲王國";
+			mes "確實發生了";
+			mes "某些事情。難怪";
+			mes "所有的公會都這麼忙碌...";
+			next;
+			mes "[瑪娜]";
+			mes "總之，請";
+			mes "繼續保持優良的";
+			mes "表現。還有，嗯，";
+			mes "伊爾漢過得好嗎？";
+		} else {
+			mes "你現在似乎已經";
+			mes "經驗豐富了，";
+			mes "我也沒有其他可以";
+			mes "教你的了。現在要靠";
+			mes "你自己去尋找方法";
+			mes "精通魔法之道了。";
+		}
+		close;
+	}
+}

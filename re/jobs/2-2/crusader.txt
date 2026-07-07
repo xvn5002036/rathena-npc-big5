@@ -1,0 +1,65 @@
+//===== rAthena Script ======================================= 
+//= Crusader Job Quest
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Crusader classes
+//===== Changelogs: ==========================================
+//= 1.0 Location changed in ep16.1 [Capuche]
+//============================================================
+
+// Senior Crusader: 1st Collect Items Test
+//============================================================
+prt_cas,251,75,1	duplicate(資深十字軍_)	資深十字軍	4_M_CRU_OLD
+
+// Suffering Man: 2nd Endurance Test
+//============================================================
+prt_cas,238,94,5	duplicate(苦惱的男子_)	苦惱的男子	4_M_JOB_KNIGHT1
+
+// Crusader: 4th Purification Test
+//============================================================
+prt_cas,261,101,3	duplicate(守護騎士_)	守護騎士	4_M_CRU
+
+// Actual tests
+//============================================================
+
+//----------------------------------------------------------------------------
+// Endurance Test
+//----------------------------------------------------------------------------
+job_cru,98,105,4	script	 召喚師#cr5	WARPNPC,3,3,{
+	end;
+OnTouch_:
+	set CRUS_Q,6;
+	changequest 3010,3011;
+	warp "prt_cas",238,94;	// inaccurate location
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Purification Test
+//----------------------------------------------------------------------------
+job_cru,168,180,4	script	魔物召喚#cr5	WARPNPC,3,3,{
+	end;
+OnInit:
+	disablenpc "魔物召喚#cr5";
+	end;
+
+OnTouch_:
+	warp "prt_cas",238,94;	// inaccurate location
+	donpcevent "魔物召喚#cr0::OnReset";
+	donpcevent "魔物召喚#cr4::OnReset";
+	donpcevent "魔物召喚#cr0::OnEnd";
+	donpcevent "魔物召喚#cr4::OnEnd";
+	donpcevent "魔物召喚#cr5::OnEnd";
+	donpcevent "魔物召喚#cr6::OnStop";
+	donpcevent "魔物召喚#cr6::OnEnd";
+	donpcevent "等候室#cr1::OnStart";
+	end;
+
+OnStart:
+	enablenpc "魔物召喚#cr5";
+	end;
+
+OnEnd:
+	disablenpc "魔物召喚#cr5";
+	end;
+}

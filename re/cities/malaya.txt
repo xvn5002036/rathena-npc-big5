@@ -1,0 +1,932 @@
+//===== rAthena Script ======================================= 
+//= Port Malaya
+//===== By: ================================================== 
+//= Euphy
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Port Malaya Town Script
+//===== Additional Comments: ================================= 
+//= 0.1 Alberta sailors only. [Euphy]
+//= 0.2 Adapted from Masao's conversion.
+//= 1.0 Added remaining NPCs.
+//= 1.1 Added Jeepney script. [DeadlySilence]
+//============================================================ 
+
+// Port Malaya Transportation
+//============================================================
+// Old coordinates: alberta (237,71)
+alberta,196,202,3	script	奧普塔瑪拉船員#alberta	100,{
+	mes "[奧普塔瑪拉船員]";
+	mes "嘿，你好！";
+	mes "前往馬來港需要 10,000 Zeny。有興趣嗎？";
+	next;
+	switch(select("關於馬來港。:前往馬來港。:取消。")) {
+	case 1:
+		mes "[奧普塔瑪拉船員]";
+		mes "馬來港是一個從艾爾貝塔向西南航行就能抵達的小村莊。";
+		next;
+		mes "[奧普塔瑪拉船員]";
+		mes "之前因為村裡有些問題所以我無法去那裡，但現在看來一切都解決了！";
+		next;
+		mes "[奧普塔瑪拉船員]";
+		mes "我不太確定，但那是個像舒適愜意的公園一樣的村莊。";
+		next;
+		mes "[奧普塔瑪拉船員]";
+		mes "我差點就不想回到舒適的艾爾貝塔了。";
+		next;
+		mes "[奧普塔瑪拉船員]";
+		mes "我相信你到了馬來港也會有同樣的感覺。";
+		close;
+	case 2:
+		if (Zeny < 10000) {
+			mes "[奧普塔瑪拉船員]";
+			mes "噢，天啊！！";
+			mes "你不知道這裡離那裡有多遠。當然不可能是免費的。請帶 10,000 Zeny 來吧。抱歉！";
+			close;
+		}
+		mes "[奧普塔瑪拉船員]";
+		mes "太好了！";
+		mes "出發前往馬來港！！";
+		set Zeny, Zeny-10000;
+		close2;
+		warp "malaya",271,55;
+		end;
+	case 3:
+		mes "[奧普塔瑪拉船員]";
+		mes "現在的冒險者都表現得很忙的樣子。等你有空再來，我們再一起去馬來港看看。";
+		close;
+	}
+}
+
+malaya,276,55,4	script	奧普塔瑪拉船員#malaya	100,{
+	if (malaya_hi < 10) {
+		mes "[奧普塔瑪拉船員]";
+		mes "我想村子裡現在還很忙。你的拜訪結束了嗎？這裡隨時都有開往艾爾貝塔的船。";
+		next;
+	} else if (malaya_hi < 20) {
+		mes "[奧普塔瑪拉船員]";
+		mes "我想是一位無名的冒險者幫村民們解決了心頭大患。呀呼！你想回艾爾貝塔嗎？";
+		next;
+	} else {
+		mes "[奧普塔瑪拉船員]";
+		mes "你想跟我一起回艾爾貝塔嗎？";
+		next;
+	}
+	switch(select("回去。:不回去。")) {
+	case 1:
+		mes "[奧普塔瑪拉船員]";
+		mes "太好了！我們現在就出發前往艾爾貝塔！！";
+		close2;
+		warp "alberta",192,217;
+		end;
+	case 2:
+		mes "[奧普塔瑪拉船員]";
+		mes "沒關係。如果你想回艾爾貝塔，隨時來這裡找我。";
+		close;
+	}
+}
+
+// Generic Port Malaya NPCs
+//============================================================
+ma_in01,30,94,4	script	旅館老闆#ma	583,{
+	if (malaya_hi < 10) {
+		mes "[旅館老闆]";
+		mes "哎呀！來拜訪的嗎？";
+		mes "時機真不巧。村子現在有點亂，所以我暫停營業了。抱歉。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[旅館老闆]";
+		mes "所以你就是村民們口中的那位冒險者嗎？多虧了你，我的旅館重新開張了。謝謝你。";
+		next;
+	} else {
+		mes "[旅館老闆]";
+		mes "歡迎光臨。";
+		mes "這裡是馬來港最好的旅館，「城市小屋」。";
+		next;
+	}
+	mes "[旅館老闆]";
+	mes "來休息的嗎？住宿費是 5,000 Zeny。";
+	next;
+	switch(select("儲存點。:住宿。 - 5,000z:取消。")) {
+	case 1:
+		mes "[旅館老闆]";
+		mes "儲存成功。下次見。";
+		savepoint "ma_in01",43,98,1,1;
+		close;
+	case 2:
+		if (Zeny < 5000) {
+			mes "[旅館老闆]";
+			mes "抱歉。我想你的錢有點不夠。";
+			close;
+		}
+		mes "[旅館老闆]";
+		mes "希望你住得愉快。";
+		close2;
+		set Zeny, Zeny-5000;
+		percentheal 100,100;
+		warp "ma_in01",43,98;
+		end;
+	case 3:
+		close;
+	}
+}
+
+-	script	不明生物#i	-1,{
+	end;
+OnInit:
+	switch(atoi(strnpcinfo(2))) {
+		case 1: setarray .@npc$,"01","02","03","04"; break;
+		case 5: setarray .@npc$,"05","06","07","08"; break;
+		case 9: setarray .@npc$,"09","10","11"; break;
+		default: end;
+	}
+	set .@size, getarraysize(.@npc$);
+	set .@rand, rand(.@size);
+	for(set .@i,0; .@i<.@size; set .@i,.@i+1)
+		donpcevent "不明生物#"+.@npc$[.@i]+"::"+((.@i == .@rand)?"OnEnable":"OnDisable");
+	end;
+OnEnable:
+	enablenpc();
+	end;
+OnDisable:
+	disablenpc();
+	end;
+OnBingx2:
+	switch(atoi(strnpcinfo(2))) {
+		case 1: setarray .@npc$,"02","03","04"; break;
+		case 5: setarray .@npc$,"06","07","08"; break;
+		case 9: setarray .@npc$,"10","11"; break;
+	}
+	set .@size, getarraysize(.@npc$);
+	set .@rand, rand(.@size);
+	for(set .@i,0; .@i<.@size; set .@i,.@i+1)
+		donpcevent "不明生物#"+.@npc$[.@i]+"::"+((.@i == .@rand)?"OnEnable":"OnDisable");
+	donpcevent strnpcinfo(0)+"::OnDisable";
+	end;
+OnTouch_:
+	if (getcharid(1)) {
+		if ($ma_name04$ == strcharinfo(0) || $ma_name05$ == strcharinfo(0) || $ma_name06$ == strcharinfo(0)) {
+			donpcevent strnpcinfo(0)+"::OnBingx2";
+			mes "不明生物看了你一眼，臉紅了，然後消失了。";
+			close;
+		}
+		if (rand(1,5)%2) {
+			switch(atoi(strnpcinfo(2))) {
+				case 1: set $ma_name04$,strcharinfo(0); break;
+				case 5: set $ma_name05$,strcharinfo(0); break;
+				case 9: set $ma_name06$,strcharinfo(0); break;
+			}
+		}
+		donpcevent strnpcinfo(0)+"::OnBingx2";
+		mes "不明生物看了你一眼，然後消失了。";
+		close;
+	}
+	donpcevent strnpcinfo(0)+"::OnBingx2";
+	mes "不明生物看了你一眼，然後跑掉了。";
+	close;
+}
+ma_fild01,74,367,6	duplicate(不明生物#i)	不明生物#01	572,2,2
+ma_fild02,282,41,4	duplicate(不明生物#i)	不明生物#05	572,2,2
+ma_scene01,195,92,4	duplicate(不明生物#i)	不明生物#09	572,2,2
+
+-	script	不明生物#j	-1,{
+	end;
+OnEnable:
+	enablenpc();
+	end;
+OnDisable:
+	disablenpc();
+	end;
+OnBingx2:
+	switch(atoi(strnpcinfo(2))) {
+		case 2: setarray .@npc$,"01","03","04"; break;
+		case 3: setarray .@npc$,"01","02","04"; break;
+		case 4: setarray .@npc$,"01","02","03"; break;
+		case 6: setarray .@npc$,"05","07","08"; break;
+		case 7: setarray .@npc$,"05","06","08"; break;
+		case 8: setarray .@npc$,"05","06","07"; break;
+		case 10: setarray .@npc$,"09","11"; break;
+		case 11: setarray .@npc$,"09","10"; break;
+	}
+	set .@size, getarraysize(.@npc$);
+	set .@rand, rand(.@size);
+	for(set .@i,0; .@i<.@size; set .@i,.@i+1)
+		donpcevent "不明生物#"+.@npc$[.@i]+"::"+((.@i == .@rand)?"OnEnable":"OnDisable");
+		donpcevent strnpcinfo(0)+"::OnDisable";
+	end;
+OnTouch_:
+	set .@i, atoi(strnpcinfo(2));
+	if (.@i%4 == 2) {
+		if (is_party_leader() == true)
+			set .@pass,1;
+	} else if (.@i%4 == 3) {
+		if (checkquest(4229,PLAYTIME) > -1 && checkquest(9223,PLAYTIME) > -1 && checkquest(12278,PLAYTIME) > -1)
+			set .@pass,1;
+	} else if (.@i%4 == 0) {
+		if (rand(1,100)%10 == 7)
+			set .@pass,1;
+	}
+	if (.@pass) {
+		if ($ma_name04$ == strcharinfo(0) || $ma_name05$ == strcharinfo(0) || $ma_name06$ == strcharinfo(0)) {
+			donpcevent strnpcinfo(0)+"::OnBingx2";
+			mes "不明生物看了你一眼，臉紅了，然後消失了。";
+			close;
+		}
+		if (rand(1,5)%2) {
+			switch(.@i) {
+			case 2:
+			case 3:
+			case 4:
+				set $ma_name04$,strcharinfo(0);
+				break;
+			case 6:
+			case 7:
+			case 8:
+				set $ma_name05$,strcharinfo(0);
+				break;
+			case 10:
+			case 11:
+				set $ma_name06$,strcharinfo(0);
+				break;
+			}
+		}
+		donpcevent strnpcinfo(0)+"::OnBingx2";
+		mes "不明生物看了你一眼，然後消失了。";
+		close;
+	}
+	donpcevent strnpcinfo(0)+"::OnBingx2";
+	mes "不明生物看了你一眼，然後跑掉了。";
+	close;
+}
+ma_fild01,109,116,4	duplicate(不明生物#j)	不明生物#02	572,2,2
+ma_fild01,280,150,6	duplicate(不明生物#j)	不明生物#03	572,2,2
+ma_fild01,309,221,6	duplicate(不明生物#j)	不明生物#04	572,2,2
+ma_fild02,246,324,4	duplicate(不明生物#j)	不明生物#06	572,2,2
+ma_fild02,71,296,6	duplicate(不明生物#j)	不明生物#07	572,2,2
+ma_fild02,32,263,4	duplicate(不明生物#j)	不明生物#08	572,2,2
+ma_scene01,158,139,4	duplicate(不明生物#j)	不明生物#10	572,2,2
+ma_scene01,167,112,6	duplicate(不明生物#j)	不明生物#11	572,2,2
+
+malaya,227,311,4	script	老奶奶#ma01	575,{
+	if (malaya_hi < 10) {
+		mes "[老奶奶]";
+		mes "你不是本地人吧？自己多保重。";
+		next;
+		mes "[老奶奶]";
+		mes "我很擔心，因為我的媳婦懷孕了。希望不要出什麼事。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[老奶奶]";
+		mes "我聽說有個外地人正在幫助村莊。";
+		next;
+		mes "[老奶奶]";
+		mes "那我的媳婦就安全了。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		mes "[老奶奶]";
+		mes "聽說這位 "+getd("$ma_name0"+rand(1,6)+"$")+" 一直跟著瑪納南加爾到處跑。";
+		next;
+		mes "[老奶奶]";
+		mes "我會為他們禁忌的愛加油的。";
+		close;
+	}
+	mes "[老奶奶]";
+	mes "我很擔心懷孕的媳婦。希望瑪納南加爾不要來騷擾她。";
+	next;
+	select("瑪納南加爾？");
+	mes "[老奶奶]";
+	mes "不是本地人對吧？讓我告訴你為什麼連你這樣的外國人也該小心。";
+	next;
+	mes "[老奶奶]";
+	mes "瑪納南加爾很久以前是個住在馬來港的女人。她嫁給了一個正派的男人，還生了一個孩子。";
+	next;
+	mes "[老奶奶]";
+	mes "但幸福總是不長久，對吧？那個孩子因為一場意外流產了...";
+	next;
+	mes "[老奶奶]";
+	mes "她在為失去孩子悲痛了幾天後，最終也去世了。";
+	next;
+	select("真是個悲傷的故事。");
+	mes "[老奶奶]";
+	mes "之後，瑪納南加爾就開始以靈體的形式出現，奪走村裡孕婦的嬰兒。";
+	next;
+	mes "[老奶奶]";
+	mes "如果你晚上在馬來港散步...";
+	next;
+	mes "[老奶奶]";
+	mes "聽到滴答滴答或是瓦克瓦克的聲音，要小心，那是瑪納南加爾拍打翅膀的聲音。";
+	close;
+}
+
+malaya,189,263,4	script	打鼓的年輕人#ma02	578,{
+	if (malaya_hi < 10) {
+		emotion ET_HUK;
+		mes "[打鼓的年輕人]";
+		mes "呃... 就像以前那次一樣...";
+		next;
+		emotion ET_HUK;
+		mes "[打鼓的年輕人]";
+		mes "當月亮被吞噬的時候。啊！";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[打鼓的年輕人]";
+		mes "我想這個村子被一個無名的冒險者拯救了。";
+		next;
+		emotion ET_OHNO;
+		mes "[打鼓的年輕人]";
+		mes "呼... 我還以為巴庫暴龍又出現了。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		mes "[打鼓的年輕人]";
+		mes getd("$ma_name0"+rand(1,6)+"$")+" 據說阻止了巴庫暴龍吞噬月亮。是不是很厲害？我總算鬆了一口氣。";
+		close;
+	}
+	mes "[打鼓的年輕人]";
+	mes "巴庫暴龍在馬來港也被稱為「吞噬月亮的魔物」。";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "但我知道巴庫暴龍也會「吞噬人」。";
+	next;
+	select("嚇！那不是很危險嗎？");
+	emotion ET_KIK;
+	mes "[打鼓的年輕人]";
+	mes "哈哈哈。有辦法可以阻止巴庫暴龍吃人。";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "沒錯，即使是已經吞了 6 個月亮的最強魔物也有弱點。";
+	next;
+	select("哇。是什麼？");
+	mes "[打鼓的年輕人]";
+	mes "牠對噪音很敏感，所以當牠準備吞噬月亮時！！";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "這就是你的機會！！什麼樣的噪音都沒關係！！不管是鍋子、鈸、鼓、罐子還是平底鍋，只要不斷製造噪音就對了。";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "然後巴庫暴龍就會嚇到，吐出月亮然後逃跑！";
+	next;
+	mes "[打鼓的年輕人]";
+	mes "隨身帶個鼓吧。你會發現它很方便的。";
+	close;
+}
+
+malaya,270,59,4	script	港口守衛#ma03	570,{
+	if (malaya_hi < 10) {
+		emotion ET_PROFUSELY_SWEAT;
+		mes "[港口守衛]";
+		mes "這幾天村子裡很亂。我這樣休息沒關係嗎？";
+		close;
+	} else if (malaya_hi < 20) {
+		emotion ET_STARE_ABOUT;
+		mes "[港口守衛]";
+		mes "村子現在稍微穩定一點了，但晚上走動時還是要小心。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		mes "[港口守衛]";
+		mes getd("$ma_name0"+rand(1,6)+"$")+" 據說被布瓦亞抓走後活著逃了出來。這個人一定很強。";
+		close;
+	}
+	emotion ET_HUK;
+	mes "[港口守衛]";
+	mes "什麼！！港口一切正常！！";
+	next;
+	mes "[港口守衛]";
+	mes "咦？你不是隊長？嚇我一跳。可惡！啊，對了！我收到了一份給旅行者的官方文件。";
+	next;
+	select("什麼文件？");
+	mes "[港口守衛]";
+	mes "上面寫著旅行者晚上在村子裡走動時要注意魔物。";
+	next;
+	mes "[港口守衛]";
+	mes "布瓦亞不常來村子，但有時牠們會在晚上用帶著的箱子把人抓走。";
+	next;
+	mes "[港口守衛]";
+	mes "咦？！這裡還說有一種叫瓦克瓦克的魔物特別常在晚上來村子，必須避開牠。";
+	next;
+	switch(select("我明白了。:有什麼方法可以阻止牠們來嗎？")) {
+	case 1:
+		mes "[港口守衛]";
+		mes "晚上要小心！";
+		close;
+	case 2:
+		mes "[港口守衛]";
+		mes "據說如果你被抓進布瓦亞帶的箱子裡，可以攻擊箱子裡面的弱點。";
+		next;
+		mes "[港口守衛]";
+		mes "當你從遠處聽到瓦克瓦克拍打翅膀的聲音時，你應該跑進最近的建築物裡。";
+		next;
+		emotion ET_SCRATCH;
+		mes "[港口守衛]";
+		mes "但如果拍打聲很小，或者你什麼都沒聽到，只能說你該準備好迎接攻擊，並祈求好運了。";
+		close;
+	}
+}
+
+malaya,88,252,4	script	小女孩#ma04	576,{
+	if (malaya_hi < 10) {
+		mes "[小女孩]";
+		mes "我好怕，但我必須去森林裡拜訪仙女。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[小女孩]";
+		mes "嘿嘿。爸爸說等村子平靜下來，我就可以去森林裡拜訪仙女了。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		set .@name$, getd("$ma_name0"+rand(1,6)+"$");
+		mes "[小女孩]";
+		mes "不久前 "+.@name$+" 來跟我講了一個有趣的故事。";
+		next;
+		mes "[小女孩]";
+		mes "「我在院子裡種了一對梨樹。」";
+		mes "嘿嘿。是不是很有趣？"+.@name$+" 感覺是個有趣的人。";
+		close;
+	}
+	mes "[小女孩]";
+	mes "爸爸說只要我和森林裡的仙女做朋友，就不會得皮膚病了。";
+	next;
+	select("這個仙女是什麼？");
+	mes "[小女孩]";
+	mes "恩坎托！恩坎托仙子住在森林裡的大樹或岩石裡。有男孩仙子也有女孩仙子...";
+	next;
+	mes "[小女孩]";
+	mes "但是男孩仙子比較漂亮。為什麼呢？";
+	close;
+}
+
+malaya,219,92,6	script	小孩#ma05	577,{
+	if (malaya_hi < 10) {
+		mes "[小孩]";
+		mes "我媽媽叫我不要在外面玩，因為很危險。為什麼啊？";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[小孩]";
+		mes "我媽媽說我可以玩，但只能在馬來港裡面。";
+		next;
+		mes "[小孩]";
+		mes "嘿嘿。但我從來沒想過要離開馬來港。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		mes "[小孩]";
+		mes "我聽說有人在巴里奧 馬西瓦加拿走了傑傑林的帽子。";
+		next;
+		mes "[小孩]";
+		mes "為什麼會有人想偷魔物的帽子？"+getd("$ma_name0"+rand(1,6)+"$")+" 一定是走投無路了。";
+		next;
+		mes "[小孩]";
+		mes "喔等一下！這應該是個秘密。噓！請假裝你沒聽到。";
+		close;
+	}
+	mes "[小孩]";
+	mes "我想有人在偷村子裡所有的帽子。";
+	next;
+	mes "[小孩]";
+	mes "我媽媽昨天洗的帽子不見了。我們鄰居的帽子幾天前也不見了。";
+	next;
+	mes "[小孩]";
+	mes "嗯... 你覺得是傑傑林拿走的嗎？";
+	next;
+	mes "[小孩]";
+	mes "我去巴里奧 馬西瓦加拜訪朋友，他說他看到傑傑林戴著那頂不見的帽子...";
+	close;
+}
+
+malaya,363,283,4	script	當地居民#ma06	582,{
+	if (malaya_hi < 10) {
+		mes "[當地居民]";
+		mes "嗯... 是不是該小心女巫詛咒的時候了？";
+		next;
+		mes "[當地居民]";
+		mes "外地人，小心芒庫庫蘭的針。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[當地居民]";
+		mes "歡迎來到馬來港，外地人..";
+		next;
+		mes "[當地居民]";
+		mes "這幾天村子裡很亂。如果你看到紅眼睛的人，盡量不要盯著他們的眼睛看。";
+		close;
+	}
+	set .@name$, getd("$ma_name0"+rand(1,6)+"$");
+	switch(rand(1,6)) {
+	case 1:
+		mes "[當地居民]";
+		mes "晚上在村子裡走動要小心。"+.@name$+" 被瓦克瓦克打倒了。";
+		close;
+	case 2:
+		mes "[當地居民]";
+		mes .@name$+" 據說成功馴服了一隻迪克巴蘭。這個人一定很有勇氣。不知道我有沒有機會看到這隻被馴服的迪克巴蘭？";
+		close;
+	case 3:
+		mes "[當地居民]";
+		mes "你看過崩吉順吉斯嗎？聽說 "+.@name$+" 正在獵殺崩吉順吉斯。";
+		close;
+	case 4:
+		mes "[當地居民]";
+		mes "如果你打算出村子，要小心提亞納克。聽說 "+.@name$+" 被提亞納克騙了，還得去醫院。";
+		close;
+	case 5:
+	case 6:
+		break;
+	}
+	mes "[當地居民]";
+	mes "這幾天村子裡很亂。看來芒庫庫蘭又回到村子裡了。";
+	next;
+	select("芒庫庫蘭？");
+	mes "[當地居民]";
+	mes "一種也被稱為女巫的魔物。長得像人，而且也穿衣服。";
+	next;
+	mes "[當地居民]";
+	mes "芒庫庫蘭會把看到的人做成娃娃，並用針詛咒它。";
+	next;
+	select("有辦法可以認出這種魔物嗎？");
+	mes "[當地居民]";
+	mes "有一個辦法。所有的芒庫庫蘭都有紅色的眼睛。";
+	next;
+	mes "[當地居民]";
+	mes "你可以從眼睛認出她們，但是！你必須記住一件事。";
+	next;
+	mes "[當地居民]";
+	mes "如果你盯著她們的眼睛太久，你會被芒庫庫蘭迷惑。";
+	next;
+	mes "[當地居民]";
+	mes "千萬不要盯著她們的眼睛看太久。";
+	close;
+}
+
+malaya,41,127,6	script	老爺爺 #ma07	574,{
+	if (malaya_hi < 10) {
+		mes "[老爺爺]";
+		mes "在我們村子像這幾天這麼混亂的時候，外國人是不太受歡迎的。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[老爺爺]";
+		mes "你在這種時候來拜訪村莊還不受歡迎，運氣真不好。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		mes "[老爺爺]";
+		mes "據說 "+getd("$ma_name0"+rand(1,6)+"$")+" 在這個村子裡亂丟傑勒比結晶。";
+		next;
+		mes "[老爺爺]";
+		mes "嘖嘖... 一定是個配不上傑勒比結晶的人。";
+		close;
+	}
+	mes "[老爺爺]";
+	mes "你在砍樹之前，也必須注意有沒有班古柯特住在裡面。";
+	next;
+	mes "[老爺爺]";
+	mes "因為如果把班古柯特住過的樹木當作建築的柱子，就會發生奇怪的事情。";
+	next;
+	select("會發生什麼事？");
+	mes "[老爺爺]";
+	mes "嗯，對於班古柯特來說，這代表失去了家，所以牠們會心生報復。";
+	next;
+	mes "[老爺爺]";
+	mes "當你試圖在柱子附近睡覺時，牠一開始會用惡作劇讓你睡不著。";
+	next;
+	mes "[老爺爺]";
+	mes "但隨著時間過去，牠們的怨恨加深，牠們會坐在你身上直到你窒息。";
+	next;
+	select("噢，天啊...");
+	mes "[老爺爺]";
+	mes "哈哈哈。普通的柱子裡是沒有班古柯特的，所以不用擔心到睡不著覺。";
+	close;
+}
+
+malaya,63,185,4	script	女人#ma08	583,{
+	if (malaya_hi < 10) {
+		mes "[女人]";
+		mes "我沒有什麼可以跟你分享的。";
+		close;
+	} else if (malaya_hi < 20) {
+		mes "[女人]";
+		mes "我很擔心孩子們。希望他們沒有被村裡發生的事嚇壞。";
+		close;
+	}
+	if (rand(1,3) == 2) {
+		set .@name$, getd("$ma_name0"+rand(1,6)+"$");
+		set .@rand, rand(1,10);
+		if (.@rand < 5) {
+			mes "[女人]";
+			mes "我喜歡有趣的故事。不久前，"+.@name$+" 來跟我講了一個有趣的故事。";
+			next;
+		}
+		switch(.@rand) {
+		case 1:
+			mes "[女人]";
+			mes "「我阿姨踩到一隻螞蟻。」";
+			next;
+			break;
+		case 2:
+			mes "[女人]";
+			mes "「你在寒冷的天氣吃辣椒。」";
+			next;
+			break;
+		case 3:
+			mes "[女人]";
+			mes "「你為什麼要把麵粉撒在那朵花上？」";
+			next;
+			break;
+		case 4:
+			mes "[女人]";
+			mes "在道具店，「我來買針線！你去買一堆乾草好讓針掉進去。」";
+			next;
+			mes "[女人]";
+			mes .@name$+" 說完這句話就被趕出道具店了。";
+			next;
+			break;
+		case 5:
+			mes "[女人]";
+			mes "我認識的一位卡普拉服務人員告訴我一個關於客人的故事。";
+			next;
+			mes "[女人]";
+			mes "「卡普拉，聰明人從不結婚，一旦結婚了，他們就變得不聰明了。」";
+			next;
+			mes "[女人]";
+			mes "呵呵... 我是很喜歡有趣的故事，但這對我來說有點難懂。";
+			close;
+		default:
+			mes "[女人]";
+			mes "我喜歡有趣的故事。喔對了！"+.@name$+"，愛情是很上相的。你同意嗎？";
+			next;
+			mes "[女人]";
+			mes "它需要黑暗才能發展。";
+			next;
+		}
+		mes "[女人]";
+		mes "呵呵。是不是很有趣？";
+		close;
+	}
+	mes "[女人]";
+	mes "如果你聽到村外的森林裡有嬰兒哭聲，千萬不要靠近。";
+	next;
+	select("為什麼？");
+	mes "[女人]";
+	mes "有一種叫做提亞納克的魔物在村外徘徊，牠會變成嬰兒的樣子並發出哭聲。";
+	next;
+	mes "[女人]";
+	mes "但當好心的旅行者抱起嬰兒時，牠就會變回原形並發動攻擊。";
+	next;
+	select("聽起來像是一種狡猾的魔物。");
+	mes "[女人]";
+	mes "是的，這種魔物利用旅行者的好心來騙人很壞，但是...";
+	next;
+	mes "[女人]";
+	mes "有傳言說這種魔物是來自於從未出世的嬰兒靈魂。真令人難過。";
+	close;
+}
+
+// Jeepneys
+//============================================================
+function	script	F_Malaya_Jeepney	{
+	.@mapName$        = getarg(0);
+	.@passengers      = getarg(1);
+	// set the other messages of varying amount)
+	for (.@i = 5; .@i < getargcount(); .@i++) {
+		setd(".@msgJeepneyInfo$[" + (.@i - 5) + "]", getarg(.@i));
+	}
+
+	if (malaya_hi < 10) {
+		mes "[吉普尼司機]";
+		mes getarg(2);
+		close;
+	} else if ((malaya_hi >= 10) && (malaya_hi < 20)) {
+		mes "[吉普尼司機]";
+		mes getarg(3);
+		close;
+	} else {
+		mes "[吉普尼司機]";
+		mes getarg(4);
+		next;
+	}
+	switch(select("搭乘 [乘客 " + getmapusers(.@mapName$) + "/" + .@passengers +"]:吉普尼？:還有其他的吉普尼嗎？:啊... 好的...")) {
+	case 1:
+		if (getmapusers(.@mapName$) >= .@passengers) {
+			mes "[吉普尼司機]";
+			mes "恐怕這輛吉普尼已經客滿了。";
+			mes "很抱歉，要不要搭其他的吉普尼？";
+			close;
+		} else {
+			mes "[吉普尼司機]";
+			mes "祝你有美好的一天。";
+			close2;
+			warp .@mapName$,29,24;
+			end;
+		}
+	case 2:
+		// iterate through all the jeepney information for this specific NPC
+		for (.@i = 0; .@i < getarraysize(.@msgJeepneyInfo$); .@i++) {
+			mes "[吉普尼司機]";
+			mes getd(".@msgJeepneyInfo$[" + .@i + "]");
+
+			if (.@i < (getarraysize(.@msgJeepneyInfo$) - 1)) {
+				next;
+			}
+		}
+		close;
+	case 3:
+		mes "[吉普尼司機]";
+		mes "喔！當然還有其他的吉普尼在營運。";
+		next;
+		mes "[吉普尼司機]";
+		mes "在馬來港有 12 人、30 人和 60 人座的吉普尼，每種各 3 輛在營運。";
+		next;
+		mes "[吉普尼司機]";
+		mes "你想知道其他車子的位置嗎？";
+		next;
+		switch (select("我想知道 12 人座車在哪裡。:我想知道 30 人座車在哪裡。:我想知道 60 人座車在哪裡。")) {
+		case 1:
+			viewpoint 1, 237, 240, 1, 0xF7E009;
+			viewpoint 1, 67 , 44 , 2, 0xF7E009;
+			viewpoint 1, 282, 129, 3, 0xF7E009;
+			set .@zif_in, 12;
+			break;
+		case 2:
+			viewpoint 1, 134, 250, 4, 0xF7E009;
+			viewpoint 1, 341, 153, 5, 0xF7E009;
+			viewpoint 1, 293, 290, 6, 0xF7E009;
+			set .@zif_in, 30;
+			break;
+		case 3:
+			viewpoint 1, 242, 221, 7, 0xF7E009;
+			viewpoint 1, 62 , 245, 8, 0xF7E009;
+			viewpoint 1, 257, 58 , 9, 0xF7E009;
+			set .@zif_in, 60;
+			break;
+		}
+		mes "[吉普尼司機]";
+		mes .@zif_in+" 人座吉普尼的位置已經標記在地圖上了。";
+		next;
+		break;
+	}
+	mes "[吉普尼司機]";
+	mes "祝你旅途愉快。";
+	close;
+}
+
+malaya,237,240,4	script	吉普尼司機#01	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif01", 12,
+
+		// Messages for malaya_hi checks.
+		"嗚嗚呃.... 我好怕... 好怕... 這個地方怎麼了？",
+		"這裡還是一團亂... 不知道我能不能在這裡開吉普尼...",
+		"哈哈哈 歡迎。我是^1561EA沃爾^000000，在這裡開 12 人座的吉普尼。",
+
+		// Monologues of variable lengths.
+		"這是你第一次來馬來港嗎？",
+		"這裡的吉普尼司機也要推廣吉普尼，所以我來為你解釋一下。",
+		"吉普尼最初是為了快速運輸貨物而開發的，但現在被當作大眾交通工具使用。",
+		"因為每個人的品味不同，你可以看到那些有著酷炫和精緻裝飾的車。",
+		"當然，你不需要自己開車，但你可以搭乘，請盡情體驗吧。"
+	);
+}
+
+malaya,67,44,4	script	吉普尼司機#02	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif02",
+		12,
+
+		"那... 那家醫院... 到底怎麼了...",
+		"我覺得從醫院傳來的呻吟聲變小了...",
+		"我是^1561EA崔^000000，開 12 人座的吉普尼。你好啊?",
+
+		"這是你第一次來馬來港嗎？",
+		"這裡的吉普尼司機也要推廣吉普尼，所以我來為你解釋一下。",
+		"吉普尼最初是為了快速運輸貨物而開發的，但現在被當作大眾交通工具使用。",
+		"這輛吉普尼是我自己改裝的...",
+		"為了安全起見，乘客數量是有限制的，而且它很安全，所以不用擔心..."
+	);
+}
+
+malaya,282,129,4	script	吉普尼司機#03	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif03",
+		12,
+
+		"外人聊天不太好... 也許蒙巴基首領有解決這個問題的方法。",
+		"你是最近見過蒙巴基的那位冒險者嗎？不等等... 那你不應該在這裡... 對，是鬼... 哇啊啊啊...",
+		"我叫^1561EA塔普^000000，負責開鎮上三輛 12 人座吉普尼的其中一輛。",
+
+		"第一次來鎮上嗎？",
+		"這裡的吉普尼司機也要推廣吉普尼，所以我來為你解釋一下。",
+		"吉普尼最初是為了快速運輸貨物而開發的，但現在被當作大眾交通工具使用。",
+		"它們的外觀會根據司機的不同而有所差異...",
+		"現在它可是馬來港的名產。"
+	);
+}
+
+malaya,134,250,6	script	吉普尼司機#04	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif04",
+		30,
+
+		"走...走... 走開...",
+		"呃啊... 嚇死我了... 走開... 噓...",
+		"為您服務，我是^1561EA布拉夫^000000，30 人座的吉普尼司機，因為我很容易受驚嚇，所以我會盡可能開得安全一點。",
+
+		"這是你第一次來馬來港嗎？",
+		"吉普尼最初是為了快速運輸貨物而開發的，但現在被當作大眾交通工具使用。",
+		"這些改裝車是由它們的駕駛員裝飾的。",
+		"來到馬來港，你一定要搭搭看吉普尼。",
+		"哈哈哈，當然你不能自己開。"
+	);
+}
+
+malaya,341,153,4	script	吉普尼司機#05	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif05",
+		30,
+
+		"有... 鎮上有鬼... 嘿... 你身上有帶嗎？",
+		"我想現在鬼變少了... 鎮上安靜了一點...",
+		"你好，我是 30 人座吉普尼的駕駛^1561EA利維爾^000000。安全是我的第一考量。",
+
+		"第一次來鎮上嗎？",
+		"作為服務，我來為你做個簡單的導覽。",
+		"吉普尼最初是為了快速運輸貨物而開發的，但現在被當作大眾交通工具使用。",
+		"為了安全起見，吉普尼對乘客人數有限制。",
+		"有些車可以載 180 人，但現在馬來港已經沒有那種車了。"
+	);
+}
+
+malaya,293,290,6	script	吉普尼司機#06	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif06",
+		30,
+
+		"守... 守衛... 守衛們在做什麼...",
+		"守衛們終於採取行動了嗎？呼... 真是捏了一把冷汗...",
+		"我是^1561EA加德^000000，值得信賴的 30 人座吉普尼司機。",
+
+		"我看你是第一次來這個鎮上。",
+		"引導旅行者也是我的任務！！讓我來解釋一下。",
+		"吉普尼本來是貨物運輸車輛，現在用馬來港的新技術裝飾和改裝了！！",
+		"這輛吉普尼是我親手改裝的。哈哈哈... 很酷對吧？哈哈哈",
+		"雖然顧客至上，但我不能讓你開... 哈哈哈"
+	);
+}
+
+malaya,242,221,4	script	吉普尼司機#07	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif07",
+		60,
+
+		"喔不... 我想整個村子都被鬼魅迷惑了... 也許... 我該去拜訪一下蒙巴基首領...",
+		"鬼... 我相信蒙巴基首領一定知道怎麼趕走這些鬼...",
+		"為您服務，我是最安全的 60 人座吉普尼駕駛^1561EA霍特^000000。",
+
+		"吉普尼是馬來港的大眾交通工具。",
+		"所以它們無處不在。而且是免費的！我知道它們都有不同的乘客限制，但這不是問題，因為到處都有車。"
+	);
+}
+
+malaya,62,245,6	script	吉普尼司機#08	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif08",
+		60,
+
+		"噓? 如果你是鬼就快走，就算是人也走開? 噓?",
+		"嘿... 你... 你是人類對吧？對吧？嗯？說你是啊... 拜託...",
+		"哈囉，我是^1561EA木燕^000000，這輛 60 人座吉普尼的駕駛。很高興認識你。",
+
+		"吉普尼是大眾交通工具，所以安全是我們的第一考量。",
+		"我的吉普尼獲得了馬來港最高等級，「60 人座吉普尼」的認證。",
+		"也就是說！！它非常安全！！你完全不用擔心這趟車程。"
+	);
+}
+
+malaya,257,58,6	script	吉普尼司機#09	582,{
+	callfunc(
+		"F_Malaya_Jeepney",
+		"ma_zif09",
+		60,
+
+		"...你是外來者... 不要亂碰東西，在鎮上小心點...",
+		"鎮上還是滿危險的。在安全之前最好什麼都別碰。",
+		"你好啊。我是^1561EA葛蘭瑪^000000，馬來港 60 人座吉普尼的駕駛。",
+
+		"這是你第一次來馬來港嗎？",
+		"這裡的吉普尼司機也要推廣吉普尼，所以我來為你解釋一下。",
+		"吉普尼最初是為了快速運輸貨物而開發的，但現在被當作大眾交通工具使用。",
+		"因為每個人的品味不同，你可以看到那些有著酷炫和精緻裝飾的車。",
+		"當然，你不需要自己開車，但你可以搭乘，請盡情體驗吧。"
+	);
+}

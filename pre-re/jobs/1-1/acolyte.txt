@@ -1,0 +1,465 @@
+//===== rAthena Script ======================================= 
+//= Acolyte Job Quest
+//===== By: ================================================== 
+//= kobra_k88; L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 2.2
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Acolyte classes
+//===== Additional Comments: ================================= 
+//= 1.0 Fully working.
+//= 1.1 Added function calls for Priest Quest.
+//= 1.2 Fixed Marthilda, Yosuke bugs. [Lupus]
+//= 1.2a Added instant job change for High Novice [Lupus]
+//= 1.3 Added Baby Class support [Lupus]
+//= 1.4 Optimised and moved first checker to Jfunc1-1 [massdriller]
+//= 1.5 Now saves/restores all quest skills [Lupus]
+//= 1.6 Merged back JFunc [Lupus]
+//= 1.7 Rescripted to Aegis 10.3 stadards. [L0ne_W0lf]
+//=     No longer uses function "F_ToHigh"
+//=     Proper dialog for Priest job quest is unused (for now.)
+//= 1.7a Functions now make use of proper priest quest dialog [L0ne_W0lf]
+//= 1.8 Removed an Unnecessary "set job_acolyte_q,0;" [Samuray22]
+//= 1.8a More bug fixes care of Crashy. [L0ne_W0lf]
+//= 1.9 Changed Marthilda to Mathilda. [L0ne_W0llf]
+//= 2.0 Fixed High Acolytesnot being given holy light. [L0ne_W0lf]
+//= 2.1 Added Quest Log commands. [L0ne_W0lf]
+//= 2.2 Fixed an issue with completequest by adding checkquest. [Kisuka]
+//============================================================ 
+
+prt_church,184,41,4	script	神職人員#aco	60,{
+	if (Upper == 1) {
+		if (ADVJOB == Job_High_Priest || ADVJOB == Job_Champion) {
+			if (Class == Job_Novice_High) {
+				mes "[馬勒西斯 神父]";
+				mes "啊，我感覺到你經歷過前世。在進入英靈殿之前，你一定學到了很多東西。";
+				next;
+				if (!callfunc("F_CanChangeJob")) {
+					mes "[馬勒西斯 神父]";
+					mes "很遺憾，我認為你還沒準備好成為一名服事。請先學會所有的基本技能。";
+					next;
+					mes "[馬勒西斯 神父]";
+					mes "同時，";
+					mes "我會等你準備好。";
+					mes "願上帝";
+					mes "與你同在。";
+					close;
+				}
+				mes "[馬勒西斯 神父]";
+				mes "好吧，歡迎你";
+				mes "從英靈殿回來，";
+				mes "祝你在新的人生旅程中好運。";
+				next;
+				skill "NV_TRICKDEAD",0,SKILL_PERM;
+				jobchange Job_Acolyte_High;
+				skill "AL_HOLYLIGHT",1,SKILL_PERM;
+				mes "[馬勒西斯 神父]";
+				mes "現在，去尋找那些需要你幫助的人吧。願上帝照亮你的道路。";
+				close;
+			}
+			else {
+				mes "[馬勒西斯 神父]";
+				mes "現在，去尋找那些需要你幫助的人吧。願上帝照亮你的道路。";
+				close;
+			}
+		}
+		else {
+			mes "[馬勒西斯 神父]";
+			mes "我感覺到你經歷過前世。在進入英靈殿之前，你一定學到了很多東西。";
+			next;
+			mes "[馬勒西斯 神父]";
+			mes "然而，看得出來你不適合成為一名服事。請記住你前世的身分，並尋找屬於你的道路。";
+			close;
+		}
+	}
+	mes "[馬勒西斯 神父]";
+	mes "你在尋求什麼？";
+	next;
+	switch(select("神父，我想成為一名服事。:服事轉職條件。:只是四處看看。")) {
+	case 1:
+		mes "[馬勒西斯 神父]";
+		if (BaseJob == Job_Acolyte) {
+			mes "你今天覺得還好嗎？從你的穿著來看，你已經是一名服事了。你不是在開玩笑吧？";
+			close;
+		}
+		else if (BaseJob != Job_Novice) {
+			mes "很抱歉，我們只接受初心者申請轉職為服事。";
+			close;
+		}
+		if (job_acolyte_q == 0) {
+			mes "你真的";
+			mes "希望成為";
+			mes "上帝的僕人嗎？";
+			next;
+			if (select("是的，神父。:不，我騙你的。") == 1) {
+				mes "[馬勒西斯 神父]";
+				mes "很好。我接受 " + strcharinfo(0) + " 成為服事的意願。你明白在成為上帝的僕人之前，你必須進行苦行，對吧？";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "那麼，我會";
+				mes "給你一個任務……";
+				switch(rand(3)) {
+				default:
+					set job_acolyte_q,2;
+					mes "請去拜訪普隆德拉教區的 ^000077魯帕卡巴拉 神父^000000，然後再回到這裡。他一直在 ^000077普隆德拉東北方的遺跡^000000 進行苦行。";
+					setquest 1001;
+					break;
+				case 1:
+					set job_acolyte_q,3;
+					mes "請去拜訪 ^000077瑪蒂爾達 修女^000000，然後再回來找我。她一直在 ^000077普隆德拉西南方的夢羅克城鎮^000000 附近進行苦行。";
+					setquest 1002;
+					break;
+				case 2:
+					set job_acolyte_q,4;
+					mes "請去拜訪 ^000077尤助 神父^000000，然後再回到這裡。他一直在 ^000077普隆德拉西北方的某座橋^000000 附近進行苦行。";
+					setquest 1003;
+					break;
+				}
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "願上帝的恩典照亮你的道路，並在你的苦行之旅中指引你。";
+				close;
+			}
+			mes "[馬勒西斯 神父]";
+			mes "你騙我的？";
+			mes "很好，你已經";
+			mes "承認了你的";
+			mes "錯誤。平安地去吧，孩子。";
+			close;
+		}
+		mes "喔，你回來了。讓我看看你是否已經準備好侍奉上帝了。讓我看看……";
+		next;
+		mes "[馬勒西斯 神父]";
+		if (!callfunc("F_CanChangeJob")) {
+			mes "天啊！你還沒完成基本訓練嗎？！完成基本訓練是很重要的！";
+			next;
+			mes "[馬勒西斯 神父]";
+			mes "你應該多加訓練！回去確保你的初心者職業等級達到 9，並學會所有的基本技能！";
+			close;
+		}
+		if (job_acolyte_q < 5) {
+			mes "喔？我在登記名單上找不到你的名字。";
+			next;
+			switch(job_acolyte_q) {
+			case 2:
+				mes "[馬勒西斯 神父]";
+				mes "請去拜訪普隆德拉教區的 ^000077魯帕卡巴拉 神父^000000，然後再回到這裡。";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "他一直在 ^000077普隆德拉東北方的遺跡^000000 進行苦行。";
+				break;
+			case 3:
+				mes "[馬勒西斯 神父]";
+				mes "請去拜訪 ^000077瑪蒂爾達 修女^000000，然後再回來找我。";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "她一直在 ^000077普隆德拉西南方的夢羅克城鎮^000000 附近進行苦行。";
+				break;
+			case 4:
+				mes "[馬勒西斯 神父]";
+				mes "請去拜訪 ^000077尤助 神父^000000，然後再回來找我。";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "他一直在 ^000077普隆德拉西北方的某座橋^000000 附近進行苦行。";
+				break;
+			}
+			next;
+			mes "[馬勒西斯 神父]";
+			mes "願上帝的恩典照亮你的道路，並在你的苦行之旅中指引你。";
+			close;
+		}
+		mes "嗯……";
+		mes "你的名字在名單上，而且你已經證明了你的資格。";
+		next;
+		mes "[馬勒西斯 神父]";
+		mes "我很榮幸地宣布，你現在已經準備好成為一名服事了！";
+		next;
+		skill "NV_TRICKDEAD",0,SKILL_PERM;
+		callfunc "Job_Change",Job_Acolyte;
+		callfunc "F_ClearJobVar";
+		if(checkquest(1001) != -1) {
+			completequest 1001;
+		}
+		else if(checkquest(1002) != -1) {
+			completequest 1002;
+		}
+		else {
+			completequest 1003;
+		}
+		mes "[馬勒西斯 神父]";
+		mes "永遠記住要感謝上帝，祂時時刻刻都在看顧著我們。";
+		next;
+		mes "[馬勒西斯 神父]";
+		mes "永遠用你的天賦去幫助別人來侍奉祂。在混亂與困難的時期，以堅定不移的信仰去面對你的困境。";
+		next;
+		mes "[馬勒西斯 神父]";
+		mes "最後，我由衷地祝賀你堅持完成了苦行的考驗。";
+		close;
+	case 2:
+		mes "[馬勒西斯 神父]";
+		mes "你想成為一名服事嗎？你必須滿足兩個條件。";
+		next;
+		mes "[馬勒西斯 神父]";
+		mes "第一，你必須達到初心者職業等級 9，並學會所有的基本技能。第二，你將會被賦予一項需要克服的苦行考驗。";
+		next;
+		mes "[馬勒西斯 神父]";
+		if (job_acolyte_q != 0) {
+			switch(job_acolyte_q) {
+			case 2:
+				mes "關於你的考驗，請去拜訪 ^000077魯帕卡巴拉 神父^000000，然後再回來找我。";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "他正在 ^000077普隆德拉東北方的遺跡^000000 進行苦行。";
+				break;
+			case 3:
+				mes "關於你的考驗，請去拜訪 ^000077瑪蒂爾達 修女^000000，然後再回來找我。";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "她一直在 ^000077普隆德拉西南方的夢羅克城鎮^000000 附近進行苦行。";
+				break;
+			default:
+				mes "關於你的考驗，請去拜訪 ^000077尤助 神父^000000，然後再回來找我。";
+				next;
+				mes "[馬勒西斯 神父]";
+				mes "他一直在 ^000077普隆德拉西北方^000000 的某座橋附近進行苦行。";
+				break;
+			}
+			next;
+			mes "[馬勒西斯 神父]";
+			mes "願上帝的恩典照亮你的道路，並在你的苦行之旅中指引你。";
+		}
+		else {
+			mes "這項考驗的目的地將會在你填寫申請表後決定。";
+		}
+		next;
+		mes "[馬勒西斯 神父]";
+		mes "請在滿足我要求你的這兩個條件後再來找我。只要你侍奉上帝和幫助他人的心是真誠的，你就一定能做到。";
+		close;
+	case 3:
+		close;
+	}
+}
+
+prt_fild03,365,255,2	script	修道者#aco	89,{
+	mes "[魯帕卡巴拉 神父]";
+	if (BaseJob == Job_Novice) {
+		if (job_acolyte_q == 6) {
+			mes "請多保重。等你到達普隆德拉大教堂時，他們應該就會知道你已經見過我了。";
+			next;
+			mes "[魯帕卡巴拉 神父]";
+			mes "我已經用信鴿傳遞了訊息。希望牠能平安抵達那裡……";
+			close;
+		}
+		if (job_acolyte_q != 0) {
+			if (job_acolyte_q == 2) {
+				mes "喔……？你一定就是那個渴望成為服事的人。我已經收到教堂的消息說你可能會來。";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "那麼，你的名字是 " + strcharinfo(0) + "，對吧？太好了，謝謝你來拜訪我。";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "我相信馬勒西斯神父已經告訴你很多關於服事的事情了。而且，普隆德拉大教堂裡還有很多樂於助人的人。";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "我想我也沒什麼好教你的了。再說，我相信像你這樣的年輕人可能很難聽進我這個老頭子的話吧。哈哈哈?";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "不過，教訓往往來自你最意想不到的地方。上帝喜歡用奇特的方式來教導祂的孩子。你會明白的。";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "好了，我會傳送訊息告訴他們你已經來拜訪過我了。所以，你現在可以回普隆德拉大教堂了。";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "再見。";
+				close2;
+				savepoint "prt_fild03",361,255,1,1;
+				set job_acolyte_q,6;
+				end;
+			}
+			else {
+				mes "喔……";
+				mes "你是申請成為";
+				mes "服事的人之一嗎……？";
+				mes "讓我看看……";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "你的名字是 " + strcharinfo(0) + "？";
+				mes "我覺得你的名字";
+				mes "不在我的名單上。嗯……";
+				next;
+				mes "[魯帕卡巴拉 神父]";
+				mes "你為什麼不回普隆德拉大教堂再確認一下呢？";
+				close;
+			}
+		}
+		else {
+			mes "咦？什麼風把你吹來了？對你這樣的初心者來說，這裡可是個非常危險的地方！";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Acolyte) callfunc "F_FatherRub";
+	else {
+		if (BaseJob == Job_Priest) {
+			mes "你好。";
+			next;
+			mes "[魯帕卡巴拉 神父]";
+			mes "歡迎來到深處。歡迎你坐下來和我一起思考上帝的啟示。雖然這裡的寧靜伴隨著危險，但這裡真的很美……";
+			close;
+		}
+		else {
+			mes "喔呵……";
+			mes "你是來這裡的深處修行嗎？還是你只是個流浪者？";
+			next;
+			mes "[魯帕卡巴拉 神父]";
+			mes "無論你是誰，請多保重。這裡的魔物雖然外表可愛，但實力卻強得驚人。";
+			close;
+		}
+	}
+}
+
+moc_fild07,41,355,4	script	修道者#2aco	95,{
+	mes "[瑪蒂爾達 修女]";
+	if (BaseJob == Job_Novice) {
+		if (job_acolyte_q == 7) {
+			mes "我會派信鴿前往普隆德拉大教堂。當你回去時，那裡的神父應該已經收到我的訊息了。";
+			next;
+			mes "[瑪蒂爾達 修女]";
+			mes "我會向上帝祈禱，希望你能早日成為一名服事。";
+			close;
+		}
+		if (job_acolyte_q != 0) {
+			if (job_acolyte_q == 3) {
+				mes "啊，你一定是服事的申請者之一。我由衷地歡迎你。";
+				next;
+				mes "[瑪蒂爾達 修女]";
+				mes "你叫什麼名字？" + strcharinfo(0) + "？讓我看看……啊，你在我的名單上。";
+				next;
+				mes "[瑪蒂爾達 修女]";
+				mes "我會傳送訊息給大教堂，確認你，" + strcharinfo(0) + "，已經拜訪過我並完成了你的苦行。";
+				next;
+				mes "[瑪蒂爾達 修女]";
+				mes "請回到普隆德拉大教堂並與負責的神父交談。";
+				close2;
+				savepoint "moc_fild07",35,355,1,1;
+				set job_acolyte_q,7;
+				end;
+			}
+			else {
+				mes "啊……！";
+				mes "你一定是";
+				mes "服事的申請者之一。";
+				mes "我由衷地歡迎你。";
+				next;
+				mes "[瑪蒂爾達 修女]";
+				mes "那麼，你叫什麼名字？";
+				mes "" + strcharinfo(0) + "？讓我看看……";
+				next;
+				mes "[瑪蒂爾達 修女]";
+				mes "嗯……";
+				mes "看來你的名字";
+				mes "不在我的名單上……";
+				next;
+				mes "[瑪蒂爾達 修女]";
+				mes "或許你應該回普隆德拉大教堂，再確認一次你苦行考驗的目的地。";
+				close;
+			}
+		}
+		else {
+			mes "……";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Acolyte) callfunc "F_MotherMart";
+	else {
+		if (BaseJob == Job_Priest) {
+			mes "你好啊?";
+			next;
+			mes "[瑪蒂爾達 修女]";
+			mes "你的修行進展如何？我真的希望你享受生活在上帝的恩典中。";
+			close;
+		}
+		else {
+			mes "願上帝";
+			mes "與你同在……";
+			close;
+		}
+	}
+}
+
+prt_fild00,208,218,6	script	修道者#3aco	98,{
+	mes "[尤助 神父]";
+	if (BaseJob == Job_Novice) {
+		if (job_acolyte_q == 8) {
+			mes "什麼？";
+			next;
+			mes "[尤助 神父]";
+			mes "你找我還有什麼事嗎？！沒事！現在就回大教堂去！";
+			close;
+		}
+		if (job_acolyte_q != 0) {
+			if (job_acolyte_q == 4) {
+				mes "嘿。";
+				mes "不管你是什麼，";
+				mes "你看起來像個";
+				mes "服事的申請者。";
+				mes "對吧？";
+				next;
+				mes "[尤助 神父]";
+				mes "不錯，不錯。你把苦行的考驗承受得很好。";
+				mes "那麼你叫什麼名字？";
+				next;
+				mes "[尤助 神父]";
+				mes "" + strcharinfo(0) + "，是嗎？";
+				next;
+				mes "[尤助 神父]";
+				mes "好。我會傳送訊息給大教堂，說你，" + strcharinfo(0) + "，已經來拜訪過我了。";
+				next;
+				mes "[尤助 神父]";
+				mes "現在回大教堂去，完成成為服事的儀式吧，孩子。";
+				close2;
+				savepoint "prt_fild00",206,230,1,1;
+				set job_acolyte_q,8;
+				end;
+			}
+			else {
+				mes "嘿。";
+				mes "你看起來像個服事的申請者。我說得對吧？";
+				next;
+				mes "[尤助 神父]";
+				mes "很不錯嘛，你居然能從普隆德拉一路來到這裡。那麼你叫什麼名字，孩子？";
+				next;
+				mes "[尤助 神父]";
+				mes "" + strcharinfo(0) + "，是嗎？為什麼你的名字不在我的名單上？";
+				next;
+				mes "[尤助 神父]";
+				mes "你可能弄錯了。回大教堂去向主教確認一下吧。";
+				close;
+			}
+		}
+		else {
+			mes "你……";
+			mes "初心者。";
+			mes "你有什麼話";
+			mes "想對我說嗎？";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Acolyte) callfunc "F_FatherYos";
+	else {
+		if (BaseJob == Job_Priest) {
+			mes "嘿……";
+			next;
+			mes "[尤助 神父]";
+			mes "如果你願意，可以過來和我一起坐在這裡，冥想偉大的真理。上帝的威嚴真是令人深受啟發……";
+			close;
+		}
+		else {
+			mes "你有什麼話想說的嗎？因為很不幸地，";
+			mes "我無話可說。";
+			close;
+		}
+	}
+}

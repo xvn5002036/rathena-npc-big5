@@ -1,0 +1,360 @@
+//===== rAthena Script =======================================
+//= Kagerou/Oboro Equipment Quests
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Quests for Kagerou/Oboro weapons and armor.
+//===== Additional Comments: =================================
+//= 1.0 First version. [Euphy]
+//= 1.1 Little clean-up. [Capuche]
+//============================================================
+
+// Armor and Weapon NPCs :: kaboro_gearmix
+//============================================================
+que_ng,21,72,6	script	防具製作大師	4_M_RASWORD,{
+	mes "[喬]";
+	mes "你會如何定義勝利呢？";
+	mes "打倒敵人……";
+	mes "然而，最重要的事情是……";
+	mes "絕對不要讓自己倒下！";
+	next;
+	mes "[喬]";
+	mes "為此，你必須更好地保護自己。";
+	mes "當你忽視『自己』的防護時，你是無法保護『他人』的。";
+	next;
+	if(select("合成防具。:結束對話。") == 2) {
+		mes "[喬]";
+		mes "謹慎也是戰鬥中一項重要的美德。";
+		close;
+	}
+	switch(select("野狼護臂[1]:弦月護臂[1]:忍者鱗片鎧甲[1]:潛影鎧甲[1]:退出。")) {
+	case 1:
+		mes "[喬]";
+		mes "野狼護臂……一件充滿野性的防具。";
+		next;
+		callsub L_Select,2172;
+		if (countitem(2171) > 0 && countitem(6252) > 9) {  //custom translation
+			delitem 2171,1; //Fox_Armguard
+			delitem 6252,10; //Wolf_Blood
+			getitem 2172,1; //Wolf_Armguard
+			mes "[喬]";
+			mes "你感受到狼的本性了嗎？";
+			mes "既狂野又迷人……";
+			close;
+		}
+		break;
+	case 2:
+		mes "[喬]";
+		mes "弦月護臂……一件兼具美麗與力量的物品……兩者毫不遜色。";
+		next;
+		callsub L_Select,2173;
+		if (countitem(2171) > 0 && countitem(7321) > 99) {  //custom translation
+			delitem 2171,1; //Fox_Armguard
+			delitem 7321,100; //Fragment_Of_Crystal
+			getitem 2173,1; //Crescent_Armguard
+			mes "[喬]";
+			mes "如此的美麗……";
+			mes "彷彿全身都洋溢著魔力。";
+			close;
+		}
+		break;
+	case 3:
+		mes "[喬]";
+		mes "忍者鱗片鎧甲……據說曾經有一位傳奇的忍者穿過它。";
+		next;
+		callsub L_Select,15054;
+		if (countitem(7451) > 29 && countitem(7562) > 29 && countitem(6091) > 29) {  //custom translation
+			delitem 7451,30; //Scale_Of_Red_Dragon
+			delitem 7562,30; //Ice_Scale
+			delitem 6091,30; //Dark_Red_Scale
+			getitem 15054,1; //Ninja_Scale_Armor
+			mes "[喬]";
+			mes "這真是一件傳奇的鎧甲……";
+			mes "即使我不相信傳說……";
+			close;
+		}
+		break;
+	case 4:
+		mes "[喬]";
+		mes "潛影鎧甲……它是為了保護他人而製作的。";
+		next;
+		callsub L_Select,15055;
+		if (countitem(15056) > 0 && countitem(6089) > 9) {  //custom translation
+			delitem 15056,1; //Special_Ninja_Suit_
+			delitem 6089,10; //Piece_Of_Darkness
+			getitem 15055,1; //Tenebris_Latitantes
+			mes "[喬]";
+			mes "感覺如何？";
+			mes "這件鎧甲看起來不像是兩件重疊的嗎？";
+			close;
+		}
+		break;
+	case 5:
+		close;
+	}
+	mes "[喬]";
+	mes "你沒有足夠的材料。";
+	mes "再檢查看看……";
+	close;
+
+L_Select:
+	.@string1$ = "確認材料。";
+	.@string2$ = "確認能力。";
+	while(1) {
+		switch(select(.@string1$,.@string2$,"合成。","退出。")) {
+		case 1:
+			.@string1$ = "";
+			callsub L_Ingredients, getarg(0);
+			break;
+		case 2:
+			.@string2$ = "";
+			callsub L_Stats, getarg(0);
+			break;
+		case 3:
+			callsub L_Combine;
+			return;
+		case 4:
+			mes "[喬]";
+			mes "看來你需要更多時間來決定。";
+			close;
+		}
+	}
+
+L_Ingredients:
+	mes "[喬]";
+	switch (getarg(0)) {
+	case 2172:	//Wolf_Armguard
+		mes "製作^ff0000野狼護臂，你需要 1 個狐狸護臂和 10 個狼血^000000。";
+		mes "你能感覺到嗎？那狼血的悸動……";
+		break;
+	case 2173:	//Crescent_Armguard
+		mes "製作^ff0000弦月護臂，你需要 1 個狐狸護臂和 100 個水晶碎片^000000。";
+		mes "它將會被刻上如同水晶般美麗清澈的新月。";
+		break;
+	case 15054:	//Ninja_Scale_Armor
+		mes "製作^ff0000忍者鱗片鎧甲，你需要 30 個火龍鱗片、30 個冰鱗片和 30 個暗紅色鱗片碎片^000000。";
+		mes "你能感覺到它傳奇般的力量。";
+		break;
+	case 15055:	//Tenebris_Latitantes
+		mes "製作^ff0000潛影鎧甲，你需要 1 件有洞的特殊忍者服和 10 個黑暗碎片^000000。";
+		mes "它以黑暗抹去了自身的存在……";
+		break;
+	}
+	next;
+	return;
+
+L_Stats:
+	mes "[" + getitemname(getarg(0)) + "]";
+	switch (getarg(0)) {
+	case 2172:	//Wolf_Armguard
+		mes "物理近戰攻擊時，有機率在 5 秒內 ATK+100，FLEE-50。";
+		mes "盾牌類型，防禦 45，插槽 1";
+		mes "限制等級 100，僅限忍者系列";
+		break;
+	case 2173:	//Crescent_Armguard
+		mes "精練每 +1，技能後延遲減少 2%。";
+		mes "盾牌類型，防禦 70，插槽 1";
+		mes "限制等級 100，僅限忍者系列";
+		break;
+	case 15054:	//Ninja_Scale_Armor
+		mes "MHP+15%，MSP-30%";
+		mes "鎧甲類型，防禦 90，插槽 1";
+		mes "限制等級 100，僅限忍者系列";
+		break;
+	case 15055:	//Tenebris_Latitantes
+		mes "遭受物理近戰攻擊時，有機率發動幻影-幻象 1 級。";
+		mes "鎧甲類型，防禦 60，插槽 1";
+		mes "限制等級 100，僅限忍者系列";
+		break;
+	}
+	next;
+	return;
+
+L_Combine:
+	mes "[喬]";
+	mes "請確認^ff0000你手邊有正確的材料和裝備^000000。";
+	mes "事後再哭是沒有用的。";
+	next;
+	switch(select("合成。:退出。")) {
+	case 1:
+		if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+			mes "- 稍等！！ -";
+			mes "- 你無法獲得物品 -";
+			mes "- 因為你攜帶了太多東西。 -";
+			mes "- 請再試一次 -";
+			mes "- 在減輕你的負擔之後。 -";
+			close;
+		}
+		return;
+	case 2:
+		mes "[喬]";
+		mes "看來你需要更多時間來決定。";
+		close;
+	}
+	end;
+}
+
+que_ng,23,70,3	script	武器製作大師	4_DST_SOLDIER,{
+	mes "[奇]";
+	mes "攻擊是最好的防禦。";
+	mes "一把強大的武器將使你真正完整。";
+	next;
+	mes "[奇]";
+	mes "當然，手邊能有一些特別的東西會更好。";
+	next;
+	if(select("合成武器。:結束對話。") == 2) {
+		mes "[奇]";
+		mes "太過小心有時也可能是致命的。";
+		close;
+	}
+	switch(select("羅剎匕首[1]:三日月[1]:風魔飛鏢-飛花[2]:退出。")) {
+	case 1:
+		mes "[奇]";
+		mes "羅剎匕首只有在經過大量的訓練後才能使用。";
+		next;
+		callsub L_Select,13076;
+		if (countitem(13013) > 0 && countitem(718) > 0) {  //custom translation
+			delitem 13013,1; //Murasame_
+			delitem 718,1; //Dark_Red_Jewel
+			getitem 13076,1; //Raksasa_Dagger
+			mes "[奇]";
+			mes "啊……";
+			mes "多麼美麗的光澤……";
+			close;
+		}
+		mes "[奇]";
+		mes "嗯……你沒有足夠的材料來製作羅剎匕首。";
+		break;
+	case 2:
+		mes "[奇]";
+		mes "三日月……宛如新月般美麗的弧線……";
+		mes "能製作它的人並不多。";
+		next;
+		callsub L_Select,13078;
+		if (countitem(13015) > 0 && countitem(727) > 0) {  //custom translation
+			delitem 13015,1; //Hakujin_
+			delitem 727,1; //White_Jewel
+			getitem 13078,1; //Mikatsuki
+			mes "[奇]";
+			mes "真是美麗……";
+			mes "能看到如此華麗的匕首，我真是太幸運了。";
+			close;
+		}
+		mes "[奇]";
+		mes "嗯……你沒有足夠的材料來製作三日月。";
+		break;
+	case 3:
+		mes "[奇]";
+		mes "風魔飛鏢-飛花……你看過花瓣飛舞嗎？";
+		next;
+		callsub L_Select,13313;
+		if (countitem(13304) > 0 && countitem(7156) > 99) {  //custom translation
+			delitem 13304,1; //Huuma_Calm_Mind
+			delitem 7156,100; //Broken_Shuriken
+			getitem 13313,1; //Huuma_Swirling_Petal
+			mes "[奇]";
+			mes "飛舞的……花瓣！！";
+			close;
+		}
+		mes "[奇]";
+		mes "嗯……你沒有足夠的材料來製作風魔飛鏢-飛花。";
+		break;
+	case 4:
+		close;
+	}
+	mes "你為什麼不再檢查一次呢？";
+	mes "有些人就是無法放棄他們所擁有的。";
+	close;
+L_Select:
+	.@string1$ = "確認材料。";
+	.@string2$ = "確認能力。";
+	while(1) {
+		switch(select(.@string1$,.@string2$,"合成。","退出。")) {
+		case 1:
+			.@string1$ = "";
+			callsub L_Ingredients, getarg(0);
+			break;
+		case 2:
+			.@string2$ = "";
+			callsub L_Stats, getarg(0);
+			break;
+		case 3:
+			callsub L_Combine;
+			return;
+		case 4:
+			mes "[奇]";
+			mes "仔細考慮清楚??";
+			close;
+		}
+	}
+
+L_Ingredients:
+	mes "[奇]";
+	switch (getarg(0)) {
+	case 13076:	//Raksasa_Dagger
+		mes "製作^ff0000羅剎匕首，你需要 1 把 2 洞的村雨和 1 個石榴石^000000。";
+		mes "石榴石賦予了羅剎匕首獨特的顏色。";
+		break;
+	case 13078:	//Mikatsuki
+		mes "製作^ff0000三日月，你需要 1 把 1 洞的白刃和 1 個蛋白石^000000。";
+		mes "蛋白石散發出半透明的光芒。";
+		break;
+	case 13313:	//Huuma_Swirling_Petal
+		mes "製作^ff0000風魔飛鏢-飛花，你需要 1 把風魔飛鏢-明鏡和 100 個破裂的飛鏢^000000。";
+		mes "這可能看起來需要太多的飛鏢……但這對於那美麗的飛舞效果是必不可少的。";
+		break;
+	}
+	next;
+	return;
+
+L_Stats:
+	mes "[" + getitemname(getarg(0)) + "]";
+	switch (getarg(0)) {
+	case 13076:	//Raksasa_Dagger
+		mes "INT+3，MATK+100。";
+		mes "短劍類型，ATK 120，插槽 1";
+		mes "限制等級 110，僅限忍者系列";
+		break;
+	case 13078:	//Mikatsuki
+		mes "MATK+120，變動詠唱時間與技能 SP 消耗量減少 5%。";
+		mes "短劍類型，ATK 50，武器等級 4，插槽 1";
+		mes "限制等級 100，僅限忍者系列";
+		break;
+	case 13313:	//Huuma_Swirling_Petal
+		mes "MATK+50，風魔飛鏢之飛花技能傷害增加 20%。";
+		mes "飛鏢類型，ATK 150";
+		mes "武器等級 3，插槽 2";
+		mes "限制等級 110，僅限忍者系列";
+		break;
+	}
+	next;
+	return;
+
+L_Combine:
+	mes "[奇]";
+	mes "請確認^ff0000你手邊有正確的材料和裝備^000000。";
+	mes "一旦完成，就無法復原了。";
+	next;
+	switch(select("合成。:退出。")) {
+	case 1:
+		if (checkweight(1201,1) == 0 || MaxWeight - Weight < 2000) {
+			mes "- 稍等！！ -";
+			mes "- 你無法獲得物品 -";
+			mes "- 因為你攜帶了太多東西。 -";
+			mes "- 請再試一次 -";
+			mes "- 在減輕你的負擔之後。 -";
+			close;
+		}
+		return;
+	case 2:
+		mes "[奇]";
+		mes "仔細考慮清楚??";
+		close;
+	}
+	end;
+}

@@ -1,0 +1,276 @@
+//===== rAthena Script ======================================= 
+//= Hair Dyer
+//===== By: ================================================== 
+//= kobra_k88;
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.5
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Hair Dyer with standard palletes
+//===== Additional Comments: ================================= 
+//= Fully working
+//= 1.1 Bugfix: fixed missing menu label LEnd->M_End [Lupus]
+//= 1.2 Rescripted to Aegis 10.3 standards.
+//= [L0ne_W0lf]
+//= 1.3 Fixed problem what "freezes" the NPC. (bugreport:509) [Samuray22]
+//= 1.4 Fixed getlook checking the wrong color.
+//= (bugreport:2392) [L0ne_W0lf]
+//= 1.5 Added Lighthalzen Hair Dying NPC. [L0ne_W0lf]
+//= 1.6 Moving NPC Jovovich to Pre-Renewal [JohnnyPlayy]
+//============================================================ 
+
+// Lighthalzen
+lhz_in02,100,134,3	script	染髮師#lich	850,{
+	mes "[羅莎]";
+	if (Sex == SEX_MALE) {
+		mes "歡迎，請進?";
+		mes "噢，我看得出來你比其他男孩";
+		mes "更懂得保養自己的";
+		mes "頭髮呢。";
+		mes "現在你想把頭髮染成";
+		mes "其他顏色嗎？";
+	}
+	else {
+		mes "噢，哇?妳在哪裡";
+		mes "做的髮型？";
+		mes "我很喜歡！不過... 如果妳";
+		mes "染個頭髮的話會更";
+		mes "漂亮。妳";
+		mes "覺得怎麼樣？";
+	}
+	while (.@choose_success != 2) {
+		next;
+		switch(select("染髮:染髮資訊:取消")) {
+		case 1:
+			mes "[羅莎]";
+			mes "呵呵呵呵?";
+			mes "那麼你想嘗試哪種顏色";
+			mes "呢？鮮豔的還是深色的？";
+			mes "性感的還是可愛的？";
+			next;
+			while (.@choose_success != 2) {
+				if (.@choose_success == 1) {
+					mes "[羅莎]";
+					mes "喔，我喜歡這個顏色！";
+					mes "但你還想試試看";
+					mes "不同的顏色嗎？";
+					next;
+					switch(select("是:否")) {
+					case 1:
+						mes "[羅莎]";
+						mes "請選擇";
+						mes "另一種顏色?";
+						next;
+						break;
+					case 2:
+						mes "[羅莎]";
+						mes "極好的選擇?";
+						mes "那麼，感謝您";
+						mes "使用我的服務，";
+						mes "希望能再次光臨！";
+						close2;
+						set .@choose_success,2;
+						break;
+					}
+				}
+				while (.@choose_success != 2) {
+					switch(select("請染成紅色。:請染成黃色。:請染成紫色。:請染成橘色。:請染成綠色。:請染成藍色。:請染成白色。:請染成深棕色。:我喜歡目前的髮色。")) {
+					case 1:
+						set .@headpalette,8;
+						break;
+					case 2:
+						set .@headpalette,1;
+						break;
+					case 3:
+						set .@headpalette,2;
+						break;
+					case 4:
+						set .@headpalette,3;
+						break;
+					case 5:
+						set .@headpalette,4;
+						break;
+					case 6:
+						set .@headpalette,5;
+						break;
+					case 7:
+						set .@headpalette,6;
+						break;
+					case 8:
+						set .@headpalette,7;
+						break;
+					case 9:
+						if (.@choose_success != 0) {
+							mes "[羅莎]";
+							mes "你確定嗎？";
+							mes "那麼好吧，你最清楚什麼";
+							mes "最適合你的美麗了，而且";
+							mes "說實話，我同意你的看法?";
+							close2;
+							set .@choose_success,2;
+						}
+						else {
+							mes "[羅莎]";
+							mes "噢，我了解了。不過我還是";
+							mes "覺得有點失望呢。";
+							mes "如果你換個髮色的話，";
+							mes "一定會很好看的?";
+							close2;
+							set .@choose_success,2;
+						}
+						break;
+					}
+					if (getlook(VAR_HEADPALETTE) == .@headpalette) {
+						mes "[羅莎]";
+						mes "嗯，你的髮色";
+						mes "還好好的，所以沒有必要";
+						mes "再染成一樣的顏色，如果這";
+						mes "是你所擔心的事情的話。";
+						next;
+					}
+					else {
+						if ((.@headpalette == 8) && (countitem(975) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有帶來";
+							mes "紅色染料的話...";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 1) && (countitem(976) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有帶來";
+							mes "黃色染料的話...";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 2) && (countitem(981) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有帶來";
+							mes "紫色染料的話...";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 3) && (countitem(980) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有帶來";
+							mes "橘色染料的話...";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 4) && (countitem(979) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有把";
+							mes "綠色染料";
+							mes "帶在身上的話。你可以";
+							mes "拿到之後再來嗎？";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 5) && (countitem(978) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有把";
+							mes "藍色染料";
+							mes "帶在身上的話。你可以";
+							mes "拿到之後再來嗎？";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 6) && (countitem(982) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有帶來";
+							mes "白色染料的話...";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						else if ((.@headpalette == 7) && (countitem(983) == 0)) {
+							mes "[羅莎]";
+							mes "噢，很抱歉親愛的，";
+							mes "但我無法幫你染髮，";
+							mes "如果你沒有帶來";
+							mes "黑色染料的話...";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						if (Zeny < 1000) {
+							mes "[羅莎]";
+							mes "噢，非常抱歉親愛的，";
+							mes "但我的服務費用是";
+							mes "1,000 Zeny。你忘記";
+							mes "帶錢出門了嗎？";
+							close2;
+							set .@choose_success,2;
+							break;
+						}
+						if (.@headpalette == 8) delitem 975,1; //Scarlet_Dyestuffs
+						else if (.@headpalette == 1) delitem 976,1; //Lemon_Dyestuffs
+						else if (.@headpalette == 2) delitem 981,1;
+//Violet_Dyestuffs
+						else if (.@headpalette == 3) delitem 980,1; //Orange_Dyestuffs
+						else if (.@headpalette == 4) delitem 979,1;
+//Darkgreen_Dyestuffs
+						else if (.@headpalette == 5) delitem 978,1; //Cobaltblue_Dyestuffs
+						else if (.@headpalette == 6) delitem 982,1;
+//White_Dyestuffs
+						else if (.@headpalette == 7) delitem 983,1; //Black_Dyestuffs
+						set Zeny, Zeny-1000;
+						setlook VAR_HEADPALETTE,.@headpalette;
+						set .@choose_success,1;
+						break;
+					}
+				}
+			}
+			break;
+		case 2:
+			mes "[羅莎]";
+			mes "當你心情不好的時候，";
+			mes "當你只想為你愛的人";
+			mes "打扮得漂漂亮亮的時候，";
+			mes "或是當你只想要改變一下";
+			mes "造型的時候，為什麼不";
+			mes "染個頭髮呢？";
+			next;
+			mes "[羅莎]";
+			mes "你只需要準備一個";
+			mes "你想要染的顏色的";
+			mes "染料，以及";
+			mes "繳交給我的";
+			mes "1,000 Zeny 服務費。";
+			mes "我在這裡隨時滿足你的愛美需求?";
+			break;
+		case 3:
+			mes "[羅莎]";
+			mes "你知道嗎，當你";
+			mes "在自己的外表上多花點";
+			mes "心思時，你不僅會";
+			mes "看起來更好看，而且";
+			mes "你自己的心情也會更好。";
+			mes "很有道理，對吧？";
+			close;
+		}
+	}
+	close;
+}

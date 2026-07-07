@@ -1,0 +1,1054 @@
+//===== rAthena Script =======================================
+//= Treasure Hunter Quests
+//===== By: ==================================================
+//= Fredzilla
+//===== Current Version: =====================================
+//= 1.6
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Start for Treasure hunter quests
+//===== Additional Comments: =================================
+//= Event_THQS - Used to check if you have already registered
+//= #Treasure_Token - used to keep track of tokens
+//= 1.0 - Straight conversionof Aegis NPC file
+//= 1.2 some bugfixes, typos [Lupus]
+//= 1.3 Removed Duplicates [Silent]
+//= 1.4 Further removed duplicates.
+[L0ne_W0lf]
+//= 1.5 Fixed name collision with 'Little Girl' in cities/lutie.txt [Ai4rei]
+//= 1.6 Changed "Caral" coordinates because moc_fild04 no longer exists.
+[Euphy]
+//============================================================
+
+///////Job list 1///////
+//1-1
+mjolnir_09,187,189,6	script	老人	107,{
+	if (one_qset==1) goto N_QuestStart;
+	mes "[老人]";
+	mes "唉！難道一個老人家連平靜地散個步都不行了嗎？！";
+	close;
+N_QuestStart:
+	mes "[老人]";
+	mes "嗯？那是什麼？！";
+	mes " ";
+	mes "我老婆叫我回家？！好吧，好吧... 我這就回去。謝謝你傳話給我。";
+	mes " ";
+	mes "來，收下這個尋寶代幣。";
+	set one_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+}
+//1-2;
+pay_arche,86,129,6	script	弓箭手	732,{
+	if (one_qset == 2) goto N_QuestStart;
+	mes "[基思]";
+	mes "抱歉沒空說話，我是個大忙人，我正在等我的包裹。";
+	close;
+N_QuestStart:
+	mes "[基思]";
+	if (countitem(1072) < 1) {
+		mes "你不是應該送個箱子給我嗎？它在哪裡？";
+		close;
+	}
+	mes "啊，你一定是尋寶獵人公會的人。你有帶我的弓來嗎？？";
+	mes " ";
+	mes "啊，太好了，感謝你花時間跑一趟。收下這個尋寶代幣吧。";
+	delitem 1072,1;
+	set one_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+}
+//1-3
+prt_fild06,37,192,6	script	農民	125,{
+	if (one_qset == 3 && countitem(909) > 19 && countitem(955) > 19 && countitem(914) > 19 && countitem(705) > 19) goto N_QuestComp;
+	if (one_qset==3) goto N_QuestStart;
+	mes "[比利-鮑伯]";
+	mes "啊啊啊！... 那些該死的蟲子把什麼都吃了，這地方看起來根本不像我的農場了！！";
+	close;
+N_QuestComp:
+	mes "[比利-鮑伯]";
+	mes "哦哦哦，太感謝了，這對我來說是個好的開始。";
+	mes "現在那些蟲子可以滾蛋了...";
+	mes " ";
+	mes "來，收下這 2 個尋寶代幣。";
+	delitem 909,20;
+	delitem 955,20;
+	delitem 914,20;
+	delitem 705,20;
+	set one_qset,0;
+	set #Treasure_Token,#Treasure_Token+2;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[比利-鮑伯]";
+	mes "那些該死的蟲子到處都是！！！";
+	mes "你一定是公會派來的！好的，請給我帶來 20 個毛、20 個傑勒比結晶、20 個加勒結晶和 20 個三葉幸運草。";
+	close;
+}
+//1-4
+prontera,264,353,6	script	老太太#thq	103,{
+	if (one_qset == 4 && countitem(934) > 14) goto N_QuestComp;
+	if (one_qset == 4) goto N_QuestStart;
+	mes "[老太太]";
+	mes "這是我丈夫的墳墓... 我只是來看看他。";
+	close;
+N_QuestComp:
+	mes "[老太太]";
+	mes "你帶來了？！";
+	next;
+	mes "[老太太]";
+	mes "太感謝你了，請收下這 3 個尋寶代幣。";
+	delitem 934,15;
+	set #Treasure_Token,#Treasure_Token+3;
+	set one_qset,0;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[老太太]";
+	mes "所以你就是來幫我的那個人？";
+	mes " ";
+	mes "好的，我希望你這麼做，我旁邊這個是我丈夫的墳墓，我答應過他會埋一些遺物陪他，問題是我沒有遺物...";
+	next;
+	mes "[老太太]";
+	mes "請幫我帶 15 個亡者遺物來。";
+	close;
+}
+///////Job list 2///////
+//2-1;
+morocc,59,109,6	script	艾莉卡	700,{
+	if (two_qset == 1 && countitem(1072) > 0) goto N_QuestComp;
+	if (two_qset == 1) goto N_QuestStart;
+	mes "[艾莉卡]";
+	mes "你好，我的名字是艾莉卡。";
+	close;
+N_QuestComp:
+	mes "[艾莉卡]";
+	mes "那是什麼？你有一封給我的信！！";
+	mes "哦哦哦，我超喜歡情書的 :D。等一下，我現在就打開它。";
+	next;
+	mes "[信件]";
+	mes "親愛的艾莉卡";
+	mes " ";
+	mes "很遺憾通知您，您已被驅逐，請在 3-5 天內搬出。";
+	mes " ";
+	mes "-管理處";
+	next;
+	mes "[艾莉卡]";
+	mes "哦... 嗯... 該死，那個混蛋以為他可以把我踢出去！！！！！他會後悔的！";
+	mes " ";
+	mes "不管怎樣，謝謝你送這封信來，收下這個尋寶代幣吧。";
+	delitem 1072,1;
+	set two_qset,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[艾莉卡]";
+	mes "所以你就是帶信給我的那個人？";
+	mes " ";
+	mes "好吧，那信在哪裡？";
+	close;
+}
+//2-2;
+in_moc_16,15,30,6	script	傑瑞米亞	730,{
+	if (two_qset == 2 && countitem(1998) > 0) goto N_QuestComp;
+	if (two_qset == 2) goto N_QuestStart;
+	mes "[傑瑞米亞]";
+	mes "當你必須一直等人的時候真的很無聊...";
+	close;
+N_QuestComp:
+	mes "[傑瑞米亞]";
+	mes "啊你好，你一定是尋寶獵人公會的人。";
+	mes "你有帶我的拳刃來嗎？啊，很好很好。謝謝你。";
+	mes "來，收下這個尋寶獵人代幣。";
+	delitem 1998,1;
+	set two_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[傑瑞米亞]";
+	mes "所以你就是那個應該帶我的拳刃來的人？";
+	mes "那我的拳刃在哪裡？";
+	close;
+}
+//2-3;
+prt_fild07,316,263,6	script	沼澤人	84,{
+	if (two_qset == 3 && countitem(518) > 19) goto N_QuestComp;
+	if (two_qset == 3) goto N_QuestStart;
+	mes "[蘭尼斯]";
+	mes "你好，抱歉我沒什麼時間說話，我正在等一個人。";
+	close;
+N_QuestComp:
+	mes "[蘭尼斯]";
+	mes "哦你好，哦你帶來了蜂蜜，我和我的蜜蜂感謝你。";
+	mes " ";
+	mes "來，收下這 2 個尋寶獵人代幣。";
+	delitem 518,20;
+	set #Treasure_Token,#Treasure_Token+2;
+	set two_qset,0;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[蘭尼斯]";
+	mes "你好，我的名字是蘭尼斯，我有一個任務要交給你。";
+	mes "最近有一群愚蠢的熊偷走了我所有蜂巢的繼箱... 蠢熊。";
+	mes " ";
+	mes "我需要你做的是幫我找些蜂蜜，這樣這些蜜蜂才能度過冬天。我大約需要 20 個蜂蜜。";
+	close;
+}
+//2-4;
+payon,161,72,6	script	莫莉	714,{
+	if (two_qset == 4 && countitem(7005) > 0) goto N_QuestComp;
+	if (two_qset == 4) goto N_QuestStart;
+	mes "[莫莉]";
+	mes "抱歉沒空說話，我正在等一個人。";
+	close;
+N_QuestComp:
+	mes "[莫莉]";
+	mes "哇，你做到了！！！";
+	mes " ";
+	mes "我就知道你看起來很強，雖然我不知道你是怎麼殺死那個怪物的。";
+	mes "太感謝你了，請收下這 3 個公會代幣作為獎勵。";
+	delitem 7005,1;
+	set two_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+3;
+	close;
+N_QuestStart:
+	mes "[莫莉]";
+	mes "哇，你一定是尋寶獵人公會來的勇士！";
+	mes "好吧，情況是這樣的，我不知道是什麼引起的，但在這裡往東 2 個地圖的樹林裡，有一隻奇怪的浪人骷髏跑來跑去。";
+	next;
+	mes "[莫莉]";
+	mes "我們過去曾試圖殺死他，但這不是... 嗯... 這是一個壞主意。我想請你去那裡，把他殺了並把他的頭骨帶回來作為證明。";
+	mes " ";
+	mes "祝你好運";
+	close;
+}
+///////Job list 3///////
+//3-1;
+moc_fild04,208,322,6	script	克拉克	65,{
+	if (three_qset == 1 && countitem(1040) > 29) goto N_QuestComp;
+	if (three_qset == 1) goto N_QuestStart;
+	mes "[克拉克]";
+	mes "我很樂意聊天，但我正在等一個人。";
+	close;
+N_QuestComp:
+	mes "[克拉克]";
+	mes "好吧，這算是個開始。";
+	mes " ";
+	mes "我希望這個洞有一天會消失，也許我將來還有其他任務要交給你。";
+	mes "來，收下這 2 個尋寶代幣。";
+	delitem 1040,30;
+	set #Treasure_Token,#Treasure_Token+2;
+	set three_qset,0;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[克拉克]";
+	mes "你好啊。";
+	mes "你一定是尋寶獵人公會的人。";
+	mes " ";
+	mes "嗯，這就是我的問題，你看到地上那個洞了嗎？是啊，那東西幾年前突然就冒出來了，裡面滿是那些醜陋的螞蟻和被稱為赤土的怪物。";
+	next;
+	mes "[克拉克]";
+	mes "我想請你做的是殺掉一些赤土。給我帶 30 個他們的小鬍鬚回來。";
+	close;
+}
+//3-2;
+yuno_fild01,186,162,6	script	法蘭克	73,{
+	if (three_qset == 2 && countitem(1082) > 0) goto N_QuestComp;
+	if (three_qset == 2) goto N_QuestStart;
+	mes "[法蘭克]";
+	mes "抱歉，我在等我的包裹，所以不想說話。";
+	close;
+N_QuestComp:
+	mes "[法蘭克]";
+	mes "完美，準時送到，現在我得去安裝這個炸彈了.... 呃，我是說把這個包裹給我媽媽當生日禮物。";
+	next;
+	mes "[法蘭克]";
+	mes "謝謝。";
+	mes "收下這個尋寶代幣。";
+	delitem 1082,1;
+	set three_qset,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[法蘭克]";
+	mes "所以你帶了我的包裹來？";
+	mes "那它在哪裡？";
+	close;
+}
+//3-3 Goes to 7-3 using callfunc
+prt_sewb1,120,245,6	script	下水道管理騎士	705,{
+	if (three_qset == 3 && countitem(955) > 149) goto N_QuestComp;
+	if (three_qset == 3) goto N_QuestStart;
+	if (seven_qset == 3) goto N_QuestStart2;
+	mes "[下水道管理員]";
+	mes "我的生活糟透了，每天都要在這個滿是蟲子的下水道工作...";
+	close;
+N_QuestComp:
+	mes "[下水道管理員]";
+	mes "看來這對你來說毫不費力。";
+	mes "謝謝，收下這 4 個尋寶代幣吧。";
+	delitem 955,150;
+	set #Treasure_Token,#Treasure_Token+4;
+	set three_qset,0;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[下水道管理員]";
+	mes "一段時間以來，我們的下水道一直被怪物，主要是蟲子給佔據...";
+	mes " ";
+	mes "我想請你幫忙清理一些，每一點都有幫助。";
+	mes "請帶來 150 個蟲皮。";
+	close;
+N_QuestStart2:
+	callfunc "seven_qset-3";
+	close;
+}
+//3-4
+mjolnir_02,87,357,6	script	男人#01	51,{
+	if (three_qset == 4 && countitem(1041) > 49) goto N_QuestComp;
+	if (three_qset == 4) goto N_QuestStart;
+	mes "[魯道夫]";
+	mes "危險，煤礦村現在是個充滿敵意的地區。";
+	close;
+N_QuestComp:
+	mes "[魯道夫]";
+	mes "很高興看到你活著回來。";
+	mes "我本來還有些懷疑，但還是感謝你的幫助。";
+	mes " ";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1041,50;
+	set three_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[魯道夫]";
+	mes "你好，你一定是尋寶獵人公會的人。";
+	mes " ";
+	mes "他們一定告訴過你這個煤礦村下層發生了什麼事，我知道這很令人不安，而且我們仍在試圖弄清楚為什麼以及 2 個邪惡箱是怎麼下去的。";
+	mes " ";
+	mes "嗯，我想請你做的是帶 50 個燈籠給我，證明你已經清理了一些，除了我要求你拿的東西之外，你在那下面找到的任何戰利品都可以自己留著。";
+	close;
+}
+///////Job list 4///////
+//4-1;
+pay_arche,45,138,6	script	芙蘿拉	724,{
+	if (four_qset == 1 && countitem(957) > 49) goto N_QuestComp;
+	if (four_qset == 1) goto N_QuestStart;
+	mes "[芙蘿拉]";
+	mes "你好，在洞穴裡要小心，我們有收到關於不死怪物出沒的報告。";
+	close;
+N_QuestComp:
+	mes "[芙蘿拉]";
+	mes "歡迎回來，幹得好，你做到了。（我想知道那個燃燒的混蛋是不是還活著）";
+	mes "嗯，我希望這能減少一些怪物，來，收下這 2 個代幣。";
+	delitem 957,50;
+	set #Treasure_Token,#Treasure_Token+2;
+	set four_qset,0;
+	set On_Quest,0;
+	killmonster "pay_dun00","芙蘿拉::OnMobDead";
+	close;
+N_QuestStart:
+	mes "[芙蘿拉]";
+	mes "你好啊。";
+	mes " ";
+	mes "這是我需要你做的事，給我帶 50 個腐爛的指甲 —— 不久前斐揚洞穴還是個安全的地方...但現在情況失控了，殭屍入侵了一樓...";
+	mes " ";
+	mes "還有一些我們稱之為燃燒的混蛋的新怪物突然不知從哪冒出來... 如果你不夠強大要小心，因為他們非常強。";
+	next;
+	mes "[芙蘿拉]";
+	mes "祝你好運";
+	mes "記得我需要 50 個指甲";
+	monster "pay_dun00",0,0,"烈燄惡鬼",1072,1,"芙蘿拉::OnMobDead";
+	monster "pay_dun00",0,0,"烈燄惡鬼",1072,1,"芙蘿拉::OnMobDead";
+	close;
+OnMobDead:
+	end;
+}
+//4-2;
+yuno,45,138,6	script	澤德	735,{
+	if (four_qset == 2 && countitem(1999) > 0) goto N_QuestComp;
+	if (four_qset == 2) goto N_QuestStart;
+	mes "[澤德]";
+	mes "從我眼前消失，你這怪咖。";
+	close;
+N_QuestComp:
+	mes "[澤德]";
+	mes "天啊，你這混蛋花了這麼久的時間！";
+	mes "你知道我的時間有多寶貴嗎！！！！";
+	mes "你太慢了，我絕對不會再推薦工作給你了，把法杖給我，然後滾出我的視線！";
+	next;
+	mes "[澤德]";
+	mes "好吧，你可以拿走這個破尋寶代幣。";
+	delitem 1999,1;
+	set On_Quest,0;
+	set four_qset,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[澤德]";
+	mes "我的法杖在哪裡？";
+	close;
+}
+//4-3;
+prontera,176,204,6	script	達西	95,{
+	if (four_qset == 3 && countitem(711) > 19) goto N_QuestComp;
+	if (four_qset == 3) goto N_QuestStart;
+	mes "[達西]";
+	mes "你好！";
+	close;
+N_QuestComp:
+	mes "[達西]";
+	mes "太棒了！現在我的寵物不會挨餓了！";
+	mes "非常感謝你！";
+	mes "收下這個尋寶代幣。";
+	delitem 711,20;
+	set On_Quest,0;
+	set four_qset,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[達西]";
+	mes "你好！！";
+	mes "你是來幫我的嗎？是的，是的。";
+	mes " ";
+	mes "好吧，我不想多說，但我需要你幫我找 20 個天地樹葉子";
+	mes "謝謝！";
+	close;
+}
+//4-4;
+prt_gld,157,99,6	script	克茲霍爾	752,{
+	if (four_qset == 4 && countitem(714) > 0) goto N_QuestComp;
+	if (four_qset == 4) goto N_QuestStart;
+	mes "[克茲霍爾]";
+	mes "你好朋友";
+	mes "你是來參觀這些公會建築之一的嗎？";
+	close;
+N_QuestComp:
+	mes "[克茲霍爾]";
+	mes "感謝老天！";
+	mes " ";
+	mes "看到這顆華麗金屬我真是太高興了！謝謝你，"+strcharinfo(0)+"。";
+	next;
+	mes "[克茲霍爾]";
+	mes "來，收下這 2 個尋寶代幣。";
+	mes "還有我一些舊的寶藏...";
+	delitem 714,1;
+	monster "prt_gld",155,99,"老人的珍藏",1324,1;
+	set four_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+2;
+	close;
+N_QuestStart:
+	mes "[克茲霍爾]";
+	mes "你好朋友";
+	mes "我知道這聽起來可能很蠢，但從我還是個小男孩開始，我就夢想擁有一顆華麗金屬...";
+	mes "如你所見我已經老了，我就是一直找不到，現在我從尋寶獵人公會退休了，也沒有什麼冒險機會了...";
+	mes " ";
+	mes "如果你能幫我弄到一個，我會獎勵你的。";
+	close;
+}
+///////Job list 5///////
+//5-1;
+prt_maze01,18,184,6	script	立辛#01	752,{
+	if (five_qset == 1 && countitem(1028) > 14) goto N_QuestComp;
+	if (five_qset == 1) goto N_QuestStart;
+	mes "[立辛]";
+	mes "你好。";
+	mes "歡迎來到迷宮森林。";
+	close;
+N_QuestComp:
+	mes "[立辛]";
+	mes "非常感謝你，但牠們還會回來的...";
+	next;
+	mes "收下這 2 個尋寶代幣吧";
+	delitem 1028,15;
+	set five_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+2;
+	close;
+N_QuestStart:
+	mes "[立辛]";
+	mes "你好。";
+	mes "歡迎來到迷宮森林，我有一個任務要交給你。";
+	mes " ";
+	mes "聽過一種叫野豬的怪物嗎？牠看起來像豬，但會發出非常煩人的聲音。";
+	mes "我想請你做的是給我帶 15 個野豬的毛。";
+	close;
+}
+//5-2 goes to 6-2 using callfunc;
+moc_ruins,75,167,6	script	立辛#02	87,{
+	if (five_qset == 2 && countitem(932) > 29) goto N_QuestComp;
+	if (five_qset == 2) goto N_QuestStart;
+	if (six_qset == 2) goto N_QuestStart2;
+	mes "[奇怪的男人]";
+	mes "...";
+	close;
+N_QuestComp:
+	mes "[奇怪的男人]";
+	mes "非常感謝你。";
+	next;
+	mes "帶著這 2 個尋寶代幣走吧。";
+	delitem 932,30;
+	set #Treasure_Token,#Treasure_Token+2;
+	set five_qset,0;
+	set On_Quest,0;
+	close;
+N_QuestStart:
+	mes "[奇怪的男人]";
+	mes "你必須為我完成。進入金字塔冒險吧。";
+	mes "當你到達第二層，消滅邪惡的骷髏。";
+	mes "你必須把牠們的骨頭帶回來給我。";
+	mes "我渴望得到 30 個。";
+	close;
+N_QuestStart2:
+	callfunc "six_qset2";
+}
+//5-3;
+geffen,57,130,6	script	金髮女孩	724,{
+	if (five_qset == 3 && countitem(744) > 0) goto N_QuestComp;
+	if (five_qset == 3) goto N_QuestStart;
+	mes "[金髮女孩]";
+	mes "不知道我的花怎麼了";
+	close;
+N_QuestComp:
+	mes "[金髮女孩]";
+	mes "喔這就是我的花嗎！可惜我已經不想要了...";
+	mes " ";
+	mes "如果你想要的話可以留著。";
+	next;
+	mes "[金髮女孩]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	set five_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[金髮女孩]";
+	mes "你好，你有帶花給我嗎！？！";
+	close;
+}
+//5-4;
+gef_tower,49,27,6	script	巫師#01	735,{
+	if (five_qset == 4 && countitem(1059) > 49) goto N_QuestComp;
+	if (five_qset == 4) goto N_QuestStart;
+	mes "[巫師]";
+	mes "你好，你有看到我的白幽靈朋友嗎？";
+	close;
+N_QuestComp:
+	mes "[巫師]";
+	mes "謝謝你的幫忙，我做了最壞的打算。";
+	next;
+	mes "[巫師]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1059,50;
+	set five_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[巫師]";
+	mes "你好，我把你找來是因為很久以前我交了一個朋友，牠剛好是隻白幽靈。";
+	mes "牠告訴我牠在那下面總是被其他幽靈欺負，而且我有一段時間沒見到牠了。";
+	mes "考慮到最壞的情況，我要報仇！";
+	mes " ";
+	mes "給我帶 50 塊破舊布料來！";
+	close;
+}
+///////Job list 6///////
+//6-1;
+moc_prydb1,47,132,6	script	盜賊	48,{
+	if (six_qset == 1 && countitem(1083) > 0) goto N_QuestComp;
+	if (six_qset == 1) goto N_QuestStart;
+	mes "[盜賊]";
+	mes "歡迎來到盜賊公會。";
+	close;
+N_QuestComp:
+	mes "[盜賊]";
+	mes "謝謝你送來這件物品。";
+	next;
+	mes "[盜賊]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	delitem 1083,1;
+	set six_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[盜賊]";
+	mes "我的包裹在哪裡？";
+	close;
+}
+//6-2
+function	script	six_qset2	{
+	if (six_qset == 2 && countitem(930) > 29) goto N_QuestComp2;
+	mes "[奇怪的男人]";
+	mes "我有另一個任務要交給你。";
+	mes "你必須深入金字塔內部。";
+	mes "你的未來將是與木乃伊戰鬥。";
+	mes " ";
+	mes "你必須把牠們的繃帶帶回來給我。";
+	mes "我渴望得到 30 個腐爛的繃帶。";
+	close;
+N_QuestComp2:
+	mes "[奇怪的男人]";
+	mes "非常感謝你。";
+	next;
+	mes "[奇怪的男人]";
+	mes "帶著這 3 個代幣走吧。";
+	delitem 930,30;
+	set #Treasure_Token,#Treasure_Token+3;
+	set On_Quest,0;
+	set six_qset,0;
+	close;
+}
+//6-3;
+xmas,144,136,6	script	奇拉奇	48,{
+	if (six_qset == 3 && countitem(1083) > 0) goto N_QuestComp;
+	if (six_qset == 3) goto N_QuestStart;
+	mes "[奇拉奇]";
+	mes "歡迎。";
+	close;
+N_QuestComp:
+	mes "[奇拉奇]";
+	mes "謝謝你送來這件物品。";
+	next;
+	mes "[奇拉奇]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	delitem 1083,1;
+	set six_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[奇拉奇]";
+	mes "我的包裹在哪裡？";
+	close;
+}
+//6-4;
+gef_tower,52,87,6	script	巫師#02	735,{
+	if (six_qset == 4 && countitem(944) > 19) goto N_QuestComp;
+	if (six_qset == 4) goto N_QuestStart;
+	mes "[祖祖]";
+	mes "你好，歡迎來到吉芬塔。";
+	close;
+N_QuestComp:
+	mes "[巫師]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 944,20;
+	set six_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	next;
+	mes "[祖祖]";
+	mes "喔老天！！！";
+	mes "其中一隻邪惡怪物跟著你上來了，殺了牠，殺了牠！！！";
+	next;
+	monster "gef_tower",42,89,"邪惡惡夢",1061,1;
+	close;
+N_QuestStart:
+	mes "[祖祖]";
+	mes "你好，我找年輕冒險家來是因為我們塔下面遇到了一些問題。";
+	mes "那下面的幽靈似乎一天比一天多。我需要你下去尋找這些我們稱為夢魘的怪物。";
+	mes " ";
+	mes "你必須殺死牠們，並給我帶 20 個馬蹄鐵來。";
+	close;
+}
+///////Job list 7///////
+//7-1 goes to 8-1 using callfunc;
+prontera,123,208,6	script	女孩#thq	717,{
+	if (seven_qset == 1 && countitem(531) > 4) goto N_QuestComp;
+	if (seven_qset == 1) goto N_QuestStart;
+	if (eight_qset == 1) goto N_QuestStart2;
+	mes "[女孩]";
+	mes "你好 "+strcharinfo(0)+" 先生。";
+	close;
+N_QuestComp:
+	mes "[女孩]";
+	mes "太感謝你了！";
+	next;
+	mes "[女孩]";
+	mes "收下這 1 個尋寶代幣吧。";
+	delitem 531,5;
+	set seven_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[女孩]";
+	mes "嗨，大哥哥。你能給我一些蘋果汁嗎？";
+	mes "我想要 5 個。";
+	close;
+N_QuestStart2:
+	callfunc "eight_qset1";
+}
+//7-2;
+alberta,101,84,6	script	查爾斯	48,{
+	if (seven_qset == 2 && countitem(1082) > 0) goto N_QuestComp;
+	if (seven_qset == 2) goto N_QuestStart;
+	mes "[查爾斯]";
+	mes "你好 "+strcharinfo(0)+" 歡迎來到艾爾貝塔。";
+	close;
+N_QuestComp:
+	mes "[查爾斯]";
+	mes "謝謝你送來這件物品。";
+	next;
+	mes "[查爾斯]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	delitem 1082,1;
+	set seven_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[查爾斯]";
+	mes "所以我的包裹在哪裡？";
+	close;
+}
+//7-3
+function	script	seven_qset-3	{
+	if (seven_qset == 3 && countitem(969) > 0) goto N_QuestComp2;
+	mes "[下水道管理員]";
+	mes "嗯，有報告指出有一隻盜蟲黃金盜蟲在下水道底層跑來跑去";
+	mes " ";
+	mes "從牠身上帶 1 塊金塊給我。";
+	close;
+N_QuestComp2:
+	mes "[下水道管理員]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[下水道管理員]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 969,1;
+	set seven_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+}
+//7-4;
+alb2trea,94,102,6	script	史嘉蕾	725,{
+	if (seven_qset == 4 && countitem(1127) > 0) goto N_QuestComp;
+	if (seven_qset == 4) goto N_QuestStart;
+	mes "[史嘉蕾]";
+	mes "抱歉，在忙。";
+	close;
+N_QuestComp:
+	mes "[史嘉蕾]";
+	mes "謝謝你的幫忙，我做了最壞的打算。";
+	next;
+	mes "[史嘉蕾]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1127,1;
+	set seven_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[史嘉蕾]";
+	mes "很好你來了。聽好，有報告指出一位名叫海盜之王的老船長霸佔了這艘船。殺了他！";
+	mes " ";
+	mes "帶他的水紋劍來作為證明！";
+	close;
+}
+///////Job list 8///////
+//8-1
+function	script	eight_qset1	{
+	if (eight_qset == 1 && countitem(532) > 4) goto N_QuestComp2;
+	mes "[女孩]";
+	mes "嗨，大哥哥。你能給我一些香蕉汁嗎？";
+	mes "我想要 5 個。";
+	close;
+N_QuestComp2:
+	mes "[女孩]";
+	mes "太感謝你了！";
+	next;
+	mes "[女孩]";
+	mes "收下這 1 個尋寶代幣吧。";
+	delitem 532,5;
+	set eight_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+}
+//8-2;
+morocc,165,55,6	script	凱爾	48,{
+	if (eight_qset == 2 && countitem(1081) > 0) goto N_QuestComp;
+	if (eight_qset == 2) goto N_QuestStart;
+	mes "[凱爾]";
+	mes "你好 "+strcharinfo(0)+"。";
+	close;
+N_QuestComp:
+	mes "[凱爾]";
+	mes "謝謝你送來這件物品。";
+	next;
+	mes "[凱爾]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	delitem 1081,1;
+	set eight_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[凱爾]";
+	mes "所以我的包裹在哪裡";
+	close;
+
+}
+//8-3;
+prt_maze02,103,86,6	script	查克	751,{
+	if (eight_qset == 3 && countitem(923) > 0) goto N_QuestComp;
+	if (eight_qset == 3) goto N_QuestStart;
+	mes "[查克]";
+	mes "你好，你有看到我的白幽靈朋友嗎？";
+	close;
+N_QuestComp:
+	mes "[查克]";
+	mes "謝謝你的幫忙，我做了最壞的打算。";
+	next;
+	mes "[查克]";
+	mes "來，收下這 5 個尋寶代幣。";
+	delitem 923,1;
+	set eight_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+5;
+	close;
+N_QuestStart:
+	mes "[查克]";
+	mes "你好，我把你找來是因為一隻名為巴風特的非常奇怪的怪物。";
+	mes "人們說巴風特守護著通往冥界的大門，但我不相信他們，殺了巴風特！";
+	mes " ";
+	mes "給我帶他的惡魔角來！";
+	close;
+}
+//8-4;
+payon,136,129,6	script	小花	703,{
+	if (eight_qset == 4 && countitem(746) > 9) goto N_QuestComp;
+	if (eight_qset == 4) goto N_QuestStart;
+	mes "[小花]";
+	mes "抱歉我正在等一個人。你等一下再來吧。";
+	close;
+N_QuestComp:
+	mes "[小花]";
+	mes "謝謝你的幫忙，我做了最壞的打算。";
+	next;
+	mes "[小花]";
+	mes "來，收下這 2 個尋寶代幣。";
+	delitem 746,10;
+	set eight_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+2;
+	close;
+N_QuestStart:
+	mes "[小花]";
+	mes "救命，救命，我弄丟了我的珠子！！我哥哥布希會殺了我的，請幫幫我";
+	mes " ";
+	mes "給我帶 10 個玻璃珠來！";
+	close;
+}
+///////Job list 9///////
+//9-1;
+geffen_in,168,124,6	script	魔法師	48,{
+	if (nine_qset == 1 && countitem(1082) > 0) goto N_QuestComp;
+	if (nine_qset == 1) goto N_QuestStart;
+	mes "[魔法師]";
+	mes "你好 "+strcharinfo(0)+" 歡迎來到魔法師公會。";
+	close;
+N_QuestComp:
+	mes "[魔法師]";
+	mes "謝謝你送來這件物品。抱歉味道有點重，這是一箱青蛙的舌頭";
+	next;
+	mes "[魔法師]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	delitem 1082,1;
+	set nine_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[魔法師]";
+	mes "你好 "+strcharinfo(0)+"，我那箱青蛙的舌頭在哪裡？。";
+	close;
+}
+//9-2;
+pay_arche,98,74,6	script	女學生	703,{
+	if (nine_qset == 2 && countitem(1020) > 19) goto N_QuestComp;
+	if (nine_qset == 2) goto N_QuestStart;
+	mes "[女學生]";
+	mes "抱歉我正在等一個人，你等一下再來吧";
+	close;
+N_QuestComp:
+	mes "[女學生]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[女學生]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1020,20;
+	set nine_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[女學生]";
+	mes "救命，我們對斐揚的了解是，不久前有一場怪火燒毀了舊學校。";
+	next;
+	mes "[女學生]";
+	mes "奇怪的是，裡面的孩子似乎沒有死在火海中。他們佔據了斐揚洞穴的整個第三層。";
+	mes " ";
+	mes "給我帶 20 根黑色的毛髮來！";
+	close;
+}
+//9-3
+payon_in02,19,33,6	script	傑克	740,{
+	if (nine_qset == 3 && countitem(1022) > 0) goto N_QuestComp;
+	if (nine_qset == 3) goto N_QuestStart;
+	if (nine_qset == 4) goto N_QuestStart2;
+	mes "[傑克]";
+	mes "抱歉我正在等一個人，你等一下再來吧";
+	close;
+N_QuestComp:
+	mes "[傑克]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[傑克]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1022,1;
+	set nine_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[傑克]";
+	mes "嗯，我對這件事不太了解，這與斐揚洞穴的最深處有關。我們知道的不多，因為似乎從來沒有人活著回來過。我們懷疑是一隻我們稱為月夜貓的怪物";
+	mes " ";
+	mes "給我帶回 1 個九尾狐尾巴！";
+	close;
+N_QuestStart2:
+//9-4
+	if (nine_qset == 4 && countitem(901) > 39) goto N_QuestComp2;
+	mes "[傑克]";
+	mes "你好，我們需要你調查一下斐揚第三層的一些廢物。";
+	mes " ";
+	mes "給我帶回 40 個辮子。";
+	close;
+N_QuestComp2:
+	mes "[傑克]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[傑克]";
+	mes "來，收下這 3 個尋寶代幣。";
+	delitem 901,40;
+	set nine_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+3;
+	close;
+}
+///////Job list 10///////
+//10-1
+morocc,193,51,6	script	克雷格	48,{
+	if (ten_qset == 1 && countitem(1082) > 0) goto N_QuestComp;
+	if (ten_qset == 1) goto N_QuestStart;
+	mes "[克雷格]";
+	mes "你好 "+strcharinfo(0)+" 歡迎來到夢羅克。";
+	close;
+N_QuestComp:
+	mes "[克雷格]";
+	mes "謝謝你送來這件物品。";
+	next;
+	mes "[克雷格]";
+	mes "來，拿這個尋寶代幣作為獎勵。";
+	delitem 1082,1;
+	set ten_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+1;
+	close;
+N_QuestStart:
+	mes "[克雷格]";
+	mes "所以我的包裹在哪裡";
+	close;
+}
+//10-2;
+pay_fild10,145,252,6	script	男人#02	122,{
+	if (ten_qset == 2 && countitem(1029) > 0) goto N_QuestComp;
+	if (ten_qset == 2) goto N_QuestStart;
+	mes "[男人]";
+	mes "抱歉我正在等一個人，你等一下再來吧";
+	close;
+N_QuestComp:
+	mes "[男人]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[男人]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1029,1;
+	set ten_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[男人]";
+	mes "東尼虎吸毒吸嗨了！必須阻止他，殺了他！";
+	mes " ";
+	mes "給我帶回 1 張老虎皮！";
+	close;
+}
+//10-3;
+cmd_fild08,328,349,4	script	卡拉爾	119,{
+	if (ten_qset == 3 && countitem(1015) > 0) goto N_QuestComp;
+	if (ten_qset == 3) goto N_QuestStart;
+	mes "[卡拉爾]";
+	mes "抱歉我正在等一個人，你等一下再來吧。";
+	close;
+N_QuestComp:
+	mes "[卡拉爾]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[卡拉爾]";
+	mes "來，收下這 4 個尋寶代幣。";
+	delitem 1015,1;
+	set ten_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+4;
+	close;
+N_QuestStart:
+	mes "[卡拉爾]";
+	mes "粉紅色的毛茸茸皮里恩正在恐嚇小初學者！必須阻止牠，殺了牠！";
+	mes " ";
+	mes "給我帶回 1 個舌頭！";
+	close;
+}
+//10-4
+moc_fild15,250,251,6	script	珍妮	727,{
+	if (ten_qset == 4 && countitem(1096) > 0) goto N_QuestComp;
+	if (ten_qset == 4) goto N_QuestStart;
+	mes "[珍妮]";
+	mes "抱歉我正在等一個人，你等一下再來吧";
+	close;
+N_QuestComp:
+	mes "[珍妮]";
+	mes "謝謝你的幫忙。";
+	next;
+	mes "[珍妮]";
+	mes "來，收下這 3 個尋寶代幣。";
+	delitem 1096,1;
+	set ten_qset,0;
+	set On_Quest,0;
+	set #Treasure_Token,#Treasure_Token+3;
+	close;
+N_QuestStart:
+	mes "[珍妮]";
+	mes "這個半裸的怪胎需要一支軍隊才能解決，現在這是你的工作了，祝你好運。";
+	mes " ";
+	mes "給我帶回 1 個圓殼！";
+	close;
+}

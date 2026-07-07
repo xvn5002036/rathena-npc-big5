@@ -1,0 +1,366 @@
+//===== rAthena Script =======================================
+//= Eden Group Quests - Mission [56 - 70]
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.7
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Repetable Quests for Players between Baselevel 56 - 70.
+//===== Additional Comments: =================================
+//= 1.0 First Version.
+//= 1.1 Some little optimization here and there. [Masao]
+//= 1.2 Added checkquest confirmation for -1. [Euphy]
+//= 1.3 Fixed Puppet Master's Agony Quest (12217 -> 3259). [Joseph]
+//= 1.4 Fixed invalid check (Magic Wand Quest). [Joseph]
+//= 1.5 Optimized, based on code by Zopokx. [Euphy]
+//= 1.6 Added support to Para_Team_Mark_ in Eden Group. [Ragno]
+//= 1.7 Added use of F_HasEdenGroupMark function. [Ragno]
+//= 1.8 Reverting Magic Wand Quest to request Trunks. [Carlosgrr]
+//============================================================
+
+moc_para01,42,38,3	script	任務 [56 - 70]	857,{
+	if (!callfunc("F_HasEdenGroupMark")) {
+		mes "要接取這些任務，我必須先加入伊甸園。我得找到秘書 萊姆 伊文諾並成為會員。";
+		close;
+	}
+	mes "這是為等級 56~70 的冒險者準備的各種冒險清單。";
+	next;
+	mes "有許多任務，例如魔物狩獵、運送物品、尋找委託人。";
+	next;
+	switch(select("任務編號 1~5:任務編號 6~10:任務編號 11~15")) {
+	case 1:
+		switch(select("這繃帶是什麼？:危險的短吻鱷。:那不是美人魚...:國家在召喚我！")) {
+			case 1: callsub L_HuntingQuest,3250,15000,5000,930,30;
+			case 2: callsub L_HuntingQuest,3251,16000,6000;
+			case 3: callsub L_HuntingQuest,3252,17000,8000;
+			case 4: callsub L_Quest,3254,18000,8000,7043,10,1056,30;
+		}
+	case 2:
+		switch(select("狩獵野豬:準備過夏天:女人的怨恨:特別的成分:人偶師的痛苦")) {
+			case 1: callsub L_HuntingQuest,3255,16000,7000;
+			case 2: callsub L_Quest,3256,15000,5000,918,30;
+			case 3: callsub L_HuntingQuest,3257,17000,8000;
+			case 4: callsub L_Quest,3258,16000,7000,7198,40;
+			case 5: callsub L_HuntingQuest,3259,17000,7000,1060,30;
+		}
+	case 3:
+		switch(select("令人厭煩的蒼蠅:危險的木乃伊亡靈:讓世界變綠:魔法棒")) {
+			case 1: callsub L_HuntingQuest,3260,16000,6000;
+			case 2: callsub L_HuntingQuest,3261,16000,7000;
+			case 3: callsub L_Quest,3262,17000,7000,1032,40;
+			case 4: callsub L_Quest,3263,18000,8000,1021,30,1019,30;
+		}
+	}
+	end;
+
+L_Quest:
+	.@quest_id = getarg(0);
+	if (checkquest(.@quest_id) == -1) {
+		callsub L_Details, .@quest_id;
+		next;
+		mes "你想接取這個任務嗎？";
+		next;
+		if(select("接取任務。:不接取任務。") == 1) {
+			if (BaseLevel < 55 || BaseLevel > 70) {
+				mes "這些任務不適合我的等級。我應該尋找其他任務。";
+				close;
+			}
+			setquest .@quest_id;
+			mes "我已成功接取任務。完成任務後，我必須回來確認我的成果。";
+			next;
+			mes "此任務沒有時間限制。";
+		}
+		close;
+	}
+	if (getargcount() > 5) {
+		if (countitem(getarg(5)) < getarg(6))
+			set .@items,1; //incomplete
+		else
+			set .@items,2; //complete
+	}
+	if (checkquest(.@quest_id) < 2 && (countitem(getarg(3)) < getarg(4) || .@items == 1)) {
+		mes "你有一個正在進行的任務。你想檢查詳細資訊嗎？";
+		next;
+		if(select("檢查詳細資訊。:取消。") == 1)
+			callsub L_Details, .@quest_id;
+		close;
+	} else {
+		mes "這個任務我進行得挺順利的。我現在該回報了嗎？";
+		next;
+		if(select("回報任務。:先不回報。") == 1) {
+			delitem getarg(3),getarg(4);
+			if (.@items)
+				delitem getarg(5),getarg(6);
+			getexp getarg(1),getarg(2);
+			erasequest .@quest_id;
+			mes "你已經完成了任務。獲得獎勵。";
+		}
+		close;
+	}
+	end;
+
+L_HuntingQuest:
+	.@quest_id = getarg(0);
+	if (checkquest(.@quest_id) == -1) {
+		callsub L_Details, .@quest_id;
+		next;
+		mes "你想接取這個任務嗎？";
+		next;
+		if(select("接取任務。:不接取任務。") == 1) {
+			if (BaseLevel < 55 || BaseLevel > 70) {
+				mes "這些任務不適合我的等級。我應該尋找其他任務。";
+				close;
+			}
+			setquest .@quest_id;
+			mes "我已成功接取任務。完成任務後，我必須回來確認我的成果。";
+			next;
+			mes "此任務沒有時間限制。";
+		}
+		close;
+	}
+	if (getargcount() > 3) {
+		if (countitem(getarg(3)) < getarg(4))
+			set .@items,1; //incomplete
+		else
+			set .@items,2; //complete
+	}
+	if (checkquest(.@quest_id,HUNTING) < 2 || .@items == 1) {
+		mes "你有一個正在進行的任務。你想檢查詳細資訊嗎？";
+		next;
+		if(select("檢查詳細資訊。:取消。") == 1)
+			callsub L_Details, .@quest_id;
+		close;
+	} else if (checkquest(.@quest_id,HUNTING) == 2) {
+		mes "這個任務我進行得挺順利的。我現在該回報了嗎？";
+		next;
+		if(select("回報任務。:先不回報。") == 1) {
+			if (.@items)
+				delitem getarg(3),getarg(4);
+			getexp getarg(1),getarg(2);
+			erasequest .@quest_id;
+			mes "你已經完成了任務。獲得獎勵。";
+		}
+		close;
+	}
+	end;
+
+L_Details:
+	switch(getarg(0)) {
+	case 3250:
+		mes "此任務由來自里希塔樂鎮的雷根貝勒公司委託。以下是詳細資訊。";
+		next;
+		mes "雷根貝勒公司即將啟動一個名為「綠色醫療中心」的新項目。作為該項目的第一款產品，我們正在準備健康繃帶。";
+		next;
+		mes "關於這個項目，我們需要研究魔物被腐爛繃帶包裹時的反應。";
+		next;
+		mes "如果您感興趣，請狩獵30隻木乃伊並帶來30個腐爛繃帶。您可以在夢羅克西方的金字塔找到牠們。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "- 雷根貝勒公司執行董事「朱莉 E 德爾芙」 -";
+		break;
+	case 3251:
+		mes "此任務由克魔島合作社委託。以下是詳細資訊。";
+		next;
+		mes "最近短吻鱷變得非常猖獗，牠們會攻擊在海灘附近流連的女性和醉漢。";
+		next;
+		mes "這對我們這個盧恩米德加茲最棒的度假勝地來說，是一個非常令人羞愧的局面。";
+		next;
+		mes "所以，如果您能狩獵30隻短吻鱷來清理這個局面，將會非常有幫助。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		break;
+	case 3252:
+		mes "此任務由一位來自依斯魯得島的無名委託人接取。";
+		next;
+		mes "自從我出生以來，我就一直讚嘆著依斯魯得島的海灘。";
+		next;
+		mes "當我年輕的時候，我在依斯魯得島海底洞穴發現了一個神秘的生物，我以前從未見過那樣的東西...";
+		next;
+		mes "我立刻認為那是一隻美人魚。我太驚訝了，我花了半生時間來研究美人魚。";
+		next;
+		mes "但是，隨著我更深入的研究，我發現那個生物並不是美人魚... 是的，牠一點也不像其他美人魚那樣美麗...";
+		next;
+		mes "我最終查明了事實，那是一隻人魚，而不是美人魚！";
+		next;
+		mes "人魚... 我居然浪費了半生來研究這種魔物！所以請狩獵30隻人魚來讓我心情好過一點。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 依斯魯得島「失去夢想的美人魚」 --";
+		break;
+	case 3254:
+		mes "此任務由神聖盧恩米德加茲王國的政府官員委託。";
+		next;
+		mes "為了防止普隆德拉發生洪水，我們決定建造一座巨大的水壩來調節供水。";
+		next;
+		mes "但是，我們的人手和物資短缺，我們需要收集細沙和粗沙。";
+		next;
+		mes "因此，我們想請求協助。各位，請為我們每人帶來10個細沙和30個粗沙，以便我們建造水壩。";
+		next;
+		mes "您可以從泥人身上取得這些材料，祝您好運！";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 神聖盧恩米德加茲王國政府官員，杜弗雷 肯特 --";
+		break;
+	case 3255:
+		mes "此任務由斐揚村長家委託。";
+		next;
+		mes "野生動物總是給農民帶來困擾。";
+		next;
+		mes "牠們攻擊我們的農場並毀壞了所有作物！！我們再也無法忍受了！";
+		next;
+		mes "因此，我們想請求勇敢冒險者的協助。";
+		next;
+		mes "請狩獵30隻野豬來拯救我們的作物！";
+		next;
+		mes "您可以輕易在我們的城鎮和原野周圍找到這些魔物。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 斐揚村長家成員 --";
+		break;
+	case 3256:
+		mes "此任務由夢羅克鐵匠 阿拉漢委託。";
+		next;
+		mes "哈囉~~~~，冒險者們！我是阿拉漢，夢羅克最熱門的鐵匠！";
+		next;
+		mes "總之，我有一個兒子叫小阿拉漢，很可愛的那位。哈哈。";
+		next;
+		mes "他今年夏天要參加夏令營，但他不會游泳。";
+		next;
+		mes "我想教他，但如你所知我是一個鐵匠，跟游泳差得遠了！呵呵。";
+		next;
+		mes "但是，我想如果我做一副蛙鞋，對他的自信心一定大有幫助?！";
+		next;
+		mes "為了製作它，我需要從青蛙身上取得30個粘稠的蹼。你能幫我帶來嗎？";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "附註：不要拿我跟忽克連或安東尼比較！！！！";
+		next;
+		mes "-- 最熱門的鐵匠，夢羅克鐵匠 阿拉漢 --";
+		break;
+	case 3257:
+		mes "此任務由來自依斯魯得島的發明家 多利安委託。";
+		next;
+		mes "你聽過這個故事嗎？如果女人心存怨恨，將會帶來自然災害。";
+		next;
+		mes "哇，所以男人們必須小心那些敏感的女人！確保她們對你沒有任何怨恨。";
+		next;
+		mes "女人可以帶來奇怪的現象！";
+		next;
+		mes "我對這個故事非常感興趣，以至於我正試圖證明它可能是真的。";
+		next;
+		mes "所以我需要讓女人們生氣！哈哈，我知道這主意多壞，對吧？";
+		next;
+		mes "但這真的只是為了研究... 所以請狩獵30隻妖道，牠們似乎是從受害者的靈魂中復活過來的。";
+		next;
+		mes "這樣我才能繼續觀察這個案例。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 優雅發明家 多利安 --";
+		break;
+	case 3258:
+		mes "此任務由來自斐揚的 瓦拉委託。";
+		next;
+		mes "哈囉，冒險者。你好嗎？你的健康狀況如何？";
+		next;
+		mes "我是一名藥劑師，最近我很難取得一些特別的成分。";
+		next;
+		mes "因為我只是一個稍微敏感的小女孩，我怎麼可能自己去弄到那些東西呢。";
+		next;
+		mes "所以，請幫幫我。只要幫我帶來40個巨大的葉子，那就足以完成我的特效藥了！";
+		next;
+		mes "請儘快帶來，人們需要我的藥物。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 瓦拉 --";
+		break;
+	case 3259:
+		mes "此任務由來自吉芬的人偶師 伍努特委託。";
+		next;
+		mes "你知道作為一個人偶師是多麼難滿足大眾的工作。";
+		next;
+		mes "現在人們可以自己搜尋和看到這麼多不同的東西。";
+		next;
+		mes "他們的期望越來越高，我再也無法滿足他們了。";
+		next;
+		mes "但如果我能製作出新的玩具概念，比如活生生的玩具，那將是突破性的。";
+		next;
+		mes "我聽說有一種叫木偶泥人的活洋娃娃。你能幫我狩獵30隻木偶泥人嗎？還有順便帶來30個金色頭髮，那些將是新玩具的絕佳材料。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 人偶師 伍努特 --";
+		break;
+	case 3260:
+		mes "此任務由一位來自普隆德拉的除蟲專家委託。";
+		next;
+		mes "隨著天氣變暖，昆蟲繁殖得越來越多。這已經失去了控制。";
+		next;
+		mes "普隆德拉的人們因為家裡所有的蟲子而無法入睡。";
+		next;
+		mes "所以，請幫幫我們，狩獵30隻獵蠅。這樣蒼蠅的數量就可以慢慢減少。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 普隆德拉除蟲專家 --";
+		break;
+	case 3261:
+		mes "此任務由來自斐揚的 芝士童子委託。";
+		next;
+		mes "你聽過木乃伊亡靈嗎？";
+		next;
+		mes "醜陋的魔物木乃伊亡靈正在威脅斐揚的人們。";
+		next;
+		mes "所以我們需要像你這樣勇敢的冒險者！";
+		next;
+		mes "請狩獵30隻木乃伊亡靈，這樣斐揚就會平靜了。";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "- 斐揚 芝士童子 -";
+		break;
+	case 3262:
+		mes "此任務由一位來自夢羅克的寶石商 易卜拉欣委託。";
+		next;
+		mes "荒涼沙漠中一朵美麗的小花... 那將是多麼令人難以置信的景象啊！";
+		next;
+		mes "種植鮮花可以讓世界變得更綠，到處都會變得很漂亮。";
+		next;
+		mes "我計畫在夢羅克沙漠中種植強壯的鮮花，以便讓土壤變得更好。";
+		next;
+		mes "我需要從曼陀羅魔花身上取得40個食人植物的花，我知道食人植物的花是一朵醜陋的花，但牠依然是植物。";
+		next;
+		mes "我希望你能狩獵曼陀羅魔花並幫我帶來40個食人植物的花。你正在讓世界變得更綠！感到自豪吧！";
+		next;
+		mes "請在完成任務後向我們確認，然後我們將給您適當的獎勵。";
+		next;
+		mes "-- 夢羅克 易卜拉欣 --";
+		break;
+	case 3263:
+		mes "此任務由斐揚鐵匠 安東尼委託。";
+		next;
+		mes "魔法棒！你聽過它嗎？它是一根不可思議的魔杖！";
+		next;
+		mes "如果你說出魔法咒語並揮動魔杖，它就會讓你的願望實現。";
+		next;
+		mes "因此，我決定自己做一根。這樣我就會變得富有又強大?！哈哈！！";
+		next;
+		mes "為了製作這根魔杖，我需要一些特別的材料。";
+		next;
+		mes "請給我帶來30個鬼火的角和30個木材。如果你這麼做，我會借你用一次我的魔法棒。哈哈，划算的交易吧？";
+		next;
+		mes "請在完成任務後向我們確認，然後我們 wilderness 給您適當的獎勵。";
+		next;
+		mes "-- 斐揚鐵匠 安東尼 --";
+		break;
+	}
+	return;
+}

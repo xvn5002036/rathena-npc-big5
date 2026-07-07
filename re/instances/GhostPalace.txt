@@ -1,0 +1,986 @@
+//===== rAthena Script =======================================
+//= Ghost Palace
+//===== Description: =========================================
+//= [Walkthrough Conversion]
+//= Ghost Palace Instance
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Capuche]
+//= 1.1 Fixed NPC names. [zackdreaver]
+//============================================================
+
+dali02,43,129,5	script	不溫和的皇家衛兵#	4_M_SAKRAYROYAL,{
+	if (BaseLevel < 120) {
+		mes "[不溫和的皇家衛兵]";
+		mes "雖然我需要有人幫忙一項任務，但你還不夠強大，無法協助我，菜鳥?！";
+		next;
+		mes "[不溫和的皇家衛兵]";
+		mes "等你在這裡修練過，並且等級達到 120 級以上時再來找我吧！";
+		close;
+	}
+	.@party_id = getcharid(1);
+	if (is_party_leader() == false || .@party_id < 1) {
+		mes "[不溫和的皇家衛兵]";
+		mes "我只能為隊長開啟秘密通道。請讓你的隊長來跟我說話。";
+		close;
+	}
+	switch( checkquest(1261,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "[不溫和的皇家衛兵]";
+		mes "你找到公主了嗎？！她安全嗎？";
+		close;
+	case 2:
+		mes "[不溫和的皇家衛兵]";
+		mes "秘密通道周圍的魔物已經消失了。現在是我們拯救公主的機會了！";
+		erasequest 1261;// Cursed Swordman
+		close;
+	}
+	mes "[不溫和的皇家衛兵]";
+	mes "我需要幫忙，哪怕是像你這樣的人。";
+	next;
+	mes "[不溫和的皇家衛兵]";
+	mes "在戰鬥中，當我在守衛宮殿時，公主突然失蹤了。";
+	next;
+	mes "[不溫和的皇家衛兵]";
+	mes "你先往前衝，我隨後就趕上。我們必須救出她。";
+	next;
+	if (select( "我願意幫忙。", "現在不是時候。" ) == 2) {
+		mes "[不溫和的皇家衛兵]";
+		mes "就在此時，所有的皇家衛兵都在與魔物戰鬥並相繼犧牲。";
+		next;
+		mes "[不溫和的皇家衛兵]";
+		mes "無論我們心中有多大的恐懼，我們都必須救出公主！";
+		close;
+	}
+	instance_create("Ghost Palace");
+	mes "[不溫和的皇家衛兵]";
+	mes "謝謝你..";
+	mes "我這就開啟前往^0000ff詛咒之島^000000的秘密通道。";
+	mes "請做好準備！";
+	close;
+}
+
+dali02,40,134,5	script	次元移動機#dk	PORTAL,{
+	if (BaseLevel < 120) {
+		mes "[不溫和的皇家衛兵]";
+		mes "雖然我需要有人幫忙一項任務，但你還不夠強大，無法協助我，菜鳥?！";
+		next;
+		mes "[不溫和的皇家衛兵]";
+		mes "等你在這裡修練過，並且等級達到 120 級以上時再來找我吧！";
+		close;
+	}
+	mes "[不溫和的皇家衛兵]";
+	mes "我可以看到通往宮殿的秘密通道了。你準備好要拯救公主了嗎？！";
+	next;
+	if (select( "進入", "停止" ) == 2) {
+		mes "[不溫和的皇家衛兵]";
+		mes "就在此時，所有的皇家衛兵都在與魔物戰鬥並相繼犧牲。";
+		next;
+		mes "[不溫和的皇家衛兵]";
+		mes "無論我們心中有多大的恐懼，我們都必須救出公主！";
+		close;
+	}
+	switch( checkquest(1261,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "[不溫和的皇家衛兵]";
+		mes "襲擊宮殿的魔物正在秘密入口附近徘徊。如果被牠們發現就太糟糕了... 請稍等一下。";
+		next;
+		mes "當進入的時間限制結束後";
+		mes "我們再試著重新進入。";
+		close;
+	case 2:
+		mes "^0000ff進入詛咒劍士的限制時間已結束。請試著再次與不溫和的皇家衛兵交談..^000000";
+		erasequest 1261;// Cursed Swordman
+		close;
+	}
+	.@party_id = getcharid(1);
+	if (is_party_leader() == false || .@party_id < 1) {
+		mes "[不溫和的皇家衛兵]";
+		mes "我只能為隊長開啟秘密通道。請讓你的隊長來跟我說話。";
+		close;
+	}
+
+	.@md_name$ = "Ghost Palace";
+	switch( instance_enter(.@md_name$) ) {
+	case IE_OTHER:
+		mes "發生了未知的錯誤。";
+		close;
+	case IE_NOINSTANCE:
+		mes "^ff0000在裝置內部你看到了一個黑暗的洞穴。如果你想進入，必須先與不溫和的皇家衛兵交談。^000000";
+		close;
+	case IE_NOMEMBER:
+		mes "只有登記的成員才能進入這個 " + .@md_name$ + " 副本。";
+		close;
+	case IE_OK:
+		mapannounce "dali", "隊伍 [" + getpartyname(.@party_id) + "] 的成員 " + strcharinfo(0) + " 正在進入詛咒之島。", bc_map, 0x00ff99; // warp "1@spa",42,196;
+		setquest 1261;// Cursed Swordman
+		end;
+	}
+}
+
+// 1st floor
+1@spa,41,204,5	script	國王#dk	4_M_RUSKING,{
+	mes "[國王]";
+	mes "你從現在起被任命為蒂亞拉公主的貼身侍衛。我高於一切地信任你的忠誠。";
+	npctalk "國王：你從現在起被任命為蒂亞拉公主的貼身侍衛。我高於一切地信任你的忠誠。";
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "我將用我的生命來保護公主。";
+	npctalk "臉色蒼白的皇家衛兵：我將用我的生命來保護公主。", instance_npcname("臉色蒼白的皇家衛兵#dk");
+	next;
+	mes "[國王]";
+	mes "婚事正按計劃進行。王子已經來到這裡與公主見面了。";
+	npctalk "國王：婚事正按計劃進行。王子已經來到這裡與公主見面了。";
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "...遵命，陛下。";
+	npctalk "臉色蒼白的皇家衛兵：...遵命，陛下。", instance_npcname("臉色蒼白的皇家衛兵#dk");
+	next;
+	mes "[國王]";
+	mes "天啊，城堡裡有魔物！立刻去消滅牠們！";
+	npctalk "國王：天啊，城堡裡有魔物！立刻去消滅牠們！";
+	close2;
+	donpcevent instance_npcname("#gp_control_1") + "::OnStart";
+	end;
+
+OnInstanceInit:
+	// 1: enabled potential double spawn (official), 0: disabled
+	'bool_double_spawn = 1;
+
+	'map_spa$ = instance_mapname("1@spa"); // warps
+	disablenpc instance_npcname("The second floor of Palace");
+	disablenpc instance_npcname("3rd floor in the palace");
+	disablenpc instance_npcname("4th floor in the palace");
+	disablenpc instance_npcname("5th floor of Palace");
+	disablenpc instance_npcname("離開宮殿");
+
+	// first floor
+	disablenpc instance_npcname("#gp_control_1");
+
+	// second floor
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk1");
+	disablenpc instance_npcname("蒂亞拉公主#dk");
+	disablenpc instance_npcname("#gp_control_2");
+
+	// 3rd floor
+	disablenpc instance_npcname("國王#dk1");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk2");
+	disablenpc instance_npcname("衛隊長#dk");
+	disablenpc instance_npcname("士兵#dk1");
+	disablenpc instance_npcname("士兵#dk2");
+	disablenpc instance_npcname("士兵#dk3");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk3");
+	disablenpc instance_npcname("魔劍 塔爾他諾斯#dk1");
+	disablenpc instance_npcname("#gp_control_3");
+
+	// 4th floor
+	disablenpc instance_npcname("#gp_control_4");
+	disablenpc instance_npcname("#gp_control_5");
+	disablenpc instance_npcname("魔劍 塔爾他諾斯#dk2");
+	disablenpc instance_npcname("鄰國的王子#dk");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk4");
+	disablenpc instance_npcname("國王的屍體#dk");
+	disablenpc instance_npcname("衛隊長的屍體#dk");
+	disablenpc instance_npcname("士兵的屍體#dk");
+	disablenpc instance_npcname("士兵的屍體#dk1");
+	disablenpc instance_npcname("士兵的屍體#dk2");
+	disablenpc instance_npcname("士兵的屍體#dk3");
+	disablenpc instance_npcname("士兵的屍體#dk4");
+
+	// 5th floor
+	disablenpc instance_npcname("#gp_control_6");
+	disablenpc instance_npcname("蒂亞拉公主#dk1");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk5");
+	disablenpc instance_npcname("國王#dk11");
+	disablenpc instance_npcname("魔劍薩克賴#dk");
+	disablenpc instance_npcname("魔劍 塔爾他諾斯#dk3");
+	disablenpc instance_npcname("#tb");
+	disablenpc instance_npcname("#sv");
+	disablenpc instance_npcname("#tv");
+	end;
+}
+
+1@spa,42,201,1	script	臉色蒼白的皇家衛兵#dk	4_M_SAKRAYROYAL,{ end; }
+
+1@spa,1,1,1	script	#gp_control_1	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#gp_control_1");
+	disablenpc instance_npcname("國王#dk");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk");
+	initnpctimer;
+	end;
+OnTimer2000:
+	.@label$ = instance_npcname("#gp_control_1") + "::OnMyMobDead1";
+	monster 'map_spa$,50,194,"被詛咒的士兵",2948,1, .@label$;		// CURSED_SOLDIER
+	monster 'map_spa$,34,208,"被詛咒的士兵",2948,1, .@label$;		// CURSED_SOLDIER
+	monster 'map_spa$,32,194,"被詛咒的守門人",2949,1, .@label$;	// CURSED_SENTINEL
+	monster 'map_spa$,52,209,"被詛咒的守門人",2949,1, .@label$; // CURSED_SENTINEL
+	stopnpctimer;
+	end;
+OnMyMobDead1:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_1") + "::OnMyMobDead1") < (1 + 'bool_double_spawn)) {
+		deltimer instance_npcname("#gp_control_1") + "::OnSpawn1"; // stop double spawn if timer is running
+		addtimer 2000, instance_npcname("#gp_control_1") + "::OnSpawn1";
+	}
+	end;
+OnSpawn1:
+	.@label$ = instance_npcname("#gp_control_1") + "::OnMyMobDead2";
+	monster 'map_spa$,37,182,"被詛咒的士兵",2948,1, .@label$;		// CURSED_SOLDIER
+	monster 'map_spa$,46,182,"被詛咒的守門人",2949,1, .@label$;	// CURSED_SENTINEL
+	end;
+OnMyMobDead2:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_1") + "::OnMyMobDead2") < 1) {
+		deltimer instance_npcname("#gp_control_1") + "::OnSpawn1"; // stop double spawn if timer is running
+		deltimer instance_npcname("#gp_control_1") + "::OnSpawn2";
+		addtimer 2000, instance_npcname("#gp_control_1") + "::OnSpawn2";
+	}
+	end;
+OnSpawn2:
+	.@label$ = instance_npcname("#gp_control_1") + "::OnMyMobDead3";
+	monster 'map_spa$,30,200,"被詛咒的士兵",2948,1, .@label$;		// CURSED_SOLDIER
+	monster 'map_spa$,51,200,"被詛咒的守門人",2949,1, .@label$;	// CURSED_SENTINEL
+	monster 'map_spa$,53,199,"被詛咒的守門人",2949,1, .@label$; // CURSED_SENTINEL
+	end;
+OnMyMobDead3:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_1") + "::OnMyMobDead3") < 1) {
+		mapannounce 'map_spa$, "通往詛咒之島宮殿2樓的通道已開啟。", bc_map,0xFFFF00;
+		enablenpc instance_npcname("The second floor of Palace");
+		enablenpc instance_npcname("臉色蒼白的皇家衛兵#dk1");
+		enablenpc instance_npcname("蒂亞拉公主#dk");
+	}
+	end;
+}
+
+// 2nd floor
+1@spa,132,122,7	script	臉色蒼白的皇家衛兵#dk1	4_M_SAKRAYROYAL,{
+	.@tiara$ = instance_npcname("蒂亞拉公主#dk");
+	cutin "npc-tiara.bmp",3;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "公主殿下，國王已經邀請了鄰國的王子來作為您的未婚夫。請準備好與他見面...";
+	npctalk "臉色蒼白的皇家衛兵：公主殿下，國王已經邀請了鄰國的王子來作為您的未婚夫。請準備好與他見面...";
+	next;
+	mes "[蒂亞拉公主]";
+	mes "如果...如果婚事被決定了，我該怎麼辦？";
+	npctalk "蒂亞拉公主：如果...如果婚事被決定了，我該怎麼辦？", .@tiara$;
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "我唯一能做的，就是保護您免受任何肉體上的傷害。";
+	npctalk "臉色蒼白的皇家衛兵：我唯一能做的，就是保護您免受任何肉體上的傷害。";
+	next;
+	mes "[蒂亞拉公主]";
+	mes "那麼，我能做些什麼？";
+	npctalk "蒂亞拉公主：那麼，我能做些什麼？", .@tiara$;
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "您必須自己決定這件事，公主殿下...";
+	npctalk "臉色蒼白的皇家衛兵：您必須自己決定這件事，公主殿下...";
+	next;
+	mes "[蒂亞拉公主]";
+	mes "如果我結婚並被送到另一個國家，這對你來說會不會比較輕鬆？";
+	npctalk "蒂亞拉公主：如果我結婚並被送到另一個國家，這對你來說會不會比較輕鬆？", .@tiara$;
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "我會永遠守護在您身邊，直到永遠。";
+	npctalk "臉色蒼白的皇家衛兵：我會永遠守護在您身邊，直到永遠。";
+	cutin "npc-tiara.bmp",255;
+	next;
+	mes "[蒂亞拉公主]";
+	mes "魔物已經潛入城堡內部了？請你保護我！";
+	npctalk "蒂亞拉公主：魔物已經潛入城堡內部了？請你保護我！", .@tiara$;
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "待在我身後。我們走！";
+	npctalk "臉色蒼白的皇家衛兵：待在我身後。我們走！";
+	close2;
+	donpcevent instance_npcname("#gp_control_2") + "::OnStart";
+	end;
+}
+
+1@spa,135,125,3	duplicate(臉色蒼白的皇家衛兵#dk)	蒂亞拉公主#dk	4_F_MAYSEL
+
+1@spa,1,1,1	script	#gp_control_2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#gp_control_2");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk1");
+	disablenpc instance_npcname("蒂亞拉公主#dk");
+	disablenpc instance_npcname("The second floor of Palace");
+	killmonster 'map_spa$, instance_npcname("#gp_control_1") + "::OnMyMobDead1";
+	killmonster 'map_spa$, instance_npcname("#gp_control_1") + "::OnMyMobDead2";
+	killmonster 'map_spa$, instance_npcname("#gp_control_1") + "::OnMyMobDead3";
+	disablenpc instance_npcname("#gp_control_1");
+	initnpctimer;
+	end;
+OnTimer2000:
+	.@label$ = instance_npcname("#gp_control_2") + "::OnMyMobDead1";
+	monster 'map_spa$,135,116,"破碎的信任",2950,1, .@label$;	// BROKEN_MIND
+	monster 'map_spa$,110,120,"破碎的信任",2950,1, .@label$;	// BROKEN_MIND
+	monster 'map_spa$,122,112,"飄渺的嘆息",2951,1, .@label$; // FLOATING_WORD
+	monster 'map_spa$,121,129,"未實現的愛",2952,1, .@label$;	// LIKE_LOVE
+	stopnpctimer;
+	end;
+OnMyMobDead1:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_2") + "::OnMyMobDead1") < 1) {
+		sleep 2000;
+		.@label$ = instance_npcname("#gp_control_2") + "::OnMyMobDead2";
+		monster 'map_spa$,120,103,"破碎的信任",2950,1, .@label$;	// BROKEN_MIND
+		monster 'map_spa$,115,137,"飄渺的嘆息",2951,1, .@label$;	// FLOATING_WORD
+		monster 'map_spa$,103,130,"未實現的愛",2952,1, .@label$; // LIKE_LOVE
+	}
+	end;
+OnMyMobDead2:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_2") + "::OnMyMobDead2") < 1) {
+		sleep 2000;
+		.@label$ = instance_npcname("#gp_control_2") + "::OnMyMobDead3";
+		monster 'map_spa$,98,119,"飄渺的嘆息",2951,1, .@label$; // FLOATING_WORD
+		monster 'map_spa$,98,120,"飄渺的嘆息",2951,1, .@label$;	// FLOATING_WORD
+		monster 'map_spa$,103,109,"未實現的愛",2952,1, .@label$;	// LIKE_LOVE
+	}
+	end;
+OnMyMobDead3:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_2") + "::OnMyMobDead3") < 1) {
+		mapannounce 'map_spa$, "通往宮殿3樓的通道已開啟。", bc_map,0xFFFF00;
+		enablenpc instance_npcname("3rd floor in the palace");
+		enablenpc instance_npcname("國王#dk1");
+		enablenpc instance_npcname("臉色蒼白的皇家衛兵#dk2");
+		enablenpc instance_npcname("衛隊長#dk");
+		enablenpc instance_npcname("士兵#dk1");
+		enablenpc instance_npcname("士兵#dk2");
+		enablenpc instance_npcname("士兵#dk3");
+		disablenpc instance_npcname("#gp_control_2");
+	}
+	end;
+}
+
+// 3rd floor
+1@spa,32,54,1	script	國王#dk1	4_M_RUSKING,{
+	mes "[國王]";
+	mes "是你把魔物帶到這裡來的！你想除掉我，把公主佔為己有？";
+	npctalk "國王：是你把魔物帶到這裡來的！你想除掉我，把公主佔為己有？";
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "這是一個陷阱，陛下！您必須相信我！";
+	npctalk "臉色蒼白的皇家衛兵：這是一個陷阱，陛下！您必須相信我！", instance_npcname("臉色蒼白的皇家衛兵#dk2");
+	next;
+	mes "[國王]";
+	mes "閉嘴！你背叛了我！我曾如此信任你... 你必須為你的恥辱付出代價。";
+	npctalk "國王：閉嘴！你背叛了我！我曾如此信任你... 你必須為你的恥辱付出代價。";
+	next;
+	mes "[國王]";
+	mes "你將在痛苦中度過餘生。";
+	npctalk "國王：你將在痛苦中度過餘生。";
+	close2;
+	disablenpc instance_npcname("3rd floor in the palace");
+	disablenpc instance_npcname("國王#dk1");
+	disablenpc instance_npcname("衛隊長#dk");
+	disablenpc instance_npcname("士兵#dk1");
+	disablenpc instance_npcname("士兵#dk2");
+	disablenpc instance_npcname("士兵#dk3");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk2");
+	donpcevent instance_npcname("魔劍 塔爾他諾斯#dk1") + "::OnStart";
+	end;
+}
+
+1@spa,35,56,5	script	魔劍 塔爾他諾斯#dk1	4_TRACE,{
+	end;
+OnStart:
+	enablenpc instance_npcname("魔劍 塔爾他諾斯#dk1");
+	enablenpc instance_npcname("臉色蒼白的皇家衛兵#dk3");
+	initnpctimer;
+	end;
+OnTimer5000:
+	npctalk "不祥的聲音：呵呵，忠誠的皇家衛兵，你被困住了。";
+	end;
+OnTimer8000:
+	npctalk "不祥的聲音：宮殿裡的陰謀，正讓你的公主陷入嚴重的危險之中...";
+	end;
+OnTimer12000:
+	npctalk "臉色蒼白的皇家衛兵：你是誰？給我現身！", instance_npcname("臉色蒼白的皇家衛兵#dk3");
+	end;
+OnTimer15000:
+	npctalk "不祥的聲音：啊... 原來你聽得到我說話？";
+	end;
+OnTimer20000:
+	npctalk "臉色蒼白的皇家衛兵：...？", instance_npcname("臉色蒼白的皇家衛兵#dk3");
+	end;
+OnTimer23000:
+	npctalk "不祥的聲音：我可以給你無盡的力量。只要你與我締結契約。";
+	end;
+OnTimer28000:
+	npctalk "臉色蒼白的皇家衛兵：我..我...", instance_npcname("臉色蒼白的皇家衛兵#dk3");
+	end;
+OnTimer33000:
+	npctalk "魔劍 塔爾他諾斯：庫庫庫... 你想要什麼，小子？";
+	end;
+OnTimer34000:
+	stopnpctimer;
+	disablenpc instance_npcname("魔劍 塔爾他諾斯#dk1");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk3");
+	donpcevent instance_npcname("#gp_control_3") + "::OnStart";
+	end;
+}
+
+1@spa,28,52,7	duplicate(臉色蒼白的皇家衛兵#dk)	衛隊長#dk	4_M_KY_KNT
+1@spa,25,53,7	duplicate(臉色蒼白的皇家衛兵#dk)	士兵#dk1	4_M_CRU_SOLD
+1@spa,34,53,1	duplicate(臉色蒼白的皇家衛兵#dk)	士兵#dk2	4_M_CRU_SOLD
+1@spa,30,52,7	duplicate(臉色蒼白的皇家衛兵#dk)	士兵#dk3	4_M_KY_SOLD
+1@spa,30,58,5	duplicate(臉色蒼白的皇家衛兵#dk)	臉色蒼白的皇家衛兵#dk2	4_M_SAKRAY_TIED
+1@spa,31,57,5	duplicate(臉色蒼白的皇家衛兵#dk)	臉色蒼白的皇家衛兵#dk3	4_M_SAKRAY_TIED
+
+1@spa,1,1,1	script	#gp_control_3	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#gp_control_3");
+	initnpctimer;
+	end;
+OnTimer2000:
+	.@label$ = instance_npcname("#gp_control_3") + "::OnMyMobDead1";
+	monster 'map_spa$,31,57, "悔恨的記憶",2953,1, .@label$; 	// CURSED_MEMORY
+	monster 'map_spa$,59,24, "悔恨的記憶",2953,1, .@label$; // CURSED_MEMORY
+	monster 'map_spa$,23,40, "虛度的情誼",2955,1, .@label$; 	// OLD_FRIENDSHIP
+	monster 'map_spa$,54,45, "褪色的誓言",2954,1, .@label$; 	// COLORLESS_VOW
+	monster 'map_spa$,26,20, "褪色的誓言",2954,1, .@label$; 	// COLORLESS_VOW
+	stopnpctimer;
+	end;
+OnMyMobDead1:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_3") + "::OnMyMobDead1") < 1)
+		addtimer 2000, instance_npcname("#gp_control_3") + "::OnSpawn1";
+	end;
+OnSpawn1:
+	.@label$ = instance_npcname("#gp_control_3") + "::OnMyMobDead2";
+	monster 'map_spa$,30,52, "褪色的誓言",2954,1, .@label$; 	// COLORLESS_VOW
+	monster 'map_spa$,58,58, "虛度的情誼",2955,1, .@label$; 	// OLD_FRIENDSHIP
+	monster 'map_spa$,54,24, "悔恨的記憶",2953,1, .@label$; 	// CURSED_MEMORY
+	end;
+OnMyMobDead2:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_3") + "::OnMyMobDead2") < (1 + 'bool_double_spawn)) {
+		deltimer instance_npcname("#gp_control_3") + "::OnAnnounce";
+		addtimer 500, instance_npcname("#gp_control_3") + "::OnAnnounce";
+	}
+	end;
+OnAnnounce:
+	mapannounce 'map_spa$, "通往宮殿4樓的通道已開啟。", bc_map,0xFFFF00;
+	enablenpc instance_npcname("4th floor in the palace");
+	deltimer instance_npcname("#gp_control_3") + "::OnSpawn2";	// stop double spawn if timer is running
+	addtimer 2000, instance_npcname("#gp_control_3") + "::OnSpawn2";
+	end;
+OnSpawn2:
+	donpcevent instance_npcname("#gp_control_4") + "::OnStart"; // 35 mobs
+	.@label$ = instance_npcname("#gp_control_3") + "::OnMyMobDead3";
+	monster 'map_spa$,67,46, "悔恨的記憶",2953,1, .@label$; // CURSED_MEMORY
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,62,48, "褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,57,46, "虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,51,48, "悔恨的記憶",2953,1, .@label$; // CURSED_MEMORY
+	unittalk $@mobid[0], "忠誠的皇家衛兵...";
+	monster 'map_spa$,56,55, "褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,62,56, "虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,66,58, "悔恨的記憶",2953,1, .@label$; // CURSED_MEMORY
+	unittalk $@mobid[0], "是你讓你的公主陷入了萬劫不復的深淵...";
+	monster 'map_spa$,66,64, "褪色的誓言",2954,1, .@label$; // COLORLESS_VOW
+	unittalk $@mobid[0], "忠誠的皇家衛兵...";
+	monster 'map_spa$,62,65, "悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,57,67, "褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,49,66, "虛度的情誼",2955,1, .@label$; // OLD_FRIENDSHIP
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,44,66, "悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,45,20, "褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,38,20, "悔恨的記憶",2953,1, .@label$; // CURSED_MEMORY
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,32,20, "虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,51,22, "虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,26,34,"虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,21,37,"褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "忠誠的皇家衛兵...";
+	monster 'map_spa$,18,39,"悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,21,45,"褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,23,49,"悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,25,54,"虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,29,54,"褪色的誓言",2954,1, .@label$; // COLORLESS_VOW
+	unittalk $@mobid[0], "是你讓你的公主陷入了萬劫不復的深淵...";
+	monster 'map_spa$,56,39,"悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,61,36,"褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "忠誠的皇家衛兵...";
+	monster 'map_spa$,66,38,"虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "趕快逃走！";
+	monster 'map_spa$,42,54,"虛度的情誼",2955,1, .@label$;	// OLD_FRIENDSHIP
+	unittalk $@mobid[0], "快逃吧！";
+	monster 'map_spa$,35,54,"悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,43,60,"褪色的誓言",2954,1, .@label$;		// COLORLESS_VOW
+	unittalk $@mobid[0], "忠誠的皇家衛兵...";
+	monster 'map_spa$,30,25,"褪色的誓言",2954,1, .@label$; // COLORLESS_VOW
+	unittalk $@mobid[0], "是你讓你的公主陷入了萬劫不復的深淵...";
+	monster 'map_spa$,30,31,"悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	unittalk $@mobid[0], "你被困住了...";
+	monster 'map_spa$,65,64, "悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	monster 'map_spa$,65,67, "悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	monster 'map_spa$,18,43,"悔恨的記憶",2953,1, .@label$; // CURSED_MEMORY
+	monster 'map_spa$,21,43,"悔恨的記憶",2953,1, .@label$;	// CURSED_MEMORY
+	end;
+OnMyMobDead3:
+	end;
+}
+
+// 4th floor
+1@spa,1,1,1	script	#gp_control_4	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#gp_control_4");
+	.@label$ = instance_npcname("#gp_control_4") + "::OnMyMobDead1";
+	monster 'map_spa$,215,194, "甜蜜的殺戮",2956,1, .@label$;		// SWEET_SLAUGHTER
+	monster 'map_spa$,194,178, "甜蜜的殺戮",2956,1, .@label$;		// SWEET_SLAUGHTER
+	monster 'map_spa$,191,211, "甜蜜的殺戮",2956,1, .@label$; // SWEET_SLAUGHTER
+	monster 'map_spa$,185,203, "被詛咒的守門人",2949,1, .@label$;	// CURSED_SENTINEL
+	monster 'map_spa$,209,218, "被詛咒的守門人",2949,1, .@label$;	// CURSED_SENTINEL
+	end;
+OnMyMobDead1:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_4") + "::OnMyMobDead1") < (1 + 'bool_double_spawn)) {
+		deltimer instance_npcname("#gp_control_4") + "::OnSpawn1";
+		addtimer 2000, instance_npcname("#gp_control_4") + "::OnSpawn1";
+	}
+	end;
+OnSpawn1:
+	.@label$ = instance_npcname("#gp_control_4") + "::OnMyMobDead2";
+	monster 'map_spa$,189,192, "被詛咒的守門人",2949,1, .@label$;	// CURSED_SENTINEL
+	monster 'map_spa$,211,209, "甜蜜的殺戮",2956,1, .@label$;		// SWEET_SLAUGHTER
+	end;
+OnMyMobDead2:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_4") + "::OnMyMobDead2") < 1) {
+		enablenpc instance_npcname("魔劍 塔爾他諾斯#dk2");
+		enablenpc instance_npcname("鄰國的王子#dk");
+		enablenpc instance_npcname("臉色蒼白的皇家衛兵#dk4");
+		enablenpc instance_npcname("國王的屍體#dk");
+		enablenpc instance_npcname("衛隊長的屍體#dk");
+		enablenpc instance_npcname("士兵的屍體#dk");
+		enablenpc instance_npcname("士兵的屍體#dk1");
+		enablenpc instance_npcname("士兵的屍體#dk2");
+		enablenpc instance_npcname("士兵的屍體#dk3");
+		enablenpc instance_npcname("士兵的屍體#dk4");
+	}
+	end;
+}
+
+1@spa,199,214,1	script	臉色蒼白的皇家衛兵#dk4	4_M_SAKRAYROYAL,{
+	.@prince$ = instance_npcname("鄰國的王子#dk");
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "蒂亞拉公主在哪裡？";
+	npctalk "臉色蒼白的皇家衛兵：蒂亞拉公主在哪裡？";
+	next;
+	mes "[鄰國的王子]";
+	mes "你來得太晚了... 不過你帶來了我一直在尋找的東西。謝謝你的幫忙。";
+	npctalk "鄰國的王子：你來得太晚了... 不過你帶來了我一直在尋找的東西。謝謝你的幫忙。", .@prince$;
+	next;
+	mes "[鄰國的王子]";
+	mes "被詛咒的魔劍 塔爾他諾斯！你準備好迎接新主人了嗎？";
+	npctalk "鄰國的王子：被詛咒的魔劍 塔爾他諾斯！你準備好迎接新主人了嗎？", .@prince$;
+	next;
+	cutin "tartanos.bmp",3;
+	mes "[魔劍 塔爾他諾斯]";
+	mes "好大的膽子！";
+	npctalk "魔劍 塔爾他諾斯：好大的膽子！", instance_npcname("魔劍 塔爾他諾斯#dk2");
+	next;
+	mes "[鄰國的王子]";
+	mes "啊，啊 ！！！";
+	npctalk "鄰國的王子：啊，啊 ！！！", .@prince$;
+	donpcevent instance_npcname("#gp_control_5") + "::OnStart";
+	close2;
+	cutin "",255;
+	end;
+}
+1@spa,201,214,1	duplicate(臉色蒼白的皇家衛兵#dk)	魔劍 塔爾他諾斯#dk2	CLEAR_NPC
+1@spa,197,218,5	duplicate(臉色蒼白的皇家衛兵#dk)	鄰國的王子#dk	4_M_KNIGHT_SILVER
+1@spa,194,214,5	duplicate(臉色蒼白的皇家衛兵#dk)	國王的屍體#dk	4_M_TRISTAN
+1@spa,211,194,3	duplicate(臉色蒼白的皇家衛兵#dk)	衛隊長的屍體#dk	4_M_LIEMAN
+1@spa,201,198,1	duplicate(臉色蒼白的皇家衛兵#dk)	士兵的屍體#dk	4_M_DIEMAN
+1@spa,197,190,1	duplicate(臉色蒼白的皇家衛兵#dk)	士兵的屍體#dk1	4_M_DIEMAN
+1@spa,191,207,7	duplicate(臉色蒼白的皇家衛兵#dk)	士兵的屍體#dk2	4_M_DIEMAN
+1@spa,206,209,7	duplicate(臉色蒼白的皇家衛兵#dk)	士兵的屍體#dk3	4_M_DIEMAN
+1@spa,189,195,1	duplicate(臉色蒼白的皇家衛兵#dk)	士兵的屍體#dk4	4_M_DIEMAN
+
+1@spa,1,1,1	script	#gp_control_5	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#gp_control_5");
+	disablenpc instance_npcname("魔劍 塔爾他諾斯#dk2");
+	disablenpc instance_npcname("鄰國的王子#dk");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk4");
+	disablenpc instance_npcname("國王的屍體#dk");
+	disablenpc instance_npcname("衛隊長的屍體#dk");
+	disablenpc instance_npcname("士兵的屍體#dk");
+	disablenpc instance_npcname("士兵的屍體#dk1");
+	disablenpc instance_npcname("士兵的屍體#dk2");
+	disablenpc instance_npcname("士兵的屍體#dk3");
+	disablenpc instance_npcname("士兵的屍體#dk4");
+	sleep 1000;
+	.@label$ = instance_npcname("#gp_control_5") + "::OnMyMobDead";
+	monster 'map_spa$,198,218, "痛苦的救贖者",2959,1, .@label$;	// TORTUROUS_REDEEMER
+	monster 'map_spa$,198,182, "甜蜜的殺戮",2956,1, .@label$;		// SWEET_SLAUGHTER
+	end;
+OnMyMobDead:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_5") + "::OnMyMobDead") < 1) {
+		deltimer instance_npcname("#gp_control_4") + "::OnSpawn1"; // stop double spawn if timer is running
+		mapannounce 'map_spa$, "通往宮殿5樓的通道已開啟。", bc_map,0xFFFF00;
+		disablenpc instance_npcname("4th floor in the palace");
+		enablenpc instance_npcname("5th floor of Palace");
+		enablenpc instance_npcname("蒂亞拉公主#dk1");
+		enablenpc instance_npcname("臉色蒼白的皇家衛兵#dk5");
+		killmonster 'map_spa$, instance_npcname("#gp_control_3") + "::OnMyMobDead2";
+		killmonster 'map_spa$, instance_npcname("#gp_control_3") + "::OnMyMobDead3";
+		disablenpc instance_npcname("#gp_control_3");
+	}
+	end;
+}
+
+// 5th floor
+1@spa,216,43,3	script	蒂亞拉公主#dk1	4_F_MAYSEL,{
+	.@guard$ = instance_npcname("臉色蒼白的皇家衛兵#dk5");
+	mes "[蒂亞拉公主]";
+	mes "你遵守了諾言。";
+	npctalk "蒂亞拉公主：你遵守了諾言。";
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "公主！";
+	npctalk "臉色蒼白的皇家衛兵：公主！", .@guard$;
+	next;
+	cutin "npc-tiara.bmp",3;
+	mes "[蒂亞拉公主]";
+	mes "謝謝你... 現在我可以安息在你的身邊了...";
+	npctalk "蒂亞拉公主：謝謝你... 現在我可以安息在你的身邊了...";
+	next;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "不..不要！！！！！";
+	npctalk "臉色蒼白的皇家衛兵：不..不要！！！！！", .@guard$;
+	next;
+	mes "[蒂亞拉公主的聲音]";
+	mes "我想永遠在平靜中與你同行... 直到永遠...";
+	npctalk "蒂亞拉公主：我想永遠在平靜中與你同行... 直到永遠...";
+	next;
+	cutin "b-tiara.BMP",3;
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "不要.....啊 啊 啊！！！！?！";
+	npctalk "臉色蒼白的皇家衛兵：不要.....啊 啊 啊！！！！?！", .@guard$;
+	next;
+	mes "[蒂亞拉公主的聲音]";
+	mes "我愛你...";
+	npctalk "蒂亞拉公主：我愛你...";
+	cutin "",255;
+	close2;
+	donpcevent instance_npcname("#gp_control_6") + "::OnStart";
+	end;
+}
+
+1@spa,213,42,7	duplicate(臉色蒼白的皇家衛兵#dk)	臉色蒼白的皇家衛兵#dk5	4_M_SAKRAYROYAL
+
+1@spa,1,1,1	script	#gp_control_6	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#gp_control_6");
+	disablenpc instance_npcname("蒂亞拉公主#dk1");
+	disablenpc instance_npcname("臉色蒼白的皇家衛兵#dk5");
+
+	killmonster 'map_spa$, instance_npcname("#gp_control_4") + "::OnMyMobDead1";
+	killmonster 'map_spa$, instance_npcname("#gp_control_4") + "::OnMyMobDead2";
+	killmonster 'map_spa$, instance_npcname("#gp_control_5") + "::OnMyMobDead";
+	disablenpc instance_npcname("#gp_control_4");
+	disablenpc instance_npcname("#gp_control_5");
+	disablenpc instance_npcname("5th floor of Palace");
+	sleep 2000;
+	.@label$ = instance_npcname("#gp_control_6") + "::OnMyMobDead1";
+	monster 'map_spa$,217,52, "被遺忘的名字" ,2957,1, .@label$; // FORGOTTEN_NAME
+	unittalk $@mobid[0], "醒醒吧！看看我們... 我們難道是怪物嗎？";
+	monster 'map_spa$,190,21, "褪色的誓言" ,2954,1, .@label$; // COLORLESS_VOW
+	unittalk $@mobid[0], "魔劍薩克賴殺了國王，還想殺了我們！";
+	monster 'map_spa$,198,49, "褪色的誓言" ,2954,1, .@label$; // COLORLESS_VOW
+	unittalk $@mobid[0], "這到底是怎麼回事..？？";
+	monster 'map_spa$,212,28, "毀滅之日" ,2958,1, .@label$;		// FATAL_DAYS
+	unittalk $@mobid[0], "魔劍薩克賴殺了公主！";
+	end;
+OnMyMobDead1:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_6") + "::OnMyMobDead1") < 1) {
+		sleep 2000;
+		.@label$ = instance_npcname("#gp_control_6") + "::OnMyMobDead2";
+		monster 'map_spa$,217,43, "被遺忘的名字" ,2957,1, .@label$; // FORGOTTEN_NAME
+		unittalk $@mobid[0], "醒醒吧！看看我們... 我們難道是怪物嗎？";
+		monster 'map_spa$,193,24, "被遺忘的名字" ,2957,1, .@label$; // FORGOTTEN_NAME
+		unittalk $@mobid[0], "魔劍薩克賴..？？ 為什麼.....魔劍薩克賴！";
+		monster 'map_spa$,216,59, "褪色的誓言" ,2954,1, .@label$; // COLORLESS_VOW
+		unittalk $@mobid[0], "魔劍薩克賴殺了國王，還想殺了我們！";
+		monster 'map_spa$,197,57, "毀滅之日" ,2958,1, .@label$; // FATAL_DAYS
+		unittalk $@mobid[0], "魔劍薩克賴殺了公主！";
+	}
+	end;
+OnMyMobDead2:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_6") + "::OnMyMobDead2") < 1) {
+		sleep 2000;
+		.@label$ = instance_npcname("#gp_control_6") + "::OnMyMobDead3";
+		monster 'map_spa$,193,39, "被遺忘的名字" ,2957,1, .@label$; // FORGOTTEN_NAME
+		unittalk $@mobid[0], "醒醒吧！看看我們... 我們難道是怪物嗎？";
+		monster 'map_spa$,212,34, "被遺忘的名字" ,2957,1, .@label$; // FORGOTTEN_NAME
+		unittalk $@mobid[0], "魔劍薩克賴..？？ 為什麼.....魔劍薩克賴！";
+		monster 'map_spa$,201,64, "褪色的誓言" ,2954,1, .@label$; // COLORLESS_VOW
+		unittalk $@mobid[0], "魔劍薩克賴殺了國王，還想殺了我們！";
+		monster 'map_spa$,175,44, "毀滅之日" ,2958,1, .@label$; // FATAL_DAYS
+		unittalk $@mobid[0], "魔劍薩克賴殺了公主！";
+	}
+	end;
+OnMyMobDead3:
+	if (mobcount('map_spa$, instance_npcname("#gp_control_6") + "::OnMyMobDead3") < 1) {
+		sleep 2000;
+		monster 'map_spa$,200,45, "痛苦的救贖者" ,2961,1, instance_npcname("#gp_control_6") + "::OnMyMobDead4";	// E_TORTUROUS_REDEEMER
+		unittalk $@mobid[0], "魔劍 塔爾他諾斯！如果我得不到你，我就要把你摧毀... 喔不！怎麼會這樣？";
+		sleep 5000;
+		killmonster 'map_spa$, instance_npcname("#gp_control_6") + "::OnMyMobDead4";
+		enablenpc instance_npcname("魔劍薩克賴#dk");
+		enablenpc instance_npcname("魔劍 塔爾他諾斯#dk3");
+		disablenpc instance_npcname("#gp_control_6");
+	}
+	end;
+OnMyMobDead4:
+	end;
+}
+
+1@spa,196,44,5	script	魔劍薩克賴#dk	4_M_SAKRAY,{
+	mes "[臉色蒼白的皇家衛兵]";
+	mes "你滿足了嗎...？魔劍 塔爾他諾斯？";
+	npctalk "臉色蒼白的皇家衛兵：你滿足了嗎...？魔劍 塔爾他諾斯？";
+	next;
+	mes "[魔劍 塔爾他諾斯]";
+	mes "我需要更多的血..魔劍薩克賴，把他的血奉獻給我。";
+	npctalk "魔劍 塔爾他諾斯：我需要更多的血..魔劍薩克賴，把他的血奉獻給我。", instance_npcname("魔劍 塔爾他諾斯#dk3");
+	next;
+	mes "[魔劍薩克賴]";
+	mes "好，那很好。一個旅人。你看到了嗎？";
+	npctalk "魔劍薩克賴：好，那很好。一個旅人。力看到了嗎？";
+	next;
+	mes "[" + strcharinfo(0) + "]";
+	mes "魔劍薩克賴，你想要什麼？同情嗎？還是這又是一個陷阱？";
+	unittalk getcharid(3), "" + strcharinfo(0) + " ：魔劍薩克賴，你想要什麼？同情嗎？還是這又是一個陷阱？";
+	next;
+	mes "[魔劍薩克賴]";
+	mes "不... 我不需要費任何力氣來捕捉一個新手。";
+	npctalk "魔劍薩克賴：不... 我不需要費任何力氣來捕捉一個新手。";
+	next;
+	mes "[" + strcharinfo(0) + "]";
+	mes "如果是這樣... 那又是為什麼...？";
+	unittalk getcharid(3), "" + strcharinfo(0) + " ：如果是這樣... 那又是為什麼...？";
+	next;
+	cutin "cry-b.bmp",2;
+	mes "[魔劍薩克賴]";
+	mes "我想透過你，徹底清除我內心僅存的一絲人性。";
+	npctalk "魔劍薩克賴：我想透過你，徹底清除我內心僅存的一絲人性。";
+	next;
+	mes "[魔劍薩克賴]";
+	mes "我對這個結果相當滿意。";
+	npctalk "魔劍薩克賴：我對這個結果相當滿意。";
+	next;
+	mes "[魔劍 塔爾他諾斯]";
+	mes "魔劍薩克賴，現在就把血奉獻給我！";
+	npctalk "魔劍 塔爾他諾斯：魔劍薩克賴，現在就把血奉獻給我！", instance_npcname("魔劍 塔爾他諾斯#dk3");
+	next;
+	mes "[魔劍薩克賴]";
+	mes "如果你是我，你會怎麼做？";
+	npctalk "魔劍薩克賴：如果你是我，你會怎麼做？";
+	next;
+	mes "[魔劍薩克賴]";
+	mes "你能讓自己從這個詛咒中解脫出來嗎？";
+	npctalk "魔劍薩克賴：你能讓自己從這個詛咒中解脫出來嗎？";
+	next;
+	mes "[" + strcharinfo(0) + "]";
+	mes "...";
+	unittalk getcharid(3), "" + strcharinfo(0) + " ：...";
+	next;
+	mes "[魔劍薩克賴]";
+	mes "呵呵... 我會一直注視著你，直到你變得足夠強大的那天到來。";
+	npctalk "魔劍薩克賴：呵呵... 我會一直注視著你，直到你變得足夠強大的那天到來。";
+	next;
+	mes "[魔劍薩克賴]";
+	mes "我以後很樂意為了塔爾他諾斯而獵殺你。";
+	npctalk "魔劍薩克賴：我以後很樂意為了塔爾他諾斯而獵殺你。";
+	cutin "",255;
+	next;
+	mes "[魔劍薩克賴]";
+	mes "那麼，永別了。";
+	npctalk "魔劍薩克賴：那麼，永別了。";
+	close2;
+	donpcevent instance_npcname("#tb") + "::OnStart";
+	end;
+}
+
+1@spa,196,46,1	script	#tb	CLEAR_NPC,{
+	end;
+OnStart:
+	disablenpc instance_npcname("魔劍薩克賴#dk");
+	disablenpc instance_npcname("魔劍 塔爾他諾斯#dk3");
+	enablenpc instance_npcname("#tb");
+	enablenpc instance_npcname("#sv");
+	enablenpc instance_npcname("#tv");
+	initnpctimer;
+	end;
+OnTimer3000:
+	npctalk "蒂亞拉公主的聲音：我能為你做些什麼？";
+	end;
+OnTimer8000:
+	npctalk "魔劍薩克賴的聲音：我會永遠守護在妳身邊。請在我身邊安息吧。", instance_npcname("#sv");
+	end;
+OnTimer13000:
+	npctalk "魔劍 塔爾他諾斯：魔劍薩克賴，不要忘記我們之間的鮮血誓約。", instance_npcname("#tv");
+	end;
+OnTimer17000:
+	npctalk "魔劍 塔爾他諾斯：你的靈魂是我的，直到你找到能讓我滿足的鮮血為止...", instance_npcname("#tv");
+	end;
+OnTimer22000:
+	npctalk "魔劍薩克賴的聲音：與我一同在陰影中安息吧。", instance_npcname("#sv");
+	end;
+OnTimer25000:
+	npctalk "魔劍薩克賴的聲音：永遠沉淪在黑暗中...", instance_npcname("#sv");
+	end;
+OnTimer28500:
+	disablenpc instance_npcname("#tb");
+	disablenpc instance_npcname("#sv");
+	disablenpc instance_npcname("#tv");
+	mapannounce 'map_spa$, "該是離開詛咒之島宮殿的時候了。", bc_map,0xFFFF00;
+	enablenpc instance_npcname("離開宮殿");
+	enablenpc instance_npcname("國王#dk11");
+	end;
+}
+
+1@spa,195,41,1	duplicate(臉色蒼白的皇家衛兵#dk)	魔劍 塔爾他諾斯#dk3	CLEAR_NPC
+1@spa,198,43,1	duplicate(臉色蒼白的皇家衛兵#dk)	#sv	CLEAR_NPC
+1@spa,196,41,1	duplicate(臉色蒼白的皇家衛兵#dk)	#tv	CLEAR_NPC
+
+1@spa,204,29,1	script	國王#dk11	4_M_RUSKING,{
+	disable_items;
+	mes "[國王]";
+	mes "嘿，那邊的朋友，你還活著嗎？";
+	mes "我沒想到還能遇見活著的人。";
+	next;
+	.@item_name_req$ = getitemname(6672);// Gray_Shard
+	mes "[國王]";
+	mes "你身上可能有 ^006400" + .@item_name_req$ + "^000000 嗎？";
+	mes "能把它交給我嗎？";
+	mes "那位忠誠的皇家衛兵的記憶，";
+	mes "以及他所愛的所有人的記憶，";
+	mes "都包含在這些碎片之中。";
+	next;
+	mes "[國王]";
+	mes "你願意把 ^006400" + .@item_name_req$ + "^000000 給我嗎？";
+	mes "內疚正無時無刻在啃食著我的靈魂。";
+	mes "我的靈魂被困在詛咒之島宮殿內。";
+	next;
+	mes "[國王]";
+	mes "我正在從這些碎片中收集魔劍薩克賴遺留下來的記憶。";
+	next;
+	mes "[國王]";
+	mes "如果你把 ^006400" + .@item_name_req$ + "^000000 給我，我可以為你製作裝備。";
+	next;
+	mes "[國王]";
+	mes "那位被詛咒的騎士...";
+	mes "請幫幫我，拯救魔劍薩克賴的靈魂。";
+	next;
+	setarray .@item_name$[0],
+		"塔諾斯單手劍", "塔諾斯雙手劍", "塔諾斯長槍", "塔諾斯雙手矛", "塔諾斯手杖",
+		"塔諾斯雙手杖", "塔諾斯弓", "塔諾斯短劍", "塔諾斯拳刃", "塔諾斯鐵錘",
+		"塔諾斯鈍器", "塔諾斯雙手斧", "塔諾斯小提琴", "塔諾斯鞭子",
+		"灰色彩盾", "灰色鎧甲", "灰色長袍", "灰色披風", "灰色靴子", "灰色頭盔";
+	setarray .@items_list[0],13441,21009,1438,1496,1669,2023,18119,13093,28000,1836,16028,28100,1933,1988,2187,15090,15091,20721,22033,18820;
+
+	for ( .@i = 0; .@i < 20; .@i++ )
+		.@menu$ += .@item_name$[.@i] + ":";
+	.@menu$ += "取消";
+	while(true) {
+		.@s = select(.@menu$) - 1;
+		if (.@s == 20) {
+			mes "[國王]";
+			mes "總有一天，魔劍薩克賴一定能";
+			mes "擺脫這個詛咒。";
+			mes "我相信";
+			mes "^006400" + .@item_name_req$ + "^000000 是唯一的辦法";
+			mes "去拯救他....";
+			close;
+		}
+		.@cost = ( .@s > 13 ? 100 : 200 );
+		mes "[國王]";
+		mes "要製作一項 ^FF0000" + .@item_name$[.@s] + "^000000";
+		mes "我需要 " + .@cost + " 個 ^006400" + .@item_name_req$ + "^000000。";
+		next;
+		if (select( "取消", "交付 " + .@cost + " 個 " + .@item_name_req$ + "。" ) == 1) {
+			mes "[國王]";
+			mes "總有一天，魔劍薩克賴一定能";
+			mes "擺脫這個詛咒。";
+			next;
+			continue;
+		}
+		if (countitem(6672) < .@cost) {
+			mes "[國王]";
+			mes "你沒有足夠的 ^006400" + .@item_name_req$ + "^000000";
+			mes "來製作 ^FF0000" + .@item_name$[.@s] + "^000000。";
+			mes "我需要 " + .@cost + " 個 ^006400" + .@item_name_req$ + "^000000。";
+			next;
+			continue;
+		}
+		mes "[國王]";
+		mes "我這就利用 " + .@cost + " 個 ^006400" + .@item_name_req$ + "^000000";
+		mes "來製作 ^FF0000" + .@item_name$[.@s] + "^000000。";
+		next;
+		mes "你看到國王合十的雙手透露出一道光芒，並逐漸凝聚成形。";
+		next;
+		mes "[國王]";
+		mes "好，已經完成了。";
+		mes "拿著這項 ^FF0000" + .@item_name$[.@s] + "^000000";
+		mes "去對抗魔劍薩克賴和塔爾他諾斯吧。";
+		next;
+		mes "[國王]";
+		mes "這股力量需要付出代價。";
+		mes "請多加小心...";
+		delitem 6672,.@cost;// Gray Shard
+		getitem .@items_list[.@s],1;
+		close;
+	}
+}
+
+1@spa,210,28,0	script	離開宮殿	WARPNPC,2,2,{
+	end;
+OnTouch_:
+	mes "該是離開詛咒之島宮殿的時候了。";
+	mes "一切現在都已結束";
+	mes "且終將消逝..";
+	close2;
+	if (isbegin_quest(1263) == 2)
+		getitem 6672,1;// Gray Shard
+	else {
+		setquest 1263;// Cursed Swordman
+		completequest 1263;
+		getexp 900000,500000;
+		getitem 6672,2;// Gray Shard
+	}
+	warp "dali02",46,129;
+	end;
+}
+
+1@spa,41,217,0	warp	The second floor of Palace	2,2,1@spa,114,120
+1@spa,117,137,0	warp	3rd floor in the palace	2,2,1@spa,60,43
+1@spa,54,28,0	warp	4th floor in the palace	2,2,1@spa,218,186
+1@spa,178,186,0	warp	5th floor of Palace	2,2,1@spa,186,57

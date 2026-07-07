@@ -1,0 +1,1172 @@
+//===== rAthena Script ======================================= 
+//= Merchant Job Quest
+//===== By: ================================================== 
+//= kobra_k88;
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 2.4
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Merchant classes
+//===== Additional Comments: ================================= 
+//= 1.0 Fully working.
+//= 1.1 Added instant job change for High Novice [Lupus]
+//= 1.3 Added Baby Class support [Lupus]
+//= 1.4 Optimised and moved first checker to Jfunc1-1 [massdriller]
+//= 1.5 Changed Prontera->Izlude teleport price to 600 [Lupus]
+//= 1.5.1 Removed Duplicates [Silent]
+//= 1.5.2 Now saves/restores all quest skills [Lupus]
+//= 1.6 Merged back JFunc, CHANGED NUMBERS TO CONSTANTS [Lupus]
+//= 1.7 Updated to use Free Ticket for Kafra [Lupus]
+//= 1.8 Rescripted to Aegis 10.3 stadards.
+//=     [L0ne_W0lf]
+//=     No longer uses function "F_ToHigh"
+//= 1.9 Bugfixes, thanks to Barron-Monster.
+//=     [L0ne_W0lf]
+//= 1.9a Added a missing next; (Barron-Monster) [L0ne_W0lf]
+//= 1.9b Typo. "nextl" -> "next;"
+//=      (Barron-Monster) [L0ne_W0lf]
+//= 2.0 Should "fix" the problem with the Biliban Kafra. [L0ne_W0lf]
+//= 2.1 Fixed mistake in condition check.
+//=     [L0ne_W0lf]
+//= 2.2 Added Quest Log commands. [L0ne_W0lf]
+//= 2.3 Fixed an issue with completequest by adding checkquest.
+//=     [Kisuka]
+//= 2.4 Quest log fixes. [Euphy]
+//============================================================ 
+
+alberta_in,53,43,6	script	商人#mer	86,{
+	if (Upper == 1) {
+		if (Class == Job_Novice_High && (ADVJOB == Job_Whitesmith || ADVJOB == Job_Creator)) {
+			mes "[公會會長 曼蘇]";
+			mes "好久不見！";
+			mes "嘿，你沒有放棄";
+			mes "你的事業，對吧？";
+			mes "發生什麼事了？";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "哇……";
+			mes "你竟然去過瓦爾哈拉？！哇，你經歷了很長的一段路啊……";
+			next;
+			if (!callfunc("F_CanChangeJob")) {
+				mes "[公會會長 曼蘇]";
+				mes "嗯……";
+				mes "看來你還沒準備好再次成為商人。先去把初學者的基本技能學完吧。";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "別擔心，我們隨時為你保留商人的位置。準備好了就再來找我，好嗎？";
+				close;
+			}
+			mes "[公會會長 曼蘇]";
+			mes "我想我們再次相遇是命運的安排。好吧，讓我再次為你轉職成商人！";
+			next;
+			skill "NV_TRICKDEAD",0,SKILL_PERM;
+			jobchange Job_Merchant_High;
+			skill "MC_CARTREVOLUTION",1,SKILL_PERM;
+			skill "MC_CHANGECART",1,SKILL_PERM;
+			skill "MC_LOUD",1,SKILL_PERM;
+			mes "[公會會長 曼蘇]";
+			mes "啊?真令人懷念。就像以前一樣！好了，好好努力吧！";
+			close;
+		}
+		else {
+			mes "[公會會長 曼蘇]";
+			mes "^333333*嘆氣*^000000";
+			mes "好無聊啊……";
+			mes "什麼時候才能聽到我可愛的布羅森的消息呢？";
+			close;
+		}
+	}
+	if (BaseJob == Job_Merchant) {
+		mes "[公會會長 曼蘇]";
+		mes "你好啊！";
+		mes "你覺得";
+		mes "當個商人如何？";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "懂得如何";
+		mes "運用金錢確實";
+		mes "有很多好處，";
+		mes "不是嗎？";
+		close;
+	}
+	else if (BaseJob != Job_Merchant && BaseJob != Job_Novice) {
+		mes "[公會會長 曼蘇]";
+		mes "我們商人最討厭兩面三刀的人。這對生意沒好處。";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "那種總是以荒唐的價格賣東西來佔別人便宜，只為了賺錢揮霍的人最糟糕了。";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "總之，我們只接受初學者轉職為商人。但我很感謝你對我們這個行業的興趣。";
+		close;
+	}
+	else if (job_merchant_q == 9) {
+		mes "[公會會長 曼蘇]";
+		mes "你好啊，";
+		mes ""+ strcharinfo(0) +"。";
+		set job_merchant_q,0;
+		set job_merchant_q2,0;
+		set quest_alb_01,0;
+		mes "很遺憾，你這次未能取得商人執照。";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "我會消除你的記錄，想重新申請時隨時可以來。";
+		close;
+	}
+	else if (job_merchant_q == 8 || job_merchant_q == 7) {
+		mes "[公會會長 曼蘇]";
+		mes "你好啊，";
+		mes ""+ strcharinfo(0) +"。";
+		mes "我很高興地告訴你";
+		mes "我帶來了好消息！";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "商人公會接受了你的申請。你已經證明自己完全有資格成為一名商人。";
+		if (job_merchant_q == 7) {
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "現在只剩下會費要處理了。";
+			mes "你準備好了嗎？";
+			next;
+			switch(select("支付剩下的 500 Zeny:離開")) {
+			case 1:
+				mes "[公會會長 曼蘇]";
+				if (Zeny < 500) {
+					mes "嗯……";
+					mes "我想你目前身上沒有足夠的金錢來支付剩餘的會費。";
+					next;
+					mes "[公會會長 曼蘇]";
+					mes "等你賺足成為商人所需的 500 Zeny 後再來吧。";
+					close;
+				}
+				set Zeny, Zeny-500;
+				mes "啊，對了……！";
+				mes "現在你的";
+				mes "會費";
+				mes "已經全額付清了。";
+				break;
+			case 2:
+				mes "[公會會長 曼蘇]";
+				mes "我想你需要一點時間去籌集繳納會費的 Zeny。請";
+				mes "準備好後盡快回來。";
+				close;
+			}
+		}
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "恭喜！";
+		callfunc "Job_Change",Job_Merchant;
+		callfunc "F_ClearJobVar";
+		for ( .@quest_id = 1009; .@quest_id <= 1012; .@quest_id++ ) {
+			if (isbegin_quest(.@quest_id) == 1)
+				completequest .@quest_id;
+		}
+		mes "我很高興你能加入商人公會，並希望你能在盧恩米德加茲的經濟中發揮積極作用。";
+		next;
+		if (quest_alb_01 == 1) {
+			mes "[公會會長 曼蘇]";
+			mes "*咳咳* 還有，這是一點小錢，當作你幫我送信給布羅森的跑腿費。";
+			mes "希望下次你還能再幫我忙喔?";
+			set Zeny, Zeny+200;
+			set quest_alb_01,2;
+		}
+		else {
+			mes "[公會會長 曼蘇]";
+			mes "我拜託你幫忙送的信呢？你忘了嗎？喔，好吧。辛苦你了！";
+		}
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "我們的目標是掌控全球 20% 的收入！我們需要像你這樣充滿熱情的年輕人！";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "但總體來說，只要能賺大錢我們也就很高興了。";
+		mes "不過這點我們都心知肚明啦?";
+		close;
+	}
+	else if (job_merchant_q2 && job_merchant_q > 0 && job_merchant_q < 7) {
+		mes "[公會會長 曼蘇]";
+		if (job_merchant_q2 == 1 || job_merchant_q2 == 2) {
+			mes "首先，去倉庫領取包裹，然後把它送到普隆德拉的前劍士公會。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "到了那裡之後，把包裹交給駐紮在附近的卡普拉服務人員。她的名字叫布羅森。你都清楚了嗎？";
+			next;
+			if (job_merchant_q2 == 1) {
+				mes "[公會會長 曼蘇]";
+				mes "記住，包裹的流水號是 ^3355FF2485741^000000。";
+			}
+			else {
+				mes "[公會會長 曼蘇]";
+				mes "記住，包裹的流水號是 ^3355FF2328137^000000。";
+			}
+		}
+		else if (job_merchant_q2 == 3 || job_merchant_q2 == 4) {
+			mes "首先，去倉庫領取包裹，然後把它送到吉芬的魔法師公會。";
+			next;
+			if (job_merchant_q2 == 3) {
+				mes "[公會會長 曼蘇]";
+				mes "到了那裡之後，把包裹交給負責的魔法師公會人員。記住，包裹的流水號是 ^3355FF2989396^000000。";
+			}
+			else {
+				mes "[公會會長 曼蘇]";
+				mes "到了那裡之後，把包裹交給負責的魔法師公會人員。記住，包裹的流水號是 ^3355FF2191737^000000。";
+			}
+		}
+		else if (job_merchant_q2 == 5 || job_merchant_q2 == 6) {
+			mes "首先，去倉庫領取包裹，然後把它送到夢羅克。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "你必須找到染料製作師 札巴杜拉罕，把訂購的商品交給他。";
+			next;
+			if (job_merchant_q2 == 5) {
+				mes "[公會會長 曼蘇]";
+				mes "但他有點健忘，所以把它交給他的一個徒弟吧。記住，包裹的流水號是 ^3355FF3012685^000000。";
+			}
+			else {
+				mes "[公會會長 曼蘇]";
+				mes "但他有點健忘，所以把它交給他的一個徒弟吧。記住，包裹的流水號是 ^3355FF3487372^000000。";
+			}
+		}
+		else if (job_merchant_q2 == 7 || job_merchant_q2 == 8) {
+			mes "首先，去倉庫領取包裹，然後把它交給駐紮在拜爾蘭島的卡普拉服務人員。她的名字叫布羅森。";
+			next;
+			if (job_merchant_q2 == 7) {
+				mes "[公會會長 曼蘇]";
+				mes "記住，包裹的流水號是 ^3355FF3318702^000000。";
+			}
+			else {
+				mes "[公會會長 曼蘇]";
+				mes "記住，包裹的流水號是 ^3355FF3543625^000000。";
+			}
+		}
+		if (job_merchant_q2 == 7 || job_merchant_q2 == 8) {
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "還有……";
+			mes "別忘了幫我把信送給她喔?";
+		}
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "別忘了你的目的地和包裹的流水號。";
+		mes "你需要把這些資訊";
+		mes "告訴倉庫管理員。";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "倉庫就在我右邊的";
+		mes "房間裡。在那邊，你可以";
+		mes "跟倉庫管理員談談，";
+		mes "他會幫你的。";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "送達包裹後，回到倉庫把收據交給倉庫管理員。";
+		mes "然後，再回來";
+		mes "找我。";
+		next;
+		mes "[公會會長 曼蘇]";
+		mes "清楚了嗎？";
+		mes "很好，這就對了。";
+		mes "保持這股幹勁。";
+		mes "路上小心！";
+		close;
+	}
+	else {
+		mes "[公會會長 曼蘇]";
+		mes "那麼，是什麼風把你吹來";
+		mes "商人公會的呢？";
+		mes "有什麼";
+		mes "我可以幫忙的嗎？";
+		next;
+		switch(select("我想成為商人。:請告訴我關於商人的事。:請告訴我轉職條件。:沒事。")) {
+		case 1:
+			mes "[公會會長 曼蘇]";
+			mes "你想";
+			mes "成為商人嗎？";
+			mes "這個嘛……";
+			next;
+			if (!callfunc("F_CanChangeJob")) {
+				mes "[公會會長 曼蘇]";
+				mes "首先，你必須達到初學者職業等級 10 級。達成之後，請確保你學會了所有的基本技能。";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "我們可不只是一群";
+				mes "只會賺錢的人！";
+				mes "我們對自己的標準感到自豪，而且只接受合格的申請者！";
+				close;
+			}
+			mes "[公會會長 曼蘇]";
+			mes "好吧，你需要填寫這份申請書，並準備 1,000 Zeny 作為會費。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "喔……！";
+			mes "如果你錢不夠，";
+			mes "我可以先收你 500 Zeny。";
+			mes "你可以在通過測驗並取得";
+			mes "商人公會執照後，";
+			mes "再補齊剩下的部分。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "所以你覺得如何？";
+			mes "你準備好要加入了嗎？";
+			next;
+			if (select("是的，我要加入。:嗯，也許晚點再說……") ==1 ) {
+				mes "[公會會長 曼蘇]";
+				mes "讓我檢查一下你是否";
+				mes "把申請書上的資料";
+				mes "都填齊了……";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "嗯…… ";
+				mes "" + strcharinfo(0) + "……";
+				mes "真是個好名字。";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "這份申請書只有在";
+				mes "繳交會費後";
+				mes "才會被正式登記。";
+				mes "你打算怎麼";
+				mes "處理這筆費用？";
+				next;
+				switch(select("現在全額付清 1,000 Zeny！:分兩次繳納，先付 500 Zeny。:放棄。")) {
+				case 1:
+					mes "[公會會長 曼蘇]";
+					if (Zeny >= 1000) {
+						set job_merchant_q,2;
+						set Zeny, Zeny-1000;
+						mes "好的?";
+						mes "這是 1,000 Zeny。";
+						mes "太好了，太好了。";
+					}
+					else {
+						mes "看來你現在沒有足夠的金錢全額繳納會費。為何不先付 500 Zeny 就好呢？考慮一下吧。";
+						close;
+					}
+					break;
+				case 2:
+					mes "[公會會長 曼蘇]";
+					if (Zeny >= 500) {
+						set job_merchant_q,1;
+						set Zeny, Zeny-500;
+						mes "讓我看看……";
+						mes "這是 500 Zeny。雖然我認為分期付款對任何商人來說都不是個好主意，但既然你還在學習，那就沒關係。";
+					}
+					else {
+						mes "嗯……";
+						mes "看來你連繳納一半會費的錢都不夠。請湊齊所需金額後再來吧。";
+						close;
+					}
+					break;
+				case 3:
+					mes "[公會會長 曼蘇]";
+					mes "準備好隨時";
+					mes "歡迎你回來，知道嗎？";
+					close;
+				}
+			}
+			else {
+				mes "[公會會長 曼蘇]";
+				mes "你現在沒有足夠的錢嗎？沒關係。慢慢來，";
+				mes "準備好了再來找我吧。";
+				close;
+			}
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "好的，你現在已經在申請者名單上了。啊，在開始之前，讓我先說一件事。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "這世上有些愚蠢又貪婪的人，根本不懂身為商人的意義。";
+			mes "我希望你不要變成他們那樣，好嗎？";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "現在，讓我";
+			mes "跟你說明";
+			mes "商人執照測驗";
+			mes "需要做什麼。";
+			next;
+			mes "[公會會長 曼蘇]";
+			switch(rand(1,4)) {
+			case 1:
+				mes "首先，去倉庫領取包裹，然後把它送到普隆德拉的前劍士公會。";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "到了那裡之後，把包裹交給駐紮在附近的卡普拉服務人員。她的名字叫布羅森。你都清楚了嗎？";
+				callsub S_GiveSerial,2485741,1,2328137,2,1009;
+				break;
+			case 2:
+				mes "首先，去倉庫領取包裹，然後把它送到吉芬的魔法師公會。到了那裡之後，把包裹交給負責的魔法師公會人員。";
+				callsub S_GiveSerial,2989396,3,2191737,4,1010;
+				break;
+			case 3:
+				mes "首先，去倉庫領取包裹，然後把它送到夢羅克。你必須找到染料製作師 札巴杜拉罕。";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "但他有點健忘，所以把它交給他的一個徒弟吧。";
+				callsub S_GiveSerial,3012685,5,3487372,6,1011;
+				break;
+			case 4:
+				mes "首先，去倉庫領取包裹，然後把它交給駐紮在拜爾蘭島的卡普拉服務人員。";
+				callsub S_GiveSerial,3318702,7,3543625,8,1012;
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "嗯……";
+				mes "我還有一點";
+				mes "私人的";
+				mes "請求想麻煩你。";
+				next;
+				mes "[公會會長 曼蘇]";
+				mes "你在送包裹時，能順便把這封信交給她嗎？拜託了?";
+				getitem 1072,1; //Delivery_Message
+				break;
+			}
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "別忘了你的目的地和包裹的流水號。你需要把這些資訊告訴我右邊倉庫裡的倉庫管理員。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "送達之後，把收據交給倉庫管理員，然後再來找我。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "清楚了嗎？";
+			mes "很好，這就對了。";
+			mes "保持這股幹勁。";
+			mes "路上小心！";
+			close;
+		case 2:
+			mes "[公會會長 曼蘇]";
+			mes "商人？";
+			mes "嗯，我們基本上就是靠賣東西來賺錢。這就是";
+			mes "商人的生存之道。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "我想我們可能不擅長戰鬥，也沒有多少特殊攻擊。我們更沒有治療技能……";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "但我們能以較低的價格從商店購買商品，然後以較高的價格賣給其他人?";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "我們的終極攻擊技能是『金錢攻擊』。金錢攻擊的力量源自於";
+			mes "當我們被迫丟出白花花的 Zeny 時所產生的憤怒。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "像那樣把 Zeny 丟出去";
+			mes "會讓任何商人心底湧現致命的怒火！";
+			mes "光是用想的";
+			mes "就讓我熱血沸騰啊！";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "總之，除了弓、手杖和雙手劍，";
+			mes "我們能使用大部分的武器。不過我們隨時可以把那些不能用的拿去賣。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "沒錯……";
+			mes "我們商人通常";
+			mes "滿腦子都是錢……";
+			close;
+		case 3:
+			mes "[公會會長 曼蘇]";
+			mes "在你成為商人之前，必須滿足三個條件。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "第一，你必須是初學者，職業等級達到 10 級，並且學會所有的基本技能。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "第二，你必須繳交 1,000 Zeny 的會費。我相信任何想成為商人的人都能輕鬆賺到這 1,000 Zeny。";
+			next;
+			mes "[公會會長 曼蘇]";
+			mes "第三，你需要通過一項測試體力和方向感的執照測驗。你將被要求送一個包裹給特定地點的特定人物。";
+			close;
+		case 4:
+			close;
+		}
+	}
+
+S_GiveSerial:
+	next;
+	mes "[公會會長 曼蘇]";
+	mes "記住……";
+	mes "包裹的";
+	mes "流水號是";
+	if (rand(2)) {
+		mes "^3355FF"+getarg(0)+"^000000。";
+		set job_merchant_q2,getarg(1);
+	}
+	else {
+		mes "^3355FF"+getarg(2)+"^000000。";
+		set job_merchant_q2,getarg(3);
+	}
+	setquest getarg(4);
+	return;
+}
+
+alberta_in,28,29,2	script	商人公會人員#mer	83,{
+	if (BaseJob == Job_Merchant) {
+		mes "[公會人員 凱伊]";
+		mes "嘿，朋友。";
+		mes "過得如何啊？";
+		close;
+	}
+	else if (BaseJob != Job_Merchant && BaseJob != Job_Novice) {
+		mes "[公會人員 凱伊]";
+		mes "嘿，你。我們目前沒有兼職的空缺。如果你想賺點 Zeny，你得去別處找找了。";
+		close;
+	}
+	else if (job_merchant_q == 9) {
+		mes "[公會人員 凱伊]";
+		mes "嘿，你。對，就是你。";
+		mes "如果你想重新測驗，去別的房間找曼蘇。然後我們再談。";
+		close;
+	}
+	else if (job_merchant_q == 8 || job_merchant_q == 7) {
+		mes "[公會人員 凱伊]";
+		mes "很好！一切都很完美！我會向公會會長報告你的成功。現在去跟公會會長 曼蘇談談吧，好嗎？";
+		close;
+	}
+	else if (job_merchant_q == 6 || job_merchant_q == 5) {
+		mes " [公會人員 凱伊] ";
+		mes "喔，是嗎？好，讓我檢查一下。你的名字是 " + strcharinfo(0) + "？好的，你的目的地是……";
+		next;
+		mes "[公會人員 凱伊]";
+		if (job_merchant_q2 == 1 || job_merchant_q2 == 2)
+			mes "哇！你見到了普隆德拉的卡普拉美眉了？！真幸運啊?……收據呢？";
+		else if (job_merchant_q2 == 3 || job_merchant_q2 == 4)
+			mes "吉芬魔法學院。好的，收據呢？";
+		else if (job_merchant_q2 == 5 || job_merchant_q2 == 6)
+			mes "夢羅克的染料製作師。不錯。收據呢？";
+		else if (job_merchant_q2 == 7 || job_merchant_q2 == 8)
+			mes "喔呵呵呵呵?！拜爾蘭島的卡普拉美眉？！太棒了！總之，你有帶收據來嗎？";
+		if (job_merchant_q2 == 1 && countitem(1073) != 0)
+			delitem 1073,1; //Merchant_Voucher_1
+		else if (job_merchant_q2 == 2 && countitem(1074) != 0)
+			delitem 1074,1;
+		//Merchant_Voucher_2
+		else if (job_merchant_q2 == 3 && countitem(1075) != 0)
+			delitem 1075,1; //Merchant_Voucher_3
+		else if (job_merchant_q2 == 4 && countitem(1076) != 0)
+			delitem 1076,1;
+		//Merchant_Voucher_4
+		else if (job_merchant_q2 == 5 && countitem(1077) != 0)
+			delitem 1077,1; //Merchant_Voucher_5
+		else if (job_merchant_q2 == 6 && countitem(1078) != 0)
+			delitem 1078,1;
+		//Merchant_Voucher_6
+		else if (job_merchant_q2 == 7 && countitem(1079) != 0)
+			delitem 1079,1; //Merchant_Voucher_7
+		else if (job_merchant_q2 == 8 && countitem(1080) != 0)
+			delitem 1080,1;
+		//Merchant_Voucher_8
+		else {
+			next;
+			set job_merchant_q,9;
+			mes " [公會人員 凱伊] ";
+			mes "等一下。";
+			mes "收據在哪裡？";
+			mes "發生什麼事了？";
+			next;
+			mes " [公會人員 凱伊] ";
+			mes "如果你沒有收據，你就沒通過測驗！你想重考最好去跟曼蘇談談，知道嗎？下次專心點！";
+			close;
+		}
+		next;
+		mes " [公會人員 凱伊] ";
+		mes "……太棒了！一切都很完美！我會向公會會長報告你的成功。你現在該去跟公會會長 曼蘇談談了，好嗎？";
+		close2;
+		if (job_merchant_q == 6)
+			set job_merchant_q,8;
+		else if (job_merchant_q == 5)
+			set job_merchant_q,7;
+		end;
+	}
+	else if (job_merchant_q == 4 || job_merchant_q == 3 && countitem(1081) == 0 && countitem(1082) == 0 && countitem(1091) == 0) {
+		mes " [公會人員 凱伊] ";
+		mes "咦？";
+		mes "你回來啦？";
+		mes "那送貨";
+		mes "還順利嗎？";
+		next;
+		if (select("*嗚嗚* 我把包裹弄丟了。:很順利。") == 1) {
+			set job_merchant_q,9;
+			mes "[公會人員 凱伊]";
+			mes "你在開玩笑吧？弄丟包裹你就測驗失敗了啊！";
+			next;
+			mes "[公會人員 凱伊]";
+			mes "噢老天。好吧，如果你想重新測驗，去跟曼蘇談談，好嗎？算你走運還有下一次機會！";
+			close;
+		}
+		mes "[公會人員 凱伊]";
+		mes "咦……";
+		mes "好吧……";
+		close;
+	}
+	else if (job_merchant_q == 4 || job_merchant_q == 3 && countitem(1081) != 0 || countitem(1082) != 0 || countitem(1091) != 0) {
+		mes "[公會人員 凱伊]";
+		mes "嘿，你還在這裡做什麼？你不是該出發了嗎？";
+		next;
+		if (select("我需要一個新包裹。:哦，對喔。你說得對！") == 1) {
+			if (countitem(1081) == 0 && countitem(1082) == 0 && countitem(1083) == 0 && countitem(1091) == 0) {
+				mes "[公會人員 凱伊]";
+				mes "什——？";
+				mes "所以你的";
+				mes "包裹跑哪去了？";
+				mes "它在哪裡？！";
+				next;
+				if (select("*嗚嗚* 我弄丟了！:它就在我這裡。") == 1) {
+					set job_merchant_q,9;
+					mes "[公會人員 凱伊]";
+					mes "你……";
+					mes "弄丟了？！";
+					mes "你測驗失敗了！";
+					next;
+					mes "[公會人員 凱伊]";
+					mes "*嘆氣* 如果你想重新測驗，去別的房間找曼蘇，好嗎？";
+					close;
+				}
+				mes "[公會人員 凱伊]";
+				mes "我還以為";
+				mes "你弄丟了呢。";
+				mes "你不需要";
+				mes "新的了。";
+				close;
+			}
+			mes "[公會人員 凱伊]";
+			mes "*嘆氣* 老兄，你開始變得很麻煩了喔。等一下，我先取消你的記錄……";
+			if (countitem(1081) != 0)
+				delitem 1081,1; //Merchant_Box_1
+			else if (countitem(1082) != 0)
+				delitem 1082,1; //Merchant_Box_2
+			else if (countitem(1091) != 0)
+				delitem 1091,1;
+			//Merchant_Box_Etc
+			if (job_merchant_q == 4)
+				set job_merchant_q,2;
+			else if (job_merchant_q == 3)
+				set job_merchant_q,1;
+			next;
+			mes "[公會人員 凱伊]";
+			mes "我需要一點時間處理，所以晚點再來吧。";
+			close;
+		}
+		mes "[公會人員 凱伊]";
+		mes "真掃興……";
+		close;
+	}
+	else if ((job_merchant_q == 0 || job_merchant_q == 1 || job_merchant_q == 2)) {
+		set where_village,0;
+		mes "[公會人員 凱伊]";
+		mes "你好啊。";
+		mes "是什麼風";
+		mes "把你吹來這裡的？";
+		next;
+		switch(select("我是來考商人執照測驗的。:我正在找兼職。:沒事。")) {
+		case 1:
+			mes "[公會人員 凱伊]";
+			mes "我懂了。";
+			mes "好的。";
+			mes "那你的";
+			mes "名字是？";
+			mes "" + strcharinfo(0) + "……？";
+			next;
+			if (job_merchant_q == 0) {
+				mes "[公會人員 凱伊]";
+				mes "咦。你的名字不在我的名單上。你到底有沒有申請轉職啊？";
+				next;
+				mes "[公會人員 凱伊]";
+				mes "你必須先跟在建築物中央的";
+				mes "公會會長 曼蘇申請，好嗎？";
+				close;
+			}
+			mes "[公會人員 凱伊]";
+			mes "好了，沒問題。包裹交給你。現在，選擇你要送貨的目的地。";
+			next;
+			switch(select("普隆德拉。:吉芬。:夢羅克。:拜爾蘭島。")) {
+			case 1: set .@where_village,1; break;
+			case 2: set .@where_village,2; break;
+			case 3: set .@where_village,3; break;
+			case 4: set .@where_village,4; break;
+			}
+			mes "[公會人員 凱伊]";
+			mes "好的，現在你需要給我包裹的流水號。如果你想取消，只要輸入『0』就好，知道了嗎？";
+			next;
+			while(1) {
+				while(1) {
+					input .@input;
+					if (.@input == 0) {
+						mes "[公會人員 凱伊]";
+						mes "你確定你要取消嗎？";
+						if (select("是的。:讓我再試一次。") == 1) {
+							mes "好吧，我們就先取消。";
+							close;
+						}
+						next;
+					}
+					else if (.@input < 1000000 || .@input > 5000000) {
+						mes "[公會人員 凱伊]";
+						mes "嘿嘿。那個號碼無效啦！輸入一個 1000000 到 5000000 之間的數值。懂嗎？";
+						next;
+					}
+					else 
+						break;
+				}
+				mes "[公會人員 凱伊]";
+				if (.@where_village == 1)
+					mes "目的地是普隆德拉。流水號是 " + .@input + "。你確定嗎？";
+				else if (.@where_village == 2)
+					mes "目的地是吉芬。呼！那還真遠！流水號是 " + .@input + "。你確定嗎？";
+				else if (.@where_village == 3)
+					mes "目的地是夢羅克。那還滿遠的！流水號是 " + .@input + "。你確定嗎？";
+				else
+					mes "算你走運！你的目的地是拜爾蘭島。流水號是 " + .@input + "。你確定嗎？";
+				next;
+				if (select("確定。:哎呀！號碼錯了！") == 1) {
+					break;
+				}
+			}
+			if (.@where_village == 1) {
+				if (job_merchant_q2 == 1 && .@input == 2485741)
+					getitem 1081,1;
+				//Merchant_Box_1
+				else if (job_merchant_q2 == 2 && .@input == 2328137)
+					getitem 1082,1; //Merchant_Box_2
+				else
+					getitem 1091,1;
+				//Merchant_Box_Etc
+			}
+			else if (.@where_village == 2) {
+				if (job_merchant_q2 == 3 && .@input == 2989396)
+					getitem 1081,1;
+				//Merchant_Box_1
+				else if (job_merchant_q2 == 4 && .@input == 2191737)
+					getitem 1082,1; //Merchant_Box_2
+				else
+					getitem 1091,1;
+				//Merchant_Box_Etc
+			}
+			else if (.@where_village == 3) {
+				if (job_merchant_q2 == 5 && .@input == 3012685)
+					getitem 1081,1;
+				//Merchant_Box_1
+				else if (job_merchant_q2 == 6 && .@input == 3487372)
+					getitem 1082,1; //Merchant_Box_2
+				else
+					getitem 1091,1;
+				//Merchant_Box_Etc
+			}
+			else {
+				if (job_merchant_q2 == 7 && .@input == 3318702)
+					getitem 1081,1; //Merchant_Box_1
+				else if (job_merchant_q2 == 8 && .@input == 3543625)
+					getitem 1082,1;
+				//Merchant_Box_2
+				else
+					getitem 1091,1; //Merchant_Box_Etc
+			}
+			if (job_merchant_q == 2)
+				set job_merchant_q,4;
+			else if (job_merchant_q == 1)
+				set job_merchant_q,3;
+			mes "[公會人員 凱伊]";
+			mes "好的。帶著這個包裹，並用你的生命保護它，直到它安全送到顧客手中。別弄丟了，懂嗎？";
+			next;
+			mes "[公會人員 凱伊]";
+			mes "那麼，祝你好運。記住，你送完貨";
+			mes "要把收據帶回來給我，好嗎？";
+			close;
+		case 2:
+			mes "[公會人員 凱伊]";
+			mes "兼職？抱歉老兄，目前沒工作。財務部永遠搞不定我們的預算……";
+			close;
+		case 3:
+			mes "[公會人員 凱伊]";
+			mes "沒事，是嗎？";
+			mes "我想你很享受";
+			mes "毫無理由地";
+			mes "打擾別人，對吧？";
+			close;
+		}
+	}
+}
+
+morocc_in,140,102,4	script	學徒#mer	86,{
+	if ((job_merchant_q == 4) || (job_merchant_q == 3)) {
+		mes "[染料學徒]";
+		mes "你是從";
+		mes "商人公會來的？";
+		mes "是的！你來對";
+		mes "地方了。";
+		next;
+		mes "[染料學徒]";
+		if (countitem(1081) == 1 || countitem(1082) == 1 || countitem(1091) == 1) {
+			mes "好喔?";
+			mes "請把";
+			mes "包裹放在";
+			mes "那邊。";
+		}
+		else {
+			mes "但是……";
+			mes "我訂購的";
+			mes "包裹在哪裡呢？";
+			mes "真奇怪……";
+			close;
+		}
+		next;
+		mes "[染料學徒]";
+		mes "讓我檢查一下包裹的流水號，這樣我才能給你收據，好嗎？";
+		next;
+		mes "[染料學徒]";
+		if (job_merchant_q2 == 5 && countitem(1081) != 0) {
+			mes "3012685……";
+			mes "沒錯。";
+			mes "這是你的";
+			mes "收據。";
+			delitem 1081,1; //Merchant_Box_1
+			getitem 1077,1; //Merchant_Voucher_5
+		}
+		else if (job_merchant_q2 == 6 && countitem(1082) != 0) {
+			mes "3487372……";
+			mes "沒錯。";
+			mes "這是你的";
+			mes "收據。";
+			delitem 1082,1; //Merchant_Box_2
+			getitem 1078,1; //Merchant_Voucher_6
+		}
+		else {
+			mes "不好意思，但是……";
+			if (job_merchant_q2 == 5)
+				mes "我不認為這是我們訂購的包裹。流水號應該是 3012685。看到了嗎？";
+			else if (job_merchant_q2 == 6)
+				mes "我不認為這是我們訂購的包裹。流水號應該是 3487372。看到了嗎？";
+			else
+				mes "我不認為這是我們訂購的包裹。流水號應該是 3012685 或 3487372。嗯，這兩個其中一個……";
+			close;
+		}
+		if (job_merchant_q == 4)
+			set job_merchant_q,6;
+		else if (job_merchant_q == 3)
+			set job_merchant_q,5;
+		next;
+		mes "[染料學徒]";
+		mes "太感謝了！";
+		mes "有緣";
+		mes "再見！";
+		close;
+	}
+	else if (job_merchant_q == 6 || job_merchant_q == 5 && job_merchant_q2 == 6 || job_merchant_q2 == 5) {
+		mes "[染料學徒]";
+		mes "喔……";
+		mes "你要";
+		mes "回去了嗎？好喔，";
+		mes "路上小心！";
+		close;
+	}
+	else {
+		mes "[染料學徒]";
+		mes "札巴杜拉罕先生是米德加爾特大陸上獨一無二，最棒的染料製作師。";
+		next;
+		mes "[染料學徒]";
+		mes "還有，我很自豪地說我是他的徒弟！總有一天，我也能製作出非常美麗的染料！";
+		next;
+		mes "[染料學徒]";
+		mes "當然，我現在還在學習基礎知識，但總有一天……";
+		close;
+	}
+}
+
+geffen_in,155,122,4	script	公會人員#mer	47,{
+	if (job_merchant_q == 4 || job_merchant_q == 3) {
+		mes "[公會人員]";
+		mes "啊，你一定是商人公會的人。我的包裹終於到了！太好了……！";
+		next;
+		mes "[公會人員]";
+		if (countitem(1081) == 1 || countitem(1082) == 1 || countitem(1091) == 1) {
+			mes "在這種天氣裡旅行，";
+			mes "你一定";
+			mes "感到";
+			mes "非常疲憊吧……";
+		}
+		else {
+			mes "等等……";
+			mes "包裹";
+			mes "在哪裡？";
+			close;
+		}
+		next;
+		mes "[公會人員]";
+		mes "好吧，讓我";
+		mes "檢查一下流水號……";
+		if (job_merchant_q2 == 3 && countitem(1081) != 0) {
+			mes "2989396。是的，這是我們訂購的。這是你的收據。";
+			delitem 1081,1; //Merchant_Box_1
+			getitem 1075,1; //Merchant_Voucher_3
+		}
+		else if (job_merchant_q2 == 4 && countitem(1082) != 0) {
+			mes "2191737。是的，這是我們訂購的。這是你的收據。";
+			delitem 1082,1; //Merchant_Box_2
+			getitem 1076,1; //Merchant_Voucher_4
+		}
+		else {
+			mes "糟糕，號碼錯了。這不是我們訂購的東西……";
+			next;
+			mes "[公會人員]";
+			if (job_merchant_q2 == 3) {
+				mes "流水號";
+				mes "應該是 2989396。";
+			}
+			else if (job_merchant_q2 == 4) {
+				mes "流水號";
+				mes "應該是 2191737。";
+			}
+			else {
+				mes "流水號";
+				mes "應該是 2989396";
+				mes "或是 2191737，這兩個";
+				mes "其中一個。";
+			}
+			mes "看看這裡！";
+			mes "你沒看出";
+			mes "哪裡";
+			mes "有問題嗎？";
+			close;
+		}
+		if (job_merchant_q == 4)
+			set job_merchant_q,6;
+		else if (job_merchant_q == 3)
+			set job_merchant_q,5;
+		next;
+		mes "[公會人員]";
+		mes "呵呵?";
+		mes "謝謝你！";
+		mes "再見！";
+		close;
+	}
+	else if (job_merchant_q == 6 || job_merchant_q == 5 && job_merchant_q2 == 4 || job_merchant_q2 == 3) {
+		mes "[公會人員]";
+		mes "你好，";
+		mes "商人公會的人員?";
+		mes "我向你道謝。";
+		close;
+	}
+	else {
+		mes "[公會人員]";
+		mes "我的包裹現在應該到了啊。咦。我想商人公會可能遲到了吧……";
+		close;
+	}
+}
+
+prontera,248,42,0	script	卡普拉服務人員#mer	116,{
+	cutin "kafra_02",2;
+	if (job_merchant_q == 6 || job_merchant_q == 5) && (job_merchant_q2 == 2 || job_merchant_q2 == 1) {
+		mes "[卡普拉服務人員]";
+		mes "哦！謝謝你";
+		mes "大老遠";
+		mes "跑來這裡?";
+		close2;
+		cutin "",255;
+		end;
+	}
+	else if (job_merchant_q == 4 || job_merchant_q == 3) {
+		mes "[卡普拉服務人員]";
+		mes "這是從商人公會";
+		mes "送來的嗎？";
+		mes "哦，對的，請把它放在";
+		mes "那邊就好……";
+		if (countitem(1081) == 1 || countitem(1082) == 1 || countitem(1091) == 1) {
+			mes "拿著它走了這麼久，";
+			mes "你一定很累吧！";
+		}
+		else {
+			mes "等、等等。你沒帶來嗎？";
+			mes "包裹在哪裡呢？";
+			close2;
+			cutin "",255;
+			end;
+		}
+		next;
+		mes "[卡普拉服務人員]";
+		mes "現在，讓我檢查一下";
+		mes "流水號……";
+		if (job_merchant_q2 == 1 && countitem(1081) != 0) {
+			mes "2485741。對，這就是";
+			mes "我們訂的。哦，";
+			mes "別忘了帶走這張收據！";
+			next;
+			delitem 1081,1; //Merchant_Box_1
+			getitem 1073,1;
+			//Merchant_Voucher_1
+		}
+		else if (job_merchant_q2 == 2 && countitem(1082) != 0) {
+			mes "2328137。對，這就是";
+			mes "我們訂的。哦，";
+			mes "別忘了帶走這張收據！";
+			next;
+			delitem 1082,1; //Merchant_Box_2
+			getitem 1074,1; //Merchant_Voucher_2
+		}
+		else {
+			mes "嗯？等等。這是";
+			mes "錯的包裹。我們";
+			if (job_merchant_q2 == 1)
+				mes "訂的流水號是 2485741。我確定不是這個。";
+			else if (job_merchant_q2 == 2)
+				mes "訂的流水號是 2328137。我確定不是這個。";
+			else
+				mes "訂的流水號是 2485741 或 2328137。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "恐怕是";
+			mes "哪裡";
+			mes "搞錯了。也許";
+			mes "你該回到";
+			mes "商人公會去";
+			mes "釐清這個狀況？";
+			close2;
+			cutin "",255;
+			end;
+		}
+		if (job_merchant_q == 4)
+			set job_merchant_q,6;
+		else if (job_merchant_q == 3)
+			set job_merchant_q,5;
+		mes "[卡普拉服務人員]";
+		mes "再次感謝你";
+		mes "不辭辛勞地";
+		mes "跑這一趟?";
+		close2;
+		cutin "",255;
+		end;
+	}
+	else {
+		mes "[卡普拉服務人員]";
+		mes "歡迎來到";
+		mes "卡普拉服務公司，";
+		mes "我們始終";
+		mes "為您服務?";
+		next;
+		mes "[卡普拉服務人員]";
+		mes "如您所見，";
+		mes "劍士公會";
+		mes "已經搬到普隆德拉的衛星都市";
+		mes "伊斯魯得島了。";
+		mes "目前，我們提供傳送至";
+		mes "伊斯魯得島的服務，只要 600 Zeny。";
+		next;
+		if (select("使用:取消") == 1) {
+			if (Zeny < 600) {
+				mes "[卡普拉服務人員]";
+				mes "很抱歉，但您";
+				mes "沒有足夠的 Zeny";
+				mes "來支付傳送費用。";
+				close2;
+				cutin "",255;
+				end;
+			}
+			set Zeny, Zeny-600;
+			set RESRVPTS, RESRVPTS + 37;
+			cutin "",255;
+			warp "izlude",94,103;
+			end;
+		}
+		close2;
+		cutin "",255;
+		end;
+	}
+}
+
+//izlu2dun,106,58,4	script	Kafra Employee#mer	116,{
+function	script	F_MercKafra	{
+	if ((job_merchant_q == 6 || job_merchant_q == 5) && (job_merchant_q2 == 8 || job_merchant_q2 == 7)) {
+		mes "[卡普拉服務人員]";
+		mes "哦，你好?";
+		mes "嗯，有什麼";
+		mes "特別的原因";
+		mes "讓你來到這裡嗎？";
+		close2;
+		cutin "",255;
+		end;
+	}
+	else if (job_merchant_q == 4 || job_merchant_q == 3) {
+		mes "[卡普拉服務人員]";
+		mes "這是從商人公會";
+		mes "送來的嗎？";
+		mes "哦，對的，請把它放在";
+		mes "那邊就好……";
+		if (countitem(1081) == 1 || countitem(1082) == 1 || countitem(1091) == 1) {
+			mes "拿著它走了這麼久，";
+			mes "你一定很累吧！";
+		}
+		else {
+			mes "等、等等。你沒帶來嗎？";
+			mes "包裹在哪裡呢？";
+			close2;
+			cutin "",255;
+			end;
+		}
+		next;
+		mes "[卡普拉服務人員]";
+		mes "現在，讓我檢查一下";
+		mes "流水號……";
+		if (job_merchant_q2 == 7 && countitem(1081) != 0) {
+			mes "3318702。對，這就是";
+			mes "我們訂的。哦，";
+			mes "別忘了帶走這張收據！";
+			delitem 1081,1; //Merchant_Box_1
+			getitem 1079,1;
+			//Merchant_Voucher_7
+		}
+		else if (job_merchant_q2 == 8 && countitem(1082) != 0) {
+			mes "3543625。對，這就是";
+			mes "我們訂的。哦，";
+			mes "別忘了帶走這張收據！";
+			delitem 1082,1; //Merchant_Box_2
+			getitem 1080,1; //Merchant_Voucher_8
+		}
+		else {
+			mes "嗯？等等。這是";
+			mes "錯的包裹。我們";
+			if (job_merchant_q2 == 7)
+				mes "訂的流水號是 3318702。我確定不是這個。";
+			else if (job_merchant_q2 == 8)
+				mes "訂的流水號是 3543625。我確定不是這個。";
+			else
+				mes "訂的流水號是 3318702 或 3543625。";
+			close2;
+			cutin "",255;
+			end;
+		}
+		if (job_merchant_q == 4)
+			set job_merchant_q,6;
+		else if (job_merchant_q == 3)
+			set job_merchant_q,5;
+		next;
+		if (countitem(1072) != 0 && quest_alb_01 == 0) {
+			select("這是商人公會的公會會長 曼蘇給妳的……");
+			delitem 1072,1; //Delivery_Message
+			set quest_alb_01,1;
+			mes "[卡普拉服務人員]";
+			mes "哦?！曼蘇寄來的信！";
+			mes "太感謝你了，";
+			mes "我一直很渴望";
+			mes "能聽到他的消息。他最近";
+			mes "過得如何，他還好嗎？";
+			mes "我迫不及待想看了……";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "哦，謝謝你";
+			mes "不辭辛勞地把這些";
+			mes "通通送過來。這不是什麼";
+			mes "特別的東西，但請收下。";
+			mes "嗯，有緣再見啦?";
+			getitem 513,3; //Banana
+		}
+		else {
+			mes "[卡普拉服務人員]";
+			mes "再次感謝你";
+			mes "不辭辛勞地";
+			mes "跑這一趟?";
+		}
+		close2;
+		cutin "",255;
+		end;
+	}
+	return;
+}

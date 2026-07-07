@@ -1,0 +1,541 @@
+//===== rAthena Script =======================================
+//= Instance: Deep Forest.
+//===== Description: =========================================
+//- [Walkthrough conversion]
+//- Part of the Spirit Handler job change.
+//- Total : 6 steps.
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Atemo]
+//============================================================
+
+// Entrance
+1@exsh,90,25,0	script	#outexsh	WARPNPC,4,4,{
+	end;
+OnTouch:
+	if (select( "離開深邃森林。", "留下。" ) == 1) {
+		warp "pay_fild09",114,343;
+		end;
+	}
+	end;
+
+OnInstanceInit:
+	'step = 0;
+	'map_1exsh$ = instance_mapname("1@exsh");
+	end;
+}
+
+1@exsh,90,53,0	script	#shbr1	WARPNPC,4,4,{
+	mes "- 似乎有某種神祕的力量擋住了去路。先去跟鐵虎說話吧。 -";
+	close2;
+	warp 'map_1exsh$,90,38;
+	end;
+}
+
+// Unknown effect
+// 1@exsh,90,53,0	script	#shbr2	WARPNPC,4,4
+
+
+// Step 1
+1@exsh,92,38,3	script	鐵虎#sh1	4_EXJOB_CHUL_HO,{
+	if ('step == 0) {
+		setpcblock( PCBLOCK_NPC, true );
+		npctalk "鐵虎：你馬上就跟過來了！";
+		cutin "ex_sh_chulho01.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：玄鹿好像很生氣呢，散發著一股凶狠的氣息。";
+		cutin "ex_sh_chulho02.png",2;
+		sleep2 2000;
+		cloakoffnpc( instance_npcname("???#sh1_s") );
+		// npctalk "??? : Who is it!!! It smells fishy!!!";	// bug?
+		npctalk "???：是誰！！！有股魚腥味！！！", instance_npcname("???#sh1_s");
+		cutin "",255;
+		sleep2 2000;
+		npctalk "鐵虎：是我！！是我！！我是鐵虎啦！！！";
+		cutin "ex_sh_chulho01.png",2;
+		sleep2 2000;
+		// npctalk "??? : I've never smelled anything like that!!!";
+		npctalk "???：我從來沒聞過那種味道！！！", instance_npcname("???#sh1_s");
+		cutin "",255;
+		sleep2 2000;
+		// npctalk "??? : Get out of this forest right now!!";
+		npctalk "???：馬上滾出這座森林！！", instance_npcname("???#sh1_s");
+		sleep2 1000;
+		npctalk "鐵虎：啊！！！你幹嘛突然打我！！！";
+		cutin "ex_sh_chulho02.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：啊！！我受不了了！！！";
+		sleep2 1000;
+		npctalk "鐵虎：我們先把這傢伙冷靜下來，再進去森林裡吧！！！";
+		cutin "",255;
+		cloakonnpc( instance_npcname("???#sh1_s") );
+		setpcblock( PCBLOCK_NPC, false );
+		disablenpc();
+		if ('step == 0)
+			donpcevent instance_npcname("doram_job_change_mob_1") + "::OnStart";
+		end;
+	}
+}
+
+1@exsh,93,39,3	duplicate(dummy_cloaked_npc)	???#sh1_s	G_RAKE_SCARABA
+
+
+// Step 2
+1@exsh,93,39,3	script	doram_job_change_mob_1	-1,{
+	end;
+OnStart:
+	'step = 1;
+	monster 'map_1exsh$,93,39,"???","G_RAKE_SCARABA",1, instance_npcname("doram_job_change_mob_1") + "::OnMobDead";
+	.@mode = ( MD_CANMOVE | MD_AGGRESSIVE | MD_CANATTACK | MD_TELEPORTBLOCK | MD_DETECTOR );
+	setunitdata( $@mobid[0], UMOB_MODE, .@mode );
+	end;
+OnMobDead:
+	if ('step != 1 || mobcount( 'map_1exsh$, instance_npcname("doram_job_change_mob_1") + "::OnMobDead" ) != 0)
+		end;
+	'step = 2;
+	cloakoffnpc( instance_npcname("鐵虎#sh1_1") );
+	setpcblock( PCBLOCK_NPC, true );
+	sleep2 2000;
+	npctalk "鐵虎：到底發生了什麼事！", instance_npcname("鐵虎#sh1_1");
+	cutin "ex_sh_chulho02.png",2;
+	sleep2 2000;
+	npctalk "鐵虎：我得去找玄鹿才行。", instance_npcname("鐵虎#sh1_1");
+	sleep2 2000;
+	npctalk "鐵虎：這裡是正門，我們快點進去吧。", instance_npcname("鐵虎#sh1_1");
+	sleep2 2000;
+	cutin "",255;
+	cloakonnpc( instance_npcname("鐵虎#sh1_1") );
+	setpcblock( PCBLOCK_NPC, false );
+	disablenpc instance_npcname("#shbr1");
+	// disablenpc instance_npcname("#shbr2");
+	if ('step == 2)
+		'step = 3;
+	end;
+}
+
+1@exsh,92,38,3	duplicate(dummy_cloaked_npc)	鐵虎#sh1_1	4_EXJOB_CHUL_HO
+
+
+// Step 3
+1@exsh,86,83,5	script	守衛#md1	4_M_PAY_SOLDIER,3,3,{
+	if ('step == 3) {
+		mes "[守衛]";
+		mes "你不能從這裡過去。";
+		mes "回去吧。";
+		next;
+		select( "請他們讓你進去。" );
+		mes "[守衛]";
+		mes "玄鹿吩咐過，不准讓可疑的人進來！！";
+		close2;
+		setpcblock( PCBLOCK_NPC, true );
+		.@npc_a$ = instance_npcname("鐵虎#sh_c1");
+		.@npc_b$ = instance_npcname("神龜#sh_k1");
+		cloakoffnpc( .@npc_a$ );
+		cloakoffnpc( .@npc_b$ );
+		npctalk "神龜：哎呀?", .@npc_b$;
+		cutin "ex_sh_kisul01.png",2;
+		sleep2 2000;
+		npctalk "神龜：他長了好多角啊！", .@npc_b$;
+		cutin "ex_sh_kisul02.png",2;
+		sleep2 2000;
+		npctalk "神龜：因為我還年輕，就請多多包涵囉?", .@npc_b$;
+		sleep2 2000;
+		npctalk "神龜：哈哈哈哈哈！", .@npc_b$;
+		sleep2 2000;
+		npctalk "鐵虎：可是你們為什麼要攻擊我啊！", .@npc_a$;
+		cutin "ex_sh_chulho02.png",2;
+		sleep2 2000;
+		npctalk "神龜：我不是叫你別亂吃東西嗎？", .@npc_b$;
+		cutin "ex_sh_kisul01.png",2;
+		sleep2 2000;
+		npctalk "神龜：吃了那種藥之後，你就不會像其他野生動物一樣產生變化了。", .@npc_b$;
+		cutin "ex_sh_kisul02.png",2;
+		sleep2 2000;
+		npctalk "神龜：那股味道散不掉，被當成可疑份子也是理所當然的啊！", .@npc_b$;
+		cutin "ex_sh_kisul03.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：別光說風涼話了，快幫幫我！", .@npc_a$;
+		cutin "ex_sh_chulho02.png",2;
+		sleep2 2000;
+		npctalk "神龜：這沒什麼難的，你自己加油吧。", .@npc_b$;
+		cutin "ex_sh_kisul01.png",2;
+		sleep2 2000;
+		npctalk "神龜：好久沒看到這麼有趣的事情了?", .@npc_b$;
+		cutin "ex_sh_kisul02.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：啊啊啊！！！", .@npc_a$;
+		cutin "",255;
+		cloakonnpc( .@npc_a$ );
+		cloakonnpc( .@npc_b$ );
+		mapannounce 'map_1exsh$, "守衛：我叫你回去！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+		sleep2 1000;
+		disablenpc instance_npcname("守衛#md1");
+		disablenpc instance_npcname("守衛#md2");
+		sleep2 2000;
+		setpcblock( PCBLOCK_NPC, false );
+		mapannounce 'map_1exsh$, "守衛：如果不回去的話，就別怪我們不客氣了！！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+		if ('step == 3)
+			donpcevent instance_npcname("doram_job_change_mob_2") + "::OnStart";
+		end;
+	}
+	end;
+
+OnTouch:
+	mes "[守衛]";
+	mes "你不能從這裡過去。";
+	mes "回去吧。";
+	close2;
+	warp 'map_1exsh$,90,75;
+	end;
+}
+1@exsh,93,83,3	duplicate(守衛#md1)	守衛#md2	4_M_PAY_SOLDIER,3,3
+
+
+// Step 4
+1@exsh,93,39,3	script	doram_job_change_mob_2	-1,{
+	end;
+OnStart:
+	'step = 4;
+	.@event$ = instance_npcname("doram_job_change_mob_2") + "::OnMobDead";
+	.@mode = ( MD_CANMOVE | MD_AGGRESSIVE | MD_CANATTACK | MD_TELEPORTBLOCK | MD_DETECTOR );
+
+	monster 'map_1exsh$,87,77,"深邃森林守護者","G_RAKE_SCARABA",1, .@event$;
+	setunitdata( $@mobid[0], UMOB_MODE, .@mode );
+	monster 'map_1exsh$,87,75,"深邃森林守護者","G_RAKE_SCARABA",1, .@event$;
+	setunitdata( $@mobid[0], UMOB_MODE, .@mode );
+	monster 'map_1exsh$,92,77,"深邃森林守護者","G_RAKE_SCARABA",1, .@event$;
+	setunitdata( $@mobid[0], UMOB_MODE, .@mode );
+	monster 'map_1exsh$,92,75,"深邃森林守護者","G_RAKE_SCARABA",1, .@event$;
+	setunitdata( $@mobid[0], UMOB_MODE, .@mode );
+	end;
+
+OnMobDead:
+	if ('step != 4 || mobcount( 'map_1exsh$, instance_npcname("doram_job_change_mob_2") + "::OnMobDead" ) != 0)
+		end;
+	.@npc_a$ = instance_npcname("神龜#sh_k1");
+	.@npc_b$ = instance_npcname("鐵虎#sh_c1");
+	'step = 5;
+	setpcblock( PCBLOCK_NPC, true );
+	cloakoffnpc( .@npc_a$ );
+	cloakoffnpc( .@npc_b$ );
+	npctalk "鐵虎：我的天啊！", .@npc_b$;
+	cutin "ex_sh_chulho02.png",2;
+	sleep2 2000;
+	npctalk "鐵虎：我還以為我死定了……", .@npc_b$;
+	emotion ET_CRY;
+	sleep2 2000;
+	npctalk "神龜：很少看到你這麼慌張呢……", .@npc_a$;
+	cutin "ex_sh_kisul01.png",2;
+	sleep2 2000;
+	npctalk "鐵虎：你都只在一旁看戲而已！！！", .@npc_b$;
+	cutin "ex_sh_chulho02.png",2;
+	sleep2 2000;
+	npctalk "神龜：嗯……", .@npc_a$;
+	cutin "ex_sh_kisul01.png",2;
+	sleep2 2000;
+	npctalk "神龜：讓我看看……", .@npc_a$;
+	sleep2 2000;
+	npctalk "鐵虎：別無視我說的話啊！", .@npc_b$;
+	cutin "ex_sh_chulho02.png",2;
+	sleep2 2000;
+	npctalk "神龜：開始飄散出不祥的氣味了，你最好快點去找玄鹿。", .@npc_a$;
+	cutin "ex_sh_kisul02.png",2;
+	sleep2 2000;
+	npctalk "神龜：如果是玄鹿的話，他總是在那個地方。", .@npc_a$;
+	sleep2 2000;
+	npctalk "鐵虎：那他應該在北部的主建築附近！", .@npc_b$;
+	cutin "ex_sh_chulho01.png",2;
+	sleep2 2000;
+	npctalk "神龜：別傻站在那裡，快點行動吧。", .@npc_a$;
+	cutin "ex_sh_kisul02.png",2;
+	sleep2 1000;
+	cloakonnpc( .@npc_b$ );
+	cloakonnpc( .@npc_a$ );
+	cloakoffnpc( instance_npcname("玄鹿#sh1") );
+	cutin "",255;
+	setpcblock( PCBLOCK_NPC, false );
+	if ('step == 5)
+		'step = 6;
+	end;
+}
+
+1@exsh,91,79,3	duplicate(dummy_cloaked_npc)	鐵虎#sh_c1	4_EXJOB_CHUL_HO
+1@exsh,87,80,5	duplicate(dummy_cloaked_npc)	神龜#sh_k1	4_EXJOB_KI_SUL
+
+
+// Step 5
+1@exsh,87,146,5	duplicate(dummy_cloaked_npc)	鐵虎#sh_c2	4_EXJOB_CHUL_HO
+1@exsh,92,146,3	duplicate(dummy_cloaked_npc)	神龜#sh_k2	4_EXJOB_KI_SUL
+1@exsh,93,139,1	duplicate(dummy_cloaked_npc)	??????#sh_y2	G_THA_ODIUM
+1@exsh,92,140,1	duplicate(dummy_cloaked_npc)	狂生#sh_t2	4_M_DARKPRIEST
+1@exsh,93,139,1	duplicate(dummy_cloaked_npc)	李大監#sh_y2	2_M_PHARMACIST
+
+1@exsh,90,148,3	script(CLOAKED)	玄鹿#sh1	4_EXJOB_HYUN_ROK,{
+	if ('step == 6) {
+		setpcblock( PCBLOCK_NPC, true );
+		.@npc_a$ = instance_npcname("鐵虎#sh_c2");
+		.@npc_b$ = instance_npcname("神龜#sh_k2");
+		.@npc_c$ = instance_npcname("??????#sh_y2");
+		.@npc_d$ = instance_npcname("狂生#sh_t2");
+		.@npc_e$ = instance_npcname("李大監#sh_y2");
+
+		npctalk "玄鹿：鐵虎、神龜。你們回來了。";
+		cutin "ex_sh_hyunrok01.png",2;
+		cloakoffnpc( .@npc_a$ );
+		cloakoffnpc( .@npc_b$ );
+		sleep2 2000;
+		npctalk "鐵虎：原來你在這裡啊！", .@npc_a$;
+		emotion ET_BLABLA, getnpcid(0,.@npc_a$);
+		cutin "ex_sh_chulho01.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：我找了你好久呢！", .@npc_a$;
+		sleep2 2000;
+		npctalk "玄鹿：我想我只是離開了一會兒而已。";
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		npctalk "玄鹿：不過你旁邊那位是……？";
+		sleep2 2000;
+		npctalk "玄鹿：你們是怎麼進入這個地方的？";
+		sleep2 2000;
+		npctalk "鐵虎：你在說什麼啊！", .@npc_a$;
+		emotion ET_SMILE, getnpcid(0,.@npc_a$);
+		cutin "ex_sh_chulho01.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：這個人跟我一樣是隻老虎啊！", .@npc_a$;
+		cutin "ex_sh_chulho03.png",2;
+		emotion ET_HUK, playerattached();
+		sleep2 2000;
+		npctalk "玄鹿：你在胡說什麼？";
+		emotion ET_PROFUSELY_SWEAT;
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		npctalk "玄鹿：他跟我們不一樣，不是這座森林的一分子，他是一名林務員，一名林務員啊。";
+		sleep2 2000;
+		npctalk "神龜：哈哈哈哈哈！！！", .@npc_b$;
+		cutin "ex_sh_kisul01.png",2;
+		emotion ET_SMILE, getnpcid(0,.@npc_b$);
+		sleep2 2000;
+		npctalk "神龜：我就覺得很奇怪，原來你根本不知道？！", .@npc_b$;
+		cutin "ex_sh_kisul02.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：什麼？！", .@npc_a$;
+		cutin "ex_sh_chulho02.png",2;
+		emotion ET_HUK, getnpcid(0,.@npc_a$);
+		sleep2 2000;
+		npctalk "鐵虎：他身上的味道跟我一模一樣啊！！！", .@npc_a$;
+		sleep2 2000;
+		npctalk "玄鹿：雖然他跟你，鐵虎，有一些相似之處……";
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：啊啊啊！！！", .@npc_a$;
+		cutin "ex_sh_chulho02.png",2;
+		sleep2 2000;
+		npctalk "玄鹿：總之，我認為住在森林外的人都應該回到外面去。";
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		npctalk "玄鹿：那些擾亂森林的人又在靠近了。";
+		sleep2 2000;
+		npctalk "玄鹿：我們不能坐視不管。";
+		sleep2 2000;
+		npctalk "神龜：啊?", .@npc_b$;
+		cutin "ex_sh_kisul01.png",2;
+		sleep2 2000;
+		npctalk "神龜：你又想做什麼麻煩事了嗎？", .@npc_b$;
+		emotion ET_SLEEPY, getnpcid(0,.@npc_b$);
+		sleep2 1000;
+		cutin "",255;
+		cloakoffnpc( .@npc_e$ );
+		sleep2 2000;
+		npctalk "李大監：我們在哪裡？", .@npc_e$;
+		emotion ET_STARE_ABOUT, getnpcid(0,.@npc_e$);
+		sleep2 2000;
+		npctalk "李大監：狂生，我覺得你走得太深了，何不把這些交給你的僕人去辦？", .@npc_e$;
+		emotion ET_SCRATCH, getnpcid(0,.@npc_e$);
+		sleep2 3000;
+		npctalk "李大監：這到底是什麼鬼地方！", .@npc_e$;
+		emotion ET_HUK, getnpcid(0,.@npc_e$);
+		sleep2 2000;
+		npctalk "李大監：為什麼野獸會穿著衣服？", .@npc_e$;
+		sleep2 2000;
+		npctalk "玄鹿：你太無禮了！！！";
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		cutin "",255;
+		npctalk "李大監：哎呀！", .@npc_e$;
+		emotion ET_HUK, getnpcid(0,.@npc_e$);
+		sleep2 2000;
+		npctalk "李大監：一個長著角的人！！！", .@npc_e$;
+		sleep2 1000;
+		cloakoffnpc( .@npc_d$ );
+		sleep2 2000;
+		npctalk "狂生：噢！！！！", .@npc_d$;
+		emotion ET_COOL, getnpcid(0,.@npc_d$);
+		sleep2 2000;
+		npctalk "狂生：我終於找到了！！！", .@npc_d$;
+		sleep2 2000;
+		npctalk "狂生：人類無法涉足的深邃森林中的神祕野獸！！！！", .@npc_d$;
+		sleep2 2000;
+		npctalk "狂生：傳說中的動物就在我眼前，只要割下那些角做成甜藥，就能長生不老！！！！", .@npc_d$;
+		emotion ET_SEXY, getnpcid(0,.@npc_d$);
+		sleep2 2000;
+		npctalk "玄鹿：退後！！！你好大的膽子！";
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		cutin "",255;
+		npctalk "狂生：嘻嘻嘻嘻！！！", .@npc_d$;
+		sleep2 2000;
+		npctalk "狂生：憑這些森林裡的野獸是阻止不了我的！", .@npc_d$;
+		emotion ET_KIK, getnpcid(0,.@npc_d$);
+		sleep2 2000;
+		npctalk "狂生：因為所有吃過我的藥的動物，都不得不聽從我的命令。", .@npc_d$;
+		sleep2 2000;
+		npctalk "李大監：啊啊啊！！！", .@npc_e$;
+		sleep2 350;
+		cloakonnpc( .@npc_e$ );
+		cloakoffnpc( .@npc_c$ );
+		emotion ET_HUK, getnpcid(0,.@npc_a$);
+		emotion ET_HUK, getnpcid(0,.@npc_b$);
+		emotion ET_HUK, playerattached();
+		emotion ET_SURPRISE;
+		sleep2 2000;
+		npctalk "??????：這太過分了！！！", .@npc_c$;
+		emotion ET_FRET, getnpcid(0,.@npc_c$);
+		sleep2 2000;
+		npctalk "玄鹿：啊啊！！";
+		cutin "ex_sh_hyunrok01.png",2;
+		sleep2 2000;
+		npctalk "玄鹿：天啊！！！";
+		sleep2 2000;
+		npctalk "鐵虎：呃啊啊啊！！！好噁心！！！！！", .@npc_a$;
+		emotion ET_PROFUSELY_SWEAT, getnpcid(0,.@npc_a$);
+		cutin "ex_sh_chulho02.png",2;
+		emotion ET_HUK, getnpcid(0,.@npc_a$);
+		sleep2 2000;
+		npctalk "鐵虎：我最後也會變成那樣嗎！！！", .@npc_a$;
+		sleep2 2000;
+		npctalk "神龜：冷靜點，待在原地。", .@npc_b$;
+		cutin "ex_sh_kisul03.png",2;
+		sleep2 2000;
+		npctalk "神龜：事情變得比我想像中還有趣了。", .@npc_b$;
+		cutin "ex_sh_kisul01.png",2;
+		emotion ET_KIK, getnpcid(0,.@npc_b$);
+		sleep2 2000;
+		npctalk "鐵虎：現在不是坐視不管的時候了吧！", .@npc_a$;
+		cutin "ex_sh_chulho02.png",2;
+		sleep2 2000;
+		npctalk "鐵虎：要是我也變成那種怪物該怎麼辦！", .@npc_a$;
+		sleep2 2000;
+		npctalk "神龜：嗯，我們先讓怪物睡著，然後再談吧。", .@npc_b$;
+		cutin "ex_sh_kisul02.png",2;
+		sleep2 2000;
+		cloakonnpc( .@npc_a$ );
+		cloakonnpc( .@npc_b$ );
+		cloakonnpc( .@npc_c$ );
+		cloakonnpc( .@npc_d$ );
+		cutin "",255;
+		setpcblock( PCBLOCK_NPC, false );
+		disablenpc();
+		mapannounce 'map_1exsh$, "??????：呃啊啊啊！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+		mapannounce 'map_1exsh$, "??????：吼！！！！", bc_map, 0xB7EE,FW_NORMAL,16;
+		if ('step == 6)
+			donpcevent instance_npcname("doram_job_change_mob_3") + "::OnStart";
+		end;
+	}
+	end;
+}
+
+
+// Step 6
+1@exsh,90,148,3	script(CLOAKED)	玄鹿#sh2	4_EXJOB_HYUN_ROK,{
+	if ('step >= 8) {	// custom (debug)
+		warp "pay_fild09",113,343;
+		end;
+	}
+	end;
+}
+
+1@exsh,93,39,3	script	doram_job_change_mob_3	-1,{
+	end;
+OnStart:
+	'step = 7;
+	.@event$ = instance_npcname("doram_job_change_mob_3") + "::OnMobDead";
+	monster 'map_1exsh$,92,140,"??????","G_THA_ODIUM",1, .@event$;
+	monster 'map_1exsh$,92,140,"??????","G_THA_ODIUM",1, .@event$;
+	monster 'map_1exsh$,92,140,"??????","G_THA_ODIUM",1, .@event$;
+	end;
+
+OnMobDead:
+	if ('step != 7 || mobcount( 'map_1exsh$, instance_npcname("doram_job_change_mob_3") + "::OnMobDead" ) != 0)
+		end;
+	'step = 8;
+
+	setpcblock( PCBLOCK_NPC, true );
+	.@npc_a$ = instance_npcname("鐵虎#sh_c2");
+	.@npc_b$ = instance_npcname("神龜#sh_k2");
+	.@npc_c$ = instance_npcname("狂生#sh_t2");
+	.@npc_d$ = instance_npcname("玄鹿#sh2");
+
+	cloakoffnpc( .@npc_a$ );
+	cloakoffnpc( .@npc_b$ );
+	cloakoffnpc( .@npc_c$ );
+	cloakoffnpc( .@npc_d$ );
+	sleep2 2000;
+	npctalk "狂生：啊！！", .@npc_c$;
+	emotion ET_HUK, getnpcid(0,.@npc_c$);
+	sleep2 2000;
+	npctalk "狂生：為什麼！！！", .@npc_c$;
+	sleep2 2000;
+	npctalk "玄鹿：妄想用這點力量就想征服這座森林，真是太魯莽了。", .@npc_d$;
+	cutin "ex_sh_hyunrok01.png",2;
+	sleep2 2000;
+	npctalk "玄鹿：你最好回到你該去的地方。", .@npc_d$;
+	sleep2 2000;
+	cutin "",255;
+	npctalk "狂生：啊啊啊！！！！！", .@npc_c$;
+	sleep2 500;
+	cloakonnpc( .@npc_c$ );
+	sleep2 1500;
+	npctalk "玄鹿：即使是微小的痕跡對你來說似乎也太過沉重，但我希望這些痕跡能成為你反省罪過的契機。", .@npc_d$;
+	cutin "ex_sh_hyunrok01.png",2;
+	sleep2 2000;
+	npctalk "玄鹿：還有 " + strcharinfo(0) + "，非常感謝你，儘管我之前很無禮，你還是願意幫助我們。", .@npc_d$;
+	sleep2 2000;
+	npctalk "鐵虎：謝謝你！", .@npc_a$;
+	cutin "ex_sh_chulho01.png",2;
+	sleep2 2000;
+	npctalk "鐵虎：那我們來開個派對吧，畢竟我們教訓了那個壞蛋！", .@npc_a$;
+	sleep2 2000;
+	npctalk "神龜：舉辦宴會固然好，但如果你在森林裡待太久，就無法回去了。", .@npc_b$;
+	cutin "ex_sh_kisul01.png",2;
+	sleep2 2000;
+	npctalk "鐵虎：那你就可以一直陪我玩啦！", .@npc_a$;
+	cutin "ex_sh_chulho01.png",2;
+	sleep2 2000;
+	npctalk "玄鹿：那是不可能的。", .@npc_d$;
+	cutin "ex_sh_hyunrok01.png",2;
+	sleep2 2000;
+	npctalk "玄鹿：我現在就送你回去。", .@npc_d$;
+	sleep2 2000;
+	npctalk "鐵虎：切——", .@npc_a$;
+	cutin "ex_sh_chulho02.png",2;
+	emotion ET_CRY, getnpcid(0,.@npc_a$);
+	sleep2 2000;
+	npctalk "玄鹿：所以在你迷戀上這個地方之前，趕快回去吧。", .@npc_d$;
+	cutin "ex_sh_hyunrok01.png",2;
+	sleep2 2000;
+	npctalk "玄鹿：我在森林前留了一封簡短的信給你回去時看，請在離開前看一眼。", .@npc_d$;
+	sleep2 2000;
+	npctalk "玄鹿：拜託了……", .@npc_d$;
+	sleep2 2000;
+	npctalk "玄鹿：祝你回家路上一路平安……", .@npc_d$;
+	if (isbegin_quest(11782) == 1) {
+		erasequest 11782;
+		setquest 11769;
+	}
+	if ('step == 8)
+		'step = 9;
+	sleep2 2000;
+	setpcblock( PCBLOCK_NPC, false );
+	cutin "",255;
+	warp "pay_fild09",113,343;
+	end;
+}

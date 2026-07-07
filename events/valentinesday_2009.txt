@@ -1,0 +1,635 @@
+//===== rAthena Script =======================================
+//= iRO Valentine's Day Event (2009)
+//===== By: ==================================================
+//= Kisuka
+//===== Current Version: =====================================
+//= 1.3
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= iRO Valentine's Day Event. (2009)
+//= Make Chocolate/Chocolate Boxes/Home-Made Chocolate.
+//= Make Valentine's Rings/Boxes.
+//= Trade rings to those of opposite gender.
+//= Register rings you have gotten for votes.
+//=
+//= The male and female with the most votes at the end of
+//= the event will receive item (14466) from GM team.
+//=
+//= Must enable the event items in item_db2 and item_trade!
+//===== Additional Comments: =================================
+//= 1.0 First version. [Kisuka]
+//= 1.1-1.2 Fixed exploits with unlimited rings and non deleting choco [Lupus]
+//= 1.3 Some Changes. [Kisuka]
+//============================================================
+
+// Marco Bassinio (Chocolate/Chocolate Box maker)
+//============================================================
+prontera,164,174,4	script	交易員#Val09	58,{
+	mes "[馬可·巴西尼奧]";
+	mes "嘿，各位！這裡有你平常看不到的好東西！";
+	mes "在盧恩米德加爾特王國絕對找不到的好東西！";
+	mes "咬一口就能讓你感到幸福的美味！";
+	next;
+	mes "[馬可·巴西尼奧]";
+	mes "這是最棒的甜點，也是送給愛人的完美禮物。";
+	mes "高品質的傳統手工巧克力，每個只要 5000 Zeny！";
+	next;
+	switch(select("我要買！:我想包裝巧克力！:結束交易。")) {
+		case 1:
+			mes "[馬可·巴西尼奧]";
+			mes "啊哈哈，親愛的。";
+			mes "這巧克力跟其他的不一樣。";
+			mes "每一塊都包含了製作者的心血！";
+			next;
+			mes "[馬可·巴西尼奧]";
+			mes "所以，我一次不能賣超過 5 個。";
+			mes "如果你真的非常想要更多，就再跟我說吧。";
+			mes "那麼你想要多少個呢？";
+			next;
+			while(.@input <= 0 || .@input > 5) {
+				input .@input;
+				if (.@input < 1) {
+					mes "[馬可·巴西尼奧]";
+					mes "喔，真是太可惜了！";
+					mes "我敢說你一定會錯過這個機會並後悔沒買的。";
+					next;
+					mes "[馬可·巴西尼奧]";
+					mes "記住，你在其他地方絕對找不到的！";
+					mes "改變主意的話，隨時歡迎回來。";
+					close;
+				}
+				if (.@input > 5) {
+					mes "[馬可·巴西尼奧]";
+					mes "呃.. 我不是告訴過你了嗎？";
+					mes "最多只能 5 個！";
+					mes "我不能賣給同一個人超過這個數量。";
+					next;
+					mes "[馬可·巴西尼奧]";
+					mes "而且你知道這不像一般的正餐。";
+					mes "吃太多對你也不太好。";
+					next;
+				}
+			}
+			if (!checkweight(558, .@input)) {
+				mes "[馬可·巴西尼奧]";
+				mes "你攜帶了太多物品。";
+				mes "請使用卡普拉服務。";
+				close;
+			}
+			set .@price, .@input * 5000;
+			if (Zeny < .@price) {
+				mes "[馬可·巴西尼奧]";
+				mes "看來你身上的 Zeny 不夠。";
+				mes "也許你該向朋友借點 Zeny。";
+				mes "因為我可不是每天都在這裡的。";
+				close;
+			} else {
+				mes "[馬可·巴西尼奧]";
+				mes "太好了！";
+				mes "當作禮物也非常完美！";
+				mes "你知道平常是買不到這種巧克力的。";
+				next;
+				mes "[馬可·巴西尼奧]";
+				mes "如果你想要更多，記得再來找我。";
+				mes "趁有機會多買一點也許是個好主意...！";
+				set Zeny,Zeny - .@price;
+				getitem 558,.@input;
+				close;
+			}
+		case 2:
+			mes "[馬可·巴西尼奧]";
+			mes "如果你想包裝巧克力，除了巧克力，當然還需要包裝紙、包裝緞帶和一個禮盒。";
+			next;
+			mes "[馬可·巴西尼奧]";
+			mes "你還需要支付 500 Zeny 將你的名字刻在禮盒上。";
+			mes "你都準備好了嗎...？";
+			next;
+			if (countitem(7175) < 1 || countitem(7174) < 1 || countitem(7948) < 1 || Zeny < 500) {
+				mes "[馬可·巴西尼奧]";
+				mes "嗯.. 看來你沒有足夠的材料來裝飾禮盒..";
+				mes "你總不能把禮物隨便塞進一個普通的盒子裡吧..";
+				mes "你不覺得嗎？";
+				next;
+				mes "[馬可·巴西尼奧]";
+				mes "你需要帶一些包裝紙、包裝緞帶和一個禮盒。";
+				mes "喔，還要帶 500 Zeny，別忘了帶上你真誠的愛心！！";
+				close;
+			}
+			if (countitem(558) < 1) {
+				mes "[馬可·巴西尼奧]";
+				mes "嘿，看這邊，冒險家！";
+				mes "我沒辦法無中生有！";
+				mes "你知道我不是鍊金術師之類的。";
+				next;
+				mes "[馬可·巴西尼奧]";
+				mes "你該不會是想要一個沒有巧克力的空禮盒吧，對嗎？";
+				close;
+			}
+			if (!checkweight(12744,1)) {
+				mes "[馬可·巴西尼奧]";
+				mes "你攜帶了太多物品。";
+				mes "請使用卡普拉服務。";
+				close;
+			}
+			mes "[馬可·巴西尼奧]";
+			mes "來，你看！";
+			mes "這是刻有你名字的巧克力禮盒。";
+			mes "是不是很棒？";
+			mes "看，你的名字印在盒子上多好看！";
+			next;
+			delitem 558,1;
+			delitem 7175,1;
+			delitem 7174,1;
+			delitem 7948,1;
+			set Zeny,Zeny-500;
+			getnameditem 12744,strcharinfo(0);
+			mes "[馬可·巴西尼奧]";
+			mes "情人節快樂！";
+			mes "情人節就是我回來的原因。";
+			close;
+		case 3:
+			mes "[馬可·巴西尼奧]";
+			mes "喔，真是太可惜了！";
+			mes "我敢說你一定會錯過這個機會並後悔沒買的。";
+			next;
+			mes "[馬可·巴西尼奧]";
+			mes "記住，你在其他地方絕對找不到的！";
+			mes "改變主意的話，隨時歡迎回來。";
+			close;
+	}
+}
+
+// Packs 交易員 (Sells Wrapping Paper, Lace, and Box)
+//============================================================
+prontera,147,171,5	script	包裝商人#Val09	58,{
+	mes "[包裝商人]";
+	mes "你好。";
+	mes "我是包裝商人，我販售用來包裝禮物的紙盒和用品。";
+	next;
+	while(1) {
+		mes "[包裝商人]";
+		mes "你有想買什麼嗎？";
+		next;
+		switch(select("包裝紙:包裝緞帶:禮盒:取消。")) {
+			case 1:
+				mes "[包裝商人]";
+				mes "1 張包裝紙 200 Zeny。";
+				mes "你想要多少個？";
+				mes "你一次最多只能買 10 個物品。";
+				next;
+				input .@input;
+				if (.@input <= 0) {
+					mes "[包裝商人]";
+					mes "沒有要買的東西。";
+					mes "有需要時再來吧。";
+					close;
+				}
+				if (.@input > 10) {
+					mes "[包裝商人]";
+					mes "我說過不能買超過 10 個...";
+					next;
+					break;
+				}
+				if (!checkweight(7175,.@input)) {
+					mes "[包裝商人]";
+					mes "你攜帶了太多物品。";
+					mes "請使用卡普拉服務。";
+					close;
+				}
+				set .@price, .@input * 200;
+				if (Zeny < .@price) {
+					mes "[包裝商人]";
+					mes "你的錢不夠。";
+					mes "請檢查你的錢包。";
+					next;
+					break;
+				} else {
+					mes "[包裝商人]";
+					mes "這些給你。";
+					mes "希望這能讓你的情人節更加愉快！";
+					set Zeny,Zeny-.@price;
+					getitem 7175,.@input;
+					next;
+					break;
+				}
+			case 2:
+				mes "[包裝商人]";
+				mes "1 個包裝緞帶 200 Zeny。";
+				mes "你想要多少個？";
+				mes "你一次最多只能買 10 個物品。";
+				next;
+				input .@input;
+				if (.@input <= 0) {
+					mes "[包裝商人]";
+					mes "沒有要買的東西。";
+					mes "有需要時再來吧。";
+					close;
+				}
+				if (.@input > 10) {
+					mes "[包裝商人]";
+					mes "我說過不能買超過 10 個...";
+					next;
+					break;
+				}
+				if (!checkweight(7174,.@input)) {
+					mes "[包裝商人]";
+					mes "你攜帶了太多物品。";
+					mes "請使用卡普拉服務。";
+					close;
+				}
+				set .@price, .@input * 200;
+				if (Zeny < .@price) {
+					mes "[包裝商人]";
+					mes "你的錢不夠。";
+					mes "請檢查你的錢包。";
+					next;
+					break;
+				} else {
+					mes "[包裝商人]";
+					mes "這些給你。";
+					mes "希望這能讓你的情人節更加愉快！";
+					set Zeny,Zeny-.@price;
+					getitem 7174,.@input;
+					next;
+					break;
+				}
+			case 3:
+				mes "[包裝商人]";
+				mes "1 個禮盒 600 Zeny。";
+				mes "你想要多少個？";
+				mes "你一次最多只能買 10 個物品。";
+				next;
+				input .@input;
+				if (.@input <= 0) {
+					mes "[包裝商人]";
+					mes "沒有要買的東西。";
+					mes "有需要時再來吧。";
+					close;
+				}
+				if (.@input > 10) {
+					mes "[包裝商人]";
+					mes "我說過不能買超過 10 個...";
+					next;
+					break;
+				}
+				if (!checkweight(7948,.@input)) {
+					mes "[包裝商人]";
+					mes "你攜帶了太多物品。";
+					mes "請使用卡普拉服務。";
+					close;
+				}
+				set .@price, .@input * 600;
+				if (Zeny < .@price) {
+					mes "[包裝商人]";
+					mes "你的錢不夠。";
+					mes "請檢查你的錢包。";
+					next;
+					break;
+				} else {
+					mes "[包裝商人]";
+					mes "這些給你。";
+					mes "希望這能讓你的情人節更加愉快！";
+					set Zeny,Zeny-.@price;
+					getitem 7948,.@input;
+					next;
+					break;
+				}
+			case 4:
+				mes "[包裝商人]";
+				mes "再見！";
+				mes "祝你情人節愉快。";
+				close;
+		}
+	}
+}
+
+// Event Ring Maker (Makes ring for players)
+//============================================================
+prontera,154,185,5	script	活動戒指製作人#Val09	721,{
+	if (BaseLevel < 75) {
+		mes "[活動戒指製作人]";
+		mes "你好，我只為 75 級以上的資深冒險家製作情人節戒指。";
+		next;
+		mes "[活動戒指製作人]";
+		mes "你還不夠資深。";
+		mes "等你經驗豐富到能應付這些任務時再來吧。";
+		close;
+	}
+	
+	if (iROval09ring >= 1) {
+		mes "[活動戒指製作人]";
+		mes "這個刻有你名字並裝著戒指的禮盒，是給你的愛人的。";
+		next;
+		mes "[活動戒指製作人]";
+		mes "至於你從別人那裡收到的戒指，應該去跟投票管理員登記。";
+		mes "她站在普隆德拉噴泉附近。";
+		next;
+		mes "[活動戒指製作人]";
+		mes "只有最受歡迎的男女性才能獲得獎勵。";
+		mes "請注意，隨時保持受歡迎的狀態！";
+		close;
+	}
+	
+	mes "[活動戒指製作人]";
+	mes "你好啊，最近好嗎？";
+	mes "如果你對『誰是情人節最受歡迎的人？』活動感興趣，就來找我吧。";
+	next;
+	mes "[活動戒指製作人]";
+	mes "我能製作出最珍貴的戒指，讓你可以送給你的甜心。";
+	mes "這些戒指非常特別，因為我會在上面刻上你的名字！";
+	next;
+	mes "[活動戒指製作人]";
+	mes "這是不是很令人興奮？";
+	mes "這主意是不是很棒？";
+	mes "把這些特別的戒指送給你的甜心吧！";
+	next;
+	mes "[活動戒指製作人]";
+	mes "你最好快點，因為這個活動只持續兩週。";
+	mes "將情人節戒指作為禮物送給那個特別的人。";
+	next;
+	mes "[活動戒指製作人]";
+	mes "記住，你只能製作一次戒指。";
+	mes "你還需要包裝紙、包裝緞帶和禮盒來製作戒指。";
+	next;
+	mes "[活動戒指製作人]";
+	mes "所以你最好確定要把它送給誰。";
+	mes "順帶一提，這需要花費 1,000 Zeny。";
+	mes "你想做一個嗎？";
+	next;
+	if(select("嗯.. 我得再想一下...:好的。") == 1) {
+		mes "[活動戒指製作人]";
+		mes "好的！";
+		mes "這種事情急不得。";
+		mes "仔細想想你真正想要的是什麼。";
+		mes "跟隨你的心！";
+		close;
+	}
+	if (countitem(7175) < 1 || countitem(7174) < 1 || countitem(7948) < 1 || Zeny < 1000) {
+		mes "[活動戒指製作人]";
+		mes "嗯，你沒有足夠的材料來製作禮盒。";
+		mes "檢查一下你有什麼，稍後帶著所有的材料再來吧。";
+		close;
+	}
+	mes "[活動戒指製作人]";
+	mes "好滴！";
+	mes "我馬上為你製作。";
+	next;
+	delitem 7175,1;
+	delitem 7174,1;
+	delitem 7948,1;
+	set Zeny,Zeny-1000;
+	set iROval09ring,1;
+	if (Sex == SEX_MALE) {
+		getnameditem 12742,strcharinfo(0);
+	} else {
+		getnameditem 12743,strcharinfo(0);
+	}
+	mes "[活動戒指製作人]";
+	mes "來，世界上最珍貴的戒指！";
+	mes "別忘了，你無法再次製作這枚戒指了。";
+	next;
+	mes "[活動戒指製作人]";
+	mes "你必須挑選出你真正非常愛的人，並把這枚戒指送給他。";
+	next;
+	mes "[活動戒指製作人]";
+	mes "當然，你必須從別人那裡獲得戒指，這才是你參與投票的方式，對吧？";
+	mes "挑戰自己成為情人節最受歡迎的人吧！";
+	close;
+}
+
+// Valentine Vote Manager (Registers votes)
+//============================================================
+prontera,157,185,4	script	情人節投票管理員#v	113,{
+	mes "[情人節投票管理員]";
+	mes "你好，我是情人節投票管理員。";
+	mes "我負責收集這次活動的戒指！";
+	next;
+	mes "[情人節投票管理員]";
+	mes "我會登記你從別人那裡拿到的戒指，並計算戒指的總數。";
+	next;
+	mes "[情人節投票管理員]";
+	mes "你知道除了計算戒指之外，我還做什麼嗎？";
+	mes "我可以告訴你得票數最多的冒險家的名字。";
+	next;
+	mes "[情人節投票管理員]";
+	mes "此外，你還可以知道他/她得了多少票。";
+	next;
+	while (1) {
+		mes "[情人節投票管理員]";
+		mes "那麼，你想要做什麼？";
+		next;
+		switch(select("請登記我的戒指。:請計算我的票數。:現在沒事。")) {
+			case 1:
+				mes "[情人節投票管理員]";
+				mes "請告訴我你想登記多少枚戒指。";
+				next;
+				mes "[情人節投票管理員]";
+				mes "當你輸入戒指的數量時，該數量不能大於你實際擁有的戒指數量。";
+				mes "輸入『0』將取消一切操作。";
+				next;
+				input .@input;
+
+				if (.@input <= 0) {
+					mes "[情人節投票管理員]";
+					mes "你輸入了 0。";
+					mes "登記已取消。";
+					next;
+					break;
+				}
+				
+				if (Sex == SEX_MALE) {
+					if (countitem(7947) > .@input) {
+						mes "[情人節投票管理員]";
+						mes "看來你輸入的數值太小了。";
+						mes "我知道你還有更多。誠實一點，親愛的。";
+						next;
+						break;
+					}
+					
+					if (countitem(7947) < .@input) {
+						mes "[情人節投票管理員]";
+						mes "看來你輸入的數值太大了。";
+						mes "我知道你沒那麼多。誠實一點，親愛的。";
+						next;
+						break;
+					}
+					
+					mes "[情人節投票管理員]";
+					mes "我會收下那些銀戒指，並為你計算票數。";
+					mes "感謝你的參與。";
+					delitem 7947,.@input;
+					set Val09Rings,Val09Rings+.@input;
+					if (Val09Rings > $Val09votes_M) {
+						set $Val09votes_M,Val09Rings;
+						set $Val09name_M$,strcharinfo(0);
+					}
+					next;
+					break;
+				} else {
+					if (countitem(7946) > .@input) {
+						mes "[情人節投票管理員]";
+						mes "看來你輸入的數值太小了。";
+						mes "我知道你還有更多。誠實一點，親愛的。";
+						next;
+						break;
+					}
+					
+					if (countitem(7946) < .@input) {
+						mes "[情人節投票管理員]";
+						mes "看來你輸入的數值太大了。";
+						mes "我知道你沒那麼多。誠實一點，親愛的。";
+						next;
+						break;
+					}
+					
+					mes "[情人節投票管理員]";
+					mes "我會收下那些金戒指，並為你計算票數。";
+					mes "感謝你的參與。";
+					delitem 7946,.@input;
+					set Val09Rings,Val09Rings+.@input;
+					if (Val09Rings > $Val09votes_F) {
+						set $Val09votes_F,Val09Rings;
+						set $Val09name_F$,strcharinfo(0);
+					}
+					next;
+					break;
+				}
+			case 2:
+				mes "[情人節投票管理員]";
+				mes "讓我看看...";
+				mes "到目前為止，你已經登記了...."+Val09Rings+" 枚戒指。";
+				mes "還有...";
+				next;
+				mes "[情人節投票管理員]";
+				mes "目前的記錄顯示... "+$Val09name_M$+" 是目前男性得票最高的人，總共登記了 "+$Val09votes_M+" 枚戒指。";
+				next;
+				mes "[情人節投票管理員]";
+				mes "目前的記錄顯示... "+$Val09name_F$+" 是目前女性得票最高的人，總共登記了 "+$Val09votes_F+" 枚戒指。";
+				next;
+				break;
+
+			case 3:
+				mes "[情人節投票管理員]";
+				mes "嘿，你也可以變受歡迎的！";
+				mes "任何人都可以... 真的！";
+				mes "雖然你得再努力一點，不過還是有機會的?哈哈哈！";
+				close;
+		}
+	}
+}
+
+// Charles Orleans (Makes Home-Made Chocolates)
+//============================================================
+prt_castle,42,35,3	script	甜點主管#Val09	47,{
+	if (Sex == SEX_MALE) {
+		mes "[查爾斯·奧爾良]";
+		mes "先生?！是什麼風把你吹來我這美麗的工作室？";
+		mes "你想要什麼？";
+		mes "唉，要不是有美麗的小姐在，我這閃亮的眼睛都要乾涸失去光彩了。";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "除非你有正事，否則請別來煩我。";
+		mes "哈啊?我是個大忙人。";
+		mes "別煩我....";
+		mes "煩死了，煩死了，煩死了??！";
+		close;
+	}
+	
+	mes "[查爾斯·奧爾良]";
+	mes "喔，小姐！";
+	mes "妳走進來的那一刻，這個微不足道的小空間彷彿變成了天堂！";
+	mes "如果不介意的話，有什麼我可以幫妳的嗎？";
+	next;
+	if(select("請幫我做一些巧克力。:不用麻煩了。我只是路過。") == 2) {
+		mes "[查爾斯·奧爾良]";
+		mes "啊，這真是太令人心碎了。";
+		mes "妳怎麼能這麼說？";
+		mes "妳真是太殘忍了。";
+		mes "不用麻煩？只是路過？";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "我該怎麼做才能讓妳";
+		mes "稍微注意我一下呢？";
+		mes "拜託.. 我覺得我的靈魂都迷失了..";
+		close;
+	}
+	if (countitem(558) < 3) {
+		mes "[查爾斯·奧爾良]";
+		mes "啊，小姐。";
+		mes "我不是鍊金術師，也不是魔術師。";
+		mes "我不是隨便拿什麼東西就能做出巧克力的。";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "我一直把製作巧克力視為一項藝術工作。";
+		mes "妳看，我可不是一般的廚師...";
+		mes "我是用心意來製作巧克力的..";
+		mes "以及充滿愛心的訊息..";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "我製作的都是傑作。";
+		mes "沒有人能模仿它的外觀和味道。";
+		mes "沒錯，這跟普通的巧克力完全不同！";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "恐怕我現在沒辦法做出來證明給妳看。";
+		mes "這真是太遺憾了！";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "我非常感謝妳來拜訪我，如果妳能帶來 ^3152ff3個 巧克力^000000，我會為妳製作妳從未見過的巧克力...";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "從未嚐過的美味...";
+		mes "小姐，以妳的精神，我相信妳一定能帶來 3 塊巧克力。";
+		mes "我對此深信不疑。";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "那麼... 妳覺得呢？";
+		mes "妳能帶來 ^3152ff3個 巧克力^000000 嗎？";
+		mes "我本來可以自己去拿的，但如妳所見，我現在被這麼多工作纏身。";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "再會了，小姐.....";
+		mes "我會等妳的。";
+		close;
+	} else {
+		if (!checkweight(559,1)) {
+			mes "[查爾斯·奧爾良]";
+			mes "你攜帶了太多物品。";
+			mes "請使用卡普拉服務。";
+			close;
+		}
+		mes "[查爾斯·奧爾良]";
+		mes "喔，小姐！";
+		mes "我會用妳帶來的巧克力做出最好的作品。";
+		mes "我要將妳眼中的光芒注入這無人能抗拒的巧克力中。";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "它會比甜美的愛情靈藥還要強烈.....";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "Un, Deux, Trois, Quatre.....（一、二、三、四.....）";
+		mes "就像醜小鴨變成美麗的天鵝一樣—";
+		mes "普通的巧克力塊正在變成一件藝術品！";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "它們正在改變！";
+		mes "它們正在變暖，輕柔地改變形狀，再次變得更強烈！";
+		mes "喔，這難道不是傑作，";
+		mes "還會是什麼...！！";
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "給妳，小姐！";
+		mes "啊哈哈哈哈，看看這個！";
+		mes "真不敢相信這是我做的。";
+		mes "喔，我簡直無法移開視線..！！";
+		delitem 558,3;
+		getitem 559,1;
+		next;
+		mes "[查爾斯·奧爾良]";
+		mes "好了。小姐，";
+		mes "我希望這正是妳想要的，因為它蘊含著妳美麗的心。";
+		close;
+	}
+	
+}

@@ -1,0 +1,118 @@
+//===== rAthena Script ======================================= 
+//= Banker Script 
+//===== By: ================================================== 
+//= Syrus22 (1.0)
+//===== Current Version: ===================================== 
+//= 2.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= An account wide Banker to store Zeny
+//===== Additional Comments: ================================= 
+//= Syrus22 - There's an optional transaction fee at the top of
+//= the script. To use it simply change the first set command
+//= to set the cost variable to whatever you want the fee to be.
+//= Version 2.0: Optimized and brought the script up to standard. [Jguy]
+//============================================================ 
+
+prontera,132,217,5	script	銀行員	109,{
+	set @cost,500;
+	mes "[銀行員]";
+	mes "歡迎來到普隆德拉第一銀行。今天有什麼我可以為您服務的嗎？";
+	next;
+	switch(select("我想存款。:我想提款。:我目前的餘額是多少？:取消")) {
+	case 1:
+		mes "[銀行員]";
+		mes "好的... 請問您想存入多少？您一次最多可以存入 999,999 Zeny。";
+		next;
+		if (@cost > 0) {
+			mes "[銀行員]";
+			mes "哦，對了，提醒您所有交易都會收取 " +@cost + " Zeny 的手續費！";
+			next;
+		}
+		input @deposit;
+		if (@deposit < 1) {
+			mes "請確保您要求存入一個有效的金額。";
+			close;
+		}
+		else if (@deposit > Zeny) {
+			mes "看來您並沒有足夠的 Zeny 來進行這筆存款！";
+			close;
+		}
+		else if (@deposit > (Zeny - @cost)) {
+			mes "您需要 " + @cost + " Zeny 來支付手續費！";
+			close;
+		}
+		else {
+			set Zeny,Zeny - @deposit;
+			set Zeny,Zeny - @cost;
+			set #bankstorage,#bankstorage + @deposit;
+			mes "[銀行員]";
+			mes "非常感謝... 您的 Zeny 在這很安全。";
+			close;
+		}
+	case 2:
+		mes "[銀行員]";
+		mes "好的... 請問您想提取多少？您一次最多可以提取 999,999 Zeny。";
+		next;
+		if (@cost > 0) {
+			mes "[銀行員]";
+			mes "哦，對了，提醒您所有交易都會收取 " +@cost + " Zeny 的手續費！";
+			next;
+		}
+		input @withdrawl;
+		if (@withdrawl < 1) {
+			mes "請別開玩笑了。我需要一個有效的提取金額。";
+			close;
+		}
+		else if (@withdrawl > #bankstorage) {
+			mes "您的帳戶裡只有 ^00FF00" + callfunc("F_InsertComma",#bankstorage) +"^000000 Zeny！";
+			close;
+		}
+		else if ((@cost > Zeny) && ((Zeny + @withdrawl) > @cost)) {
+			mes "[銀行員]";
+			mes "您現在沒有足夠的 Zeny 來支付手續費。您希望我直接從您的提款金額中扣除手續費嗎？";
+			next;
+			switch(select("好的，麻煩了。:不用了，謝謝")){
+			case 1:
+				mes "[銀行員]";
+				mes "從您的提款金額中扣除 " + @cost + " 來支付手續費...";
+				set @withdrawl,@withdrawl - @cost;
+				set #bankstorage,#bankstorage - @cost;
+				set @cost,0;
+				next;
+				set Zeny,Zeny - @cost;
+				set Zeny,Zeny + @withdrawl;
+				set #bankstorage,#bankstorage - @withdrawl;
+				mes "[銀行員]";
+				mes "這是您的 Zeny。祝您有美好的一天。";
+				close;
+			case 2:
+				mes "[銀行員]";
+				mes "好的... 歡迎下次光臨。";
+				close;
+			}
+		}
+		else {
+			set Zeny,Zeny - @cost;
+			set Zeny,Zeny + @withdrawl;
+			set #bankstorage,#bankstorage - @withdrawl;
+			mes "[銀行員]";
+			mes "這是您的 Zeny。祝您有美好的一天。";
+			close;
+		}
+	case 3:
+		mes "[銀行員]";
+		mes "嗯... 讓我查一下文件。";
+		next;
+		mes "*翻找聲，翻找聲*";
+		next;
+		mes "[銀行員]";
+		mes "您的帳戶目前有 " + callfunc("F_InsertComma",#bankstorage) + " Zeny。";
+		close;
+	case 4:
+		mes "[銀行員]";
+		mes "好的... 歡迎下次光臨。";
+		close;
+	}
+}

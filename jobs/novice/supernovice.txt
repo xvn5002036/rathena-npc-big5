@@ -1,0 +1,445 @@
+//===== rAthena Script ======================================= 
+//= Super Novice Job Quest
+//===== By: ================================================== 
+//= Darkchild
+//===== Current Version: ===================================== 
+//= 2.4
+//===== Compatible With: ===================================== 
+//= rAthena Project; SVN r15340+
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Super Novice Job Change Npc
+//= Super Novice Cart Rental Npc
+//= Some Other Useless Super Novice Npc
+//===== Additional Comments: ================================= 
+//= 1.9 Rescripted to the Aegis 10.3 Standars. [Samuray22]
+//= 2.0 Rescripted again, this time using an iRO base. [L0ne_W0lf]
+//= 2.1 Swapped use of baseclass for basejob. [L0ne_W0lf]
+//= 2.2 Added Quest Log commands. [Kisuka]
+//= 2.3 NPC "Esseray" calls Ex. Super Novice script when enabled. [Euphy]
+//= 2.4 Added an Ex. Super Novice dialog check. [Euphy]
+//============================================================ 
+
+aldeba_in,223,167,3	script	采雷羅#sn	709,{
+	if (BaseJob == Job_Super_Novice) {
+		mes "[采雷羅]";
+		mes "我相信你很享受身為";
+		mes "超級初心者的生活吧？啊，";
+		mes "很好很好...正如我所料。";
+		mes "的確，平凡的光芒在你體內閃耀著...";
+		next;
+		mes "[采雷羅]";
+		mes "我鼓勵你像";
+		mes "金修先生那樣生活...";
+		mes "成為一個萬事通...";
+		mes "...卻樣樣不精。";
+		close;
+	}
+	if (countitem(938) > 29 && countitem(907) > 29 && SUPNOV_Q == 1) {
+		delitem 938,30; //Sticky_Mucus
+		delitem 907,30; //Resin
+		mes "[采雷羅]";
+		mes "啊，你帶來了";
+		mes "我要求的物品！";
+		mes "你已經證明自己";
+		mes "有資格加入我們的";
+		mes "超級初心者俱樂部。";
+		next;
+		mes "[采雷羅]";
+		mes "那麼，按照約定，我將";
+		mes "把你的職業轉為";
+		mes "^3355FF超級初--^000000咦？";
+		mes "你背後那是什麼？";
+		next;
+		select("咦？:那是什麼？");
+		mes "^3355FF你往背後看，但是...";
+		mes "那裡什麼都沒有。";
+		mes "這其中一定有詐！^000000";
+		next;
+		completequest 6010;
+		callfunc "F_ClearJobVar";
+		getitem 2339,1; //G_Strings
+		if (Upper==0) jobchange Job_Super_Novice;
+		if (Upper==2) jobchange Job_Super_Baby;
+		mes "[采雷羅]";
+		mes "哇哈哈！騙到你了！";
+		mes "所以...你喜歡我的玩笑嗎？";
+		mes "算了，我們忘了這件事吧...";
+		next;
+		mes "[采雷羅]";
+		mes "還有像我這樣的";
+		mes "成年男子，會隨身攜帶";
+		mes "一件內褲的任何可能原因。";
+		next;
+		mes "[采雷羅]";
+		mes "重要的是...";
+		mes "你已經加入了偉大的超級初心者";
+		mes "尊貴的行列。";
+		next;
+		mes "[采雷羅]";
+		mes "把這件內褲當作是禮物吧...";
+		mes "據說這件衣服是";
+		mes "我們傳奇的俱樂部創始人金修先生，";
+		mes "在早年致力於追求模範般的平凡時所穿的。";
+		next;
+		mes "[采雷羅]";
+		mes "去吧，享受你身為超級初心者";
+		mes "的全新生活！向前邁進並";
+		mes "幫助普通人，同時";
+		mes "自己也成為其中一員！";
+		close;
+	}
+	if (SUPNOV_Q == 1) {
+		mes "[采雷羅]";
+		mes "咦？你忘了我要你";
+		mes "做什麼嗎？好吧，";
+		mes "我再告訴你一次。";
+		mes "這次請記住...";
+		next;
+		mes "[采雷羅]";
+		mes "我請你帶";
+		mes "^FF000030 個 黏稠液體^000000 和";
+		mes "^FF000030 個 樹脂^000000 給我。";
+		close;
+	}
+	if (BaseJob == Job_Novice && Upper != 1) {
+		mes "[采雷羅]";
+		mes "...嗯？";
+		mes "停下來。";
+		mes "讓我看看你。";
+		next;
+		mes "[采雷羅]";
+		mes ".....";
+		mes ".......";
+		mes ".........";
+		emotion ET_THINK;
+		next;
+		mes "[采雷羅]";
+		mes "我看到平凡的光芒";
+		mes "在你體內閃耀著...";
+		next;
+		mes "[采雷羅]";
+		mes "你為什麼不加入我們呢，";
+		mes "年輕的初心者？加入";
+		mes "我們，學習平凡之中";
+		mes "微妙的偉大...";
+		next;
+		mes "[采雷羅]";
+		mes "接受我的提議...";
+		mes "脫下你那件佈滿灰塵的";
+		mes "棕色衣服，並綻放成為...";
+		next;
+		mes "[采雷羅]";
+		mes "...一名 ^CE6300超級初心者^000000。";
+		next;
+		switch(select("接受他的提議。:拒絕他的提議。:再仔細聽聽。")) {
+		case 1:
+			if (!callfunc("F_CanChangeJob")) {
+				mes "[采雷羅]";
+				mes "嗯...但是你真的";
+				mes "懂得在弱小中尋找力量的";
+				mes "價值嗎？你必須";
+				mes "向我證明你";
+				mes "是一個真正的低成就者。";
+				next;
+				mes "[采雷羅]";
+				mes "以初心者的身分生活...";
+				mes "當你精通了基本技能後";
+				mes "再回來...";
+				mes "在平凡中成長，並";
+				mes "成為一名職業等級 10 的初心者...";
+				close;
+			}
+			if (BaseLevel < 45) {
+				mes "[采雷羅]";
+				mes "嗯...但是你真的";
+				mes "重視平庸冒險者那輕鬆的生活方式嗎？";
+				mes "向我證明你並不";
+				mes "渴望力量...";
+				next;
+				mes "[采雷羅]";
+				mes "平淡地生活...";
+				mes "成為一名等級 45 的初心者...";
+				mes "到時候你就可以加入我們了...";
+				close;
+			}
+			mes "[采雷羅]";
+			mes "我能從你的眼中";
+			mes "看到簡單生活的決心...";
+			next;
+			mes "[采雷羅]";
+			mes "只有真正有智慧的人才能";
+			mes "看出，平凡與平庸是";
+			mes "生活最好的方式。";
+			next;
+			mes "[采雷羅]";
+			mes "然而，我們並不歡迎";
+			mes "任何人隨便加入我們的俱樂部。";
+			mes "你必須先通過我們的資格測驗。";
+			next;
+			mes "[采雷羅]";
+			mes "為了這個測驗，你必須";
+			mes "帶給我一些由普通、";
+			mes "不起眼的魔物掉落的物品。";
+			next;
+			mes "[采雷羅]";
+			mes "嗯...";
+			mes "^FF000030 個 黏稠液體^000000";
+			mes "和 ^FF000030 個 樹脂";
+			mes "^000000將適合用來測試你";
+			mes "對抗微弱敵人的能力。";
+			next;
+			mes "[采雷羅]";
+			mes "此外，數字 30";
+			mes "很有意義。它沒有什麼";
+			mes "特別的...只是一個";
+			mes "普通的數字。";
+			mes "哈哈哈哈哈?";
+			next;
+			set SUPNOV_Q,1;
+			setquest 6010;
+			mes "[采雷羅]";
+			mes "祝你好運，我的朋友。";
+			close;
+		case 2:
+			mes "[采雷羅]";
+			mes "哎呀，哎呀...我想簡單生活";
+			mes "的價值對你來說很難";
+			mes "理解。這...沒關係...";
+			mes "你的生活是你自己的。";
+			next;
+			mes "[采雷羅]";
+			mes "但是，如果你哪天看到了";
+			mes "平庸之光，隨時";
+			mes "歡迎你來拜訪我...";
+			next;
+			mes "[采雷羅]";
+			mes "隨著我們的初心者俱樂部";
+			mes "越來越受歡迎並獲得更多追隨者，";
+			mes "我們可能會考慮使用";
+			mes "更困難的測驗...";
+			close;
+		case 3:
+			mes "[采雷羅]";
+			mes "我們的初心者俱樂部是由傳奇的";
+			mes "金修先生創立的...他或許是";
+			mes "我們這個世代最偉大的人。";
+			next;
+			mes "[采雷羅]";
+			mes "他意識到世界上";
+			mes "有許多苦難，尤其是在";
+			mes "米德加爾特的平民百姓之中...";
+			next;
+			mes "[采雷羅]";
+			mes "他從遇到的各種人身上";
+			mes "學到了許多技能...但";
+			mes "因為他沒有在一個地方停留太久，";
+			mes "他成了一個萬事通...";
+			mes "卻樣樣不精。";
+			next;
+			mes "[采雷羅]";
+			mes "在分擔普通人的痛苦時，";
+			mes "他自己也成為了其中一員...";
+			mes "有史以來最偉大的";
+			mes "普通人。";
+			next;
+			mes "[采雷羅]";
+			mes "我們俱樂部的成員";
+			mes "試著像金修先生那樣生活，根據";
+			mes "他為我們定下的原則...";
+			close;
+		}
+	}
+	else {
+		if (BaseJob == Job_Super_Novice) {
+			mes "[采雷羅]";
+			mes "你喜歡身為一名";
+			mes "超級初心者的簡單生活嗎？";
+			mes "我相信你一定很享受?";
+			next;
+			mes "[采雷羅]";
+			mes "請以超級初心者的身分成長，";
+			mes "在幫助普通人的同時，";
+			mes "自己也成為其中一員...";
+			next;
+			mes "[采雷羅]";
+			mes "我鼓勵你在超級初心者的";
+			mes "道路上成長，並樹立一個";
+			mes "過著極其平凡生活的榜樣。";
+			close;
+		}
+		mes "[采雷羅]";
+		mes "你好，我是采雷羅，";
+		mes "偉大初心者俱樂部的";
+		mes "非官方執行總監。";
+		next;
+		mes "[采雷羅]";
+		mes "嗯...你看起來遠高於";
+		mes "一般人。是的，你絕對是";
+		mes "『非凡』多過於";
+		mes "『平凡』...";
+		next;
+		mes "[采雷羅]";
+		mes "*嘆氣* 我想你";
+		mes "永遠無法理解";
+		mes "我們的生活方式，那種";
+		mes "平凡之中微妙的偉大。不過";
+		mes "沒關係。";
+		next;
+		mes "[采雷羅]";
+		mes "嗯...這世界上有成千上萬種";
+		mes "不同的人，所以我只是試著去接受";
+		mes "我們之間的所有差異。";
+		mes "我希望你也能做到。";
+		close;
+	}
+}
+
+aldeba_in,216,169,5	script	艾瑟雷#sn	86,{
+	if (Class == Job_Super_Novice_E || Class == Job_Super_Baby_E) {
+		mes "[艾瑟雷]";
+		mes "你！比以前更強了。";
+		mes "我就知道你能通過測驗?";
+		close;
+	}
+	if (BaseJob == Job_Super_Novice) {
+		if (checkre(0))
+			callfunc "Esseray_Ex";
+		mes "[艾瑟雷]";
+		mes "嗯？嘿，你是我們";
+		mes "偉大初心者俱樂部的成員，";
+		mes "對吧？這難道不是";
+		mes "最棒的俱樂部嗎？！";
+		next;
+		mes "[艾瑟雷]";
+		mes "遵循金修先生的原則，";
+		mes "過著平淡的生活...";
+		mes "平凡真是太棒了！";
+		next;
+		mes "[艾瑟雷]";
+		mes "讓我們試著盡可能";
+		mes "正常地過我們的生活！";
+		mes "順帶一提，我是";
+		mes "頭號成員，當然是在";
+		mes "采雷羅先生之下！";
+		close;
+	}
+	if (BaseJob == Job_Novice && Upper != 1) {
+		mes "[艾瑟雷]";
+		mes "哈?你還完全不懂得";
+		mes "如何做一個普通人！";
+		mes "你為什麼不加入我們的初心者";
+		mes "俱樂部呢？這個俱樂部是世界上最棒的?";
+		next;
+		mes "[艾瑟雷]";
+		mes "沒錯，超級初心者";
+		mes "是最棒的職業！";
+		mes "哈哈哈哈哈哈哈！";
+		close;
+	}
+	else {
+		mes "[艾瑟雷]";
+		mes "呸?！你比一般人還要優秀...";
+		mes "搞不好你甚至是";
+		mes "『特別』的。";
+		mes "真可惜！嗯...";
+		mes "我希望你還是能積極地";
+		mes "過生活。";
+		close;
+	}
+}
+
+aldebaran,54,238,5	script	卡普拉服務人員#sn	117,{
+	if (BaseJob == Job_Super_Novice) {
+		mes "[卡普拉服務人員]";
+		if (Sex == SEX_MALE)
+			mes "你好，超級初心者先生?";
+		else
+			mes "你好，超級初心者小姐。";
+		mes "你一定很失望";
+		mes "其他卡普拉服務人員不讓你";
+		mes "向她們租用手推車。";
+		mes "不過現在別擔心了...";
+		next;
+		mes "[卡普拉服務人員]";
+		mes "我來這裡為你們";
+		mes "提供手推車的支援...";
+		next;
+		mes "[卡普拉服務人員]";
+		mes "^3355FF*小聲說*^000000";
+		mes "^555555我不應該這麼做，";
+		mes "因為這違反了我們的";
+		mes "公司規定。但我對";
+		mes "超級初心者感到非常抱歉";
+		mes "... 所以我來了。^000000";
+		next;
+		mes "[卡普拉服務人員]";
+		mes "總之，你想租用手推車嗎？服務費是 1,900 zeny。";
+		next;
+		if (select("租用手推車。:取消。") == 1) {
+			mes "[卡普拉服務人員]";
+			mes "哦，是這樣的...";
+			mes "你學會了『手推車使用』";
+			mes "技能嗎？我可以租給你";
+			mes "手推車，但如果你還沒學會";
+			mes "使用它，你只是在";
+			mes "浪費你的 zeny。";
+			next;
+			mes "[卡普拉服務人員]";
+			mes "所以請確保你";
+			mes "已經學會了『手推車使用』技能。";
+			next;
+			if (select("租用手推車。:取消。") == 1) {
+				if (checkcart()) {
+					mes "[卡普拉服務人員]";
+					mes "哦，你已經裝備了手推車。";
+					close;
+				}
+				if (Zeny >= 1899) {
+					set RESRVPTS, RESRVPTS + 190;
+					set Zeny, Zeny-1900;
+					if (getskilllv("MC_PUSHCART") > 0) setcart;
+					mes "[卡普拉服務人員]";
+					mes "感謝你使用我的服務。";
+					mes "雖然我所做的事對其他";
+					mes "卡普拉服務人員來說可能不合規定，但我堅信";
+					mes "我正在做對顧客正確的事。";
+					close;
+				}
+				else {
+					mes "[卡普拉服務人員]";
+					mes "很抱歉，但你身上的 zeny 不夠。服務費是 1,900 zeny。";
+					close;
+				}
+			}
+			mes "[卡普拉服務人員]";
+			mes "歡迎下次光臨。";
+			mes "感謝你使用我的服務。";
+			close;
+		}
+		mes "[卡普拉服務人員]";
+		mes "歡迎下次光臨。";
+		mes "感謝你使用我的服務。";
+		close;
+	}
+	mes "[卡普拉服務人員]";
+	mes "日安——哎呀...！";
+	mes "我想我無法為你提供";
+	mes "你想要的服務...";
+	mes "請去跟其他的";
+	mes "卡普拉服務人員談談。很抱歉";
+	mes "造成你的不便...";
+	close;
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= Dialogs From Some Other Scripts (Most Of It)
+//= 1.3-1.5 Added Baby class support (and to the Kafta SN Cart
+//=     renter, too) [Lupus]
+//= 1.6 Added a fix which prevent High Novices passing
+//=     this Job Quests again. [Lupus]
+//= 1.7 Fixed Baby Class Support. [Lupus]
+//= 1.8 Now a Baby can become a Super Baby [Lupus]
+//============================================================

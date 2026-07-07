@@ -1,0 +1,991 @@
+//===== rAthena Script =======================================
+//= God Items Quest
+//===== Description: =========================================
+//= [Official Conversion]
+//= God Item Hervor Creation script (WoE TE)
+//===== Changelogs: ==========================================
+//= 1.0 First Version.
+//============================================================
+
+te_prtcas01,204,204,3	script	鐵匠 凱#tegod01	4_M_RACHMAN2,{
+	if (checkweight(1201,1) == 0) {
+		mes "你身上的物品太多了，無法進行任務。";
+		mes "請減輕重量後再試一次。";
+		close;	}
+
+	.@guild_id = getcastledata("te_prtcas01",1);
+	.@economy  = getcastledata("te_prtcas01",2);
+	.@npc_name$ = "凱";
+	mes "["+ .@npc_name$ +"]";
+	if (.@guild_id != getcharid(2)) {
+		mes "你...你看起來好面生...？";
+		mes "你是來威脅我的嗎？";
+		mes "不是吧？";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我有我的苦衷。";
+		mes "拜託，請裝作沒看到我。";
+		close;
+	}
+	if (WoeTETimeStart(14400) == 1 || agitcheck3() == 1) {// cannot start the quest 4 hours before and during WOE TE
+		mes "從現在開始，我會安靜地待在這裡，直到攻城戰結束為止，不會打擾任何人。";
+		mes "請不要在意我。";
+		close;
+	}
+	if (is_guild_leader() == false) {
+		mes "對於你讓我待在這裡，我一直心存感激。";
+		mes "雖然沒什麼特別的... 但如果你需要，我可以為你製作一些有用的工具。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我是說如果公會會長需要的話。";
+		mes "我也是追求極致之道的工匠。";
+		mes "我希望能在此找到那條道路。";
+		close;
+	}
+	if ($2012_tegod_gloria == 0) {// event status
+		mes "啊... 會長。";
+		mes "我一直都非常感謝你。";
+		mes "既然欠了你這麼大的人情，只要有需要，我隨時都會幫你。";
+		next;
+		switch( select( "製作赫爾沃爾。","合成材料。","休息一下。" ) ) {
+		case 1:
+			if (.@economy > 29) {
+				if (countitem(6595) > 1 && countitem(6596) > 0 && countitem(6594) > 3 && countitem(6597) > 2 && countitem(6602) > 0 && countitem(6605) > 0 && countitem(6604) > 0 && countitem(2115) > 0) {
+					mes "^ff0000製作赫爾沃爾的過程中需要巴基力亞鋼盾。";
+					mes "為了進行任務，除了巴基力亞鋼盾之外，請不要攜帶任何其他物品。^ff0000";
+					next;
+					mes "^ff0000即使有精煉或插卡，過程中只需要你擁有的任何一面巴基力亞鋼盾。";
+					mes "請整理好身上的物品後再試一次。^000000";
+					next;
+					if (select( "整理物品。","繼續進行。" ) == 1) {
+						mes "你決定只保留巴基力亞鋼盾。";
+						close;
+					}
+					mes "["+ .@npc_name$ +"]";
+					mes "我看到你如約發展了這座城池。";
+					mes "而且，你還找到了韋倫的物品...";
+					next;
+					mes "["+ .@npc_name$ +"]";
+					mes "... 所以...我們開始動工吧。";
+					mes "趁那些女孩還沒發現我們...";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "那些女孩... ？";
+					next;
+					mes "["+ .@npc_name$ +"]";
+					mes "... 對，就是有一些女孩...";
+					mes "我就是因為她們才逃跑的...";
+					donpcevent "#tequest_master_prt01::OnCommandOn";
+					mapannounce "te_prtcas01","女孩的聲音：喂，你在說我們嗎？是"+ .@npc_name$ +"對吧？真不敢相信你居然跑到這種地方來。",bc_map,"0x00FF00",FW_BOLD,20,0,40;
+					next;
+					mes "["+ .@npc_name$ +"]";
+					mes "哦，不... ！";
+					mes "她們來了..！！";
+					next;
+					mes "[" + strcharinfo(0) + "]";
+					mes "交給我吧。";
+					next;
+					mes "^4d4dff!- 說明 -!";
+					mes "追捕"+ .@npc_name$ +"的7名女孩很快就會試圖入侵城池。";
+					mes "你必須保護"+ .@npc_name$ +" 1個小時。^000000";
+					next;
+					mes "^4d4dff!- 說明 -!";
+					mes "當實際攻擊開始時，華麗金屬區域的入口將會被封鎖以進行防護。^000000";
+					close;
+				}
+				mes "["+ .@npc_name$ +"]";
+				mes "赫爾沃爾是以女武神赫爾沃爾的名字命名的盾牌。";
+				mes "我不知道這座城池裡會有赫爾沃爾的丈夫韋倫曾經擁有的物品...";
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "如果我們使用這些，我們就能製作出赫爾沃爾。";
+				mes "對我來說就像夢想成真一樣... 我的手都在發抖。";
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "不過，似乎我們還需要更多的材料。";
+				mes "你能再確認一下嗎？我會把需要的清單給你。";
+				callsub S_Material, .@npc_name$,1,"因為這是韋倫之愛的結晶。";
+			}
+			mes "["+ .@npc_name$ +"]";
+			mes "不過，我可以說幾句話嗎？";
+			mes "赫爾沃爾是我製作過最強大的戰甲裝備之一，你值得從我這裡得到這樣的東西...";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "但我希望你至少具備最低限度的資格。";
+			mes "請好好管理這座城池，並將^4d4dff其商業度提升30或以上^000000。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "能力越大，責任與義務也越大。";
+			mes "我希望你先掌握好基礎。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "之後我就會為你製作赫爾沃爾。";
+			mes "如果你想要的話，我把材料清單給你。";
+			callsub S_Material, .@npc_name$,0,"因為這是韋倫之愛的結晶。";
+		case 2:
+			callsub S_Fuse, .@npc_name$, "赫爾沃爾";
+		case 3:
+			mes "["+ .@npc_name$ +"]";
+			mes "你這麼說真是太好了。";
+			mes "順帶一提，不知道我的弟弟卡諾過得好不好？";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "我相信他一定和我一樣過得很好。";
+			mes "... 希望事情能像現在一樣平靜。";
+			close;
+		}
+	}
+	if ($2012_tegod_gloria == 1) {// event started
+		mes "你聽到消息了嗎？";
+		mes "那些女孩來了。";
+		mes "那些冷酷無情的女孩！！！";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "既然她們已經宣戰了，隨時都會抵達這裡。";
+		mes "我敢肯定她們是為了赫爾沃爾而來的。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "請阻止她們，拜託了！";
+		next;
+		switch( select( "交給我吧。","你說的'那些女孩'是什麼意思？" ) ) {
+		case 1:
+			mes "["+ .@npc_name$ +"]";
+			mes "謝謝你...";
+			mes "很抱歉給你添麻煩了，但我真的無能為力。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "拜託，替我阻止她們！";
+			close;
+		case 2:
+			mes "["+ .@npc_name$ +"]";
+			mes "... 她們是一群想成為女武神的女孩...";
+			mes "而且她們總是七個人一起行動。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "她們想要的是強大的戰甲裝備...";
+			mes "她們總是威脅我和我的弟弟卡諾。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "一開始她們對基本武器還算滿意，但是";
+			mes "很快她們就開始威脅我們，說她們需要更強大的東西才能成為女武神。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "我受不了了，所以我逃跑了... 但她們還是追來了...";
+			mes "你必須小心，因為她們發現製作赫爾沃爾的材料就在這裡。";
+			close;
+		}
+	}
+	if ($2012_tegod_gloria == 2) {// after 10 minutes delay
+		mes "啊，別再跟著我了！";
+		mes "如果你能幫我趕走她們... 赫爾沃爾，沒錯！我就幫你製作赫爾沃爾！";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "她們什麼時候才會停止跟蹤我...";
+		mes "現在我對女孩都有陰影了... 我害怕得什麼都做不了...";
+		next;
+		mes "他在胡言亂語了。";
+		mes "等一下他就會冷靜下來。";
+		mes "你必須先解決掉那些女孩。";
+		close;
+	}
+	if ($2012_tegod_gloria == 3) {// event failed
+		mes "... 雖然我再次成功從她們手中逃脫...";
+		mes "但這太難了。";
+		mes "生活... 實在是太難了。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我累到什麼都做不了。";
+		mes "... 我想我暫時什麼都做不了，不管是製造、鍛造還是其他什麼。";
+		mes "對不起。我要休息一下。";
+		close;
+	}
+	if ($2012_tegod_gloria == 4) {
+		mes "我終於可以鬆一口氣了。";
+		mes "我會照約定開始製作赫爾沃爾。";
+		next;
+		switch( select( "製作赫爾沃爾。","合成材料。","現在不要。" ) ) {
+		case 1:
+			if (countitem(6595) > 1 && countitem(6596) > 0 && countitem(6594) > 3 && countitem(6597) > 2 && countitem(6602) > 0 && countitem(6605) > 0 && countitem(6604) > 0 && countitem(2115) > 0) {
+				mes "^ff0000製作赫爾沃爾的過程中需要巴基力亞鋼盾。";
+				mes "為了進行任務，除了巴基力亞鋼盾之外，請不要攜帶任何其他物品。^ff0000";
+				next;
+				mes "^ff0000即使有精煉或插卡，過程中只需要你擁有的任何一面巴基力亞鋼盾。";
+				mes "請整理好身上的物品後再試一次。^000000";
+				next;
+				if (select( "整理物品。","繼續進行。" ) == 1) {
+					mes "你決定只保留巴基力亞鋼盾。";
+					close;
+				}
+				mes "["+ .@npc_name$ +"]";
+				mes "喔... 謝謝你。";
+				mes "真不敢相信我終於親手接觸到這些材料了...";
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "完成了。";
+				mes "雖然經歷了許多步驟，但是不是很快呢？";
+				mes "我太專注了，感覺就像一瞬間。";
+				next;
+				mes "鐵匠韋倫為他的妻子赫爾沃爾所打造的盾牌「赫爾沃爾」，終於由";
+				mes ""+ .@npc_name$ +"之手製作完成。";
+				delitem 6595,2;// Hammer_Of_Velund
+				delitem 6596,1;// Anvil_Of_Velund
+				delitem 6594,4;// Magic_Bronze_Bullion
+				delitem 6597,3;// Bracelet_Of_Velund
+				delitem 6602,1;// Secret_Of_Rune
+				delitem 6605,1;// Muspellium
+				delitem 6604,1;// Essence_Of_Rune
+				delitem 2115,1;// Valkyrja's_Shield
+				$2012_tegod_gloria = 5;
+				getitem 2181,1;// Hervor
+				announce "韋倫的禮物 [ 赫爾沃爾 ] 藉由 ["+ getguildname(.@guild_id) +"] 公會的 ["+ strcharinfo(0) +"] 現世了。",bc_all,"0x70dbdb",FW_NORMAL,12;
+				if (.@economy > 20)
+					setcastledata "te_prtcas01",2,(.@economy-20);
+				else
+					setcastledata "te_prtcas01",2,1;// min is 1 for WOE TE
+				next;
+				mes "["+ .@npc_name$ +"]";
+				mes "呼.. 我想我有一陣子沒法工作了。";
+				mes "我筋疲力盡了。哈哈哈...";
+				close;
+			}
+			mes "["+ .@npc_name$ +"]";
+			mes "不過，似乎我們還需要更多的材料。";
+			mes "你能再確認一下嗎？我會把需要的清單給你。";
+			callsub S_Material, .@npc_name$,1;
+		case 2:
+			callsub S_Fuse, .@npc_name$, "赫爾沃爾";
+		case 3:
+			mes "["+ .@npc_name$ +"]";
+			mes "現在正是製作它的好時機。";
+			mes "等到下一顆華麗金屬出現時，就不會再有機會了。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "而且，請記住我一週只能做一次。";
+			close;
+		}
+	}
+	if ($2012_tegod_gloria == 5) {
+		mes "我有點累了。";
+		mes "我想我應該休息幾天。";
+		mes "我也許看起來還好，但我的精神已經非常疲憊了。";
+		close;
+	}
+	mes "真奇怪。";
+	mes "我說不出是什麼感覺。";
+	mes "我是不是生了什麼病？";
+	mes "是絕症嗎？";
+	close;
+
+S_Material:
+	.@npc_name$ = getarg(0);
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "^4d4dff2個 韋倫的鐵鎚";
+	mes "1個 韋倫的鐵砧";
+	mes "4個 魔法青銅塊";
+	mes "3個 韋倫的臂環";
+	mes "1個 盧恩文的秘密";
+	mes "1面 巴基力亞鋼盾";
+	mes "穆斯貝爾星?和盧恩的精華各1個^000000";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "我們需要這麼多的材料。";
+	mes getarg(2,"");
+	mes "順帶一提，穆斯貝爾星?和盧恩的精華需要額外的材料分開製作。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "為了製作穆斯貝爾星?，你需要^4d4dff合成50個神之金屬和50個鋁^000000。";
+	mes "至於盧恩的精華，你需要^4d4dff合成200個古代的符文原石和100個神秘的符文原石^000000。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "只要你有需求，我隨時都能為你製作穆斯貝爾星?和盧恩的精華，";
+	mes "當然，一旦我們湊齊所有需要的材料，我也會立刻為你製作耶夢加得。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	if (getarg(1))
+		mes "比起你為我所做的一切，我做的這些根本微不足道。";
+	else {
+		mes "不過，你恐怕找不到韋倫的物品。";
+		mes "... 但人們說它們一定會出現在真正渴望它的人面前。祝你好運。";
+	}
+	close;
+
+S_Fuse:
+	.@npc_name$ = getarg(0);
+	mes "["+ .@npc_name$ +"]";
+	mes "你想製作哪種材料？";
+	next;
+	switch( select( "穆斯貝爾星?","盧恩的精華","算了。" ) ) {
+	case 1:
+		mes "["+ .@npc_name$ +"]";
+		if (countitem(985) > 49 && countitem(984) > 49) {
+			mes "我會用你準備的材料來製作穆斯貝爾星?。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "不會花太多時間的。";
+			mes "完成了。";
+			mes "這是製作赫爾沃爾與耶夢加得不可或缺的材料。";
+			delitem 985,50;// Elunium
+			delitem 984,50;// Oridecon
+			getitem 6605,1;// Muspellium
+			close;
+		}
+		mes "為了製作穆斯貝爾星?，";
+		mes "^4d4dff你需要50個神之金屬和50個鋁。^000000";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "我們應該先把所有材料準備好吧？";
+		close;
+	case 2:
+		mes "["+ .@npc_name$ +"]";
+		if (countitem(12735) > 199 && countitem(12736) > 99) {
+			mes "我會用你準備的材料來製作盧恩的精華。";
+			next;
+			mes "["+ .@npc_name$ +"]";
+			mes "不會花太多時間的。";
+			mes "完成了。";
+			mes "這是製作赫爾沃爾與耶夢加得不可或缺的材料。";
+			delitem 12735,200;// Runstone_Ancient
+			delitem 12736,100;// Runstone_Mystic
+			getitem 6604,1;// Essence_Of_Rune
+			close;
+		}
+		mes "至於盧恩的精華，";
+		mes "^4d4dff你需要200個古代的符文原石和100個神秘的符文原石。^000000";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "確實，這需要很多材料...";
+		close;
+	case 3:
+		mes "["+ .@npc_name$ +"]";
+		mes "需要的時候隨時告訴我。";
+		mes "我很高興至少能為你做這點事。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "另外，這個能找到"+ getarg(1) +"材料的地方...";
+		mes "對我來說也像個夢幻之地。";
+		close;
+	}
+
+OnInit:
+	if ($2012_tegod_gloria == 3 || agitcheck3())// 3 -> quest failed
+		disablenpc();
+	else
+		enablenpc();
+	end;
+}
+
+te_prtcas01,190,2,0	script	#tequest_master_prt01	CLEAR_NPC,{
+	mes "密碼？";
+	next;
+	if ( callfunc( "F_GM_NPC", 1854,0, 0,9999 ) < 1 ) {
+		mes "走開";
+		close;
+	}
+	.@map$ = "te_prtcas01";
+	mes "當前狀態: " + $2012_tegod_gloria;
+	mes "0: 可進行任務";
+	mes "1: 任務進行中。10分鐘等待";
+	mes "2: 任務進行中";
+	mes "3: 任務失敗";
+	mes "4: 可製作物品 , 5: 物品製作成功。";
+	next;
+	mes "公主狀態: " + $@2012_tegirls_prt01;
+	mes "當前城池商業度:" + getcastledata(.@map$,2);
+	next;
+	switch( select( "不進行","初始化","提升商業度","降低商業度" ) ) {
+	case 1:
+		end;
+	case 2:
+		mes "初始化";
+		donpcevent "#tequest_master_prt01::OnReset";
+		close;
+	case 3:
+		.@economy = getcastledata(.@map$,2) +30;
+		.@economy = .@economy > 100 ? 100 : .@economy;
+		setcastledata .@map$,2,.@economy;
+		mes "提升商業度 30";
+		mes "修改後商業度:" + .@economy;
+		close;
+	case 4:
+		.@economy1 = getcastledata(.@map$,2);
+		.@economy2 = .@economy1 > 30 ? (.@economy1 -30) : 1;
+		if (.@economy1 > 30) {
+			mes "降低商業度 30";
+			setcastledata .@map$,2,.@economy2;
+		}
+		else {
+			mes "由於當前等級低於30，商業度降低為1。";
+			setcastledata .@map$,2,1;// min is 1 for WOE TE
+		}
+		mes "修改後商業度:" + .@economy2;
+		close;
+	}
+
+OnReset:// gm Initialization
+	callsub S_EventReset;// kill some quests mobs and stop timer of others npcs
+	callsub S_EventOff;// clear setnpcdisplay
+	$2012_tegod_gloria = 0;
+	$@2012_tegirls_prt01 = 0;
+	.npc_name$ = "";
+	enablenpc "prtg-1-22_prtg-1-31#te";
+	enablenpc "鐵匠 凱#tegod01";
+	stopnpctimer;
+	end;
+
+OnCommandOn:
+	$2012_tegod_gloria = 1;
+	.npc_name$ = strnpcinfo(0);// for script readability
+	initnpctimer;
+	end;
+
+OnTimer10000:
+	announce "女孩們的聲音：凱?我們已經知道你在哪裡了。一切都結束了！",bc_all,"0xFF0000",FW_NORMAL,10;
+	end;
+OnTimer15000:
+	announce "女孩們的聲音：我們只等10分鐘。如果你在這期間不出現，我們就強行攻入城池！",bc_all,"0xFF0000",FW_NORMAL,10;
+	end;
+OnTimer595000:
+	mapannounce "te_prtcas01", "女孩的聲音：凱！你竟敢無視我們的警告！所以，你有幫手對吧？但你以為他們能保護你多久？！",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer598000:
+	mapannounce "te_prtcas01", "你被未知的力量強行趕出城池。",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+
+OnTimer600000:
+	$2012_tegod_gloria = 2;
+	mapwarp "te_prtcas01", "te_prt_gld",159,211;
+	donpcevent "艾拉#fake01_prt01::OnCommandOn";
+	donpcevent "庫露娜#fake01_prt01::OnCommandOn";
+	donpcevent "瑪莉娜#fake01_prt01::OnCommandOn";
+	donpcevent "伊傑拉#fake01_prt01::OnCommandOn";
+	donpcevent "露奈#fake01_prt01::OnCommandOn";
+	donpcevent "莫琳#fake01_prt01::OnCommandOn";
+	donpcevent "娜莎琳#fake01_prt01::OnCommandOn";
+
+	disablenpc "prtg-1-22_prtg-1-31#te";// warp to emperium room
+	end;
+OnTimer602000:
+	announce "葛羅利亞區域的城池正受到一群不明生物的攻擊。",bc_all,"0xFF0000",FW_NORMAL,10;
+	monster "te_prtcas01",0,0,"幽靈劍士",1163,15, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"卡利斯格",1132,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"深淵騎士",1219,5, .npc_name$ +"::OnMyMobDead";
+
+	monster "te_prtcas01",197,197,"達隆吉",1272,1, .npc_name$ +"::OnMyMobDead";// DARK_LORD
+	monster "te_prtcas01",197,197,"召喚的馴鹿",1251,1, .npc_name$ +"::OnMyMobDead";// KNIGHT_OF_WINDSTORM
+	monster "te_prtcas01",197,197,"召喚的狼",1252,1, .npc_name$ +"::OnMyMobDead";// GARM
+
+	monster "te_prtcas01",40,26,"達隆吉",1272,1, .npc_name$ +"::OnMyMobDead";// DARK_LORD
+	monster "te_prtcas01",80,33,"召喚的馴鹿",1251,1, .npc_name$ +"::OnMyMobDead";// KNIGHT_OF_WINDSTORM
+	monster "te_prtcas01",151,96,"召喚的狼",1252,1, .npc_name$ +"::OnMyMobDead";// GARM
+	end;
+OnTimer610000:
+	monster "te_prtcas01",0,0,"幽靈劍士",1163,15, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"卡利斯格",1132,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"深淵騎士",1219,5, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"血腥騎士",1268,5, .npc_name$ +"::OnMyMobDead";
+	end;
+OnTimer1000000:
+OnTimer1300000:
+OnTimer1900000:
+OnTimer2500000:
+OnTimer3100000:
+	callsub S_MobRedondant;
+	end;
+S_MobRedondant:
+	monster "te_prtcas01",0,0,"幽靈劍士",1163,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"卡利斯格",1132,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"深淵騎士",1219,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"高階獸人",1213,10, .npc_name$ +"::OnMyMobDead";
+	monster "te_prtcas01",0,0,"血腥騎士",1268,5, .npc_name$ +"::OnMyMobDead";
+	end;
+OnTimer4200000:
+	mapannounce "te_prtcas01", "女孩們：...我們還要等多久？",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer4205000:
+	mapannounce "te_prtcas01", "女孩們：赫爾沃爾應該是為我們製作的！",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer4210000:
+	mapannounce "te_prtcas01", "女孩們：夠了，別再撐了！你們還真頑固！！",bc_map,"0x00ff00",FW_NORMAL,12;
+	end;
+OnTimer4220000:
+	mapannounce "te_prtcas01", "艾拉：啊！我受不了了！女孩們，過來這裡！",bc_map,"0x00ff00",FW_NORMAL,12;
+	$2012_tegod_gloria = 3;// quest off until someone break the emp
+	callsub S_EventReset;
+	enablenpc "prtg-1-22_prtg-1-31#te";
+	end;
+
+OnTimer4225000:
+	donpcevent "#eproom_girls_prt01::OnReset";
+	donpcevent "#end_aira_prt01::OnCommandOn";
+	donpcevent "#end_kuluna_prt01::OnCommandOn";
+	donpcevent "#end_mallina_prt01::OnCommandOn";
+	donpcevent "#end_ezella_prt01::OnCommandOn";
+	donpcevent "#end_lune_prt01::OnCommandOn";
+	donpcevent "#end_morin_prt01::OnCommandOn";
+	donpcevent "#end_nasarin_prt01::OnCommandOn";
+	end;
+OnTimer4227000:
+	npctalk "凱：哦... 不！妳們想對我做什麼？！", "鐵匠 凱#tegod01";
+	end;
+OnTimer4230000:
+	npctalk "艾拉：嗯？嘿，凱。你該回家了。", "#end_aira_prt01";
+	end;
+OnTimer4233000:
+	npctalk "庫露娜：對呀?你回去後得幫我修好壞掉的法杖，還要幫我做強大的武器！", "#end_kuluna_prt01";
+	end;
+OnTimer4236000:
+	npctalk "伊傑拉：再試著逃跑看看。你會後悔的，懂嗎？", "#end_ezella_prt01";
+	end;
+OnTimer4237000:
+	npctalk "娜莎琳：... 直接帶走他。你們幹嘛跟他說那麼多廢話？", "#end_nasarin_prt01";
+	end;
+OnTimer4240000:
+	npctalk "艾拉：你說得對！那就這樣吧！", "#end_aira_prt01";
+	npctalk "凱：哦... 不... 不要啊！！！", "鐵匠 凱#tegod01";
+	end;
+OnTimer4243000:
+	mapannounce "te_prtcas01", "你未能奪回城池。凱已經消失了。",bc_map,"0x00ff00",FW_NORMAL,12;
+	disablenpc "鐵匠 凱#tegod01";
+	callsub S_EventOff;// clear setnpcdisplay
+	.npc_name$ = "";
+	stopnpctimer;
+	end;
+
+S_EventOff:
+	donpcevent "#end_aira_prt01::OnCommandOff";
+	donpcevent "#end_kuluna_prt01::OnCommandOff";
+	donpcevent "#end_mallina_prt01::OnCommandOff";
+	donpcevent "#end_ezella_prt01::OnCommandOff";
+	donpcevent "#end_lune_prt01::OnCommandOff";
+	donpcevent "#end_morin_prt01::OnCommandOff";
+	donpcevent "#end_nasarin_prt01::OnCommandOff";
+	return;
+
+OnStop:// all girls have been defeated, kill remaining mobs and stop timer
+	callsub S_EventReset;
+	$@2012_tegirls_prt01 = 0;
+	.npc_name$ = "";
+	stopnpctimer;
+	end;
+
+S_EventReset:
+	killmonster "te_prtcas01", .npc_name$ +"::OnMyMobDead";
+	donpcevent "#eproom_girls_prt01::OnReset";
+	donpcevent "艾拉#fake01_prt01::OnReset";
+	donpcevent "庫露娜#fake01_prt01::OnReset";
+	donpcevent "瑪莉娜#fake01_prt01::OnReset";
+	donpcevent "伊傑拉#fake01_prt01::OnReset";
+	donpcevent "露奈#fake01_prt01::OnReset";
+	donpcevent "莫琳#fake01_prt01::OnReset";
+	donpcevent "娜莎琳#fake01_prt01::OnReset";
+
+	donpcevent "#aira_real_prt01::OnReset";
+	donpcevent "#kuluna_real_prt01::OnReset";
+	donpcevent "#mallina_real_prt01::OnReset";
+	donpcevent "#ezella_real_prt01::OnReset";
+	donpcevent "#lune_real_prt01::OnReset";
+	donpcevent "#morin_real_prt01::OnReset";
+	donpcevent "#nasarin_real_prt01::OnReset";
+	return;
+
+OnMyMobDead:
+	end;
+
+OnInit:
+	$@2012_tegirls_prt01 = 0;// girls mobs killed count
+	if ($2012_tegod_gloria < 3)
+		$2012_tegod_gloria = 0;
+	end;
+}
+
+
+te_prtcas01,64,20,3	script	艾拉#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "艾拉#fake01_prt01";
+	setnpcdisplay "艾拉#fake01_prt01",2443;// AIRA
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","艾拉#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#aira_real_prt01::OnCommandOn";
+	npctalk "艾拉：我的召喚水球！我會解決你的！親手解決！！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "艾拉#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "艾拉#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "艾拉#fake01_prt01";
+	end;
+
+OnTimer1000:
+	monster "te_prtcas01",65,28,"保鑣",1213,5, "艾拉#fake01_prt01::OnMyMobDead";// HIGH_ORC
+	monster "te_prtcas01",65,28,"保鑣",1309,5, "艾拉#fake01_prt01::OnMyMobDead";// GAJOMART
+	end;
+OnTimer2000:
+	monster "te_prtcas01",65,28,"保鑣",1367,5, "艾拉#fake01_prt01::OnMyMobDead";// BLAZZER
+	monster "te_prtcas01",65,10,"保鑣",1837,5, "艾拉#fake01_prt01::OnMyMobDead";// IMP
+	end;
+OnTimer3000:
+	monster "te_prtcas01",65,10,"保鑣",1949,1, "艾拉#fake01_prt01::OnMyMobDead";// B_S_GUARDIAN
+	monster "te_prtcas01",65,28,"保鑣",1833,2, "艾拉#fake01_prt01::OnMyMobDead";// KASA
+	monster "te_prtcas01",65,28,"保鑣",1831,2, "艾拉#fake01_prt01::OnMyMobDead";// SALAMANDER
+	stopnpctimer;
+	end;
+}
+
+te_prtcas01,50,54,3	script	庫露娜#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "庫露娜#fake01_prt01";
+	setnpcdisplay "庫露娜#fake01_prt01",2444;// KULUNA
+	initnpctimer;
+	end;
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","庫露娜#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#kuluna_real_prt01::OnCommandOn";
+	npctalk "庫露娜：嗯？你要這樣嗎？你最好做好準備！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "庫露娜#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "庫露娜#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "庫露娜#fake01_prt01";
+	end;
+
+OnTimer1000:
+	monster "te_prtcas01",54,61,"守護者",1143,10, "庫露娜#fake01_prt01::OnMyMobDead";// MARIONETTE
+	end;
+OnTimer2000:
+	monster "te_prtcas01",54,61,"守護者",1693,10, "庫露娜#fake01_prt01::OnMyMobDead";// PLASMA_Y
+	end;
+OnTimer3000:
+	monster "te_prtcas01",54,61,"守護者",1869,5, "庫露娜#fake01_prt01::OnMyMobDead";// FLAME_SKULL
+	monster "te_prtcas01",54,61,"守護者",1704,1, "庫露娜#fake01_prt01::OnMyMobDead";// THA_ODIUM
+	monster "te_prtcas01",54,61,"守護者",1705,1, "庫露娜#fake01_prt01::OnMyMobDead";// THA_DESPERO
+	monster "te_prtcas01",54,61,"守護者",1706,1, "庫露娜#fake01_prt01::OnMyMobDead";// THA_MAERO
+	monster "te_prtcas01",54,61,"守護者",1707,1, "庫露娜#fake01_prt01::OnMyMobDead";// THA_DOLOR
+	stopnpctimer;
+	end;
+}
+
+te_prtcas01,175,92,3	script	瑪莉娜#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "瑪莉娜#fake01_prt01";
+	setnpcdisplay "瑪莉娜#fake01_prt01",2445;// MALLINA
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","瑪莉娜#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#mallina_real_prt01::OnCommandOn";
+	npctalk "瑪莉娜：住手！！別再煩我了！！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "瑪莉娜#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "瑪莉娜#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "瑪莉娜#fake01_prt01";
+	end;
+
+OnTimer1000:
+	monster "te_prtcas01",182,92,"絕對者",1993,10, "瑪莉娜#fake01_prt01::OnMyMobDead";// NAGA
+	end;
+OnTimer3000:
+	monster "te_prtcas01",182,92,"絕對者",1695,10, "瑪莉娜#fake01_prt01::OnMyMobDead";// PLASMA_G
+	end;
+OnTimer5000:
+	monster "te_prtcas01",182,92,"絕對者",1717,5, "瑪莉娜#fake01_prt01::OnMyMobDead";// FERUS_
+	monster "te_prtcas01",182,92,"絕對者",1991,2, "瑪莉娜#fake01_prt01::OnMyMobDead";// TENDRILRION
+	monster "te_prtcas01",182,92,"絕對者",1989,2, "瑪莉娜#fake01_prt01::OnMyMobDead";// HILLSRION
+	stopnpctimer;
+	end;
+}
+
+te_prtcas01,159,113,3	script	伊傑拉#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "伊傑拉#fake01_prt01";
+	setnpcdisplay "伊傑拉#fake01_prt01",2446;// EZELLA
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","伊傑拉#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#ezella_real_prt01::OnCommandOn";
+	npctalk "伊傑拉：啊... 這樣只會讓我們雙方都更累而已...";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "伊傑拉#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "伊傑拉#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "伊傑拉#fake01_prt01";
+	end;
+
+OnTimer1000:
+	monster "te_prtcas01",161,111,"護衛隊",1692,10, "伊傑拉#fake01_prt01::OnMyMobDead";// BREEZE
+	end;
+OnTimer2000:
+	monster "te_prtcas01",161,111,"護衛隊",1627,2, "伊傑拉#fake01_prt01::OnMyMobDead";// ANOPHELES
+	monster "te_prtcas01",161,111,"護衛隊",1656,2, "伊傑拉#fake01_prt01::OnMyMobDead";// KAVAC
+	monster "te_prtcas01",161,111,"護衛隊",1315,6, "伊傑拉#fake01_prt01::OnMyMobDead";// ASSULTER
+	end;
+OnTimer3000:
+	monster "te_prtcas01",161,111,"護衛隊",1669,5, "伊傑拉#fake01_prt01::OnMyMobDead";// DIMIK
+	monster "te_prtcas01",161,111,"護衛隊",1259,2, "伊傑拉#fake01_prt01::OnMyMobDead";// GRYPHON
+	monster "te_prtcas01",161,111,"護衛隊",1783,1, "伊傑拉#fake01_prt01::OnMyMobDead";// GALION
+	monster "te_prtcas01",161,111,"護衛隊",1950,1, "伊傑拉#fake01_prt01::OnMyMobDead";// B_B_GUARDIAN
+	stopnpctimer;
+	end;
+}
+
+te_prtcas01,152,102,3	script	露奈#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "露奈#fake01_prt01";
+	setnpcdisplay "露奈#fake01_prt01",2447;// LUNE
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","露奈#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#lune_real_prt01::OnCommandOn";
+	npctalk "露奈：..你想溺死在深海中嗎？嗯？";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "露奈#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "露奈#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "露奈#fake01_prt01";
+	end;
+
+OnTimer1000:
+	monster "te_prtcas01",144,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";// GAZETI
+	monster "te_prtcas01",145,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",146,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",147,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",148,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",149,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",150,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",151,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",152,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",153,97,"保鑣",1778,1, "露奈#fake01_prt01::OnMyMobDead";
+	end;
+
+OnTimer2000:
+	monster "te_prtcas01",155,97,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";// AQUA_ELEMENTAL
+	monster "te_prtcas01",155,96,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,95,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,94,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,93,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,92,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,91,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,90,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,89,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	monster "te_prtcas01",155,87,"保鑣",2016,1, "露奈#fake01_prt01::OnMyMobDead";
+	end;
+OnTimer3000:
+	monster "te_prtcas01",149,97,"保鑣",1777,5, "露奈#fake01_prt01::OnMyMobDead";// ICE_TITAN
+	monster "te_prtcas01",149,97,"保鑣",1681,1, "露奈#fake01_prt01::OnMyMobDead";// GEMINI
+	monster "te_prtcas01",149,97,"保鑣",2021,1, "露奈#fake01_prt01::OnMyMobDead";// PHYLLA
+	monster "te_prtcas01",149,97,"保鑣",2020,2, "露奈#fake01_prt01::OnMyMobDead";// RHYNCHO
+	stopnpctimer;
+	end;
+}
+
+te_prtcas01,99,180,3	script	莫琳#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "莫琳#fake01_prt01";
+	setnpcdisplay "莫琳#fake01_prt01",2448;// MORIN
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","莫琳#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#morin_real_prt01::OnCommandOn";
+	npctalk "莫琳：... . ...";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "莫琳#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "莫琳#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "莫琳#fake01_prt01";
+	end;
+
+OnTimer1000:
+	monster "te_prtcas01",99,176,"夢魘幫",1379,10, "莫琳#fake01_prt01::OnMyMobDead";// NIGHTMARE_TERROR
+	end;
+OnTimer2000:
+	monster "te_prtcas01",99,176,"夢魘幫",1701,5, "莫琳#fake01_prt01::OnMyMobDead";// SHELTER
+	monster "te_prtcas01",99,176,"夢魘幫",1753,5, "莫琳#fake01_prt01::OnMyMobDead";// FRUS
+	end;
+OnTimer3000:
+	monster "te_prtcas01",99,176,"夢魘幫",1752,5, "莫琳#fake01_prt01::OnMyMobDead";// SKOGUL
+	monster "te_prtcas01",99,176,"夢魘幫",1733,1, "莫琳#fake01_prt01::OnMyMobDead";// KIEL
+	monster "te_prtcas01",99,176,"夢魘幫",1205,1, "莫琳#fake01_prt01::OnMyMobDead";// EXECUTIONER
+	monster "te_prtcas01",99,176,"夢魘幫",2040,1, "莫琳#fake01_prt01::OnMyMobDead";// TIRFING_R
+	monster "te_prtcas01",99,176,"夢魘幫",1203,1, "莫琳#fake01_prt01::OnMyMobDead";// MYSTELTAINN
+	stopnpctimer;
+end;
+}
+
+te_prtcas01,120,174,3	script	娜莎琳#fake01_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "娜莎琳#fake01_prt01";
+	setnpcdisplay "娜莎琳#fake01_prt01",2449;// NASARIN
+	initnpctimer;
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","娜莎琳#fake01_prt01::OnMyMobDead" )) end;
+	donpcevent "#nasarin_real_prt01::OnCommandOn";
+	npctalk "娜莎琳：..啊.. 成為女武神真是太難了！";
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "娜莎琳#fake01_prt01::OnMyMobDead";
+	setnpcdisplay "娜莎琳#fake01_prt01",CLEAR_NPC;
+OnInit:
+	disablenpc "娜莎琳#fake01_prt01";
+	end;
+OnTimer1000:
+	monster "te_prtcas01",125,170,"劇毒幫",1987,10, "娜莎琳#fake01_prt01::OnMyMobDead";// CENTIPEDE
+	end;
+OnTimer2000:
+	monster "te_prtcas01",125,170,"劇毒幫",2015,10, "娜莎琳#fake01_prt01::OnMyMobDead";// PINGUICULA_D
+	end;
+OnTimer3000:
+	monster "te_prtcas01",125,170,"劇毒幫",1618,3, "娜莎琳#fake01_prt01::OnMyMobDead";// UNGOLIANT
+	monster "te_prtcas01",125,170,"卡利斯格",1949,1, "娜莎琳#fake01_prt01::OnMyMobDead";// B_S_GUARDIAN
+	stopnpctimer;
+	end;
+}
+
+-	script	real_prt01	-1,{
+	end;
+OnCommandOn:
+	.@npc_name$ = strnpcinfo(0);
+	if (.@npc_name$ == "#aira_real_prt01")
+		monster "te_prtcas01",65,28,"火焰中的艾拉",2443,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#kuluna_real_prt01")
+		monster "te_prtcas01",54,61,"熱情的庫露娜",2444,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#mallina_real_prt01")
+		monster "te_prtcas01",182,92,"大地的瑪莉娜",2445,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#ezella_real_prt01")
+		monster "te_prtcas01",161,111,"新綠的伊傑拉",2446,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#lune_real_prt01")
+		monster "te_prtcas01",149,97,"萬年冰川的露奈",2447,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#morin_real_prt01")
+		monster "te_prtcas01",99,176,"深淵的莫琳",2448,1, .@npc_name$ +"::OnMyMobDead";
+	else if (.@npc_name$ == "#nasarin_real_prt01")
+		monster "te_prtcas01",125,170,"致命的娜莎琳",2449,1, .@npc_name$ +"::OnMyMobDead";
+	end;
+
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", strnpcinfo(0) +"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	if (mobcount( "te_prtcas01",strnpcinfo(0) +"::OnMyMobDead" ) == 0)
+		initnpctimer;
+	end;
+OnTimer1000:
+	if (mobcount( "te_prtcas01",strnpcinfo(0) +"::OnMyMobDead" ) == 0) {
+		$@2012_tegirls_prt01++;
+		if ($@2012_tegirls_prt01 == 7) {
+			mapannounce "te_prtcas01","凱：啊啊！！女孩們打破了盾牌，闖進華麗金屬所在的地方了！！！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			donpcevent "#eproom_girls_prt01::OnCommandOn";
+		}
+		else {
+			.@npc_name$ = strnpcinfo(0);
+			if (.@npc_name$ == "#aira_real_prt01")
+				mapannounce "te_prtcas01","艾拉：你以為我輸了？你錯了！我們要強行闖到凱那裡去！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#kuluna_real_prt01")
+				mapannounce "te_prtcas01","庫露娜：... 這叫做戰略性撤退。",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#mallina_real_prt01")
+				mapannounce "te_prtcas01","瑪莉娜：... 你們為什麼要這樣妨礙我們？但最終的勝利會是我們的！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#ezella_real_prt01")
+				mapannounce "te_prtcas01","伊傑拉：喔你這傢伙，像風一樣消失的弱者... ！！！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#lune_real_prt01")
+				mapannounce "te_prtcas01","露奈：..好吧。讓戰鬥開始吧！",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#morin_real_prt01")
+				mapannounce "te_prtcas01","莫琳：已經... 不有趣了。",bc_map,"0x00ff00",FW_NORMAL,12;
+			else if (.@npc_name$ == "#nasarin_real_prt01")
+				mapannounce "te_prtcas01","娜莎琳：.. 我浪費了時間。凱在這座城池的中心嗎？",bc_map,"0x00ff00",FW_NORMAL,12;
+		}
+	}
+	stopnpctimer;
+	end;
+}
+te_prtcas01,192,2,0	duplicate(real_prt01)	#aira_real_prt01	CLEAR_NPC
+te_prtcas01,193,2,0	duplicate(real_prt01)	#kuluna_real_prt01	CLEAR_NPC
+te_prtcas01,194,2,0	duplicate(real_prt01)	#mallina_real_prt01	CLEAR_NPC
+te_prtcas01,194,2,0	duplicate(real_prt01)	#ezella_real_prt01	CLEAR_NPC
+te_prtcas01,196,2,0	duplicate(real_prt01)	#lune_real_prt01	CLEAR_NPC
+te_prtcas01,197,2,0	duplicate(real_prt01)	#morin_real_prt01	CLEAR_NPC
+te_prtcas01,198,2,0	duplicate(real_prt01)	#nasarin_real_prt01	CLEAR_NPC
+
+
+te_prtcas01,199,2,0	script	#eproom_girls_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	enablenpc "prtg-1-22_prtg-1-31#te";
+	monster "te_prtcas01",184,188,"致命的娜莎琳",2449,1, "#eproom_girls_prt01::OnMyMobDead";
+	monster "te_prtcas01",191,182,"深淵的莫琳",2448,1, "#eproom_girls_prt01::OnMyMobDead";
+	monster "te_prtcas01",183,183,"萬年冰川的露奈",2447,1, "#eproom_girls_prt01::OnMyMobDead";
+	monster "te_prtcas01",197,188,"新綠的伊傑拉",2446,1, "#eproom_girls_prt01::OnMyMobDead";
+	monster "te_prtcas01",202,190,"大地的瑪莉娜",2445,1, "#eproom_girls_prt01::OnMyMobDead";
+	monster "te_prtcas01",199,192,"熱情的庫露娜",2444,1, "#eproom_girls_prt01::OnMyMobDead";
+	monster "te_prtcas01",200,195,"火焰中的艾拉",2443,1, "#eproom_girls_prt01::OnMyMobDead";
+	end;
+
+OnReset:
+	stopnpctimer;
+	killmonster "te_prtcas01", "#eproom_girls_prt01::OnMyMobDead";
+	end;
+OnMyMobDead:
+	if (mobcount( "te_prtcas01","#eproom_girls_prt01::OnMyMobDead" ) == 0)
+		initnpctimer;
+	end;
+
+OnTimer3000:
+	if (mobcount( "te_prtcas01","#eproom_girls_prt01::OnMyMobDead" ) == 0) {
+		donpcevent "#tequest_master_prt01::OnStop";
+		$2012_tegod_gloria = 4;
+		mapannounce "te_prtcas01","你已經擊敗了那些女孩，並成功奪回了城池。",bc_map,"0x00ff00",FW_NORMAL,12;
+	}
+	stopnpctimer;
+	end;
+}
+
+te_prtcas01,203,204,5	script	#end_aira_prt01	CLEAR_NPC,{
+	end;
+OnCommandOn:
+	.@npc_name$ = strnpcinfo(0);
+	enablenpc .@npc_name$;
+	if (compare(.@npc_name$,"aira")) setnpcdisplay .@npc_name$,2443;
+	else if (compare(.@npc_name$,"kuluna")) setnpcdisplay .@npc_name$,2444;
+	else if (compare(.@npc_name$,"mallina")) setnpcdisplay .@npc_name$,2445;
+	else if (compare(.@npc_name$,"ezella")) setnpcdisplay .@npc_name$,2446;
+	else if (compare(.@npc_name$,"lune")) setnpcdisplay .@npc_name$,2447;
+	else if (compare(.@npc_name$,"morin")) setnpcdisplay .@npc_name$,2448;
+	else if (compare(.@npc_name$,"nasarin")) setnpcdisplay .@npc_name$,2449;
+	end;
+
+OnCommandOff:
+	setnpcdisplay strnpcinfo(0),CLEAR_NPC;
+OnInit:
+	disablenpc();
+	end;
+}
+te_prtcas01,205,205,3	duplicate(#end_aira_prt01)	#end_kuluna_prt01	CLEAR_NPC
+te_prtcas01,204,203,7	duplicate(#end_aira_prt01)	#end_mallina_prt01	CLEAR_NPC
+te_prtcas01,203,205,5	duplicate(#end_aira_prt01)	#end_ezella_prt01	CLEAR_NPC
+te_prtcas01,205,204,3	duplicate(#end_aira_prt01)	#end_lune_prt01	CLEAR_NPC
+te_prtcas01,204,205,4	duplicate(#end_aira_prt01)	#end_morin_prt01	CLEAR_NPC
+te_prtcas01,205,203,1	duplicate(#end_aira_prt01)	#end_nasarin_prt01	CLEAR_NPC

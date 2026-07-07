@@ -1,0 +1,458 @@
+//===== rAthena Script =======================================
+//= Guild Dungeon Daily Quest Coin Exchange
+//===== Description: =========================================
+//= [Official Conversion]
+//= NPCs reward from Guild Dungeon's Daily Missions.
+//===== Changelogs: ==========================================
+//= 1.0 First Version. [Cydh]
+//= 1.1 Minified the script. [Secretdataz]
+//= 1.2 Script cleanup. [aleos]
+//= 1.3 Minified Kvasir's ring part. [Lemongrass]
+//============================================================
+
+// Templates
+-	script	#GldDungeonReward	-1,{
+	if (checkweight(1304,3) == 0) {
+		mes "你攜帶的物品太多，無法繼續任務。";
+		mes "請減輕負重後再試一次。";
+		close;
+	}
+
+	mes "這是一台將攻城戰紀念硬幣兌換成特殊物品的機器。";
+	mes "請選擇想要的物品，並投入所需數量的硬幣。";
+	next;
+	while(1) {
+		switch(select("查看可兌換的物品","兌換投資證明書","兌換優良藥水","兌換禮物","克瓦希爾戒指","離開")) {
+			case 1:
+				mes "[喀哩喀哩喵喵-GX]";
+				mes "感謝您選擇喀哩喀哩喵喵！";
+				mes "這是您可以使用攻城戰紀念硬幣購買的物品清單。";
+				next;
+				mes "= 霜巨人之血 =";
+				mes "由三國煉金術士公會共同開發的新型藥水。能在短時間內賦予使用者超自然的力量。";
+				mes "^4d4dff消耗 3000 HP，但在 10 秒內增加對玩家（人類型）的物理與魔法傷害 100%。";
+				mes "等級限制：80 以上^000000";
+				next;
+				mes "= 巨石怪核心 =";
+				mes "由三國煉金術士公會共同開發的新型藥水。能在短時間內賦予使用者超自然的力量。";
+				mes "^4d4dff消耗 300 SP，但在 10 秒內減少來自玩家（人類型）的傷害 50%。";
+				mes "等級限制：80 以上^000000";
+				next;
+				setarray .@status$, "暈眩", "石化", "冰凍", "睡眠", "詛咒", "沉默", "盲目";
+				.@size = getarraysize(.@status$);
+				for(.@i = 0; .@i < .@size; ++.@i) {
+					mes "= 妖精之淚 (" + .@status$[.@i] + ") =";
+					mes "由製藥天才 Vicent 所開發的藥水。能在短時間內賦予使用者超自然的力量。";
+					mes "^4d4dff消耗 3000 HP，但在 10 秒內免疫 " + (.@i == 1 ? "石化" : .@status$[.@i]) + " 狀態。^000000";
+					next;
+				}
+				mes "= 羽毛貝雷帽[1] =";
+				mes "一頂以羽毛裝飾、舒適的天藍色帽子。";
+				mes "^4d4dffMDEF + 1，減少來自玩家（人類型）的傷害 10%。";
+				mes "卡片插槽 [1]，除初學者外的所有職業皆可裝備。";
+				next;
+				mes "= (服飾)羽毛貝雷帽 =";
+				mes "一頂以羽毛裝飾、舒適的天藍色帽子。";
+				mes "^4d4dff服飾裝備，所有職業皆可裝備。^000000";
+				next;
+				mes "清單到此結束。";
+				break;
+
+			case 2:
+				mes "[喀哩喀哩喵喵-GX]";
+				mes "我們將貓貓手商隊的^4d4dff1張投資證明書^000000以^4d4dff10枚攻城戰紀念硬幣^000000進行兌換！";
+				mes "您要兌換嗎？";
+				next;
+				switch(select("是的。","查看其他物品。")) {
+					case 1:
+						mes "[喀哩喀哩喵喵-GX]";
+						if (countitem(6615) > 9) {
+							mes "感謝您使用我們的服務，喵！";
+							delitem 6615,10; // Siege_Guild_Coin
+							getitem 6489,1; // Cats_Invest_Certif
+						} else {
+							mes "您的硬幣不足，無法兌換投資證明書。";
+							mes "1 張投資證明書需要 10 枚硬幣。";
+						}
+						break;
+
+					case 2:
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "您決定查看其他物品。";
+						break;
+				}
+				break;
+
+			case 3:
+				mes "[喀哩喀哩喵喵-GX]";
+				mes "您選擇了優良藥水清單！";
+				mes "以下列出的所有物品，每個價值 ^4d4dff300 枚硬幣^000000，喵！";
+				next;
+				switch(select("霜巨人之血", "巨石怪核心", "妖精之淚 (暈眩)", "妖精之淚 (冰凍)", "妖精之淚 (睡眠)", "妖精之淚 (詛咒)", "妖精之淚 (石化)", "妖精之淚 (沉默)", "妖精之淚 (盲目)", "查看其他物品。")) {
+					case 1:
+						callsub S_PurchaseMedicine, "霜巨人之血", 12874;
+						break;
+					case 2:
+						callsub S_PurchaseMedicine, "巨石怪核心", 12875;
+						break;
+					case 3:
+						callsub S_PurchaseMedicine, "妖精之淚(暈眩)", 12876;
+						break;
+					case 4:
+						callsub S_PurchaseMedicine, "妖精之淚(冰凍)", 12878;
+						break;
+					case 5:
+						callsub S_PurchaseMedicine, "妖精之淚(睡眠)", 12879;
+						break;
+					case 6:
+						callsub S_PurchaseMedicine, "妖精之淚(詛咒)", 12880;
+						break;
+					case 7:
+						callsub S_PurchaseMedicine, "妖精之淚(石化)", 12877;
+						break;
+					case 8:
+						callsub S_PurchaseMedicine, "妖精之淚(沉默)", 12881;
+						break;
+					case 9:
+						callsub S_PurchaseMedicine, "妖精之淚(盲目)", 12882;
+						break;
+					case 10:
+						mes "您決定查看其他物品。";
+						break;
+				}
+				break;
+			case 4:
+				mes "[喀哩喀哩喵喵-GX]";
+				mes "您選擇了優良禮物清單！";
+				mes "每個物品的價格皆有單獨標示，喵！";
+				next;
+				switch(select("老舊收集冊 -500 枚硬幣", "神秘紫箱 -300 枚硬幣", "老舊藍色箱子 -100 枚硬幣", "寶石箱 -500 枚硬幣", "偽裝面罩 -500 枚硬幣", "羽毛貝雷帽","離開")) {
+					case 1:
+						callsub S_PurchaseGift, "老舊收集冊", 616, 500;
+						break;
+					case 2:
+						callsub S_PurchaseGift, "神秘紫箱", 617, 300;
+						break;
+					case 3:
+						callsub S_PurchaseGift, "老舊藍色箱子", 603, 100;
+						break;
+					case 4:
+						callsub S_PurchaseGift, "寶石箱", 12106, 500;
+						break;
+					case 5:
+						callsub S_PurchaseGift, "偽裝面罩", 12107, 500;
+						break;
+					case 6:
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "您選擇了一頂裝飾著羽毛的漂亮貝雷帽！";
+						mes "我們有可插卡的羽毛貝雷帽和(服飾)羽毛貝雷帽，喵！";
+						next;
+						switch(select("羽毛貝雷帽[1] -1500 枚硬幣","(服飾)羽毛貝雷帽 -800 枚硬幣","購買貝雷帽","查看其他物品。")) {
+							case 1:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "這是一頂可以插卡的羽毛貝雷帽！";
+								mes "它價值 1500 枚攻城戰紀念硬幣。您確定要購買嗎？";
+								next;
+								switch(select("是的！","不！")) {
+									case 1:
+										mes "[喀哩喀哩喵喵-GX]";
+										if (countitem(6615) > 1499) {
+											mes "感謝您使用我們的服務，喵！";
+											delitem 6615,1500; // Siege_Guild_Coin
+											getitem 18755,1; // Feather_Beret_
+										} else {
+											mes "您需要 1500 枚攻城戰紀念硬幣才能購買所選物品。";
+											mes "您決定查看其他物品。";
+										}
+										break;
+
+									case 2:
+										mes "[喀哩喀哩喵喵-GX]";
+										mes "您決定查看其他物品。";
+										break;
+								}
+								break;
+
+							case 2:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "這是一頂(服飾)羽毛貝雷帽！";
+								mes "它價值 800 枚攻城戰紀念硬幣。您確定要購買嗎？";
+								next;
+								switch(select("是的！","不！")) {
+									case 1:
+										mes "[喀哩喀哩喵喵-GX]";
+										if (countitem(6615) > 799) {
+											mes "感謝您使用我們的服務，喵！";
+											delitem 6615,800; // Siege_Guild_Coin
+											getitem 19585,1; // C_Feather_Beret
+										} else {
+											mes "您需要 800 枚攻城戰紀念硬幣才能購買所選物品。";
+											mes "您決定查看其他物品。";
+										}
+										break;
+
+									case 2:
+										mes "[喀哩喀哩喵喵-GX]";
+										mes "您決定查看其他物品。";
+										break;
+								}
+								break;
+
+							case 3:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "我們正在準備(服飾)羽毛貝雷帽的變色服務。";
+								mes "請稍後再來！";
+								mes "讓我給您看看其他物品！";
+								break;
+
+							case 4:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "您決定查看其他物品。";
+								break;
+						}
+						break;
+
+					case 7:
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "不使用兌換機。";
+						break;
+				}
+				break;
+
+			case 5:
+				mes "[喀哩喀哩喵喵-GX]";
+				mes "這是克瓦希爾戒指的分類。";
+				mes "您可以在此查看每枚戒指的說明並進行購買。";
+				next;
+				switch(select("兌換克瓦希爾戒指 (藍)", "兌換克瓦希爾戒指 (紅)", "兌換克瓦希爾戒指 (綠)", "兌換克瓦希爾戒指 (棕)", "離開")) {
+					case 1:
+						mes "= 克瓦希爾戒指 (藍) =";
+						mes "傳說中充滿了賢明之神克瓦希爾力量的戒指。";
+						mes "^4d4dffMSP + 30。可使用「翻轉的雪」Lv 1^000000";
+						mes "裝飾品。所有職業皆可裝備。等級限制：1";
+						next;
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "克瓦希爾戒指 (藍) 可以用 ^4d4dff20個霜巨人之血 與 20個巨石怪核心^000000 進行購買，";
+						mes "或者使用 ^4d4dff1個其他顏色的克瓦希爾戒指 與 10枚攻城戰紀念硬幣^000000！";
+						mes "您確定要購買嗎？";
+						next;
+						switch(select("用血液和核心支付","用克瓦希爾戒指 (紅) 支付","用克瓦希爾戒指 (綠) 支付","用克瓦希爾戒指 (棕) 支付","離開")) {
+							case 1:
+								mes "[喀哩喀哩喵喵-GX]";
+								if ((countitem(12874) > 19) & (countitem(12875) > 19)) {
+									mes "已購買克瓦希爾戒指 (藍)。";
+									delitem 12874,20; // Frost_Giant_Blood
+									delitem 12875,20; // Golem_Stone
+									getitem 2951,1; // Kvasir_Ring_Blue
+								} else {
+									mes "克瓦希爾戒指 (藍) 需要 ^4d4dff20個霜巨人之血 與 20個巨石怪核心^000000 才能購買。";
+									mes "您沒有足夠的物品完成購買。請查看其他物品。";
+								}
+								break;
+							case 2:
+								callsub S_Kvasir, "克瓦希爾戒指 (紅)", 2952, "克瓦希爾戒指 (藍)", 2951;
+								break;
+							case 3:
+								callsub S_Kvasir, "克瓦希爾戒指 (綠)", 2953, "克瓦希爾戒指 (藍)", 2951;
+								break;
+							case 4:
+								callsub S_Kvasir, "克瓦希爾戒指 (棕)", 2954, "克瓦希爾戒指 (藍)", 2951;
+								break;
+
+							case 5:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "您決定查看其他物品。";
+								break;
+						}
+					break;
+
+					case 2:
+						mes "= 克瓦希爾戒指 (紅) =";
+						mes "傳說中充滿了賢明之神克瓦希爾力量的戒指。";
+						mes "^4d4dffMSP + 30。可使用「牡丹真美」Lv 1^000000";
+						mes "裝飾品。所有職業皆可裝備。等級限制：1";
+						next;
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "克瓦希爾戒指 (紅) 可以用 ^4d4dff1個其他顏色的克瓦希爾戒指 與 10枚攻城戰紀念硬幣^000000 進行購買。";
+						mes "您想要用以下哪一個來交換克瓦希爾戒指 (紅) 呢？";
+						next;
+						switch(select("克瓦希爾戒指 (藍)","克瓦希爾戒指 (綠)","克瓦希爾戒指 (棕)","離開")) {
+							case 1:
+								callsub S_Kvasir, "克瓦希爾戒指 (藍)", 2951, "克瓦希爾戒指 (紅)", 2952;
+								break;
+							case 2:
+								callsub S_Kvasir, "克瓦希爾戒指 (綠)", 2953, "克瓦希爾戒指 (紅)", 2952;
+								break;
+							case 3:
+								callsub S_Kvasir, "克瓦希爾戒指 (棕)", 2954, "克瓦希爾戒指 (紅)", 2952;
+								break;
+
+							case 4:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "您決定查看其他物品。";
+								break;
+						}
+						break;
+
+					case 3:
+						mes "= 克瓦希爾戒指 (綠) =";
+						mes "傳說中充滿了賢明之神克瓦希爾力量的戒指。";
+						mes "^4d4dffMSP + 100。可使用「薩達之耳」Lv 1^000000";
+						mes "裝飾品。所有職業皆可裝備。等級限制：1";
+						next;
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "克瓦希爾戒指 (綠) 可以用 ^4d4dff1個其他顏色的克瓦希爾戒指 與 10枚攻城戰紀念硬幣^000000 進行購買。";
+						mes "您想要用以下哪一個來交換克瓦希爾戒指 (綠) 呢？";
+						next;
+						switch(select("克瓦希爾戒指 (藍)","克瓦希爾戒指 (紅)","克瓦希爾戒指 (棕)","離開")) {
+							case 1:
+								callsub S_Kvasir, "克瓦希爾戒指 (藍)", 2951, "克瓦希爾戒指 (綠)", 2953;
+								break;
+							case 2:
+								callsub S_Kvasir, "克瓦希爾戒指 (紅)", 2952, "克瓦希爾戒指 (綠)", 2953;
+								break;
+							case 3:
+								callsub S_Kvasir, "克瓦希爾戒指 (棕)", 2954, "克瓦希爾戒指 (綠)", 2953;
+								break;
+
+							case 4:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "您決定查看其他物品。";
+								break;
+						}
+						break;
+
+					case 4:
+						mes "= 克瓦希爾戒指 (棕) =";
+						mes "傳說中充滿了賢明之神克瓦希爾力量的戒指。";
+						mes "^4d4dffMSP + 100。可使用「星塵」Lv 1^000000";
+						mes "裝飾品。所有職業皆可裝備。等級限制：1";
+						next;
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "克瓦希爾戒指 (棕) 可以用 ^4d4dff1個其他顏色的克瓦希爾戒指 與 10枚攻城戰紀念硬幣^000000 進行購買。";
+						mes "您想要用以下哪一個來交換克瓦希爾戒指 (棕) 呢？";
+						next;
+						switch(select("克瓦希爾戒指 (藍)","克瓦希爾戒指 (紅)","克瓦希爾戒指 (綠)","離開")) {
+							case 1:
+								callsub S_Kvasir, "克瓦希爾戒指 (藍)", 2951, "克瓦希爾戒指 (棕)", 2954;
+								break;
+							case 2:
+								callsub S_Kvasir, "克瓦希爾戒指 (紅)", 2952, "克瓦希爾戒指 (棕)", 2954;
+								break;
+							case 3:
+								callsub S_Kvasir, "克瓦希爾戒指 (綠)", 2953, "克瓦希爾戒指 (棕)", 2954;
+								break;
+
+							case 4:
+								mes "[喀哩喀哩喵喵-GX]";
+								mes "您決定查看其他物品。";
+								break;
+						}
+						break;
+
+					case 5:
+						mes "[喀哩喀哩喵喵-GX]";
+						mes "您決定查看其他物品。";
+						break;
+				}
+				break;
+
+			case 6:
+				mes "[喀哩喀哩喵喵-GX]";
+				mes "不使用兌換機。";
+				break;
+		}
+	}
+	close;
+
+S_PurchaseMedicine:
+	mes "[喀哩喀哩喵喵-GX]";
+	mes "您要購買 1 個" + getarg(0) + "，喵！";
+	mes "您確定嗎？";
+	next;
+	switch(select("是的！","不！")) {
+		case 1:
+			mes "[喀哩喀哩喵喵-GX]";
+			if (countitem(6615) > 299) {
+				mes "感謝您使用我們的服務，喵！";
+				delitem 6615,300; // Siege_Guild_Coin
+				getitem getarg(1),1;
+			} else
+				mes "一瓶優良藥水價值 300 枚您辛辛苦苦收集來的攻城戰紀念硬幣喔...";
+			break;
+
+		case 2:
+			mes "[喀哩喀哩喵喵-GX]";
+			mes "您決定查看其他物品。";
+			break;
+	}
+	return;
+	
+S_PurchaseGift:
+	.@itemid = getarg(1);
+	.@price = getarg(2);
+	mes "[喀哩喀哩喵喵-GX]";
+	mes "您要購買 1 個" + getarg(0) + "，喵！";
+	mes "您確定嗎？";
+	next;
+	switch(select("是的！","不！")) {
+		case 1:
+			mes "[喀哩喀哩喵喵-GX]";
+			if (countitem(6615) >= .@price) {
+				mes "感謝您使用我們的服務，喵！";
+				delitem 6615,.@price; // Siege_Guild_Coin
+				getitem .@itemid,1;
+			} else {
+				mes "您需要 " + .@price + " 枚攻城戰紀念硬幣才能購買所選物品。";
+				mes "您決定查看其他物品。";
+			}
+			break;
+
+		case 2:
+			mes "[喀哩喀哩喵喵-GX]";
+			mes "您決定查看其他物品。";
+			break;
+	}
+	return;
+
+S_Kvasir:
+	.@fromid = getarg(1);
+	.@fromname$ = getarg(2);
+	.@toid = getarg(3);
+	.@toname$ = getarg(4);
+	
+	mes "[喀哩喀哩喵喵-GX]"; // One of Kvasir's Rings and 10 Siege_Guild_Coin
+	if( countitem( .@fromid ) > 0 && countitem( 6615 ) > 9 ){
+		mes "您擁有" + .@fromname$ + "。";
+		mes "您想將它兌換為" + .@toname$ + "嗎？";
+		next;
+		mes "[喀哩喀哩喵喵-GX]";
+		switch( select( "是的！:離開" ) ){
+			case 1:
+				// Recheck the items once more
+				if( countitem( .@fromid ) > 0 && countitem( 6615 ) > 9 ){
+					mes "您已將" + .@fromname$ + "兌換為" + .@toname$ + "。";
+					delitem .@fromid, 1;
+					delitem 6615, 10; // Siege_Guild_Coin
+					getitem .@toid, 1;
+					close;
+				}
+				break;
+			case 2:
+				mes "您決定查看其他物品。";
+				return;
+		}
+	}
+	mes "您需要 1 個" + .@fromname$ + "和 10 枚攻城戰紀念硬幣才能完成購買。";
+	return;
+}
+
+// Main NPCs
+alde_gld,180,163,3	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#1	2_VENDING_MACHINE1
+pay_gld,196,176,5	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#2	2_VENDING_MACHINE1
+gef_fild13,198,246,3	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#3	2_VENDING_MACHINE1
+sch_gld,266,119,5	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#4	2_VENDING_MACHINE1
+aru_gld,89,204,5	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#5	2_VENDING_MACHINE1
+prt_gld,107,155,3	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#6	2_VENDING_MACHINE1
+te_prt_gld,107,155,3	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#7	2_VENDING_MACHINE1
+te_alde_gld,180,163,3	duplicate(#GldDungeonReward)	喀哩喀哩喵喵-GX#8	2_VENDING_MACHINE1

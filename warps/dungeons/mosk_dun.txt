@@ -1,0 +1,225 @@
+//===== rAthena Script =======================================
+//= Moscovia Dungeon Warp Script
+//===== By: ==================================================
+//= Kisuka, $ephiroth
+//===== Current Version: =====================================
+//= 2.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Warp Points for Moscovia Dungeon
+//===== Additional Comments: =================================
+//= 1.0 Initial version [$ephiroth]
+//= 1.1, 1.2 Updated from jA [$ephiroth]
+//= 1.3 Added warp npcs. Removed place holder warps. [Kisuka]
+//= 1.4 Fixed cords on milestone 1-3. [Kisuka]
+//= 2.0 Clean-up. [Capuche]
+//============================================================
+
+mosk_fild02,190,257,0	warp	moscoviawarp0401	1,1,mosk_dun01,189,45
+mosk_dun01,189,42,0	warp	moscoviawarp0501	1,1,mosk_fild02,190,254
+mosk_in,215,36,0	warp2	babayagaout	1,1,mosk_dun02,53,217
+
+mosk_dun02,53,220,4	script	#babayagain	WARPNPC,1,1,{
+	end;
+OnTouch:
+	if (mos_nowinter == 11) {
+		donpcevent "士兵1#mos::OnEnable";
+		donpcevent "士兵2#mos::OnEnable";
+		donpcevent "士兵3#mos::OnEnable";
+		mes "[士兵]";
+		mes "在那裡停下來！";
+		next;
+		mes "[士兵]";
+		mes "我們收到情報，";
+		mes "指出你一直暗中";
+		mes "與可怕的";
+		mes "芭芭亞加聯繫。";
+		next;
+		mes "[士兵]";
+		mes "如果你有什麼話想說，";
+		mes "去跟沙皇說吧。";
+		mes "跟我們走。";
+		close2;
+		donpcevent "士兵1#mos::OnInit";
+		donpcevent "士兵2#mos::OnInit";
+		donpcevent "士兵3#mos::OnInit";
+		set mos_nowinter,12;
+		warp "mosk_in",125,92;
+		end;
+	}
+	else if (mos_nowinter == 12 || mos_nowinter == 13) {
+		donpcevent "士兵1#mos::OnEnable";
+		donpcevent "士兵2#mos::OnEnable";
+		donpcevent "士兵3#mos::OnEnable";
+		mes "[士兵]";
+		mes "我們早就料到";
+		mes "你會再次出現。";
+		mes "你找沙皇有什麼事？";
+		next;
+		if(select("逃跑。:解釋情況。") == 1) {
+			mes "["+strcharinfo(0)+"]";
+			mes "我應該離開這裡...";
+			close2;
+			warp "mosk_dun02",100,100;
+		}
+		else {
+			mes "-我解釋了到目前為止所發生的事情。-";
+			next;
+			mes "[士兵]";
+			mes "如果你有什麼話想說，去跟";
+			mes "沙皇說吧。";
+			mes "如果你離開這裡，";
+			mes "將會被視為我們的敵人。";
+			close2;
+		}
+		donpcevent "士兵1#mos::OnInit";
+		donpcevent "士兵2#mos::OnInit";
+		donpcevent "士兵3#mos::OnInit";
+		end;
+	}
+	else {
+		warp "mosk_in",215,41;
+		end;
+	}
+}
+
+mosk_dun02,53,215,3	script	士兵1#mos	4_M_RUSKNIGHT,{
+	mes "[士兵]";
+	mes "我們是沙皇的士兵。";
+	mes "我們是為了緊急情況才被召喚出來的，";
+	mes "不要再打擾我們了。";
+	close;
+	
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+OnEnable:
+	hideoffnpc strnpcinfo(0);
+	end;
+}
+mosk_dun02,50,217,3	duplicate(士兵1#mos)	士兵2#mos	4_M_RUSKNIGHT
+mosk_dun02,56,217,5	duplicate(士兵1#mos)	士兵3#mos	4_M_RUSKNIGHT
+
+mosk_dun01,170,164,3	script	石碑#1	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "^3131FF- 侍奉太陽者將面臨死亡，往北方前進吧。 -^000000";
+	close;
+}
+
+mosk_dun01,207,276,3	script	石碑#1-2	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "^3131FF- 前進者可能會受傷但內心充滿勇氣，後退者將可保平安。";
+	mes "如果你有勇氣，就向前邁進。否則，請後退。 -^000000";
+	next;
+	if(select("向前邁進。:留在原地。") == 1) {
+		mes "- 你沿著前方的路走去。 -";
+		close2;
+		warp "mosk_dun02",165,30;
+		end;
+	}
+	mes "- 你決定不往前走。 -";
+	close;
+}
+
+mosk_dun01,264,191,3	script	石碑#1-3	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "^3131FF- 前進者可能會受傷但內心勇敢，後退者將可保平安。";
+	mes "如果你夠勇敢，就向前邁進。否則，請後退。 -^000000";
+	next;
+	if(select("向前邁進。:留在原地。") == 1) {
+		mes "- 你沿著前方的路走去。 -";
+		close2;
+		warp "mosk_dun03",117,36;
+		end;
+	}
+	mes "- 你決定留下來。 -";
+	close;
+}
+
+mosk_dun02,168,28,3	script	石碑#2-1	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "^3131FF- 前進者可能會受傷但內心英勇，後退者將可保平安。";
+	mes "如果你夠英勇，就向前邁進。否則，請後退。 -^000000";
+	next;
+	if(select("退後。:留在原地。") == 1) {
+		mes "- 你感覺到危險，決定退後。 -";
+		close2;
+		warp "mosk_dun01",201,269;
+		end;
+	}
+	mes "- 你決定留下來。 -";
+	close;
+}
+
+mosk_dun02,268,117,3	script	石碑#2-3	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "^3131FF- 前進者將獲得榮耀但可能死亡，後退者將擁有勇氣但仍可能受傷。";
+	mes "如果你是真正的勇者，請向前邁進。否則，請退後。 -^000000";
+	next;
+	if(select("向前邁進。:留在原地。") == 1) {
+		mes "- 你勇敢地向前邁進。 -";
+		close2;
+		warp "mosk_dun03",32,135;
+		end;
+	}
+	mes "- 你決定留下來。 -";
+	close;
+}
+
+mosk_dun03,27,131,3	script	石碑#3-2	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "^3131FF- 留下者可能死亡但將獲得榮耀，退後者可能受傷但將獲得勇氣。";
+	mes "擁有勇氣者請退後，否則請向前邁進並留下。 -^000000";
+	next;
+	if(select("退後。:留在原地。") == 1) {
+		mes "- 你感覺到危險，決定退後。 -";
+		close2;
+		warp "mosk_dun02",262,118;
+		end;
+	}
+	mes "- 你決定留下來。 -";
+	close;
+}
+
+mosk_dun03,119,46,3	script	石碑#3-1	HIDDEN_NPC,{
+	mes "大石頭上寫著字。";
+	next;
+	mes "^3131FF- 留下者可能死亡但將獲得榮耀，退後者可能受傷但將獲得勇氣。";
+	mes "畏懼死亡者請退後，否則請向前邁進並留下。 -^000000";
+	next;
+	if(select("退後。:留在原地。") == 1) {
+		mes "- 你感覺到危險，決定退後。 -";
+		close2;
+		warp "mosk_dun01",257,190;
+		end;
+	}
+	mes "- 你決定留下來。 -";
+	close;
+}
+
+mosk_dun01,194,43,3	script	石碑#1-1	HIDDEN_NPC,{
+	mes "- 大石頭上寫著字。 -";
+	next;
+	mes "- 如果你想保命，請退後。 -";
+	close;
+}
+
+mosk_fild02,198,53,3	script	船#mos_dun	HIDDEN_NPC,{
+	mes "- 你發現一艘停泊的船。 -";
+	next;
+	if(select("搭船回到村莊。:繼續探索。") == 1) {
+		mes "- 你上了船並划動船槳。 -";
+		close2;
+		warp "moscovia",140,54;
+		end;
+	}
+	mes "- 那片未知的區域引起了你的興趣。 -";
+	close;
+}

@@ -1,0 +1,317 @@
+//===== rAthena Script ======================================= 
+//= Quest NPCs related to Payon
+//===== By: ================================================== 
+//= kobra_k88
+//===== Current Version: ===================================== 
+//= 1.7
+//===== Compatible With: ===================================== 
+//= rAthena Project; 7.15 +
+//===== Description: ========================================= 
+//= Pretend Murder, Ear Muffs, Oxygen, Derivuchi Cap, Helm of Angel Quests.
+//===== Additional Comments: ================================= 
+//= 1.1 Helm of Angel bug fixed [Lupus]
+//= 1.2 Fixed skirt of virgin [Lupus]
+//= 1.3 Fixed exploits [Lupus]
+//= 1.4 Removed Duplicates [Silent]
+//= 1.5 Updated Dialogs from "Pretend Murdered Quest" [Samuray22]
+//= 1.5a replaced item "names" with item id. [Lupus]
+//= 1.6 Updated Dialogs from "Oxygen Mask Quest" [Samuray22]
+//= 1.7 Updated headgear quests. [L0ne_W0lf]
+//= 1.8 Updating NPC Position. [JohnnyPlayy]
+//============================================================ 
+
+// 'Pretend Murdered' Quest
+//============================================================
+payon_in01,99,72,4	script	老奶奶	103,{
+	if (checkweight(908,1) == 0) {
+		mes "^3355FF等一下！現在你身上的物品太多了。請把一些東西放進卡普拉服務人員的倉庫後再來吧。^000000";
+		close;
+	}
+	if (countitem(1049) > 3) {
+		mes "[老奶奶]";
+		mes "真希望能為我的孫子們做些祭典季節穿的衣服...";
+		next;
+		mes "[老奶奶]";
+		mes "噢！你能把你的^3355FF純潔的裙子^000000給我嗎？我需要四個。拜託你，我求求你。";
+		next;
+		switch(select("好的。:想都別想！")) {
+		case 1:
+			delitem 1049,4; //Skirt_Of_Virgin
+			mes "[老奶奶]";
+			mes "噢！太感謝你了?現在我可以幫凱蒂卡蒂做些衣服了?";
+			next;
+			mes "[老奶奶]";
+			mes "啊，等等！我差點忘了。我年輕時可是個相當受歡迎的女演員。當我離開劇團時，我的演員朋友們給了我一份結婚禮物。我一直留著它，為了提醒我那段珍貴的時光。";
+			next;
+			mes "[老奶奶]";
+			mes "如果不介意的話...";
+			mes "我想把這個送給你。";
+			next;
+			getitem 2293,1; //Pretend_Murdered
+			mes "[老奶奶]";
+			mes "再見了，冒險者?！";
+			mes "謝謝你讓一個老太婆這麼開心...";
+			close;
+		case 2:
+			mes "[老奶奶]";
+			mes "*唉* 我怎麼有辦法自己去弄到^3355FF純潔的裙子^000000呢？我實在太虛弱了，光是搖搖椅就讓我精疲力盡。*嗚* 我只是想讓我的孫子們開心而已...";
+			close;
+		}
+	}
+	else {
+		mes "[老奶奶]";
+		mes "我每天都在斐揚的山上採蘑菇。時間過得真快，不知不覺就到了祭典的季節了。我真希望能為我的家人做些這個季節穿的衣服。";
+		next;
+		mes "[老奶奶]";
+		mes "...";
+		mes "但是為了這個，我需要^3355FF4個純潔的裙子^000000...";
+		next;
+		mes "[老奶奶]";
+		mes "年輕的旅行者，請幫幫我。當你找到一些^3355FF純潔的裙子^000000時，請把它們帶來給我。我會非常感激的...";
+		close;
+	}
+}
+
+// 'Ear Muffs' Quest
+//============================================================
+payon_in01,18,10,4	script	神秘女子	76,{
+	mes "[神秘女子]";
+	mes "我的家族多年來一直生產並販售特殊的冬季商品^3355FF耳罩^000000。我們剛搬來這裡，但這裡的天氣總是很溫暖，所以我們幾乎無法維持生計。";
+	next;
+	mes "[神秘女子]";
+	mes "如果你計劃前往較寒冷的地區旅行，我建議你帶上一些^3355FF耳罩^000000...";
+	emotion ET_THINK;
+	next;
+	mes "[神秘女子]";
+	mes "耳罩是我們家族的特產，我們將它提供給擁有^FF33551個受詛咒的紅寶石^000000、^3311AA1個耳機，^000000 ^3355FF 200根鳥毛^000000以及^DDDD005000 Zeny^000000的客人。";
+	emotion ET_THINK;
+	next;
+	switch(select("喔是嗎？聽起來不錯。:不了，謝謝妳，夫人。")) {
+	case 1:
+		if ((countitem(724) > 0) && (countitem(949) > 199) && (countitem(5001) > 0) && (Zeny > 4999)) {
+			mes "[神秘女子]";
+			delitem 724,1; //Cardinal_Jewel_
+			delitem 949,200; //Feather
+			delitem 5001,1; //Headset
+			set Zeny,Zeny-5000;
+			mes "來，我把這個做好的給你。";
+			getitem 2283,1; //Ear_Mufs
+			next;
+			mes "[神秘女子]";
+			mes "感謝你購買我們的產品。你絕對不會後悔買我們的耳罩的：保證滿意?";
+			emotion ET_THINK;
+			close;
+		}
+		else {
+			mes "[神秘女子]";
+			mes "噢，親愛的...";
+			mes "你的錢或物品不夠。很抱歉，我們無法提供任何折扣。請體諒我們也必須維持生計...";
+			emotion ET_THINK;
+			close;
+		}
+	case 2:
+		mes "[神秘女子]";
+		mes "沒關係。";
+		mes "我相信我們";
+		mes "會再見面的。";
+		mes "...總有一天。";
+		emotion ET_THINK;
+		close;
+	}
+}
+
+// 'Oxygen Mask' Quest
+//============================================================
+payon_in02,25,71,4	script	男孩	86,{
+	if (countitem(701) > 4) {
+		mes "[年輕人]";
+		mes "啊啊啊啊啊！";
+		mes "啊，不，我受不了了...";
+		next;
+		mes "[年輕人]";
+		mes "*呃*";
+		mes "現在連我的眼睛都出毛病了！！為什麼這些蟲子突然看起來這麼可愛？！不???！！！";
+		next;
+		switch(select("給他看歐拉歐拉:給他歐拉歐拉:取消")) {
+		case 1:
+			mes "[年輕人]";
+			mes "喔喔喔喔喔！！！";
+			mes "這、這難道是";
+			mes "那個嗎？！";
+			mes "這是...";
+			mes "歐拉歐拉！！";
+			next;
+			mes "[年輕人]";
+			mes "長話短說！把它給我，我就把我的寶物給你！你覺得這個主意怎麼樣？要交易嗎？";
+			close;
+		case 2:
+			if (countitem(701) > 4) {
+				delitem 701,5; //Ora_Ora
+			}
+			mes "[年輕人]";
+			mes "姆哈哈哈哈！！！";
+			mes "我終於得到這個了！";
+			mes "歐拉歐拉！";
+			mes "愚蠢又噁心的";
+			mes "盜蟲！！";
+			mes "你們會付出代價的！！！";
+			next;
+			mes "[年輕人]";
+			mes "呼...呼...";
+			mes "抱歉，我剛才一時高興得失去控制了。現在，我會按照約定把寶物給你。";
+			next;
+			getitem 5004,1; //Oxygen_Mask
+			mes "[年輕人]";
+			mes "當你把它戴在嘴巴上呼吸時，它可以在髒東西進入你的肺部之前過濾掉它們。";
+			next;
+			mes "[年輕人]";
+			mes "卡卡卡卡卡卡！";
+			mes "我等不及";
+			mes "要用這個";
+			mes "歐拉歐拉了！";
+			close;
+		case 3:
+			mes "[年輕人]";
+			mes "呼呼呼呼呼...";
+			mes "如果我無法消滅所有這些盜蟲怎麼辦？我甚至可能會愛上牠們... *呃*";
+			close;
+		}
+	}
+	else {
+		mes "[年輕人]";
+		mes "哇啊啊啊啊！我、我...";
+		mes "我再也受不了了！";
+		mes "你們這些發臭骯髒的小混蛋！";
+		next;
+		switch(select("繼續:取消")) {
+		case 1:
+			mes "[年輕人]";
+			mes "天啊...";
+			mes "這一切都始於我小時候父母去世。我很早就必須為了生計工作，度過了一段非常艱難的時期。";
+			next;
+			mes "[年輕人]";
+			mes "我工作了 10 年，希望能買到夢想中的房子，讓我在那裡重新找到平靜與舒適的感覺。最後我以為我存夠了 Zeny 可以負擔得起屬於我自己的溫暖小家。";
+			next;
+			mes "[年輕人]";
+			mes "不幸的是，我沒有足夠的錢買我一直看中的那棟好房子。但後來，我發現了這棟房子，它比第一棟更大也更便宜。我不假思索就買了下來...";
+			next;
+			mes "[年輕人]";
+			mes "老天爺啊！結果這裡竟然是盜蟲的天堂！！！";
+			next;
+			mes "[年輕人]";
+			mes "我嘗試了所有能做的事。我哄騙牠們、殺死牠們，但只帶來了片刻的安寧！我甚至試過把這棟房子燒了...！";
+			next;
+			mes "[年輕人]";
+			mes "*喘氣* 我的意思是，難道我真的需要^3355FF歐拉歐拉^000000才能除掉牠們嗎？人們說它在遙遠的國家非常罕見。";
+			next;
+			mes "[年輕人]";
+			mes "如果我能買得起 5 個，我就不用再為這些噁心的蟲子感到沮喪了...";
+			close;
+		case 2:
+			mes "[年輕人]";
+			mes "這場與蟲子無休止的戰鬥真的讓我精疲力盡。我放棄了。你們這些混蛋愛怎樣就怎樣吧！";
+			close;
+		}
+	}
+}
+
+// 'Helm of Angel' and 'Deviruchi Cap' Quest
+//============================================================
+-	script	年輕人#12	89,{
+	mes "[年輕人]";
+	mes "...什麼事？";
+	next;
+	switch(select("你能幫我做個特殊的物品嗎？:嘿。")) {
+	case 1:
+		mes "[年輕人]";
+		mes "咦？看來你已經知道我的專長了，是嗎？我想那就沒必要再像平常那樣保密了。告訴我你想要什麼。";
+		next;
+		switch(select("天使頭盔。:小惡魔帽。:我下次再來。")) {
+		case 1:
+			mes "[年輕人]";
+			mes "1個頭盔[1]。";
+			mes "1個天使翅膀。";
+			mes "5個卡崙之牙。";
+			mes "我只需要這些。";
+			next;
+			mes "[年輕人]";
+			mes "等等！我先跟你說清楚，我不在乎你身上的物品是否有精煉過或插卡。";
+			next;
+			mes "[年輕人]";
+			mes "我的意思是，我用來幫你製作物品的材料中，任何插卡或精煉效果在物品製作完成後都會消失。所以把東西交給我時要小心。";
+			next;
+			mes "[年輕人]";
+			mes "你收集好物品了嗎？那就交給我吧。";
+			next;
+			switch(select("把物品交給他。:不要把物品交給他。")) {
+			case 1:
+				if ((countitem(2229) > 0) && (countitem(2254) > 0) && (countitem(7036) > 4)) {
+					mes "[年輕人]";
+					mes ".....嗯。";
+					mes "好吧，這是你的天使頭盔。拿去吧。";
+					delitem 2229,1; //Helm_
+					delitem 2254,1; //Angelic_Chain
+					delitem 7036,5; //Fang_Of_Garm
+					close2;
+					getitem 5025,1; //Helm_Of_Angel
+					end;
+				}
+				else {
+					mes "[年輕人]";
+					mes "...物品的數量不對。你最好再檢查一下。";
+					close;
+				}
+			case 2:
+				mes "[年輕人]";
+				mes "隨便你...";
+				close;
+			}
+		case 2:
+			mes "[年輕人]";
+			mes "600個小惡魔角。";
+			mes "40個獅鷲獸指甲。";
+			mes "我只需要這些。";
+			next;
+			mes "[年輕人]";
+			mes "等等！我先跟你說清楚，我不在乎你身上的物品是否有精煉過或插卡。";
+			next;
+			mes "[年輕人]";
+			mes "我的意思是，我用來幫你製作物品的材料中，任何插卡或精煉效果在物品製作完成後都會消失。所以把東西交給我時要小心。";
+			next;
+			mes "[年輕人]";
+			mes "你收集好物品了嗎？那就交給我吧。";
+			next;
+			switch(select("把物品交給他。:不要把物品交給他。")) {
+			case 1:
+				if ((countitem(1038) > 599) && (countitem(7048) > 39)) {
+					mes "[年輕人]";
+					mes ".....嗯。這是你的小惡魔帽。請拿去吧。";
+					delitem 1038,600; //Petite_DiablOfs_Horn
+					delitem 7048,40; //Talon_Of_Griffin
+					close2;
+					getitem 5038,1; //Deviruchi_Cap
+					end;
+				}
+				else {
+					mes "[年輕人]";
+					mes "...物品的數量不對。你最好再檢查一下。";
+					close;
+				}
+			case 2:
+				mes "[年輕人]";
+				mes "隨便你...";
+				close;
+			}
+		case 3:
+			mes "[年輕人]";
+			mes "嗯。好吧。";
+			mes "那我們下次再見。";
+			close;
+		}
+	case 2:
+		mes "[年輕人]";
+		mes "嗯。";
+		mes "保重。";
+		close;
+	}
+}

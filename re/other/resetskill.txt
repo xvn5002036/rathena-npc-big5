@@ -1,0 +1,144 @@
+//===== rAthena Script =======================================
+//= Hypnotist
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Stat and skill resetter for expanded first class under
+//= base level 50 and normal first class.
+//===== Additional Comments: =================================
+//= 1.0 First version, Renewal script.
+//= 1.1 Added Izlude duplicates. [Euphy]
+//============================================================
+
+// Main NPC :: resetskill_novice
+//============================================================
+izlude,127,175,3	script	催眠師#novice	124,{
+	mes "[催眠師]";
+	mes "你好，冒險者。";
+	mes "我是催眠師學院派來";
+	mes "伊斯魯得島的成員，";
+	mes "為特定的一轉職業提供重置技能服務，";
+	mes "而且價格非常划算：免費！";
+	next;
+	mes "[催眠師]";
+	mes "雖然我目前提供無限制的";
+	mes "素質/技能重置，但我有";
+	mes "兩個必須滿足的條件。";
+	mes "第一，你的^FF0000Base Level 必須低於 50^000000。";
+	next;
+	mes "[催眠師]";
+	mes "第二，你必須是";
+	mes "^FF0000劍士、服事、魔法師、";
+	mes "盜賊、弓箭手、商人、";
+	mes "跆拳少年或跆拳少女、";
+	mes "神槍手和忍者^000000";
+	mes "職業才符合資格。";
+	mes "現在，你有什麼問題嗎？";
+	next;
+	switch(select("^FF0000什麼是素質/技能重置？:重置素質:重置技能^000000:取消")) {
+	case 1:
+		mes "[催眠師]";
+		mes "素質/技能重置讓冒險者";
+		mes "如果對目前的技能不滿意，";
+		mes "可以重新分配他們的技能點數。";
+		next;
+		mes "[催眠師]";
+		mes "在進行";
+		mes "素質/技能重置之前，你必須";
+		mes "將你角色身上所有攜帶物品的重量";
+		mes "減到 0。你可以把";
+		mes "多餘的物品放進卡普拉倉庫。";
+		next;
+		mes "[催眠師]";
+		mes "啊，還有一點很重要，";
+		mes "如果你有裝備^FF0000手推車^000000，";
+		mes "請務必卸下。";
+		mes "否則，催眠會";
+		mes "無效，或者會產生反效果...";
+		close;
+	case 2:
+		set .@str$,"素質";
+	case 3:
+		if (.@str$ == "")
+			set .@str$,"技能";
+		mes "[催眠師]";
+		mes "你確定要";
+		mes "繼續進行";
+		mes "我的^FF0000"+.@str$+"重置^000000服務嗎？";
+		next;
+		if(select("是:取消") == 1)
+			break;
+	case 4:
+		mes "[催眠師]";
+		mes "謝謝你，祝你";
+		mes "冒險順利。";
+		mes "請注意安全?";
+		close;
+	}
+	if ((Class >= Job_Swordman && Class <= Job_Thief) || Class == Job_Taekwon || Class == Job_Gunslinger || Class == Job_Ninja) {
+		if (checkcart()) {
+			mes "[催眠師]";
+			mes "哦！在進行";
+			mes .@str$+" 重置服務之前，";
+			mes "請先卸下你的手推車。";
+			mes "感謝你的配合?";
+			close;
+		}
+		if (Weight != 0) {
+			mes "[催眠師]";
+			mes "如果你是來使用我的"+.@str$;
+			mes "重置服務，請";
+			mes "記住，除非";
+			mes "^FF0000你物品欄中攜帶物品的重量";
+			mes "減到 0^000000，否則無法重置你的"+.@str$+"。";
+			next;
+			mes "[催眠師]";
+			mes "你何不先把你的";
+			mes "東西放進卡普拉倉庫";
+			mes "呢？這樣你就可以";
+			mes "安全地保管你所有的物品。";
+			close;
+		}
+		if (BaseLevel >= 50 && (Class == Job_Taekwon || Class == Job_Gunslinger || Class == Job_Ninja)) {
+			mes "[催眠師]";
+			mes "很抱歉，但是Base Level";
+			mes "高於 50 的角色不符合";
+			mes "我提供的"+.@str$+"重置服務資格。";
+			close;
+		}
+		mes "[催眠師]";
+		mes "感謝你使用";
+		mes "我的"+.@str$+"重新分配";
+		mes "服務。哦，冒險者，祝你在";
+		mes "旅途中一切順利。";
+		if (.@str$ == "素質")
+			resetstatus;
+		else
+			resetskill;
+		close;
+	} else {
+		mes "[催眠師]";
+		mes "很抱歉，但你的";
+		mes "職業不符合";
+		mes "我提供的"+.@str$+"重置服務";
+		mes "資格。我只能";
+		mes "為以下職業提供"+.@str$+"重置服務...";
+		next;
+		mes "[催眠師]";
+		mes "^FF0000劍士、服事、";
+		mes "魔法師、盜賊、弓箭手、";
+		mes "商人、跆拳";
+		mes "少年、跆拳少女、";
+		mes "神槍手和忍者^000000。";
+		close;
+	}
+}
+izlude_a,127,175,3	duplicate(催眠師#novice)	催眠師#novice_a	124
+izlude_b,127,175,3	duplicate(催眠師#novice)	催眠師#novice_b	124
+izlude_c,127,175,3	duplicate(催眠師#novice)	催眠師#novice_c	124
+izlude_d,127,175,3	duplicate(催眠師#novice)	催眠師#novice_d	124

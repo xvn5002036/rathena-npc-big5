@@ -1,0 +1,696 @@
+//===== rAthena Script ======================================= 
+//= Octopus Cave
+//===== By: ================================================== 
+//= Muad_Dib
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Defeat the Disgusting Octopus.
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [Euphy]
+//= 1.1 Instance system rewrite. [Euphy]
+//============================================================ 
+
+// Instance Creation :: oct
+//============================================================
+mal_dun01,151,235,5	script	海星	551,{
+
+	set .@party_id,getcharid(1);
+	set .@md_name$,"Octopus Cave";
+
+	if (!.@party_id) {
+		mes "[海星]";
+		mes "你一個人是無能為力的，嘿嘿！";
+		mes "最好找人來幫你。";
+		mes "組個隊伍，稍後再來吧。";
+		close;
+	}
+	if (is_party_leader() == false) {
+		mes "[海星]";
+		mes "你的隊長在哪裡，嘿嘿。";
+		mes "我才不跟隨便的人說話。";
+		mes "把你們老大叫來。";
+		close;
+	}
+	mes "[海星]";
+	mes "我正在這裡守衛，嘿嘿！";
+	mes "現在只是隨便封鎖起來而已。";
+	mes "但總有一天這個洞穴必須被永遠封印，嘿嘿！";
+	next;
+	while(1) {
+		switch(select("問問發生了什麼事。:要求打開大門。:去其他地方。")) {
+		case 1:
+			mes "[海星]";
+			mes "最近，我們的海星小姐";
+			mes "遇到了一些麻煩，嗚嗚。";
+			mes "在這個和平的地方";
+			mes "發生了不好的事，嘿嘿！";
+			next;
+			mes "[海星]";
+			mes "長相奇怪的觸手從";
+			mes "那邊的洞裡伸了出來，";
+			mes "試圖綁架我們的海星小姐。";
+			mes "嗚嗚。";
+			next;
+			mes "[海星]";
+			mes "看來那些觸手是屬於";
+			mes "那隻醜陋的章魚的。";
+			mes "必須處理掉那隻魔物，";
+			mes "但光靠我們自己是很難辦到的，嘿嘿。";
+			next;
+			mes "[海星]";
+			mes "我想找個特別的人，";
+			mes "請他去懲罰這隻醜陋的章魚。";
+			mes "我希望這隻章魚永遠不會";
+			mes "再來騷擾我們的小姐，嘿嘿。";
+			next;
+			mes "[海星]";
+			mes "去抓住那隻章魚，然後把牠串在這根長籤上。";
+			mes "如果你帶著長籤回來，我會";
+			mes "把這扇門打開一陣子。";
+			mes "如果你有興趣可以挑戰看看，嘿嘿。";
+			next;
+			break;
+		case 2:
+			set .@playtime, checkquest(4197,PLAYTIME);
+			if (.@playtime == 0 || .@playtime == 1) {
+				mes "[海星]";
+				mes "章魚現在不在這附近，嘿嘿。";
+				mes "請稍後再來。";
+				close;
+			}
+			if (.@playtime == 2) erasequest 4197;
+			if (rentalcountitem(6442)) {
+				if (instance_create(.@md_name$) < 0) {
+					mes "[海星]";
+					mes "隊伍名稱是... "+getpartyname(.@party_id)+"。";
+					mes "隊長是... "+strcharinfo(0)+"。";
+					mes "^0000ff"+.@md_name$+"^000000，我現在打不開，嘿嘿。";
+					mes "現在還不是時候，請稍候。";
+					close;
+				}
+				mes "[海星]";
+				mes "我會為 ^0000ff"+.@md_name$+"^000000 打開大門一陣子。";
+				mes "請抓住那隻變態章魚，";
+				mes "然後把牠串在長籤上帶回來，嘿嘿。";
+				close;
+			}
+			mes "[海星]";
+			mes "先準備一根長籤，";
+			mes "這樣你才能把那隻章魚";
+			mes "串在那根長籤上。";
+			mes "然後，我就會讓你進去一陣子，嘿嘿。";
+			close;
+		case 3:
+			mes "[海星]";
+			mes "這不是個好地方，去別處看看吧。";
+			close;
+		}
+	}
+}
+
+mal_dun01,153,237,5	script	奇怪的入口	844,{
+	mes "有一個奇怪的入口";
+	mes "被一些木板隨意地封鎖著。";
+	next;
+	switch(select("進去。:停止。")) {
+	case 1:
+		if (rentalcountitem(6442)) {
+			switch(instance_enter("Octopus Cave")) {
+			case IE_OTHER:
+				mes "[海星]";
+				mes "啊，現在還不是時候...";
+				mes "你能稍後再來嗎？嘿嘿。";
+				close;
+			case IE_NOINSTANCE:
+			case IE_NOMEMBER:
+				mes "[海星]";
+				mes "那個入口藏著一個秘密。";
+				mes "所以，請務必小心點，好嗎？嘿嘿。";
+				close;
+			case IE_OK:
+				mapannounce "mal_dun01", getpartyname(getcharid(1))+" 隊伍的 "+strcharinfo(0)+" 隊員開始狩獵章魚了！",bc_map,"0x00ff99";
+				if (checkquest(4197) == -1) setquest 4197;
+				//warp instance_mapname("1@cash"),199,99;
+				close;
+			default:
+				mes "[海星]";
+				mes "噓... 奇怪的氣息";
+				mes "正從那個入口散發出來。";
+				mes "如果你現在進去，會有大麻煩的。";
+				close;
+			}
+		}
+		mes "[海星]";
+		mes "你絕對需要準備";
+		mes "狩獵用樹枝，如果你想";
+		mes "懲罰那隻章魚的話。";
+		mes "否則我不會讓你進去的！嘿嘿。";
+		close;
+	case 2:
+		mes "[海星]";
+		mes "是啊是啊，你最好放棄。";
+		close;
+	}
+}
+
+// Instance Scripts :: oct_in
+//============================================================
+1@cash,199,99,0	script	oct_enter	139,4,4,{
+	end;
+OnTouch_:
+	donpcevent instance_npcname("oct_enter_broad")+"::OnEnable";
+	specialeffect EF_BASH;
+	disablenpc instance_npcname("oct_enter");
+	end;
+}
+
+1@cash,1,1,0	script	oct_enter_broad	-1,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("oct_foot_exit1");
+	disablenpc instance_npcname("oct_foot_exit2");
+	disablenpc instance_npcname("oct_foot_exit3");
+	disablenpc instance_npcname("oct_foot_exit4");
+	disablenpc instance_npcname("oct_boss_warp");
+	donpcevent instance_npcname("oct_enter_broad")+"::OnDisable";
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_enter_broad");
+	donpcevent instance_npcname("oct_foot_4")+"::OnEnable";
+	donpcevent instance_npcname("oct_mob_con")+"::OnEnable";
+	initnpctimer;
+	end;
+OnDisable:
+	disablenpc instance_npcname("oct_enter_broad");
+	end;
+OnTimer1000:
+	mapannounce instance_mapname("1@cash"),"變態章魚 : 竟敢闖入我的地盤！",bc_map,"0xFFFF00";
+	end;
+OnTimer4000:
+	mapannounce instance_mapname("1@cash"),"變態章魚 : 但我已經封鎖了所有的洞穴大門！！你們無能為力！",bc_map,"0xFFFF00";
+	end;
+OnTimer7000:
+	mapannounce instance_mapname("1@cash"),"變態章魚 : 我的小鬼們?你們的玩具來了！好好玩玩吧?哈哈哈",bc_map,"0xFFFF00";
+	stopnpctimer;
+	donpcevent instance_npcname("oct_enter_broad")+"::OnDisable";
+	end;
+}
+
+1@cash,3,3,0	script	oct_foot_4	-1,{
+	end;
+OnInstanceInit:
+	donpcevent instance_npcname("oct_foot_4")+"::OnDisable";
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_foot_4");
+	donpcevent instance_npcname("oct_foot1")+"::OnEnable";
+	donpcevent instance_npcname("oct_foot2")+"::OnEnable";
+	donpcevent instance_npcname("oct_foot3")+"::OnEnable";
+	donpcevent instance_npcname("oct_foot4")+"::OnEnable";
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,20,114,"章魚腳#1",2193,1,instance_npcname("oct_foot_4")+"::OnMyMobDead";
+	monster .@map$,88,190,"章魚腳#2",2193,1,instance_npcname("oct_foot_4")+"::OnMyMobDead";
+	monster .@map$,307,215,"章魚腳#3",2193,1,instance_npcname("oct_foot_4")+"::OnMyMobDead";
+	monster .@map$,372,131,"章魚腳#4",2193,1,instance_npcname("oct_foot_4")+"::OnMyMobDead";
+	end;
+OnDisable:
+	disablenpc instance_npcname("oct_foot_4");
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@cash");
+	if (mobcount(.@map$,instance_npcname("oct_foot_4")+"::OnMyMobDead") < 1) {
+		donpcevent instance_npcname("oct_boss_con")+"::OnEnable";
+		mapannounce .@map$,"喂！！我要親自解決你們！放馬過來吧！",bc_map,"0x00ff99";
+		enablenpc instance_npcname("oct_boss_warp");
+		instance_warpall .@map$,199,99, instance_id();
+		end;
+	}
+	mapannounce .@map$,"呃啊！！好痛！！！我需要別的策略...",bc_map,"0x00ff99";
+	end;
+}
+
+1@cash,20,114,0	script	oct_foot1	139,6,6,{
+	end;
+OnInstanceInit:
+	donpcevent instance_npcname(strnpcinfo(0))+"::OnDisable";
+	end;
+OnEnable:
+	enablenpc();
+	set .@label$, instance_npcname(strnpcinfo(0))+"::OnMyMobDead";
+	set .@i, atoi(charat(strnpcinfo(0),8));
+	set .@map$, instance_mapname("1@cash");
+	switch(.@i) {
+	case 1:
+		areamonster .@map$,34,96,38,100,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,39,90,41,92,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,38,76,40,78,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,39,58,41,60,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,50,38,56,44,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,68,32,72,36,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,83,26,85,28,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,107,28,109,30,"章魚的部下",2192,1,.@label$;
+		areamonster .@map$,123,28,125,30,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,134,31,138,35,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,142,39,146,43,"章魚的部下",2192,2,.@label$;
+		break;
+	case 2:
+		areamonster .@map$,139,113,143,117,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,135,104,137,106,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,123,93,127,97,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,113,90,115,92,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,103,89,105,91,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,89,90,91,92,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,74,104,76,106,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,74,120,76,122,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,83,131,87,135,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,92,142,94,144,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,98,159,100,161,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,94,180,98,184,"章魚的部下",2192,5,.@label$;
+		break;
+	case 3:
+		areamonster .@map$,299,209,303,213,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,292,203,296,207,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,291,186,293,188,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,292,166,294,168,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,293,151,295,153,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,299,137,303,141,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,300,123,304,127,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,300,104,304,108,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,279,101,281,103,"章魚的部下",2192,2,.@label$;
+		monster .@map$,260,103,"章魚的部下",2192,1,.@label$;
+		break;
+	case 4:
+		areamonster .@map$,363,123,367,127,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,364,108,368,112,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,363,93,367,97,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,364,72,366,74,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,364,58,366,60,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,355,44,359,48,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,346,36,350,40,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,319,28,325,34,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,305,27,307,29,"章魚的部下",2192,2,.@label$;
+		areamonster .@map$,276,29,280,33,"章魚的部下",2192,5,.@label$;
+		areamonster .@map$,258,37,262,41,"章魚的部下",2192,2,.@label$;
+		break;
+	}
+	end;
+OnDisable:
+	killmonster instance_mapname("1@cash"),instance_npcname(strnpcinfo(0))+"::OnMyMobDead";
+	// Not in official script.
+	disablenpc();
+	end;
+OnTouch_:
+	if (getd("."+strnpcinfo(0)+instance_id())) end;
+	setd "."+strnpcinfo(0)+instance_id(),1;
+	hideonnpc instance_npcname(strnpcinfo(0));
+	mapannounce instance_mapname("1@cash"),"出來吧，我的寶貝們，來幫幫我！",bc_map,"0xFFFF00";
+	initnpctimer;
+	end;
+OnTimer5000:
+	set .@map$, instance_mapname("1@cash");
+	mapannounce .@map$,"給他們一點顏色瞧瞧！",bc_map,"0xFFFF00";
+	set .@label$, instance_npcname(strnpcinfo(0))+"::OnMyMobDead";
+	set .@i, atoi(charat(strnpcinfo(0),8));
+	switch(.@i) {
+	case 1:
+		areamonster .@map$,18,112,22,116,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,18,112,22,116,"章魚的部下",2192,3,.@label$;
+		break;
+	case 2:
+		areamonster .@map$,86,188,90,192,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,96,98,100,102,"章魚的部下",2192,3,.@label$;
+		break;
+	case 3:
+		areamonster .@map$,305,213,309,217,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,305,213,309,217,"章魚的部下",2192,3,.@label$;
+		break;
+	case 4:
+		areamonster .@map$,370,129,374,133,"章魚的部下",2192,3,.@label$;
+		areamonster .@map$,370,129,374,133,"章魚的部下",2192,3,.@label$;
+		break;
+	}
+	end;
+OnTimer30000:
+	setd "."+strnpcinfo(0)+instance_id(),0;
+	stopnpctimer;
+	set .@i, atoi(charat(strnpcinfo(0),8));
+	enablenpc instance_npcname("oct_foot_exit"+.@i);
+	donpcevent instance_npcname(strnpcinfo(0))+"::OnDisable";
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@cash");
+	if (mobcount(.@map$,instance_npcname(strnpcinfo(0))+"::OnMyMobDead") < 1) {
+		mapannounce .@map$,"你竟敢傷害我的寶貝！！？你要為此付出代價！！！",bc_map,"0x00ff99";
+		setd "."+strnpcinfo(0)+instance_id(),0;
+		stopnpctimer;
+		set .@i, atoi(charat(strnpcinfo(0),8));
+		enablenpc instance_npcname("oct_foot_exit"+.@i);
+		donpcevent instance_npcname(strnpcinfo(0))+"::OnDisable";
+		end;
+	}
+	end;
+}
+1@cash,88,190,0	duplicate(oct_foot1)	oct_foot2	139,6,6
+1@cash,307,215,0	duplicate(oct_foot1)	oct_foot3	139,6,6
+1@cash,372,131,0	duplicate(oct_foot1)	oct_foot4	139,6,6
+
+1@cash,15,15,0	script	oct_mob_con	-1,{
+	end;
+OnInstanceInit:
+	donpcevent instance_npcname("oct_mob_con")+"::OnDisable";
+	end;
+OnEnable:
+	set .@map$, instance_mapname("1@cash");
+	enablenpc instance_npcname("oct_mob_con");
+	monster .@map$,32,94,"海葵",1068,1;
+	monster .@map$,41,101,"海葵",1068,1;
+	monster .@map$,35,78,"海葵",1068,1;
+	monster .@map$,35,62,"海葵",1068,1;
+	monster .@map$,49,54,"海葵",1068,1;
+	monster .@map$,70,28,"海葵",1068,1;
+	monster .@map$,83,22,"海葵",1068,1;
+	monster .@map$,99,23,"海葵",1068,1;
+	monster .@map$,115,23,"海葵",1068,1;
+	monster .@map$,132,25,"海葵",1068,1;
+	monster .@map$,100,185,"海葵",1068,1;
+	monster .@map$,92,178,"海葵",1068,1;
+	monster .@map$,92,162,"海葵",1068,1;
+	monster .@map$,70,121,"海葵",1068,1;
+	monster .@map$,70,105,"海葵",1068,1;
+	monster .@map$,105,85,"海葵",1068,1;
+	monster .@map$,121,84,"海葵",1068,1;
+	monster .@map$,292,209,"海葵",1068,1;
+	monster .@map$,303,206,"海葵",1068,1;
+	monster .@map$,290,163,"海葵",1068,1;
+	monster .@map$,299,150,"海葵",1068,1;
+	monster .@map$,308,141,"海葵",1068,1;
+	monster .@map$,308,125,"海葵",1068,1;
+	monster .@map$,295,97,"海葵",1068,1;
+	monster .@map$,279,97,"海葵",1068,1;
+	monster .@map$,370,111,"海葵",1068,1;
+	monster .@map$,370,110,"海葵",1068,1;
+	monster .@map$,371,96,"海葵",1068,1;
+	monster .@map$,371,80,"海葵",1068,1;
+	monster .@map$,367,55,"海葵",1068,1;
+	monster .@map$,343,29,"海葵",1068,1;
+	monster .@map$,327,24,"海葵",1068,1;
+	monster .@map$,311,22,"海葵",1068,1;
+	monster .@map$,295,22,"海葵",1068,1;
+	monster .@map$,279,22,"海葵",1068,1;
+	areamonster .@map$,30,67,50,87,"捕蟲堇妖",1784,1;
+	areamonster .@map$,102,19,122,39,"捕蟲堇妖",1784,1;
+	areamonster .@map$,89,138,109,158,"捕蟲堇妖",1784,1;
+	areamonster .@map$,112,83,132,103,"捕蟲堇妖",1784,1;
+	areamonster .@map$,283,168,303,188,"捕蟲堇妖",1784,1;
+	areamonster .@map$,292,97,312,117,"捕蟲堇妖",1784,1;
+	areamonster .@map$,355,64,375,84,"捕蟲堇妖",1784,1;
+	areamonster .@map$,317,17,337,37,"捕蟲堇妖",1784,1;
+	donpcevent instance_npcname("oct_backattack1")+"::OnEnable";
+	donpcevent instance_npcname("oct_backattack2")+"::OnEnable";
+	donpcevent instance_npcname("oct_backattack3")+"::OnEnable";
+	donpcevent instance_npcname("oct_backattack4")+"::OnEnable";
+	donpcevent instance_npcname("oct_mob_con")+"::OnDisable";
+	end;
+OnDisable:
+	disablenpc instance_npcname("oct_mob_con");
+	end;
+}
+
+1@cash,45,53,0	script	oct_backattack1	139,3,3,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("oct_backattack1");
+	end;
+OnTouch_:
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,39,59,"海葵",1068,1;
+	monster .@map$,40,59,"海葵",1068,1;
+	monster .@map$,41,59,"海葵",1068,1;
+	monster .@map$,47,50,"海葵",1068,1;
+	monster .@map$,48,50,"海葵",1068,1;
+	monster .@map$,49,50,"海葵",1068,1;
+	monster .@map$,41,53,"章魚的部下",2192,1;
+	mapannounce .@map$,"別讓他們突破，阻止他們！！！",bc_map,"0x00ff99";
+	specialeffect EF_BASH;
+	disablenpc instance_npcname("oct_backattack1");
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_backattack1");
+	end;
+}
+
+1@cash,78,99,0	script	oct_backattack2	139,3,3,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("oct_backattack2");
+	end;
+OnTouch_:
+	if (getd("."+instance_id())) end;
+	setd "."+instance_id(),1;
+	initnpctimer;
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,71,105,"章魚的部下 ",2192,1;
+	mapannounce .@map$,"總部現在是空的，上啊！！！",bc_map,"0x00ff99";
+	hideonnpc instance_npcname("oct_backattack2");
+	end;
+OnTimer2000:
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,71,105,"章魚的部下 ",2192,1;
+	mapannounce .@map$,"跑，快跑！上，快上！！！",bc_map,"0x00ff99";
+	end;
+OnTimer4000:
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,71,105,"章魚的部下 ",2192,1;
+	mapannounce .@map$,"沒時間了，快點出來！",bc_map,"0x00ff99";
+	end;
+OnTimer6000:
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,71,105,"章魚的部下 ",2192,3;
+	mapannounce .@map$,"我們來佔領總部！！！",bc_map,"0x00ff99";
+	end;
+OnTimer8000:
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,71,105,"章魚的部下 ",2192,1;
+	mapannounce .@map$,"沒時間浪費了，快點！！！",bc_map,"0x00ff99";
+	stopnpctimer;
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_backattack2");
+	end;
+}
+
+1@cash,299,144,0	script	oct_backattack3	139,3,3,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("oct_backattack3");
+	end;
+OnTouch_:
+	if (getd("."+instance_id())) end;
+	setd "."+instance_id(),1;
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,293,153,"章魚的部下 ",2192,1;
+	monster .@map$,294,152,"章魚的部下 ",2192,1;
+	monster .@map$,292,153,"章魚的部下 ",2192,1;
+	monster .@map$,293,151,"章魚的部下 ",2192,1;
+	monster .@map$,293,152,"章魚的部下 ?",2175,1;
+	mapannounce .@map$,"哈哈哈！驚喜吧？？！！",bc_map,"0x00ff99";
+	initnpctimer;
+	hideonnpc instance_npcname("oct_backattack3");
+	end;
+OnTimer5000:
+	mapannounce instance_mapname("1@cash"),"...看來我們之中有間諜。",bc_map,"0x00ff99";
+	stopnpctimer;
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_backattack3");
+	end;
+}
+
+1@cash,336,36,0	script	oct_backattack4	139,3,3,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("oct_backattack4");
+	end;
+OnTouch_:
+	if (getd("."+instance_id())) end;
+	setd "."+instance_id(),1;
+	set .@map$, instance_mapname("1@cash");
+	monster .@map$,332,37,"章魚的部下 ",2192,1;
+	monster .@map$,332,36,"章魚的部下 ",2192,1;
+	monster .@map$,332,35,"章魚的部下 ",2192,1;
+	monster .@map$,332,34,"章魚的部下 ",2192,1;
+	monster .@map$,341,37,"章魚的部下 ",2192,1;
+	monster .@map$,341,36,"章魚的部下 ",2192,1;
+	monster .@map$,341,35,"章魚的部下 ",2192,1;
+	monster .@map$,341,34,"章魚的部下 ",2192,1;
+	monster .@map$,260,40,"傭兵墨魚",2175,1;
+	monster .@map$,260,41,"傭兵墨魚",2175,1;
+	monster .@map$,260,39,"傭兵墨魚",2175,1;
+	monster .@map$,259,40,"傭兵墨魚",2175,1;
+	monster .@map$,261,40,"傭兵墨魚",2175,1;
+	mapannounce .@map$,"多麼成功的鉗形戰術！敵人很強大！別自亂陣腳！話說回來，那些傭兵都去哪了？？",bc_map,"0x00ff99";
+	initnpctimer;
+	hideonnpc instance_npcname("oct_backattack4");
+	end;
+OnTimer5000:
+	mapannounce instance_mapname("1@cash"),"傭兵墨魚 : 呃...呃... 方向錯了。這個方向沒有看到敵人。",bc_map,"0x00ff99";
+	end;
+OnTimer7000:
+	mapannounce instance_mapname("1@cash"),"變態章魚 : 笨蛋！你們不會看地圖嗎？？！！沒用的東西！！",bc_map,"0x00ff99";
+	stopnpctimer;
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_backattack4");
+	end;
+}
+
+1@cash,2,2,0	script	oct_boss_con	-1,{
+	end;
+OnInstanceInit:
+	donpcevent instance_npcname("oct_boss_con")+"::OnDisable";
+	end;
+OnDisable:
+	disablenpc instance_npcname("oct_boss_con");
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_boss_con");
+	donpcevent instance_npcname("oct_boss_foot")+"::OnEnable";
+	monster instance_mapname("1@cash"),199,188,"噁心的章魚",2194,1,instance_npcname("oct_boss_con")+"::OnMyMobDead";
+	initnpctimer;
+	end;
+OnTimer7000:
+	callsub OnAnnounce,
+		"你們不會攻擊一個單身漢吧。",
+		"我上週才剛被墨水工廠解雇。",
+		"噁心的章魚 : 呃啊啊啊啊，來吧！";
+	end;
+OnTimer14000:
+	callsub OnAnnounce,
+		"為什麼... 為什麼你們不懂我的心！",
+		"你們知道現在沒有多少新冒險者，日子有多難過嗎？",
+		"你們.. 我要毀了你們全部...！";
+	end;
+OnTimer21000:
+	callsub OnAnnounce,
+		"什麼？我是一隻噁心的章魚？你們這些施虐狂。",
+		"我們別打了，一起尋找最佳的解決方案怎麼樣，嗯？？",
+		"即使我在這裡倒下，我也會不斷回來，永遠！！！";
+	end;
+OnTimer28000:
+	callsub OnAnnounce,
+		"交配是雄性的本能，我做錯了什麼？",
+		"你們真的想用暴力來解決人類之間的問題嗎？？啊，我是一隻章魚...",
+		"夠了！退後！";
+	end;
+OnTimer35000:
+	callsub OnAnnounce,
+		"難道我又要一個人過聖誕節了嗎...",
+		"現在青年失業是一個很大的問題... 你們繼續在這裡跟我玩是找不到工作的。",
+		"我只能走到這裡了！";
+	end;
+OnTimer42000:
+	callsub OnAnnounce,
+		"摸著良心想想，你們有沒有搭訕過別人...",
+		"我們別在這裡動手，要遵守法律啊！",
+		"你們要一直這樣搞到最後，是嗎？";
+	end;
+OnTimer49000:
+	callsub OnAnnounce,
+		"呃呃呃呃呃呃呃呃呃呃呃... 咳！咳！",
+		"噁心的章魚 : 暴力在任何情況下都是不合理的。",
+		"這是我的地盤！！！";
+	stopnpctimer;
+	initnpctimer;
+	end;
+OnAnnounce:
+	mapannounce instance_mapname("1@cash"),"噁心的章魚 : "+getarg(rand(3)),bc_map,"0xFFFF00";
+	return;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@cash");
+	if (mobcount(.@map$,instance_npcname("oct_boss_con")+"::OnMyMobDead") < 1) {
+		mapannounce .@map$,"噁心的章魚 : 今天就到此為止！下次，我會好好地跟你們玩玩！",bc_map,"0xFFFF00";
+		enablenpc instance_npcname("oct_exit_1");
+		enablenpc instance_npcname("oct_exit_2");
+		donpcevent instance_npcname("oct_boss_foot")+"::OnDisable";
+		stopnpctimer;
+		donpcevent instance_npcname("oct_boss_con")+"::OnDisable";
+		end;
+	}
+	end;
+}
+
+1@cash,4,4,0	script	oct_boss_foot	-1,{
+	end;
+OnInstanceInit:
+	donpcevent instance_npcname("oct_boss_foot")+"::OnDisable";
+	end;
+OnEnable:
+	enablenpc instance_npcname("oct_boss_foot");
+	initnpctimer;
+	end;
+OnCall:
+	set .@map$, instance_mapname("1@cash");
+	if (mobcount(.@map$,instance_npcname("oct_boss_foot")+"::OnMyMobDead") < 100) {
+		switch(rand(2)) {
+		case 0:
+			mapannounce .@map$,"噁心的章魚 : 你們知道章魚有幾隻腳嗎？這不重要，我有無限的腳！！",bc_map,"0xFFFF00";
+			areamonster .@map$,192,181,206,195,"章魚腳",2193,1,instance_npcname("oct_boss_foot")+"::OnMyMobDead";
+			break;
+		case 1:
+			mapannounce .@map$,"噁心的章魚 : 我...撐不住了，我的寶貝們?請出來戰鬥吧！",bc_map,"0xFFFF00";
+			areamonster .@map$,192,181,206,195,"章魚的部下 ",2192,5,instance_npcname("oct_boss_foot")+"::OnMyMobDead";
+			break;
+		}
+	}
+	initnpctimer;
+	end;
+OnTimer10000:
+	stopnpctimer;
+	donpcevent instance_npcname("oct_boss_foot")+"::OnCall";
+	end;
+OnDisable:
+	stopnpctimer;
+	killmonster instance_mapname("1@cash"),instance_npcname("oct_boss_foot")+"::OnMyMobDead"; // Not in official script.
+	disablenpc instance_npcname("oct_boss_foot");
+	end;
+OnMyMobDead:
+	end;
+}
+
+
+1@cash,190,208,0	script	oct_exit_1	45,2,2,{
+	end;
+OnInstanceInit:
+	disablenpc();
+	end;
+OnTouch:
+	mes "你想要離開章魚洞穴嗎？";
+	next;
+	if(select("不要！:是的！") == 2)
+		warp "mal_dun01",153,233;
+	close;
+}
+1@cash,198,82,0	duplicate(oct_exit_1)	oct_exit_2	45,2,2
+// This is never enabled in the official script.
+//1@cash,200,161,0	duplicate(oct_exit_1)	oct_exit_3	45,2,2
+
+// Warp Portals
+//============================================================
+1@cash,16,117,0	warp2	oct_foot_exit1	2,2,1@cash,198,99
+1@cash,77,193,0	warp2	oct_foot_exit2	2,2,1@cash,198,99
+1@cash,312,214,0	warp2	oct_foot_exit3	2,2,1@cash,198,99
+1@cash,370,139,0	warp2	oct_foot_exit4	2,2,1@cash,198,99
+1@cash,198,116,0	warp2	oct_boss_warp	2,2,1@cash,210,172
+
+1@cash,193,82,0	warp2	oct_door1	2,2,1@cash,151,48
+1@cash,154,53,0	warp2	oct_door2	2,2,1@cash,197,87
+1@cash,187,99,0	warp2	oct_door3	2,2,1@cash,148,128
+1@cash,153,133,0	warp2	oct_door4	2,2,1@cash,197,99
+1@cash,209,100,0	warp2	oct_door5	2,2,1@cash,250,111
+1@cash,244,118,0	warp2	oct_door6	2,2,1@cash,199,100
+1@cash,209,83,0	warp2	oct_door7	2,2,1@cash,252,46
+1@cash,246,53,0	warp2	oct_door8	2,2,1@cash,203,83

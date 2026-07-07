@@ -1,0 +1,234 @@
+//===== rAthena Script =======================================
+//= Devil Square
+//===== By: ==================================================
+//= Kirlein, Stillhard (translation), AnnieRuru (rewrite)
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Devil Square, based on the event in MU Online.
+//= Defeat three waves of monsters for treasure.
+//===== Additional Comments: =================================
+//= 1.0 First version, edited.
+//= [Euphy]
+//============================================================
+
+prontera,156,185,5	script	惡魔廣場守衛#1	406,{
+	set .@gm_level, 99; // GM level required to start/stop the event
+
+	mes "[惡魔廣場守衛]";
+	mes "這裡是^FF0000惡魔廣場^000000的入口。";
+	mes "如果您失敗或死亡，大門將會關閉，您必須等到活動再次開始才能重新進入。";
+	next;
+	switch(select("進入.:活動資訊.:" + ((getgmlevel() >= .@gm_level) ? "GM 選單." : "") + ":取消.")) {
+	case 1:
+		if (.start != 1) { // registration period
+			mes "[惡魔廣場守衛]";
+			mes "惡魔廣場目前已關閉。";
+			mes "開放時間如下：";
+			mes "00:00 , 02:00 , 04:00 , 06:00"; // display your times here
+			mes "08:00 , 10:00 , 12:00 , 14:00";
+			mes "16:00 , 18:00 , 20:00 , 22:00";
+			close;
+		}
+		if (BaseLevel < 70 || Zeny < 20000) { // requirements
+			mes "[惡魔廣場守衛]";
+			mes "您不符合進入惡魔廣場的條件。";
+			mes " ";
+			mes "條件要求：";
+			mes " - 基礎等級 70";
+			mes " - 報名費 20,000z";
+			close;
+		}
+		Zeny -= 20000;
+		announce strcharinfo(0)+" 已經進入惡魔廣場。", bc_npc;
+		percentheal 100,100;
+		warp "ordeal_1-1",183,182;
+		close;
+	case 2:
+		mes "[惡魔廣場守衛]";
+		mes "在裡面，您將會遭遇 3 波怪物的襲擊。怪物會一波比一波強大。";
+		next;
+		mes "[惡魔廣場守衛]";
+		mes "如果您擊敗所有敵人，將有機會打開 10 個藏有物品、裝備和稀有卡片的寶箱！";
+		close;
+	case 3:
+		mes "[惡魔廣場守衛]";
+		switch (.start) { // event states
+			case 0: mes "惡魔廣場尚未開始。"; break;
+			case 1: mes "惡魔廣場目前正在接受報名。"; break;
+			case 2: mes "惡魔廣場活動正在進行第 "+ .round +" 回合，還剩下 "+ .mob +" 隻怪物。"; break;
+		}
+		next;
+		switch(select("開始活動.:停止活動.:取消.")) {
+		case 1:
+			mes "[惡魔廣場守衛]";
+			if (.start)
+				mes "惡魔廣場已經開始了。";
+			else {
+				mes "正在啟動惡魔廣場...";
+				donpcevent strnpcinfo(0)+"::OnStartEvent";
+			}
+			close;
+		case 2:
+			mes "[惡魔廣場守衛]";
+			if (!.start)
+				mes "惡魔廣場尚未開始。";
+			else {
+				mes "正在停止惡魔廣場...";
+				donpcevent strnpcinfo(0)+"::OnStopEvent";
+			}
+			close;
+		case 3:
+			break;
+		}
+		break;
+	case 4:
+		break;
+	}
+	mes "[惡魔廣場守衛]";
+	mes "再會。";
+	close;
+
+OnStartEvent:
+OnClock0000:
+OnClock0200:
+OnClock0400:
+OnClock0600:
+OnClock0800:
+OnClock1000:
+OnClock1200:
+OnClock1400:
+OnClock1600:
+OnClock1800:
+OnClock2000:
+OnClock2200:
+	.start = 1;
+	disablenpc "ord11-12"; //from npc/warps/pvp.txt
+	disablenpc "惡魔廣場守衛#2";
+	mapannounce "ordeal_1-1","惡魔廣場現在已關閉。", bc_map;
+	getmapxy .@map$, .@x, .@y, BL_NPC;
+	mapwarp "ordeal_1-1", .@map$, .@x, .@y;
+	killmonsterall "ordeal_1-1";
+	announce "惡魔廣場已開放報名。活動將於 5 分鐘後開始。", bc_all;
+	sleep 60000;
+	announce "惡魔廣場將於 4 分鐘後開始。", bc_all;
+	sleep 60000;
+	announce "惡魔廣場將於 3 分鐘後開始。", bc_all;
+	sleep 60000;
+	announce "惡魔廣場將於 2 分鐘後開始。", bc_all;
+	sleep 60000;
+	announce "惡魔廣場將於 1 分鐘後開始。", bc_all;
+	sleep 60000;
+	announce "惡魔廣場已開始！", bc_all;
+	if ( !getmapusers("ordeal_1-1") )
+		goto OnStopEvent;
+	.start = 2;
+	.round = 1;
+	.mob = 75;
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 邪骸戰士",1028,10,strnpcinfo(0)+"::OnDevilDead";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 獸人射手",1189,15,strnpcinfo(0)+"::OnDevilDead";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 泥人",1165,10,strnpcinfo(0)+"::OnDevilDead";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 邪骸弓箭手",1016,15,strnpcinfo(0)+"::OnDevilDead";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 米諾斯",1149,15,strnpcinfo(0)+"::OnDevilDead";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 瑞比歐",1164,10,strnpcinfo(0)+"::OnDevilDead";
+	end;
+
+OnDevilDead:
+	.mob--;
+	if ( .mob == 25 || .mob == 5 )
+		announce "惡魔廣場 : 第 1 回合還剩下 "+ .mob +" 隻怪物。", bc_map;
+	else if ( .mob <= 0 ) {
+		announce "惡魔廣場即將進入第 2 回合...", bc_map;
+		goto OnDevil2;
+	}
+	end;
+OnDevil2:
+	.round = 2;
+	.mob = 70;
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 石像鬼",1253,15,strnpcinfo(0)+"::OnDevilDead2";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 鐘怪",1193,10,strnpcinfo(0)+"::OnDevilDead2";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 高等獸人",1213,10,strnpcinfo(0)+"::OnDevilDead2";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 邪惡使者",1257,10,strnpcinfo(0)+"::OnDevilDead2";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 邪惡箱",1191,15,strnpcinfo(0)+"::OnDevilDead2";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 幽靈",1192,10,strnpcinfo(0)+"::OnDevilDead2";
+	end;
+
+OnDevilDead2:
+	.mob--;
+	if ( .mob == 25 || .mob == 5 )
+		announce "惡魔廣場 : 第 2 回合還剩下 "+ .mob +" 隻怪物。", bc_map;
+	else if ( .mob <= 0 ) {
+		announce "惡魔廣場即將進入第 3 回合...", bc_map;
+		goto OnDevil3;
+	}
+	end;
+OnDevil3:
+	.round = 3;
+	.mob = 58;
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 顎魚",1206,15,strnpcinfo(0)+"::OnDevilDead3";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 浪人",1208,15,strnpcinfo(0)+"::OnDevilDead3";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 小惡魔",1109,10,strnpcinfo(0)+"::OnDevilDead3";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 裘卡",1131,15,strnpcinfo(0)+"::OnDevilDead3";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 月夜貓",1150,2,strnpcinfo(0)+"::OnDevilDead3";
+	areamonster "ordeal_1-1",183,182,246,244,"[DS] 闇黑幻影",1302,1,strnpcinfo(0)+"::OnDevilDead3";
+	end;
+
+OnDevilDead3:
+	.mob--;
+	if ( .mob == 25 || .mob == 5 )
+		announce "惡魔廣場 : 最終回合還剩下 "+ .mob +" 隻怪物。", bc_map;
+	else if ( .mob <= 0 ) {
+		announce "惡魔廣場 : 恭喜過關。這 10 個寶箱是您的了。", bc_map;
+		goto OnDevil4;
+	}
+	end;
+
+OnDevil4:
+	.round = 4;
+	.mob = 10;
+	monster "ordeal_1-1",231,250,"寶箱",1324,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",234,247,"寶箱",1328,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",237,244,"寶箱",1332,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",240,241,"寶箱",1336,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",243,238,"寶箱",1340,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",246,235,"寶箱",1344,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",249,232,"寶箱",1348,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",252,229,"寶箱",1352,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",249,241,"寶箱",1356,1,strnpcinfo(0)+"::OnTreasureDead";
+	monster "ordeal_1-1",240,249,"寶箱",1360,1,strnpcinfo(0)+"::OnTreasureDead";
+	end;
+
+OnTreasureDead:
+	.mob--;
+	announce "惡魔廣場 : "+ strcharinfo(0) +" 打開了惡魔廣場的寶箱。", bc_all;
+	if ( .mob <= 0 )
+		goto OnStopEvent;
+	end;
+
+OnStopEvent:
+	killmonsterall "ordeal_1-1";
+	enablenpc "ord11-12"; //from npc/warps/pvp.txt
+	enablenpc "惡魔廣場守衛#2";
+	.start = .round = .mob = 0;
+	end;
+}
+
+ordeal_1-1,246,245,7	script	惡魔廣場守衛#2	406,{
+	mes "[出口]";
+	mes "再會。";
+	close2;
+	warp "SavePoint",0,0;
+	end;
+}
+
+ordeal_1-1	mapflag	nowarp
+ordeal_1-1	mapflag	nowarpto
+ordeal_1-1	mapflag	noteleport
+ordeal_1-1	mapflag	monster_noteleport
+ordeal_1-1	mapflag	nosave	SavePoint
+ordeal_1-1	mapflag	nomemo
+ordeal_1-1	mapflag	nobranch
+ordeal_1-1	mapflag	nopenalty
+ordeal_1-1	mapflag	noicewall

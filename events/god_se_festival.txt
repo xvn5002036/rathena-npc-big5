@@ -1,0 +1,730 @@
+//===== rAthena Script ======================================= 
+//= Valkyrie's Gift NPCs
+//===== By: ================================================== 
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Post-God Item SE Creation Summoning Event 
+//= Second Sister is a custom translation.
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [L0ne_W0lf]
+//= 1.1 Added GM management function. [Euphy]
+//============================================================ 
+
+// Original name: "慶典管理員#god_se_fes00"
+yuno,1,1,0	script	慶典管理員#gq_fes0	891,{
+	callfunc "F_GM_NPC";
+	mes "[慶典管理員]";
+	mes "我是神器 SE 任務的慶典 NPC 管理員。";
+	mes "請輸入您的密碼。";
+	next;
+	if (callfunc("F_GM_NPC","07godsefes",1) == 0) {
+		mes "[慶典管理員]";
+		mes "密碼錯誤。";
+		close;
+	}
+	mes "[慶典管理員]";
+	mes "您想要做什麼？";
+	next;
+	switch(select("關閉慶典 NPC:開啟慶典 NPC")) {
+	case 1:
+		mes "[慶典管理員]";
+		mes "結束慶典並關閉 NPC。";
+		donpcevent "里米米 拉維斯#gq_fes01::Onover";
+		donpcevent "里米米 拉維斯#gq_fes01::Onover";
+		close;
+	case 2:
+		mes "[慶典管理員]";
+		mes "重置慶典並開啟 NPC。";
+		donpcevent "里米米 拉維斯#gq_fes01::Onover";
+		donpcevent "里米米 拉維斯#gq_fes01::OnEnable";
+		close;
+	}
+}
+
+yuno,118,192,5	script	里米米 拉維斯#gq_fes01	891,{
+	if (countitem(7840) > 0) {
+		mes "[露米米·拉維斯]";
+		mes "這就是那朵花。";
+		mes "這只是一個形式，但讓我檢查一下你的資格。";
+		next;
+		if (is_guild_leader() == true) {
+			mes "[露米米·拉維斯]";
+			mes "您的資格已確認為公會會長。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "我想知道你是否清楚這朵花的用途... 讓我為你解釋一下。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "這是女武神祈願少女賜予的神聖之花，它可以讓特定的召喚師召喚出特定的魔物。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "這個世界上只有兩位召喚師...";
+			mes "我和我的姐姐蕾赫（Rhehe）...";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "我們完全不同，但我們可以...";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "...................................";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "總之，";
+			mes "你想要召喚魔物嗎？";
+			next;
+			switch(select("不召喚:請召喚")) {
+			case 1:
+				mes "[露米米·拉維斯]";
+				mes "我不喜歡被別人打斷..";
+				next;
+				mes "[露米米·拉維斯]";
+				mes "但這只是公事。";
+				close;
+			case 2:
+				break;
+			}
+			mes "[露米米·拉維斯]";
+			mes "我將向你解釋如何召喚魔物。";
+			mes "這朵花可以在朱諾（Juno）這裡召喚『女武神的祝福』和『女武神的禮物』魔物，持續一個小時。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "將會廣播公告召喚了哪種魔物。";
+			mes "這個慶典是祈願少女為了讓全世界所有冒險家同樂而舉辦的。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "現在，你準備好召喚魔物了嗎？";
+			next;
+			switch(select("不，我還沒準備好。:是的！我準備好了。")) {
+			case 1:
+				mes "[露米米·拉維斯]";
+				mes "如果你還沒準備好，那你為什麼來找我？";
+				next;
+				mes "[露米米·拉維斯]";
+				mes "我會等你準備好。";
+				mes "畢竟這只是公事。";
+				close;
+			case 2:
+				break;
+			}
+			mes "[露米米·拉維斯]";
+			mes "現在我們準備好了。";
+			next;
+			if ($@gqse_festival == 0) {
+				mes "[露米米·拉維斯]";
+				mes "好的，我們將開始召喚魔物。";
+				delitem 7840,1; //Valkyrie's_Gift
+				next;
+				mes "[露米米·拉維斯]";
+				mes "玩得開心。";
+				donpcevent "里米米 拉維斯#gq_fes01::OnStart";
+				
+				announce "["+ strcharinfo(0) +"] 來自 ["+ GetGuildName( getcharid(2) ) +"] 公會的成員正在『朱諾』召喚『女武神的禮物』。",bc_all,"0x70dbdb";
+				close;
+			}
+			else {
+				mes "[露米米·拉維斯]";
+				mes "看來女武神的祝福召喚儀式已經在其他地方進行中了。";
+				next;
+				mes "[露米米·拉維斯]";
+				mes "請稍後再試。";
+				close;
+			}
+		}
+		else {
+			mes "[露米米·拉維斯]";
+			mes "看來你不夠資格。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "我不知道你是怎麼得到那朵花的，但如果你沒有能力領導他人.. 那你就不能繼續。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "太苛刻了？";
+			mes "嗯，你能怎麼辦呢，這也是工作的一部分。";
+			close;
+		}
+	}
+	else {
+		mes "[露米米·拉維斯]";
+		mes "你沒有任何憑證嗎？";
+		close;
+	}
+
+OnInit:
+	enablenpc "里米米 拉維斯#gq_fes01";
+	end;
+
+OnEnable:
+	enablenpc "里米米 拉維斯#gq_fes01";
+	end;
+
+OnDisable:
+	disablenpc "里米米 拉維斯#gq_fes01";
+	end;
+
+OnStart:
+	initnpctimer;
+	set $@gqse_festival,1;
+	end;
+
+Oncall:
+	if (mobcount("yuno","里米米 拉維斯#gq_fes01::OnMyMobDead") < 31) {
+		monster "yuno",0,0,"女武神的祝福",1083,100,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1951,25,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1952,25,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1953,25,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1954,25,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的惡作劇",1002,10,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+	}
+	else if (mobcount("yuno","里米米 拉維斯#gq_fes01::OnMyMobDead") > 149) {
+		monster "yuno",0,0,"女武神的祝福",1083,1,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1951,1,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1952,1,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1953,1,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1954,1,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+	}
+	else {
+		monster "yuno",0,0,"女武神的祝福",1083,50,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1951,10,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1952,10,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1953,10,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的禮物",1954,10,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+		monster "yuno",0,0,"女武神的惡作劇",1002,5,"里米米 拉維斯#gq_fes01::OnMyMobDead";
+	}
+	end;
+
+Onover:
+	killmonster "yuno","里米米 拉維斯#gq_fes01::OnMyMobDead";
+	set $@gqse_festival,0;
+	stopnpctimer;
+	end;
+
+OnMyMobDead:
+	end;
+
+OnTimer10000:
+	announce "召喚儀式將在 5 分鐘後於朱諾開始。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer13000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer120000:
+	announce "召喚儀式將在 3 分鐘後於朱諾開始。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer123000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer240000:
+	announce "召喚儀式將在 1 分鐘後於朱諾開始。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer243000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer300000:
+	announce "第一批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer303000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer308000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer600000:
+	announce "第二批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::oncall";
+	end;
+
+OnTimer603000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer608000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer900000:
+	announce "第三批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer903000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer908000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer1200000:
+	announce "第四批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer1203000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer1208000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer1500000:
+	announce "第五批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer1503000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer1508000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer1800000:
+	announce "第六批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer1803000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer1808000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer2100000:
+	announce "第七批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer2103000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer2108000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer2400000:
+	announce "第八批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer2403000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer2408000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer2700000:
+	announce "第九批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer2703000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer2708000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3000000:
+	announce "第十批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer3003000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3008000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3300000:
+	announce "第十一批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer3303000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3308000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3600000:
+	announce "第十二批『女武神的禮物』已由祈願少女在朱諾召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Oncall";
+	end;
+
+OnTimer3603000:
+	announce "最後的儀式將進行 5 分鐘。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3608000:
+	announce "請前往朱諾參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+
+OnTimer3900000:
+	announce "整個儀式現在已經結束了，我相信大家都玩得很開心。",bc_all,"0x70dbdb";
+	donpcevent "里米米 拉維斯#gq_fes01::Onover";
+	end;
+}
+
+
+// Original name: "慶典管理員#god_se_fes02"
+rachel,1,1,0	script	慶典管理員#gq_fes2	891,{
+	callfunc "F_GM_NPC";
+	mes "[慶典管理員]";
+	mes "我是神器 SE 任務的慶典 NPC 管理員。";
+	mes "請輸入您的密碼。";
+	next;
+	if (callfunc("F_GM_NPC","07godsefes",1) == 0) {
+		mes "[慶典管理員]";
+		mes "密碼錯誤。";
+		close;
+	}
+	mes "[慶典管理員]";
+	mes "您想要做什麼？";
+	next;
+	switch(select("關閉慶典 NPC:開啟慶典 NPC")) {
+	case 1:
+		mes "[慶典管理員]";
+		mes "結束慶典並關閉 NPC。";
+		donpcevent "蕾赫 拉維斯#gq_fes03::Onover";
+		donpcevent "蕾赫 拉維斯#gq_fes03::Ondisable";
+		close;
+	case 2:
+		mes "[慶典管理員]";
+		mes "重置慶典並開啟 NPC。";
+		donpcevent "蕾赫 拉維斯#gq_fes03::Onover";
+		donpcevent "蕾赫 拉維斯#gq_fes03::OnEnable";
+		close;
+	}
+}
+
+rachel,132,117,3	script	蕾赫 拉維斯#gq_fes03	891,{
+	if (countitem(7840) > 0) {
+		mes "[蕾赫 拉維斯]";
+		mes "一朵花！！";
+		mes "我們要繼續嗎？";
+		next;
+		if (is_guild_leader() == true) {
+			mes "[蕾赫 拉維斯]";
+			mes "咦，這麼年輕居然是公會會長？你的公會成員一定很嫉妒。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "我不確定你是否了解那朵花的用途，所以我簡單解釋一下。";
+			next;
+			mes "[露米米·拉維斯]";
+			mes "那朵花是女武神祈願少女親自賜予的禮物。";
+			mes "它可以透過召喚師在特定區域召喚出特殊的魔物。";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "世上只有兩位召喚師有能力使用這朵花。";
+			mes "一個是我，另一個是我的雙胞胎妹妹露米米。";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "身為雙胞胎姊妹，我們卻沒有太多相似之處，就像在你面前的小指頭...";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "..................................";
+			mes ".....哎呀！我不該告訴任何人的...";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "... 呵呵呵，總之我們繼續吧。";
+			mes "那麼你到底想不想召喚！？";
+			next;
+			switch(select("不召喚:召喚")) {
+			case 1:
+				mes "[蕾赫 拉維斯]";
+				mes "...*哭泣*。";
+				next;
+				mes "[蕾赫 拉維斯]";
+				mes "如果你找我沒事，請不要來搭話。";
+				mes "如果是我的妹妹，她肯定會為此羞辱你。";
+				close;
+			case 2:
+				break;
+			}
+			mes "[蕾赫 拉維斯]";
+			mes "好吧，那我就稍微解釋一下召喚儀式。";
+			mes "在朱諾這裡，使用那朵花進行召喚儀式將會召喚出『女武神的祝福』和『女武神的禮物』。";
+			mes "召喚儀式的效果大約會持續一個小時。";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "在召喚儀式期間，將會進行持續的廣播。";
+			mes "這是女武神祈願少女的恩賜，為了讓各地的冒險家團結起來一起參與慶典。";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "你準備好開始召喚儀式了嗎?？";
+			next;
+			switch(select("不，還沒。:是的！我準備好了！")) {
+			case 1:
+				mes "[蕾赫 拉維斯]";
+				mes "你根本還沒準備好，幹嘛還來找我說話？";
+				next;
+				mes "[蕾赫 拉維斯]";
+				mes "好吧，如果你還有其他事情要做，那我就等等。";
+				mes "畢竟，這也是我工作的一部分。";
+				close;
+			case 2:
+				break;
+			}
+			mes "[蕾赫 拉維斯]";
+			mes "很好，那麼我會確認一個合適的時間來開始召喚儀式。";
+			next;
+			if ($@gqse_festival == 0) {
+				mes "[蕾赫 拉維斯]";
+				mes "很好！現在似乎是個好時機，那我們開始吧！";
+				delitem 7840,1;
+				//Valkyrie_Gift
+				next;
+				mes "[蕾赫 拉維斯]";
+				mes "希望你玩得開心！";
+				donpcevent "蕾赫 拉維斯#gq_fes03::OnStart";
+				announce "["+ strcharinfo(0) +"] 來自 ["+ GetGuildName( getcharid(2) ) +"] 公會的成員正在『拉赫（Rachel）』召喚『女武神的禮物』。",bc_all,"0x70dbdb";
+				close;
+			}
+			else {
+				mes "[蕾赫 拉維斯]";
+				mes "*哭泣*";
+				mes "現在似乎不是個好時機。";
+				next;
+				mes "[蕾赫 拉維斯]";
+				mes "請稍後再試。";
+				close;
+			}
+		}
+		else {
+			mes "[蕾赫 拉維斯]";
+			mes "...看來你的地位還不配和我說話？";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "我不知道你是怎麼得到那朵花的，但如果你沒有能力領導他人.. 那你就不能繼續。";
+			next;
+			mes "[蕾赫 拉維斯]";
+			mes "太苛刻了？";
+			mes "嗯，你能怎麼辦呢，這也是工作的一部分。";
+			close;
+		}
+	}
+	else {
+		mes "[蕾赫 拉維斯]";
+		mes "你沒有任何東西可以給我以證明你自己嗎？";
+		close;
+	}
+
+OnInit:
+	enablenpc "蕾赫 拉維斯#gq_fes03";
+	end;
+OnEnable:
+	enablenpc "蕾赫 拉維斯#gq_fes03";
+	end;
+
+OnDisable:
+	disablenpc "蕾赫 拉維斯#gq_fes03";
+	end;
+
+OnStart:
+	initnpctimer;
+	set $@gqse_festival,1;
+	end;
+Oncall:
+	if (mobcount("rachel","蕾赫 拉維斯#gq_fes03::OnMyMobDead") < 31) {
+		monster "rachel",0,0,"女武神的祝福",1083,100,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1951,25,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1952,25,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1953,25,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1954,25,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的惡作劇",1002,10,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+	}
+	else if (mobcount("rachel","蕾赫 拉維斯#gq_fes03::OnMyMobDead") > 149) {
+		monster "rachel",0,0,"女武神的祝福",1083,1,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1951,1,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1952,1,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1953,1,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1954,1,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+	}
+	else {
+		monster "rachel",0,0,"女武神的祝福",1083,50,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1951,10,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1952,10,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1953,10,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的禮物",1954,10,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+		monster "rachel",0,0,"女武神的惡作劇",1002,5,"蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+	}
+	end;
+
+Onover:
+	killmonster "rachel","蕾赫 拉維斯#gq_fes03::OnMyMobDead";
+	set $@gqse_festival,0;
+	stopnpctimer;
+	end;
+
+OnMyMobDead:
+	end;
+
+OnTimer10000:
+	announce "召喚儀式將在 5 分鐘後於拉赫（Rachel）開始。",bc_all,"0x70dbdb";
+	end;
+OnTimer13000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer120000:
+	announce "女武神的禮物召喚將在大約 3 分鐘後於拉赫（Rachel）開始。",bc_all,"0x70dbdb";
+	end;
+OnTimer123000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer240000:
+	announce "召喚儀式將在 1 分鐘後於拉赫（Rachel）開始。",bc_all,"0x70dbdb";
+	end;
+OnTimer243000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer300000:
+	announce "第一批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer303000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer308000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer600000:
+	announce "第二批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer603000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer608000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer900000:
+	announce "第三批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer903000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer908000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer1200000:
+	announce "第四批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer1203000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer1208000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer1500000:
+	announce "第五批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer1503000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer1508000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer1800000:
+	announce "第六批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer1803000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer1808000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer2100000:
+	announce "第七批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer2103000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer2108000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer2400000:
+	announce "第八批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer2403000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer2408000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer2700000:
+	announce "第九批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer2703000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer2708000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer3000000:
+	announce "第十批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer3003000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer3008000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer3300000:
+	announce "第十一批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer3303000:
+	announce "召喚儀式將以五分鐘為間隔進行 12 次，持續約一小時。",bc_all,"0x70dbdb";
+	end;
+OnTimer3308000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer3600000:
+	announce "第十二批『女武神的禮物』已由祈願少女在拉赫召喚出來。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Oncall";
+	end;
+OnTimer3603000:
+	announce "最後的儀式將進行 5 分鐘。",bc_all,"0x70dbdb";
+	end;
+OnTimer3608000:
+	announce "請前往拉赫參加召喚儀式。",bc_all,"0x70dbdb";
+	end;
+OnTimer3900000:
+	announce "整個儀式現在已經結束了，我相信大家都玩得很開心。",bc_all,"0x70dbdb";
+	donpcevent "蕾赫 拉維斯#gq_fes03::Onover";
+	end;
+}

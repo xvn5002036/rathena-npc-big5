@@ -1,0 +1,116 @@
+//===== rAthena Script =======================================
+//= Rachel Guide
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.2b
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Rachel City guide
+//===== Additional Comments: =================================
+//= 1.0 First version. [L0ne_W0lf]
+//= 1.1 Change the while loops a bit. [L0ne_W0lf]
+//= 1.2 Deleted an Unnecessary "next;" [Samuray22]
+//	-Thanks to $ephiroth.
+//= 1.2a Fixed some errors with the loop[Samuray22]
+//	-Thanks to $ephiroth.
+//= 1.2b Deleted a unnecessary "end". [Samuray22]
+//============================================================
+
+rachel,138,146,5	script	拉赫嚮導	934,{
+	mes "[拉赫嚮導]";
+	mes "歡迎來到阿盧納貝茲的";
+	mes "首都拉赫，這裡充滿了";
+	mes "女神芙蕾雅溫暖的氣息。";
+	mes "如果這是你第一次";
+	mes "使用導覽服務，何不先";
+	mes "查看一下『注意事項』選單呢？";
+	set .@loop1,1;
+	while(.@loop1) {
+		next;
+		switch(select("村莊導覽:消除小地圖上的標記:注意事項:取消")) {
+		case 1:
+			mes "[拉赫嚮導]";
+			mes "只要是在拉赫，我可以告訴你任何建築物的位置。";
+			mes "所以你想到哪裡去呢？";
+			if (.@compass_check == 0) {
+				mes "需要我幫你在";
+				mes "小地圖上標記";
+				mes "這些地點嗎？";
+				next;
+				if (select("是:否") == 1) set .@compass_check,1;
+			}
+			set .@loop2,1;
+			while(.@loop2) {
+				if (.@wait_button_chk == 0) set .@wait_button_chk,1;
+				else next;
+
+				switch(select("祈斯露尼爾:旅館:武器店:道具店:飛機場:取消")) {
+				case 1:
+					mes "[拉赫嚮導]";
+					mes "祈斯露尼爾是女神芙蕾雅的化身——教宗所在的聖地。";
+					mes "沿著這條路往北走就能找到那棟建築。";
+					if (.@compass_check == 1) viewpoint 1,150,249,1,0xFF0000;
+					break;
+				case 2:
+					mes "[拉赫嚮導]";
+					mes "你可以在旅館裡洗去旅途的疲憊。";
+					mes "我旁邊左邊這棟建築物就是拉赫的旅館。";
+					if (.@compass_check == 1) viewpoint 1,115,149,2,0xFF00FF;
+					break;
+				case 3:
+					mes "[拉赫嚮導]";
+					mes "你想去看看拉赫販售的武器嗎？";
+					mes "武器店就位在西門附近。";
+					if (.@compass_check == 1) viewpoint 1,42,87,3,0x99FFFF;
+					break;
+				case 4:
+					mes "[拉赫嚮導]";
+					mes "拉赫的道具店販售著最高品質的藥水。";
+					mes "它就位在西門附近。";
+					if (.@compass_check == 1) viewpoint 1,83,78,4,0x0000FF;
+					break;
+				case 5:
+					mes "[拉赫嚮導]";
+					mes "飛機場位在東門外。";
+					if (.@compass_check == 1) viewpoint 1,273,125,5,0x00FF00;
+					break;
+				case 6:
+					mes "[拉赫嚮導]";
+					mes "如果你想把小地圖上所有的位置標記消除，";
+					mes "只要再來找我，然後選擇『消除小地圖上的標記』選單即可。";
+					set .@loop2,0;
+					break;
+				}
+			}
+			break;
+
+		case 2:
+			viewpoint 2,150,249,1,0xFF0000;
+			viewpoint 2,115,149,2,0xFF00FF;
+			viewpoint 2,42,87,3,0x99FFFF;
+			viewpoint 2,83,78,4,0x0000FF;
+			viewpoint 2,273,125,5,0x00FF00;
+			mes "[拉赫嚮導]";
+			mes "好的，標記現在都消失了。如果你還有想問的地點，儘管讓我知道。";
+			break;
+		case 3:
+			mes "[拉赫嚮導]";
+			mes "當你使用『村莊導覽』選單時，";
+			mes "請確認建築物的位置標記有顯示在你畫面右上角的小地圖上。";
+			mes "如果你沒看到小地圖，請使用快捷鍵『ctrl+tab』，或是點擊基本資訊視窗裡的『Map』按鈕，好嗎？";
+			mes "如果無法看到村莊的全貌，你也可以使用『-』按鈕來縮小你的小地圖。";
+			break;
+		case 4:
+			mes "[拉赫嚮導]";
+			mes "希望你在阿盧納貝茲";
+			mes "有個美好的旅程。";
+			close2;
+			set .@loop1,0;
+			break;
+		}
+	}
+	close;
+}

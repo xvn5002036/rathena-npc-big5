@@ -1,0 +1,100 @@
+//===== rAthena Script ======================================= 
+//= Dead Branch (+Bloody Branch) Quest
+//===== By: ================================================== 
+//= GM-Yevon
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+// Simple item trade-in quest, a person can get a Dead Branch
+// by simply providing the items: Log x3 (7201), Wooden Heart x1 (7189), 
+// Trunk x5 (1019), and Wooden Gnarl x1 (7222).
+//===== Additional Comments: ================================= 
+//= 1.1 Optimized, added Bloody Branch with 0.01% chance [Lupus]
+//============================================================
+
+niflheim,204,179,3	script	莫布里先生	121,{
+
+	mes "[莫布里先生]";
+	mes "你知道嗎，樹木是有靈魂的...";
+	next;
+
+	mes "[莫布里先生]";
+	mes "事實上，我知道一個關於這些靈魂的秘密，或許在某些方面... 能對你有所幫助...";
+	next;
+	mes "[莫布里先生]";
+	mes "我可以製作一根有靈魂的樹枝... 當然，前提是你能提供我正確的材料...";
+	next;
+	goto L_MENU;
+
+L_MENU:
+	menu "我需要什麼？",-,"我去哪找這些鬼東西？",M_FIND,"幫我做一根枯樹枝吧！",M_CREATE,"算了...",M_END;
+	mes "[莫布里先生]";
+	mes "姆呵呵... 看來你想控制樹木的靈魂，對吧？好... 我需要：";
+	mes "^1354453個 原木^000000";
+	mes "^1354451個 木之心^000000";
+	mes "^1354455個 樹幹^000000";
+	mes "^1354451個 木瘤^000000";
+	next;
+	goto L_MENU;
+
+M_FIND:
+	mes "[莫布里先生]";
+	mes "你可以從特定的魔物身上找到這些物品，呵呵...";
+	mes "^135445原木可以從樹靈身上獲得。^000000";
+	mes "^135445木之心是樹靈的精華。^000000";
+	mes "^135445樹幹？說真的，想想木頭吧...^000000";
+	mes "^135445木瘤... 吊死鬼...^000000";
+	next;
+	goto L_MENU;
+L_NOLOG:
+	mes "[莫布里先生]";
+	mes "^135445原木^000000是軀體... 我需要更多。";
+	mes "給我三個原木，我就為你製作這個靈魂...";
+	close;
+
+L_NOHEART:
+	mes "[莫布里先生]";
+	mes "^135445木之心^000000是靈魂的精華。";
+	mes "給我一個木之心，我就為你製作這個靈魂...";
+	close;
+
+L_NOTRUNK:
+	mes "[莫布里先生]";
+	mes "什麼？你連^1354455個 樹幹^000000都找不到嗎？";
+	mes "去殺長老樹精什麼的吧... 天啊... 連樹幹都沒有，呵... 真可悲。";
+	close;
+L_NOGNARL:
+	mes "[莫布里先生]";
+	mes "沒有^135445木瘤^000000，我怎麼做得出來？";
+	mes "我說了吊死鬼... 這附近到處都是...";
+	close;
+
+M_CREATE:
+	mes "[莫布里先生]";
+	mes "嗯... 讓我看看你帶來了什麼...";
+	next;
+	if(countitem(7201)<3) goto L_NOLOG;
+	if(countitem(7189)<1) goto L_NOHEART;
+	if(countitem(1019)<5) goto L_NOTRUNK;
+	if(countitem(7222)<1) goto L_NOGNARL;
+	delitem 7201,3;
+	delitem 7189,1;
+	delitem 1019,5;
+	delitem 7222,1;
+	mes "[莫布里先生]";
+	mes "呵... 希望你和樹木的靈魂玩得開心... 小心點...";
+	mes "呵... 小心點？我管你去死..... 算了，沒事。";
+	if(rand(1000)==0) goto L_GIVE2;
+	getitem 604,1; //Dead Branch
+	close;
+L_GIVE2:
+	getitem 12103,1; //Bloody Branch
+	close;
+
+M_END:
+	mes "[莫布里先生]";
+	mes "沒有靈魂要給你... 那快走吧！";
+	close;
+}

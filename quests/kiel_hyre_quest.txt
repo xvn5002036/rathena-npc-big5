@@ -1,0 +1,6833 @@
+//===== rAthena Script ======================================= 
+//= Kiel Hyre Quest
+//===== By: ================================================== 
+//= L0ne_W0lf (Script), DZeroX (Timer)
+//===== Current Version: ===================================== 
+//= 4.7
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Quest for opening Robot Factory first and second floors.
+//===== Additional Comments: ================================= 
+//= 4.0 A whole bunch-a-updates to various npcs. [L0ne_W0lf]
+//=     Corrected condition checks throughout the quest.
+//=     Npcs no longer make use of the goto command.
+//=     Uses temp npc vars now instead of temp char.
+//=     Reduced the amount of variables used.
+//=     Corrected some of the cutins in npcs with them.
+//=     Added the missing dialogs and weight checks.
+//=     Fixed many typos, and grammatical errors.
+//=     NPC now names use '#<name>' instead of labels.
+//=     Updated some NPC positions, and facings.
+//=     Changed the way some NPCs work.
+//=     Updated comments for get/delitem commands.
+//= 4.1 Added an 'end;' to Kiel Hyre's dialog for the "Yes" option for if you want to confront Kiehl.
+//= 4.2 Fixed some issues reported in bugreport:2129. [L0ne_W0lf]
+//= 4.2a Follow up to last update. [L0ne_W0lf]
+//= 4.2b Missed a condition, fixed it though. [L0ne_W0lf]
+//= 4.2c More various fixes :D [L0ne_W0lf]
+//= 4.3 Fixed improper condition in the Elly NPC. [L0ne_W0lf]
+//=     Corrected some typos in the dialogs.
+//= 4.4 Updated reviecer and robots NPC to use mobcount. (bugreport:2380) [L0ne_W0lf]
+//= 4.5 Removed a delitem that was no logner needed. [L0en_W0lf]
+//= 4.6 Fixed impossible condition for security guard. [L0ne_W0lf]
+//= 4.7 Updated RE/Pre-RE EXP. [Euphy]
+//============================================================ 
+
+//============================================================================
+// Kiel Hyre Quest/Robotic Lab Dungeon
+//
+// Script Dialog Obtained and Copied Down by L0ne_W0lf
+// Timer work and some variable dances by DZeroX
+// Based on [iRO Sakray] as of [03/29/2007]
+//============================================================================
+//----------------------------------------------------------------------------
+// [Notes]
+//  - Let it be noted that ALL DIALOG IS OFFICIAL TO IRO UNLESS SPECIFIED.
+//  - I've fixed a few of iRO's mistakes, but I'm sure I made some of my own.
+//  - Will probably require a major optimizing.
+//  - Not going to list ALL of the more usless NPCs. (Doors + Empty "Beautiful Ladies")
+//  - Parties are *NOT REQUIRED* as per Doddler's Wiki information.
+//
+//----------------------------------------------------------------------------
+// [Maps]                [Use]
+//  yuno_in01 ........... Start quest in pub
+//  kh_school ........... Deliver Wine here, Meet Elly
+//  yuno ................ Get Delivery for/from "Little Kid"
+//  lighthalzen ......... Get Delivery package for "Little Kid"
+//  kh_vila ............. Kiel Hyre cottage.
+//  kh_dun01 ............ Robot Factory; Save Kiel Hyre
+//  kh_mansion .......... Kiel Hyre's Mansion in Lighthalzen
+//  kh_kiehl01 .......... Kiehl's room/Cave
+//  kh_kiehl02 .......... Kiehl's room/Boss Room
+//
+//----------------------------------------------------------------------------
+// [Variables in Use]
+//  KielHyreQuest 	- Main quest tracking variable (Quest finished at 106)
+//
+//  KHToastGirlEnd	- Pick up delivery if set to 1, 
+//			- picked up delivery if set to 2
+//			- finished if set to 3 
+//			- Deleted once no longer needed.
+//
+//  KHCottagePoem1	- Tracks Poem 1 quest in cottage. (finished = 5)
+//			- Deleted once no longer needed.
+//
+//  KHCottagePoem2	- Tracks Poem 2 quest in cottage. (finished = 3)
+//			- Deleted once no longer needed.
+//
+//  .@KHInput$		- Used with "Security Guard"
+//  			- Used with "Test Tube"
+//  			- Used when "Elly" (inputing string in attempt to wake her)
+//  			- Used with "Grave", (twice)
+//  			- Used with "Heavy Door"
+//  			- Used with "Mechanical Device"
+//  			- Used for opening various doors in Kiehl's area.
+//
+//  .@KHFirstKeyhole	- Holds 1 (green keycard) or 2 (cottage key)
+//  .@KHSecondKeyhole	- Holds 1 (green keycard) or 2 (cottage key)
+//
+//  .@KHPotionColor$	- Holds 'red', 'green', or 'yellow' depending on what wrong potion is selected.
+//
+//  .@KHSwords 		- Used with "Sword Hilt"
+//
+//  .@KHQRead		- Make sure player has asked questions to Kiel Hyre
+//
+//  .@KHTitle$		- Holds "Mr", "Mrs", or "Miss"
+//
+//  .@KHDoorPushAttempt	- Keeps track of how many times a person has attmepted to push the door open.
+//
+//  .@KHPryingItem$	- Used for incorrect options when prying open last door.
+//
+//  .KHKilled		- Tracks how many monsters have been killed. Used with "Receiver", "Robots", and "Kiehl" NPCs
+//
+//  .KHDoor1Open	- 0/1 Depending on if the first door is opened.
+//  .KHDoor2Open	- 0/1 Depending on if the second door is opened.
+//  .KHDoor3Open	- 0/1 Depending on if the third door is opened.
+//  .KHDoor4Open	- 0/1 Depending on if the fourth door is opened.
+//  .KHDoor5Open	- 0/1 Depending on if the fifth door is opened.
+//
+//  .KHKilledBoss	- 0/1 depending on if the boss has been killed.
+//
+//  $@KHQuestBusy	- 0/1 depending on if the boss room has been set in motion.
+//
+//----------------------------------------------------------------------------
+// [NPCs]			 [Location]
+//  Pub Master .................. yuno_in01	[ 35,178]
+//  Hanie ....................... yuno_fild08	[196,196]
+//  Security Guard .............. yuno_fild08	[158,194]
+//  Security Guard .............. yuno_fild08	[158,183]
+//  Student ..................... kh_school	[ 57,142]
+//  Student ..................... kh_school	[ 57,139]
+//  Lady ........................ kh_school	[176, 60]
+//  Cute Student ................ kh_school	[179, 39]
+//  Little Kid .................. yuno		[217,114]
+//  Windmill Owner .............. lighthalzen	[365,300]
+//  Cottage Keeper .............. yuno_fild02	[ 93,210]
+//  Door ........................ yuno_fild02	[ 75,218]
+//  Door ........................ yuno_fild02	[109,218]
+//  Wall ........................ kh_vila	[191, 14]
+//  Book ........................ kh_vila	[184, 20]
+//  Book ........................ kh_vila	[181, 20]
+//  Book ........................ kh_vila	[178, 20]
+//  Book ........................ kh_vila	[175, 19]
+//  Letter ...................... kh_vila	[179, 11]
+//  Box ......................... kh_vila	[ 16,175]
+//  Apple Box ................... kh_vila	[ 30,184]
+//  Map ......................... kh_vila	[ 44,125]
+//  Pot ......................... kh_vila	[ 33,148]
+//  Calabash .................... kh_vila	[ 14, 55]
+//  Pool ........................ kh_vila	[ 39, 39]
+//  Vicious Dog ................. kh_vila 	[180,178]
+//  Drawer ...................... kh_vila 	[115,186]
+//  Box ......................... kh_vila 	[107,126]
+//  Bookshelf ................... kh_vila 	[181,138]
+//  Sword Hilt .................. kh_vila 	[136, 69]
+//  Test Tube ................... kh_vila	[179, 69]
+//  Test Tube ................... kh_vila	[185, 69]
+//  Window ...................... yuno_fild08	[ 69,185]
+//  Elly ........................ kh_school	[178,180]
+//  Cookie Basket ............... kh_school	[175,175]
+//  Window ...................... kh_school	[188,185]
+//  Grave ....................... yuno_fild08	[ 72,170]
+//  Heavy Door .................. kh_dun01	[236, 48]
+//  Beautiful lady .............. kh_school	[119,149]
+//  Beautiful lady .............. kh_school	[122,186]
+//  Signboard ................... kh_dun01	[163,223]
+//  Mechanical Device ........... kh_dun01	[166,223]
+//  Mechanical Device ........... kh_dun01	[162,206]
+//  Kiel_Hyre_Door .............. kh_dun01	[224,232]
+//  Steward ..................... kh_mansion	[ 78, 55]
+//  Kiel Hyre ................... kh_mansion	[ 22, 27]
+//  Allysia ..................... kh_mansion	[ 22, 27]
+//  Abduction_trigger ........... lighthalzen	[188,200]
+//  Mysterious Woman ............ kh_mansion	[ 25, 79]
+//  Odd Granma .................. yuno		[250,132]
+//  Old Lady .................... yuno 		[250,132]
+//  Rosimmir_Entrance ........... yuno		[273,141]
+//  Table ....................... kh_rossi	[ 23, 23]
+//  Shelf ....................... kh_rossi	[ 92, 40]
+//  Desk ........................ kh_rossi	[144,146]
+//  Bookshelf ................... kh_rossi	[144,146]
+//  Bed ......................... kh_rossi	[154,286]
+//  Old Fisherman ............... yuno_fild12	[232,222]
+//  Wooden Board ................ yuno_fild09	[158,217]
+//  Kiehl_Room_Warp ............. kh_mansion	[ 29, 27]
+//  Entrance Device#KHEntry1 .... kh_dun01	[ 44, 20]
+//  Entrance Device#KHEntry2 .... kh_dun01	[ 44,203]
+//  Security Guard .............. yuno_fild08	[158,194]
+//  Receiver .................... kh_kiehl01	[ 17, 39]
+//  Flower Vase ................. kh_kiehl01	[ 13, 40]
+//  Box ......................... kh_kiehl01	[ 19, 25]
+//  Big Door .................... kh_kiehl01	[ 44, 33]
+//  Big_Door_1_Warp ............. kh_kiehl01	[ 43, 33]
+//  Big Door .................... kh_kiehl01	[174, 40]
+//  Big_Door_2_Warp ............. kh_kiehl01	[174, 39]
+//  Big Door .................... kh_kiehl01	[ 77,108]
+//  Big_Door_3_Warp ............. kh_kiehl01	[ 68,108]
+//  Big Door .................... kh_kiehl01	[ 41,177]
+//  Big_Door_4_Warp ............. kh_kiehl01	[ 78,177]
+//  Robots ...................... kh_kiehl01	[ 15,181]
+//  Big Door .................... kh_kiehl01	[166,187]
+//  Big_Door_5_Warp ............. kh_kiehl01	[166,186]
+//  Kiehl_Room_Trap ............. kh_kiehl02	[ 49, 15]
+//  Kiehl#Original .............. kh_kiehl02	[ 50, 52]
+//  KiehlRoom ................... kh_kiehl02	[  1,  1]
+//  Mitchell#KiehlRoom .......... kh_kiehl02	[ 49, 55]
+//  Agent#KHAgent1 ....   ....... kh_kiehl02	[ 53, 52]
+//  Agent#KHAgent2 .............. kh_kiehl02	[ 51, 49]
+//  Agent#KHAgent3 .............. kh_kiehl02	[ 47, 50]
+//  Agent#KHAgent4 .............. kh_kiehl02	[ 46, 53]
+//  Kiehl#Copy .................. kh_kiehl02	[ 48, 53]
+//  Kiehl_Roomn_Exit ............ kh_kiehl01	[ 50, 59]
+//
+//----------------------------------------------------------------------------
+// [Functions]
+//  None
+//
+//----------------------------------------------------------------------------
+// [Conflicts]
+//   Resolved
+//
+//============================================================================
+
+//============================================================================
+// Affiliated NPCs
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Juno Pub Master/Starting point.
+//----------------------------------------------------------------------------
+yuno_in01,35,179,4	script	酒吧主人#kh	46,5,5,{
+	if (checkweight(7487,1) == 0) {
+		mes "[凡特]";
+		mes "等一下！你現在身上";
+		mes "攜帶了太多物品。";
+		mes "你最好把東西";
+		mes "存放到卡普拉倉庫裡，";
+		mes "否則你將無法";
+		mes "拿起任何新東西...";
+		close;
+	}
+	if (KielHyreQuest == 0) {
+		mes "[凡特]";
+		mes "嗨，歡迎來到";
+		mes "我的酒吧。那麼";
+		mes "你想喝點什麼？";
+		next;
+		switch(select("請給我一杯啤酒。","請給我一杯雞尾酒。","請給我一杯燒酒。","也許晚點再點。")) {
+		case 1:
+			mes "[凡特]";
+			mes "好的，讓我為你";
+			mes "倒一杯生啤酒。";
+			mes "來，這是我們";
+			mes "特製的秀發茲發德啤酒。";
+			next;
+			mes "^3355FF*咕嚕 咕嚕 咕嚕*^000000";
+			percentheal 5,-5;
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "啊，真好喝！";
+			mes "實在是太";
+			mes "過癮了！";
+			close;
+		case 2:
+			mes "[凡特]";
+			mes "很抱歉，但我必須把";
+			mes "我們所有的雞尾酒";
+			mes "原料送到其他客人那裡。";
+			mes "也許下次我會有足夠的原料";
+			mes "為你調製一杯，好嗎？";
+			close;
+		case 3:
+			mes "[凡特]";
+			mes "燒-燒酒？很抱歉，";
+			mes "但我們這裡不供應";
+			mes "那個。對我來說，那實在";
+			mes "太像是硬漢喝的酒了...";
+			close;
+		case 4:
+			mes "[凡特]";
+			mes "當然，慢慢來，";
+			mes "放輕鬆，等你想好";
+			mes "要點什麼的時候再說。";
+			close;
+		}
+	}
+	if (KielHyreQuest == 1) {
+		mes "[凡特]";
+		mes "嗨，歡迎來到";
+		mes "我的酒吧。那麼";
+		mes "你想喝點什麼？";
+		next;
+		switch(select("請給我一杯啤酒。:請給我一杯雞尾酒。:請給我一杯燒酒。:你看起來很擔心，發生什麼事了？:取消")) {
+		case 1:
+			mes "[凡特]";
+			mes "好的，讓我為你";
+			mes "倒一杯生啤酒。";
+			mes "來，這是我們";
+			mes "特製的秀發茲發德啤酒。";
+			next;
+			mes "^3355FF*咕嚕 咕嚕 咕嚕*^000000";
+			percentheal 5,-5;
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "啊，真好喝！";
+			mes "實在是太";
+			mes "過癮了！";
+			close;
+		case 2:
+			mes "[凡特]";
+			mes "很抱歉，但我必須把";
+			mes "我們所有的雞尾酒";
+			mes "原料送到其他客人那裡。";
+			mes "也許下次我會有足夠的原料";
+			mes "為你調製一杯，好嗎？";
+			close;
+		case 3:
+			mes "[凡特]";
+			mes "燒-燒酒？很抱歉，";
+			mes "但我們這裡不供應";
+			mes "那個。對我來說，那實在";
+			mes "太像是硬漢喝的酒了...";
+			close;
+		case 4:
+			mes "[凡特]";
+			mes "喔，你聽到了嗎？";
+			mes "抱歉，只是因為我的一名";
+			mes "員工發生了意外，受了重傷，";
+			mes "所以我現在找不到人可以";
+			mes "幫忙運送這批貨物。";
+			next;
+			mes "[凡特]";
+			mes "我有一份緊急訂單";
+			mes "必須送到";
+			mes "奇爾·海爾學院，";
+			mes "但我找不到任何";
+			mes "可以接下這種";
+			mes "臨時工作的人。";
+			next;
+			switch(select("聽到這個消息我很遺憾。:需要我幫忙嗎？")) {
+			case 1:
+				mes "[凡特]";
+				mes "嗯，我相信我一定能";
+				mes "想出辦法的。";
+				mes "你認識任何";
+				mes "對兼職工作";
+				mes "感興趣的人嗎？";
+				close;
+			case 2:
+				mes "[凡特]";
+				mes "真的嗎？那太好了！";
+				mes "但首先，我覺得有必要";
+				mes "告訴你，這份工作可能";
+				mes "並不像你想像的那麼簡單。";
+				mes "我希望你能完成這次";
+				mes "運送，無論發生什麼事。";
+				next;
+				switch(select("沒問題，我來做。:等等，讓我考慮一下...")) {
+				case 1:
+					mes "[凡特]";
+					mes "聽到你這麼說我很高興。";
+					mes "那麼，請把這瓶";
+					mes "料理用酒送到奇爾·海爾";
+					mes "學院的^ff0000勒克萊恩^000000女士那裡。";
+					mes "等你完成工作後，我就會";
+					mes "付錢給你，好嗎？";
+					getitem 7487,1; //Tavern_Wine
+					set KielHyreQuest,2;
+					close;
+				case 2:
+					mes "[凡特]";
+					mes "沒問題。我真的很需要";
+					mes "完成這件事，所以如果你";
+					mes "沒辦法幫忙，但認識任何";
+					mes "有能力且負責的人";
+					mes "可以勝任的話，請把我的";
+					mes "情況告訴他們。";
+					close;
+				}
+			}
+		case 5:
+			mes "[凡特]";
+			mes "當然，慢慢來，";
+			mes "放輕鬆，等你想好";
+			mes "要點什麼的時候再說。";
+			close;
+		}
+	}
+	else if ((KielHyreQuest >= 2) && (KielHyreQuest < 6)) {
+		mes "[凡特]";
+		mes "請把那瓶";
+		mes "我給你的酒送到";
+		mes "^ff0000勒克萊恩^000000女士那裡，她應該在";
+		mes "奇爾·海爾學院裡面。";
+		mes "趕快送過去，免得她";
+		mes "對這次運送抱怨連連。";
+		close;
+	}
+	else if (KielHyreQuest == 6) {
+		if (countitem(7487) == 0) {
+			mes "[凡特]";
+			mes "喔，你回來了。";
+			mes "謝謝你幫忙完成";
+			mes "那次運送。請稍等";
+			mes "一下，我這就把";
+			mes "Zeny 酬勞付給你，好嗎？";
+			next;
+			select("我還需要更多酒...");
+			mes "[凡特]";
+			mes "喔，你還需要送";
+			mes "另一瓶過去？好的，";
+			mes "讓我找找看，然後";
+			mes "我就把酒和";
+			mes "你的酬勞給你。";
+			next;
+			mes "^3355FF翻找 翻找^000000";
+			mes "^3355FF翻找 翻找^000000";
+			next;
+			mes "[凡特]";
+			mes "來，拿去吧！";
+			mes "非常感謝你";
+			mes "的幫忙?";
+			getitem 7487,1; //Tavern_Wine
+			set Zeny, Zeny+1000;
+			close;
+		}
+		else {
+			mes "[凡特]";
+			mes "嘿，非常感謝你";
+			mes "上次的幫忙。我知道";
+			mes "我是臨時拜託你的，但";
+			mes "你簡直就是我的";
+			mes "救命恩人！我真的很感激！";
+			close;
+		}
+	}
+	else {
+		mes "[凡特]";
+		mes "你是個非常優秀的";
+		mes "工作者，你知道嗎？";
+		mes "可靠、負責、";
+		mes "樂於助人，而且";
+		mes "很積極主動！我想你";
+		mes "未來的成就會不可限量，真的?";
+		close;
+	}
+
+OnTouch:
+	if (KielHyreQuest < 1) {
+		mes "[凡特]";
+		mes "啊啊啊啊啊...";
+		mes "這可不妙...";
+		mes "這太糟糕了！";
+		mes "我該怎麼辦才好？";
+		set KielHyreQuest,1;
+		close;
+	} 
+}
+
+//----------------------------------------------------------------------------
+// Juno Toast Sales Girl.
+//----------------------------------------------------------------------------
+yuno,217,114,6	script	小女孩#kh	96,{
+	mes "[瑟珠]";
+	if (KielHyreQuest < 6) {
+		mes "新鮮、酥脆的吐司！";
+		mes "想吃的話就來";
+		mes "買些吐司吧?";
+		close;
+	}
+	else if (KielHyreQuest == 6) {
+		if (KHToastGirlEnd < 1) {
+			mes "新鮮、酥脆的吐司！";
+			mes "想吃的話就來";
+			mes "買些吐司吧?";
+			mes "喔！你好啊?你想";
+			mes "買些好吃的吐司嗎？";
+			next;
+			switch(select("我是為了艾莉來的。:不用了，謝謝。")) {
+			case 1:
+				mes "[瑟珠]"; 
+				mes "喔，原來如此。艾莉一定是";
+				mes "又把一批食材";
+				mes "給搞砸了。嗯，";
+				mes "她是常客，";
+				mes "所以我真的很想幫忙，但";
+				mes "我實在無能為力。";
+				next;
+				mes "[瑟珠]"; 
+				mes "你看，我的食材";
+				mes "也剛好用完了！";
+				mes "但我不能離開";
+				mes "去進貨。萬一有";
+				mes "人想買吐司怎麼辦？";
+				mes "聽著，你可以幫我個忙嗎？";
+				next;
+				mes "[瑟珠]"; 
+				mes "能不能請你去";
+				mes "^3355FF里希塔樂鎮的風車^000000";
+				mes "幫我拿些麵粉和雞蛋？";
+				mes "等你回來後，我就可以";
+				mes "把食材分一分，你再";
+				mes "幫我送去給艾莉。";
+				next;
+				mes "[瑟珠]";
+				mes "我知道我幾乎是";
+				mes "把所有事情都交給你";
+				mes "一個人去做，但請你";
+				mes "體諒一下，我真的";
+				mes "走不開。不-不要問我";
+				mes "為什麼，反正就是不行！";
+				set KHToastGirlEnd,1;
+				close;
+			case 2:
+				mes "[瑟珠]";
+				mes "好的，好的?";
+				mes "歡迎下次光臨！";
+				close;
+			}
+		}
+		else if (KHToastGirlEnd == 1) {
+			mes "能不能請你去一趟";
+			mes "里希塔樂鎮的風車，";
+			mes "告訴他們瑟珠需要";
+			mes "大量的麵粉和雞蛋！";
+			mes "然後，盡快把東西";
+			mes "帶回來給我喔?";
+			close;
+		}
+		else if (KHToastGirlEnd == 2) {
+			mes "嘿，你帶著食材";
+			mes "回來了！非常感謝";
+			mes "你，我真的很需要這些！";
+			mes "現在請把這份麵粉";
+			mes "和這些雞蛋交給艾莉，並";
+			mes "代我向她問好。再見囉?";
+			delitem 7488,1; //Delivery_Package
+			getitem 7488,1; //Delivery_Package
+			set KHToastGirlEnd,3;
+			close;
+		}
+	}
+	//KHToastGirlEnd no longer needed-- deleting.
+	if (KielHyreQuest > 6) set KHToastGirlEnd,0;
+	mes "熱騰騰、新鮮又";
+	mes "酥?脆的吐司！";
+	mes "快來買喔！";
+	close;
+}
+
+//----------------------------------------------------------------------------
+// Lighthalzen WindMill Owner.
+//----------------------------------------------------------------------------
+lighthalzen,366,299,4	script	風車主人#kh	46,{
+	if (checkweight(7488,1) == 0) {
+		mes "[米爾斯]";
+		mes "嘿，你現在身上的東西";
+		mes "太多了。如果你還想";
+		mes "從我這裡拿到任何東西，";
+		mes "就把你的垃圾放到卡普拉倉庫去。";
+		mes "你就是為了這個";
+		mes "才來找我的，不是嗎？";
+		close;
+	}
+	if (KHToastGirlEnd < 1) {
+		mes "[米爾斯]";
+		mes "嘿，你想要什麼？";
+		mes "我現在非常忙，";
+		mes "你介意晚點再來嗎？";
+		mes "到時候我們再談。";
+		close;
+	}
+	else if (KHToastGirlEnd == 1) {
+		mes "[米爾斯]";
+		mes "嘿，你想要什麼？";
+		mes "你剛好在一個好時機";
+		mes "來找我，但如果你需要什麼，";
+		mes "最好快點說出來，";
+		mes "免得等一下又忙起來了。";
+		next;
+		switch(select("我是為了瑟珠來的。:......")) {
+		case 1:
+			mes "[米爾斯]";
+			mes "喔，賣吐司的";
+			mes "瑟珠嗎？好的，";
+			mes "那孩子需要的東西";
+			mes "我這裡全都有。裡面有雞蛋，";
+			mes "所以你要非常小心。";
+			mes "已經為你準備好了...";
+			next;
+			mes "[米爾斯]";
+			mes "那孩子是我的常客，";
+			mes "所以你不用付錢，也";
+			mes "不需要幫我跑腿。是啊，";
+			mes "我知道其他人是怎麼對待";
+			mes "你們這些冒險者的。好吧，再見。";
+			getitem 7488,1; //Delivery_Package
+			set KHToastGirlEnd,2;
+			close;
+		case 2:
+			mes "[米爾斯]";
+			mes "......";
+			mes "嗯，好吧，如果你";
+			mes "需要什麼的話，";
+			mes "我想你只要喊一聲就行了。";
+			mes "庫茨，庫茨，你在哪裡？";
+			mes "你最好沒有在偷懶！";
+			close;
+		}
+	}
+	else if (KHToastGirlEnd >= 2) {
+		mes "[米爾斯]";
+		mes "那個庫茨真是個";
+		mes "懶骨頭。這傢伙";
+		mes "竟然以為他可以在上班時間";
+		mes "摸魚...！";
+		mes "唉，他也知道我找不到";
+		mes "更好的助手了。他會學到教訓的...";
+		close;
+	}
+}
+
+lighthalzen,366,289,2	script	風車主人的助手	97,{
+	if (KHToastGirlEnd < 1) {
+		mes "[庫茨]";
+		mes "天啊，為什麼我們";
+		mes "總是這麼忙？";
+		mes "為什麼米爾斯";
+		mes "要把我操個半死？";
+		mes "唉，這也是為了生活吧...";
+		close;
+	}
+	else if (KHToastGirlEnd >= 2) {
+		mes "[庫茨]";
+		mes "你-你憑什麼";
+		mes "認為我在偷懶，";
+		mes "米爾斯？你看，你看，";
+		mes "我的手一直在動，";
+		mes "我很忙，我正在工作啊！";
+		close;
+	}
+	else {
+		mes "[庫茨]";
+		mes "嘿，你是從";
+		mes "瑟珠的吐司攤來的，";
+		mes "對吧？可愛的";
+		mes "小瑟珠最近過得好嗎？";
+		close;
+	}
+}
+
+//============================================================================
+//Kiel Hyre Academy NPCs
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Girl (Talks about the academy)
+//----------------------------------------------------------------------------
+yuno_fild08,196,196,5	script	漢妮#kh1	102,{
+	mes "[漢妮]";
+	mes "喔，真希望我能在";
+	mes "奇爾·海爾學院讀書...";
+	mes "那裡的畢業生都能找到";
+	mes "非常好的工作！我簡直";
+	mes "嫉妒死那些學生了！";
+	next;
+	select("奇爾·海爾學院？");
+	mes "[漢妮]";
+	mes "喔，奇爾·海爾學院";
+	mes "是由奇爾·海爾創辦的一所學校，";
+	mes "他是一位靠著那些奇特機器";
+	mes "致富的發明家。";
+	mes "他決定回饋社會，";
+	mes "所以建立了這所私立學院。";
+	next;
+	mes "[漢妮]";
+	mes "不過，這所學校";
+	mes "只招收窮到無法就讀";
+	mes "其他學校的孤兒。有時候，";
+	mes "這讓我真希望自己也是個孤兒！";
+	mes "嗯，也不是真的想啦，但你懂的...";
+	close;
+}
+
+
+//----------------------------------------------------------------------------
+// Academy Security Guards
+//----------------------------------------------------------------------------
+yuno_fild08,158,194,6	script	警衛#1::KHAGuard	852,{
+	if ((KielHyreQuest < 2) || (KielHyreQuest > 31)) { 
+		mes "[警衛]";
+		mes "很抱歉，如果你不是";
+		mes "本機構的相關人員，";
+		mes "就無權進入";
+		mes "^FF0000奇爾·海爾學院^000000。";
+		mes "如果您沒有與教職員預約，";
+		mes "請離開。";
+		close;
+	}
+	else if (KielHyreQuest == 2) { 
+		mes "[警衛]";
+		mes "很抱歉，如果你不是";
+		mes "本機構的相關人員，";
+		mes "就無權進入";
+		mes "^FF0000奇爾·海爾學院^000000。";
+		mes "如果您沒有與教職員預約，";
+		mes "請離開。";
+		next;
+		switch(select("我是來送貨的。:......")) {
+		case 1:
+			mes "[警衛]";
+			mes "你是來送貨的？";
+			mes "好的，只要告訴我";
+			mes "收件人的^FF0000名字^000000，";
+			mes "然後是你送來的^FF0000物品^000000名稱，";
+			mes "我核對無誤後";
+			mes "就會讓你進去。";
+			next;
+			input .@KHDelivery$;
+			if (.@KHDelivery$ != "勒克萊恩") {
+				mes "[警衛]";
+				mes "你是來送酒給...";
+				mes "給誰的？名字叫什麼？";
+				mes "我...我不認為";
+				mes "我們學院裡有";
+				mes "一個叫 "+.@KHDelivery$+" 的人。";
+				close;
+			}
+			input .@KHDelivery$ ;
+			if (.@KHDelivery$ != "料理用酒") {
+				mes "[警衛]";
+				mes "所以你是來送貨給";
+				mes "勒克萊恩女士的？";
+				mes "你帶了什麼給她？";
+				mes "一些^3355FF"+.@KHDelivery$+"^000000？";
+				next;
+				mes "[警衛]";
+				mes "讓我先通知她一聲，";
+				mes "確認她確實";
+				mes "在等你。";
+				mes "讓我看看...";
+				next;
+				mes "......";
+				mes ".........";
+				mes "............";
+				next;
+				mes "[警衛]";
+				mes "嗯。勒克萊恩女士";
+				mes "確實在等一份送貨，";
+				mes "但並不是你說你帶來";
+				mes "給她的那個東西。你可能";
+				mes "需要檢查一下是不是弄錯了...";
+				close;
+			}
+			mes "[警衛]";
+			mes "好的....";
+			mes "所以你是來送";
+			mes "一瓶酒給勒克萊恩女士的？";
+			mes "讓我通知她一聲，馬上";
+			mes "確認一下這件事。";
+			next;
+			mes "......";
+			mes ".........";
+			mes "............";
+			next;
+			mes "[警衛]";
+			mes "好的，一切都";
+			mes "沒問題。勒克萊恩女士";
+			mes "一直在等你。";
+			mes "我想你可以進去了。";
+			close2;
+			warp "kh_school",71,155;
+			end;
+		case 2:
+			mes "[警衛]";
+			mes "如果你沒有";
+			mes "預約的話，就別";
+			mes "在學院門口逗留！";
+			close;
+		}
+	}
+	else if (KielHyreQuest < 32) { 
+		mes "[警衛]";
+		mes "喔，你還有其他事情";
+		mes "要進學院辦嗎？我記得";
+		mes "你，所以再讓你進去";
+		mes "應該沒什麼問題...";
+		close2;
+		warp "kh_school",71,155;
+		end;
+	}
+}
+
+yuno_fild08,158,183,7	duplicate(KHAGuard)	警衛#2	852
+
+//----------------------------------------------------------------------------
+// Gossiping Teenagers/Story NPCs
+//----------------------------------------------------------------------------
+kh_school,57,142,6	script	學生#kha	893,3,3,{
+	mes "[蕾西]";
+	mes "喔，哇！我們校園裡";
+	mes "平常很少有訪客！嗯，";
+	mes "你該不會是新來的教職員吧？";
+	close;
+
+OnTouch_:
+	mes "[蕾西]";
+	mes "嘿，妮莎...！";
+	mes "妳有聽說為什麼";
+	mes "艾希好一陣子沒來上課了嗎？";
+	next;
+	mes "[奎·妮莎]";
+	mes "對耶，我好一陣子";
+	mes "沒看到艾希了。";
+	mes "發生了什麼事嗎？";
+	next;
+	mes "[蕾西]";
+	mes "那是因為....";
+	mes "艾希看到了見鬼的幽靈！";
+	mes "這是百分之百";
+	mes "千真萬確的！我是從，";
+	mes "妳知道的，我的消息來源聽說的。";
+	next;
+	mes "[奎·妮莎]";
+	mes "...什麼...？";
+	mes "喔，拜託，";
+	mes "少來了。";
+	close;
+}
+
+kh_school,57,139,0	script	學生#khb	893,{
+	mes "[奎·妮莎]";
+	mes "我們討論這種事情";
+	mes "不會顯得太幼稚嗎？妳知道的，";
+	mes "就是那些毫無根據的";
+	mes "謠言和鬼故事？";
+	mes "拜託，蕾西，別鬧了！";
+	emotion ET_PROFUSELY_SWEAT;
+	close;
+}
+
+//----------------------------------------------------------------------------
+// Mrs. Lecollane
+//----------------------------------------------------------------------------
+kh_school,176,60,4	script	女士#kh	101,{
+	if (KielHyreQuest < 2) {
+		mes "[勒克萊恩女士]";
+		mes "有什麼問題嗎？";
+		mes "外人是不准進來的，";
+		mes "請你離開。";
+		close;
+	}
+	else if (KielHyreQuest == 2) { 
+		mes "[勒克萊恩女士]";
+		mes "喔，你好。啊！";
+		mes "你是來送酒的嗎？";
+		mes "警衛打電話來";
+		mes "說你要過來了。";
+		next;
+		switch(select("是的，沒錯！:呃，抱-抱歉！")) {
+		case 1:
+			mes "[勒克萊恩女士]";
+			mes "嗯，你來得比我預期的";
+			mes "晚了一點，但我想";
+			mes "這也沒辦法。";
+			mes "我想等待只是增加了我";
+			mes "對這瓶酒的期盼--";
+			next;
+			mes "^3355FF*鏘！啪啦！*^000000";
+			next;
+			mes "[勒克萊恩女士]";
+			mes "艾莉？艾莉，妳";
+			mes "是不是又打破什麼東西了？！";
+			mes "妳必須再小心一點！";
+			mes "如果妳今天之內烤不完";
+			mes "那些餅乾，妳這學期的";
+			mes "成績就會受到影響！";
+			next;
+			mes "[艾莉]";
+			mes "可-可是我剛剛...";
+			next;
+			mes "[勒克萊恩女士]";
+			mes "^FF0000艾莉^000000！！";
+			next;
+			mes "[艾莉]";
+			mes "......";
+			mes "是的，勒克萊恩女士。";
+			next;
+			mes "[勒克萊恩女士]";
+			mes "*咳咳* 不好意思。";
+			mes "請把酒留在那邊好嗎？";
+			mes "你可以走了，還有請";
+			mes "不要在學院裡";
+			mes "無故閒晃。";
+			delitem 7487,1; //Tavern_Wine
+			set KielHyreQuest,4;
+			close;
+		case 2:
+			mes "[勒克萊恩女士]";
+			mes "嗯...？";
+			mes "我想我一定是";
+			mes "弄錯了。很抱歉，";
+			mes "我以為你是";
+			mes "另一個人。";
+			close;
+		}
+	}
+	else if (KielHyreQuest == 4) {
+		mes "[勒克萊恩女士]";
+		mes "好了，我們的事情已經";
+		mes "辦完了，能不能請你";
+		mes "盡快離開校園？*嘆氣*";
+		mes "我不敢相信我們的未來";
+		mes "竟然掌握在這些女孩手中...";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Elly (In school)
+//----------------------------------------------------------------------------
+kh_school,179,39,0	script	可愛的學生#kh	895,{
+	if (checkweight(908,200) == 0) {
+		mes "[伊萊]";
+		mes "不好意思，可以請你";
+		mes "先把一些東西放到";
+		mes "卡普拉服務人員的倉庫或是";
+		mes "其他地方嗎？你帶這麼多東西，";
+		mes "我實在沒辦法幫你。";
+		close;
+	}
+	cutin "kh_elly01",2;
+	if (KielHyreQuest < 4) { 
+		cutin "kh_elly03",2;
+		mes "[伊萊]";
+		mes "哇！喔...！";
+		mes "^333333*呼*^000000 好險，";
+		mes "我差點又把這些東西";
+		mes "弄掉了！為什麼我處理這些材料";
+		mes "總是這麼笨手笨腳的？";
+	}
+	else if (KielHyreQuest == 4) { 
+		cutin "kh_elly03",2;
+		mes "[伊萊]";
+		mes "糟了，我該怎麼辦？";
+		mes "^333333*啜泣*^000000 我...我該";
+		mes "怎麼辦才好？^333333*吸鼻子*^000000";
+		next;
+		switch(select("發生什麼事了？:......")) {
+		case 1:
+			mes "[伊萊]";
+			mes "我...我今天之內必須";
+			mes "把這批餅乾烤好，可是我剛才";
+			mes "不小心把所有材料都灑在";
+			mes "地上了。我現在不知道該怎麼";
+			mes "烤那些餅乾了...";
+			next;
+			switch(select("我能幫你什麼忙嗎？:噢，我很遺憾。")) {
+			case 1:
+				cutin "kh_elly02",2;
+				mes "[伊萊]";
+				mes "你說什麼...？";
+				mes "你真的願意幫";
+				mes "我？那真是太棒了！";
+				mes "謝謝你！太感謝你了！";
+				next;
+				break;
+			case 2:
+				mes "[伊萊]";
+				mes "等一下，你不是";
+				mes "這所學校的學生吧？";
+				mes "你...你是那些冒險者之一，對吧？";
+				next;
+				select("嗯，沒錯。");
+				mes "聽我說，我知道你";
+				mes "可能還有自己的計畫，";
+				mes "但你覺得你可以幫我解決";
+				mes "這個大麻煩嗎？";
+				next;
+				switch(select("接受:拒絕")) {
+				case 1:
+					cutin "kh_elly02",2;
+					mes "太棒了！";
+					mes "謝謝你！太感謝";
+					mes "你了！我本來應該快點把";
+					mes "這批餅乾烤好的，可是我";
+					mes "不小心把所有材料都灑了...";
+					next;
+					break;
+				case 2:
+					mes "["+strcharinfo(0)+"]";
+					mes "我要走了。";
+					next;
+					cutin "kh_elly04",2;
+					mes "[伊萊]";
+					mes "等...等一下...！";
+					mes "回來，你";
+					mes "不...不要...！我真的";
+					mes "需要人幫忙！";
+					emotion ET_CRY;
+					close2;
+					cutin "",255;
+					end;
+				}
+			}
+			cutin "kh_elly01",2;
+			mes "[伊萊]";
+			mes "嗯，我想唯一能烤好";
+			mes "這些餅乾的方法就是";
+			mes "再去弄些新材料來。";
+			mes "很抱歉給你添這麼大麻煩，";
+			mes "但如果你不主動幫我，";
+			mes "我就沒人可以拜託了！";
+			next;
+			cutin "kh_elly04",2;
+			mes "[伊萊]";
+			mes "你不懂烤好這些餅乾";
+			mes "對我來說有多重要...";
+			mes "如果我沒完成這份作業，";
+			mes "克蘭克老師這學期一定會";
+			mes "把我當掉的！";
+			next;
+			mes "[伊萊]";
+			cutin "kh_elly01",2;
+			mes "好，我需要冷靜";
+			mes "下來。我想只要有你的幫忙，";
+			mes "我一定做得到。";
+			mes "你能不能幫我這個大忙，";
+			mes "幫我把這些材料通通找齊呢？";
+			next;
+			mes "[伊萊]";
+			mes "我需要 ^3355FF1個陳年好酒^000000、";
+			mes "^3355FF7個牛奶^000000、";
+			mes "^3355FF5個可可^000000、";
+			mes "^3355FF2個起司^000000、";
+			mes "^3355FF1個蛋^000000，還有";
+			mes "^3355FF1個麵粉袋^000000。";
+			next;
+			mes "[伊萊]";
+			mes "讓我想想...你可以從";
+			mes "朱諾的酒吧拿到陳年好酒，";
+			mes "可可的話可以打溜溜猴掉落，";
+			mes "麵粉和蛋可以從朱諾那個";
+			mes "賣吐司的女孩那裡拿到。";
+			next;
+			mes "[伊萊]";
+			mes "祝你順利找到所有東西，";
+			mes "希望你能盡快把那些";
+			mes "烤餅乾的材料帶回來這裡，好嗎？";
+			set KielHyreQuest,6;
+			break;
+		case 2:
+			mes "[伊萊]";
+			mes "*啜泣*...";
+			break;
+		}
+	}
+	else if (KielHyreQuest == 6) {
+		if ((countitem(519) < 7) || (countitem(548) < 2) || (countitem(7182) < 5) || (countitem(7487) < 1) || (countitem(7488) < 1)) {
+			mes "[伊萊]";
+			mes "讓我想想，你希望";
+			mes "我再提醒你一次";
+			mes "我需要哪些材料嗎？";
+			mes "請盡快把這些東西帶來，";
+			mes "這樣我才能趕快烤些餅乾~";
+			next;
+			mes "[伊萊]";
+			mes "我需要 ^3355FF1個陳年好酒^000000、";
+			mes "^3355FF7個牛奶^000000、";
+			mes "^3355FF5個可可^000000、";
+			mes "^3355FF2個起司^000000、";
+			mes "^3355FF1個蛋^000000，還有";
+			mes "^3355FF1個麵粉袋^000000。";
+			next;
+			cutin "kh_elly01",2;
+			mes "[伊萊]";
+			mes "讓我想想...你可以從";
+			mes "朱諾的酒吧拿到陳年好酒，";
+			mes "可可的話可以打溜溜猴掉落，";
+			mes "麵粉和蛋可以從朱諾那個";
+			mes "賣吐司的女孩那裡拿到。";
+		}
+		else {
+			cutin "kh_elly02",2;
+			mes "[伊萊]";
+			mes "萬歲！我終於把所有需要的東西都找齊了！";
+			mes "這真是太棒了！喔，能不能請你等我一下，";
+			mes "我來把這些餅乾烤好？";
+			mes "應該不會花太久時間，稍微等我一下。";
+			delitem 519,7; //Milk
+			delitem 548,2; //Cheese
+			delitem 7182,5; //Cacao
+			delitem 7487,1; //Tavern_Wine
+			delitem 7488,1; //Delivery_Package
+			set KielHyreQuest,8;
+			//KHPubMasterEnd no longer needed-- deleting.
+			set KHPubMasterEnd,0;
+			set KHToastGirlEnd,0;
+			emotion ET_DELIGHT;
+		}
+	}
+	else if (KielHyreQuest == 8) {
+		mes "[伊萊]";
+		mes "搭啦！我成功了！";
+		mes "終於烤好了！";
+		mes "伊萊的特製餅乾。";
+		mes "我想請你嚐幾塊，";
+		mes "感謝你幫了我的大忙。";
+		next;
+		mes "[伊萊]";
+		mes "很抱歉，我剛才滿腦子";
+		mes "都只想著怎麼把這些餅乾烤好，";
+		mes "都忘了問你的名字了。我是";
+		mes "^FF0000伊萊佳^000000，但大家通常叫我";
+		mes "「伊萊」。請問你的名字是？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我是 ^3355FF"+strcharinfo(0)+"^000000。";
+		mes "我是 ^3355FF"+strcharinfo(0)+"^000000。";
+		next;
+		cutin "kh_elly02",2;
+		mes "[伊萊]";
+		mes ""+strcharinfo(0)+"？";
+		mes "...這個名字！真是太棒了！";
+		getitem 538,5; //Well_Baked_Cookie
+		set KielHyreQuest,10;
+	}
+	else if (KielHyreQuest == 10) {
+		mes "[伊萊]";
+		mes "很抱歉，但如果你不介意的話，";
+		mes "我還有另一個忙想請你幫忙。";
+		mes "別擔心，這次你不需要像上次那樣";
+		mes "急急忙忙的。";
+		next;
+		switch(select("你需要什麼？:抱歉，但我現在很忙...")) {
+		case 1:
+			mes "[伊萊]";
+			mes "你還記得你幫我";
+			mes "烤的那些餅乾嗎？";
+			mes "這是我第一次沒有把它們烤焦！";
+			mes "我知道爺爺一定會";
+			mes "為我感到驕傲的！";
+			next;
+			mes "[伊萊]";
+			mes "我真的很想讓爺爺";
+			mes "嚐嚐我烤的餅乾，";
+			mes "但等我能離開學校的時候，";
+			mes "餅乾早就變得不新鮮了。";
+			mes "你能幫我把這些餅乾送去給爺爺嗎？";
+			next;
+			switch(select("當然好:我很忙。")) {
+			case 1:
+				cutin "kh_elly02",2;
+				mes "[伊萊]";
+				mes "喔，"+strcharinfo(0)+"！";
+				mes "非常感謝你，我就知道";
+				mes "你會明白的！能不能請你把餅乾";
+				mes "送到 ^FF0000基爾 海爾的別墅^000000 給他？";
+				next;
+				mes "[伊萊]";
+				mes "喔，對了！他們對訪客";
+				mes "和陌生人進入領地非常";
+				mes "謹慎，但只要你提我的名字，";
+				mes "他們就會讓你進去的。";
+				mes "那就先這樣囉，再見~";
+				set KielHyreQuest,12;
+				break;
+			case 2:
+				cutin "kh_elly03",2;
+				mes "[伊萊]";
+				mes "喔，嗯...";
+				mes "好吧，很抱歉";
+				mes "打擾你了...";
+				break;
+			}
+			break;
+		case 2:
+			cutin "kh_elly03",2;
+			mes "[伊萊]";
+			mes "喔，嗯...";
+			mes "好吧，很抱歉";
+			mes "打擾你了...";
+			break;
+		}
+	}
+	else if (KielHyreQuest == 12) {
+		mes "[伊萊]";
+		mes "喔，你不知道要去哪裡";
+		mes "找基爾 海爾的別墅嗎？";
+		mes "就在這間學院的正北方。請幫我把";
+		mes "餅乾送去給爺爺，並";
+		mes "告訴他我真的很想他。";
+	}
+	else if (KielHyreQuest == 14) {
+		cutin "kh_elly03",2;
+		mes "[伊萊]";
+		mes "嗯？爺爺不在家？";
+		mes "這太奇怪了，他";
+		mes "並沒有提到有";
+		mes "任何出差行程。我以為";
+		mes "他會整天待在家裡的...";
+		next;
+		cutin "kh_elly04",2;
+		mes "[伊萊]";
+		mes "你能再回他的";
+		mes "別墅一趟嗎？來，";
+		mes "你可以用這把別墅鑰匙。";
+		mes "這樣一來，你就可以直接進去";
+		mes "找他談話了~";
+		getitem 7489,1; //Villa_Spare_Key
+		set KielHyreQuest,16;
+	}
+	else if ((KielHyreQuest >= 14) && (KielHyreQuest < 20)) {
+		mes "[伊萊]";
+		mes "這真是太奇怪了...";
+		mes "我以為爺爺";
+		mes "說過他今天會";
+		mes "整天待在家裡的...";
+	}
+	else if (KielHyreQuest == 20) {
+		mes "[伊萊]";
+		mes "嗯...？";
+		mes "這是什麼，";
+		mes "給我的信？";
+		next;
+		mes "^3355FF伊萊打開信封，";
+		mes "開始閱讀信件。^000000";
+		next;
+		mes "^333333親愛的伊萊，";
+		mes " ";
+		mes "我有事需要和我的兒子基爾商量，";
+		mes "所以我現在要去見他。";
+		mes "如果你在我寫這封信的7天後";
+		mes "還沒收到我的消息，那你必須盡快";
+		mes "逃離學院，並去別墅的書房裡";
+		mes "拿一樣東西。";
+		mes " ";
+		mes "如果你有信得過的朋友，請拜託他";
+		mes "循著我在別墅留下的線索找我。";
+		mes "我可能遇到了危險，";
+		mes "急需救援。";
+		mes " ";
+		mes "伊萊，不要相信學院裡的任何人，";
+		mes "甚至你的同學，因為他們可能";
+		mes "已經被基爾影響了。";
+		mes " ";
+		mes "小心點，我愛你。";
+		mes " ";
+		mes "——爺爺^000000";
+		next;
+		cutin "kh_elly03",2;
+		mes "[伊萊]";
+		mes "什麼？糟了，距離他寫這封信";
+		mes "已經過十天了！啊，這難道";
+		mes "意味著他遇到危險了嗎？！";
+		mes "糟了，我該怎麼辦才好？";
+		delitem 7490,1; //Letter_to_Elly
+		set KielHyreQuest,22;
+	}
+	else if (KielHyreQuest == 22) {
+		cutin "kh_elly03",2;
+		mes "[伊萊]";
+		mes "......";
+		mes ".........";
+		mes "............";
+		next;
+		switch(select("關於你的爺爺:跟我說說基爾的事:這間學院是怎麼回事？")) {
+		case 1:
+			mes "[伊萊]";
+			mes "喔！我的爺爺是";
+			mes "基爾 海爾，也就是";
+			mes "基爾 海爾財團的創辦人兼";
+			mes "執行長。他看起來很嚴格、";
+			mes "冷酷，但他其實是個大好人！";
+			next;
+			mes "[伊萊]";
+			mes "我們並沒有血緣關係，";
+			mes "但自從我失去父母後，";
+			mes "他一直很照顧我。喔，";
+			mes "爺爺，你到底在哪裡？";
+			mes "我快擔心死了！";
+			break;
+		case 2:
+			mes "[伊萊]";
+			mes "基爾？那是我";
+			mes "爺爺的兒子...";
+			mes "我跟他不熟，只在";
+			mes "一次學院的活動上見過他一次。";
+			next;
+			mes "[伊萊]";
+			mes "嗯，他是個帥氣的傢伙，";
+			mes "皮膚白皙、銀白色的頭髮，";
+			mes "還有一雙冷酷銳利的眼神。";
+			mes "我有很多同學都很崇拜基爾，";
+			mes "因為他也是個商業天才~";
+			next;
+			mes "[伊萊]";
+			mes "不過這真的很奇怪...";
+			mes "我完全不知道為什麼我爺爺";
+			mes "和基爾處不來。他們在各自的領域";
+			mes "明明都那麼優秀...";
+			break;
+		case 3:
+			mes "[伊萊]";
+			mes "嗯，我知道這裡的保全";
+			mes "非常嚴密，但那是因為";
+			mes "這裡的設備都非常高級、";
+			mes "昂貴，你知道的~";
+			next;
+			mes "[伊萊]";
+			mes "我們還有一套非常特別的";
+			mes "課程，讓你學習更多你感興趣的";
+			mes "東西。就我個人而言，我想成為像";
+			mes "^0000FF艾麗西亞小姐^000000 一樣出色的職業婦女。嘿嘿~";
+			next;
+			mes "[伊萊]";
+			mes "這個地方確實跟";
+			mes "其他學校不一樣。";
+			//mes "You already know that only";
+			mes "是啊，每件事都是為了";
+			mes "滿足每個學生的需求而量身打造的。";
+			next;
+			mes "[伊萊]";
+			mes "不過最近呢？";
+			mes "發生了一些非常奇怪的事情。";
+			mes "我所有的同學都害怕";
+			mes "獨自外出。";
+			next;
+			cutin "kh_elly02",2;
+			mes "[伊萊]";
+			mes "但我不會有事的！";
+			mes "你一定會來危險中";
+			mes "拯救我的，對吧，"+strcharinfo(0)+"？";
+			next;
+			switch(select("艾麗西亞小姐是誰？:奇怪的事情？")) {
+			case 1:
+				mes "[伊萊]";
+				mes "喔，艾麗西亞小姐是";
+				mes "爺爺的秘書~";
+				mes "她非常漂亮，而且";
+				mes "我爺爺非常信任她，把所有事情都交給她處理！";
+				break;
+			case 2:
+				cutin "kh_elly04",2;
+				mes "[伊萊]";
+				mes "嗯，"+strcharinfo(0)+"...";
+				mes "我不應該告訴學校以外的任何人，";
+				mes "但我相信你！事情是這樣的...";
+				mes "我們學校鬧鬼了！";
+				next;
+				mes "[伊萊]";
+				mes "我知道這聽起來很扯，";
+				mes "但這個幽靈在校園裡徘徊，";
+				mes "並對受害者下咒，讓他們變得";
+				mes "冰冷且毫無生氣。";
+				mes "這事就發生在我的室友梅優身上。她變得就像一座雕像...";
+				next;
+				mes "[伊萊]";
+				mes "我溜進醫務室看她，然後她...";
+				mes "她什麼也做不了！";
+				mes "如果那個幽靈決定對我下咒，該怎麼辦？！";
+				next;
+				cutin "kh_elly02",2;
+				mes "[伊萊]";
+				mes "你知道嗎...？";
+				mes "如果我真的被那個幽靈下咒了，只要大喊";
+				mes "「^FF0000快醒醒，伊萊！^000000」";
+				mes "那樣我一定會醒過來的！";
+				set KielHyreQuest,24;
+				break;
+			}
+		}
+	}
+	else if (KielHyreQuest >= 24 && KielHyreQuest <= 26) {
+		cutin "kh_elly04",2;
+		mes "[伊萊]";
+		mes "啊，我遇到麻煩了！";
+		mes "我必須在作業到期前";
+		mes "完成它！是的，我現在必須";
+		mes "去見萊科蘭老師。";
+		next;
+		mes "[伊萊]";
+		mes "對了，"+strcharinfo(0)+"，如果方便的話，";
+		mes "能不能請你去^FF0000別墅書房^000000";
+		mes "找找看我爺爺留了什麼給我？你是我";
+		mes "唯一能信任的人了！";
+		next;
+		mes "[伊萊]";
+		mes "總之，我們晚上見！";
+		mes "請來我的^FF0000宿舍房間^000000 找我。嗯，宿舍";
+		mes "就在學院後面的教堂裡，好嗎？";
+		next;
+		mes "[伊萊]";
+		mes "我的房間在最後面，";
+		mes "在^FF0000二樓的左邊^000000。請爬梯子上來，好嗎？";
+		mes "我會為你留一扇窗，你一定要來喔。";
+		next;
+		mes "[伊萊]";
+		mes "快走、快走，老師來了！";
+		set KielHyreQuest,26;
+	}
+	else {
+		mes "[伊萊]";
+		mes "快走、快走，老師來了！";
+	}
+	close2;
+	cutin "",255;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Elly's Window 
+//----------------------------------------------------------------------------
+yuno_fild08,69,185,0	script	窗戶#kh	111,{
+	if (KielHyreQuest < 29) {
+		mes "^3355FF你可以透過這個房間的窗戶";
+		mes "看到裝飾著可愛圖案的窗簾，";
+		mes "這房間可能是一個年輕女孩在使用的。^000000";
+		close;
+	}
+	else if (KielHyreQuest== 29) {
+		mes "^3355FF這一定是伊萊的房間。";
+		mes "聽起來裡面沒人，所以她大概還沒回來。";
+		mes "現在，你應該試著去他們別墅的書房裡，";
+		mes "尋找她爺爺留給她的東西。^000000";
+		close;
+	}
+	else if ((KielHyreQuest >= 30) && (KielHyreQuest <= 45)) {
+		mes "^3355FF這扇半開的窗戶";
+		mes "一定是通往伊萊的房間。";
+		mes "雖然她要你找個梯子爬進她的窗戶，";
+		mes "但你可能找不到。或許你可以沿著那根水管爬上去...^000000";
+		next;
+		switch(select("攀爬水管:找其他方法")) {
+		case 1:
+			if (rand(1,3) == 2) {
+				mes "^3355FF你沿著水管往上爬，";
+				mes "並成功潛入了伊萊的房間。^000000";
+				close2;
+				warp "kh_school",185,185;
+				end;
+			}
+			else {
+				mes "^3355FF你試著攀爬水管，";
+				mes "但最後摔了下來，撞到了頭。^000000";
+				percentheal -10,0;
+				close;
+			}
+		case 2:
+			mes "^3355FF一定還有其他方法";
+			mes "可以進入伊萊的房間，";
+			mes "除了爬這根水管之外...^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF你無法爬進那扇開著的窗戶。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Elly (In Dormitory)
+//----------------------------------------------------------------------------
+kh_school,178,180,4	script	伊萊	895,{
+	if (checkweight(908,200) == 0) {
+		mes "^3355FF等一下...";
+		mes "你現在帶了太多東西在身上，";
+		mes "你必須先清出更多的背包空間...^000000";
+		close;
+	}
+	if (KielHyreQuest < 30) {
+		mes "[伊萊]";
+		mes "你到底是誰？";
+		mes "你...你不應該能進來的！";
+		mes "馬上滾出去！";
+		close2;
+		percentheal -99,0;
+		warp "yuno_fild08",100,100;
+		end;
+	}
+	else if (KielHyreQuest < 32) {
+		mes "[伊萊]";
+		mes "......";
+		mes ".........";
+		mes "............";
+		close;
+	}
+	else if (KielHyreQuest == 32) {
+		mes "[伊萊]";
+		mes "......";
+		mes ".........";
+		mes "............";
+		next;
+		mes "^3355FF伊萊似乎被下咒了，";
+		mes "完全一動也不動，毫無生氣。";
+		mes "你必須試試看能不能做點什麼，但該怎麼做呢？^000000";
+		next;
+		switch(select("搖醒她。:大聲叫醒她。:忽略")) {
+		case 1:
+			mes "^3355FF你抓住伊萊的肩膀，";
+			mes "試圖用力搖晃她的全身來讓她有反應。^000000";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "伊萊？伊萊！不！";
+			mes "快醒過來！";
+			next;
+			mes "^3355FF伊萊沒有反應...^000000";
+			close;
+		case 2:
+			input .@KHInput$;
+			if (.@KHInput$ == "快醒醒，伊萊！") {
+				mes "[伊萊]";
+				mes ".............";
+				next;
+				mes "^3355FF就在你說出那些話的瞬間，一把 ^000000小巧的金色鑰匙^3355FF";
+				mes "和一個 ^000000按鈕^3355FF 從伊萊的手中掉落。";
+				mes "看起來她醒了，但只有一瞬間。^000000";
+				getitem 7493,1; //Golden_Key
+				getitem 7494,1; //Kiel_Button
+				set KielHyreQuest,34;
+				close;
+			}
+			else {
+				mes "[伊萊]";
+				mes "......";
+				mes ".........";
+				mes "............";
+				next;
+				mes "^3355FF伊萊沒有反應...^000000";
+				close;
+			}
+		case 3:
+			mes "^3355FF好吧...";
+			mes "但遲早，你都應該試著解開伊萊身上的詛咒。^000000";
+			close;
+		}
+	}
+	else if (KielHyreQuest == 34) {
+		if (countitem(7491) < 1) {
+			//Missing text, needs another run through.
+			mes "^3355FF也許這把金色鑰匙可以^000000";
+			mes "解鎖別墅裡的某個東西。我們再去看看吧。^000000";
+			close;
+		}
+		else {
+			mes "^3355FF看起來伊萊的金色鑰匙";
+			mes "剛好可以插進你在基爾 海爾別墅裡找到的";
+			mes "那個灰色箱子的鑰匙孔裡。^000000";
+			next;
+			mes "^3355FF你成功用金色鑰匙打開了灰色箱子，";
+			mes "並在裡面發現了一張藍色的感應卡，";
+			mes "還有一張摺疊的紙條。你快速地閱讀了";
+			mes "紙條上的內容...^000000";
+			next;
+			mes "親愛的伊萊，";
+			mes "基爾終究還是打破了禁忌，";
+			mes "並試圖把你們變成可怕的怪物。";
+			mes "^FFFFFF_^000000";
+			mes "當你讀到這封信的時候，";
+			mes "我大概已經危在旦夕了。";
+			mes "我能不能活下去就看你了。";
+			mes "^FFFFFF_^000000";
+			mes "如果你遇到了傀儡，你大概就已經知道了，但我還是想親口告訴你：你不是人類。";
+			mes "如果你從教堂旁墳墓附近的入口進入工廠，你就會了解詳情了。然後，我要你去工廠的密室裡找艾麗西亞。";
+			mes "我已經把你的名字登錄在她的保全系統裡了，所以別擔心。希望艾麗西亞到時候會來救我...";
+			mes "^FFFFFF_^000000";
+			mes "對不起，";
+			mes "爺爺";
+			getitem 7495,1; //Blue_Key_Card
+			delitem 7491,1; //Iron_Box
+			set KielHyreQuest,36;
+			close;
+		}
+	}
+	else if (KielHyreQuest >= 36) {
+		mes "^3355FF這就是你發現鎖在灰色箱子裡的紙條的地方。";
+		mes "紙條上寫著伊萊的爺爺——基爾 海爾留下的以下訊息。^000000";
+		next;
+		mes "親愛的伊萊，";
+		mes "基爾終究還是打破了禁忌，";
+		mes "並試圖把你們變成可怕的怪物。";
+		mes "^FFFFFF_^000000";
+		mes "當你讀到這封信的時候，";
+		mes "我大概已經危在旦夕了。";
+		mes "我能不能活下去就看你了。";
+		mes "^FFFFFF_^000000";
+		mes "如果你遇到了傀儡，你大概就已經知道了，但我還是想親口告訴你：你不是人類。";
+		mes "如果你從教堂旁墳墓附近的入口進入工廠，你就會了解詳情了。然後，我要你去工廠的密室裡找艾麗西亞。";
+		mes "我已經把你的名字登錄在她的保全系統裡了，所以別擔心。希望艾麗西亞到時候會來救我...";
+		mes "^FFFFFF_^000000";
+		mes "對不起，";
+		mes "爺爺";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cookie Basket
+//----------------------------------------------------------------------------
+kh_school,175,176,0	script	餅乾籃#kh	111,{
+	if (KielHyreQuest < 30) {
+		mes "^3355FF這是一個裝滿了";
+		mes "美味餅乾的餅乾籃。^000000";
+		close;
+	}
+	else if (KielHyreQuest == 30) {
+		mes "^3355FF這一定是伊萊的餅乾籃。";
+		mes "餅乾之間似乎夾著一張摺疊的紙條。^000000";
+		next;
+		switch(select("閱讀紙條:忽略")) {
+		case 1:
+			mes ""+strcharinfo(0)+"，救命！";
+			mes "有個穿著黑衣服的傢伙在到處走動，";
+			mes "並施展著某種奇怪的法術！";
+			mes "他就是那個把人變成冷冰冰、毫無生氣的傀儡的傢伙！我好害怕！";
+			mes "^FFFFFF_^000000";
+			mes "希望你能收到這張紙條...";
+			mes "他跑來追我，但我把自己鎖在房間裡。我會把窗戶打開，這樣你才找得到我。希望他不要對我下咒！";
+			set KielHyreQuest,32;
+			close;
+		case 2:
+			mes "^3355FF那張紙條可能";
+			mes "根本不是寫給你的。^000000";
+			close;
+		}
+	}
+	else if (KielHyreQuest < 108) {
+		mes "^3355FF這些餅乾還沒變軟，但它們已經不熱了。如果不把它們放在室溫下，它們會有點冷。^000000";
+		close;
+	}
+	else if (KielHyreQuest == 108) {
+		mes "^3355FF當你盯著餅乾籃時，窗外吹來的風吹動了它，露出一封壓在底下的信。這可能是伊萊寫給你讀的。^000000";
+		next;
+		mes "^333333親愛的 "+strcharinfo(0)+"，";
+		mes " ";
+		mes "因為我常常犯錯，老師們通常都會罵我，";
+		mes "但今天萊科蘭老師稱讚我的餅乾很好吃！";
+		mes "這一切都要感謝你，我的朋友。";
+		mes "很高興能認識你：你讓我明白這個世界上還是有好人的。";
+		mes "而且我知道爺爺也會喜歡你的，雖然我不知道他現在在哪裡...";
+		mes " ";
+		mes "希望有一天，我也能成為像你一樣善良的人。";
+		mes "我們要保持聯絡，做非常要好的朋友喔，好嗎？";
+		mes " ";
+		mes "你的，伊萊^000000";
+		next;
+		mes "^3355FF你似乎還能從伊萊的餅乾籃裡感受到她的溫暖與善良。你拿起一塊餅乾放進嘴裡。那是一種苦甜參半的美味。";
+		set KielHyreQuest,109;
+		next;
+		input .@input$;
+		mes "["+strcharinfo(0)+"]";
+		mes ""+.@input$+"";
+		mes "該回去了。我不能再待在這裡了。";
+		close2;
+		warp "yuno_fild08",69,183;
+		end;
+	}
+	else {
+		mes "^3355FF這個籃子裡所有的餅乾都軟掉了！嗯，這也不奇怪。距離它們剛烤好的時候已經過很久了。^000000";
+		close;
+	}
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Elly's Window (In Dormitory)
+//----------------------------------------------------------------------------
+kh_school,188,185,0	script	窗戶#kh2	111,{
+	warp "yuno_fild08",69,183;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Grave/Kiel Hyre dungeon entry
+//----------------------------------------------------------------------------
+yuno_fild08,71,170,0	script	墳墓#kh	111,{
+	if (KielHyreQuest < 36) {
+		mes "^3355FF這只是一座墳墓。";
+		mes "以後對你來說可能會很重要，但現在它對你一點幫助也沒有。^000000";
+		close;
+	}
+	else if (KielHyreQuest == 36) {
+		if (countitem(7492) < 1) {
+			mes "^3355FF這只是一座墳墓。";
+			mes "以後對你來說可能會很重要，但現在它對你一點幫助也沒有。^000000";
+			close;
+		}
+		else {
+			mes "^3355FF這座墳墓附近有一扇暗門。看起來門上安裝了某種插槽和數字鍵盤。^000000";
+			next;
+			mes "^3355FF你應該把什麼插進插槽裡？^000000";
+			next;
+			input .@KHInput$;
+			if (.@KHInput$ == "黃色鑰匙卡") {
+				mes "^3355FF插入黃色鑰匙卡後，發出了一聲電子確認音，接著一個自動語音問道：^000000";
+				next;
+				mes "[保全系統]";
+				mes "請輸入密碼。";
+				next;
+				input .@KHInput$;
+				next;
+				if (.@KHInput$ == "4772961") {
+					mes "[保全系統]";
+					mes "密碼確認無誤。";
+					mes "歡迎，基爾 海爾。";
+					next;
+					mes "^3355FF你聽到另一聲令人愉快的嗶聲，接著一條秘密通道打開了。^000000";
+					set KielHyreQuest,38;
+					close;
+				}
+				else {
+					mes "[保全系統]";
+					mes "密碼錯誤。";
+					mes "請再試一次。";
+					close;
+				}
+			}
+			else {
+				mes "^3355FF你試圖插進插槽裡的任何東西都完全沒用...^000000";
+				close;
+			}
+		}
+	}
+	else if ((KielHyreQuest >= 38) && (KielHyreQuest < 106)) {
+		mes "^3355FF工廠的門是敞開著的。^000000";
+		next;
+		switch(select("進入:取消")) {
+		case 1:
+			warp "kh_dun01",3,230;
+			end;
+		case 2:
+			mes "......";
+			mes ".........";
+			mes "............";
+			close;
+		}
+	}
+
+	else if (KielHyreQuest >= 106) {
+		if (countitem(7509) < 1) {
+			mes "^3355FF秘密入口現在已經被封鎖了。^000000";
+			close;
+		}
+		else {
+			mes "當你靠近這座墳墓時，它開始發出閃爍的光芒。^000000";
+			next;
+			switch(select("使用 ^0000FF豪華的鑰匙卡^000000:忽略")) {
+			case 1:
+				mes "一旦你使用了豪華的鑰匙卡，一條秘密通道就會打開^000000";
+				next;
+				switch(select("進入:取消")) {
+				case 1:
+					warp "kh_dun01",3,230;
+					end;
+				case 2:
+					mes "......";
+					mes ".........";
+					mes "............";
+					close;
+				}
+			case 2:
+				mes "......";
+				mes ".........";
+				mes "............";
+				close;
+			}
+		}
+	}
+}
+
+//============================================================================
+//Kiel Hyre Cottage NPCs
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Cottage Keeper
+//----------------------------------------------------------------------------
+yuno_fild02,93,210,4	script	別墅管理員#kh	85,{
+	if ((KielHyreQuest < 12) || (KielHyreQuest > 12)) {
+		mes "[別墅管理員]";
+		mes "這是私人財產，所以除非您有獲得授權，否則請勿進入此區域。";
+		close;
+	}
+	else if (KielHyreQuest == 12) {
+		mes "[別墅管理員]";
+		mes "這是私人財產，所以除非您有獲得授權，否則請勿進入此區域。";
+		next;
+		switch(select("我跟基爾 海爾有約。:好吧。")) {
+		case 1:
+			mes "[別墅管理員]";
+			mes "您和基爾 海爾老爺";
+			mes "有約？";
+			mes "呃，您確定嗎？";
+			next;
+			switch(select("是的:不是")) {
+			case 1:
+				mes "[別墅管理員]";
+				mes "這其中一定有什麼誤會。海爾先生如果有約的話，是不會離開的...";
+				set KielHyreQuest,14;
+				close;
+			case 2:
+				mes "[別墅管理員]";
+				mes "好吧，除非您有預約，否則我不認為您能見到海爾先生。";
+				close;
+			}
+		case 2:
+			mes "[別墅管理員]";
+			mes "再見。";
+			close;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage Door (left)
+//----------------------------------------------------------------------------
+yuno_fild02,75,218,0	script	門#kh2	111,{
+	if (KielHyreQuest < 16) {
+		mes "^3355FF這扇門被鎖上了。如果裡面的人不幫你開門，那你就需要一把合適的鑰匙才能解鎖。";
+		close;
+	}
+	if (KielHyreQuest == 16) {
+		mes "^3355FF這扇門被鎖上了。如果裡面的人不幫你開門，那你就需要一把合適的鑰匙才能解鎖。";
+		next;
+		switch(select("解鎖:取消")) {
+		case 1:
+			mes "^3355FF你用伊萊給你的鑰匙解開了門鎖，當你推開門時，一張摺疊的紙條從門上掉了下來。這張粗糙的紙條上寫著以下字句。";
+			next;
+			mes "前進6，";
+			mes "左轉3，";
+			mes "前進3，";
+			mes "左轉4";
+			close2;
+			set KielHyreQuest,18;
+			warp "kh_vila",188,18;
+			end;
+		case 2:
+			mes "......";
+			mes ".........";
+			mes "............";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF門是開著的。^000000";
+		next;
+		switch(select("進入:取消")) {
+		case 1:
+			warp "kh_vila",188,18;
+			end;
+		case 2:
+			close;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage Door (Right)
+//----------------------------------------------------------------------------
+yuno_fild02,109,218,0	script	門#kh1	111,{
+	if (KielHyreQuest != 16) {
+		mes "^3355FF這扇門被鎖上了。如果裡面的人不幫你開門，那你就需要一把合適的鑰匙才能解鎖。";
+		close;
+	}
+	if (KielHyreQuest == 16) {
+		mes "^3355FF這扇門被鎖上了。如果裡面的人不幫你開門，那你就需要一把合適的鑰匙才能解鎖。";
+		next;
+		switch(select("打開:取消")) {
+		case 1:
+			mes "^3355FF你沒有可以打開這扇門的鑰匙。^000000";
+			close;
+		case 2:
+			mes "......";
+			mes ".........";
+			mes "............";
+			close;
+		}
+	}
+}
+
+
+//----------------------------------------------------------------------------
+// Store room interior; Wall
+//----------------------------------------------------------------------------
+kh_vila,191,14,0	script	牆壁#kh	139,1,1,{
+	if (KielHyreQuest < 28) {
+		mes "^3355FF這只是一面牆。";
+		mes "並沒有特別擋住你的去路。^000000";
+		close;
+	}
+	if (KielHyreQuest >= 28) {
+		mes "^3355FF牆壁現在打開了，露出一條秘密通道。^000000";
+		next;
+		switch(select("進入:取消")) {
+		case 1:
+			warp "kh_vila",17,177;
+			end;
+		case 2:
+			close;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Store room interior; books
+//----------------------------------------------------------------------------
+kh_vila,184,20,0	script	書本#kh1::BookKHQ1	111,{
+	if (KielHyreQuest != 26) {
+		mes "^3355FF這個書架上^000000";
+		mes "^3355FF塞滿了許多^000000";
+		mes "^3355FF厚重的精裝書^000000";
+		close;
+	}
+	else if (KielHyreQuest == 26) {
+		if (rand(1,10) == 8) {
+			mes "^3355FF你不假思索地";
+			mes "從書架上拿了";
+			mes "一本書。當你";
+			mes "把它拉向自己時，";
+			mes "牆壁滑開了，";
+			mes "露出一條秘密通道。^000000";
+			set KielHyreQuest,28;
+			specialeffect EF_READYPORTAL2,AREA,"Wall#kh";
+			close;
+		}
+		else {
+			mes "^3355FF這個書架上";
+			mes "塞滿了許多";
+			mes "厚重的精裝書。^000000";
+			close;
+		}
+
+	}
+
+}
+kh_vila,181,20,0	duplicate(BookKHQ1)	書本#kh2	111
+kh_vila,178,20,0	duplicate(BookKHQ1)	書本#kh3	111
+kh_vila,175,19,0	duplicate(BookKHQ1)	書本#kh4	111
+
+//----------------------------------------------------------------------------
+// Store room interior; Letter to Elly on the floor.
+//----------------------------------------------------------------------------
+kh_vila,179,11,0	script	信件#kh	-1,1,1,{
+OnTouch:
+	if (KielHyreQuest == 18) {
+		if (checkweight(7490,1) == 0) {
+			mes "^3355FF等一下...！";
+			mes "地上有些東西，";
+			mes "但你現在帶了";
+			mes "太多東西，";
+			mes "所以無法";
+			mes "撿起來。^000000";
+			close;
+		}
+		mes "^3355FF你在地上找到了一封信。";
+		mes "雖然這不是寫給你的，";
+		mes "但你還是自然而然地";
+		mes "把它";
+		mes "撿了起來。^000000";
+		getitem 7490,1; //Kyll_Hire_Letter
+		set KielHyreQuest,20;
+		close;
+	} 
+	else{
+		mes "^3355FF你進入了房間。^000000";
+		close;
+	}
+	end; 
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, kitchen; Box (Pet Food vending machine)
+//----------------------------------------------------------------------------
+kh_vila,16,175,0	script	箱子#khp1	111,{
+	mes "^FFFFFF##^000000*美味-營養-可口*";
+	mes "*寵物飼料自動販賣機*";
+	mes "給您可愛寵物最棒的食物，";
+	mes "比市面上買得到的";
+	mes "寵物飼料還要高級！";
+	mes "^FFFFFF_^000000";
+	mes "價格：1,100 zeny (便宜！)";
+	next;
+	switch(select("購買！:取消")) {
+	case 1:
+		if (Zeny < 1100) {
+			mes "^3355FF很遺憾，你";
+			mes "沒有足夠的";
+			mes "zeny 可以投進";
+			mes "自動販賣機裡。^000000";
+			close;
+		}
+		else {
+			mes "^3355FF喔不...！^000000";
+			mes "^3355FF1,100 zeny 買寵物飼料似乎";
+			mes "有點貴，";
+			mes "但如果它比普通的還要好，";
+			mes "或許值得";
+			mes "一試。^000000";
+			next;
+			mes "^3355FF喔不...！";
+			mes "它根本";
+			mes "沒有什麼";
+			mes "特別的！這只是";
+			mes "普通的寵物飼料！";
+			set Zeny, Zeny-1100;
+			getitem 537,1;	//Pet_Food
+			close;
+		}
+	case 2:
+		mes "^3355FF這台自動販賣機";
+		mes "不知為何看起來真的";
+		mes "很可疑又很詭異。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, kitchen;
+// Apple Box (Useless?)
+//----------------------------------------------------------------------------
+kh_vila,30,184,0	script	蘋果箱#khp1	111,{
+	mes "^3355FF你發現一個裝滿了";
+	mes "成熟美味蘋果的箱子。^000000";
+	next;
+	switch(select("拿走箱子:留下")) {
+	case 1:
+		mes "^3355FF不...！等等！";
+		mes "哪裡不對勁！";
+		mes "無論如何，";
+		mes "千萬別拿這個箱子！^000000";
+		next;
+		mes "^3355FF於是，你內心的";
+		mes "聲音，或者說是你的";
+		mes "榮格陰影，";
+		mes "阻止了你";
+		mes "拿走箱子。^000000";
+		close;
+	case 2: 
+		mes "^3355FF這箱蘋果";
+		mes "有點不對勁。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, dining room; Map
+//----------------------------------------------------------------------------
+kh_vila,44,126,0	script	地圖#khp1	111,{
+	if ((KHCottagePoem1 < 2) && (KielHyreQuest < 30)) {
+		mes "^3355FF一張宏偉的世界地圖";
+		mes "貼在這面牆上，詳細描繪了盧恩米德加茲";
+		mes "王國、秀發茲發德共和國，";
+		mes "以及西方另一個你";
+		mes "不熟悉名字的國家。^000000";
+		next;
+		mes "^3355FF當你仔細觀察";
+		mes "這張世界地圖時，";
+		mes "你發現下面";
+		mes "藏著某種東西。^000000";
+		switch(select("忽略:檢查")) {
+		case 1:
+			mes "^3355FF藏在地圖下面的";
+			mes "任何東西，";
+			mes "可能都不值得";
+			mes "你去調查。^000000";
+			close;
+		case 2:
+			mes "^3355FF很遺憾，你無法";
+			mes "看到地圖下面有什麼，";
+			mes "因為它緊緊貼在牆上。";
+			mes "你必須找到某種";
+			mes "方法來弄鬆膠水，";
+			mes "且不能損壞地圖...^000000";
+			set KHCottagePoem1,1;
+			close;
+		}
+	}
+	else  if ((KHCottagePoem1 == 2) && (KielHyreQuest < 30)) {
+		mes "^3355FF你把那鍋";
+		mes "冒著蒸氣的熱水";
+		mes "靠近世界地圖。";
+		mes "隨著牆上的漿糊";
+		mes "變濕，地圖慢慢地";
+		mes "開始剝落。^000000";
+		next;
+		mes "^3355FF剝落的地圖露出了";
+		mes "藏在下面的一張摺疊紙條。你";
+		mes "拿下紙條，並把地圖撫平，";
+		mes "讓它再次貼回";
+		mes "牆上。紙條上";
+		mes "寫著一段訊息。^000000";
+		next;
+		mes "^0000FF她將會在一個";
+		mes "如極地般寒冷的地方。";
+		mes "當水井乾涸";
+		mes "大地龜裂時，";
+		mes "通往她那顆如水晶般";
+		mes "透明的心的道路，";
+		mes "將會敞開。^000000";
+		next;
+		mes "^3355FF我必須用四把劍";
+		mes "對抗四條蛇";
+		mes "才能找到她。第一把劍";
+		mes "是愛。第二把劍";
+		mes "是絕望。第三把劍";
+		mes "是憤怒。第四把劍是";
+		mes "希望。找到她，拯救她。^000000";
+		next;
+		mes "^3355FF...............................";
+		mes "這首詩的深層含義，";
+		mes "如果它真的有的話，";
+		mes "你也無法理解。^000000";
+		set KHCottagePoem1,3;
+		close;
+	}
+	else  if ((KHCottagePoem1 > 2) || (KielHyreQuest >= 30)) {
+		mes "^3355FF這裡是你發現";
+		mes "寫著那首詩的";
+		mes "紙條的地方。也許";
+		mes "重新回憶一下，";
+		mes "再讀一次那首詩會是個好主意。^000000";
+		next;
+		switch(select("閱讀:取消")) {
+		case 1:
+			mes "^0000FF她將會在一個";
+			mes "如極地般寒冷的地方。";
+			mes "當水井乾涸";
+			mes "大地龜裂時，";
+			mes "通往她那顆如水晶般";
+			mes "透明的心的道路，";
+			mes "將會敞開。^000000";
+			next;
+			mes "^3355FF我必須用四把劍";
+			mes "對抗四條蛇";
+			mes "才能找到她。第一把劍";
+			mes "是愛。第二把劍";
+			mes "是絕望。第三把劍";
+			mes "是憤怒。第四把劍是";
+			mes "希望。找到她，拯救她。^000000";
+			next;
+			mes "^3355FF...............................";
+			mes "這首詩的深層含義，";
+			mes "如果它真的有的話，";
+			mes "你也無法理解。^000000";
+			close;
+		case 2:
+			mes "^3355FF你不需要";
+			mes "重讀這首詩。";
+			mes "你可是個天才！^000000";
+			close;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, kitchen;
+// Pot
+//----------------------------------------------------------------------------
+kh_vila,33,184,0	script	鍋子#khp1	111,{
+	if (KHCottagePoem1 < 1) {
+		mes "^3355FF你發現了一個鍋子，";
+		mes "裡面裝滿了沸騰、";
+		mes "冒著蒸氣的液體。^000000";
+		close;
+	}
+	else if (KHCottagePoem1 == 1) {
+		mes "^3355FF你發現了一個鍋子，";
+		mes "裡面裝滿了沸騰、";
+		mes "冒著蒸氣的液體。";
+		mes "蒸氣...你可以";
+		mes "用它來弄鬆地圖上的";
+		mes "膠水...你真是個天才！^000000";
+		next;
+		switch(select("試試看。:那個？那行不通的！")) {
+		case 1:
+			mes "^3355FF你拿起了那個";
+			mes "沸騰的鍋子，但";
+			mes "不小心稍微燙傷了";
+			mes "你的手。";
+			set KHCottagePoem1,2;
+			close;
+
+		case 2:
+			mes "^3355FF不，不...";
+			mes "我們最好試試";
+			mes "其他的方法。^000000";
+			close;
+		}
+	}
+	else if ((KHCottagePoem1 > 1) || (KielHyreQuest >= 30)){
+		mes "^3355FF這就是你";
+		mes "拿起那個裝滿";
+		mes "冒著蒸氣的熱水鍋子的地方。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, fire place;
+// Calabash
+//----------------------------------------------------------------------------
+kh_vila,14,55,0	script	葫蘆#khp1	111,{
+	if ((countitem(7329) < 1) && (countitem(7516) < 1) && (countitem(7491) < 1) && (KielHyreQuest < 38)) {
+		if (checkweight(7329,1) == 0) {
+			mes "^3355FF那是一個看起來很不錯的";
+			mes "葫蘆。你也許可以";
+			mes "從裡面拿到什麼東西...";
+			mes "但首先你最好清空";
+			mes "身上多餘的重量。";
+			mes "我指的重量，是物品。^000000";
+			close;
+		}
+		mes "^3355FF這是一個看起來很昂貴的";
+		mes "葫蘆——";
+		mes "或用比較通俗的";
+		mes "說法，一個「瓜」。";
+		mes "你會怎麼做？^000000";
+		next;
+		switch(select("打破葫蘆:查看葫蘆裡面:忽略")) {
+		case 1:
+			mes "^3355FF你不能打破";
+			mes "那個葫蘆...";
+			mes "你是個英雄，不是破壞狂。";
+			mes "當然，如果這種破壞行為";
+			mes "可以被視為一種";
+			mes "英雄行為，那就沒關係了。^000000";
+			close;
+		case 2:
+			mes "^3355FF你溫柔地把";
+			mes "手伸進";
+			mes "葫蘆裡，輕輕地";
+			mes "用手指摸索，";
+			mes "直到你拿出";
+			mes "一把古老的銅鑰匙。^000000";
+			getitem 7329,1; //Old_Bronze_Key
+			close;
+		case 3:
+			mes "^3355FF裡面大概";
+			mes "什麼都沒有。^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF這就是你";
+		mes "取得古老的銅鑰匙";
+		mes "那個看起來很昂貴的葫蘆。";
+		mes "它現在對你沒用了。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, garden;
+// Pool
+//----------------------------------------------------------------------------
+kh_vila,39,41,0	script	水池#khp1	111,{
+	if ((KHCottagePoem1 < 3) && (KielHyreQuest < 30)) {
+		mes "^3355FF你發現一個裝滿";
+		mes "清水的華麗水池。^000000";
+		close;
+	}
+	else if ((KHCottagePoem1 == 3) && (KielHyreQuest < 30)) {
+		mes "^3355FF你發現一個裝滿";
+		mes "清水的華麗水池，";
+		mes "旁邊還有一座顯眼的";
+		mes "獅子雕像，上面有兩個把手。^000000";
+		next;
+		switch(select("拉下把手:取消")) {
+		case 1:
+			mes "你想先拉";
+			mes "哪一個把手？";
+			next;
+			switch(select("右邊把手:左邊把手")) {
+			case 1:
+				mes "^3355FF你拉下右邊的";
+				mes "把手，讓水從";
+				mes "獅子的嘴裡湧出。";
+				mes "看起來滿酷的~^000000";
+				close;
+			case 2:
+				mes "^3355FF你一拉下";
+				mes "左邊的把手，水池裡的";
+				mes "水就排乾了。水池";
+				mes "空了，你可以";
+				mes "看到一層綠色的青苔";
+				mes "覆蓋在水池底部。^000000";
+				next;
+				switch(select("忽略:調查")) {
+				case 1:
+					mes "^3355FF你認為";
+					mes "一個沒有水的";
+					mes "水池就只是一個坑而已。^000000";
+					close;
+				case 2:
+					mes "^3355FF當你翻看";
+					mes "水池底部濕潤的";
+					mes "青苔時，";
+					mes "你偶然發現了一個";
+					mes "奇特的小按鈕。^000000";
+					next;
+					switch(select("按下按鈕:不要按按鈕")) {
+					case 1:
+						mes "^3355FF你按下了按鈕，";
+						mes "似乎觸發了";
+						mes "走廊樓梯處傳來的";
+						mes "一陣奇怪聲響。^000000";
+						set KHCottagePoem1,4;
+						close;
+					case 2:
+						mes "^3355FF你最好不要按";
+						mes "這個按鈕。你的敵人";
+						mes "一定是小心翼翼地把它藏起來";
+						mes "讓你找到：這一定";
+						mes "是某種邪惡的陷阱。^000000";
+						close;
+					}
+				}
+			}
+		case 2:
+			mes "^3355FF你決定不";
+			mes "拉下任何把手。^000000";
+			close;
+		}
+	}
+	else if ((KHCottagePoem1 > 3) || (KielHyreQuest >= 30)) {
+		mes "^3355FF這就是你按下";
+		mes "那個小按鈕的地方，它導致";
+		mes "走廊附近的樓梯傳出";
+		mes "一些奇怪的聲響。";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, upstairs; Vicious Dog
+//----------------------------------------------------------------------------
+kh_vila,181,178,4	script	兇猛的狗#khp1	81,7,3,{
+OnTouch:
+	mes "*吼~*";
+	next;
+	mes "^3355FF一隻看起來極度兇猛的";
+	mes "狗正瞪著";
+	mes "你。你真的能";
+	mes "毫髮無傷地";
+	mes "經過這隻生物嗎？^000000";
+	next;
+	switch(select("向前邁進:逃跑")) {
+	case 1:
+		if (countitem(537) >= 1) {
+			mes "^3355FF等等！也許你可以";
+			mes "用食物來安撫這隻";
+			mes "野獸。何不";
+			mes "餵牠一點你的寵物";
+			mes "飼料，看看會發生什麼事？^000000";
+			next;
+			switch(select("給予寵物飼料:這行不通的！")) {
+			case 1:
+				mes "^3355FF你小心翼翼地把";
+				mes "寵物飼料扔向那隻狗。";
+				mes "牠狼吞虎嚥地吃著食物時，";
+				mes "尾巴劇烈地搖晃著。你最好";
+				mes "趁現在有機會";
+				mes "趕快繞過這隻狗！^000000";
+				delitem 537,1; //Pet_Food
+				close2;
+				warp "kh_vila",173,182;
+				end;
+			case 2:
+				break;
+			}
+		}
+		mes "^3355FF你慢慢靠近";
+		mes "那隻狗，但牠不斷";
+		mes "對你呲牙咧嘴。";
+		mes "你試圖跑過";
+		mes "那隻狗，但牠擋住了你";
+		mes "所有的去路。該怎麼辦？^000000";
+		next;
+		mes "[兇猛的狗]";
+		mes "汪 汪！";
+		mes "汪 汪！";
+		mes "汪 汪 汪！";
+		next;
+		mes "^3355FF那隻狗把你追到";
+		mes "樓下，就像你";
+		mes "是個可憐的笨蛋一樣。^000000";
+		close2;
+		warp "kh_vila",126,70;
+		end;
+	case 2:
+		mes "^3355FF我們快離開這裡吧！^000000";
+		close2;
+		warp "kh_vila",126,70;
+		end;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, upstairs; Drawer, first room nightstand
+//----------------------------------------------------------------------------
+kh_vila,115,186,0	script	抽屜#khp1	111,{
+	if (checkweight(7492,1) == 0) {
+		mes "^3355FF這個抽屜裡";
+		mes "有些東西，但你帶了";
+		mes "太多物品在身上，";
+		mes "所以無法拿取。也許";
+		mes "你應該先去拜訪一下你";
+		mes "值得信賴的卡普拉倉庫。^000000";
+		close;
+	}
+	if ((countitem(7492) < 1) && (KielHyreQuest <= 36)) {
+		mes "^3355FF你發現一個舊抽屜";
+		mes "^緊緊關著。";
+		mes "^如果你打開它，也許";
+		mes "^能發現裡面有";
+		mes "^什麼東西。或者它";
+		mes "^是空的。誰知道呢？^000000";
+		next;
+		switch(select("打開抽屜:忽略")) {
+		case 1:
+			mes "^3355FF你從抽屜裡";
+			mes "獲得了一張黃色";
+			mes "鑰匙卡。看來打開那個抽屜";
+			mes "是值得的。^000000";
+			getitem 7492,1; //Yellow_Key_Card
+			close;
+		case 2:
+			mes "^3355FF算了吧，別打開那個";
+			mes "抽屜了。我是說，拜託，";
+			mes "這樣做有什麼意義？^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF這就是你";
+		mes "找到黃色鑰匙卡的地方。";
+		mes "這個抽屜現在是空的。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, upstairs;
+// Box
+//----------------------------------------------------------------------------
+kh_vila,107,126,0	script	箱子#khp2	111,{
+	if ((countitem(7329) < 1) && (countitem(7516) < 1) && (countitem(7491) < 1) && (KielHyreQuest < 38)) {
+		mes "^3355FF地板上放著一個堅固的箱子，";
+		mes "裡面還放置了";
+		mes "一個較小且上鎖的箱子。^000000";
+		close;
+	}
+	else if ((countitem(7329) >= 1) && (countitem(7516) < 1) && (countitem(7491) < 1) && (KielHyreQuest < 38)) {
+		mes "^3355FF地板上放著一個堅固的箱子，";
+		mes "裡面還放置了";
+		mes "一個較小且上鎖的箱子。";
+		mes "也許你可以用你的";
+		mes "古老銅鑰匙來解鎖它。^000000";
+		next;
+		switch(select("使用古老銅鑰匙:不，這絕對行不通。")) {
+		case 1:
+			mes "^3355FF你的直覺對了！";
+			mes "古老銅鑰匙真的";
+			mes "解開了那個箱子！你";
+			mes "打開裡面的箱子，";
+			mes "並獲得了鎖在裡面的";
+			mes "綠色鑰匙卡。";
+			getitem 7516,1; //Green_Key_Card
+			delitem 7329,1; //Old_Bronze_Key
+			close;
+		case 2:
+			mes "^3355FF什麼...？";
+			mes "什麼？用鑰匙";
+			mes "去開鎖？";
+			mes "拜託，那簡直是";
+			mes "瘋言瘋語！^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF這就是你從中";
+		mes "獲得綠色鑰匙卡的";
+		mes "那個箱子。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, upstairs;
+// Bookshelf.
+//----------------------------------------------------------------------------
+kh_vila,181,138,0	script	書架#khp1	111,{
+	if ((countitem(7491) < 1) && (countitem(7329) >= 1) || (countitem(7516) >= 1)) {
+		mes "^3355FF這個塞滿書的";
+		mes "書架上，其中一本書";
+		mes "貼著一張紙條，寫著";
+		mes "「給伊萊」。這一定是";
+		mes "她爺爺留下來的。^000000";
+		next;
+		switch(select("檢查書本:忽略")) {
+		case 1:
+			mes "^3355FF你略讀了";
+			mes "書的內容，並沒有";
+			mes "發現任何特別";
+			mes "有趣的東西。然而，當你";
+			mes "把書放回原處時，你注意到";
+			mes "書架後面有一個鋼鐵表面。^000000";
+			next;
+			switch(select("檢查鋼鐵表面:忽略")) {
+			case 1:
+				mes "^3355FF你移開了書架上";
+				mes "更多的書，發現";
+				mes "那個鋼鐵表面是";
+				mes "隱藏在書架後面的保險箱的";
+				mes "一部分。這個鋼鐵保險箱上";
+				mes "有兩個鑰匙孔。^000000";
+				next;
+				switch(select("嘗試所有的鑰匙:取消")) {
+				case 1:
+					mes "^3355FF你想把哪把鑰匙";
+					mes "插入";
+					mes "第一個鑰匙孔？^000000";
+					next;
+					if (countitem(7329) >= 1) {
+						select("古老銅鑰匙:別墅鑰匙");
+						mes "^3355FF你想把哪把鑰匙";
+						mes "插入";
+						mes "第二個鑰匙孔？^000000";
+						next;
+						select("古老銅鑰匙:別墅鑰匙");
+					}
+					else if (countitem(7516) >= 1) {
+						switch(select("綠色鑰匙卡:別墅鑰匙")) {
+						case 1:
+							set .@KHFirstKeyhole,1;
+							break;
+						case 2:
+							set .@KHFirstKeyhole,2;
+							break;
+						}
+						mes "^3355FF你想把哪把鑰匙";
+						mes "插入";
+						mes "第二個鑰匙孔？^000000";
+						next;
+						switch(select("綠色鑰匙卡:別墅鑰匙")) {
+						case 1:
+							set .@KHSecondKeyhole,1;
+							break;
+
+						case 2:
+							set .@KHSecondKeyhole,2;
+							break;
+
+						}
+						if (.@KHFirstKeyhole == 2) && (.@KHSecondKeyhole == 1) {
+							mes "^3355FF保險箱發出「?」的一聲";
+							mes "打開了，你看到";
+							mes "裡面有一個灰色箱子。";
+							mes "你帶走了這個灰色箱子，";
+							mes "希望它之後";
+							mes "能夠派上用場。^000000";
+							delitem 7489,1; //Villa_Spare_Key
+							delitem 7516,1; //Green_Key_Card
+							getitem 7491,1; //Iron_Box
+							close;
+						}
+
+					}
+					mes "^3355FF保險箱打不開。^000000";
+					close;
+				case 2:
+					mes "^3355FF在別墅裡尋找";
+					mes "可以打開這個保險箱的";
+					mes "鑰匙，或許會是個";
+					mes "更好的主意...^000000";
+					close;
+				}
+			case 2:
+				mes "^3355FF你把書本";
+				mes "放回書架上。^000000";
+				close;
+			}
+		case 2:
+			mes "^3355FF你也許可以在";
+			mes "附近的其他地方";
+			mes "找到更好的線索。^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF你發現了一個";
+		mes "塞滿書本的";
+		mes "書架。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, upstairs; Desk
+//----------------------------------------------------------------------------
+kh_vila,118,144,0	script	書桌#khp1	111,{
+	if (KHCottagePoem2 < 1) {
+		mes "^3355FF書桌上疊滿了成堆的紙張";
+		mes "和書本，內容涵蓋了";
+		mes "人工動力、賢者";
+		mes "巴爾蒙特的研究、工廠";
+		mes "自動化，以及魔法卷軸等主題...^000000";
+		next;
+		mes "^3355FF在翻閱";
+		mes "這些書本和紙張時，你";
+		mes "發現了一張印有";
+		mes "基爾 海爾財團";
+		mes "官方印章的紙張。你認為";
+		mes "總有一天它會派上用場。^000000";
+		next;
+		mes "^3355FF你獲得了";
+		mes "一張印有基爾";
+		mes "海爾財團印章的";
+		mes "空白紙張。^000000";
+		set KHCottagePoem2,1;
+		close;
+	}
+	else if (KHCottagePoem2 >= 1) {
+		mes "^3355FF這張書桌上疊滿了";
+		mes "涵蓋各種科學與魔法主題的";
+		mes "成堆紙張和書本。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, upstairs;
+// Medicine Chest
+//----------------------------------------------------------------------------
+kh_vila,123,170,0	script	藥櫃#khp1	111,{
+	if ((KHCottagePoem2 < 1) && (KielHyreQuest < 30)) {
+		mes "^3355FF這個藥櫃裡";
+		mes "裝滿了各種顏色的";
+		mes "瓶子。這裡可以找到";
+		mes "什麼樣的藥呢？^000000";
+		close;
+	}
+	else if ((KHCottagePoem2 == 1) && (KielHyreQuest < 30)) {
+		mes "^3355FF這個藥櫃裡";
+		mes "裝滿了各種顏色的";
+		mes "瓶子。這裡可以找到";
+		mes "什麼樣的藥呢？^000000";
+		next;
+		mes "^3355FF等等，你有一張印有基爾 海爾";
+		mes "財團印章的空白";
+		mes "紙張！把印章蓋在空白";
+		mes "紙張上真的很奇怪。也許上面";
+		mes "用特殊的墨水寫了些什麼？^000000";
+		next;
+		mes "^3355FF這是一個瘋狂的直覺，但是";
+		mes "也許，僅僅是也許，你可以";
+		mes "用這藥櫃裡的";
+		mes "某種東西，來";
+		mes "讓這份文件上用隱形墨水";
+		mes "寫的字跡顯現出來！^000000";
+		next;
+		switch(select("什麼？太瘋狂了！:當然！我們試試看！")) {
+		case 1:
+			mes "^3355FF抱歉。";
+			mes "我還以為";
+			mes "這是個好主意...^000000";
+			close;
+		case 2:
+			switch(select("嘗試紅色液體:嘗試藍色液體:嘗試黃色液體:嘗試綠色液體:取消")) {
+			case 1:
+				set .@KHPotionColor$,"紅";
+				break;
+			case 2:
+				mes "^3355FF成功了！";
+				mes "藍色液體";
+				mes "讓紙上寫的小字";
+				mes "顯現出來了。";
+				mes "看起來像是某種";
+				mes "長詩...^000000";
+				next;
+				mes "[詩篇]";
+				mes "第一條蛇是由";
+				mes "鋼鐵製成的，但我用我的憤怒";
+				mes "摧毀了牠。第二條";
+				mes "蛇是由魔法製成的，";
+				mes "但我的愛刺穿了牠的心臟。";
+				next;
+				mes "[詩篇]";
+				mes "第三條蛇是有血";
+				mes "有肉的，但我的希望";
+				mes "最終擊敗了牠。";
+				mes "然而，第四條也就是";
+				mes "最後一條蛇是無形的，";
+				mes "沒人知道牠的模樣。";
+				next;
+				mes "[詩篇]";
+				mes "我將我的絕望拋向空中，";
+				mes "但沒人知道這是否殺死了";
+				mes "那條蛇。我只是一個 ^0000FF帶著四把劍和";
+				mes "四條蛇的迷路小惡魔^000000，";
+				mes "在黑暗中尋找著那個";
+				mes "女孩。";
+				next;
+				mes "^3355FF這是一首非常";
+				mes "奇怪的詩。這";
+				mes "可能意味著什麼呢？^000000";
+				set KHCottagePoem2,2;
+				close;
+			case 3:
+				set .@KHPotionColor$,"黃";
+				break;
+			case 4:
+				set .@KHPotionColor$,"綠";
+				break;
+			case 5:
+				mes "^3355FF算了。";
+				mes "這個想法聽起來";
+				mes "太瘋狂了，根本行不通...";
+				mes "就像把人送上";
+				mes "月球一樣。你";
+				mes "會相信這種鬼話嗎？^000000";
+				close;
+			}
+			mes "^3355FF你試著將藥櫃裡的";
+			mes "那 "+.@KHPotionColor$+" 色液體灑在";
+			mes "印有基爾 海爾財團";
+			mes "印章的空白紙張上。";
+			mes "然而，什麼事也沒發生...^000000";
+			close;
+		}
+	}
+	else if ((KHCottagePoem2 >= 2) || (KielHyreQuest >= 30)) {
+		mes "^3355FF這就是你倒了";
+		mes "一些藍色液體，以閱讀";
+		mes "寫在印有基爾 海爾財團";
+		mes "印章的空白紙張上";
+		mes "隱形墨水詩篇的地方。";
+		mes "你想讀一讀嗎？^000000";
+		next;
+		switch(select("沒時間了！:閱讀")) {
+		case 1:
+			mes "^3355FF你的時間快";
+			mes "沒了！現在，你";
+			mes "最好搜遍這棟別墅的";
+			mes "每個角落。^000000";
+			close;
+		case 2:
+			mes "[詩篇]";
+			mes "第一條蛇是由";
+			mes "鋼鐵製成的，但我用我的憤怒";
+			mes "摧毀了牠。第二條";
+			mes "蛇是由魔法製成的，";
+			mes "但我的愛刺穿了牠的心臟。";
+			next;
+			mes "[詩篇]";
+			mes "第三條蛇是有血";
+			mes "有肉的，但我的希望";
+			mes "最終擊敗了牠。";
+			mes "然而，第四條也就是";
+			mes "最後一條蛇是無形的，";
+			mes "沒人知道牠的模樣。";
+			next;
+			mes "[詩篇]";
+			mes "我將我的絕望拋向空中，";
+			mes "但沒人知道這是否殺死了";
+			mes "那條蛇。我只是一個 ^3355FF帶著四把劍和^000000";
+			mes "^3355FF四條蛇的迷路小惡魔^000000，";
+			mes "在黑暗中尋找著那個";
+			mes "女孩。";
+			close;
+
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, stair case;
+// Sword hilt
+//----------------------------------------------------------------------------
+kh_vila,136,68,0	script	劍柄#kh	111,{
+	if ((KHCottagePoem1 < 3) || (KHCottagePoem2 < 2) && (KielHyreQuest < 30)) {
+		mes "^3355FF有四把設計";
+		mes "精美的劍被放置在";
+		mes "四座看起來令人毛骨悚然的";
+		mes "蛇形雕像旁邊。^000000";
+		close;
+	}
+	else if ((KHCottagePoem1 <= 4) || (KHCottagePoem2 <= 2) && (KielHyreQuest < 30)) {
+		mes "^3355FF有四把設計";
+		mes "精美的劍被放置在";
+		mes "四座看起來令人毛骨悚然的";
+		mes "蛇形雕像旁邊。等等！";
+		mes "也許它們與";
+		mes "你剛才讀到的那首詩有關...";
+		next;
+		switch(select("不可能！:當然！")) {
+		case 1:
+			mes "^3355FF不可能...";
+			mes "這一定是某種";
+			mes "巧合...^000000";
+			close;
+		case 2:
+			mes "^3355FF當然！你看！";
+			mes "每座蛇形雕像的";
+			mes "頭頂上都有一個洞。";
+			mes "這些洞看起來";
+			mes "夠大，可以插入";
+			mes "旁邊的每一把裝飾劍...^000000";
+			next;
+			switch(select("忽略:插入裝飾劍")) {
+			case 1:
+				mes "^3355FF不可能...^000000";
+				mes "^3355FF這一定是某種^000000";
+				mes "^3355FF巧合...^000000";
+				close;
+			case 2:
+				if (KHCottagePoem1 != 4) {
+					mes "^3355FF拔不... 出來...";
+					mes "劍！它一定是被";
+					mes "某種方式鎖住了，";
+					mes "或者被某種奇怪的";
+					mes "力量封印了！^000000";
+					close;
+				}
+				else {
+					mes "^3355FF你也許應該";
+					mes "試著把每把劍";
+					mes "插入正確的蛇中。";
+					mes "首先，請選擇";
+					mes "你要將第一把劍";
+					mes "插入的蛇。^000000";
+					next;
+					switch(select("第一條蛇:第二條蛇:第三條蛇:第四條蛇")) {
+					default:
+						break;
+					case 2:
+						set .@KHSwords,.@KHSwords+1;
+						break;
+					}
+					next;
+					mes "^3355FF現在，請選擇";
+					mes "你要將第二把劍";
+					mes "插入的蛇。^000000";
+					next;
+					switch(select("第一條蛇:第二條蛇:第三條蛇:第四條蛇")) {
+					default:
+						break;
+					case 4:
+						set .@KHSwords,.@KHSwords+1;
+						break;
+					}
+					next;
+					mes "^3355FF接下來，請選擇";
+					mes "你要將第三把劍";
+					mes "插入的蛇。^000000";
+					next;
+					switch(select("第一條蛇:第二條蛇:第三條蛇:第四條蛇")) {
+					case 1:
+						set .@KHSwords,.@KHSwords+1;
+						break;
+					default:
+						break;
+					}
+					next;
+					mes "^3355FF最後，請選擇";
+					mes "你要將第四把劍";
+					mes "插入的蛇。^000000";
+					next;
+					switch(select("第一條蛇:第二條蛇:第三條蛇:第四條蛇")) {
+					default:
+						break;
+					case 3:
+						set .@KHSwords,.@KHSwords+1;
+						break;
+					}
+
+					if (.@KHSwords == 4) {
+						mes "^3355FF你的耳邊突然";
+						mes "充滿了低沉的嗡嗡";
+						mes "聲，你的身心";
+						mes "感覺彷彿";
+						mes "被捲走了一般...^000000";
+						set KHCottagePoem1,5;
+						set KHCottagePoem2,3;
+						close2;
+						warp "kh_vila",178,72;
+						end;
+					}
+
+					else {
+						mes "^3355FF什麼事也沒發生...";
+						mes "你大概沒有把";
+						mes "劍插入";
+						mes "正確的蛇中。現在，";
+						mes "你應該把劍放回去，";
+						mes "稍後再試一次。^000000";
+						close;
+					}
+				}
+			}
+		}
+	}
+	else if ((KHCottagePoem1 == 5) && (KHCottagePoem2 == 3) || (KielHyreQuest >= 30)) {
+		mes "^3355FF這裡有一條通往";
+		mes "秘密實驗室的";
+		mes "隱藏通道。^000000";
+		next;
+		switch(select("進入:取消")) {
+		case 1:
+			warp "kh_vila",178,72;
+			end;
+		case 2:
+			close;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Cottage interior, Secret Room; left test tube
+//----------------------------------------------------------------------------
+kh_vila,179,68,0	script	試管#khp2	111,{
+	mes "^3355FF這個試管裡裝著";
+	mes "一個穿著基爾 海爾學院";
+	mes "制服的年輕人。不知為何，你";
+	mes "總覺得你曾經";
+	mes "在哪裡見過他。^000000";
+	close;
+}
+
+
+//----------------------------------------------------------------------------
+// Cottage interior, Secret Room; Right test tube
+//----------------------------------------------------------------------------
+kh_vila,185,68,0	script	試管::TestTubeKHQ2	111,{
+	if (KielHyreQuest > 28) {
+		mes "^3355FF一個面貌古怪、";
+		mes "乾癟的老人被";
+		mes "關在這個試管裡。^000000";
+		close;
+	}
+	else if (KielHyreQuest == 28) {
+		mes "^3355FF一個面貌古怪、";
+		mes "乾癟的老人被";
+		mes "關在這個試管裡。";
+		mes "試管的正下方";
+		mes "有一個紅色的小按鈕。^000000";
+		next;
+		switch(select("按下按鈕:進一步調查")) {
+		case 1:
+			mes "[???]";
+			mes "哈...哈囉...？你...聽得見";
+			mes "我說話嗎？我不認識";
+			mes "你...但是...也許我忘了？";
+			mes "等等，等等。如果你是我的朋友，";
+			mes "那你就知道該怎麼稱呼我，";
+			mes "對吧？你知道我是什麼嗎？";
+			next;
+			input .@KHInput$;
+			if (.@KHInput$ == "迷路小惡魔") {
+				mes "[???]";
+				mes "嘿... 嘿嘿...";
+				mes "他知道... 嘿，你";
+				mes "必須記住這些";
+				mes "數字，好嗎？千...千萬別";
+				mes "忘了，它們會很重要的...";
+				mes "^FF00004^000000、^FF00007^000000、^FF00007^000000、^FF00002^000000、^FF00009^000000、^FF00006^000000、^FF00001^000000。就這樣...";
+				next;
+				mes "^3355FF4772961^000000";
+				mes "^3355FF這些數字^000000";
+				mes "^3355FF到底可能^000000";
+				mes "^3355FF代表什麼意思？^000000";
+				//KHCottagePoem1 and KHCottagePoem2 no longer needed-- deleting
+				set KHCottagePoem1,0;
+				set KHCottagePoem2,0;
+				set KielHyreQuest,30;
+				close;
+			}
+			else {
+				mes "[???]";
+				mes "不...不...";
+				mes "這不對。";
+				mes "我不認為我們";
+				mes "是朋友。不...";
+				close;
+			}
+		case 2:
+			mes "^3355FF我們先在";
+			mes "這個區域再";
+			mes "稍微調查一下吧。^000000";
+			close;
+		}
+	}
+	else if (KielHyreQuest >= 30) {
+		if ((countitem(7491) > 0) && (countitem(7492) > 0)){
+			mes "^3355FF數字 4772961";
+			mes "代表什麼意思呢？目前，你已經";
+			mes "找到了這裡所有";
+			mes "你需要的東西，";
+			mes "所以你應該回去找伊萊了。^000000";
+			close;
+		}
+		else {
+			mes "^3355FF數字 4772961";
+			mes "代表什麼意思呢？現在，你";
+			mes "最好在這棟別墅裡尋找";
+			mes "任何你能找到的線索...^000000";
+			close;
+		}
+	}
+	end;
+}
+
+//============================================================================
+// Robot Factory NPCs
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Robotic's Factory; Heavy Door
+//----------------------------------------------------------------------------
+kh_dun01,235,48,0	script	沉重的門#kh1::HeavyDoorKHQ1	111,{
+	if (KielHyreQuest < 38) {
+		mes "^3355FF你面前有一扇";
+		mes "沉重的大門。^000000";
+		next;
+		switch(select("打開門:取消")) {
+		case 1:
+			input .@KHInput$;
+			mes "^3355FF你試圖用盡";
+			mes "全力把門推開，";
+			mes "但它卻紋風不動。^000000";
+			close;
+		case 2:
+			mes "^3355FF你決定先別管";
+			mes "這扇門，直到";
+			mes "你能弄清楚";
+			mes "該怎麼打開它^000000";
+			close;
+		}
+	}
+	else if ((KielHyreQuest >= 38) && (KielHyreQuest < 46)) {
+		mes "^3355FF你面前有一扇";
+		mes "沉重的大門。^000000";
+		next;
+		switch(select("打開門:取消")) {
+		case 1:
+			input .@KHInput$;
+			if (.@KHInput$ == "藍色鑰匙卡") {
+				mes "^3355FF你成功地";
+				mes "打開了門。";
+				close2;
+				warp "kh_school",119,144;
+				end;
+			}
+			else {
+				mes "^3355FF你試圖用盡";
+				mes "全力把門推開，";
+				mes "但它卻紋風不動。^000000";
+				close;
+			}
+		case 2:
+			mes "^3355FF你決定先別管";
+			mes "這扇門，直到";
+			mes "你能弄清楚";
+			mes "該怎麼打開它。^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF這是一扇關得非常緊的";
+		mes "極其沉重的大門。你無法用蠻力";
+		mes "打開它。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Robotic's Factory;
+// Heavy Door (These doors don't seem to serve any purpose)
+//----------------------------------------------------------------------------
+kh_dun01,76,233,0	script	沉重的門::HeavyDoorKHQ2	111,{
+	if ((KielHyreQuest >= 38) && (KielHyreQuest < 46)) {
+		mes "^3355FF你面前有一扇";
+		mes "沉重的大門。^000000";
+		next;
+		switch(select("打開門:取消")) {
+		case 1:
+			input .@KHInput$;
+			mes "^3355FF你試圖用盡";
+			mes "全力把門推開，";
+			mes "但它卻紋風不動。^000000";
+			close;
+		case 2:
+			mes "^3355FF你決定先別管";
+			mes "這扇門，直到";
+			mes "你能弄清楚";
+			mes "該怎麼打開它^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF你面前有一扇";
+		mes "沉重的大門^000000";
+		close;
+	}
+}
+
+kh_dun01,106,233,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh3	111
+kh_dun01,6,164,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh4	111
+kh_dun01,6,133,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh5	111
+kh_dun01,6,60,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh6	111
+kh_dun01,6,30,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh7	111
+kh_dun01,6,18,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh8	111
+kh_dun01,235,70,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh9	111
+kh_dun01,235,92,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh10	111
+kh_dun01,235,114,0	duplicate(HeavyDoorKHQ2)	沉重的門#kh11	111
+
+//----------------------------------------------------------------------------
+// Beautiful Lady and Beautiful Lady copies.
+//----------------------------------------------------------------------------
+kh_school,119,149,4	script	美麗的淑女#kh1::BeatifulLadyKHQ1	894,{
+	cutin "kh_ellisia",2;
+	if (KielHyreQuest < 40) {
+		mes "[艾麗西亞]";
+		mes "嗯？我想";
+		mes "我不認識你。基爾 海爾";
+		mes "只授權伊萊，";
+		mes "以及可能在幫助她";
+		mes "值得信賴的朋友，";
+		mes "可以進入這個區域。";
+		next;
+		mes "[艾麗西亞]";
+		mes "我沒看到 ^FF0000伊萊^000000。";
+		mes "難道她也遇襲了嗎？";
+		mes "你是 ^FF0000伊萊的朋友^000000 嗎？";
+		next;
+		mes "[艾麗西亞]";
+		mes "我在這附近";
+		mes "到處都沒看到伊萊。除非你能證明";
+		mes "你是伊萊的朋友，否則我";
+		mes "只能讓你進入。";
+		mes "你有什麼東西";
+		mes "可以向我證明嗎？";
+		next;
+		switch(select("黃色鑰匙卡:藍色鑰匙卡:金色鑰匙:雕刻按鈕:...？")) {
+		default:
+			break;
+		case 3:
+			mes "[艾麗西亞]";
+			mes "啊，這不就是";
+			mes "基爾 海爾給";
+			mes "伊萊的鑰匙嗎？是的，我相信";
+			mes "你一直在幫助她。";
+			mes "我一直在等你，所以";
+			mes "讓我帶你去我的房間吧。";
+			close2;
+			cutin "",255;
+			warp "kh_school",120,180;
+			end;
+		case 4:
+			mes "[艾麗西亞]";
+			mes "那...那是基爾的";
+			mes "印記！是他派你";
+			mes "來抓我的嗎？！我";
+			mes "不會冒任何風險的！";
+			close2;
+			cutin "",255;
+			monster "kh_school",117,144,"炸彈",1745,1;
+			monster "kh_school",117,144,"炸彈",1745,1;
+			monster "kh_school",117,144,"炸彈",1745,1;
+			monster "kh_school",117,144,"炸彈",1745,1;
+			end;
+		case 5:
+			mes "[艾麗西亞]";
+			mes "......";
+			mes "........";
+			mes "...........";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[艾麗西亞]";
+		mes "嗯？這不能證明";
+		mes "伊萊真的信任你...";
+		close2;
+		cutin "",255;
+		end;
+	}
+	else if (KielHyreQuest >= 40) {
+		mes "[艾麗西亞]";
+		mes "請跟我來。";
+		close2;
+		cutin "",255;
+		warp "kh_school",120,180;
+		end;
+	}
+}
+
+
+kh_school,117,149,4	script	美麗的淑女#kh2::BeatifulLadyKHQ2	894,{
+	end;
+}
+kh_school,118,149,4	duplicate(BeatifulLadyKHQ2)	美麗的淑女#kh3	894
+kh_school,120,149,4	duplicate(BeatifulLadyKHQ2)	美麗的淑女#kh4	894
+kh_school,121,149,4	duplicate(BeatifulLadyKHQ1)	美麗的淑女#kh5	894
+
+//----------------------------------------------------------------------------
+// Beautiful Lady "Allysia"
+//----------------------------------------------------------------------------
+kh_school,122,186,4	script	美麗的淑女#kh6	894,{
+	if (checkweight(7496,1) == 0) {
+		mes "^3355FF稍等一下...";
+		mes "你身上帶了";
+		mes "太多東西了，";
+		mes "所以你必須";
+		mes "先清出一些";
+		mes "背包空間...^000000";
+		close;
+	}
+	cutin "kh_ellisia",2;
+	if (KielHyreQuest < 38) {
+		mes "[??????]";
+		mes "這裡是私人財產。";
+		mes "請立即離開！";
+		close2;
+		cutin "kh_ellisia",255;
+		warp "yuno_fild08",73,172;
+		end;
+	}
+	else if (KielHyreQuest <= 38) {
+		mes "[艾麗西亞]";
+		mes "原型機伊萊的朋友，";
+		mes "歡迎你。你可能";
+		mes "已經發現了，我需要你的";
+		mes "幫忙。基爾 海爾被關在";
+		mes "這座工廠的某個地方。";
+		next;
+		mes "[艾麗西亞]";
+		mes "當務之急是";
+		mes "請你盡快尋找基爾 海爾";
+		mes "並將他救出！";
+		next;
+		switch(select("這座工廠是什麼？:^FF0000基爾 海爾^000000發生了什麼事？")) {
+		case 1:
+			mes "[艾麗西亞]";
+			mes "這座工廠是";
+			mes "基爾 海爾財團";
+			mes "製造人型機器人的秘密事業的一部分。我自己，";
+			mes "以及學院裡所有的學生，";
+			mes "其實都是機器人，而不是人類。";
+			next;
+			mes "[艾麗西亞]";
+			mes "基爾 海爾財團的";
+			mes "最終目標是開發出";
+			mes "能幫助人類社會的優秀機器人。";
+			mes "身為機器人，我們";
+			mes "可以處理對人類來說";
+			mes "太危險或太困難的任務。";
+			break;
+		case 2:
+			mes "[艾麗西亞]";
+			mes "^3355FF基爾^000000 已經開始對";
+			mes "人型機器人進行";
+			mes "異常的改造。這件事";
+			mes "已經向基爾 海爾報告，";
+			mes "他已前往阻止基爾。";
+			mes "然而，海爾先生卻一去不回。";
+			next;
+			mes "[艾麗西亞]";
+			mes "基爾 海爾擔心基爾會";
+			mes "把我破壞，所以帶了";
+			mes "一個我的複製品去。我還能";
+			mes "偵測到基爾 海爾的心跳，";
+			mes "所以他應該沒事，但他的";
+			mes "親生兒子可能很快就會傷害他。";
+			next;
+			mes "[艾麗西亞]";
+			mes "拿著這張鑰匙卡，";
+			mes "它能讓你進入這座";
+			mes "工廠裡的秘密區域。";
+			mes "如果你";
+			mes "找到了基爾 海爾，請";
+			mes "立刻讓我知道。";
+			getitem 7496,1;
+			//Red_Key_Card
+			set KielHyreQuest,40;
+			break;
+		}
+		close2;
+		cutin "",255;
+		end;
+	}
+	else if (KielHyreQuest == 40) {
+		mes "[艾麗西亞]";
+		mes "我還能偵測到";
+		mes "基爾 海爾的心跳，";
+		mes "但他的兒子基爾可能";
+		mes "很快就會對他做出瘋狂的事。";
+		mes "請在那之前找到基爾 海爾！";
+		close2;
+		cutin "",255;
+		warp "kh_dun01",22,216;
+		end;
+	}
+	else if (KielHyreQuest == 42) {
+		mes "[艾麗西亞]";
+		mes "你已經找到";
+		mes "基爾 海爾了嗎？";
+		next;
+		mes "^3355FF你告訴艾麗西亞^000000";
+		mes "^3355FF基爾 海爾被關在^000000";
+		mes "^3355FF哪裡，並把基爾 海爾交給你^000000";
+		mes "^3355FF的金屬碎片交給了她。^000000";
+		mes "^3355FF她接過碎片，並^000000";
+		mes "^3355FF戴在手腕上。^000000";
+		next;
+		mes "[艾麗西亞]";
+		mes "...確認基爾 海爾的密碼。";
+		mes "B_2_3 區域。";
+		mes "生命徵象正常。";
+		mes "已收到信封。正在發送";
+		mes "修改過的傀儡設計圖...";
+		next;
+		mes "[艾麗西亞]";
+		mes "好的，我已經收到";
+		mes "基爾 海爾的命令，並且";
+		mes "必須執行它們...";
+		delitem 7497,1; //Steel_Piece
+		set KielHyreQuest,44;
+		close2;
+		cutin "",255;
+		end;
+	}
+	else if (KielHyreQuest == 44) {
+		mes "[艾麗西亞]";
+		mes "好的，我必須為基爾 海爾";
+		mes "執行一項任務，";
+		mes "而且我沒有多少時間了。";
+		mes "讓我快速地給你";
+		mes "一些明確的指示。";
+		next;
+		mes "[艾麗西亞]";
+		mes "首先，基於安全考量，我必須收回你的鑰匙卡。";
+		mes "其次，請在里希塔樂鎮的基爾";
+		mes "海爾宅邸與我會合。";
+		mes "出示金色鑰匙即可";
+		mes "獲准進入宅邸。";
+		delitem 7492,1;
+		//Yellow_Key_Card
+		delitem 7495,1; //Blue_Key_Card
+		delitem 7496,1; //Red_Key_Card
+		set KielHyreQuest,46;
+		next;
+		mes "[艾麗西亞]";
+		mes "我知道這";
+		mes "很突然，我也沒有";
+		mes "給你一個詳盡的";
+		mes "解釋，但如果我不";
+		mes "盡快趕過去，將會發生可怕的事情。";
+		close2;
+		warp "yuno_fild08",73,172;
+		cutin "",255;
+		end;
+	}
+	else if (KielHyreQuest >= 44) {
+		mes "[艾麗西亞]";
+		mes "我知道這";
+		mes "很突然，我也沒有";
+		mes "給你一個詳盡的";
+		mes "解釋，但如果我不";
+		mes "盡快趕過去，將會發生可怕的事情。";
+		close2;
+		warp "yuno_fild08",73,172;
+		cutin "",255;
+		end;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Signboard (another useless NPC?)
+//----------------------------------------------------------------------------
+kh_dun01,163,223,4	script	告示牌#kh	857,{
+	mes "[公告]";
+	mes "此區域禁止";
+	mes "攜帶可愛寵物。（為視障人士提供特殊協助的可愛寵物，";
+	mes "不在此限。）";
+	close;
+}
+
+//----------------------------------------------------------------------------
+// Mechanical Devices for accessing restricted area
+//----------------------------------------------------------------------------
+kh_dun01,166,223,0	script	機械裝置#kh::KHKeyardReader	111,{
+	if ((KielHyreQuest <= 38) || (KielHyreQuest >= 44)) {
+		mes "^3355FF你遇到一個";
+		mes "機械裝置。";
+		mes "看起來只要將正確的";
+		mes "鑰匙卡插入插槽即可操作。^000000";
+		close;
+	}
+	else if ((KielHyreQuest == 40) && (countitem(7496) >= 1)) {
+		mes "^3355FF你遇到一個";
+		mes "機械裝置。";
+		mes "看起來只要將正確的";
+		mes "鑰匙卡插入插槽即可操作。^000000";
+		next;
+		input .@KHInput$;
+		if (.@KHInput$ == "紅色鑰匙卡") {
+			mes "^3355FF一旦你插入";
+			mes "紅色鑰匙卡，門就會打開。^000000";
+			close2;
+			warp "kh_dun01",170,227;
+			end;
+		}
+		else {
+			mes "^3355FF什麼事也沒發生。^000000";
+			close;
+		}
+	}
+}
+
+kh_dun01,162,206,0	duplicate(KHKeyardReader)	機械裝置	111
+
+//----------------------------------------------------------------------------
+// Keep monsters out of the quest area.
+// Silly really since the rest of it's a dungeon
+//----------------------------------------------------------------------------
+//kh_dun01,180,220,0	script	Monster Warp#kh1::KHMobWarp	-1,5,20,{
+//OnTouchNPC:
+//	warp "kh_dun01",178,138;
+//	end;
+//}
+
+//kh_dun01,190,220,0	duplicate(KHMobWarp)	Monster Warp#kh2	-1,5,20
+//kh_dun01,200,250,0	duplicate(KHMobWarp)	Monster Warp#kh3	-1,5,20
+//kh_dun01,210,220,0	duplicate(KHMobWarp)	Monster Warp#kh4	-1,5,20
+//kh_dun01,220,220,0	duplicate(KHMobWarp)	Monster Warp#kh5	-1,5,10
+
+//----------------------------------------------------------------------------
+// Kiel Hyre - OnTouch
+//----------------------------------------------------------------------------
+kh_dun01,224,233,0	script	工廠B區門	-1,5,5,{
+OnTouch:
+	if (KielHyreQuest == 40) {
+		if (checkweight(7497,1) == 0) {
+			mes "^3355FF稍等一下...";
+			mes "你身上帶了";
+			mes "太多東西了，";
+			mes "所以你必須";
+			mes "先清出一些";
+			mes "背包空間...^000000";
+			close;
+		}
+		mes "^3355FF你可以隱約聽到";
+		mes "這扇門的另一邊";
+		mes "傳來一個聲音。^000000";
+		next;
+		mes "[????]";
+		mes "^333333...基爾...";
+		mes "...你竟敢...！^000000";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "基爾 海爾先生？";
+		mes "是你在裡面嗎？";
+		next;
+		mes "[基爾 海爾]";
+		mes "是...是誰在外面？";
+		mes "表明你的身分！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我是... 我是...";
+		next;
+		mes "^3355FF你向門後的聲音";
+		mes "說明了你的來歷，";
+		mes "並告訴他伊萊和艾麗西亞";
+		mes "發生了什麼事。^000000";
+		next;
+		mes "[基爾 海爾]";
+		mes "^333333...是的... 是我。";
+		mes "我是基爾 海爾，被困在";
+		mes "這裡。他居然連";
+		mes "伊萊都改造了，是嗎？";
+		mes "...............................^000000";
+		next;
+		mes "[基爾 海爾]";
+		mes "^333333快，把這個";
+		mes "模組拿給艾麗西亞！";
+		mes "她會知道該怎麼";
+		mes "處理。如果你真的";
+		mes "在幫助我們，那她也會有";
+		mes "些指示要給你。^000000 ";
+		next;
+		mes "^3355FF基爾 海爾透過";
+		mes "門和地板之間的";
+		mes "縫隙滑出了一塊奇怪的金屬碎片。^000000";
+		getitem 7497,1; //Steel_Piece
+		set KielHyreQuest,42;
+		close;
+	}
+
+	else if (KielHyreQuest >= 42) {
+		mes "[基爾 海爾]";
+		mes "......";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Robot Factory Second Floor Entrances
+//----------------------------------------------------------------------------
+kh_dun01,44,203,0	script	入口裝置#khd2::KHAccess	111,{
+	if (countitem(7509) < 1) {
+		mes "^3355FF你遇到一個";
+		mes "機械裝置。";
+		mes "看起來只要將正確的";
+		mes "鑰匙卡插入插槽即可操作。^000000";
+		close;
+	}
+	else {
+		mes "^3355FF你遇到一個";
+		mes "機械裝置。";
+		mes "看起來只要將正確的";
+		mes "鑰匙卡插入插槽即可操作。^000000";
+		next;
+		input .@KHInput$;
+		if (.@KHInput$ == "豪華的鑰匙卡") {
+			mes "^3355FF當你將";
+			mes "豪華的鑰匙卡";
+			mes "插入鑰匙卡插槽時，";
+			mes "門自動打開了，";
+			mes "露出一條長長向下的樓梯。^000000";
+			next;
+			switch(select("走下樓梯:取消")) {
+			case 1:
+				warp "kh_dun02",41,198;
+				end;
+			case 2:
+				mes "^3355FF看來這扇門";
+				mes "在預設的";
+				mes "時間限制過後，";
+				mes "已經自動關閉了。^000000";
+				close;
+			}
+		}
+		else {
+			mes "^3355FF你試圖用盡";
+			mes "全力把門推開，";
+			mes "但它卻紋風不動。^000000";
+			close;
+		}
+	}
+}
+
+kh_dun01,36,195,0	duplicate(KHAccess)	入口裝置#khd1	111
+
+//============================================================================
+// Kiel Hyre Mansion NPCs, and Kiehl's Room NPCs
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Kiel's Steward
+//----------------------------------------------------------------------------
+kh_mansion,78,55,5	script	管家#kh	109,{
+	if (KielHyreQuest < 46) {
+		mes "[管家]";
+		mes "這裡是私人住宅，";
+		mes "請離開。";
+		close2;
+		warp "lighthalzen",188,201;
+		end;
+	}
+	if ((KielHyreQuest >= 46) && (KielHyreQuest < 50)) {
+		mes "[管家]";
+		mes "您好。";
+		mes "您是受";
+		mes "這棟宅邸主人的邀請而來的嗎？";
+		next;
+		switch(select("出示金色鑰匙:？？？？")) {
+		case 1:
+			mes "[管家]";
+			mes "啊，"+strcharinfo(0)+"少爺。";
+			mes "我一直在等候您的";
+			mes "大駕。請，這邊走。";
+			close2;
+			warp "kh_mansion",21,14;
+			end;
+		case 2:
+			mes "[管家]";
+			mes "如果您沒有受到";
+			mes "這棟宅邸主人的邀請，那我恐怕必須堅持請您立即離開！";
+			close2;
+			warp "lighthalzen",188,201;
+			end;
+		}
+	}
+	if ((KielHyreQuest >= 50) && (KielHyreQuest < 64) || (KielHyreQuest >= 70)) {
+		mes "[管家]";
+		mes "啊，"+strcharinfo(0)+"少爺。";
+		mes "很高興能";
+		mes "再次接待您。您";
+		mes "想見我的主人嗎？";
+		next;
+		switch(select("是的:不用了")) {
+		case 1:
+			mes "[管家]";
+			mes "好的。";
+			mes "請往這邊走~";
+			close2;
+			warp "kh_mansion",21,14;
+			end;
+		case 2:
+			mes "[管家]";
+			mes "好的。";
+			mes "請把這裡當自己家。";
+			close;
+		}
+	}
+	if ((KielHyreQuest == 52) || (KielHyreQuest == 54) || (KielHyreQuest >= 64) && (KielHyreQuest <= 70)) {
+		mes "[管家]";
+		mes "啊，"+strcharinfo(0)+"少爺。";
+		mes "很高興能";
+		mes "再次接待您。您";
+		mes "想見我的主人，還是...？";
+		next;
+		switch(select("^FF0000基爾 海爾^000000:^3355FF米切爾^000000")) {
+		case 1:
+			mes "[管家]";
+			mes "好的。";
+			mes "請往這邊走~";
+			close2;
+			warp "kh_mansion",21,14;
+			end;
+		case 2:
+			mes "[管家]";
+			mes "喔...？您一定。";
+			mes "是來傳遞";
+			mes "好消息的。失陪一下...";
+			next;
+			mes "^3355FF管家鬼祟地^000000";
+			mes "^3355FF環顧四周，檢查^000000";
+			mes "^3355FF是否有人在監視他。^000000";
+			next;
+			mes "[管家]";
+			mes "我想現在讓您";
+			mes "去見他應該夠安全了...";
+			mes "請，快往這邊走。";
+			close2;
+			warp "kh_mansion",20,87;
+			end;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Kiel Hyre
+//----------------------------------------------------------------------------
+kh_mansion,22,28,4	script	基爾 海爾#kh	903,{
+	if (checkweight(908,200) == 0) {
+		mes "^3355FF稍等一下...";
+		mes "你身上帶了";
+		mes "太多東西了，";
+		mes "所以你必須";
+		mes "先清出一些";
+		mes "背包空間...^000000";
+		close;
+	}
+
+	cutin "kh_kyel01",2;
+	if (KielHyreQuest < 46) {
+		mes "[基爾 海爾]";
+		mes ".........";
+		mes ".........";
+		mes "............";
+		close2;
+		cutin "",255;
+		end;
+	}
+
+	else if (KielHyreQuest == 46) {
+		cutin "kh_kyel01",2;
+		mes "[基爾 海爾]";
+		mes "啊，你一定是 "+strcharinfo(0)+"。";
+		mes "我想謝謝你救了";
+		mes "我的命。你一定有很多";
+		mes "問題想問我，我會";
+		mes "盡我所能給你解答。";
+		next;
+		while(1) {
+			switch(select("機器人？:^3355FF基爾^000000？:^FF0000伊萊^000000的按鈕？")) {
+			case 1:
+				mes "[基爾 海爾]";
+				mes "我研究機器人技術";
+				mes "已經三十二年了。";
+				mes "我很自豪地";
+				mes "說，我在偉大的賢者";
+				mes "巴爾蒙特失敗的地方";
+				mes "取得了成功。";
+				next;
+				mes "[基爾 海爾]";
+				mes "我的夢想是";
+				mes "從人類開發出";
+				mes "人型機器人。那些守護者";
+				mes "也許也是機器人，但他們";
+				mes "並非憑藉自由意志運作。";
+				next;
+				mes "[基爾 海爾]";
+				mes "如果你想知道更多";
+				mes "關於機器人技術的細節，";
+				mes "何不去跟 ^3355FF艾麗西亞^000000 談談？";
+				mes "她能解釋得";
+				mes "比我簡潔得多。我常常會扯遠...";
+				set .@KHQRead,.@KHQRead+1;
+				next;
+				break;
+			case 2:
+				mes "[基爾 海爾]";
+				mes "^3355FF基爾^000000 是我唯一的兒子，";
+				mes "但我一生的摯愛";
+				mes "生下他後就過世了。";
+				mes "我承認他在機械";
+				mes "設計與開發方面是個天才。";
+				next;
+				mes "[基爾 海爾]";
+				mes "像伊萊這樣的第三代";
+				mes "機器人主要就是";
+				mes "由他創造的。";
+				mes "不幸的是，他試圖";
+				mes "為了某種邪惡的目的，";
+				mes "改造他的創造物。";
+				next;
+				mes "[基爾 海爾]";
+				mes "我試圖阻止他，";
+				mes "但我最後卻被鎖在";
+				mes "工廠裡。";
+				mes "我不知道他為什麼想";
+				mes "這麼做。我到現在";
+				mes "還是毫無頭緒...";
+				set .@KHQRead,.@KHQRead+1;
+				next;
+				break;
+			case 3:
+				mes "[基爾 海爾]";
+				mes "伊萊拿著的那個按鈕上";
+				mes "刻有 ^3355FF基爾的徽章^000000。";
+				mes "啊，那個威脅";
+				mes "學生的黑衣男子？那大概是";
+				mes "^3355FF凱撒^000000，基爾的保鑣。";
+				next;
+				mes "[基爾 海爾]";
+				mes "凱撒...";
+				mes "我對他";
+				mes "一無所知。";
+				mes "我甚至沒見過";
+				mes "他的臉！基爾沒通知我就";
+				mes "直接僱用他了...";
+				set .@KHQRead,.@KHQRead+1;
+				next;
+				break;
+			}
+			if (.@KHQRead == 3) {
+				mes "[基爾 海爾]";
+				mes "如果你對我沒有";
+				mes "其他問題了，";
+				mes "那能請你";
+				mes "讓我休息了嗎？自從我";
+				mes "被關在工廠裡之後，到現在";
+				mes "還是覺得不太舒服。";
+				delitem 7493,1; //Golden_Key
+				delitem 7494,1; //Kiel_Button
+				set KielHyreQuest,48;
+				break;
+			}
+		}
+	}
+	else if (KielHyreQuest == 48) {
+		mes "[基爾 海爾]";
+		mes "啊，我差點忘了。";
+		mes "請收下這個，當作";
+		mes "是你救了我一命的";
+		mes "一點小謝禮。";
+		getitem 12105,1; //Taming_Gift_Set
+		getexp (checkre(3))?70000:700000,0;
+		set KielHyreQuest,50;
+	}
+	else if ((KielHyreQuest >= 50) && (KielHyreQuest < 64)) {
+		mes "[基爾 海爾]";
+		mes "如果你對我沒有";
+		mes "其他問題了，";
+		mes "那能請你";
+		mes "讓我休息了嗎？自從我";
+		mes "被關在工廠裡之後，到現在";
+		mes "還是覺得不太舒服。";
+	}
+	else if (KielHyreQuest == 64) {
+		cutin "kh_kyel01",2;
+		mes "[基爾 海爾]";
+		mes "嗯？你有";
+		mes "什麼事";
+		mes "想問我的嗎？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我現在還沒有足夠的";
+		mes "具體證據，";
+		mes "但我很快就會有";
+		mes "一些問題要問了。";
+	}
+	else if (KielHyreQuest == 68) {
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "啊，"+strcharinfo(0)+"。";
+		mes "是你啊。今天";
+		mes "有什麼我可以幫忙的嗎？";
+		next;
+		select("關於 ^3355FF艾麗西亞^000000...");
+		mes "["+strcharinfo(0)+"]";
+		mes "你知道嗎，我在朱諾";
+		mes "查看一棟廢棄的房子時，發現了";
+		mes "一張老舊的女人畫像，";
+		mes "看起來就像艾麗西亞。";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "喔...";
+		mes "就這樣嗎？";
+		mes "我還以為你有";
+		mes "關於機器人技術的問題呢。";
+		next;
+		cutin "kh_Kyel03",2;
+		mes "[基爾 海爾]";
+		mes "總之，那真是個";
+		mes "奇怪的巧合。";
+		mes "好吧，我想長得像";
+		mes "其他人也不是";
+		mes "什麼奇怪的事...";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我不認為這只是";
+		mes "巧合。那幅三十年前";
+		mes "畫像中的女人";
+		mes "也叫艾麗西亞，而且她";
+		mes "在朱諾的奧西米亞街";
+		mes "工作過。這有讓你想起什麼嗎？";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "......";
+		mes ".........";
+		mes "............";
+		next;
+		cutin "kh_kyel01",2;
+		mes "["+strcharinfo(0)+"]";
+		mes "然後我想，這個";
+		mes "艾麗西亞一定就是你";
+		mes "曾經愛過的女人，而且";
+		mes "你的機器人外貌";
+		mes "就是以她為範本的。";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "............";
+		next;
+		cutin "kh_kyel01",2;
+		mes "["+strcharinfo(0)+"]";
+		mes "我認為事情是這樣的：";
+		mes "當你還是個年輕窮小子的";
+		mes "時候，你愛上了";
+		mes "艾麗西亞。然而，她";
+		mes "愛的是羅西米亞，一個";
+		mes "有錢又有勢的人。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "但是，羅西米亞已經";
+		mes "和別的女人訂婚了，而且他";
+		mes "最後娶了他的未婚妻，";
+		mes "這讓艾麗西亞心碎了。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "她感到被背叛，心碎之餘，";
+		mes "艾麗西亞跳進了";
+		mes "河裡。然後，你決定";
+		mes "向羅西米亞報仇，所以";
+		mes "你最後加入了";
+		mes "雷根貝爾企業！";
+		next;
+		cutin "kh_Kyel03",2;
+		mes "[基爾 海爾]";
+		mes "哈哈哈哈哈哈哈！";
+		mes "喔，多麼豐富的想像力啊~";
+		mes "這太荒謬了...";
+		mes "雖然，我承認，也許";
+		mes "我真的是在很久以前看到那個女人之後";
+		mes "才設計出艾麗西亞的。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我幾乎都快忘了";
+		mes "她了！我想我們";
+		mes "只是朋友... 不過，";
+		mes "你是從哪裡得來的想法，";
+		mes "認為我可能";
+		mes "愛上她了？";
+		next;
+		select("出示從小屋中找到的基爾畫像");
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "什...什麼...";
+		mes "這怎麼會...";
+		mes "你從哪裡得到...？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "基爾 海爾，這幅";
+		mes "你年輕時的畫像是我在";
+		mes "買下艾麗西亞戒指的男人的";
+		mes "房子裡找到的。";
+		mes "我甚至還和發現";
+		mes "艾麗西亞屍體的漁夫談過。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "你花了非常大一筆錢";
+		mes "買下了艾麗西亞的戒指。";
+		mes "你怎麼還能告訴我";
+		mes "你不愛她？";
+		next;
+		cutin "kh_Kyel03",2;
+		mes "[基爾 海爾]";
+		mes "*嘆氣...*";
+		mes "你逮到我了，你逮到我了。";
+		mes "我不想讓你得知";
+		mes "真相。你說得沒錯。";
+		mes "我愛艾麗西亞，並把我的";
+		mes "機器人設計得跟她一模一樣。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我永遠也忘不了她。";
+		mes "永遠。但我絕對不會";
+		mes "做任何傷害";
+		mes "羅西米亞家族的事！我是個科學家！";
+		mes "我年輕時的確很恨他，";
+		mes "但現在情況已經不同了！";
+		next;
+		mes "[基爾 海爾]";
+		mes "羅西米亞家族沒落時我沒有";
+		mes "掉過一滴眼淚，但我不是";
+		mes "罪魁禍首。再說，我也沒有";
+		mes "資源或能力";
+		mes "去造成這件事...";
+		next;
+		cutin "kh_kyel02",2;
+		mes "["+strcharinfo(0)+"]";
+		mes "恐怕證據顯示";
+		mes "並非如此。";
+		next;
+		select("出示羅西米亞家族的畫像");
+		mes "["+strcharinfo(0)+"]";
+		mes "仔細看看";
+		mes "這張我在羅西米亞舊宅";
+		mes "找到的畫像。";
+		mes "你有看到任何... 有罪的證據嗎？";
+		next;
+		cutin "kh_Kyel03",2;
+		mes "[基爾 海爾]";
+		mes "除了那個";
+		mes "詹姆斯 羅西米亞，你的意思";
+		mes "是？沒有！我完全看不出";
+		mes "這張照片有任何";
+		mes "不對勁的地方。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "仔細看看畫像裡的";
+		mes "懷錶。那不就是";
+		mes "你今天戴著的";
+		mes "懷錶嗎？";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "...！！！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "你可能沒有親手造成";
+		mes "羅西米亞家族的沒落，";
+		mes "但在雷根貝爾企業的";
+		mes "協助下，我敢說";
+		mes "這絕對是有可能的！";
+		next;
+		cutin "kh_Kyel03",2; 
+		mes "[基爾 海爾]";
+		mes "幹得好，冒險者。";
+		mes "幹得好。我不後悔";
+		mes "我做過的事：他們殺了我的";
+		mes "艾麗西亞！如果詹姆斯沒有背叛";
+		mes "她，如果他沒有逼她";
+		mes "自殺的話...";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "這就是你錯的地方！";
+		mes "艾麗西亞是被殺的，她不是";
+		mes "自殺的。仔細看看";
+		mes "這裡的這張紙條！";
+		next;
+		mes "[基爾 海爾]";
+		mes "什麼？！";
+		next;
+		select("出示詹姆斯的紙條");
+		mes "[基爾 海爾]";
+		mes "這能證明什麼？";
+		mes "這不能顯示詹姆斯";
+		mes "沒有背叛艾麗西亞。";
+		mes "這能改變什麼？";
+		mes "她已經死了，我做什麼";
+		mes "都無法讓她回到我身邊！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我從沒說過詹姆斯沒有";
+		mes "背叛她。看看紙條上";
+		mes "的日期。詹姆斯計畫";
+		mes "在8月20日和她一起私奔。";
+		mes "然而，她的屍體";
+		mes "也是在同一天被發現的。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "因此，艾麗西亞必定";
+		mes "是在8月19日死亡的。如果她";
+		mes "計畫在隔天和她的愛人一起私奔，";
+		mes "那她就沒有理由自殺！";
+		next;
+		mes "[基爾 海爾]";
+		mes "不，這不對！";
+		mes "她可能已經";
+		mes "不信任我了！她一定";
+		mes "意識到她對他來說";
+		mes "不過是另一個玩具而已！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "喔，是嗎？我說她之所以";
+		mes "跳進河裡，是因為你";
+		mes "那天去見了她。現在，";
+		mes "仔細看看這個！";
+		next;
+		select("出示 K.H. 的紙條");
+		mes "["+strcharinfo(0)+"]";
+		mes "這張紙條是一個";
+		mes "名字縮寫和你一樣是";
+		mes "K.H. 的男人寫的。這些縮寫也";
+		mes "簽名在她的畫像上。這張紙條";
+		mes "一定是你寫的：";
+		mes "有太多巧合了！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "根據這張紙條，";
+		mes "你告訴艾麗西亞你想";
+		mes "在你們第一次見面的地方";
+		mes "再見她一面。";
+		mes "我想你確實又見到她了...";
+		mes "在8月19日，她死去的那一天！";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "我假設你們兩個";
+		mes "第一次見面的地方在河邊。";
+		mes "別再說謊了：";
+		mes "告訴我到底發生了什麼事！";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "............";
+		mes ".........";
+		mes "......";
+		next;
+		cutin "kh_Kyel03",2;
+		mes "[基爾 海爾]";
+		mes "哈... 哈哈哈...";
+		mes "是的... 沒錯...";
+		mes "那個可怕的夜晚。";
+		mes "我記得很清楚...";
+		mes ".....................";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[基爾 海爾]";
+		mes "那天晚上，當她照我的要求";
+		mes "來到河邊見我時，我求她";
+		mes "跟我一起私奔，而不是";
+		mes "繼續等那個詹姆斯。";
+		next;
+		mes "[基爾 海爾]";
+		mes "她堅持詹姆斯";
+		mes "從未背叛她，而且他";
+		mes "答應明天就要帶她";
+		mes "遠走高飛。你能";
+		mes "想像這讓我感覺";
+		mes "如何嗎？我對她來說什麼都不是。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我的感受對她來說";
+		mes "一點都不重要！她一直";
+		mes "擺弄著那枚戒指...我失去了控制，";
+		mes "試圖把那該死的東西";
+		mes "從她手上搶走，並";
+		mes "扔進河裡...";
+		next;
+		mes "[基爾 海爾]";
+		mes "但你知道嗎？";
+		mes "她掙扎了，她居然";
+		mes "反抗我！那只是一場小小的";
+		mes "爭執，然後，不知不覺中，";
+		mes "我們腳下的地面";
+		mes "崩塌了... 然後大雨...";
+		next;
+		select(".........");
+		mes "[基爾 海爾]";
+		mes "我不知道那是";
+		mes "怎麼回事。雨水軟化了";
+		mes "地面，出了什麼差錯...";
+		mes "然後她就... 就...";
+		mes "河水吞噬了她...";
+		mes "我感到空虛。她走了。";
+		delitem 7499,1; //Family_Portrait
+		delitem 7500,1; //Elysia_Portrait
+		delitem 7501,1; //Kyll_Hyre_Letter2
+		delitem 7502,1; //Piece_Memo_Of_James
+		delitem 7503,1; //Man_Portrait
+		set KielHyreQuest,70;
+		close2;
+		cutin "",255;
+		end;
+	}
+	else if (KielHyreQuest <= 70) {
+		cutin "kh_kyel01",2;
+		mes "[基爾 海爾]";
+		mes "你已經知道";
+		mes "隔天她被發現死了。";
+		mes "但真正讓我心碎的是，";
+		mes "即使死了，她手裡還是";
+		mes "緊緊握著那枚戒指...";
+		next;
+		cutin "kh_kyel03",2;
+		mes "[基爾 海爾]";
+		mes "他的家族擁有一切，";
+		mes "而我一無所有。而且";
+		mes "他居然膽敢把";
+		mes "艾麗西亞從我身邊奪走？！";
+		mes "這怎麼能算公平？";
+		next;
+		mes "[基爾 海爾]";
+		mes "即使她已經去世了，";
+		mes "我還是想向艾麗西亞證明";
+		mes "詹姆斯到底是個什麼樣醜陋的人。";
+		mes "那就是我加入";
+		mes "雷根貝爾企業的時候。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我設計了第一台";
+		mes "第一代機器人，我將她";
+		mes "命名為艾麗西亞，並把設計圖";
+		mes "賣給了雷根貝爾。我給他們";
+		mes "機器人，他們給我錢、";
+		mes "權力，以及聽話的部下。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我當然知道他們會把";
+		mes "我的機器人拿去當間諜和殺手！";
+		mes "但你知道嗎？只要他們能給我";
+		mes "報仇的手段，那都無所謂。";
+		mes "這真的是完美的合作關係。";
+		next;
+		mes "[基爾 海爾]";
+		mes "你已經完全掌握我的把柄了。";
+		mes "你在為誰工作，";
+		mes "你到底想要什麼？";
+		mes "我的設計圖？";
+		mes "要我的命？還是全部...？";
+		next;
+		cutin "kh_kyel01",2;
+		mes "["+strcharinfo(0)+"]";
+		mes "其實，我只是想問";
+		mes "你和雷根貝爾企業之間專業關係的本質。";
+		mes "還有關於基爾的事。";
+		next;
+		mes "[基爾 海爾]";
+		mes "基爾，是嗎？聽完";
+		mes "我瘋狂的故事後，我猜";
+		mes "你已經懷疑關於他的真相了...";
+		mes "他也是一個";
+		mes "機器人，特別是";
+		mes "第二代機型的第一台。";
+		next;
+		mes "[基爾 海爾]";
+		mes "他的大腦是使用一種實驗性的、不穩定的，";
+		mes "濃縮魔法咒語卷軸";
+		mes "開發出來的。他是唯一一台";
+		mes "被允許保留的第二代機器人。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我對基爾";
+		mes "產生了很深的感情。這並不奇怪，";
+		mes "因為機器人技術已經成為了";
+		mes "我的生命。我甚至把他當作";
+		mes "自己的兒子般撫養長大，並教導";
+		mes "他所有關於機器人技術的知識";
+		next;
+		mes "[基爾 海爾]";
+		mes "基爾現在是個天才，";
+		mes "甚至還開發出了";
+		mes "第三代機器人。";
+		mes "不幸的是，我沒能";
+		mes "用人類的道德和倫理";
+		mes "適當地教導他。";
+		next;
+		select("......");
+		mes "[基爾 海爾]";
+		mes "他一直在將";
+		mes "第三代機器人";
+		mes "改造成殺人機器。那就是";
+		mes "為什麼我試圖把他們全送進學院，好讓他們可以學習人類的行為。";
+		next;
+		mes "[基爾 海爾]";
+		mes "儘管學院";
+		mes "延緩了基爾的計畫，";
+		mes "但他還是成功地將";
+		mes "所有的機器人改造成了";
+		mes "無法控制的";
+		mes "大規模毀滅引擎。";
+		next;
+		mes "[基爾 海爾]";
+		mes "是的，他一直在與雷根貝爾密切合作。";
+		mes "他們的真正目標是製造殺人機器";
+		mes "供雷根貝爾使用。";
+		next;
+		mes "[基爾 海爾]";
+		mes "你現在知道了我過去所有的秘密。我並沒有";
+		mes "生你的氣或什麼的，";
+		mes "但我確實有件事想拜託你。";
+		next;
+		mes "[基爾 海爾]";
+		mes "拜託！阻止基爾！";
+		mes "我不希望他的瘋狂";
+		mes "摧毀更多機器人了！";
+		mes "我把他們每一個都";
+		mes "視為我自己的孩子！";
+		next;
+		mes "[基爾 海爾]";
+		mes "我知道我必須為所有發生的事情負起全部責任。我答應";
+		mes "一旦所有事情解決後，我會接受任何對我行為的懲罰。";
+		next;
+		select("接受:好的:點頭");
+		mes "[基爾 海爾]";
+		mes "非常感謝你！";
+		mes "你可以在這棟宅邸的";
+		mes "地下樓層找到基爾。";
+		next;
+		mes "[基爾 海爾]";
+		mes "他待在他被創造出來時所在的舊房間裡，但";
+		mes "他把它改造成了某種洞穴，把所有人都拒之門外，";
+		mes "包括我在內。是的，他不再信任任何人了...";
+		next;
+		mes "[基爾 海爾]";
+		mes "當你找到他時，我希望你把艾麗西亞的戒指從他的心臟裡取出來。如果你";
+		mes "移除了它，那應該能阻止他發狂。";
+		next;
+		select("艾麗西亞的戒指？");
+		mes "[基爾 海爾]";
+		mes "是的...她的戒指是一切的開端";
+		mes "我把它放在他的心裡，這樣我就永遠不會忘記";
+		mes "羅西米亞家族對我做了什麼。";
+		next;
+		mes "[基爾 海爾]";
+		mes "我認為基爾已經變得太強大了，普通武器可能對他已經沒用了。";
+		mes "使用這個會讓他的能量供應產生波動的裝置吧。";
+		getitem 7504,1; //Toy_Motor
+		next;
+		cutin "kh_kyel03",2;
+		mes "[基爾 海爾]";
+		mes "如果你成功將這個裝置安裝在基爾身上，那麼";
+		mes "他就無法使用他身體的全部能量。趁他虛弱時，打開他的胸膛，從他的心臟拿出戒指。";
+		next;
+		mes "[基爾 海爾]";
+		mes "準備好了就告訴我。然後，我會";
+		mes "帶你去基爾的房間。";
+		set KielHyreQuest,74;
+	}
+	else if ((KielHyreQuest >= 74) && (KielHyreQuest <= 104)) {
+		mes "[基爾 海爾]";
+		mes "你準備好";
+		mes "要面對";
+		mes "基爾了嗎？";
+		next;
+		switch(select("是的:還沒")) {
+		case 1:
+			mes "[基爾 海爾]";
+			mes "看那裡... 秘密通道現在打開了。";
+			mes "就往我的右邊走，但要小心。基爾";
+			mes "極度危險。";
+			close2;
+			enablenpc "Kiehl_Room_Warp";
+			donpcevent "Kiehl_Room_Warp::OnEnable";
+			cutin "",255;
+			end;
+			break;
+		case 2:
+			mes "[基爾 海爾]";
+			mes "請慢慢準備。我想";
+			mes "這絕對不是一件簡單的事。";
+			break;
+		}
+	}
+	else if ((KielHyreQuest >= 74) && (KielHyreQuest <= 106)) {
+		cutin "kh_kyel01",2;
+		mes "[基爾 海爾]";
+		mes "你回來了...！";
+		mes "所以你成功從基爾的";
+		mes "心臟取回艾麗西亞的戒指了嗎？";
+		next;
+		if (countitem(7508) < 1) {
+			mes "[基爾 海爾]";
+			mes "你是說...你沒拿到？";
+			mes "拜託，從基爾的心臟裡";
+			mes "取回艾麗西亞的戒指吧！";
+			next;
+			enablenpc "Kiehl_Room_Warp";
+			donpcevent "Kiehl_Room_Warp::OnEnable";
+			close2;
+			cutin "",255;
+			end;
+		}
+		mes "[基爾 海爾]";
+		mes "發...發生了什麼事...？";
+		mes "基爾為自己開發了";
+		mes "一具新身體？那...那會";
+		mes "讓他成為第四代";
+		mes "機器人。我完全不知道";
+		mes "他已經這麼聰明了。";
+		next;
+		mes "[基爾 海爾]";
+		mes "等等，現在回想起來，";
+		mes "我被關在工廠裡的時候，";
+		mes "確實看到長得像基爾的";
+		mes "機器人身體。所以他";
+		mes "一直在利用那些複製品來";
+		mes "開發個人升級。";
+		next;
+		mes "[基爾 海爾]";
+		mes "來，請收下這張";
+		mes "鑰匙卡，它能讓你";
+		mes "進入並調查工廠";
+		mes "最深處的樓層。";
+		mes "我會去調查基爾的房間。";
+		getitem 7509,1; //Fancy_Key_Card
+		set KielHyreQuest,108;
+		next;
+		if (Sex == SEX_FEMALE) {
+			if (getpartnerid() == 0) set .@KHTitle$,"小姐";
+			else set .@KHSTitle$,"女士";
+		}
+		else set .@KHTitle$,"先生";
+		mes "[基爾 海爾]";
+		mes "基爾是我的責任...";
+		mes "不論代價是什麼，";
+		mes "我都必須阻止他！喔，";
+		mes "還有，為了感謝你所有的幫忙，請收下這個，"+.@KHTitle$+" "+strcharinfo(0)+"。";
+		getitem 616,1;
+		//Old Card Album
+		delitem 7508,1; //Elysia_Ring
+		getexp (checkre(3))?100000:1000000,0;
+	}
+	else if (KielHyreQuest >= 108) {
+		mes "[基爾 海爾]";
+		mes "......";
+		mes ".........";
+		mes "............";
+	}
+	close2;
+	cutin "",255;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Allysia
+//----------------------------------------------------------------------------
+kh_mansion,18,30,4	script	艾麗西亞	894,{
+	if (KielHyreQuest < 46) {
+		mes "[艾麗西亞]";
+		mes "你是誰？";
+		mes "你怎麼進來的？";
+		mes "走開";
+		close;
+	}
+	cutin "kh_ellisia",2;
+	if (KielHyreQuest < 70) {
+		mes "[艾麗西亞]";
+		mes "你一定對最近發生的";
+		mes "這些事情感到";
+		mes "很驚訝吧。也許我";
+		mes "解釋一下機器人的事情，";
+		mes "會比較容易理解？";
+		next;
+		switch(select("好:不用了")) {
+		case 1:
+			mes "[艾麗西亞]";
+			mes "你一直遇到的";
+			mes "那些機器人，都是能";
+			mes "獨立思考與運作的";
+			mes "自動機械傀儡。";
+			mes "很多賢者都試圖開發";
+			mes "自己的機器人，但都失敗了。";
+			next;
+			mes "[艾麗西亞]";
+			mes "我的主人基爾 海爾從";
+			mes "二十歲開始就一直在研究";
+			mes "機器人技術，並且";
+			mes "已經開發出三代";
+			mes "不同的機器人，分別是";
+			mes "第一代、第二代和第三代。";
+			next;
+			switch(select("第一代:第二代:第三代")) {
+			case 1:
+				mes "[艾麗西亞]";
+				mes "我就是基爾 海爾";
+				mes "第一代機器人的";
+				mes "一個好例子。我是用";
+				mes "沉重的機械骨架、";
+				mes "機器人心臟，以及化學";
+				mes "合成皮膚覆蓋建造而成的。";
+				next;
+				mes "[艾麗西亞]";
+				mes "我的中央處理器，也就是";
+				mes "等同於人類大腦的部位，";
+				mes "基本上是一個記憶卷軸，";
+				mes "其設計理念源自你們冒險者";
+				mes "在戰鬥中使用的魔法卷軸。";
+				next;
+				mes "[艾麗西亞]";
+				mes "我是最古老的人型";
+				mes "機器人類型，所以我非常重，";
+				mes "而且我的大腦只能";
+				mes "處理有限的資料。因此，";
+				mes "我無法像人類一樣";
+				mes "表達情感。";
+				next;
+				break;
+			case 2:
+				mes "[艾麗西亞]";
+				mes "第一代機器人";
+				mes "主要是由機械零件";
+				mes "開發而成的，但";
+				mes "第二代機器人";
+				mes "則融入了生命體";
+				mes "的科學與技術。";
+				next;
+				mes "[艾麗西亞]";
+				mes "第二代機器人";
+				mes "更像活生生的人，因為它們";
+				mes "擁有的人造的皮膚";
+				mes "和血肉，儘管它們仍然";
+				mes "是由沉重的機械";
+				mes "骨架建造而成的。";
+				next;
+				mes "[艾麗西亞]";
+				mes "賢者的元素卷軸";
+				mes "技術也被用來";
+				mes "開發濃縮";
+				mes "記憶卷軸，這是一種優於";
+				mes "第一代機器人所使用的";
+				mes "中央處理器。";
+				next;
+				mes "[艾麗西亞]";
+				mes "雖然濃縮記憶";
+				mes "卷軸比普通的記憶卷軸強大十萬倍，";
+				mes "但它們";
+				mes "存在問題，並且容易";
+				mes "發生太多錯誤。";
+				next;
+				mes "[艾麗西亞]";
+				mes "第二代機器人";
+				mes "能夠表達";
+				mes "類似人類的情感，但它們的";
+				mes "生產在六年後便停止了，因為它們";
+				mes "被認為是有瑕疵的。";
+				next;
+				break;
+			case 3:
+				mes "[艾麗西亞]";
+				mes "第三代機器人";
+				mes "主要由基爾 海爾的";
+				mes "兒子基爾設計，";
+				mes "完全沒有使用機械骨架：整個";
+				mes "身體基本上就是一個生命體。";
+				next;
+				mes "[艾麗西亞]";
+				mes "憑藉著有機的身體";
+				mes "和用仿造伊米爾心臟碎片製成的先進人工心臟，它們能像普通人類一樣";
+				mes "體驗生理現象。";
+				next;
+				mes "[艾麗西亞]";
+				mes "基爾成功開發出";
+				mes "更穩定的濃縮記憶卷軸，";
+				mes "這種卷軸不會發生";
+				mes "嚴重的錯誤，而且可以";
+				mes "廉價地大量生產。";
+				next;
+				mes "[艾麗西亞]";
+				mes "伊萊實際上是第三代原型機。一旦我們最佳化這些原型機，我們就會開始量產。";
+				mes "事實上，學院就是我們的";
+				mes "原型機測試場。";
+				next;
+				mes "[艾麗西亞]";
+				mes "我們的原型機器人能像真人一樣互動的事實，就是我們在機器人技術上";
+				mes "取得成功的證明。";
+				next;
+				break;
+			}
+		case 2:
+			mes "[艾麗西亞]";
+			mes "如果您想了解更多關於基爾 海爾的機器人，請告訴我。";
+			break;
+		}
+	}
+	else {
+		mes "[艾麗西亞]";
+		mes "......";
+		mes ".........";
+		mes "............";
+	}
+	close2;
+	cutin "",255;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Abduction triggering NPC
+//----------------------------------------------------------------------------
+lighthalzen,188,200,0	script	綁架觸發器	-1,3,1,{
+OnTouch:
+	if (KielHyreQuest == 50) {
+		mes "^3355FF當你走出";
+		mes "宅邸時，有東西";
+		mes "重擊了你的頭部，";
+		mes "你瞬間";
+		mes "失去了意識...^000000";
+		close2;
+		percentheal -99,0;
+		warp "kh_mansion",30,75;
+	}
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Mysterious Woman "Mitchell Layla"
+//----------------------------------------------------------------------------
+kh_mansion,25,79,4	script	神祕女子#kh	727,3,3,{
+
+OnTouch:
+	if (KielHyreQuest == 50) {
+		mes "^3355FF你醒來時頭痛欲裂，";
+		mes "發現一個神祕的女人";
+		mes "站在你面前。^000000";
+		next;
+		mes "[??????]";
+		mes "嗯？喔，你醒得";
+		mes "比我想像中早。";
+		mes "你一定覺得很困惑，";
+		mes "但請仔細聽好。如果你";
+		mes "不聽，那我就無法保證";
+		mes "你的安全了，知道嗎？很好。";
+		next;
+		mes "[??????]";
+		mes "你只需要知道";
+		mes "我是秀發茲發德共和國";
+		mes "政府的秘密特工。我們正在調查";
+		mes "基爾 海爾和雷根貝爾企業之間的";
+		mes "異常活動。";
+		next;
+		mes "[??????]";
+		mes "我們看到你進入";
+		mes "宅邸並與";
+		mes "基爾 海爾交談，所以基本上";
+		mes "你在這裡是為了接受審問。";
+		mes "現在告訴我真相。你";
+		mes "是怎麼認識基爾 海爾的？";
+		next;
+		switch(select("我會把知道的都告訴妳！:我什麼都不知道！")) {
+		case 2:
+			mes "[??????]";
+			mes "什麼都...不...知道？";
+			mes "你確定嗎？只有";
+			mes "少數被選中的人才能";
+			mes "親自和基爾 海爾說話。你";
+			mes "一定和他有某種";
+			mes "關聯。我說的對吧？";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "......";
+			mes ".........";
+			mes "............";
+			next;
+			mes "[??????]";
+			mes "你是在試圖保護";
+			mes "他嗎？我想你可能";
+			mes "不了解你到底在和什麼樣的";
+			mes "人打交道。我會告訴你";
+			mes "我對他的了解...";
+			next;
+			mes "[??????]";
+			mes "基爾 海爾。";
+			mes "各種機械製造商";
+			mes "基爾 海爾財團的執行長。";
+			mes "他的公司起初";
+			mes "只是艾因布羅克的一家小店，";
+			mes "其技術慢慢出名。";
+			next;
+			mes "[??????]";
+			mes "雷根貝爾企業提議";
+			mes "與基爾 海爾財團";
+			mes "合併。我們仍然不確定為什麼他們";
+			mes "特別希望基爾 海爾";
+			mes "來維修和開發他們的守護者...";
+			next;
+			mes "[??????]";
+			mes "我們也不確定為什麼";
+			mes "他們會突然想";
+			mes "把重心放在守護者";
+			mes "開發上。然後，突然間，";
+			mes "基爾 海爾的兒子就";
+			mes "憑空出現了。";
+			next;
+			mes "[??????]";
+			mes "這非常可疑。";
+			mes "沒有他的出生紀錄";
+			mes "或任何資料。不過，也許";
+			mes "基爾 海爾真的和他的秘書";
+			mes "艾麗西亞生下了他。";
+			mes "嗯，沒有人真的確定。";
+			next;
+			mes "[??????]";
+			mes "無論如何，基爾 海爾的";
+			mes "兒子兼繼承人基爾，幫助";
+			mes "他的父親建立了這所";
+			mes "特別的學院，作為他們";
+			mes "回饋社會的方式。";
+			next;
+			mes "[??????]";
+			mes "幾乎每家企業和組織都試圖讓他們的";
+			mes "間諜進入這所學院，";
+			mes "但都被拒絕了。";
+			mes "這很奇怪。至少應該有";
+			mes "一個人能混進去才對。";
+			next;
+			mes "[??????]";
+			mes "而且最近，基爾 海爾";
+			mes "和雷根貝爾的高層舉行了一次";
+			mes "秘密會議，宣布他的新計畫。他打算";
+			mes "創造出先進的人型機器人";
+			mes "來取代守護者！";
+			next;
+			mes "[??????]";
+			mes "我們的間諜報告說，";
+			mes "在會議上根本看不到基爾 海爾的身影，";
+			mes "他信任的秘書艾麗西亞";
+			mes "也不見蹤影。他...";
+			mes "他就這樣消失了！";
+			next;
+			mes "[??????]";
+			mes "然後，過了這麼久，";
+			mes "基爾 海爾又突然出現";
+			mes "在他的宅邸裡，就好像什麼事也沒發生過一樣！與此同時，";
+			mes "基爾卻以進行研究為藉口消失了。";
+			next;
+			mes "[??????]";
+			mes "雷根貝爾同時贊助了";
+			mes "基爾和基爾 海爾，但";
+			mes "這對父子之間一定發生了";
+			mes "某種衝突，我很確定！現在告訴我，";
+			mes "到底發生了什麼事？";
+			next;
+			mes "[??????]";
+			mes "我不確定你對這個國家了解多少，但";
+			mes "雷根貝爾牽涉其中的事實";
+			mes "一定告訴了你他們不是什麼好人。告訴我";
+			mes "你所知道的關於他們的事情！";
+			next;
+		case 1:
+			mes "^3355FF你把所知道關於^000000";
+			mes "^3355FF基爾 海爾的一切^000000";
+			mes "^3355FF都告訴了這個女人。每當^000000";
+			mes "^3355FF你提到伊萊時，你的^000000";
+			mes "^3355FF聲音都會因為悲傷而顫抖。^000000";
+			next;
+			mes "[??????]";
+			mes "我明白了，我明白了...";
+			mes "那個可憐的女孩...所以...";
+			mes "你捲入這件事";
+			mes "純粹是巧合？既然如此，我需要你協助我們的調查。";
+			next;
+			switch(select("好的:......")) {
+			case 2:
+				mes "[??????]";
+				mes "如果你不合作，";
+				mes "那我就無法保證";
+				mes "你的安全了，冒險者";
+				next;
+				mes "["+strcharinfo(0)+"]";
+				mes "咦？什麼...？";
+				mes "那是什麼意思？";
+				mes "妳在威脅我嗎？";
+				next;
+				select("照她說的做吧。");
+			case 1:
+				mes "[??????]";
+				mes "很好。";
+				mes "我是特工米切爾 萊拉。";
+				mes "從現在開始，你就是在為秀發茲發德共和國工作了！";
+				set KielHyreQuest,52;
+				close;
+			}
+		}
+	}
+	else if (KielHyreQuest == 52) {
+		mes "[米切爾]";
+		mes "我有一些新的";
+		mes "情報給你。";
+		mes "在朱諾有一位老太太";
+		mes "認識一個30年前名叫艾麗西亞的女人。";
+		next;
+		mes "[米切爾]";
+		mes "關鍵在於這個";
+		mes "30年前的艾麗西亞";
+		mes "自殺了，而且長得";
+		mes "和基爾 海爾的秘書一模一樣，她的秘書";
+		mes "也叫艾麗西亞。";
+		next;
+		mes "[米切爾]";
+		mes "這實在太巧了。我要你";
+		mes "去朱諾調查一下。";
+		mes "調查完後，去和";
+		mes "基爾 海爾的管家談談，";
+		mes "他會把你送到我這裡來。";
+		next;
+		mes "[米切爾]";
+		mes "是的，我知道。";
+		mes "那個人其實";
+		mes "是為我工作的。總之，";
+		mes "當你準備好去";
+		mes "朱諾時，讓我知道，你";
+		mes "就可以搭乘聯邦飛空艇。";
+		set KielHyreQuest,54;
+		close;
+	}
+	else if (KielHyreQuest == 54) {
+		mes "[米切爾]";
+		mes "你準備好了嗎？";
+		mes "我會讓你搭乘";
+		mes "聯邦飛空艇，這樣你";
+		mes "就能到達朱諾，並";
+		mes "盡快完成你的任務。";
+		next;
+		switch(select("是的:還沒")) {
+		case 1:
+			mes "[米切爾]";
+			mes "祝你好運。一旦你";
+			mes "完成任務，";
+			mes "記得向";
+			mes "基爾 海爾的管家報告，這樣";
+			mes "他才能把你送到我這裡。";
+			close2;
+			warp "yuno",54,209;
+			end;
+		case 2:
+			mes "[米切爾]";
+			mes "慢慢來...";
+			mes "但要記住，";
+			mes "我可不是個有耐心的女人！";
+			close;
+		}
+	}
+	else if (KielHyreQuest == 64) {
+		mes "[米切爾]";
+		mes "啊，你回來了。";
+		mes "你從你的";
+		mes "調查中得到了";
+		mes "什麼報告？";
+		next;
+		mes "[米切爾]";
+		mes ".....................";
+		mes "啊，我明白了。幹得好。";
+		mes "你何不去和基爾";
+		mes "海爾談談，用你所了解到關於他過去的事情去與他對質？對，去拷問他。";
+		next;
+		mes "[米切爾]";
+		mes "戴上這個隱藏式麥克風，";
+		mes "這樣如果你有危險，我們就能派人支援。我要";
+		mes "你找出基爾";
+		mes "的真實身分，以及他";
+		mes "和雷根貝爾的關係。";
+		set KielHyreQuest,68;
+		next;
+		warp "kh_mansion",83,50;
+		end;
+	}
+	else if (KielHyreQuest >= 68) {
+		mes "[米切爾]";
+		mes "你現在不是";
+		mes "應該要離開了嗎？";
+		next;
+		warp "kh_mansion",83,50;
+		end;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Warp portal into Kiehl's 'Room'
+// - Anyone can enter
+// - After 30-40 seonds this NPC should be disabled.
+//----------------------------------------------------------------------------
+kh_mansion,27,27,0	script	Kiehl_Room_Warp	45,2,2,{
+OnTouch_:
+	warp "kh_kiehl01",10,31;
+	end;
+
+OnEnable:
+	initnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnTimer30000:
+	stopnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	disablenpc "Kiehl_Room_Warp";
+	end;
+
+OnInit:
+	disablenpc "Kiehl_Room_Warp";
+	end;
+}
+
+//============================================================================
+// Rosimier NPCs and other Related NPCs
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Odd Grandma
+//----------------------------------------------------------------------------
+yuno,257,140,4	script	古怪的老婆婆	846,{
+	if (KielHyreQuest < 54) {
+		mes "[老婆婆]";
+		mes "你去了哪裡，";
+		mes "親愛的？你";
+		mes "在哪裡，我的小寶貝？";
+		close;
+	}
+	else if (KielHyreQuest == 54) {
+		mes "[老婆婆]";
+		mes "搖籃曲...";
+		mes "說晚安...";
+		mes "安靜點，小寶貝...";
+		mes "快睡吧~";
+		next;
+		switch(select("妳在做什麼？:嗯，我沒看到嬰兒...")) {
+		case 1:
+			mes "[老婆婆]";
+			mes "喔？我的寶貝一直";
+			mes "哭個不停，似乎";
+			mes "睡不著。她需要";
+			mes "休息，這樣我才能去工作。";
+			mes "房子好亂，";
+			mes "老闆很不高興...";
+			set KielHyreQuest,56;
+			next;
+			select("嗯，我沒看到嬰兒...");
+			mes "[老婆婆]";
+			mes "什麼，她就在這——";
+			mes "嗯。親愛的，你";
+			mes "在做什麼？不要";
+			mes "在我們朋友面前";
+			mes "調皮搗蛋！噓，要";
+			mes "乖喔，我的小女孩。";
+			//GetHEALTHSTATE VAR_CURSE 30
+			close;
+		case 2:
+			mes "[老婆婆]";
+			mes "你在說什麼...？";
+			mes "喔，你看你。";
+			mes "你把我的小";
+			mes "寶貝弄哭了！噓，";
+			mes "安靜，小 ^0000FF艾麗西亞^000000。";
+			mes "快睡吧~";
+			close;
+		}
+	}
+	else if ((KielHyreQuest >= 56) && (KielHyreQuest < 60)) {
+		mes "[老婆婆]";
+		mes "艾麗西亞...？！";
+		mes "艾麗西亞，你去了";
+		mes "哪裡？你不是";
+		mes "早就該";
+		mes "回家了嗎！";
+		if (countitem(7500) < 1) { 
+			close;
+		}
+		else {
+			next;
+			switch(select("艾麗西亞？她不是...")) {
+			case 1:
+				cutin "kh_ellisia_port",1;
+				mes "^3355FF你將艾麗西亞的";
+				mes "畫像給老婦人看。^000000";
+				next;
+				cutin "",255;
+				mes "[老婆婆]";
+				mes "喔，你認識";
+				mes "艾麗西亞嗎？她一直";
+				mes "不見蹤影！她昨天離開家";
+				mes "後就再也沒回來過了！能...能不能";
+				mes "告訴我她在哪裡？！";
+				close;
+			}
+		}
+	}
+	else if (KielHyreQuest >= 60) {
+		mes "[老婆婆]";
+		mes "別擔心，艾麗西亞...";
+		mes "媽咪會永遠";
+		mes "陪著妳的。沒有理由";
+		mes "要難過...";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Old Lady;
+// gives you the key to the Rosimier Mansion
+//----------------------------------------------------------------------------
+yuno,250,132,0	script	老太太#kh	711,{
+	if (KielHyreQuest < 56) {
+		mes "[老太太]";
+		mes "噢，我的腿和背";
+		mes "好痛。這把老骨頭";
+		mes "全身都在痛...";
+		close;
+	}
+	else if (KielHyreQuest == 56) {
+		if (checkweight(7498,1) == 0) {
+			mes "^3355FF稍等一下...";
+			mes "你身上帶了";
+			mes "太多東西了，";
+			mes "所以你必須";
+			mes "先清出一些";
+			mes "背包空間...^000000";
+			close;
+		}
+		mes "[老太太]";
+		mes "天啊，我討厭這個";
+		mes "天氣！這讓我想到";
+		mes "我已經變得多老了！";
+		mes "這天氣真是冷到骨子裡去了，真的！";
+		next;
+		switch(select("......:妳認識那位老婆婆嗎？")) {
+		case 1:
+			mes "[老太太]";
+			mes "可惡！如果我年輕時";
+			mes "沒有經歷過那麼多冒險就好了！";
+			mes "那也許我";
+			mes "這把年紀就不會這麼受苦了！";
+			close;
+		case 2:
+			mes "[老太太]";
+			mes "喔... 是的。她是我";
+			mes "最好的朋友 ^3355FF艾麗西亞^000000 的母親。自從";
+			mes "她自殺後，一切";
+			mes "都變了。她的";
+			mes "母親失去了理智...";
+			next;
+			select("艾麗西亞是...？");
+			mes "[老太太]";
+			mes "喔，艾麗西亞是個多麼";
+			mes "美麗的女孩。很多";
+			mes "男人都追求她，尤其是";
+			mes "那位英俊的詹姆斯 羅西米亞。";
+			mes "我記得聽說過他們";
+			mes "就要結婚了...";
+			next;
+			mes "[老太太]";
+			mes "我真為她感到高興！";
+			mes "但是後來，突然間，";
+			mes "她自殺了。嗯，";
+			mes "大家都是這麼說的。";
+			mes "直到今天，我仍然不";
+			mes "確定發生了什麼事。";
+			next;
+			select("等等，誰是詹姆斯 羅西米亞？");
+			mes "[老太太]";
+			mes "喔，詹姆斯屬於";
+			mes "朱諾最古老、最富有的";
+			mes "家族之一。一切";
+			mes "對他們來說都很順利，但";
+			mes "在艾麗西亞死後不久，";
+			mes "這個家族就破產了。";
+			next;
+			mes "[老太太]";
+			mes "這座城市現在管理著他們的";
+			mes "舊宅邸。出於";
+			mes "某種原因，他們決定";
+			mes "將羅西米亞宅邸的萬能鑰匙";
+			mes "委託給我。";
+			next;
+			select("我可以借那把萬能鑰匙嗎？");
+			mes "[老太太]";
+			mes "嗯，我真的不";
+			mes "應該把它隨便給";
+			mes "任何人，但我看得出來";
+			mes "你是真心為了艾麗西亞的";
+			mes "最大利益著想而努力的。";
+			next;
+			mes "[老太太]";
+			mes "然而，你必須";
+			mes "確保在市政廳的人";
+			mes "向我要之前";
+			mes "把它還給我。";
+			mes "好吧，希望你能找到";
+			mes "你正在尋找的東西。";
+			getitem 7498,1; //Rosimier_Key
+			set KielHyreQuest,58;
+			close;
+		}
+	}
+
+	else if ((KielHyreQuest == 58) &&
+		(countitem(7499) < 1) || 
+		(countitem(7500) < 1) || 
+		(countitem(7501) < 1) || 
+		(countitem(7502) < 1)) {
+		mes "[老太太]";
+		mes "請快點在";
+		mes "羅西米亞宅邸裡";
+		mes "找到你正在尋找的任何東西。";
+		mes "如果市政廳的人";
+		mes "來向我要鑰匙，";
+		mes "我可能會有麻煩的...";
+		close;
+	}
+
+	else if ((KielHyreQuest == 58) &&
+		(countitem(7499) == 1) && 
+		(countitem(7500) == 1) && 
+		(countitem(7501) == 1) && 
+		(countitem(7502) == 1)) {
+		mes "[老太太]";
+		mes "喔，你已經搜完宅邸了嗎？";
+		mes "很令人沮喪，不是嗎？";
+		mes "債權人基本上";
+		mes "在很久以前";
+		mes "就把所有東西都洗劫一空了。";
+		next;
+		select("為什麼 ^3355FF艾麗西亞^000000 會...？");
+		mes "[老太太]";
+		mes "嗯，我知道詹姆斯";
+		mes "和艾麗西亞相愛，";
+		mes "而且他承諾要娶";
+		mes "她。可是，據說他的";
+		mes "家族已經將他許配";
+		mes "給了另一個女人。";
+		next;
+		mes "[老太太]";
+		mes "時間流逝，他";
+		mes "被迫娶了她的";
+		mes "未婚妻。艾麗西亞相當";
+		mes "崩潰。我想也許";
+		mes "這就是她... 你知道的...";
+		next;
+		mes "[老太太]";
+		mes "聽著，如果你想了解";
+		mes "更多關於發生了什麼事，";
+		mes "那我想你應該去跟";
+		mes "^3355FF住在基爾 海爾學院南邊的漁夫^000000 談談。";
+		next;
+		mes "[老太太]";
+		mes "他是那個在河裡";
+		mes "發現艾麗西亞屍體的人，";
+		mes "所以他可能對發生了什麼事";
+		mes "有更清楚的了解。";
+		delitem 7498,1; //Rosimier_Key 
+		set KielHyreQuest,60;
+		close;
+	}
+	else if (KielHyreQuest >= 60) {
+		mes "[老太太]";
+		mes "是啊，快下雨了。";
+		mes "我的骨頭感覺得到。";
+		close;
+	}
+}
+
+
+//----------------------------------------------------------------------------
+// Warp portal into Rosimier Mansion
+//----------------------------------------------------------------------------
+yuno,273,141,0	script	羅西米亞入口	45,2,2,{
+OnTouch_:
+	if (countitem(7498) < 1) {
+		mes "那棟宅邸似乎已經";
+		mes "被時間摧毀了。";
+		mes "然而，這扇門看起來";
+		mes "如果你有合適的鑰匙，";
+		mes "似乎還是可以運作的。";
+		close;
+	}
+	else {
+		warp "kh_rossi",20,92;
+	}
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Rosimier Mansion, first floor;
+// Table
+//----------------------------------------------------------------------------
+kh_rossi,23,23,0	script	桌子#khr2	111,{
+	if (checkweight(7499,1) == 0) {
+		mes "^3355FF稍等一下...";
+		mes "你身上帶了";
+		mes "太多東西了，";
+		mes "所以你必須";
+		mes "先清出一些";
+		mes "背包空間...^000000";
+		close;
+	}
+	if (KielHyreQuest < 58) {
+		mes "^3355FF這裡沒有什麼";
+		mes "對你來說很重要的東西。^000000";
+		close;
+	}
+	else if (KielHyreQuest < 60) {
+		if (countitem(7499) < 1) {
+			cutin "kh_family_port",1;
+			mes "^3355FF你檢查了桌子，";
+			mes "並在打開的抽屜裡";
+			mes "發現了一幅裝框的畫像。^000000";
+			getitem 7499,1; //Family_Portrait
+		}
+		else {
+			mes "^3355FF這張書桌打開的";
+			mes "抽屜現在是空的。^000000";
+		}
+	}
+	else{
+		mes "^3355FF這就是你從中";
+		mes "獲得羅西米亞家族畫像的";
+		mes "書桌。";
+		mes "它的抽屜現在是空的。^000000";
+		close;
+	}
+	close2;
+	cutin "",255;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Rosimier Mansion, first floor;
+// Shelf
+//----------------------------------------------------------------------------
+kh_rossi,92,40,0	script	書架#khr	111,{
+	if (checkweight(7500,1) == 0) {
+		mes "^3355FF稍等一下...";
+		mes "你身上帶了";
+		mes "太多東西了，";
+		mes "所以你必須";
+		mes "先清出一些";
+		mes "背包空間...^000000";
+		close;
+	}
+	if (KielHyreQuest < 58) {
+		mes "^3355FF這裡沒有什麼";
+		mes "對你來說很重要的東西。^000000";
+		close;
+	}
+	else if (KielHyreQuest < 60) {
+		if (countitem(7500) < 1) {
+			mes "^3355FF這些書架上";
+			mes "有上了鎖的箱子。";
+			mes "也許如果你使用這棟宅邸的";
+			mes "萬能鑰匙，你";
+			mes "就有可能打開它們。^000000";
+			next;
+			switch(select("使用鑰匙:跳過")) {
+			case 1:
+				mes "^3355FF你想嘗試打開";
+				mes "哪一個箱子？^000000";
+				next;
+				switch(select("第一個箱子:第二個箱子")) {
+				case 1:
+					mes "^3355FF你使用萬能鑰匙";
+					mes "解開了箱子的鎖，並獲得";
+					mes "一幅長得像基爾 海爾助理艾麗西亞的";
+					mes "女人畫像。^000000";
+					next;
+					cutin "kh_ellisia_port",2;
+					mes "^3355FF背面寫著一段訊息：";
+					mes "「給我摯愛的艾麗西亞。";
+					mes "詹姆斯 留。」^000000";
+					getitem 7500,1; //Elysia_Portrait
+					close2;
+					cutin "",255;
+					end;
+				case 2:
+					mes "^3355FF這個箱子是空的。^000000";
+					close;
+				}
+			case 2:
+				mes "^3355FF這個箱子是空的。^000000";
+				close;
+			}
+		}
+		else {
+			mes "^3355FF你在這個架子上";
+			mes "其中一個箱子裡找到了一幅女人的畫像。^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF你在這個架子上";
+		mes "其中一個箱子裡找到了一幅女人的畫像。";
+		mes "這個箱子現在是空的。^000000";
+		close;
+	}
+}
+
+
+//----------------------------------------------------------------------------
+// Rosimier Mansion, top floor; Desk
+//----------------------------------------------------------------------------
+kh_rossi,144,286,0	script	書桌#khr3	111,{
+	if (checkweight(7501,1) == 0) {
+		mes "^3355FF稍等一下...";
+		mes "你身上帶了";
+		mes "太多東西了，";
+		mes "所以你必須";
+		mes "先清出一些";
+		mes "背包空間...^000000";
+		close;
+	}
+	if (KielHyreQuest < 58) {
+		mes "^3355FF這只是一張書桌。^000000";
+		close;
+	}
+	else if (KielHyreQuest < 60) {
+		mes "^3355FF這張書桌有";
+		mes "三個抽屜。^000000";
+		next;
+		switch(select("第一個抽屜:第二個抽屜:第三個抽屜:取消")) {
+		case 1:
+			mes "^3355FF第一個抽屜被鎖上了。^000000";
+			close;
+		case 2:
+			if (countitem(7501) < 1) {
+				mes "^3355FF這第二個抽屜裡";
+				mes "有一封信。它";
+				mes "是由一個名字縮寫為";
+				mes "K.H. 的人寄出的，";
+				mes "收件人是艾麗西亞。^000000";
+				getitem 7501,1; //Kyll_Hyre_Letter2
+				close;
+			}
+			else {
+				mes "^3355FF這個抽屜現在是空的。^000000";
+				close;
+			}
+		case 3:
+			mes "^3355FF這第三個抽屜裡";
+			mes "有一張小紙條。";
+			mes "這是詹姆斯寫的，";
+			mes "提到他想";
+			mes "娶艾麗西亞，而且她";
+			mes "收到了一枚訂婚戒指。^000000";
+			close;
+		case 4:
+			mes "......";
+			mes ".........";
+			mes "............";
+			close;
+		}
+	}
+	else{
+		mes "^3355FF這就是你找到";
+		mes "一封 K.H. 寫的信，";
+		mes "以及詹姆斯 羅西米亞草寫紙條的書桌。這兩件物品";
+		mes "都是寫給";
+		mes "同一個女人艾麗西亞的。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Rosimier Mansion, top floor;
+// Bookshelf
+//----------------------------------------------------------------------------
+kh_rossi,148,288,0	script	書架#khr2	111,{
+	if (checkweight(7502,1) == 0) {
+		mes "^3355FF稍等一下...";
+		mes "你身上帶了";
+		mes "太多東西了，";
+		mes "所以你必須";
+		mes "先清出一些";
+		mes "背包空間...^000000";
+		close;
+	}
+	if (KielHyreQuest < 58) {
+		mes "^3355FF你遇到一個積滿灰塵的";
+		mes "書架，上面擺滿了";
+		mes "許多書。^000000";
+		close;
+	}
+	else if (KielHyreQuest < 60) {
+		if (countitem(7502) < 1) {
+			mes "^3355FF你遇到一個積滿灰塵的";
+			mes "書架，上面擺滿了";
+			mes "許多書。當你";
+			mes "檢查這些書時，你在書本之間";
+			mes "發現了一張摺疊的紙條。^000000";
+			getitem 7502,1; //Piece_Memo_Of_James
+			close;
+		}
+		else {
+			mes "^3355FF你遇到一個積滿灰塵的";
+			mes "書架，上面擺滿了";
+			mes "許多書。^000000";
+			close;
+		}
+	}
+	else{
+		mes "^3355FF你遇到一個積滿灰塵的";
+		mes "書架，上面擺滿了";
+		mes "許多書。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Rosimier Mansion, top floor;
+// Bed
+//----------------------------------------------------------------------------
+kh_rossi,154,286,0	script	床#khr	111,{
+	if (KielHyreQuest < 58) {
+		mes "^3355FF你找到一張鋪好的床，但在";
+		mes "多年未使用後，上面已經積了";
+		mes "厚厚一層灰塵。^000000";
+		close;
+	}
+	else if (KielHyreQuest < 60) {
+		mes "^3355FF你找到一張鋪好的床，但在";
+		mes "多年未使用後，上面已經積了";
+		mes "厚厚一層灰塵。^000000";
+		next;
+		switch(select("檢查床單:檢查床底")) {
+		case 1:
+			mes "^3355FF你用手輕拂過";
+			mes "床的表面，";
+			mes "揚起了一陣令人不舒服的";
+			mes "灰塵，刺激了你的鼻子";
+			mes "和喉嚨。呃，好噁心！^000000";
+			percentheal -10,0;
+			close;
+		case 2:
+			mes "^3355FF你搜尋了";
+			mes "床底下，發現一個空的";
+			mes "訂婚戒指盒。^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF這是一張骯髒的床。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Fisherman
+//----------------------------------------------------------------------------
+yuno_fild12,232,222,0	script	老漁夫	709,{
+	if (KielHyreQuest < 60) {
+		mes "[老漁夫]";
+		mes "最近啊，要捕魚變得";
+		mes "困難多了。";
+		mes "自從他們建了這座";
+		mes "工廠後，魚群";
+		mes "就開始變異，";
+		mes "連外觀都變得不一樣了...";
+		close;
+	}
+	else if (KielHyreQuest == 60) {
+		mes "[老漁夫]";
+		mes "咦？你想要什麼嗎？";
+		mes "呵，年輕人！我知道";
+		mes "你們多喜歡不勞而獲，";
+		mes "但你什麼都得不到的。";
+		mes "現在，如果你能帶些";
+		mes "生魚片給我，我也許會友善一點喔?";
+		if (countitem(544) >= 10)  {
+			next;
+			mes "[老漁夫]";
+			mes "哦，這些魚都是";
+			mes "給我的嗎？呵，你真";
+			mes "慷慨啊。既然你";
+			mes "這麼好心，那";
+			mes "我想我也必須回報";
+			mes "這份人情。想問什麼就問吧?";
+			next;
+			select("30年前，有個女人自殺了...");
+			mes "[老漁夫]";
+			mes "哦？哦哦。哦對。";
+			mes "我記得那件事。對。";
+			mes "那是8月20日，我";
+			mes "老婆的生日。那天，";
+			mes "我沒捕到魚，反而";
+			mes "撈到了一個死女人。";
+			next;
+			mes "[老漁夫]";
+			mes "當然，我馬上向";
+			mes "朱諾警察報案了！他們告訴";
+			mes "我她是自殺的，因為";
+			mes "她被她的愛人，也就是";
+			mes "她的雇主給背叛了。";
+			mes "真是個悲劇啊。";
+			next;
+			mes "[老漁夫]";
+			mes "總之，當他們把";
+			mes "她的屍體從河裡移出來";
+			mes "時，她的手上掉出了";
+			mes "一枚戒指。我把它撿了起來，";
+			mes "希望能賣點Zeny。";
+			mes "我知道，我知道...";
+			next;
+			mes "[老漁夫]";
+			mes "我很幸運警察";
+			mes "沒看到我拿走";
+			mes "它。那天晚一點，有個人";
+			mes "來找我並出";
+			mes "高價要買下它。";
+			mes "我想那天真是我的幸運日！";
+			next;
+			mes "[老漁夫]";
+			mes "後來我發現他是個";
+			mes "機械維修員之類的。";
+			mes "他賣掉了所有東西";
+			mes "就為了買那枚戒指，所以我猜";
+			mes "他非常想要它。";
+			mes "然後他就消失了。";
+			next;
+			select("你記得他的名字嗎？");
+			mes "[老漁夫]";
+			mes "他的名字...？";
+			mes "好像是...";
+			mes "海爾？海雷？總之，那";
+			mes "是很久以前的事了。哦，";
+			mes "他的舊房子還在。";
+			next;
+			mes "[老漁夫]";
+			mes "如果你真的";
+			mes "那麼好奇，你大可";
+			mes "自己去看看。";
+			mes "讓我想想，他住在";
+			mes "東北邊森林守衛";
+			mes "營地附近的小屋裡。";
+			delitem 544,10; //Fish_Slice
+			set KielHyreQuest,62;
+			close;
+		}
+		else {
+			close;
+		}
+	}
+	else if (KielHyreQuest >= 62) {
+		mes "[老漁夫]";
+		mes "你不記得";
+		mes "我跟你說過的話了嗎？那";
+		mes "傢伙住在東北邊森林";
+		mes "守衛營地附近";
+		mes "的小屋裡！你何不";
+		mes "去那個地方看看？";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Kiel Hyre's hut;
+// Wooden Board
+//----------------------------------------------------------------------------
+yuno_fild09,158,217,0	script	木板#kh	111,{
+	if (checkweight(7503,1) == 0) {
+		mes "^3355FF等一下...";
+		mes "你身上攜帶了太";
+		mes "多物品了，";
+		mes "所以你需要";
+		mes "先清出更多";
+		mes "物品欄空間...^000000";
+		close;
+	}
+	if ((KielHyreQuest < 62) || (KielHyreQuest >= 64)) {
+		mes "^3355FF這是在灌木叢裡";
+		mes "一塊無用的";
+		mes "木板。^000000";
+		close;
+	}
+	else if (KielHyreQuest == 62) {
+		mes "^3355FF你發現了一塊長";
+		mes "木板，上面刻著";
+		mes "首字母縮寫「K.H.」。^000000";
+		next;
+		cutin "kh_kyel_port",2;
+		mes "^3355FF你找到了一幅";
+		mes "年輕男子的畫像，看起來";
+		mes "像是年輕時的";
+		mes "基爾 海雷，裝在舊木板";
+		mes "下方一個破損的";
+		mes "相框裡。^000000";
+		getitem 7503,1;	//Man_Portrait
+		set KielHyreQuest,64;
+		next;
+		cutin "",255;
+		mes "^3355FF你現在已經掌握了";
+		mes "足夠的資訊，";
+		mes "所以你應該回去";
+		mes "向米契爾報告了。^000000";
+		close;
+	}
+}
+
+//============================================================================
+// Kiehl Hyre's Room and Boss NPCs
+//============================================================================
+// Beyond here the NPC for the final areas.
+// Now, this area is not someplace you wanna slow down so
+// you can pick up dialog.
+// I used packet logging to pull
+// what I could and for the sake of the two people with me,
+// did not bother doing all the proper NPC positioning
+// or some of the 'error/wrong option' dialogs.
+// All the doors are kind of weird.
+//============================================================================
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Receiver (Gives black keycards upon killing mobs)
+//----------------------------------------------------------------------------
+kh_kiehl01,17,39,0	script	接收器#kh	111,{
+	if (mobcount("kh_kiehl01","Receiver#kh::OnMyMobDead") < 1) {
+		mes "^333333*嗶嗶茲茲*^000000";
+		if (KielHyreQuest == 74) {
+			next;
+			mes "[????]";
+			mes "^333333*茲茲...*";
+			mes "我以前從沒見過你。";
+			mes "是父親派你來";
+			mes "殺我的嗎？我們走";
+			mes "著瞧！來吧，";
+			mes "試著找到我吧，冒險者。^000000.";
+			set KielHyreQuest,76;
+		}
+		close2;
+		monster "kh_kiehl01",16,32,"愛麗瑟",1739,1,"Receiver#kh::OnMyMobDead";
+		monster "kh_kiehl01",18,31,"愛麗俄",1740,1,"Receiver#kh::OnMyMobDead";
+		end;
+	}
+
+	else {
+		end;
+	}
+
+OnMyMobDead:
+	if (mobcount("kh_kiehl01","Receiver#kh::OnMyMobDead") <1) { 
+		makeitem 7506,1,"this",19,36;
+	}
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Flower Vase (Gives...password...for Box)
+//----------------------------------------------------------------------------
+kh_kiehl01,13,40,0	script	花瓶#kh1	111,{
+	if (KielHyreQuest < 74) {
+		mes "^3355FF你找到了一個花瓶。^000000";
+		close;
+	}
+	if (KielHyreQuest >= 74) {
+		mes "^3355FF你找到了一個花瓶。^000000";
+		next;
+		switch(select("拿起花瓶:打破花瓶:把花瓶倒過來")) {
+		case 1:
+			mes "^3355FF花瓶是空的。^000000";
+			close;
+		case 2:
+			mes "^3355FF就算你用盡全力";
+			mes "敲擊，也無法摧毀";
+			mes "這個花瓶。";
+			mes "這一定是";
+			mes "由雷根貝勒公司";
+			mes "特別製造的。^000000";
+			close;
+		case 3:
+			mes "^3355FF花瓶的底部寫著";
+			mes "以下文字。^000000";
+			next;
+			mes "[花瓶訊息]";
+			mes "「兔子經常";
+			mes "觀察著門";
+			mes "黑夜吞噬了";
+			mes "醃製的橘子。」";
+			close;
+		}
+	}
+	else{
+		mes "^3355FF花瓶的底部寫著";
+		mes "以下文字。^000000";
+		next;
+		mes "[花瓶訊息]";
+		mes "「兔子經常";
+		mes "觀察著門。";
+		mes "黑夜吞噬了";
+		mes "醃製的橘子。」";
+		close;
+	}
+}
+
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Box
+//----------------------------------------------------------------------------
+kh_kiehl01,19,25,0	script	盒子#kh1	111,{
+	if (checkweight(7505,1) == 0) {
+		mes "^3355FF等一下...";
+		mes "你身上攜帶了太";
+		mes "多物品了，";
+		mes "所以你需要";
+		mes "先清出更多";
+		mes "物品欄空間...^000000";
+		close;
+	}
+	if (KielHyreQuest < 74) {
+		mes "^3355FF你找到一個盒子，上面";
+		mes "有對應每個英文字母的";
+		mes "按鈕。^000000";
+		next;
+		input .@KHInput$;
+		mes "^3355FF什麼事也沒發生。^000000";
+		close;
+	}
+	if (KielHyreQuest >= 74) {
+		if (countitem(7505) < 1) {
+			mes "^3355FF你找到一個盒子，上面";
+			mes "有對應每個英文字母的";
+			mes "按鈕。^000000";
+			next;
+			input .@KHInput$;
+			if (.@KHInput$ == "open the door") {
+				mes "^3355FF當你一輸入";
+				mes "密碼，附近的門便";
+				mes "發出清脆的叮噹聲，";
+				mes "盒子也隨之彈開，";
+				mes "露出了一把小鑰匙。^000000";
+				getitem 7505,1;
+				//Toy_Key
+				close;
+			}
+			else {
+				mes "^3355FF什麼事也沒發生。^000000";
+				close;
+			}
+		}
+		else {
+			mes "^3355FF這就是你找到";
+			mes "玩具鑰匙的地方^000000";
+			close;
+		}
+	}
+	else{
+		mes "^3355FF盒子是敞開的，";
+		mes "裡面什麼都";
+		mes "沒有。^000000";
+		close;
+	}
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Big Door, (First)
+// - Anyone can pass through this door
+// - Consume one Black KeyCard when opened.
+// - Only one person actually needs to open it.
+//----------------------------------------------------------------------------
+kh_kiehl01,44,33,0	script	大門#BigDoorKHQ1	111,{
+	if (.KHDoor1Opened == 0) {
+		mes "^3355FF門被鎖上了，";
+		mes "但門把旁邊有";
+		mes "一個狹窄的插槽。^000000";
+		next;
+		input .@KHInput$;
+		if (.@KHInput$ == "Black Keycard") {
+			if (countitem(7506) >= 1) {
+				mes "^3355FF你將";
+				mes "黑色通行證插入";
+				mes "插槽，成功解鎖並";
+				mes "打開了大門。^000000";
+				delitem 7506,1; //Black_Key_Card
+				donpcevent "Big_Door_1_Warp::OnEnable";
+				enablenpc "Big_Door_1_Warp";
+				set .KHDoor1Opened,1;
+				close;
+			}
+
+		}
+		mes "^3355FF你試著用盡全力";
+		mes "推開門，";
+		mes "但門卻紋";
+		mes "風不動。^000000";
+		close;
+	}
+
+	else {
+		mes "^3355FF大門是開著的。^000000";
+		close;
+	}
+}
+
+kh_kiehl01,43,33,0	script	Big_Door_1_Warp	45,1,1,{
+OnEnable:
+	initnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnInit:
+	disablenpc "Big_Door_1_Warp";
+	end;
+
+OnTimer30000:
+	stopnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	disablenpc "Big_Door_1_Warp";
+	set getvariableofnpc(.KHDoor1Opened,"大門#BigDoorKHQ1"),0;
+	end;
+
+OnTouch_:
+	warp "kh_kiehl01",55,33;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Big Door, (second)
+// - Consume Toy Key when opened.
+// - Only one person actually needs to open it.
+//----------------------------------------------------------------------------
+kh_kiehl01,174,40,0	script	大門#BigDoorKHQ2	111,{
+	if (.KHDoor2Opened == 0) {
+		mes "^3355FF門被鎖上了，";
+		mes "但門把旁邊有";
+		mes "一個小鑰匙孔。^000000";
+		next;
+		input .@KHInput$;
+		if (.@KHInput$ == "Toy Key") {
+			if (countitem(7505) >= 1) {
+				mes "^3355FF你將鑰匙插入";
+				mes "鑰匙孔，轉動鑰匙後";
+				mes "伴隨著喀嗒一聲，";
+				mes "門解鎖了。^000000";
+				delitem 7505,1;
+				//Toy_Key
+				donpcevent "Big_Door_2_Warp::OnEnable";
+				enablenpc "Big_Door_2_Warp";
+				set .KHDoor2Opened,1;
+				close;
+			}
+
+		}
+		mes "^3355FF你試著用盡全力";
+		mes "推開門，";
+		mes "但門卻紋";
+		mes "風不動。^000000";
+		close;
+	}
+	else {
+		mes "^3355FF大門是開著的。^000000";
+		close;
+	}
+}
+
+kh_kiehl01,173,39,0	script	Big_Door_2_Warp	45,1,1,{
+OnEnable:
+	initnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnInit:
+	disablenpc "Big_Door_2_Warp";
+	end;
+
+OnTimer30000:
+	stopnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	disablenpc "Big_Door_2_Warp";
+	set getvariableofnpc(.KHDoor2Opened,"大門#BigDoorKHQ2"),0;
+	end;
+
+OnTouch_:
+	if (KielHyreQuest == 48)
+		warp "kh_kiehl01",173,35;
+	else
+		warp "kh_kiehl01",173,52;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Big Door, (Third)
+// - Consume one Black KeyCard when opened.
+// - Only one person actually needs to open it.
+//----------------------------------------------------------------------------
+kh_kiehl01,77,108,0	script	大門#BigDoorKHQ3	111,{
+	if (.KHDoor3Opened == 0) {
+		mes "^3355FF門被鎖上了，";
+		mes "但門把旁邊有";
+		mes "一個狹窄的插槽。^000000";
+		next;
+		input .@KHInput$;
+		if (.@KHInput$ == "Black Keycard") {
+			if (countitem(7506) >= 1) {
+				mes "^3355FF你將";
+				mes "黑色通行證插入";
+				mes "插槽，成功解鎖並";
+				mes "打開了大門。^000000";
+				delitem 7506,1; //Black_Key_Card
+				donpcevent "Big_Door_3_Warp::OnEnable";
+				enablenpc "Big_Door_3_Warp";
+				set .KHDoor3Opened,1;
+				close;
+			}
+
+		}
+		mes "^3355FF你試著用盡全力";
+		mes "推開門，";
+		mes "但門卻紋";
+		mes "風不動。^000000";
+		close;
+	}
+	else {
+		mes "^3355FF大門是開著的。^000000";
+		close;
+	}
+}
+
+kh_kiehl01,78,107,0	script	Big_Door_3_Warp	45,1,1,{
+OnEnable:
+	initnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnInit:
+	disablenpc "Big_Door_3_Warp";
+	end;
+	
+OnTimer30000:
+	stopnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	disablenpc "Big_Door_3_Warp";
+	set getvariableofnpc(.KHDoor3Opened,"大門#BigDoorKHQ3"),0;
+	end;
+
+OnTouch_:
+	if (KielHyreQuest == 49)
+		warp "kh_kiehl01",82,108;
+	else
+		warp "kh_kiehl01",68,108;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Big Door, (Fourth)
+// - Consume TWO Black KeyCard when opened.
+// - Only one person actually needs to open it.
+//----------------------------------------------------------------------------
+kh_kiehl01,42,177,0	script	大門#BigDoorKHQ4	111,{
+	if (.KHDoor4Opened == 0) {
+		mes "^3355FF門被鎖上了，";
+		mes "但門把旁邊有";
+		mes "一個狹窄的插槽。^000000";
+		next;
+		input .@KHInput$;
+		if (.@KHInput$ == "Black Keycard") {
+			if (countitem(7506) >= 2) {
+				mes "^3355FF你將";
+				mes "黑色通行證插入";
+				mes "插槽，成功解鎖並";
+				mes "打開了大門。^000000";
+				delitem 7506,2; //Black_Key_Card
+				donpcevent "Big_Door_4_Warp::OnEnable";
+				enablenpc "Big_Door_4_Warp";
+				set .KHDoor4Opened,1;
+				close;
+			}
+		}
+		mes "^3355FF你試著用盡全力";
+		mes "推開門，";
+		mes "但門卻紋";
+		mes "風不動。^000000";
+		close;
+	}
+
+	else {
+		mes "^3355FF大門是開著的。^000000";
+		close;
+	}
+}
+
+kh_kiehl01,41,178,0	script	Big_Door_4_Warp	45,1,1,{
+OnEnable:
+	initnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnInit:
+	disablenpc "Big_Door_4_Warp";
+	end;
+
+OnTimer30000:
+	stopnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	disablenpc "Big_Door_4_Warp";
+	set getvariableofnpc(.KHDoor4Opened,"大門#BigDoorKHQ4"),0;
+	end;
+
+OnTouch_:
+	if (KielHyreQuest == 50)
+		warp "kh_kiehl01",38,178;
+	else
+		warp "kh_kiehl01",47,171;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Robots
+//----------------------------------------------------------------------------
+kh_kiehl01,15,179,0	script	機器人#kh1	111,{
+	if (mobcount("kh_kiehl01","機器人#kh1::OnMyMobDead") < 1) {
+		mes "^3355FF當你一碰到";
+		mes "試管，";
+		mes "一群機器人";
+		mes "突然出現了。^000000.";
+		close2;
+		monster "kh_kiehl01",18,181,"愛麗俄",1740,1,"機器人#kh1::OnMyMobDead";
+		monster "kh_kiehl01",18,180,"愛麗瑟",1739,1,"機器人#kh1::OnMyMobDead";
+		monster "kh_kiehl01",18,179,"愛麗俄",1740,1,"機器人#kh1::OnMyMobDead";
+		monster "kh_kiehl01",18,178,"愛麗瑟",1739,1,"機器人#kh1::OnMyMobDead";
+		end;
+	}
+	else  {
+		end;
+	}
+
+OnMyMobDead:
+	if (mobcount("kh_kiehl01","機器人#kh1::OnMyMobDead") < 1) { 
+		makeitem 7506,1,"this",18,180;
+		}
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Dummy Robots
+//----------------------------------------------------------------------------
+kh_kiehl01,15,177,0	script	機器人#kh2::RobotsKHQ	111,{
+	end;
+}
+kh_kiehl01,15,180,0	duplicate(RobotsKHQ)	機器人#kh3	111
+kh_kiehl01,15,182,0	duplicate(RobotsKHQ)	機器人#kh4	111
+kh_kiehl01,35,187,0	duplicate(RobotsKHQ)	機器人#kh5	111
+kh_kiehl01,37,187,0	duplicate(RobotsKHQ)	機器人#kh6	111
+kh_kiehl01,39,187,0	duplicate(RobotsKHQ)	機器人#kh7	111
+kh_kiehl01,41,187,0	duplicate(RobotsKHQ)	機器人#kh8	111
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Big Door, (Fifth, and final)
+// - Anyone can pass through this door
+// - Consumes 4 Solid Iron Pieces
+//----------------------------------------------------------------------------
+kh_kiehl01,166,187,0	script	大門#BigDoorKHQ5	111,{
+	if (($@KHQuestBusy == 0) && (KielHyreQuest >= 74) && (KielHyreQuest <= 106)) {
+		if (KielHyreQuest < 86) {
+			mes "^3355FF這扇大門..";
+			mes "緊緊關著。";
+			mes "如果你仔細聽，";
+			mes "可以聽到門鉸鏈";
+			mes "發出輕微的嘎吱聲。^000000";
+			next;
+			select("推門:踢門:搖門:拉門:抬門");
+			mes "^3355FF一群怪物";
+			mes "在你對門施加";
+			mes "壓力時突然";
+			mes "出現了。";
+			mes "這一定是某種";
+			mes "安全裝置。^000000";
+			close2;
+			set @KHDoorPushAttempt,@KHDoorPushAttempt+1;
+			monster "kh_kiehl01",163,183,"愛麗瑟",1739,1;
+			monster "kh_kiehl01",163,179,"愛麗俄",1740,1;
+			monster "kh_kiehl01",169,183,"愛麗瑟",1739,1;
+			monster "kh_kiehl01",169,179,"愛麗俄",1740,1;
+			if (@KHDoorPushAttempt >= 3) { 
+				set KielHyreQuest,86; 
+			}
+			end;
+		}
+		else if ((KielHyreQuest > 84) && (KielHyreQuest < 94)) {
+			mes "^3355FF你對門施加";
+			mes "了一些壓力，";
+			mes "發現你可以稍微";
+			mes "推動它，但";
+			mes "無法完全打開。^000000";
+			next;
+			mes "^3355FF如果你在門和門框的";
+			mes "縫隙中塞入某個東西，";
+			mes "並充分利用槓桿原理，";
+			mes "那你應該就能";
+			mes "夠打開它。^000000";
+			next;
+			switch(select("鋼鐵:生鏽的鐵:堅硬的鐵片:鐵片:螺絲釘:取消")) {
+			case 1:
+				set .@KHPryingItem$,"Steel";
+				break;
+			case 2:
+				set .@KHPryingItem$,"Rusty Iron Piece";
+				break;
+			case 3:
+				if (countitem(7507) >= 1) {
+					if (KielHyreQuest < 92) {
+						mes "^3355FF你將一塊堅硬的";
+						mes "鐵片的一端插入";
+						mes "門縫中，費力地想";
+						mes "撬開大門";
+						mes "縫隙稍微變寬了一點，";
+						mes "但你弄斷了一塊";
+						mes "堅硬的鐵片。^000000";
+						delitem 7507,1;
+						//Hard_Piece_of_Steel
+						set KielHyreQuest,KielHyreQuest+2;
+						close;
+					}
+					else if (KielHyreQuest == 92) {
+						mes "^3355FF你用力一推，";
+						mes "用一塊堅硬的鐵片";
+						mes "撬入門縫，猛然將門";
+						mes "大開";
+						mes "無法承受這股強大的";
+						mes "力量，這塊堅硬的";
+						mes "鐵片粉碎成了灰塵。^000000";
+						delitem 7507,1; //Hard_Piece_of_Steel
+						set KielHyreQuest,94;
+						close;
+					}
+				}
+				else {
+					mes "^3355FF要是你有一塊堅硬的";
+					mes "鐵片可以用來";
+					mes "撬開這扇門就好了。^000000";
+					close;
+				}
+			case 4:
+				set .@KHPryingItem$,"Iron Piece";
+				break;
+			case 5:
+				set .@KHPryingItem$,"Screw";
+				break;
+			case 6:
+				mes "^3355FF我們找找看有沒有什麼";
+				mes "重物可以用來撬";
+				mes "開這扇門。^000000";
+				close;
+			}
+
+			mes "^3355FF這 "+.@KHPryingItem$+" 對於";
+			mes "你要做的事來說太脆弱了，";
+			mes "結果斷掉了。^000000";
+			close;
+		}
+		else if ((KielHyreQuest >= 94) && (KielHyreQuest <= 104)) {
+			if (.KHDoor5Opened == 0) {
+				mes "^3355FF大門";
+				mes "敞開著，";
+				mes "你現在可以進去了。^000000";
+				next;
+				switch(select("是:否")) {
+				case 1:
+					close2;
+					donpcevent "Big_Door_5_Warp::OnEnable";
+					enablenpc "Big_Door_5_Warp";
+					set .KHDoor5Opened,1;
+					end;
+				case 2:
+					mes "^3355FF誰知道這扇門的另一邊";
+					mes "有什麼。在闖入之前";
+					mes "我們先想清楚吧..^000000";
+					close;
+				}
+			}
+			else {
+				mes "^3355FF大門是開著的。^000000";
+				close;
+			}
+		}
+		else {
+			mes "^3355FF這扇大門..";
+			mes "緊緊關著。";
+			mes "如果你仔細聽，";
+			mes "可以聽到門鉸鏈";
+			mes "發出輕微的嘎吱聲。^000000";
+			close;
+		}
+	}
+	else {
+		mes "^3355FF這扇大門..";
+		mes "緊緊關著。";
+		mes "如果你仔細聽，";
+		mes "可以聽到門鉸鏈";
+		mes "發出輕微的嘎吱聲。^000000";
+		close;
+	}
+}
+
+kh_kiehl01,166,186,0	script	Big_Door_5_Warp	45,1,1,{
+	end;
+
+OnEnable:
+	initnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnTimer30000:
+	stopnpctimer;
+	specialeffect EF_SUMMONSLAVE;
+	disablenpc "Big_Door_5_Warp";
+	set getvariableofnpc(.KHDoor5Opened,"大門#BigDoorKHQ5"),0;
+	end;
+OnInit:
+	disablenpc "Big_Door_5_Warp";
+	end;
+
+OnTouch_:
+	if (KielHyreQuest >= 46)
+		warp "kh_kiehl02",50,7;
+	else
+		warp "kh_kiehl01",166,183;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Kiehl_Room_Trap (Entry way trap)
+//----------------------------------------------------------------------------
+kh_kiehl02,49,10,0	script	Kiehl_Room_Trap	-1,5,3,{
+	end;
+OnTouch:
+	if (.KHTrapSprung < 1) {
+		set .KHTrapSprung,1;
+		set $@KHQuestBusy,1;
+		initnpctimer;
+		monster "kh_kiehl02",47,13,"愛麗俄",1740,1;
+		monster "kh_kiehl02",45,13,"愛麗瑟",1739,1;
+		monster "kh_kiehl02",49,13,"康斯坦恩",1745,1;
+		monster "kh_kiehl02",51,13,"愛麗俄",1740,1;
+		monster "kh_kiehl02",53,13,"愛麗瑟",1739,1;
+		monster "kh_kiehl02",49,13,"康斯坦恩",1745,1;
+	}
+	end;
+
+OnTimer300000:
+OnTimer600000:
+OnTimer900000:
+	if (getmapusers("kh_kiehl02") == 0) {
+		donpcevent "KiehlRoom::OnReset";
+		stopnpctimer;
+	}
+	end;
+
+OnTimer1200000:
+	donpcevent "KiehlRoom::OnReset";
+	stopnpctimer;
+	end;
+
+OnGlobalTimerOff:
+	stopnpctimer;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Kiehl
+// - Timer will drop to 3 minutes once Kiehl is defeated.
+//----------------------------------------------------------------------------
+kh_kiehl02,50,52,4	script	基爾#Original	902,{
+	if (checkweight(908,200) == 0) {
+		mes "^3355FF等一下...";
+		mes "你身上攜帶了太";
+		mes "多物品了，";
+		mes "所以你需要";
+		mes "先清出更多";
+		mes "物品欄空間...^000000";
+		close;
+	}
+	cutin "kh_kiel01",2;
+	if ((KielHyreQuest < 94) || (KielHyreQuest >= 106)) {
+		mes "[基爾]";
+		mes "......";
+		mes ".........";
+		mes "............";
+		close2;
+		cutin "",255;
+		end;
+	}
+	if ((KielHyreQuest == 94) && (getvariableofnpc(.KHKilled,"KiehlRoom") < 5)) {
+		mes "[基爾]";
+		mes "真驚訝你能";
+		mes "走到這裡，冒險者?";
+		mes "歡迎來到我這";
+		mes "簡陋的房間。我想";
+		mes "你是為了濃縮";
+		mes "記憶捲軸而來的吧...也就是我的記憶。";
+		next;
+		mes "[基爾]";
+		mes "你應該明白";
+		mes "我不能就這樣交給你，";
+		mes "所以如果你真的想要";
+		mes "濃縮記憶捲軸，";
+		mes "那就讓我看看你的本事！";
+		close2;
+		cutin "",255;
+		set getvariableofnpc(.KHKilled,"KiehlRoom"),0;
+		monster "kh_kiehl02",50,52,"愛麗俄",1740,1,"KiehlRoom::OnKiehlMobDead";
+		monster "kh_kiehl02",50,52,"愛麗瑟",1739,1,"KiehlRoom::OnKiehlMobDead";
+		monster "kh_kiehl02",50,52,"康斯坦恩",1745,1,"KiehlRoom::OnKiehlMobDead";
+		monster "kh_kiehl02",50,52,"愛麗俄",1740,1,"KiehlRoom::OnKiehlMobDead";
+		monster "kh_kiehl02",50,52,"愛麗瑟",1739,1,"KiehlRoom::OnKiehlMobDead";
+		monster "kh_kiehl02",50,52,"康斯坦恩",1745,1,"KiehlRoom::OnKiehlMobDead";
+		monster "kh_kiehl02",50,52,"愛麗俄",1740,1,"KiehlRoom::OnKiehlMobDead";
+		hideonnpc "基爾#Original";
+		end;
+	}
+	else if ((KielHyreQuest == 94) && (getvariableofnpc(.KHKilled,"KiehlRoom") >= 5)) {
+		cutin "kh_kiel03",2;
+		mes "[基爾]";
+		mes "哼！你滿厲害的。";
+		mes "父親一定花了";
+		mes "不少錢來僱用";
+		mes "你。所以他是派";
+		mes "你來殺我的嗎？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "基爾 海雷派我來要求";
+		mes "你停止將所有的";
+		mes "第三代機器人";
+		mes "變成殺人機器！你怎麼";
+		mes "能對其他像你一樣的機器人";
+		mes "做出這種事？";
+		next;
+		cutin "kh_kiel01",2;
+		mes "[基爾]";
+		mes "為什麼不行？據說人類";
+		mes "是以上帝的形象創造的。";
+		mes "而機器人則是依人類的";
+		mes "形象創造的。就我所見，";
+		mes "你們人類不也是隨心所欲地";
+		mes "自相殘殺嗎。";
+		next;
+		mes "[基爾]";
+		mes "提供武器給有需求";
+		mes "的人類，對我來說";
+		mes "或許不合乎道德...";
+		mes "但他們本質就是如此。";
+		mes "武器。讓機器人去戰鬥";
+		mes "比人類更人道。";
+		next;
+		mes "[基爾]";
+		mes "機器人天生不";
+		mes "會感到痛苦或情緒...";
+		mes "除非他們被特別";
+		mes "編程。抱歉，但我沒";
+		mes "打算停止我正在做的事。";
+		next;
+		cutin "kh_kiel04",2;
+		mes "[基爾]";
+		mes "抱歉，但我沒有打算停止我正在做的事。";
+		mes "除此之外，我的父親向我展示了一個很好的例子，";
+		mes "示範了人類為了自身的自私可以做到什麼地步，甚至不惜摧毀一個家庭。";
+		mes "因此我不認為他能創造出比我更好的機器人。";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "人類或許不";
+		mes "完美，但想想看";
+		mes "你在跟誰合作！";
+		mes "雷根貝勒是人類";
+		mes "邪惡的縮影！你怎麼能";
+		mes "像這樣支持他們？";
+		next;
+		cutin "kh_kiel02",2;
+		mes "[基爾]";
+		mes "我跟雷根貝勒";
+		mes "有著長久的關係。我完全了解";
+		mes "他們的能力。你還記得";
+		mes "你來這裡途中經過的";
+		mes "第一個房間嗎，那個";
+		mes "擺滿玩具的房間？";
+		next;
+		mes "[基爾]";
+		mes "我敢說你不知道那裡";
+		mes "有5個第二代";
+		mes "機器人。我，還有我其他";
+		mes "四個兄弟姐妹。父親";
+		mes "建造了那個房間，好讓";
+		mes "我們五個可以住在一起。";
+		next;
+		cutin "kh_kiel03",2;
+		mes "[基爾]";
+		mes "我是唯一";
+		mes "活下來的。我回到了";
+		mes "父親身邊，甚至得到了一個";
+		mes "名字。但沒錯，我知道";
+		mes "雷根貝勒到底有多壞...";
+		next;
+		mes "[基爾]";
+		mes "我不想...我不想";
+		mes "再談論這個了。";
+		mes "你讓我...離開吧。";
+		mes "我想我會留你一命。";
+		next;
+		cutin "",255;
+		mes "[米契爾]";
+		mes "不許動！";
+		mes "基爾 海雷，你因為";
+		mes "製造和交易非法武器";
+		mes "被逮捕了！";
+		set KielHyreQuest,100;
+		hideoffnpc "米契爾#KiehlRoom";
+		hideoffnpc "探員#KHAgent1";
+		hideoffnpc "探員#KHAgent2";
+		hideoffnpc "探員#KHAgent3";
+		hideoffnpc "探員#KHAgent4";
+		next;
+	}
+	if ((KielHyreQuest == 100) && (getvariableofnpc(.KHKilledBoss,"KiehlRoom") < 1)) {
+		set getvariableofnpc(.KHKilledBoss,"KiehlRoom"),0;
+		cutin "kh_kiel01",2;
+		mes "[基爾]";
+		mes "啊，秀發茲發德共和國";
+		mes "的探員。呵。我以前從沒";
+		mes "有過這麼多客人。";
+		mes "嗯，我想這代表";
+		mes "我們終究還是得打一場了，";
+		mes "你跟我。*嘆氣* 真可惜。";
+		next;
+		mes "[基爾]";
+		mes "首先，為了公平起見，";
+		mes "讓我先解決這些";
+		mes "礙事的傢伙。他們只是";
+		mes "無腦地做著他們的";
+		mes "工作——有點像機器人——但";
+		mes "別擔心，他們不會受傷的。";
+		next;
+		mes "[米契爾]";
+		mes "不————！";
+		specialeffect PF_FOGWALL,AREA,"米契爾#KiehlRoom";
+		specialeffect PF_FOGWALL,AREA,"探員#KHAgent1";
+		specialeffect PF_FOGWALL,AREA,"探員#KHAgent2";
+		specialeffect PF_FOGWALL,AREA,"探員#KHAgent3";
+		specialeffect PF_FOGWALL,AREA,"探員#KHAgent4";
+		next;
+		cutin "kh_kiel03",2;
+		mes "[基爾]";
+		mes "現在，你跟我可以";
+		mes "來場真正的對決了，人類。";
+		mes "我很有興趣看看你";
+		mes "到底有多強?";
+		close2;
+		cutin "",255;
+		monster "kh_kiehl02",50,52,"齊爾",1733,1,"KiehlRoom::OnKiehlDead";
+		hideonnpc "基爾#Original";
+		end;
+	}
+	else if ((KielHyreQuest == 100) && (getvariableofnpc(.KHKilledBoss,"KiehlRoom") == 1)) {
+		cutin "kh_kiel02",2;
+		mes "[基爾]";
+		mes "可...可惡...！";
+		mes "打得好，冒險者。";
+		mes "打得好。我早該";
+		mes "知道父親會派";
+		mes "最頂尖的人來對付我。不過，";
+		mes "你還是沒能真正擊敗我。";
+		next;
+		cutin "kh_kiel03",2;
+		mes "[基爾]";
+		mes "我還有一些";
+		mes "王牌沒出";
+		mes "我想...我會拉你";
+		mes "跟我一起下地獄...嗯，";
+		mes "如果機器人能去那裡的話?";
+		next;
+		mapannounce "kh_kiehl02","*嘰——茲—— 嘎—— 喀啦~*",bc_map,"0xFF0000";
+		mes "[米契爾]";
+		mes "不...！我們被鎖";
+		mes "在房間裡了！我們...";
+		mes "我們被困在這裡了！";
+		next;
+		mes "[基爾]";
+		mes "耶?讓我們把";
+		mes "一切都燒毀吧?";
+		next;
+		mes "[米契爾]";
+		mes "快，"+strcharinfo(0)+"，";
+		mes "使用基爾 海雷的動力";
+		mes "裝置，那個";
+		mes "用來干擾";
+		mes "基爾動力供應的裝置！";
+		mes "快點，現在就用！";
+		next;
+		mapannounce "kh_kiehl02","*嘰茲~ 嘰茲~*",bc_map,"0xFF0000";
+		mes "[基爾]";
+		mes "什...什麼？我動...";
+		mes "動不了了！今天真是";
+		mes "充滿了驚喜啊。唉，算了。";
+		mes "我想是時候讓我";
+		mes "使用另一張王牌了。";
+		next;
+		mes "[米契爾]";
+		mes "什麼...？";
+		mes "你到底有";
+		mes "多少張王牌？";
+		next;
+		mes "[????]";
+		mes "我太失望了...";
+		mes "我不敢相信你們";
+		mes "沒人想到這點。";
+		next;
+		mes "[米契爾]";
+		mes "你是誰...？";
+		mes "出來！";
+		next;
+		mes "[????]";
+		mes "拜託。";
+		mes "別侮辱我了。";
+		mes "妳認得這個聲音。";
+		mes "它一直都在跟妳說話啊?";
+		next;
+		mes "[米契爾]";
+		mes "不可能...";
+		mes "怎麼可能";
+		mes "有兩個你...？！";
+		next;
+		hideoffnpc "基爾#Copy";
+		next;
+		cutin "kh_kiel01",0;
+		mes "[基爾]";
+		mes "哈哈哈哈哈！";
+		mes "我是個機器人啊！";
+		mes "我可以製造額外的";
+		mes "身體，並在其中切換";
+		mes "大腦。這可是非常";
+		mes "方便的，我跟妳說。";
+		next;
+		cutin "kh_kiel03",2;
+		mes "[基爾]";
+		mes "總之，我無意炫耀，";
+		mes "但我想我最好還是";
+		mes "向妳展示我最後的王牌。";
+		mes "首先，我對妳的一切";
+		mes "瞭若指掌，米契爾 萊拉小姐?";
+		next;
+		mes "[米契爾]";
+		mes "什麼？你怎麼";
+		mes "知道我的名字？";
+		next;
+		mes "[基爾]";
+		mes "嗯，我自己也安插了";
+		mes "一些間諜...";
+		mes "我讓他來解釋吧...";
+		next;
+		mes "[蒙面男子]";
+		mes "米契爾...";
+		mes "我很抱歉";
+		mes "妳必須被牽扯";
+		mes "進這一切...";
+		next;
+		mes "[米契爾]";
+		mes "沃爾克休？沃爾克休 蓋札？！";
+		mes "你是間諜？！但你曾冒著";
+		mes "生命危險拯救了我們的總統！";
+		mes "不！天啊！這怎麼";
+		mes "可能發生？！一切都...";
+		mes "這太瘋狂了！這一切！";
+		next;
+		mes "[沃爾克休]";
+		mes "這只是多年前";
+		mes "精心策劃的計畫";
+		mes "結果罷了。我沒想到";
+		mes "妳會這麼驚訝，";
+		mes "米契爾。這就是遊戲的";
+		mes "規則。妳知道的。";
+		next;
+		mes "[米契爾]";
+		mes "總統先生...";
+		mes "我辜負了您...對不起...";
+		next;
+		mes "[基爾]";
+		mes "嗯，蓋札，她似乎";
+		mes "很難接受，但至少";
+		mes "你表現得很有紳士風度。";
+		mes "嗯，我很樂意讓";
+		mes "我們大家都更";
+		mes "熟悉彼此，但是...";
+		next;
+		cutin "kh_kiel01",2;
+		mes "[基爾]";
+		mes "我們最好在這裡";
+		mes "道別。這個";
+		mes "地方在五分鐘後";
+		mes "就會消失。啊，還有";
+		mes "萊拉小姐，妳要跟";
+		mes "我們一起走。我們有些問題想問?";
+		next;
+		mes "[基爾]";
+		mes "我很好奇";
+		mes "總統的計畫是什麼。";
+		mes "蓋札先生，麻煩你";
+		mes "護送萊拉小姐...";
+		next;
+		mes "[沃爾克休 蓋札]";
+		mes "...............................";
+		mes "抱歉，米契爾。";
+		mes "我必須這麼做。";
+		next;
+		mes "[米契爾]";
+		mes "不，走開！放開我！";
+		mes "放開我，沃爾克休！";
+		hideonnpc "米契爾#KiehlRoom";
+		hideonnpc "探員#KHAgent1";
+		hideonnpc "探員#KHAgent2";
+		hideonnpc "探員#KHAgent3";
+		hideonnpc "探員#KHAgent4";
+		next;
+		cutin "kh_kiel02",2;
+		mes "[基爾]";
+		mes "太好了，我們已經處理完";
+		mes "那件醜陋的事了。現在，";
+		mes "我剛說到哪了？啊，對了。";
+		mes "是的。很抱歉。我們沒有";
+		mes "多餘的時間可以玩了。";
+		next;
+		mes "[基爾]";
+		mes "給你，冒險者。";
+		mes "我知道我父親";
+		mes "派你來拿這個。";
+		mes "就當作是我給他的";
+		mes "最後一份禮物吧。不過我滿驚訝";
+		mes "他會把這枚戒指留在我體內...";
+		next;
+		cutin "kh_kiel04",2;
+		mes "[基爾]";
+		mes "我想這對他來說一定";
+		mes "很珍貴。但";
+		mes "我想知道他為什麼";
+		mes "要把它放在我體內？總之，";
+		mes "我有一個訊息想";
+		mes "請你轉達給他。";
+		next;
+		cutin "kh_kiel01",2;
+		mes "[基爾]";
+		mes "首先...我想我們";
+		mes "應該處理掉這具";
+		mes "舊軀體。這是一具很好的";
+		mes "身體，它為我服役了";
+		mes "23年。我會想念";
+		mes "它的。好好休息吧，舊基爾。";
+		next;
+		specialeffect EF_DEVIL;
+		next;
+		mes "[基爾]";
+		mes "現在，這是";
+		mes "我父親製造的身體。";
+		mes "請告訴他，";
+		mes "這代表我們";
+		mes "之間再也沒有任何";
+		mes "關係了。";
+		next;
+		mes "[基爾]";
+		mes "我現在正在使用的身體？";
+		mes "是我用最先進的技術";
+		mes "自己製造的。如果可以的話...";
+		mes "就把他當作是第四代機器人";
+		mes "的身體吧。父親會";
+		mes "明白我的意思的。";
+		next;
+		mes "[基爾]";
+		mes "總之，請把這些話轉達給他，";
+		mes "然後從我舊的機器人身體裡";
+		mes "取出他的舊戒指，";
+		mes "交給他。至於";
+		mes "現在，我們離開這裡吧：我們";
+		mes "只有3分鐘的時間可以撤離。";
+		next;
+		mes "[基爾]";
+		mes "你是個值得尊敬的對手，";
+		mes "也是我尊重的人類。";
+		mes "我不知道我們是否會再見面，";
+		mes "但誰知道呢？";
+		mes "總之，我會為你開啟";
+		mes "出口。永別了?";
+		delitem 7504,1; //Toy_Motor
+		set KielHyreQuest,104;
+		hideonnpc "基爾#Copy";
+		donpcevent "Kiehl_Room_Exit::OnEnable";
+		enablenpc "Kiehl_Room_Exit";
+		initnpctimer;
+		cutin "",255;
+		close;
+	}
+	if (KielHyreQuest == 104) {
+		cutin "kh_kiel02",2;
+		mes "^3355FF你從基爾舊的";
+		mes "機器人身體的心臟";
+		mes "部位取出了戒指。^000000";
+		getitem 7508,1; //Elysia_Ring
+		set KielHyreQuest,106;
+		close2;
+		cutin "",255;
+		end;
+	}
+	else{
+		cutin "kh_kiel02",2;
+		mes "^3355FF基爾的舊";
+		mes "機器人身體";
+		mes "獨自佇立著，";
+		mes "毫無生氣且寂靜無聲。^000000";
+		close2;
+		cutin "",255;
+		end;
+	}
+
+
+OnTimer180000:
+	stopnpctimer;
+	mapannounce "kh_kiehl02","嗶————",bc_npc,0xFF0000;
+	donpcevent "KiehlRoom::OnReset";
+	end;
+
+OnTimer179000:
+	mapannounce "kh_kiehl02","距離引爆還有1秒",bc_npc,0xFF0000;
+	end;
+
+OnTimer178000:
+	mapannounce "kh_kiehl02","距離引爆還有2秒",bc_npc,0xFF0000;
+	end;
+OnTimer177000:
+	mapannounce "kh_kiehl02","距離引爆還有3秒",bc_npc,0xFF0000;
+	end;
+
+OnTimer176000:
+	mapannounce "kh_kiehl02","距離引爆還有4秒",bc_npc,0xFF0000;
+	end;
+
+OnTimer175000:
+	mapannounce "kh_kiehl02","距離引爆還有5秒",bc_npc,0xFF0000;
+	end;
+
+OnTimer170000:
+	mapannounce "kh_kiehl02","距離引爆還有10秒",bc_npc,0xFF0000;
+	end;
+
+OnTimer160000:
+	mapannounce "kh_kiehl02","距離引爆還有20秒",bc_npc,0xFF0000;
+	end;
+OnTimer150000:
+	mapannounce "kh_kiehl02","距離引爆還有30秒",bc_npc,0xFF0000;
+	end;
+
+OnTimer120000:
+	mapannounce "kh_kiehl02","距離引爆還有1分鐘",bc_npc,0xFF0000;
+	end;
+
+OnTimer60000:
+	mapannounce "kh_kiehl02","距離引爆還有2分鐘",bc_npc,0xFF0000;
+	end;
+
+OnTimer1000:
+	mapannounce "kh_kiehl02","距離引爆還有3分鐘",bc_npc,0xFF0000;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; NPC for mob control, timers, and other junk.
+//----------------------------------------------------------------------------
+kh_kiehl02,1,1,0	script	KiehlRoom	-1,{
+	end;
+OnKiehlMobDead:
+	set .KHKilled,.KHKilled+1;
+	if (.KHKilled == 5) { 
+		hideoffnpc "基爾#Original"; 
+	}
+	end;
+
+OnKiehlDead:
+	set .KHKilledBoss,1;
+	hideoffnpc "基爾#Original";
+	end;
+	
+OnReset:
+	donpcevent "Kiehl_Room_Trap::OnGlobalTimerOff";
+	if (getmapusers("kh_kiehl02") > 0)
+		mapwarp "kh_kiehl02","lighthalzen",192,200;
+	killmonsterall "kh_kiehl02";
+	disablenpc "Kiehl_Room_Exit";
+	hideonnpc "米契爾#KiehlRoom";
+	hideonnpc "探員#KHAgent1";
+	hideonnpc "探員#KHAgent2";
+	hideonnpc "探員#KHAgent3";
+	hideonnpc "探員#KHAgent4";
+	hideonnpc "基爾#Copy";
+	hideoffnpc "基爾#Original"; 
+	set .KHKilledBoss,0;
+	set .KHKilled,0;
+	set getvariableofnpc(.KHTrapSprung,"Kiehl_Room_Trap"),0;
+	set $@KHQuestBusy,0;
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Mitchell and Agents.
+//----------------------------------------------------------------------------
+kh_kiehl02,49,55,6	script	米契爾#KiehlRoom	727,{
+	end;
+OnInit:
+	hideonnpc strnpcinfo(0);
+	end;
+}
+kh_kiehl02,53,52,4	duplicate(米契爾#KiehlRoom)	探員#KHAgent1	880
+kh_kiehl02,51,49,1	duplicate(米契爾#KiehlRoom)	探員#KHAgent2	880
+kh_kiehl02,47,50,0	duplicate(米契爾#KiehlRoom)	探員#KHAgent3	880
+kh_kiehl02,46,53,6	duplicate(米契爾#KiehlRoom)	探員#KHAgent4	880
+
+//----------------------------------------------------------------------------
+// Kiehl's Room; Copy of Kiehl.
+//----------------------------------------------------------------------------
+kh_kiehl02,48,53,6	script	基爾#Copy	902,{
+	end;
+
+OnInit:
+	hideonnpc "基爾#Copy";
+	end;
+}
+
+//----------------------------------------------------------------------------
+// Kiehl's Room;
+// Kiehl_Room_Exit
+//----------------------------------------------------------------------------
+kh_kiehl02,49,56,0	script	Kiehl_Room_Exit	45,1,1,{
+OnTouch_:
+	if (getmapusers("kh_kiehl02") < 1)
+		donpcevent "KiehlRoom::OnReset";
+	warp "lighthalzen",193,200;
+	end;
+
+OnEnable:
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnInit:
+	disablenpc "Kiehl_Room_Exit";
+	end;
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= 1.0 First version, needs testing [Playtester]
+//= 1.1 Copied over some changes made by -Tsuyuki- [L0ne_W0lf]
+//=     Reworked variables slightly so that the permenents ones aside from the 
+//=     main tracking variable, are deleted when no longer needed.
+//      Renamed
+//=     several variables that handle strings to @KHInput$. [L0ne_W0lf]
+//= 1.2 Removed duplicate NPCs. [Toms]
+//= 1.3 More Bug fixes, fixed typo. Updated Additional comments. [L0ne_W0lf]
+//= 1.4 Fixed doors not resetting in kh_kiehl01 after 30 second timer is up. [L0ne_W0lf]
+//= 1.5 Another bug fixed (&& instead of ||). [L0ne_W0lf]
+//= 1.6 More squashed bugs with if checking. [L0ne_W0lf]
+//= 1.7 Corrected some spelling mistakes. [Balish]
+//=     Corrected Exploit with the pub man, giving infinite wine and money.
+//=     Corrected pool and map not showing text for some states of the quest.
+//=     Corrected Elly showing cutin but not text for some states of the quest (causing players to log off to continue).
+//=     Let fisherman talk to you when you have 10 fishes OR MORE.
+//=     Corrected not letting you enter the tombstone after finishing the quest.
+//= 1.8 Elly now deletes the Iron_Box, and Kiel Hyre deletes the Pin.
+//      [L0ne_W0lf]
+//=     More security on the 5th Big Door, now makes sure no one outside of who-
+//=     acticated it initially can use it.
+//      Resets after 10 minutes to make it.
+//=     Made it so that you need to be at least step 84 to activate the final door.
+//=     Corrected not deleting Allysia's Ring from inventory.
+//= 1.9 Exit will now enable if you are just retrieving the Ring, keeps you from getting stuck. [L0ne_W0lf]
+//=     Corrected "KH_Kielh02", was setting off a debug, invalid map index.
+//      Should have been "kh_Kiehl02"
+//=     Made .KHQuestBusy$ into a temp global variable. $@KHQuestBusy$.
+//= 2.0 Changed the labels on the "Big Doors" to "Identifier Names" to prevent an error with using getvariableofnpc [L0ne_W0lf]
+//= 2.1 Fifth door now checks for a variable HIGHER or EQUAL to 74 not 84, as pointed out by Stollen. [L0ne_W0lf]
+//= 2.2 Another fix for Elly, no longer RESETS to 26 when you talk to her. [L0ne_W0lf]
+//= 2.3 Should NOT have been setting .KHQuestBusy at all. It's not used or accessed anymore. Removed. [L0ne_W0lf]
+//= 2.4 Lots of fixes (4ish) from Valandi. [L0ne_W0lf]
+//=     Added a getmapuser check to the mapwarp in KHTimerEnd so it's not trying to warp out 0 users. [L0ne_W0lf]
+//= 2.5 Fixed several small issues (and large one) such as typos in cutins, typos in dialog, etc. [L0ne_W0lf]
+//=     Added some of the missing dialogs for several NPCs, and fixed a few NPC locations.
+//=     ALL books can now trigger the wall.
+//=     Allysia will now summon 4 (was 2) G_CONSTANTS instead of REGULAR constants.
+//=     Fixed where Golden_Key and Kiel_Button are deleted.
+//=     Removed KHTimerEnd, and instead use OnReset.
+//=     Fixed typo in the second NPC that gives Black Keycards.
+//=     Added Monster Warps. (Keeps monsters from being in dungeon quest area.) [Non-functional]
+//= 2.6 Stupid mistake, accidentally had 4 copies of the same script in 1... [L0ne_W0lf the bonehead]
+//= 2.7 Fixed the wrong name being displayed for Kiel Hyre in one dialog.
+//=     Removed $@KH_DoorInvoker entirely. The quest is now working like it should according to iRO.
+//=     Fixed up a few more NPC headers. Facing direction fixes mostly this time.
+//=     More progression changes to Kiehl Hyre. He no longer stops dialog after the agents appear.
+//= 2.8 Fixed the weight checking in Vandt, and added official dialog. [L0ne_W0lf]
+//=     Added weight checks for all NPCs that give items. Semi-official dialog.
+//=     Got the missing portion of dialog for Mills'.
+//=     Will add further proper dialogs as I get to them on the second runthrough of the quest.
+//= 2.8a minor optimization with extra goto, else or empty switch [Lupus]
+//= 2.9 Fixed the "enablenpc" problem with the missing spaces.
+//      No idea how it happened. [L0ne_W0lf]
+//= 3.0 Fixed a typo in Elly, in her room.
+//      (was <= should have been <) [L0ne_W0lf]
+//=     Added an 'end;' to the cookie basket.
+//      Kiel Hyre's final dialog will now delete all quest-related items.
+//= 3.1 Moved the "delitem" for all related quest items to the proper NPC. [L0ne_W0lf]
+//= 3.2 Fixed error with Allysia teling you to "Go away." maybe. [L0ne_W0lf]
+//= 3.2b Fixed some typos and grammar mistakes. [SinSloth]
+//= 3.3 Fixed the receiver log out bugs. [L0ne_W0lf]
+//= 3.4 Fixed bug when u can't get a Yellow Keycard if u got the Blue one at first [Lupus]
+//=     Note: There are many condition checks that should be omitted in the future fixed item names in item_db.txt / txt resources according the quest
+//=     for items, should be used bitwise methods in a single variable.
+//      So let's fix the rest possible bugs (if they exist) and then optimize ^_-
+//= 3.5 Changed the way the Black Keycard distibuting NPCs work slighty. [L0ne_W0lf]
+//= 3.6 Keil Hyre removes ALL outstanding quest items when he is talked [L0ne_W0lf]
+//=     to after finishing the quest.
+//= 3.7 Corrected NPC names to fall within proper restrictions. [L0ne_W0lf]
+//= 3.8 Corrected some delitems. (bugreport:690) [Samuray22]
+//= 3.9 Fixed a cutin not being erased. (bugreport:1539) [L0ne_W0lf]
+//============================================================

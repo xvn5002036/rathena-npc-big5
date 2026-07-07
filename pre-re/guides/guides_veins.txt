@@ -1,0 +1,129 @@
+//===== rAthena Script =======================================
+//= Veins Guide
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Veins City guide
+//===== Additional Comments: =================================
+//= 1.0 First version. [L0ne_W0lf]
+//= 1.1 Added second Veins guide NPC. [L0ne_W0lf]
+//= 1.2 Fixed a few small typos. [L0ne_W0lf]
+//============================================================
+
+veins,210,345,5	script	菲音斯嚮導#1::ve_guide	934,{
+	mes "[菲音斯嚮導]";
+	mes "沙漠之都菲音斯歡迎尋求躲避強烈沙塵暴的冒險者們。";
+	mes "如果這是你第一次使用導覽服務，何不先查看一下……";
+	set .@loop1,1;
+	while(.@loop1) {
+		next;
+		switch(select("村莊導覽:消除小地圖上的標記:注意事項:取消")) {
+		case 1:
+			mes "[菲音斯嚮導]";
+			mes "只要是在菲音斯，我可以告訴你任何建築物的位置。";
+			mes "所以你想去哪裡呢？";
+			if (.@compass_check == 0) {
+				mes "需要我幫你在";
+				mes "小地圖上標記";
+				mes "這些地點嗎？";
+				next;
+				if (select("是:否") == 1) set .@compass_check,1;
+			}
+			set .@loop2,1;
+			while(.@loop2) {
+				if (.@wait_button_chk == 0) set .@wait_button_chk,1;
+				else next;
+
+				switch(select("神殿:旅館:武器店:道具店:飛空艇:酒館:地質研究所:取消")) {
+				case 1:
+					mes "[菲音斯嚮導]";
+					mes "我們的神殿位在北方，";
+					mes "那裡總是擠滿了女神芙蕾雅虔誠的信徒。";
+					if (.@compass_check == 1) viewpoint 1,196,258,1,0xFF0000;
+					break;
+				case 2:
+					mes "[菲音斯嚮導]";
+					mes "你可以在旅館裡洗去旅途的疲憊。";
+					mes "我旁邊左邊這棟建築物就是菲音斯的旅館。";
+					if (.@compass_check == 1) viewpoint 1,128,266,2,0xFF00FF;
+					break;
+				case 3:
+					mes "[菲音斯嚮導]";
+					mes "沒錯，你應該靠自己保護自己免受危險。";
+					mes "以實惠的價格購買高品質的武器。";
+					mes "菲音斯的武器店就位在西邊。";
+					if (.@compass_check == 1) viewpoint 1,150,175,3,0x99FFFF;
+					break;
+				case 4:
+					mes "[菲音斯嚮導]";
+					mes "你為你的冒險準備了足夠的必需品嗎？";
+					mes "如果沒有，我建議你去看看位在中心的菲音斯道具店能提供你什麼。";
+					if (.@compass_check == 1) viewpoint 1,230,161,4,0x0000FF;
+					break;
+				case 5:
+					mes "[菲音斯嚮導]";
+					mes "請注意，菲音斯只有營運貨運飛空艇。";
+					if (.@compass_check == 1) viewpoint 1,273,285,5,0x00FF00;
+					break;
+				case 6:
+					mes "[菲音斯嚮導]";
+					mes "如果你想和";
+					mes "鎮民們交朋友，我建議你";
+					mes "去西邊的酒館";
+					mes "喝一杯。";
+					if (.@compass_check == 1) viewpoint 1,150,217,6,0x00FF00;
+					break;
+				case 7:
+					mes "[菲音斯嚮導]";
+					mes "你對研究地質學有興趣嗎？";
+					mes "那你最好去看看";
+					mes "位在武器店二樓的";
+					mes "地質研究所。";
+					if (.@compass_check == 1) viewpoint 1,150,175,7,0x00FF00;
+					break;
+				case 8:
+					mes "[菲音斯嚮導]";
+					mes "如果你想把小地圖上所有的位置標記消除，";
+					mes "只要再來找我，然後選擇『消除小地圖上的標記』選單即可。";
+					set .@loop2,0;
+					break;
+				}
+			}
+			break;
+
+		case 2:
+			viewpoint 2,196,258,1,0xFF0000;
+			viewpoint 2,128,266,2,0xFF00FF;
+			viewpoint 2,150,175,3,0x99FFFF;
+			viewpoint 2,230,161,4,0x0000FF;
+			viewpoint 2,273,285,5,0x00FF00;
+			viewpoint 2,150,217,6,0x00FF00;
+			viewpoint 2,150,175,7,0x00FF00;
+			mes "[菲音斯嚮導]";
+			mes "好的，標記現在都消失了。如果你還有想問的地點，儘管讓我知道。";
+			mes "祝你在菲音斯玩得愉快。";
+			break;
+		case 3:
+			mes "[菲音斯嚮導]";
+			mes "當你使用『村莊導覽』選單時，";
+			mes "請確認建築物的位置標記有顯示在你畫面右上角的小地圖上。";
+			mes "如果你沒看到小地圖，請使用快捷鍵『ctrl+tab』，或是點擊基本資訊視窗裡的『Map』按鈕，好嗎？";
+			mes "如果無法看到村莊的全貌，你也可以使用『-』按鈕來縮小你的小地圖。";
+			break;
+		case 4:
+			mes "[菲音斯嚮導]";
+			mes "祝你在菲音斯玩得愉快。";
+			close2;
+			set .@loop1,0;
+			break;
+		}
+	}
+	close;
+}
+
+veins,189,101,5	duplicate(ve_guide)	菲音斯嚮導#2	934

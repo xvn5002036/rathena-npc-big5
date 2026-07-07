@@ -1,0 +1,127 @@
+//===== rAthena Script =======================================
+//= White Day Event Script
+//===== By: ==================================================
+//= 1.0a Muad_Dib (Prometheus Project)
+//===== Current Version: =====================================
+//= 1.0a
+//===== Compatible With: =====================================
+//= rAthena Project;
+// RO Episode 6+
+//===== Description: =========================================
+//= Sells candy, candy cane and well baked cookie.
+//===== Additional Comments: =================================
+//= 07/06/05 : Added 1st Version. [Muad_Dib]
+//= Converted to rAthena format by Dr.Evil
+//============================================================
+
+alberta,188,64,4	script	糖	91,{
+	set @maplenum,0;
+	set @mapleItemID,0;
+	set @maplePrice,0;
+	set @maplePriceT,0;
+	mes "[糖]";
+	mes "歡迎光臨！";
+	mes "甜點多麼美味呀？";
+	mes "我的老師……";
+	mes "阿爾貝塔的甜點工匠";
+	mes "用心製作出了非常紮實的甜點。";
+	next;
+	mes "[糖]";
+	mes "這是一位親愛的人送的。";
+	mes "作為禮物的回報……";
+	mes "希望能像";
+	mes "禮物本身的甜美一樣，傳達這份心意。";
+	next;
+	menu "請給我！",-,"我不需要。",M_END,"關於老師。",M_L1;
+
+	mes "[糖]";
+	mes "好的！";
+	mes "請從這裡的選單選擇。";
+	mes "因為數量有限制";
+	mes "最多只能帶走 ^ff0000 5 個^000000。";
+	mes "可以嗎？";
+	next;
+	menu "糖果",-,"拐杖糖",L0_2,"好吃的餅乾",L0_3;
+	set @maplePrice,3000;
+	set @mapleItemID,529;
+	mes "[糖]";
+	mes "這是糖果，價格是";
+	mes "每個 3000 Zeny。";
+	mes "你想買多少個？";
+	next;
+	goto L_INPUT;
+L0_2:
+	set @maplePrice,4000;
+	set @mapleItemID,530;
+	mes "[糖]";
+	mes "這是拐杖糖，價格是";
+	mes "每個 4000 Zeny。";
+	mes "你想買多少個？";
+	next;
+	goto L_INPUT;
+L0_3:
+	set @maplePrice,2000;
+	set @mapleItemID,538; 
+	mes "[糖]";
+	mes "這是好吃的餅乾，價格是";
+	mes "每個 2000 Zeny。";
+	mes "你想買多少個？";
+	next;
+
+L_INPUT:
+	input @maplenum;
+	if (@maplenum > 5) goto L_ERROR;
+	if (@maplenum == 0) goto M_END;
+	set @maplePriceT,@maplePrice*@maplenum;
+	if (Zeny < @maplePriceT) goto L_ERROR2;
+	set Zeny,Zeny- @maplePriceT;
+	getitem @mapleItemID,@maplenum;
+	mes "[糖]";
+	mes "謝謝你！！！";
+	mes "這些甜點真的很好吃。";
+	mes "因為教我做甜點的老師是世界第一的！";
+	mes "雖然你可以自己享用";
+	mes "但別吃太多，不然會變胖喔。";
+	mes "請保重！！！";
+	close;
+
+M_L1:
+	mes "[糖]";
+	mes "是的";
+	mes "我的老師";
+	mes "是 Kuberu 先生，一位甜點工匠。";
+	mes "在兩位前輩的指導下製作甜點。";
+	mes "現在已經獲准自行修行了。";
+	next;
+	mes "[糖]";
+	mes "雖然似乎有在各地販售……";
+	mes "但他現在在哪裡？";
+	mes "這我就不知道了。";
+	close;
+
+L_ERROR:
+	mes "[糖]";
+	mes "？？？";
+	mes "你似乎沒有聽清楚。";
+	mes "需要我再說一次嗎？";
+	mes "你一次只能購買";
+	mes "^ff0000 5 個^000000。";
+	next;
+	goto L_INPUT;
+
+L_ERROR2:
+	mes "[糖]";
+	mes "？？？";
+	mes "嗯……看來你沒有足夠的錢";
+	mes "來買這個。";
+	mes "我建議你先檢查一下身上的 Zeny。";
+	close;
+
+M_END:
+	mes "[糖]";
+	mes "真的嗎……你可能會後悔喔。";
+	mes "如果你改變心意了。";
+	mes "我就在這裡。";
+	mes "祝你有個美好的一天！";
+	close;
+}

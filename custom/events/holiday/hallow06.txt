@@ -1,0 +1,124 @@
+//===== rAthena Script =======================================
+//= Custom Halloween Event 2006
+//===== By: ==================================================
+//= Stryker
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Halloween Event Script
+//===== Additional Comments: =================================
+//= 1.1 - Added trick to script
+//= 1.2 fixed bugs, optimized.
+//= Now uses 1 var instead of 3 [Lupus]
+//============================================================
+
+prontera,151,190,5	script	萬聖節活動	807,{
+	mes "[萬聖節活動]";
+	if(Class == Job_Novice){
+		mes "很抱歉，你必須先轉職才能完成這個活動。";
+		emotion ET_SWEAT, playerattached();
+		close;
+	}
+	if((EVENT_HALWN06&1) && (EVENT_HALWN06&2)){
+		mes "很抱歉，你已經完成過這個活動了。";
+		emotion ET_SORRY;
+		close;
+	}
+	mes "你好，充滿活力的人類。";
+	next;
+	mes "[萬聖節活動]";
+	mes "萬聖節到了，是時候前往那些鮮少有人敢踏足的地方冒險了。";
+	next;
+	mes "[萬聖節活動]";
+	mes "不給糖就搗蛋，你喜歡哪一個？";
+	next;
+	menu "搗蛋",-, "給糖",L_Treat;
+
+	mes "[萬聖節活動]";
+	if(EVENT_HALWN06&2){
+		mes "很抱歉，你已經搗蛋過了。你為什麼不去選個糖果呢？";
+		emotion ET_SORRY;
+		close;
+	}
+	mes "給我一分鐘...";
+	next;
+	set BaseExp,BaseExp+BaseLevel*1000;
+	set EVENT_HALWN06,EVENT_HALWN06|2;
+
+	mes "[萬聖節活動]";
+	mes "這是你的獎勵。你的 Base EXP 稍微增加了。";
+	next;
+	mes "[萬聖節活動]";
+	mes "希望你喜歡你的搗蛋禮物，萬聖節快樂！";
+	close;
+
+L_Treat:
+	mes "[萬聖節活動]";
+	if(EVENT_HALWN06&1){
+		mes "很抱歉，你已經拿過糖果了。你為什麼不去選個搗蛋呢？";
+		emotion ET_SORRY;
+		close;
+	}
+	if(!(EVENT_HALWN06&4)){
+		mes "太棒了！這一定會很有趣。";
+		next;
+		mes "[萬聖節活動]";
+		mes "我會派你去進行一場物品尋寶遊戲。";
+		next;
+		mes "[萬聖節活動]";
+		mes "帶回所有必需的物品，我就會為你製作一份糖果。";
+		next;
+		mes "[萬聖節活動]";
+		mes "這可不是一般的糖果，而是一件你可以戴在頭上的物品。";
+		next;
+		mes "[萬聖節活動]";
+		mes "但在製作任何東西之前，需要先準備一些材料。";
+		mes "清單如下：";
+		mes "1 個帽子，";
+		mes "30 個南瓜，和";
+		mes "20 個黑色布條";
+		next;
+		mes "[萬聖節活動]";
+		mes "現在快點去吧。";
+		set EVENT_HALWN06,EVENT_HALWN06|4;
+		close;
+	}
+	mes "你拿到我要求的物品了嗎？還是你需要再看一次清單？";
+	next;
+	menu "拿到了",-, "還沒拿到",L_Dont_Have, "看清單",L_List;
+
+	mes "[萬聖節活動]";
+	if((countitem(2220) < 1) || (countitem(535) < 30) || (countitem(7205) < 20)){
+		mes "你的物品數量不足。等你集齊了再來吧。";
+		emotion ET_SORRY;
+		close;
+	}
+	delitem 2220,1;
+	delitem 535,30;
+	delitem 7205,20;
+	getitem 5134,1;
+	set EVENT_HALWN06,EVENT_HALWN06|1;
+	mes "做得好！希望你喜歡你的物品。";
+	emotion ET_CONGRATULATION;
+	next;
+	mes "[萬聖節活動]";
+	mes "好好享受剩下的萬聖節時光吧。";
+	emotion ET_SCISSOR, playerattached();
+	close;
+
+L_Dont_Have:
+	mes "[萬聖節活動]";
+	mes "回去繼續尋找吧。你想再看一次清單嗎？";
+	next;
+	menu "不用",-, "好的",L_List;
+	close;
+L_List:
+	mes "[萬聖節活動]";
+	mes "我需要以下物品：";
+	mes "1 個帽子，";
+	mes "30 個南瓜，和";
+	mes "20 個黑色布條。";
+	close;
+}

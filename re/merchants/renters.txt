@@ -1,0 +1,274 @@
+//===== rAthena Script =======================================
+//= Renters
+//===== Description: =========================================
+//= [Official Conversion]
+//= Renewal-specific breeder NPCs.
+//===== Changelogs: ==========================================
+//= 2.1 Moved some renters to a separate renewal file. [Daegaladh]
+//= 2.2 Updated to match the official scripts. [Euphy]
+//= 2.3 Added fourth class support. [Emistry]
+//============================================================
+
+// Dragon Breeder :: dragon
+//============================================================
+job3_rune01,88,62,5	script	龍培育員	105,{
+	mes "[龍培育員]";
+	if ((eaclass()&EAJ_THIRDMASK)==EAJ_RUNE_KNIGHT) {
+		mes "歡迎。你想要租借一隻龍嗎？";
+		next;
+		switch(select("是:否")) {
+		case 1:
+			//if (!getskilllv("RK_DRAGONTRAINING")) {
+			if (!getskilllv("KN_RIDING")) {
+				mes "[龍培育員]";
+				mes "請先學習如何騎乘龍。";
+				close;
+			}
+			else if (checkdragon()) {
+				mes "[龍培育員]";
+				mes "你已經有一隻龍了。";
+				close;
+			}
+			else if (ismounting()) {
+				mes "[龍培育員]";
+				mes "請先解除你的商城坐騎。";
+				close;
+			}
+			setdragon;
+			close;
+		case 2:
+			mes "[龍培育員]";
+			mes "我明白了。祝你有個美好的一天。";
+			close;
+		}
+	}
+	mes "你在這裡做什麼？";
+	mes "只有盧恩騎士才能租借龍。";
+	close;
+}
+
+// Dragon/Gryphon Master :: dragon
+//============================================================
+prontera,130,213,5	script	坐騎管理員	105,{
+	mes "[坐騎管理員]";
+	if ((eaclass()&EAJ_THIRDMASK)==EAJ_RUNE_KNIGHT) {
+		mes "歡迎。你想要租借一隻龍嗎？";
+		next;
+		switch(select("是:否")) {
+		case 1:
+			//if (!getskilllv("RK_DRAGONTRAINING")) {
+			if (!getskilllv("KN_RIDING")) {
+				mes "[坐騎管理員]";
+				mes "請先學習如何騎乘龍。";
+				close;
+			}
+			else if (checkdragon()) {
+				mes "[坐騎管理員]";
+				mes "你已經有一隻龍了。";
+				close;
+			}
+			else if (ismounting()) {
+				mes "[坐騎管理員]";
+				mes "請先解除你的商城坐騎。";
+				close;
+			}
+			setdragon;
+			close;
+		case 2:
+			mes "[坐騎管理員]";
+			mes "我明白了。祝你有個美好的一天。";
+			close;
+		}
+	}
+	if ((eaclass()&EAJ_THIRDMASK)==EAJ_ROYAL_GUARD) {
+		mes "歡迎。你想要租借一隻獅鷲獸嗎？";
+		next;
+		switch(select("是:否")) {
+		case 1:
+			if (!getskilllv("KN_RIDING")) {
+				mes "[坐騎管理員]";
+				mes "請先學習如何騎乘獅鷲獸。";
+				close;
+			}
+			else if (checkriding()) {
+				mes "[坐騎管理員]";
+				mes "你已經有一隻獅鷲獸了。";
+				close;
+			}
+			else if (ismounting()) {
+				mes "[坐騎管理員]";
+				mes "請先解除你的商城坐騎。";
+				close;
+			}
+			setriding;
+			close;
+		case 2:
+			mes "[坐騎管理員]";
+			mes "我明白了。祝你有個美好的一天。";
+			close;
+		}
+	}
+	mes "我是在這裡為盧恩騎士和皇家禁衛隊提供坐騎的。";
+	close;
+}
+geffen,100,55,3	duplicate(坐騎管理員)	坐騎管理員#2	105
+payon,166,102,5	duplicate(坐騎管理員)	坐騎管理員#3	105
+aldebaran,133,109,5	duplicate(坐騎管理員)	坐騎管理員#4	105
+yuno,171,187,3	duplicate(坐騎管理員)	坐騎管理員#5	105
+rachel,106,130,5	duplicate(坐騎管理員)	坐騎管理員#6	105
+
+// Peco removing NPC :: dragon
+//============================================================
+prontera,125,208,5	script	大嘴鳥解除員	105,{
+	mes "[士兵]";
+	mes "如果你因為某些不明原因";
+	mes "無法從大嘴鳥上下來，";
+	mes "請隨時使用我的服務。";
+	if (checkriding()) {
+		next;
+		mes "[士兵]";
+		mes "你正在騎乘大嘴鳥。";
+		mes "你想要下來嗎？";
+		next;
+		switch(select("是:否")) {
+		case 1:
+			setriding 0;
+			mes "[士兵]";
+			mes "說說看，重新用自己的雙腳";
+			mes "踩在地面上的感覺";
+			mes "如何？";
+			close;
+		case 2:
+			mes "[士兵]";
+			mes "我明白了。如果你改變主意，";
+			mes "請隨時來找我。";
+			close;
+		}
+	}
+	close;
+}
+
+// Mado Gear Renter :: madogear
+//============================================================
+-	script	::mgm	-1,{
+	mes "[魔導戰甲技師]";
+	if ((eaclass()&EAJ_THIRDMASK)==EAJ_MECHANIC) {
+		mes "歡迎，機械工匠。";
+		mes "你想要租借一輛手推車或是";
+		mes "搭乘魔導戰甲嗎？";
+		next;
+		switch(select("租借手推車:搭乘魔導戰甲:購買緊急魔導戰甲:升級冷卻裝置:取消")) {
+		case 1:
+			if (checkcart()) {
+				mes "[魔導戰甲技師]";
+				mes "很抱歉，但是你已經";
+				mes "有一輛手推車了。";
+				close;
+			}
+			setcart;
+			mes "[魔導戰甲技師]";
+			mes "給你！";
+			close;
+		case 2:
+			if (checkmadogear()) {
+				mes "[魔導戰甲技師]";
+				mes "很抱歉，但是你已經";
+				mes "在搭乘魔導戰甲了。";
+				close;
+			}
+			else if (!getskilllv("NC_MADOLICENCE")) {
+				mes "[魔導戰甲技師]";
+				mes "請先學習獲得魔導戰甲執照的技能。";
+				close;
+			}
+			else if(ismounting()) {
+				mes "[魔導戰甲技師]";
+				mes "請先解除你的商城坐騎。";
+				close;
+			}
+			setmadogear;
+			mes "[魔導戰甲技師]";
+			mes "祝你玩得開心，歡迎下次再來！";
+			close;
+		case 3:
+			mes "[魔導戰甲技師]";
+			mes "緊急魔導戰甲在緊急情況下非常有用，售價為 1,000,000 Zeny。";
+			next;
+			if (select("購買:取消") == 2) {
+				mes "[魔導戰甲技師]";
+				mes "我明白了。如果你改變主意，";
+				mes "請隨時來找我。";
+				close;
+			}
+			if (countitem(23277) > 0) {
+				mes "[魔導戰甲技師]";
+				mes "很抱歉，但是你已經有一個緊急魔導戰甲了。";
+				close;
+			}
+			if (Zeny < 1000000) {
+				mes "[魔導戰甲技師]";
+				mes "很抱歉，但是你沒有足夠的 Zeny 來購買緊急魔導戰甲。";
+				close;
+			}
+			Zeny -= 1000000;
+			getitem 23277,1; //Mado_Box
+			mes "[魔導戰甲技師]";
+			mes "給你！";
+			close;
+		case 4:
+			mes "[魔導戰甲技師]";
+			mes "你想要升級哪個裝置？";
+			next;
+			if (select("冷卻裝置:高品質冷卻器") == 1) {
+				mes "[魔導戰甲技師]";
+				mes "將冷卻裝置升級為高品質冷卻器需要 1個 冷卻裝置 和 2,000,000 Zeny。";
+				next;
+				.@itemid = 2804;
+				.@cost = 2000000;
+			} else {
+				mes "[魔導戰甲技師]";
+				mes "將高品質冷卻器升級為特殊冷卻器需要 1個 高品質冷卻器 和 4,000,000 Zeny。";
+				next;
+				.@itemid = 2809;
+				.@cost = 4000000;
+			}
+			if (select("升級:取消") == 2) {
+				mes "[魔導戰甲技師]";
+				mes "我明白了。如果你改變主意，";
+				mes "請隨時來找我。";
+				close;
+			}
+			if (!countitem(.@itemid)) {
+				mes "[魔導戰甲技師]";
+				mes "很抱歉，但是你沒有 " + getitemname(.@itemid) + "。";
+				close;
+			}
+			if (Zeny < .@cost) {
+				mes "[魔導戰甲技師]";
+				mes "很抱歉，但是你沒有足夠的 Zeny 來升級該裝置。";
+				close;
+			}
+			Zeny -= .@cost;
+			delitem .@itemid,1;
+			getitem (.@itemid == 2804 ? 2809 : 2810),1; //High_Quality_Cooler,Special_Cooler
+			mes "[魔導戰甲技師]";
+			mes "給你！這是你專屬的 " + getitemname(.@itemid) + "。";
+			close;
+		case 5:
+			close;
+		}
+	}
+	mes "有什麼我可以幫你的嗎？";
+	mes "魔導戰甲只有機械工匠可以使用。";
+	close;
+}
+prontera,163,178,3	duplicate(mgm)	魔導戰甲技師#prt	105
+geffen,103,55,5	duplicate(mgm)	魔導戰甲技師#gef	105
+payon,166,106,5	duplicate(mgm)	魔導戰甲技師#pay	105
+aldebaran,133,112,5	duplicate(mgm)	魔導戰甲技師#alde	105
+yuno,167,187,3	duplicate(mgm)	魔導戰甲技師#yuno	105
+rachel,106,134,5	duplicate(mgm)	魔導戰甲技師#ra	105
+dicastes01,187,207,3	duplicate(mgm)	魔導戰甲技師#dic	105
+manuk,273,212,5	duplicate(mgm)	魔導戰甲技師#man	105
+splendide,180,174,5	duplicate(mgm)	魔導戰甲技師#spl	105
+mid_camp,242,243,3	duplicate(mgm)	魔導戰甲技師#mid	105

@@ -1,0 +1,811 @@
+//===== rAthena Script =======================================
+//= Eden Group Quests - Mission [121-130]
+//===== By: ==================================================
+//= Capuche
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Repeatable quests for players between BaseLevel 121 - 130.
+//===== Additional Comments: =================================
+//= 1.0 First version.
+//= 1.1 Added support to Para_Team_Mark_ in Eden Group. [Ragno]
+//= 1.2 Added use of F_HasEdenGroupMark function. [Ragno]
+//============================================================
+
+moc_para01,44,81,3	script	旋律傑克#1	4_M_MELODY,8,8,{
+	mes "[旋律傑克]";
+	if (!callfunc("F_HasEdenGroupMark")) {
+		mes "你到底是誰？給我滾出去！";
+		mes "我只和 Base Level ^FF0000121-130^000000 的冒險者說話。";
+	}
+	else if (para_120lv01 == 0)
+		mes "什麼？別煩我。我現在很忙。";
+	else if (para_120lv01 == 1) {
+		mes "你接到那個小女孩的委託了？那邊那個個子小、話多又半裸的傢伙？";
+		next;
+		select("說對。", "避而不答。");
+		mes "[旋律傑克]";
+		mes "不。我不在乎。只要你不是因為迷路才踏進這個房間的就好。除了那種笨蛋，我誰都需要。";
+		next;
+		mes "[旋律傑克]";
+		mes "請聽我說，我會向你提出一個很有吸引力的建議。";
+		next;
+		mes "[旋律傑克]";
+		mes "我是^ff0000旋律傑克！^000000 擁有最棒匕首技巧的頂尖高手。";
+		next;
+		mes "旋律傑克朝你的方向揮舞了一下匕首。";
+		next;
+		mes "[旋律傑克]";
+		mes "我有資格接下秘密任務。而你現在運氣很好。";
+		next;
+		mes "[旋律傑克]";
+		mes "看來我不得不放棄一個任務、交易和承諾了，我現在無法接下它。";
+		next;
+		mes "[旋律傑克]";
+		mes "接下我的任務，去解決艾古的委託。我會補償你的。";
+		next;
+		mes "[旋律傑克]";
+		mes "我們的交易對艾古是保密的。除非你有九條命。我們開始吧。";
+		para_120lv01 = 2;
+	}
+	else if (para_120lv01 > 1) {
+		mes "......";
+		next;
+		if (select( "讓我看看委託！", "閒聊。" ) == 2) {
+			mes "[旋律傑克]";
+			mes "什麼？你對我有興趣？";
+			next;
+			switch( select( "我很感興趣。", "關於委託", "關於交易", "什麼是承諾？" ) ) {
+				mes "[旋律傑克]";
+			case 1:
+				mes "好吧，滾開。我對你沒興趣。";
+				close;
+			case 2:
+				mes "因為我信用不好，所以我無法停止。這快把我逼瘋了。";
+				next;
+				mes "[旋律傑克]";
+				mes "我很幸運能和像你這樣的冒險者簽訂雙重契約。他們不在我們的合約範圍內。";
+				close;
+			case 3:
+				mes "老實說，我不認為有任何人值得信任。信任或承諾都是愚蠢的。";
+				next;
+				mes "[旋律傑克]";
+				mes "我只相信我自己和我的交易。如果信任或承諾被打破了，那就什麼都不是，但如果交易被打破了，就會有補償或報復。";
+				close;
+			case 4:
+				mes "這些小鬼都是誰？";
+				next;
+				mes "[旋律傑克]";
+				mes "我出來雖然一無所獲，但我理應履行我的職責。我不欠任何人東西。";
+				close;
+			}
+		}
+		mes "[旋律傑克]";
+		if (BaseLevel < 121)
+			mes "哦，我犯了個錯。你不是我要找的那個等級的冒險者。我正在尋找 Base Level 121 到 130 的冒險者。";
+		else if (BaseLevel < 131) {
+			mes "我不喜歡這樣，但交易就是交易。請在清除艾古要求搜索的地方的魔物後回來。";
+			next;
+			switch( select( "達納托斯之塔相關 ", "拉赫神殿相關 ", "無名島相關 ", "深淵湖水相關 " ) ) {
+				mes "[旋律傑克]";
+			case 1:
+				mes "達納托斯之塔是最煩人的地方。別擔心你的報酬。我會說到做到的。";
+				next;
+				switch( select( "代行刑者", "慰勞者", "安息者", "監視者" ) ) {
+					mes "[旋律傑克]";
+				case 1:
+					if (checkquest(13120,PLAYTIME) == 0)
+						mes "我想我今天的表演結束了。我不能放鬆，萬一魔物突然出現怎麼辦。";
+					else if (checkquest(13119,HUNTING) == 1) {
+						cutin "????????",3;  //retribution_card
+						mes "我不喜歡那個生物，不是因為艾古不喜歡他們...你怎麼敢？誰在懲罰誰？";
+						next;
+						mes "[旋律傑克]";
+						mes "這些是世界上最危險的生物之一。這些生物不配得到正義。";
+						next;
+						cutin "",255;
+						mes "[旋律傑克]";
+						mes "你當然可以相信我。因為我相信真正的交易。讓我們把那些生物掃蕩乾淨吧。";
+					}
+					else if (checkquest(13119,HUNTING) == 2) {
+						mes "你清理掉他們了嗎？這樣那個小男孩今天就不會被打擾了。做得好。";
+						callsub S_Quest,13119,13120,1;
+					}
+					else {
+						cutin "????????",3;  //retribution_card
+						mes "如你所知，達納托斯之塔是艾古最關心的地方。在某些方面它是最危險的地方。";
+						next;
+						mes "[旋律傑克]";
+						mes "請清除魔物來幫助艾古。外行人會把事情搞砸的。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "那裡一定有很多。別忘了要保密。 ";
+							callsub S_Quest,13120,13119;
+						}
+					}
+					close;
+				case 2:
+					if (checkquest(13122,PLAYTIME) == 0)
+						mes "我想我今天的表演結束了。我不能放鬆...萬一魔物突然出現怎麼辦？";
+					else if (checkquest(13121,HUNTING) == 1) {
+						cutin "?????",3;  //solace_card
+						mes "這棟建築似乎不是人類設計的，而且那裡總是播放著奇怪的旋律。";
+						next;
+						mes "[旋律傑克]";
+						mes "不要沉浸在旋律的氣氛中，因為那可能是你聽到的最後一首歌。";
+						next;
+						cutin "",255;
+						mes "[旋律傑克]";
+						mes "記住，世界上有像刀一樣銳利可以殺人的奇怪音樂。";
+					}
+					else if (checkquest(13121,HUNTING) == 2) {
+						mes "你聽過他們演奏的旋律嗎？如果那個小男孩再次開始演奏，你就有機會了。";
+						callsub S_Quest,13121,13122,1;
+					}
+					else {
+						cutin "?????",3;  //solace_card
+						mes "優美的旋律。也許聽起來很優美是因為生物在演奏。";
+						next;
+						mes "[旋律傑克]";
+						mes "然而那是另一個障礙。交易隨時都優先於個人利益。所以清除慰勞者吧。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "我們只是履行了我們的交易。現在去清除那些生物。";
+							callsub S_Quest,13122,13121;
+						}
+					}
+					close;
+				case 3:
+					if (checkquest(13124,PLAYTIME) == 0)
+						mes "我想我今天的表演結束了。我不能放鬆...萬一魔物突然出現怎麼辦？";
+					else if (checkquest(13123,HUNTING) == 1) {
+						cutin "????????",3;  //shelter_card
+						mes "你知道有變成魔物的天使嗎？我不知道那是不是天使。但牠的外表像個天使。";
+						next;
+						mes "[旋律傑克]";
+						mes "不要因為美麗的外表而驚慌，不管它是天使還是生物。你應該做好你的工作。";
+						next;
+						mes "[旋律傑克]";
+						mes "凡事都有定期。也許你接受這個委託是因為時候到了。";
+						cutin "",255;
+					}
+					else if (checkquest(13123,HUNTING) == 2) {
+						mes "很好。如果有人找我，請讓我知道。如果是這樣，我可能需要更改交易的細節。";
+						callsub S_Quest,13123,13124,1;
+					}
+					else {
+						cutin "????????",3;  //shelter_card
+						mes "你知道有變成魔物的天使嗎？我不知道那是不是天使。但牠的外表像個天使。";
+						next;
+						mes "[旋律傑克]";
+						mes "我不在乎它是真正的天使還是只是個生物。清除安息者。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "枯萎的花朵會被風雨吹落。這就是你該做的事。";
+							emotion ET_BEST;
+							callsub S_Quest,13124,13123;
+						}
+					}
+					close;
+				case 4:
+					if (checkquest(13126,PLAYTIME) == 0)
+						mes "我完成了今天的表演。我不能放鬆，萬一魔物突然出現怎麼辦。";
+					else if (checkquest(13125,HUNTING) == 1) {
+						cutin "???????",3;  //observation_card
+						mes "一旦你踏入達納托斯之塔的上層，你可能會感覺到他們在監視。";
+						next;
+						mes "[旋律傑克]";
+						mes "監視者並不容易對付，所以一定要做好戰鬥的準備。";
+						next;
+						mes "[旋律傑克]";
+						mes "今天是個赴死的好日子。不是你死就是他們亡，所以盡力而為吧。";
+						cutin "",255;
+					}
+					else if (checkquest(13125,HUNTING) == 2) {
+						mes "你看起來不錯。也許你比我想像的還要好？不過我並沒有親眼確認。";
+						callsub S_Quest,13125,13126,1;
+					}
+					else {
+						cutin "???????",3;  //observation_card
+						mes "如果艾古要求，你會遇到他們的。監視者。";
+						next;
+						mes "[旋律傑克]";
+						mes "我也希望他們被清除，這樣她就能輕鬆地進行這個冒險委託。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "為了一個委託而委託...隨便啦。";
+							callsub S_Quest,13126,13125;
+						}
+					}
+					close;
+				}
+			case 2:
+				mes "艾古的冒險指向了拉赫神殿。好吧...如果艾古在找的^FF0000那個人類^000000在任何地方被發現，這並不奇怪。";
+				next;
+				switch( select( "梵柏和伊西拉", "異型", "阿卡布和艾基歐" ) ) {
+					mes "[旋律傑克]";
+				case 1:
+					if (checkquest(13128,PLAYTIME) == 0)
+						mes "你可以休息一天了。你已經清理得夠多了，但狂熱者增加了。";
+					else if (checkquest(13127,HUNTING) == 1) {
+						cutin "?????",3;  //isilla_card
+						mes "自以為是的人是最危險的。這個世界充滿了傻瓜。";
+						next;
+						mes "[旋律傑克]";
+						mes "最後強迫別人相信他們所相信的。讓我們去清除梵柏和伊西拉吧。";
+						next;
+						mes "[旋律傑克]";
+						mes "這不關我的事。但這次不一樣。一個小男孩可能會有危險，所以我們趕快去清除這些魔物吧。";
+						cutin "",255;
+					}
+					else if (checkquest(13127,HUNTING) == 2) {
+						mes "只要一天。會沒事的。";
+						callsub S_Quest,13127,13128,1;
+					}
+					else {
+						cutin "??????",3;
+						//vanberk_card
+						mes "拉赫的神殿是禁止一般人進入的。你必須知道這點。";
+						next;
+						mes "[旋律傑克]";
+						mes "他們認為可以在那裡找到線索，但那不是個安全的地方。你應該先去清除梵柏和伊西拉。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "盡快把它們全部清除。";
+							emotion ET_SPARK;
+							callsub S_Quest,13128,13127;
+						}
+					}
+					close;
+				case 2:
+					if (checkquest(13130,PLAYTIME) == 0)
+						mes "未知的魔物很危險，所以先清除它們。如果有什麼事我會通知你的。";
+					else if (checkquest(13129,HUNTING) == 1) {
+						cutin "??????",3;  //hodremlin_card
+						mes "冰冷的牙齒可能正在逼近。牠的牙齒比你的手還要快。";
+						next;
+						mes "[旋律傑克]";
+						mes "拉赫神殿的敵人會從四面八方逼近。你應該要小心這一個。";
+						next;
+						mes "[旋律傑克]";
+						mes "只要專注於手邊的工作。那就夠了。";
+						cutin "",255;
+					}
+					else if (checkquest(13129,HUNTING) == 2) {
+						mes "我不是那麼擔心，但你安全嗎？沒被咬到吧？";
+						callsub S_Quest,13129,13130,1;
+					}
+					else {
+						cutin "??????",3;  //hodremlin_card
+						mes "狂熱者是個問題。更嚴重的問題是他們會突然出現。";
+						next;
+						mes "[旋律傑克]";
+						mes "毫不猶豫地除掉^FF0000異型^000000。因為牠們非常危險。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "他們需要比頭腦更快的手。我不擔心，但你還是得小心。";
+							callsub S_Quest,13130,13129;
+						}
+					}
+					close;
+				case 3:
+					if (checkquest(13132,PLAYTIME) == 0)
+						mes "如果你能說話。現在沒有委託了。今天就休息一下吧。";
+					else if (checkquest(13131,HUNTING) == 1) {
+						cutin "?????",3;  //echio_card
+						mes "這裡充滿了瘋狂。我只覺得噁心。";
+						next;
+						mes "[旋律傑克]";
+						mes "這是我的感覺，但你可能會喜歡。我確定^FF0000阿卡布^000000和^FF0000艾基歐^000000不會喜歡你的。";
+						next;
+						mes "[旋律傑克]";
+						mes "他們會撞上你。不要猶豫，專心工作。";
+						cutin "",255;
+					}
+					else if (checkquest(13131,HUNTING) == 2) {
+						mes "找到人了嗎？我不會擔心的。承諾就是承諾，交易就是交易。";
+						callsub S_Quest,13131,13132,1;
+					}
+					else {
+						cutin "?????",3;  //agav_card
+						mes "拉赫神殿裡面確實越來越危險，但艾古不會在意我們不確定的事情。";
+						next;
+						mes "[旋律傑克]";
+						mes "那還不算太糟。但需要有人幫忙？讓我們去清除拉赫神殿裡的^FF0000阿卡布^000000和^FF0000艾基歐^000000吧。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "我無法離開，所以再會了。";
+							callsub S_Quest,13132,13131;
+						}
+					}
+					close;
+				}
+			case 3:
+				mes "無名島對一般冒險者來說並不為人知。艾古對那裡也很感興趣。";
+				next;
+				switch( select( "狩獵襤褸腐屍", "狩獵屠殺腐屍", "狩獵女妖" ) ) {
+					mes "[旋律傑克]";
+				case 1:
+					if (checkquest(13134,PLAYTIME) == 0)
+						mes "襤褸腐屍減少了。這是個進行艾古委託的好時機，稍等一下。";
+					else if (checkquest(13133,HUNTING) == 1) {
+						cutin "???????",3;  //ragged_zombie_card
+						mes "在無名島上很容易遇到任何東西。真無聊。";
+						next;
+						mes "[旋律傑克]";
+						mes "除掉它，幫助艾古和其他冒險者。";
+						cutin "",255;
+					}
+					else if (checkquest(13133,HUNTING) == 2) {
+						mes "你洗澡了嗎？這裡有味道。但我確定你一定受不了那味道。";
+						callsub S_Quest,13133,13134,1;
+					}
+					else {
+						cutin "???????",3;  //ragged_zombie_card
+						mes "死者在夜間歸來。歸來聽起來很奇怪。我們別廢話了。";
+						next;
+						mes "[旋律傑克]";
+						mes "希望你能清除^FF0000襤褸腐屍^000000。這很容易，因為牠們到處都是。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "去^FF0000洗個澡^000000，你就不會再有味道了。";
+							callsub S_Quest,13134,13133;
+						}
+					}
+					close;
+				case 2:
+					if (checkquest(13136,PLAYTIME) == 0)
+						mes "我知道去無名島的委託並不容易，但如果你能再次加入，我會很高興。";
+					else if (checkquest(13135,HUNTING) == 1) {
+						cutin "???????",3;  //zombie_slaughter_card
+						mes "對我來說，踏入無名島也不是件容易的事。我沒有那麼有耐心。";
+						next;
+						mes "[旋律傑克]";
+						mes "但冒險者應該挑戰一次。^FF0000屠殺腐屍^000000值得被清除。";
+						cutin "",255;
+					}
+					else if (checkquest(13135,HUNTING) == 2) {
+						mes "你很不錯嘛！你清除了牠們。回來需要一些時間。";
+						callsub S_Quest,13135,13136,1;
+					}
+					else {
+						cutin "???????",3;  //zombie_slaughter_card
+						mes "牠們和襤褸腐屍不同，很危險，因為牠們會揮舞尖銳的東西。";
+						next;
+						mes "[旋律傑克]";
+						mes "請清除^FF0000屠殺腐屍^000000。小心避開牠們的刀刃。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "你有很多事情要處理，所以我就不多說了。清除牠們吧。";
+							callsub S_Quest,13136,13135;
+						}
+					}
+					close;
+				case 3:
+					if (checkquest(13138,PLAYTIME) == 0)
+						mes "女妖被清除了。反正委託解決了，但這不是結束。遲早還會再需要的。";
+					else if (checkquest(13137,HUNTING) == 1) {
+						cutin "????",3;  //banshee_card
+						mes "你會發現，在冒險時，無論魔物和同伴如何，有時總會遇到不受歡迎的事物。";
+						next;
+						mes "[旋律傑克]";
+						mes "這個委託對我來說就是這樣。我只是不喜歡這些生物，或是不喜歡發布這個委託的理由。";
+						cutin "",255;
+					}
+					else if (checkquest(13137,HUNTING) == 2) {
+						mes "你一定很累了。你去了那個超出你能力的艱困地方。別生氣。我會為此獎勵你的。";
+						callsub S_Quest,13137,13138,1;
+					}
+					else {
+						cutin "????",3;  //banshee_card
+						mes "請清除無名島裡的^FF0000女妖^000000。不要拒絕。你知道這也是為了艾古。";
+						next;
+						mes "[旋律傑克]";
+						mes "女妖和艾古都很煩人。我本來不想做這個委託的，但你就不一樣了。對吧？";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "看吧？有人需要這個委託。去無名島清除^FF0000女妖^000000吧。";
+							callsub S_Quest,13138,13137;
+						}
+					}
+					close;
+				}
+			case 4:
+				mes "深淵湖水有來自一個小女孩的委託。非常勤奮。";
+				next;
+				if (select( "綠貝勒斯和紅貝勒斯已清除。", "金色和藍色 艾斯恩魔女已清除。" ) == 1) {
+					mes "[旋律傑克]";
+					if (checkquest(13140,PLAYTIME) == 0)
+						mes "綠龍和紅龍讓我聯想到西瓜。";
+					else if (checkquest(13139,HUNTING) == 1) {
+						cutin "???????",3;
+						//ferus_card
+						mes "深淵湖水...你可能知道怎麼進去吧？你不是那種擁有這類情報的冒險者嗎？";
+						next;
+						mes "[旋律傑克]";
+						mes "以防萬一，我給你個線索，鑰匙和入口會在附近被找到。";
+						cutin "",255;
+					}
+					else if (checkquest(13139,HUNTING) == 2) {
+						mes "你把所有的龍都清除了嗎？休息一天吧。";
+						callsub S_Quest,13139,13140,1;
+					}
+					else {
+						cutin "???????",3;  //ferus__card
+						mes "深淵湖水裡裡外外都充滿了龍。龍並沒有那麼特別，但數量太多了。";
+						next;
+						mes "[旋律傑克]";
+						mes "綠貝勒斯和紅貝勒斯哪個比較危險？我不知道。把牠們都清除掉。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "綠色和紅色都不太令人困擾。但不管怎樣，全部清除後再回來。";
+							callsub S_Quest,13140,13139;
+						}
+					}
+				}
+				else {
+					mes "[旋律傑克]";
+					if (checkquest(13142,PLAYTIME) == 0)
+						mes "休息一下。我們應該再去制服艾斯恩魔女龍了。";
+					else if (checkquest(13141,HUNTING) == 1) {
+						cutin "????????",3;  //acidus__card
+						mes "深淵湖水並不近。但它值得一遊。";
+						next;
+						mes "[旋律傑克]";
+						mes "嚴格來說這是一場訓練演習，但就假裝你在幫助別人吧。會有獎勵的。";
+						cutin "",255;
+					}
+					else if (checkquest(13141,HUNTING) == 2) {
+						mes "你比我想像的更有天賦。如果你找到了戰術，下次就交給你了。這項研究就靠你了。";
+						callsub S_Quest,13141,13142,1;
+					}
+					else {
+						cutin "??????",3;  //acidus_card
+						mes "在深淵湖水裡面有一個龍居住的洞穴。那裡有很多龍，但會飛的東西很煩人。";
+						next;
+						mes "[旋律傑克]";
+						mes "盡你所能制服牠們。別管牠們的顏色，因為全都要清除。";
+						next;
+						cutin "",255;
+						if (select( "接受委託。", "停止。" ) == 1) {
+							mes "[旋律傑克]";
+							mes "制服深淵湖水最後一層的金色和藍色 艾斯恩魔女。";
+							callsub S_Quest,13142,13141;
+						}
+					}
+				}
+				close;
+			}
+		}
+		else {
+			mes "你幫完艾古了，還是你放棄了？總之，我沒有其他事要交給你了。 ";
+			next;
+			callsub S_Erasequest,
+				13119,"代行刑者",
+				13121,"慰勞者",
+				13123,"安息者",
+				13125,"監視者",
+				13127,"梵柏和伊西拉",
+				13129,"異型",
+				13131,"阿卡布和艾基歐",
+				13133,"襤褸腐屍",
+				13135,"屠殺腐屍",
+				13137,"女妖",
+				13139,"貝勒斯 ",
+				13141,"艾斯恩魔女";
+			mes "[旋律傑克]";
+			mes "我不確定你是否找到了你要找的東西...我不能再捲入其中了。謝謝。";
+		}
+	}
+	close;
+S_Quest:
+	if (isbegin_quest(getarg(0)))
+		erasequest getarg(0);
+	setquest getarg(1);
+	if (getarg(2,0))
+		getexp 900000,200000;
+	return;
+S_Erasequest:
+	.@total = getargcount();
+	for ( .@i = 0; .@i < .@total; .@i += 2 ) {
+		.@quest_id = getarg(.@i);
+		switch( checkquest(.@quest_id,HUNTING) ) {
+		case -1:
+			if (checkquest(.@quest_id+1) > -1)
+				erasequest (.@quest_id+1);
+			continue;
+		case 0:
+		case 1:
+			mes "[旋律傑克]";
+			mes getarg(.@i+1) +" 已清除。不需要再有更多委託了。";
+			break;
+		case 2:
+			mes "[旋律傑克]";
+			mes getarg(.@i+1) +" 已清除。交易就是交易。我需要得到報酬。";
+			getexp 900000,200000;
+			break;
+		}
+		erasequest .@quest_id;
+		next;
+	}
+	return;
+OnTouch_:
+	if (para_120lv01 == 1) {
+		emotion ET_SURPRISE;
+		mes "[旋律傑克]";
+		mes "嘿，那邊的！... 等等。？";
+		close;
+	}
+	end;
+}
+
+moc_para01,17,77,5	script	艾古#1	4_F_IU,{
+	mes "[艾古]";
+	if (!callfunc("F_HasEdenGroupMark")) {
+		mes "哦，你為什麼不是伊甸園的一員？";
+		mes "我只和 Base Level ^FF0000121-130^000000 的冒險者說話。";
+	}
+	else if (para_120lv01 == 0) {
+		cutin "igu01",2;
+		mes "嗨？今天天氣真好。能請你幫個忙嗎？我聽說伊甸園的冒險者都很友善。";
+		next;
+		if (select( "我不是那種友善的人。", "好啊，我會幫忙的。" ) == 1) {
+			cutin "igu05",2;
+			mes "[艾古]";
+			mes "噁.. 討厭。";
+		}
+		else {
+			cutin "igu03",2;
+			mes "[艾古]";
+			mes "真的嗎？我要自我介紹一下！我是^ff0000蒲公英樂團的 艾古。^000000";
+			next;
+			mes "[艾古]";
+			mes "我剛結束地方的表演回來。有個人我想見，但他現在失蹤了，所以我來伊甸園發布委託。";
+			next;
+			mes "[艾古]";
+			mes "我決定自己發布委託，因為沒有人負責，而且每個人都很忙。謝謝你的幫忙。";
+			para_120lv01 = 1;
+		}
+	}
+	else if (para_120lv01 > 0) {
+		cutin "igu01",2;
+		mes "回到米德加爾特真好！就像第一天一樣令人興奮。";
+		next;
+		if (select( "你的委託是什麼？", "聊點別的。" ) == 2) {
+			cutin "igu01",2;
+			mes "[艾古]";
+			mes "蒲公英樂團在世界各地旅行，並向人們傳遞治癒的音樂";
+			next;
+			cutin "igu02",2;
+			mes "[艾古]";
+			mes "其實我們的歌沒有魔力，但我相信它能幫助人們，因為是我在唱歌。";
+		}
+		else if (BaseLevel < 121) {
+			cutin "igu04",2;
+			mes "[艾古]";
+			mes "我想你很難接受我的委託吧？就目前而言，我認為這會讓更多人迷路。不如透過旅行來開闊你的視野如何？";
+		}
+		else if (BaseLevel < 131) {
+			mes "[艾古]";
+			mes "我為我正在尋找的人和迷路的冒險者建造了一個避難所。我想知道哪些冒險者去過那裡。";
+			next;
+			switch( select( "達納托斯之塔搜索", "拉赫神殿搜索", "無名島搜索", "深淵湖水搜索" ) ) {
+				mes "[艾古]";
+			case 1:
+				if (checkquest(13115,PLAYTIME) == 0)
+					mes "過一段時間我會要求再次搜索，因為發現了某人的痕跡，所以還有希望。";
+				else if (isbegin_quest(13111) == 1) {
+					cutin "igu04",2;
+					mes "你知道有人去過那裡，但你不知道那個人是誰？謝謝你。但既然我們不知道是誰，請讓我明天再請你搜索一次。";
+					callsub S_Quest,13111,13115,1250000,300000;
+				}
+				else if (isbegin_quest(13107) == 1)
+					mes "你可能會在塔頂找到避難所。即使是那個避難所也只有水和營火。";
+				else {
+					mes "由於危險的魔物和達納托斯之塔的高度，冒險者很容易迷路。但對某些冒險者來說並非不可能，所以請幫我確認一下。";
+					next;
+					if (select( "開始搜索。", "取消。" ) == 1) {
+						mes "[艾古]";
+						mes "達納托斯之塔在秀發茲發德共和國的北方！離朱諾或毀葛不遠。";
+						callsub S_Quest,13115,13107;// Thanatos Tower Search
+					}
+				}
+				break;
+			case 2:
+				if (checkquest(13116,PLAYTIME) == 0)
+					mes "搜索拉赫已經足夠了。過一段時間我會再拜託你的。";
+				else if (isbegin_quest(13112) == 1) {
+					mes "你的旅程如何？沒什麼特別的消息。但還沒結束，所以我會要求你再次搜索。";
+					callsub S_Quest,13112,13116,1000000,300000;
+				}
+				else if (isbegin_quest(13108) == 1)
+					mes "無法以一般方式進入神殿。這不容易，但我們可以在拉赫找到線索。";
+				else {
+					cutin "igu03",2;
+					mes "在拉赫神殿裡面有一個聖域。一旦你進去，就有可能被困在那裡。";
+					next;
+					mes "[艾古]";
+					mes "請看看2樓中間區域的東南部，是否有迷路冒險者的痕跡。";
+					next;
+					if (select( "開始搜索。", "停止。" ) == 1) {
+						cutin "igu05",2;
+						mes "[艾古]";
+						mes "祝你在搜索過程中平安。";
+						callsub S_Quest,13116,13108;// Rachel holy ground Search
+					}
+				}
+				break;
+			case 3:
+				if (checkquest(13117,PLAYTIME) == 0)
+					mes "搜索無名島的事情改天再繼續。先休息一下如何？";
+				else if (isbegin_quest(13113) == 1) {
+					mes "謝謝你！也有流浪的冒險者在幫忙！無論如何我們都應該繼續搜索。下次請再幫幫我。";
+					callsub S_Quest,13113,13117,900000,300000;
+				}
+				else if (isbegin_quest(13109) == 1) {
+					cutin "igu04",2;
+					mes "也許...和死者一起閒逛喝酒。但請跟我說說話。";
+				}
+				else {
+					cutin "igu03",2;
+					mes "是啊，也許他們無法過來，是因為被死者抓住了！無名島會沒事的！請搜索無名島。";
+					next;
+					if (select( "開始搜索。", "停止。" ) == 1) {
+						cutin "igu01",2;
+						mes "[艾古]";
+						mes "我會要求你搜索無名島上修道院的地下1樓。除非你自願，否則我不能讓你冒這個險。";
+						callsub S_Quest,13117,13109;// Unknown island Search
+					}
+				}
+				break;
+			case 4:
+				if (checkquest(13118,PLAYTIME) == 0)
+					mes "過一段時間我會再試著搜索深淵湖水。";
+				else if (isbegin_quest(13114) == 1) {
+					cutin "igu05",2;
+					mes "你平安回來了，但看你的表情，我想應該沒有好結果吧。我會再多搜索一下，所以別失望！謝謝你。";
+					callsub S_Quest,13114,13118,900000,200000;
+				}
+				else if (isbegin_quest(13110) == 1) {
+					cutin "igu05",2;
+					mes "也許，因為在湖底沒有找到魔物而感到失望和沮喪吧。";
+				}
+				else {
+					mes "我建議準確地搜索深淵湖水，即湖中間的那個洞穴。";
+					next;
+					mes "[艾古]";
+					mes "對！一場好的冒險的結尾需要一條龍！我聽說湖底有一隻魔物。";
+					next;
+					if (select( "開始搜索。", "停止。" ) == 1) {
+						mes "[艾古]";
+						mes "深淵湖水是前往毀葛最快的方法。請去地下洞穴的3樓看看！";
+						callsub S_Quest,13118,13110;// Abyss Lake Search
+					}
+				}
+			}
+		}
+		else {
+			cutin "igu04",2;
+			mes "[艾古]";
+			mes "我現在不能再給你任何搜索任務了！你需要適合你等級的更艱難的挑戰。";
+			callsub S_Erasequest,
+				13107,"達納托斯之塔",
+				13108,"拉赫神殿",
+				13109,"無名島",
+				13110,"深淵湖水";
+			callsub S_Erasequest2,
+				13111,"達納托斯之塔",1250000,300000,
+				13112,"拉赫神殿",1000000,300000,
+				13113,"無名島",900000,300000,
+				13114,"深淵湖水",900000,200000;
+			for ( .@i = 13115; .@i <= 13118; .@i++ )
+				if (isbegin_quest(.@i)) erasequest .@i;
+		}
+	}
+	close2;
+	cutin "",255;
+	end;
+S_Quest:
+	if (isbegin_quest(getarg(0)))
+		erasequest getarg(0);
+	setquest getarg(1);
+	if (getarg(2,0))
+		getexp getarg(2),getarg(3);
+	return;
+S_Erasequest:
+	.@total = getargcount();
+	for ( .@i = 0; .@i < .@total; .@i += 2 ) {
+		if (isbegin_quest(getarg(.@i))) {
+			next;
+			mes "[艾古]";
+			mes "哦，你一直在進行 "+ getarg(.@i+1) +" 冒險任務。讓我清除你的記錄，這樣你就可以去接更好的任務了。";
+			erasequest getarg(.@i);
+		}
+	}
+	return;
+S_Erasequest2:
+	.@total = getargcount();
+	for ( .@i = 0; .@i < .@total; .@i += 4 ) {
+		if (isbegin_quest(getarg(.@i))) {
+			next;
+			mes "[艾古]";
+			mes "哦，你已經完成 "+ getarg(.@i+1) +" 冒險了。謝謝你幫我完成這個任務！。";
+			erasequest getarg(.@i);
+			getexp getarg(.@i+2),getarg(.@i+3);
+		}
+	}
+	return;
+}
+
+-	script	冒險者的痕跡	-1,{
+	.@quest = 13106 + atoi(strnpcinfo(2));
+	.@delay = 13110 + atoi(strnpcinfo(2));
+	if (isbegin_quest(.@quest) == 1) {
+		mes "我發現了有人曾經來過這裡的痕跡，但我找不到線索。我們回去向艾古報告吧。";
+		erasequest .@quest;
+		setquest .@delay;
+	}
+	else
+		mes "這裡有某人來過的痕跡。";
+	close;
+}
+thana_step,167,292,5	duplicate(冒險者的痕跡)	冒險者的痕跡#1	4_TRACE
+ra_san05,265,69,5	duplicate(冒險者的痕跡)	冒險者的痕跡#2	4_TRACE
+abbey02,155,290,5	duplicate(冒險者的痕跡)	冒險者的痕跡#3	4_TRACE
+abyss_03,102,140,5	duplicate(冒險者的痕跡)	冒險者的痕跡#4	4_TRACE
+
+tha_t06,126,128,3	script	可疑的魔物#1	4_DEVIRUCHI,{
+	mes "[偽裝的冒險者]";
+	mes "我只是為了 5000 Zeny 才在這個危險的地方工作...你就是那個接到伊甸園委託的冒險者嗎？";
+	next;
+	switch( select( "是","不是" ) ) {
+		mes "[偽裝的冒險者]";
+	case 1:
+		if (BaseLevel < 121 || BaseLevel > 130) {
+			mes "我一眼就看出來那不是你了！";
+			close;
+		}
+		mes "正在進行艾古委託的冒險者，將代表艾古被傳送到上層。";
+		next;
+		if (select( "上去。", "不上去。" ) == 1) {
+			mes "[偽裝的冒險者]";
+			if (isbegin_quest(13107) != 1)
+				mes "看來你目前並沒有在進行達納托斯之塔的冒險委託。很抱歉，我這麼做是為了艾古，而不是你。";
+			else {
+				mes "小心！一旦上去就下不來了。為了艾古！";
+				close2;
+				warp "thana_step",69,369;
+				end;
+			}
+		}
+		close;
+	case 2:
+		mes "那就請裝作不認識我吧！如果你拆穿了我的偽裝，我就有危險了！";
+		close;
+	}
+}

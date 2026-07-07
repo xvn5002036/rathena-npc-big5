@@ -1,0 +1,228 @@
+//===== rAthena Script =======================================
+//= Eden Group Quests - Mission [71 - 85]
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.5
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Repetable Quests for Players between Baselevel 71 - 85.
+//===== Additional Comments: =================================
+//= 1.0 First Version.
+//= 1.1 Some little optimization here and there. [Masao]
+//= 1.2 Optimized. [Euphy]
+//= 1.3 Updated to match the official scripts. [Euphy]
+//= 1.4 Added support to Para_Team_Mark_ in Eden Group. [Ragno]
+//= 1.5 Added use of F_HasEdenGroupMark function. [Ragno]
+//============================================================
+
+moc_para01,44,38,3	script	任務佈告欄 [71 - 85]	857,{
+	if (!callfunc("F_HasEdenGroupMark")) {
+		mes "- 只有伊甸園的 -";
+		mes "- 組織成員才能閱讀 -";
+		mes "- 這個佈告欄。 -";
+		close;
+	}
+
+	// Clear the original quest data (no longer used).
+	if (slv_quest) set slv_quest,0;
+	if (checkquest(10102) > -1 || checkquest(10103) > -1 || checkquest(10104) > -1 || checkquest(10105) > -1 || checkquest(10106) > -1) {
+		for(set .@quest,10102; .@quest<=10106; set .@quest,.@quest+1) {
+			if (checkquest(.@quest) > -1)
+				erasequest .@quest;
+		}
+		mes "- 因為委託人已經搬到 -";
+		mes "- 其他地方了， -";
+		mes "- 所以申請表已被移除。 -";
+		next;
+	}
+
+	if (BaseLevel < 71) {
+		mes "- 只有符合 -";
+		mes "- 適當等級的成員才能閱讀 -";
+		mes "- 這個佈告欄。 -";
+		mes "- 請嘗試尋找一個 -";
+		mes "- 適合你等級的佈告欄。 -";
+		close;
+	} else if (BaseLevel > 85) {
+		// Quest IDs: 10107-10123, 5055-5057
+		setarray .@quests[0],
+			10107,10108,10109,
+			10110,10111,10112,10113,
+			10114,10115,10116,10117,
+			10118,10119,10120,
+			10121,10122,10123,5055,5056;
+		for(set .@i,0; .@i<getarraysize(.@quests); set .@i,.@i+1) {
+			if (checkquest(.@quests[.@i],HUNTING) == 2)
+				set .@complete[getarraysize(.@complete)], .@quests[.@i];
+		}
+		if (checkquest(5057) > -1 && countitem(7187) >= 30)
+			set .@complete[getarraysize(.@complete)],5057;
+		if (getarraysize(.@complete)) {
+			mes "你有正在進行中的任務。";
+			mes "你想要回報任務嗎？";
+			next;
+			if(select("當然。:不用了。") == 2)
+				close;
+			for(set .@i,0; .@i<getarraysize(.@complete); set .@i,.@i+1)
+				callsub L_Quest,.@complete[.@i];
+			close;
+		}
+		mes "- 只有符合 -";
+		mes "- 適當等級的成員才能閱讀 -";
+		mes "- 這個佈告欄。 -";
+		mes "- 請嘗試尋找一個 -";
+		mes "- 適合你等級的佈告欄。 -";
+		close;
+	}
+	mes "- 請選擇你 -";
+	mes "- 想要狩獵的地點。 -";
+	next;
+	switch(select("斯芬克斯密穴:克雷斯特漢姆古城:朱諾周邊:鐘塔:地方城市")) {
+	case 1:
+		mes "- 佈告欄上有幾個 -";
+		mes "- 關於斯芬克斯密穴的 -";
+		mes "- 委託任務。 -";
+		next;
+		set .@str1$,"夢羅克村民對斯芬克斯密穴裡不斷增加的魔物感到非常擔憂。 ";
+		set .@str2$,"- 夢羅克的 梅迪 -";
+		switch(select("狩獵鎮魂鬼:狩獵馬爾杜克:狩獵帕莎納")) {
+			case 1: callsub L_Quest,10107,.@str1$+"狩獵10隻鎮魂鬼。",.@str2$;
+			case 2: callsub L_Quest,10108,.@str1$+"狩獵10隻馬爾杜克。",.@str2$;
+			case 3: callsub L_Quest,10109,.@str1$+"狩獵10隻帕莎納。",.@str2$;
+		}
+	case 2:
+		mes "- 佈告欄上有幾個 -";
+		mes "- 關於克雷斯特漢姆古城的 -";
+		mes "- 委託任務。 -";
+		next;
+		set .@str1$,"我好怕克雷斯特漢姆古城的魔物會跑出來攻擊我們。 ";
+		set .@str2$,"- 吉芬的 安希莉亞 -";
+		switch(select("狩獵黑暗特區:狩獵闇黑祭司:狩獵惡靈:狩獵邪骸弓箭手")) {
+			case 1: callsub L_Quest,10110,.@str1$+"狩獵10隻黑暗特區。",.@str2$;
+			case 2: callsub L_Quest,10111,.@str1$+"狩獵10隻闇黑祭司。",.@str2$;
+			case 3: callsub L_Quest,10112,.@str1$+"狩獵10隻惡靈。",.@str2$;
+			case 4: callsub L_Quest,10113,.@str1$+"狩獵10隻邪骸弓箭手。",.@str2$;
+		}
+	case 3:
+		mes "- 佈告欄上有幾個 -";
+		mes "- 關於朱諾周邊地區的 -";
+		mes "- 委託任務。 -";
+		next;
+		set .@str1$,"像我這種不會戰鬥的人，因為魔物數量的增加，旅行變得更加困難了。 ";
+		set .@str2$,"- 旅行者 珍百 -";
+		switch(select("狩獵七彩大嘴鳥:狩獵鐘乳巨石怪:狩獵邪惡山羊:狩獵哈比")) {
+			case 1: callsub L_Quest,10114,.@str1$+"狩獵20隻七彩大嘴鳥。",.@str2$;
+			case 2: callsub L_Quest,10115,.@str1$+"狩獵20隻鐘乳巨石怪。",.@str2$;
+			case 3: callsub L_Quest,10116,.@str1$+"狩獵20隻邪惡山羊。",.@str2$;
+			case 4: callsub L_Quest,10117,.@str1$+"狩獵20隻哈比。",.@str2$;
+		}
+	case 4:
+		mes "- 佈告欄上有幾個 -";
+		mes "- 關於鐘塔的 -";
+		mes "- 委託任務。 -";
+		next;
+		set .@str1$,"我以前很喜歡聽艾爾帕蘭鐘塔優美的旋律，但是現在因為魔物製造的噪音，我什麼都聽不到了。 ";
+		set .@str2$,"- 愛鐘協會會長 萊辛塞特 -";
+		switch(select("狩獵鐘怪:狩獵龐克魔:狩獵飛行魔書")) {
+			case 1: callsub L_Quest,10118,.@str1$+"在它壞掉前狩獵15隻鐘怪。",.@str2$;
+			case 2: callsub L_Quest,10119,.@str1$+"在它壞掉前狩獵15隻龐克魔。",.@str2$;
+			case 3: callsub L_Quest,10120,.@str1$+"在它壞掉前狩獵15隻飛行魔書。",.@str2$;
+		}
+	case 5:
+		mes "- 佈告欄上有幾個 -";
+		mes "- 關於地方城市的 -";
+		mes "- 委託任務。 -";
+		next;
+		set .@str1$,"我很想去冒險，但我還有很多事情要處理。如果我不能去，那其他人也休想去！ ";
+		set .@str2$,"- 想去冒險的 芬菲 -";
+		switch(select("狩獵奇奇莫拉:狩獵雅人形:狩獵米糕:狩獵無頭騾:狩獵塔武蘭:為慶典收集慶典面具")) {
+			case 1: callsub L_Quest,10121,.@str1$+"在莫斯柯比亞狩獵15隻奇奇莫拉！",.@str2$;
+			case 2: callsub L_Quest,10122,.@str1$+"在天津狩獵15隻雅人形！",.@str2$;
+			case 3: callsub L_Quest,10123,.@str1$+"在洛陽狩獵15隻米糕！",.@str2$;
+			case 4: callsub L_Quest,5055,"我知道城外有很多可怕的魔物，但真正讓我害怕的是那些在周圍潛伏的無頭騾。我希望牠們永遠不會進到城裡。狩獵15隻無頭騾！","- 巴西里斯的 瑪麗安娜 -";
+			case 5: callsub L_Quest,5056,"塔武蘭真的很吵。早上我還不介意，但牠們讓我在晚上無法入睡。我想睡覺。狩獵15隻塔武蘭！","- 哎喲泰雅的 薩滿 普莫 -";
+			case 6: callsub L_Quest,5057,"那些胖子偷走我為慶典準備的所有面具。試著去拿回30個面具！我會感激你的~","- 崑崙村長 薩雲門 -";
+		}
+	}
+	end;
+
+//callsub L_Quest,<quest ID>{,"<description1>","<description2>"};
+L_Quest:
+	set .@quest, getarg(0);
+	switch(.@quest) {
+		case 10107: set .@name$,"狩獵鎮魂鬼"; set .@exp,15000; break;
+		case 10108: set .@name$,"狩獵馬爾杜克"; set .@exp,15000; break;
+		case 10109: set .@name$,"狩獵帕莎納"; set .@exp,15000; break;
+		case 10110: set .@name$,"狩獵黑暗特區"; set .@exp,20000; break;
+		case 10111: set .@name$,"狩獵闇黑祭司"; set .@exp,20000; break;
+		case 10112: set .@name$,"狩獵惡靈"; set .@exp,20000; break;
+		case 10113: set .@name$,"狩獵邪骸弓箭手"; set .@exp,20000; break;
+		case 10114: set .@name$,"狩獵七彩大嘴鳥"; set .@exp,30000; break;
+		case 10115: set .@name$,"狩獵鐘乳巨石怪"; set .@exp,30000; break;
+		case 10116: set .@name$,"狩獵邪惡山羊"; set .@exp,30000; break;
+		case 10117: set .@name$,"狩獵哈比"; set .@exp,30000; break;
+		case 10118: set .@name$,"狩獵鐘怪"; set .@exp,25000; break;
+		case 10119: set .@name$,"狩獵龐克魔"; set .@exp,25000; break;
+		case 10120: set .@name$,"狩獵飛行魔書"; set .@exp,25000; break;
+		case 10121: set .@name$,"狩獵奇奇莫拉"; set .@exp,30000; break;
+		case 10122: set .@name$,"狩獵雅人形"; set .@exp,30000; break;
+		case 10123: set .@name$,"狩獵米糕"; set .@exp,30000; break;
+		case 5055: set .@name$,"狩獵無頭騾"; set .@exp,30000; break;
+		case 5056: set .@name$,"狩獵塔武蘭"; set .@exp,30000; break;
+		case 5057: set .@name$,"為慶典收集慶典面具"; set .@exp,30000; break;
+	}
+	if (getargcount() == 1) {
+		mes "『"+.@name$+"』已完成。你想要回報任務並領取你的獎勵嗎？";
+		next;
+		if(select("回報任務。:取消。") == 1) {
+			if (.@quest == 5057) delitem 7187,30; //Festival_Mask
+			erasequest .@quest;
+			getexp .@exp,0;
+			mes "你因為完成任務獲得了經驗值。";
+			next;
+			return;
+		}
+		close;
+	} else {
+		if (.@quest == 5057) {
+			// Quest 5057 is the only collection quest, so separate conditions are unnecessary.
+			if (checkquest(5057) == -1)
+				set .@hunting,-1;
+			else if (countitem(7187) >= 30)
+				set .@hunting,2;
+		} else
+			set .@hunting, checkquest(.@quest,HUNTING);
+		if (.@hunting == 0 || .@hunting == 1) {
+			mes getarg(1);
+			mes getarg(2);
+			next;
+			mes "完成任務後請回到這裡。";
+		} else if (.@hunting == 2) {
+			mes "你已經完成了這個任務。";
+			next;
+			if(select("回報任務。:取消。") == 1) {
+				if (.@quest == 5057) delitem 7187,30; //Festival_Mask
+				erasequest .@quest;
+				getexp .@exp,0;
+				mes "你因為完成任務獲得了經驗值。";
+			}
+		}/* else if (.@hunting == 3) {
+//			recall_completequest .@quest
+			erasequest .@quest;
+			mes "You have re-accepted the quest '"+.@name$+"'.";
+		}*/ else {
+			mes getarg(1);
+			mes getarg(2);
+			next;
+			mes "你想要接受這個任務嗎？";
+			next;
+			if(select("是的。:不用了。") == 1) {
+				mes "你已經接受了任務『"+.@name$+"』。查看你的任務資訊以獲取更多詳情。";
+				setquest .@quest;
+			}
+		}
+		close;
+	}
+}

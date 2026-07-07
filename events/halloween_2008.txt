@@ -1,0 +1,269 @@
+//===== rAthena Script =======================================
+//= iRO Halloween (2008)
+//===== By: ==================================================
+//= Kisuka
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= iRO Halloween (2008)
+//= Run away from the zombies for tickets.
+//= Redeem tickets for prizes.
+//===== Notes: ===============================================
+//= You must enable the event monsters in mob_db2.
+//===== Additional Comments: =================================
+//= 1.0 First version. [Kisuka]
+//= 1.1 Some small changes. [Kisuka]
+//============================================================
+
+payon,162,176,4	script	萬聖節魔術師#iRO08	704,{
+	if (Hallow08 < 1) {
+		mes "[萬聖節魔術師]";
+		mes "科科科科科！";
+		mes "今年的萬聖節我準備了一個特別的活動來測試你的運氣和敏捷。";
+		mes "你有興趣嗎？";
+		next;
+		mes "[萬聖節魔術師]";
+		mes "拜託！別當個膽小鬼！";
+		mes "如果你收集到足夠的票券，就可以換取很棒的獎品！";
+		mes "你覺得如何？";
+		next;
+		goto MainMenu;
+	}
+	if (Hallow08Kill == 1) {
+		mes "[萬聖節魔術師]";
+		mes "你是個膽小鬼還是怎樣？！";
+		mes "你知道你想再試一次的...";
+		mes "你知道規則嗎？";
+		next;
+		set Hallow08Kill,0;
+		if(select("是的，我知道。:不，我不知道。") == 2) {
+			goto Rules;
+		}
+		goto Participate;
+	}
+	if (Hallow08Kill == 2) {
+		mes "[萬聖節魔術師]";
+		mes "喔，做得好！你沒事了！";
+		mes "跟殭屍在一起是不是很有趣？？";
+		mes "你知道的，殭屍以前也是人啊！";
+		mes "哈！";
+		mes "科科科科。";
+		next;
+		getitem 7941,1;
+		set Hallow08Kill,0;
+		mes "[萬聖節魔術師]";
+		mes "就如我答應的";
+		mes "你可以獲得萬聖節票券來兌換酷炫的物品。";
+		close;
+	}
+	if (Hallow08 > 0) {
+		mes "[萬聖節魔術師]";
+		mes "那麼，你想再聽一次規則，還是直接開始...";
+		next;
+		goto MainMenu2;
+	}
+
+		Rules:
+			mes "[萬聖節魔術師]";
+			mes "這個村莊就像是虛擬的斐揚。";
+			mes "這裡有殭屍和食屍鬼四處遊蕩，並且有三個南邊的出口，但只有一個能走。";
+			mes "這就得靠你自己去發現了。";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "你不能使用任何技能來殺死食屍鬼或殭屍。";
+			mes "還有一件事...";
+			mes "你不應該忘記...";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "所有參賽者都不能穿戴任何裝備。";
+			mes "把所有物品放進倉庫，當你的負重為 '0' 時再來找我。";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "喔，還有一件事！";
+			mes "你不能騎乘大嘴鳥或攜帶手推車。";
+			mes "如果有的話，我會在你進入前移除它們。";
+			mes "懂了嗎？";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "記住，這裡有三個出口但只有一個隨機開放，四處遊蕩的殭屍和食屍鬼是殺不死的，而且你不能穿戴任何裝備。";
+			next;
+			if (Hallow08 > 0) {
+				mes "[萬聖節魔術師]";
+				mes "嘿...";
+				mes "準備好就回來吧。";
+				close;
+			} else {
+				goto MainMenu;
+			}
+
+		Participate:
+			mes "[萬聖節魔術師]";
+			mes "好的，你準備好了。";
+			mes "讓我檢查一下你的負重。";
+			next;
+			if (Weight > 0) {
+				mes "[萬聖節魔術師]";
+				mes "天啊！";
+				mes "到處都有這種害群之馬。";
+				next;
+				mes "[萬聖節魔術師]";
+				mes "你以為我不會注意到你的負重超過 '0' 嗎？";
+				mes "你超重了...";
+				close;
+			} else {
+				mes "[萬聖節魔術師]";
+				mes "你看起來準備就緒了，而且負重剛剛好。";
+				next;
+				mes "[萬聖節魔術師]";
+				mes "我工作太忙了，所以我現在精疲力盡。";
+				next;
+				mes "[萬聖節魔術師]";
+				mes "我有時候會忘記送你過去...";
+				next;
+				mes "[萬聖節魔術師]";
+				mes "希望你能平安回來。";
+				close2;
+				if (Hallow08 < 1) {
+					set Hallow08,1;
+				}
+				set Hallow08Kill,1;
+				set @Hallow08Warp, rand(1,3);
+				percentheal -98,0;
+				setriding 0;
+				setcart 0;
+				warp "evt_zombie",155,246;
+				end;
+			}
+
+		TicketExchange:
+			mes "[萬聖節魔術師]";
+			mes "你想用票券兌換獎品？";
+			mes "做得好！科科科科！";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "讓我告訴你可以兌換什麼物品。";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "5 張票券兌換 南瓜派。";
+			mes "20 張票券兌換 南瓜頭。";
+			mes "50 張票券兌換 老舊藍色箱子。";
+			mes "70 張票券兌換 老舊紫色箱子。";
+			mes "200 張票券兌換 老舊收集冊。";
+			next;
+			mes "[萬聖節魔術師]";
+			mes "你想兌換什麼？";
+			next;
+			switch(select("南瓜派:南瓜頭:老舊藍色箱子:老舊紫色箱子:老舊收集冊")) {
+			case 1:
+				if (countitem(7941) < 5) {
+					goto NotEnough;
+				} else {
+					delitem 7941,5;
+					getitem 12192,1;
+					goto Enough;
+				}
+				break;
+			case 2:
+				if (countitem(7941) < 20) {
+					goto NotEnough;
+				} else {
+					delitem 7941,20;
+					getitem 5134,1;
+					goto Enough;
+				}
+				break;
+			case 3:
+				if (countitem(7941) < 50) {
+					goto NotEnough;
+				} else {
+					delitem 7941,50;
+					getitem 603,1;
+					goto Enough;
+				}
+				break;
+			case 4:
+				if (countitem(7941) < 70) {
+					goto NotEnough;
+				} else {
+					delitem 7941,70;
+					getitem 617,1;
+					goto Enough;
+				}
+				break;
+			case 5:
+				if (countitem(7941) < 200) {
+					goto NotEnough;
+				} else {
+					delitem 7941,200;
+					getitem 616,1;
+					goto Enough;
+				}
+			}
+
+		NextTime:
+			mes "[萬聖節魔術師]";
+			mes "好，下次見。";
+			mes "科科科科科。";
+			close;
+
+	MainMenu:
+		menu "向我解釋。",Rules,"我想參加。",Participate,"我想用票券兌換獎品。",TicketExchange,"我下次再來。",NextTime;
+
+	MainMenu2:
+		menu "現在就把我送回去！",Participate,"請告訴我規則。",Rules,"我想用票券兌換獎品。",TicketExchange,"我下次再來。",NextTime;
+
+	NotEnough:
+		mes "[萬聖節魔術師]";
+		mes "你的票券不夠！";
+		mes "你連數數都不會嗎？";
+		mes "請帶著正確數量的票券來這裡。";
+		close;
+
+	Enough:
+		mes "[萬聖節魔術師]";
+		mes "給你。";
+		mes "你還需要...";
+		mes "其他東西嗎？";
+		next;
+		if (Hallow08 == 1) {
+			goto MainMenu2;
+		} else {
+			goto MainMenu;
+		}
+}
+
+evt_zombie,16,142,1	script	zombiewarp001	45,2,2,{
+OnTouch:
+	if (@Hallow08Warp == 1) {
+		set Hallow08Kill,2;
+		specialeffect EF_BASH;
+		warp "payon",28,142;
+	}
+	end;
+}
+
+evt_zombie,122,27,1	script	zombiewarp002	45,2,2,{
+OnTouch:
+	if (@Hallow08Warp == 2) {
+		set Hallow08Kill,2;
+		specialeffect EF_BASH;
+		warp "payon",121,40;
+	}
+	end;
+}
+
+evt_zombie,267,89,1	script	zombiewarp003	45,2,2,{
+OnTouch:
+	if (@Hallow08Warp == 3) {
+		set Hallow08Kill,2;
+		specialeffect EF_BASH;
+		warp "payon",253,95;
+	}
+	end;
+}
+
+evt_zombie,0,0	monster	腐屍	3000,150
+evt_zombie,0,0	monster	食屍鬼	3001,80
+evt_zombie,0,0	monster	殭屍大師	3002,20

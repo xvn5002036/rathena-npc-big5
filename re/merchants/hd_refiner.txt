@@ -1,0 +1,409 @@
+//===== rAthena Script =======================================
+//= HD Refiners
+//===== Description: =========================================
+//= [Official Conversion]
+//= Refiners that use HD ores to refine equipment.
+//= Upon
+//= failure, the equipment is not destroyed; rather, its
+//= refine level decreases by 1. The success rate is identical
+//= to that for Enriched ores.
+//= - "Blacksmith Mighty Hammer" only refines from +7~9.
+//= - "Basta" only refines from +10 and up.
+//===== Changelog: ===========================================
+//= 1.0 First version. [Euphy]
+//= 1.1 Removed re-roll behavior. [Secret]
+//============================================================
+
+// Blacksmith Mighty Hammer (+7~9) :: cash_smelting79
+//============================================================
+-	script	::MightyHammer	-1,{
+	disable_items;
+	mes "[鐵匠 強化神錘]";
+	mes "和其他人不同，我是一名只精煉特定範圍裝備的鐵匠。";
+	mes "我只精煉 ^CC0000+7 到 +9^000000 的裝備。";
+	next;
+	mes "[鐵匠 強化神錘]";
+	mes "我的專長是，即使精煉失敗，裝備也不會消失，只會下降 1 個精煉值。是不是很棒？";
+	next;
+	mes "[鐵匠 強化神錘]";
+	mes "那麼我們就開始吧，你說呢？你想精煉哪一件裝備？";
+	next;
+	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+	for ( .@i = 1; .@i <= 10; ++.@i )
+		.@menu$ = .@menu$ + ( getequipisequiped(.@indices[.@i]) ? getequipname(.@indices[.@i]) : F_getpositionname(.@indices[.@i]) + "-[未裝備]" ) + ":";
+	.@part = .@indices[ select(.@menu$) ];
+	if (!getequipisequiped(.@part)) {
+		mes "[鐵匠 強化神錘]";
+		switch(.@part) {
+		case EQI_HEAD_TOP:
+			mes "我是鐵匠，不是美髮師。";
+			break;
+		case EQI_ARMOR:
+			mes "用我的鐵鎚，我會讓你成為天上的星星。";
+			break;
+		case EQI_HAND_L:
+		case EQI_HAND_R:
+			mes "製作義肢可不是我的專長。";
+			break;
+		case EQI_GARMENT:
+			mes "把裝備拿出來我才能幫你精煉啊！";
+			break;
+		case EQI_SHOES:
+			mes "這腳臭味是從哪裡來的？";
+			break;
+		case EQI_ACC_L:
+		case EQI_ACC_R:
+			mes "裝飾品在哪裡？";
+			break;
+		case EQI_HEAD_MID:
+			mes "你想讓我精煉什麼？";
+			break;
+		case EQI_HEAD_LOW:
+			mes "咦？你想讓我做什麼？";
+			break;
+		}
+		close;
+	}
+	if (!getequipisenableref(.@part)) {
+		mes "[鐵匠 強化神錘]";
+		mes "這件裝備無法被精煉。";
+		close;
+	}
+	switch( getequiprefinerycnt(.@part) ) {
+	case 7:
+		.@blacksmith_blessing_count = 1;
+		break;
+	case 8:
+		.@blacksmith_blessing_count = 2;
+		break;
+	case 9:
+		.@blacksmith_blessing_count = 4;
+		break;
+	default:
+		mes "[鐵匠 強化神錘]";
+		mes "我只處理精煉值在 +7 到 +9 的裝備。";
+		close;
+	}
+
+	.@refineitemid = getequipid(.@part);
+	// save id of the item
+	.@itemtype = getiteminfo( .@refineitemid, ITEMINFO_TYPE );
+	.@refinerycnt = getequiprefinerycnt(.@part);
+	//save refinery count
+	setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+	.@price = getequiprefinecost(.@part, REFINE_COST_HD, REFINE_ZENY_COST);
+	.@material = getequiprefinecost(.@part, REFINE_COST_HD, REFINE_MATERIAL_ID);
+	mes "[鐵匠 強化神錘]";
+	mes "為了精煉你選擇的裝備，你需要 ^ff9999" + getitemname(.@material) + "^000000 以及 20,000 Zeny 的手續費。";
+	mes "你準備好了嗎？";
+	next;
+	if (select("是的:沒有") == 2) {
+		mes "[鐵匠 強化神錘]";
+		mes "我會等到你準備好。";
+		close;
+	}
+	if (getequippercentrefinery(.@part) < 100) {
+		mes "[鐵匠 強化神錘]";
+		mes "看起來這件裝備很有可能會精煉失敗。";
+		mes "不過，就算失敗了，也只會下降 1 級精煉值。";
+		mes "你想繼續精煉嗎？";
+		next;
+		if (countitem(6635) < .@blacksmith_blessing_count)
+			setarray .@menu$[0], "", "是的", "還沒";
+		else {
+			mes "[鐵匠 強化神錘]";
+			mes "啊！那是 ^0000ff鐵匠的祝福^000000 嗎？";
+			mes "有了鐵匠的祝福，精煉失敗時裝備就不會消失！";
+			next;
+			mes "[鐵匠 強化神錘]";
+			if ( .@itemtype != IT_WEAPON )
+				mes "對於 +" + getequiprefinerycnt(.@part) + " 的防具，使用 ^316AC5" + .@blacksmith_blessing_count + " 個鐵匠的祝福^000000 來精煉可以防止裝備消失。你要使用它來精煉嗎？";
+			else
+				mes "對於 +" + getequiprefinerycnt(.@part) + " 的武器，使用 ^316AC5" + .@blacksmith_blessing_count + " 個鐵匠的祝福^000000 來精煉可以防止裝備消失。你要使用它來精煉嗎？";
+			next;
+			setarray .@menu$[0], "使用它來精煉", "不使用直接精煉", "先不精煉";
+		}
+		switch( select(.@menu$[0], .@menu$[1], .@menu$[2]) ) {
+		case 1:
+			.@bless_who = 1;
+			break;
+		case 2:
+			break;
+		case 3:
+			mes "[鐵匠 強化神錘]";
+			mes "只有克服對失敗恐懼的人，才能獲得真正的傑作。";
+			close;
+		}
+	}
+	if ((.@bless_who && countitem(6635) < .@blacksmith_blessing_count) || countitem(.@material) == 0 || Zeny < .@price) {
+		mes "[鐵匠 強化神錘]";
+		mes "你剛剛不是才說準備好了嗎？";
+		close;
+	}
+	if (.@bless_who)
+		delitem 6635, .@blacksmith_blessing_count;
+	delitem .@material,1;
+	Zeny = Zeny - .@price;
+
+	// anti-hack
+	if (callfunc("F_IsEquipIDHack", .@part, .@refineitemid) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) ||
+		callfunc("F_IsEquipRefineHack", .@part, .@refinerycnt)) {
+		mes "[鐵匠 強化神錘]";
+		emotion ET_FRET;
+		mes "等一下...";
+		mes "你以為我是白痴嗎？！";
+		mes "你趁我不注意時把裝備調包了！給我滾出去！";
+		close;
+	}
+
+	mes "[鐵匠 強化神錘]";
+	mes "鏘！鏘！鏘！";
+	if (getequippercentrefinery(.@part, true) > rand(100)) {
+		successrefitem .@part;
+		next;
+		emotion ET_BEST;
+		mes "[鐵匠 強化神錘]";
+		mes "每次聽到這聲音都讓我感到神清氣爽。";
+		mes "來，拿去吧。精煉完美成功了！";
+		close;
+	}
+	if (.@bless_who == 1) {
+		specialeffect EF_HOLYHIT;
+		next;
+		emotion ET_HUK;
+		mes "[鐵匠 強化神錘]";
+		mes "什麼？！！";
+		next;
+		mes "[鐵匠 強化神錘]";
+		mes "哎呀！我真是沒臉見人了。哼哼。";
+		close;
+	}
+	downrefitem .@part;
+	next;
+	emotion ET_HUK;
+	mes "[鐵匠 強化神錘]";
+	mes "哎呀！！";
+	next;
+	mes "[鐵匠 強化神錘]";
+	mes "我相信像你這樣的人，絕對不會因為精煉值下降了 1 級就怪罪我的。嗯。";
+	close;
+}
+prt_in,59,54,3	duplicate(MightyHammer)	鐵匠 強化神錘#prt	4_M_DWARF
+morocc_in,65,30,3	duplicate(MightyHammer)	鐵匠 強化神錘#morocc	4_M_DWARF
+payon,148,176,3	duplicate(MightyHammer)	鐵匠 強化神錘#pay	4_M_DWARF
+alberta_in,16,56,3	duplicate(MightyHammer)	鐵匠 強化神錘#alb	4_M_DWARF
+yuno_in01,171,18,3	duplicate(MightyHammer)	鐵匠 強化神錘#yuno	4_M_DWARF
+ein_in01,22,82,3	duplicate(MightyHammer)	鐵匠 強化神錘#ein	4_M_DWARF
+lhz_in02,280,19,3	duplicate(MightyHammer)	鐵匠 強化神錘#lhz	4_M_DWARF
+
+// iRO NPC locations:
+// payon,174,133,4	duplicate(MightyHammer)	鐵匠 強化神錘#im	4_M_DWARF
+
+// Basta (+10 and up) :: cash_smelting
+//============================================================
+-	script	::Basta	-1,{
+	disable_items;
+	mes "[巴斯塔]";
+	mes "我是全世界最棒的鐵匠，巴斯塔。";
+	mes "但我可不提供普通的精煉服務。";
+	mes "我只精煉 ^CC0000+10 以上^000000 的裝備。";
+	next;
+	mes "[巴斯塔]";
+	mes "你想精煉哪一件裝備？";
+	next;
+	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+	for ( .@i = 1; .@i <= 10; ++.@i )
+		.@menu$ = .@menu$ + ( getequipisequiped(.@indices[.@i]) ? getequipname(.@indices[.@i]) : F_getpositionname(.@indices[.@i]) + "-[未裝備]" ) + ":";
+	.@part = .@indices[ select(.@menu$) ];
+	if (!getequipisequiped(.@part)) {
+		mes "[巴斯塔]";
+		switch(.@part) {
+		case EQI_HEAD_TOP:
+			mes "你的頭算是裝備嗎？";
+			break;
+		case EQI_ARMOR:
+			mes "你想讓我做什麼？";
+			break;
+		case EQI_HAND_L:
+		case EQI_HAND_R:
+			mes "製作義肢可不是我的專長。";
+			break;
+		case EQI_GARMENT:
+			mes "你到底知不知道什麼是披肩？";
+			break;
+		case EQI_SHOES:
+			mes "如果你想精煉你的雙腳，別來找我，去跑馬拉松吧。";
+			break;
+		case EQI_ACC_L:
+		case EQI_ACC_R:
+			mes "裝飾品在哪裡？";
+			break;
+		case EQI_HEAD_MID:
+			mes "嗯... 我沒看到任何值得精煉的裝備。";
+			break;
+		case EQI_HEAD_LOW:
+			mes "我沒辦法讓你變聰明。想變聰明就去找學校老師。";
+			break;
+		}
+		close;
+	}
+	if (!getequipisenableref(.@part)) {
+		mes "[巴斯塔]";
+		mes "就算是本大爺也無法精煉這件裝備。沒辦法。";
+		close;
+	}
+	.@refine_count = getequiprefinerycnt(.@part);
+	if (.@refine_count < 10) {
+		mes "[巴斯塔]";
+		mes "我不是說過了嗎？我只精煉 +10 以上的裝備。";
+		close;
+	}
+	else if (.@refine_count == 10)
+		.@blacksmith_blessing_count = 7;
+	else if (.@refine_count == 11)
+		.@blacksmith_blessing_count = 11;
+	else if (.@refine_count == 20) {
+		mes "[巴斯塔]";
+		mes "這把武器已經很完美了，不需要再精煉了?";
+		close;
+	}
+	.@refineitemid = getequipid(.@part); // save id of the item
+	.@itemtype = getiteminfo( .@refineitemid, ITEMINFO_TYPE );
+	.@refinerycnt = getequiprefinerycnt(.@part);
+	//save refinery count
+	setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+	.@price = getequiprefinecost(.@part, REFINE_COST_HD, REFINE_ZENY_COST);
+	.@material = getequiprefinecost(.@part, REFINE_COST_HD, REFINE_MATERIAL_ID);
+	if ( .@itemtype != IT_WEAPON )
+		.@type$ = "防具";
+	else
+		.@type$ = "武器";
+	mes "[巴斯塔]";
+	mes "嗯... 這就是你想精煉的那件嗎？";
+	mes "要精煉這件裝備，我需要 1 個 ^ff9999" + getitemname(.@material) + "^000000 以及 " + callfunc("F_InsertComma",.@price) + " Zeny 作為手續費。";
+	mes "你真的要精煉這件嗎？";
+	next;
+	if (select("是的:沒有") == 2) {
+		mes "[巴斯塔]";
+		mes "好吧。如果你想這樣的話...";
+		close;
+	}
+	if (getequippercentrefinery(.@part, true) < 100) {
+		mes "[巴斯塔]";
+		mes "這件" + .@type$ + "已經精煉得相當高了。";
+		mes "如果你想繼續精煉，精煉值可能會下降。";
+		next;
+		mes "[巴斯塔]";
+		mes "我和其他地方的鐵匠可不一樣。";
+		mes "精煉值不可能會一口氣掉個 3 級或 4 級... 那聽起來太可怕了。";
+		mes "在這裡最多只會下降 1 級。";
+		next;
+		if (.@blacksmith_blessing_count == 0 || countitem(6635) < .@blacksmith_blessing_count) {
+			mes "[巴斯塔]";
+			mes "與其他鐵匠相比，風險小得多了。";
+			mes "我已經把所有的注意事項都告訴你了。你要試試看嗎？";
+			next;
+			setarray .@menu$[0], "", "是的", "沒有";
+		}
+		else {
+			mes "[巴斯塔]";
+			mes "哇?那是 ^316AC5鐵匠的祝福^000000 嗎？這可是很難弄到的東西啊?不過，你居然有！";
+			next;
+			mes "[巴斯塔]";
+			mes "對於 +" + .@refine_count + " 的" + .@type$ + "，需要 ^316AC5" + .@blacksmith_blessing_count + " 個鐵匠的祝福^000000 才能防止裝備消失。你要使用鐵匠的祝福來精煉嗎？";
+			next;
+			setarray .@menu$[0], "使用鐵匠的祝福精煉", "不使用直接精煉", "先不精煉";
+		}
+		switch( select(.@menu$[0], .@menu$[1], .@menu$[2]) ) {
+		case 1:
+			.@bless_who = 1;
+			break;
+		case 2:
+			break;
+		case 3:
+			mes "[巴斯塔]";
+			mes "嗯?";
+			mes "毫不挑戰有時也是一種人生智慧。";
+			close;
+		}
+	}
+	if ((.@bless_who && countitem(6635) < .@blacksmith_blessing_count) || countitem(.@material) == 0 || Zeny < .@price) {
+		mes "[巴斯塔]";
+		mes "嗯... 你沒有把需要的材料都帶來。";
+		mes "等你全部準備好再來吧。";
+		close;
+	}
+	if (.@bless_who)
+		delitem 6635, .@blacksmith_blessing_count;
+	delitem .@material,1;
+	Zeny = Zeny - .@price;
+	// anti-hack
+	if (callfunc("F_IsEquipIDHack", .@part, .@refineitemid) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) ||
+		callfunc("F_IsEquipRefineHack", .@part, .@refinerycnt)) {
+		mes "[巴斯塔]";
+		emotion ET_FRET;
+		mes "等一下...";
+		mes "你以為我是白痴嗎？！";
+		mes "你趁我不注意時把裝備調包了！給我滾出去！";
+		close;
+	}
+
+	mes "砰！砰！砰！砰！";
+	if (getequippercentrefinery(.@part, true) > rand(100)) {
+		successrefitem .@part;
+		next;
+		emotion ET_BEST;
+		mes "[巴斯塔]";
+		mes "太棒了！做得好！！";
+		mes "我果然是全世界最棒的鐵匠！";
+		close;
+	}
+	if (.@bless_who == 1) {
+		specialeffect EF_HOLYHIT;
+		next;
+		emotion (!rand(5))?ET_MONEY:ET_HUK;
+		mes "[巴斯塔]";
+		mes "啊啊啊啊啊啊啊！！！";
+		next;
+		mes "[巴斯塔]";
+		mes "精煉失敗了！";
+		mes "像我這樣全世界最棒的鐵匠...";
+		mes "也不能保證 100% 成功啊?";
+	}
+	else {
+		downrefitem .@part;
+		next;
+		emotion (!rand(5))?ET_MONEY:ET_HUK;
+		mes "[巴斯塔]";
+		mes "啊啊啊啊啊啊啊！！！";
+		next;
+		mes "[巴斯塔]";
+		mes "可惡！";
+		mes "精煉失敗，而且精煉值下降了！";
+		mes "就算是全世界最棒的鐵匠也不能保證 100% 成功！";
+	}
+	mes "太可惜了。";
+	next;
+	mes "[巴斯塔]";
+	mes "我下次會做得更好的！別擔心！";
+	close;
+}
+
+prt_in,57,54,3	duplicate(Basta)	巴斯塔#prt	4_M_DWARF
+morocc_in,68,30,3	duplicate(Basta)	巴斯塔#morocc	4_M_DWARF
+payon,148,174,3	duplicate(Basta)	巴斯塔#payon	4_M_DWARF
+alberta_in,18,56,3	duplicate(Basta)	巴斯塔#alberta	4_M_DWARF
+yuno_in01,173,18,3	duplicate(Basta)	巴斯塔#yuno	4_M_DWARF
+ein_in01,24,82,3	duplicate(Basta)	巴斯塔#einbroch	4_M_DWARF
+lhz_in02,280,17,3	duplicate(Basta)	巴斯塔#lighthalzen	4_M_DWARF
+
+// Refine UI makes these NPCs useless
+-	script	RefineUI_Init	-1,{
+	end;
+OnInit:
+	if (getbattleflag("feature.refineui")) {
+		unloadnpc "Basta";
+		unloadnpc "MightyHammer";
+	}
+	end;
+}

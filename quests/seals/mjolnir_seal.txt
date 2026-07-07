@@ -1,0 +1,2784 @@
+//===== rAthena Script ======================================= 
+//= God Item Quest - Mjolnir Seal
+//===== By: ================================================== 
+//= SinSloth
+//===== Current Version: ===================================== 
+//= 1.9
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Quest for breaking the seal of Mjolnir.
+//===== Additional Comments: =================================
+//= 1.0 First version. Thanks to SinSloth for scripting it. [MasterOfMuppets]
+//= 1.1 Fixed wrong label names [Luups]
+//= 1.1a Corrected a a typo error ";;". [Samuray22]
+//= 1.2 Updated several aspects of the script. [L0ne_W0lf]
+//= 1.3 Minor Touchups to quest. [L0ne_W0lf]
+//= 1.4 Optimizing refine method and wrong close2. [Zephyrus]
+//= 1.5 Fixed Trans classes being assigned random reward. [L0ne_W0lf]
+//= 1.6 Fixed checking for Oridecon Hammer. [L0ne_W0lf]
+//=     Corrected Sudi's and player's HP settings.
+//= 1.7 Fixed a copy/paste error in Nordri. [L0ne_W0lf]
+//= 1.8 Fixed item check for Oridecon. [L0ne_W0lf]
+//= 1.8a Added 'disable_items' command. [Euphy]
+//= 1.9 Renewal script update. [Euphy]
+//============================================================
+
+prontera,124,297,3	script	提亞爾菲	706,{
+	if (checkweight(1301,3) == 0) {
+		mes "- 你攜帶太多物品了！ -";
+		close;
+	}
+	if ($God3 < $@god_check1) {
+		cutin "god_tialpi01",2;
+		mes "[提亞爾菲]";
+		mes "嗯...";
+		mes "我能感覺到米德加爾特某處有一股奇怪的力量正變得越來越強大。";
+		next;
+		mes "[提亞爾菲]";
+		mes "你感覺到了嗎？";
+		mes "一定發生了";
+		mes "什麼事！";
+	}
+	else {
+		if (god_mjo_0 == 11) {
+			cutin "god_tialpi01",2;
+			mes "[提亞爾菲]";
+			mes "我一直等待著有一天能親眼看見索爾的雷電。我相信總有一天，我的夢想會成真。";
+		}
+		else if (god_mjo_1 == 2 && god_mjo_2 == 2 && god_mjo_3 == 2 && god_mjo_4 == 2) {
+			if (god_mjo_0 == 10) {
+				if ((countitem(756) > 49) && (countitem(757) > 49)) {
+					set .@gift,0;
+					if (BaseJob == Job_Knight) {
+						set .@gift,1;
+					}
+					else if (BaseJob == Job_Priest) {
+						set .@gift,2;
+					}
+					else if (BaseJob == Job_Wizard){
+						set .@gift,3;
+					}
+					else if (BaseJob == Job_Blacksmith){
+						set .@gift,4;
+					}
+					else if (BaseJob == Job_hunter){
+						set .@gift,5;
+					}
+					else if (BaseJob == Job_Assassin){
+						set .@gift,6;
+					}
+					else if (BaseJob == Job_Crusader){
+						set .@gift,7;
+					}
+					else if (BaseJob == Job_Monk){
+						set .@gift,8;
+					}
+					else if (BaseJob == Job_Sage){
+						set .@gift,9;
+					}
+					else if (BaseJob == Job_Alchemist){
+						set .@gift,10;
+					}
+					else if (BaseJob == Job_Rogue){
+						set .@gift,11;
+					}
+					else if (BaseJob == Job_Bard){
+						set .@gift,12;
+					}
+					else if (BaseJob == Job_Hunter){
+						set .@gift,13;
+					}
+					else {
+						set .@gift,rand(1,13);
+					}
+					cutin "god_tialpi01",2;
+					mes "[提亞爾菲]";
+					mes "你回來了！";
+					mes "作為你帶給我的礦石的交換，我會給你一件我們家族的傳家寶。";
+					next;
+					mes "[提亞爾菲]";
+					mes "在選擇寶物時你有兩個選項。你可以選擇一件對自己有用的寶物，或者可能適合你朋友的東西。";
+					next;
+					mes "[提亞爾菲]";
+					mes "那麼你想要";
+					mes "哪一件寶物？";
+					next;
+					switch(select("我能使用的物品。:我朋友能使用的物品。")) {
+					case 1:
+						mes "[提亞爾菲]";
+						mes "我明白了...";
+						mes "給我一點時間";
+						mes "找一件適合";
+						mes "你的物品。";
+						break;
+					case 2:
+						set .@gift,rand(1,13);
+						mes "[提亞爾菲]";
+						mes "我明白了...";
+						mes "給我一點時間";
+						mes "找一件適合";
+						mes "你朋友的物品。";
+						break;
+					}
+					next;
+					mes "[提亞爾菲]";
+					mes "好的，讓我想想...";
+					mes "我記得我把它放在這附近的某個地方... 嗯。";
+					mes "一定是在這附近——啊！";
+					mes "找到了~";
+					next;
+					delitem 756,50; //Oridecon_Stone
+					delitem 757,50; //Elunium_Stone
+					set god_mjo_0,11;
+					if (.@gift == 1) {
+						getitem 1471,1; // Hell_Fire
+					}
+					else if (.@gift == 2) {
+						getitem 1526,1; // Slash
+					}
+					else if (.@gift == 3) {
+						getitem 1231,1; // Bazerald
+					}
+					else if (.@gift == 4) {
+						getitem 1367,1; // Slaughter
+					}
+					else if (.@gift == 5) {
+						getitem 1722,1; // Balistar
+					}
+					else if (.@gift == 6) {
+						getitem 1230,1; // House_Auger
+					}
+					else if (.@gift == 7) {
+						getitem 1141,1; // Immaterial_Sword
+					}
+					else if (.@gift == 8) {
+						getitem 1813,1; // Kaiser_Knuckle
+					}
+					else if (.@gift == 9) {
+						getitem 1557,1; // Book_Of_The_Apocalypse
+					}
+					else if (.@gift == 10) {
+						getitem 1235,1; // Azoth
+					}
+					else if (.@gift == 11) {
+						getitem 1227,1; // Weeder_Knife
+					}
+					else if (.@gift == 12) {
+						getitem 1913,1; // Electronic_Guitar
+					}
+					else if (.@gift == 13) {
+						getitem 1963,1; // Rapture_Rose
+					}
+					else {
+						mes "Unknown error occurred.";
+						close2;
+						cutin "god_tialpi01",255;
+						end;
+					}
+					cutin "god_tialpi01",2;
+					mes "[提亞爾菲]";
+					mes "再次感謝你為了我而經歷的這些麻煩。我不確定這東西怎麼用，但我希望它對你有用。據我所知，這應該是件稀有的物品。";
+					next;
+					mes "[提亞爾菲]";
+					mes "我會等待著能親眼見到索爾雷電的那一天。我相信我做過的夢，總有一天會成真。";
+				}
+				else {
+					cutin "god_tialpi01",2;
+					mes "[提亞爾菲]";
+					mes "我需要";
+					mes "50個神之金屬原石";
+					mes "和50個鋁原石。";
+					next;
+					mes "[提亞爾菲]";
+					mes "我沒有太多時間，所以如果你不能把它們帶給我，就請繼續你的旅程吧。";
+				}
+			}
+			else {
+				if ($God4 >= $@god_check2) {
+					mes "[提亞爾菲]";
+					mes "我能感覺到這片大陸某處有一股奇怪的力量正變得越來越強大...";
+					next;
+					mes "[提亞爾菲]";
+					mes "你感覺到了嗎？";
+					mes "一定發生了什麼事！";
+					next;
+					mes "[提亞爾菲]";
+					mes "我想我們最好靜觀其變。會有人把消息傳遞給我們的。雖然，我不確定那會是好消息還是壞消息...";
+				}
+				else {
+					set $God4,$God4 +1;
+					if ($God4 == $@god_check1)
+						announce "[雷神之鎚]的第4道封印出現了。",bc_all;
+					else if ($God4 == $@god_check2) {
+						if ($God4 == $@god_check2 && $God2 == $@god_check2 && $God3 == $@god_check2 && $God1 == $@god_check2)
+							announce "[雷神之鎚]的封印與四道封印同時被解除了。",bc_all;
+						else
+							announce "[雷神之鎚]的第4道封印被解除了。",bc_all;
+					}
+					set god_mjo_0,10;
+					mes "[提亞爾菲]";
+					mes "你見過那四位矮人鐵匠了。我聽說他們很少跟人類說話。所以如果你能跟他們說上話，你一定很特別。";
+					next;
+					mes "[提亞爾菲]";
+					mes "你覺得我的夢想會成真嗎？你相信索爾的雷神之鎚會出現在人類的眼前嗎？我擔心這個世界將會迎來巨大的改變。";
+					next;
+					mes "[提亞爾菲]";
+					mes "謝謝你為了我經歷這些麻煩。我想送你一件我們家族的傳家寶作為感謝的信物。";
+					next;
+					mes "[提亞爾菲]";
+					mes "不過，我希望你能理解，如果其中一件寶物就這樣不見了，我的家人會起疑心的。";
+					next;
+					mes "[提亞爾菲]";
+					mes "嗯，不過，如果我用其中一件寶物交換其他東西，我想他們應該不會抱怨。讓我想想...";
+					next;
+					mes "[提亞爾菲]";
+					mes "如果你能帶給我50個神之金屬原石和50個鋁原石，";
+					mes "我應該就能把我們家族的其中一件傳家寶交給你。";
+					next;
+					mes "[提亞爾菲]";
+					mes "如果你不想的話，你不必這麼做。但看起來我們家族的傳家寶對像你這樣的冒險者會更有用...";
+				}
+			}
+		}
+		else if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+			mes "[提亞爾菲]";
+			mes "嗯...";
+			mes "矮人鐵匠們";
+			mes "一定因為某些原因";
+			mes "在生你的氣。";
+			next;
+			mes "[提亞爾菲]";
+			mes "記住我妹妹的";
+			mes "建議，並以極大的禮貌";
+			mes "與他們交談。";
+			mes "小心選擇";
+			mes "尊敬的措辭，以免";
+			mes "冒犯他們。";
+			next;
+			set god_mjo_1,0;
+			set god_mjo_2,0;
+			set god_mjo_3,0;
+			set god_mjo_4,0;
+			mes "[提亞爾菲]";
+			mes "你現在應該沒事了。";
+			mes "這個時候，他們大概已經忘記那份冒犯了。但請務必先去跟我妹妹尋求建議。";
+		}
+		else if (god_mjo_0 == 2 || god_mjo_0 == 1) {
+			cutin "god_tialpi01",2;
+			mes "[提亞爾菲]";
+			mes "抱歉給你添麻煩了。";
+			mes "祝你尋找矮人時";
+			mes "好運！";
+			mes "只是... 千萬別冒犯他們！";
+		}
+		else if (god_mjo_0 == 0) {
+			if ($God4 >= $@god_check2) {
+				cutin "god_tialpi01",2;
+				mes "[提亞爾菲]";
+				mes "我能感覺到這片大陸某處有一股奇怪的力量正變得越來越強大...";
+				next;
+				mes "[提亞爾菲]";
+				mes "你感覺到了嗎？";
+				mes "一定發生了什麼事！";
+				next;
+				mes "[提亞爾菲]";
+				mes "我想我們最好靜觀其變。會有人把消息傳遞給我們的。雖然，我不確定那會是好消息還是壞消息...";
+				close3;
+			}
+			else if (BaseLevel < 70) {
+				cutin "god_tialpi02",2;
+				mes "[提亞爾菲]";
+				mes "據說我的一位祖先曾是索爾的僕人。儘管如此，我還是覺得很難以置信。";
+				next;
+				mes "[提亞爾菲]";
+				mes "如果神明擁有這麼多力量，區區一個人類怎麼可能幫得上什麼忙？";
+			}
+			else {
+				cutin "god_tialpi01",2;
+				mes "[提亞爾菲]";
+				mes "昨晚，我做了一個最不可思議的夢，在夢裡我是雷神索爾的僕人。";
+				next;
+				mes "[提亞爾菲]";
+				mes "在夢中，我跟著";
+				mes "索爾前往巨人國度約頓海姆。在我們的旅程中，他告訴了我許多關於神與英雄的有趣故事。";
+				next;
+				mes "[提亞爾菲]";
+				mes "當然，我無法清楚記得每一件事，但那真的是太奇妙了。";
+				next;
+				mes "[提亞爾菲]";
+				mes "不知為何，我能清楚地想起索爾告訴我關於他的武器，雷神之鎚的事。雷神之鎚是矮人的傑作。";
+				next;
+				mes "[提亞爾菲]";
+				mes "索爾告訴我，矮人是非常有才華的工匠，他們的作品是至高無上的。所以當";
+				mes "我在回想我的夢時，";
+				mes "我想起了...";
+				next;
+				mes "[提亞爾菲]";
+				mes "有一座山";
+				mes "跟索爾的武器有著";
+				mes "相同的名字。當然，這兩者之間";
+				mes "一定有某種關聯。";
+				next;
+				mes "[提亞爾菲]";
+				mes "我最近也聽到一個傳聞，說矮人鐵匠就居住在妙勒尼山脈。";
+				mes "我知道那座山很危險，我也沒有立場要求這種事...";
+				next;
+				mes "[提亞爾菲]";
+				mes "我忍不住想親自查明我的夢是否屬實。雷神之鎚有可能重新出現嗎？";
+				next;
+				mes "[提亞爾菲]";
+				mes "如果你不介意的話，我想請你去探索這座山，並尋找這些矮人鐵匠。";
+				next;
+				switch(select("不要。:好的。")) {
+				case 1:
+					cutin "god_tialpi02",2;
+					mes "[提亞爾菲]";
+					mes "我明白了。但我還是很感謝你抽出時間聽我說話。";
+					mes "希望有一天我能了解關於我的夢和雷神之鎚的真相。";
+					break;
+				case 2:
+					cutin "god_tialpi01",2;
+					mes "[提亞爾菲]";
+					mes "謝謝你，";
+					mes "真的非常感謝！";
+					mes "儘管這並不容易，但我相信如果矮人鐵匠真的存在，你一定能找到他們。";
+					next;
+					mes "[提亞爾菲]";
+					mes "喔，請先去跟我妹妹蘿絲克瓦談談。她就在普隆德拉北邊入口外。";
+					next;
+					mes "[提亞爾菲]";
+					mes "我相信如果你有幸";
+					mes "遇到矮人，她能給你一些有用的資訊。";
+					next;
+					set god_mjo_0,rand(1,2);
+					mes "[提亞爾菲]";
+					mes "能遇見像你這樣的冒險者，我真的很幸運。祝你好運。";
+				}
+			}
+		}
+		else {
+			cutin "god_tialpi01",2;
+			mes "[提亞爾菲]";
+			mes "我相信你。";
+			mes "拿出勇氣來！";
+		}
+	}
+	close2;
+	cutin "god_tialpi01",255;
+	end;
+}
+
+prt_fild01,196,47,3	script	蘿絲克瓦	703,{
+	if (god_mjo_0 == 1) {
+		mes "[蘿絲克瓦]";
+		mes "你應該知道，如果你沒有以最崇高的敬意與矮人鐵匠說話，他們會感到非常被冒犯。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "所以，";
+		mes "盡可能禮貌地";
+		mes "與矮人們交談";
+		mes "是非常重要的。";
+		mes "你必須拜訪的第一位矮人";
+		mes "在東邊。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "以順時針方向繞行米德加爾特，並依序尋找其他的矮人。你的最終目的地將會在北邊。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "如果你不小心弄錯了與他們交談的順序，請回去再跟我哥哥提亞爾菲談談。";
+		close;
+	}
+	else if (god_mjo_0 == 2) {
+		mes "[蘿絲克瓦]";
+		mes "你應該知道，如果你沒有以最崇高的敬意與矮人鐵匠說話，他們會感到非常被冒犯。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "所以，";
+		mes "盡可能禮貌地";
+		mes "與矮人們交談";
+		mes "是非常重要的。";
+		mes "你必須拜訪的第一位矮人";
+		mes "在北邊。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "以逆時針方向繞行米德加爾特，並依序尋找其他的矮人。你的最終目的地將會在東邊。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "如果你不小心弄錯了與他們交談的順序，請回去再跟我哥哥提亞爾菲談談。";
+		close;
+	}
+	else {
+		mes "[蘿絲克瓦]";
+		mes "很久以前，有很多人常來這個區域。朋友和家人曾經住在這裡，分享著喜悅與悲傷。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "但他們現在都不在了。我的父母和我的朋友都去了一個我連名字都不知道的地方。";
+		next;
+		mes "[蘿絲克瓦]";
+		mes "我忍不住";
+		mes "感到孤單...";
+		close;
+	}
+}
+
+mjolnir_11,149,247,5	script	矮人鐵匠#east	826,{
+	if ($God3 < $@god_check1) {
+		mes "[奧斯特里]";
+		mes "這片大陸上的某個地方正發生著一些事。你可能不相信我，但我一直看到芬里爾狼的幻象。";
+		close;
+	}
+	else {
+		if ($God4 >= $@god_check2) {
+			mes "[奧斯特里]";
+			mes "這片大陸上的某個地方正發生著一些事。你可能不相信我，但我一直看到芬里爾狼的幻象。";
+			close;
+		}
+		else if (god_mjo_0 == 11) {
+			mes "[奧斯特里]";
+			mes "當我的族人終於找回他們過去的記憶時，我們將能把神的力量賜予人類。";
+			next;
+			mes "[奧斯特里]";
+			mes "我相信那個";
+			mes "時刻即將到來...";
+			close;
+		}
+		else if (god_mjo_0 == 10) {
+			mes "[奧斯特里]";
+			mes "嗯？我感覺到你是受那個人的委託來幫忙的。如果我是你，我會盡快完成那項任務。不知為何，那個人類的命運，以及矮人們的命運，是交織在一起的...";
+			close;
+		}
+		else if (god_mjo_0 == 1) {
+			if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+				mes "[奧斯特里]";
+				mes "什麼事？！我拒絕跟像你這樣粗魯又卑劣的";
+				mes "人類說話！現在，從我眼前消失！";
+				close;
+			}
+			else if (god_mjo_1 == 2) {
+				mes "[奧斯特里]";
+				mes "什麼...？";
+				mes "我沒什麼好";
+				mes "跟你說的。";
+				close;
+			}
+			else if (god_mjo_2 != 0 || god_mjo_3 != 0 || god_mjo_4 != 0) {
+				mes "[奧斯特里]";
+				mes "嗯...？";
+				mes "人類，你為什麼";
+				mes "來找我？";
+				next;
+				switch(select("沒事。:嘿，最近怎樣！")) {
+				case 1:
+					mes "[奧斯特里]";
+					mes "...";
+					close;
+				case 2:
+					set god_mjo_1,3;
+					mes "[奧斯特里]";
+					mes "什麼...？！";
+					mes "凡人，";
+					mes "不要隨便跟";
+					mes "矮人打招呼！";
+					close;
+				}
+			}
+			else if (god_mjo_1 == 1) {
+				mes "[奧斯特里]";
+				mes "是什麼風";
+				mes "把你吹來找我的？";
+				next;
+				switch(select("沒事。:不好意思，先生。")) {
+				case 1:
+					mes "[奧斯特里]";
+					mes "...";
+					close;
+				case 2:
+					if (countitem(1005) > 0) { //Hammer_Of_Blacksmith 
+						mes "[奧斯特里]";
+						mes "啊，看來並非全人類都值得鄙視。跟你的許多同類不同，我看出來你懂得尊敬長者。";
+						next;
+						while(1) {
+							if (.@talk_to == 0) {
+								mes "[奧斯特里]";
+								mes "所以你想";
+								mes "問我";
+								mes "什麼事？";
+								next;
+								switch(select("...:關於雷神之鎚。")) {
+								case 1:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 1) {
+								mes "[奧斯特里]";
+								mes "雷神之鎚...？";
+								mes "索爾的傳說武器？";
+								mes "那把能撼動大地、撕裂天空的鎚子？在所有傳說武器中，雷神之鎚或許是最偉大的。";
+								next;
+								mes "[奧斯特里]";
+								mes "事實上，它是由我的祖先鍛造的。雷神之鎚是一把完美的武器，除了有一個小瑕疵。";
+								next;
+								mes "[奧斯特里]";
+								mes "雷神之鎚的握柄鍛造得比預期還要短。你還在聽我說話嗎？";
+								next;
+								switch(select("...:是的，先生！:蛤？")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 2) {
+								mes "[奧斯特里]";
+								mes "有一天，洛基來到我們的村莊炫耀他的寶物。他吹噓說我們不可能製造出超越它們品質的東西。";
+								next;
+								mes "[奧斯特里]";
+								mes "坦白說，他的寶物是";
+								mes "由另一個矮人部落製造的，但我們無法容忍他的侮辱。所以我的祖先自己創造了三件寶物。";
+								next;
+								switch(select("...:好無聊喔！:喔，哇。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 3) {
+								mes "[奧斯特里]";
+								mes "在我的祖先創造的三件寶物中，雷神之鎚是最後也是最偉大的一件。";
+								next;
+								mes "[奧斯特里]";
+								mes "然而，在製造它的時候，一隻奇怪的蒼蠅咬了我祖先的手。因為這個干擾，雷神之鎚的握柄有點瑕疵。";
+								next;
+								mes "[奧斯特里]";
+								mes "這非常令人遺憾。雖然雷神之鎚是有史以來最偉大的武器，但它差一點就能成為工藝的巔峰之作。";
+								next;
+								switch(select("...:巔——什麼？:是的先生，我同意。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 4) {
+								mes "[奧斯特里]";
+								mes "儘管有這個小瑕疵，雷神之鎚仍然被認為是最偉大的傳說武器。";
+								next;
+								mes "[奧斯特里]";
+								mes "雷神之鎚是索爾在戰場上揮舞的可靠武器，每個巨人都害怕它的力量。";
+								next;
+								mes "[奧斯特里]";
+								mes "我必須說，一個鐵匠最大的驕傲來自於他創造出能被視為他畢生心血的武器和防具。";
+								next;
+								switch(select("...:我同意，先生！:嗯，是啊。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 5) {
+								mes "[奧斯特里]";
+								mes "這座山之所以被稱為妙勒尼山脈，是因為它實際上是由那把鎚子創造出來的。";
+								next;
+								mes "[奧斯特里]";
+								mes "在一千年前與惡魔的戰鬥中，索爾用雷神之鎚敲擊大地。那股衝擊力導致地面隆起，創造了這座山。";
+								next;
+								mes "[奧斯特里]";
+								mes "你可以想像";
+								mes "雷神之鎚有多麼強大。";
+								mes "然而，人類永遠別指望能看到甚至揮舞雷神之鎚。只有神才能駕馭那種力量。";
+								next;
+								switch(select("...:哇哇哇~！:啊，我明白了先生！")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 6) {
+								mes "[奧斯特里]";
+								mes "嗯... 但或許一個有野心的矮人可以鍛造出類似雷神之鎚的東西，讓它實際上能被人類使用。它的力量會比較小，但會被完美地製作出來。";
+								next;
+								mes "[奧斯特里]";
+								mes "是的，創造一把";
+								mes "適合人類的雷神之鎚是可能的。儘管如此，這並不是件容易的事。";
+								next;
+								switch(select("...:是的，先生！:是喔，隨便啦。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 7) {
+								mes "[奧斯特里]";
+								mes "嗯，我不小心說得比我預期的還要久。但我希望你已經學到了你想知道的";
+								mes "關於雷神之鎚的事。";
+								next;
+								mes "[奧斯特里]";
+								mes "我感覺到一個巨大的改變即將到來。我不知道它會對";
+								mes "我們的世界產生什麼樣的影響，但將會有重要的事情發生...";
+								next;
+								mes "[奧斯特里]";
+								mes "或許只有神才能";
+								mes "確定未來會帶來什麼。無論如何，我們必須為將要發生的事做好準備。";
+								next;
+								switch(select("...:是嗎？:是的，先生！")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 8) {
+								set god_mjo_1,2;
+								mes "[奧斯特里]";
+								mes "那麼就這樣吧...";
+								mes "如果你想了解更多，你應該去跟我的兄弟們談談。";
+								mes "保重，人類。";
+								close;
+							}
+							if (.@talk_not == 1) {
+								set god_mjo_1,3;
+								mes "[奧斯特里]";
+								mes "咕嚕...！";
+								mes "你根本沒在聽，對吧？！真是浪費我的時間！";
+								next;
+								mes "[奧斯特里]";
+								mes "這就是為什麼我不想跟人類打交道。當我在說話的時候，他們總是把我拒於門外！";
+								close;
+							}
+							else {
+								set .@talk_to,.@talk_to + 1;
+							}
+						}
+					}
+					else {
+						mes "[奧斯特里]";
+						mes "你似乎並不";
+						mes "明白。如果你";
+						mes "想向我證明你了解鐵匠，你應該帶一些跟我工作相關的東西來！";
+						close;
+					}
+				}
+			}
+			else if (god_mjo_1 == 0) {
+				mes "[奧斯特里]";
+				mes "是什麼風";
+				mes "把你吹來找我的？";
+				next;
+				switch(select("沒事。:不好意思，先生。")) {
+				case 1:
+					mes "[奧斯特里]";
+					mes "...";
+					close;
+				case 2:
+					mes "[奧斯特里]";
+					mes "一個受人尊敬的鐵匠會珍惜他的工具，並勤奮謹慎地鍛造。";
+					next;
+					mes "[奧斯特里]";
+					mes "說到人類，我相信只有那些能欣賞我工作的人才值得交談。";
+					next;
+					set god_mjo_1,1;
+					mes "[奧斯特里]";
+					mes "每個優秀的鐵匠都知道一把好鐵鎚的價值。如果你能明白這一點，我會考慮跟你談談。";
+					next;
+					mes "[奧斯特里]";
+					mes "現在走吧，人類。";
+					mes "祝你旅途";
+					mes "平安。";
+					close;
+				}
+			}
+			else {
+				mes "[奧斯特里]";
+				mes "Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 2) {
+			if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+				mes "[奧斯特里]";
+				mes "什麼事？！我拒絕跟像你這樣粗魯又卑劣的";
+				mes "人類說話！現在，從我眼前消失！";
+				close;
+			}
+			else if (god_mjo_4 == 2) {
+				mes "[奧斯特里]";
+				mes "什麼事...？";
+				mes "我沒什麼好";
+				mes "跟你說的。";
+				close;
+			}
+			else if (god_mjo_1 == 0 || god_mjo_1 == 1 || god_mjo_2 == 0 || god_mjo_2 == 1 || god_mjo_3 == 0 || god_mjo_3 == 1) {
+				mes "[奧斯特里]";
+				mes "是什麼風把你吹來找我的？";
+				next;
+				switch(select("沒事。:嘿，最近怎樣！")) {
+				case 1:
+					mes "[奧斯特里]";
+					mes "...";
+					close;
+				case 2:
+					set god_mjo_4,3;
+					mes "[奧斯特里]";
+					mes "什麼？！";
+					mes "馬上離開，去好好學學你的禮貌和措辭！";
+					close;
+				}
+			}
+			else if (god_mjo_4 == 1) {
+				mes "[奧斯特里]";
+				mes "是什麼風";
+				mes "把你吹來找我的？";
+				next;
+				switch(select("沒事。:不好意思，先生。")) {
+				case 1:
+					mes "[奧斯特里]";
+					mes "...";
+					close;
+				case 2:
+					if (countitem(1005) > 0) {
+						mes "[奧斯特里]";
+						mes "啊，看來並非全人類都值得鄙視。跟你的許多同類不同，我看出來你懂得尊敬長者。";
+						next;
+						while(1) {
+							if (.@talk_to == 0) {
+								mes "[奧斯特里]";
+								mes "所以你想";
+								mes "問我";
+								mes "什麼事？";
+								next;
+								switch(select("...:關於雷神之鎚。")) {
+								case 1:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 1) {
+								mes "[奧斯特里]";
+								mes "雷神之鎚...？";
+								mes "索爾的傳說武器？";
+								mes "那把能撼動大地、撕裂天空的鎚子？在所有傳說武器中，雷神之鎚或許是最偉大的。";
+								next;
+								mes "[奧斯特里]";
+								mes "事實上，它是由我的祖先鍛造的。雷神之鎚是一把完美的武器，除了有一個小瑕疵。";
+								next;
+								mes "[奧斯特里]";
+								mes "雷神之鎚的握柄鍛造得比預期還要短。你還在聽我說話嗎？";
+								next;
+								switch(select("...:是的，先生！:蛤？")) {
+								default:
+									set .@talk_not,1;
+								break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 2) {
+								mes "[奧斯特里]";
+								mes "有一天，洛基來到我們的村莊炫耀他的寶物。他吹噓說我們不可能製造出超越它們品質的東西。";
+								next;
+								mes "[奧斯特里]";
+								mes "坦白說，他的寶物是";
+								mes "由另一個矮人部落製造的，但我們無法容忍他的侮辱。所以我的祖先自己創造了三件寶物。";
+								next;
+								switch(select("...:好無聊喔！:喔，哇。")) {
+								case 1:
+									set .@talk_not,1;
+								break;
+								case 2:
+									set .@talk_not,1;
+								break;
+								case 3:
+								break;
+								}
+							}
+							else if (.@talk_to == 3) {
+								mes "[奧斯特里]";
+								mes "在我的祖先創造的三件寶物中，雷神之鎚是最後也是最偉大的一件。";
+								next;
+								mes "[奧斯特里]";
+								mes "然而，在製造它的時候，一隻奇怪的蒼蠅咬了我祖先的手。因為這個干擾，雷神之鎚的握柄有點瑕疵。";
+								next;
+								mes "[奧斯特里]";
+								mes "這非常令人遺憾。雖然雷神之鎚是有史以來最偉大的武器，但它差一點就能成為工藝的巔峰之作。";
+								next;
+								switch(select("...:巔——什麼？:是的先生，我同意。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 4) {
+								mes "[奧斯特里]";
+								mes "儘管有這個小瑕疵，雷神之鎚仍然被認為是最偉大的傳說武器。";
+								next;
+								mes "[奧斯特里]";
+								mes "雷神之鎚是索爾在戰場上揮舞的可靠武器，每個巨人都害怕它的力量。";
+								next;
+								mes "[奧斯特里]";
+								mes "我必須說，一個鐵匠最大的驕傲來自於他創造出能被視為他畢生心血的武器和防具。";
+								next;
+								switch(select("...:我同意，先生！:嗯，是啊。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 5) {
+								mes "[奧斯特里]";
+								mes "這座山之所以被稱為妙勒尼山脈，是因為它實際上是由那把鎚子創造出來的。";
+								next;
+								mes "[奧斯特里]";
+								mes "在一千年前與惡魔的戰鬥中，索爾用雷神之鎚敲擊大地。那股衝擊力導致地面隆起，創造了這座山。";
+								next;
+								mes "[奧斯特里]";
+								mes "你可以想像";
+								mes "雷神之鎚有多麼強大。";
+								mes "然而，人類永遠別指望能看到甚至揮舞雷神之鎚。只有神才能駕馭那種力量。";
+								next;
+								switch(select("...:哇哇哇~！:啊，我明白了先生！")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 6) {
+								mes "[奧斯特里]";
+								mes "嗯... 但或許一個有野心的矮人可以鍛造出類似雷神之鎚的東西，讓它實際上能被人類使用。它的力量會比較小，但會被完美地製作出來。";
+								next;
+								mes "[奧斯特里]";
+								mes "是的，創造一把";
+								mes "適合人類的雷神之鎚是可能的。儘管如此，這並不是件容易的事。";
+								next;
+								switch(select("...:是的，先生！:是喔，隨便啦。")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 2:
+									break;
+								}
+							}
+							else if (.@talk_to == 7) {
+								mes "[奧斯特里]";
+								mes "嗯，我不小心說得比我預期的還要久。但我希望你已經學到了你想知道的";
+								mes "關於雷神之鎚的事。";
+								next;
+								mes "[奧斯特里]";
+								mes "我感覺到一個巨大的改變即將到來。我不知道它會對";
+								mes "我們的世界產生什麼樣的影響，但將會有重要的事情發生...";
+								next;
+								mes "[奧斯特里]";
+								mes "或許只有神才能";
+								mes "確定未來會帶來什麼。無論如何，我們必須為將要發生的事做好準備。";
+								next;
+								switch(select("...:是嗎？:是的，先生！")) {
+								default:
+									set .@talk_not,1;
+									break;
+								case 3:
+									break;
+								}
+							}
+							else if (.@talk_to == 8) {
+								set god_mjo_4,2;
+								mes "[奧斯特里]";
+								mes "那麼就這樣吧...";
+								mes "保重";
+								mes "自己，人類。";
+								close;
+							}
+							if (.@talk_not == 1) {
+								set god_mjo_4,3;
+								mes "[奧斯特里]";
+								mes "咕嚕...！";
+								mes "你根本沒在聽，對吧？！真是浪費我的時間！";
+								next;
+								mes "[奧斯特里]";
+								mes "這就是為什麼我不想跟人類打交道。當我在說話的時候，他們總是把我拒於門外！";
+								close;
+							} else {
+								set .@talk_to,.@talk_to + 1;
+							}
+						}
+					}
+					else {
+						mes "[奧斯特里]";
+						mes "你似乎並不";
+						mes "明白。如果你";
+						mes "想向我證明你了解鐵匠，你應該帶一些跟我工作相關的東西來！";
+						close;
+					}
+				}
+			}
+			else if (god_mjo_4 == 0) {
+				mes "[奧斯特里]";
+				mes "是什麼風把你吹來找我的？";
+				next;
+				switch(select("沒事。:不好意思，先生。")) {
+				case 1:
+					mes "[奧斯特里]";
+					mes "...";
+					close;
+				case 2:
+					mes "[奧斯特里]";
+					mes "一個受人尊敬的鐵匠會珍惜他的工具，並勤奮謹慎地鍛造。";
+					next;
+					mes "[奧斯特里]";
+					mes "說到人類，我相信只有那些能欣賞我工作的人才值得交談。";
+					next;
+					set god_mjo_4,1;
+					mes "[奧斯特里]";
+					mes "每個優秀的鐵匠都知道一把好鐵鎚的價值。如果你能明白這一點，我會考慮跟你談談。";
+					next;
+					mes "[奧斯特里]";
+					mes "現在走吧，人類。";
+					mes "祝你旅途";
+					mes "平安。";
+					close;
+				}
+			}
+			else {
+				mes "[奧斯特里]";
+				mes "Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 0) {
+			mes "[奧斯特里]";
+			mes "啊...";
+			mes "感覺今天會是個美好的一天。";
+			next;
+			mes "[奧斯特里]";
+			mes "我有溫暖的陽光、清新的森林空氣，而且我的鐵鎚和鐵砧都準備好了。這真是個適合鍛造的完美日子！";
+			close;
+		}
+		else {
+			mes "[奧斯特里]";
+			mes "Zzzz Zzzz...";
+			close;
+		}
+	}
+}
+
+mjolnir_09,209,341,3	script	矮人鐵匠#south	826,{
+	if ($God3 < $@god_check1) {
+		mes "[蘇德里]";
+		mes "我想要挑戰，";
+		mes "並且和越來越強的對手戰鬥！";
+		next;
+		mes "[蘇德里]";
+		mes "總有一天，我會回到斯瓦特阿爾海姆打敗伊瓦爾迪！哇哈哈哈！";
+		close;
+	}
+	else {
+		if ($God4 >= $@god_check2) {
+			mes "[蘇德里]";
+			mes "等等，現在";
+			mes "還不是";
+			mes "戰鬥的時候...";
+			next;
+			mes "[蘇德里]";
+			mes "被隱藏的事物即將在決心的汗水和犧牲的淚水中誕生。我們必須等到那時。";
+			close;
+		}
+		else if (god_mjo_0 == 11) {
+			mes "[蘇德里]";
+			mes "我想和更強的人比試！";
+			mes "我會變得越來越強，";
+			mes "有一天當我回到斯瓦特阿爾海姆時，";
+			mes "我一定要打敗伊瓦爾迪！";
+			mes "哇哈哈哈...！";
+			close;
+		}
+		else if (god_mjo_10 == 10) {
+			mes "[蘇德里]";
+			mes "我必須承認你真是一個非常強大的人類。有機會我們再打一場吧。下次你可就不會這麼幸運了！";
+			close;
+		}
+		else if (god_mjo_0 == 1) {
+			if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+				mes "[蘇德里]";
+				mes "趁我還沒把你打死之前，滾回你該去的地方！";
+				next;
+				mes "[蘇德里]";
+				mes "你在這裡能得到的只有一些草藥。";
+				close;
+			}
+			else if (god_mjo_2 == 2) {
+				mes "[蘇德里]";
+				mes "真是一場精彩的戰鬥！";
+				mes "哇哈哈哈！我對這個結果很滿意。雖然我輸了，但我們都拼盡全力，光榮地戰鬥了。";
+				close;
+			}
+			else if (god_mjo_1 == 0 || god_mjo_1 == 1 || god_mjo_3 != 0 || god_mjo_4 != 0) {
+				mes "[蘇德里]";
+				mes "所以...";
+				mes "是什麼風";
+				mes "把你吹來的？";
+				next;
+				switch(select("沒事。:打擾一下，先生。")) {
+				case 1:
+					mes "[蘇德里]";
+					mes "你時間太多了吧。為什麼不登出遊戲去和朋友玩呢？";
+					close;
+				case 2:
+					set god_mjo_2,3;
+					mes "[蘇德里]";
+					mes "我為什麼";
+					mes "要原諒你？";
+					next;
+					mes "[蘇德里]";
+					mes "如果說";
+					mes "我有什麼討厭的，";
+					mes "那就是虛偽和諷刺。";
+					mes "怎樣，你想打架嗎？！";
+					close;
+				}
+			}
+			else if (god_mjo_2 == 1) {
+				set .@n_vit,200;
+				set .@p_vit,100;
+				while(1) {
+					mes "蘇德里 : " + .@n_vit + " HP";
+					mes "" + strcharinfo(0) + " : " + .@p_vit + " HP";
+					mes "--------------------";
+					mes "" + strcharinfo(0) + "";
+					mes "發起了";
+					mes "攻擊！";
+					next;
+					switch(select("...?!:攻擊頭部！:攻擊胸部！:攻擊腿部！:休息一下。")) {
+					case 1:
+						set .@p_atk,0;
+						break;
+					case 2:
+						set .@p_atk,1;
+						break;
+					case 3:
+						set .@p_atk,2;
+						break;
+					case 4:
+						set .@p_atk,3;
+						break;
+					case 5:
+						set .@p_atk,4;
+						break;
+					}
+					set .@n_def,rand(1,3);
+					set .@damage,rand(15,25);
+					if (.@p_atk == 1) {
+						mes "" + strcharinfo(0) + "";
+						mes "攻擊了蘇德里的頭部！";
+					}
+					else if (.@p_atk == 2) {
+						mes "" + strcharinfo(0) + "";
+						mes "擊中了蘇德里的胸部！";
+					}
+					else if (.@p_atk == 3) {
+						mes "" + strcharinfo(0) + "";
+						mes "瞄準了蘇德里的腿部！";
+					}
+					else if (.@p_atk == 4) {
+						mes "" + strcharinfo(0) + "";
+						mes "要求休息！";
+					}
+					else {
+						mes "" + strcharinfo(0) + "的";
+						mes "弱點暴露了！";
+					}
+					if (.@p_atk == .@n_def) {
+						specialeffect EF_GUARD;
+						if (.@n_def == 1) {
+							mes "--------------------";
+							mes "蘇德里扭動他";
+							mes "嬌小卻敏捷的身軀，";
+							mes "輕鬆躲開了你的攻擊。";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 沒打中！";
+						}
+						else if (.@n_def == 2) {
+							mes "--------------------";
+							mes "蘇德里交叉他";
+							mes "粗壯的手臂";
+							mes "擋下了你的攻擊。";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + "的攻擊被擋下了！";
+						}
+						else if (.@n_def == 3) {
+							mes "--------------------";
+							mes "蘇德里一個優雅的";
+							mes "跳躍，";
+							mes "輕鬆躲開了你的攻擊。";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 沒打中！";
+						}
+					}
+					else if (.@p_atk == 4) {
+						specialeffect2 EF_HEAL;
+						set .@p_vit,.@p_vit + 10;
+						mes "--------------------";
+						mes "" + strcharinfo(0) + "";
+						mes "恢復了 10 HP！";
+					}
+					else if (.@p_atk == 1) {
+						specialeffect EF_HIT5;
+						set .@n_vit,.@n_vit - .@damage;
+						mes "--------------------";
+						mes "你成功地擊中";
+						mes "蘇德里的頭部！";
+						mes "--------------------";
+						mes "蘇德里損失了 " + .@damage + " HP！";
+					}
+					else if (.@p_atk == 2) {
+						specialeffect EF_HIT2;
+						set .@n_vit,.@n_vit - .@damage;
+						mes "--------------------";
+						mes "你成功地擊中";
+						mes "蘇德里的胸部！";
+						mes "--------------------";
+						mes "蘇德里";
+						mes "損失了 " + .@damage + " HP！";
+					}
+					else if (.@p_atk == 3) {
+						specialeffect EF_HIT4;
+						set .@n_vit,.@n_vit - .@damage;
+						mes "--------------------";
+						mes "你成功地擊中";
+						mes "蘇德里的腿部！";
+						mes "--------------------";
+						mes "蘇德里";
+						mes "損失了 " + .@damage + " HP！";
+					}
+					else if (.@p_atk == 0) {
+						specialeffect2 EF_HIT5;
+						set .@p_vit,.@p_vit - 10;
+						mes "--------------------";
+						mes "你被蘇德里的";
+						mes "反擊擊中了！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 10 HP！";
+						if (.@p_vit < 1) {
+							mes "被打敗了...";
+							next;
+							break;
+						}
+					}
+					else {
+						mes "--------------------";
+						mes "發生了一些事，";
+						mes "戰鬥中斷了！";
+						close;
+					}
+					if (.@n_vit < 1) {
+						mes "" + strcharinfo(0) + " 贏了！";
+						next;
+						break;
+					}
+					next;
+					mes "蘇德里 : " + .@n_vit + " HP";
+					mes "" + strcharinfo(0) + " : " + .@p_vit + " HP";
+					mes "--------------------";
+					mes "蘇德里發動攻擊...！";
+					next;
+					switch(select("...?!:閃避！:格擋！:跳躍！:反擊！")) {
+					case 1:
+						set .@p_def,0;
+						break;
+					case 2:
+						set .@p_def,1;
+						break;
+					case 3:
+						set .@p_def,2;
+						break;
+					case 4:
+						set .@p_def,3;
+						break;
+					case 5:
+						set .@p_def,4;
+						break;
+					}
+					set .@n_atk,rand(1,3);
+					set .@damage,rand(20,25);
+					if (.@n_atk == 1) {
+						mes "蘇德里瞄準了頭部！";
+					}
+					else if (.@n_atk == 2) {
+						mes "蘇德里瞄準了胸部！";
+					}
+					else {
+						mes "蘇德里瞄準了腿部！";
+					}
+					if (.@n_atk == .@p_def) {
+						specialeffect2 EF_GUARD;
+						if (.@p_def == 1) {
+							mes "--------------------";
+							mes "" + strcharinfo(0) + "";
+							mes "迅速閃躲！";
+							mes "蘇德里的手太短";
+							mes "沒打中！";
+							mes "--------------------";
+							mes "蘇德里攻擊失敗。";
+						}
+						else if (.@p_def == 2) {
+							mes "--------------------";
+							mes "" + strcharinfo(0) + "";
+							mes "勉強擋下了";
+							mes "蘇德里的攻擊。";
+							mes "--------------------";
+							mes "蘇德里攻擊失敗。";
+						}
+						else if (.@p_def == 3) {
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 跳了起來，";
+							mes "輕鬆躲開了蘇德里的攻擊。";
+							mes "--------------------";
+							mes "蘇德里攻擊失敗。";
+						}
+					}
+					else if (.@p_def == 4) {
+						set .@count,rand(1,4);
+						mes "--------------------";
+						mes "" + strcharinfo(0) + "";
+						mes "發動反擊！";
+						if (.@count == 1) {
+							specialeffect2 EF_AUTOCOUNTER;
+							specialeffect EF_MAGNUMBREAK;
+							set .@n_vit,.@n_vit - 20;
+							mes "你成功地";
+							mes "反擊了！";
+							mes "--------------------";
+							mes "蘇德里損失了 20 HP！";
+							if (.@n_vit < 1) {
+								mes "" + strcharinfo(0) + " 贏了！";
+								next;
+								break;
+							}
+						}
+						else {
+							specialeffect2 EF_CRASHEARTH;
+							set .@p_vit,.@p_vit - 30;
+							mes "你的弱點";
+							mes "受到了";
+							mes "致命傷害！";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 損失了 30 HP！";
+						}
+					}
+					else if (.@n_atk == 1) {
+						specialeffect2 EF_HIT5;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中 " + strcharinfo(0) + "的";
+						mes "頭部！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else if (.@n_atk == 2) {
+						specialeffect2 EF_HIT2;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中 " + strcharinfo(0) + "的";
+						mes "胸部！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else if (.@n_atk == 3) {
+						specialeffect2 EF_HIT4;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中 " + strcharinfo(0) + "的";
+						mes "腿部！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else if (.@n_atk == 0) {
+						specialeffect2 EF_HIT5;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中了 "+ strcharinfo(0) +"";
+						mes "趁著你";
+						mes "恍神的時候！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else {
+						mes "--------------------";
+						mes "發生了一些事，";
+						mes "戰鬥中斷了！";
+						close;
+					}
+					if (.@p_vit < 1) {
+						mes "蘇德里贏了！";
+						next;
+						break;
+					}
+					next;
+				}
+				if (.@p_vit < n_vit) {
+					mes "[蘇德里]";
+					mes "哇哈哈哈！";
+					mes "你還不夠強，打不贏我的！我想要能給我帶來挑戰的對手！";
+					next;
+					mes "[蘇德里]";
+					mes "出去鍛鍊一下，等你變強了再考慮回來吧！";
+					close;
+				}
+				else if (.@n_vit < p_vit) {
+					set god_mjo_2,2;
+					mes "[蘇德里]";
+					mes "你比我強。我從沒想過會遇到像你這麼強大的人類。";
+					next;
+					mes "[蘇德里]";
+					mes "我印象深刻！好吧，我會在朋友面前替你說好話。希望我的兄弟們能給你想要的幫助。";
+					next;
+					mes "[蘇德里]";
+					mes "那麼，";
+					mes "祝你";
+					mes "旅途平安！";
+					close;
+				}
+			}
+			else if (god_mjo_2 == 0) {
+				mes "[蘇德里]";
+				mes "所以...";
+				mes "人類，是什麼風";
+				mes "把你吹來的？";
+				next;
+				switch(select("沒事。:打擾一下，先生。")) {
+				case 1:
+					mes "[蘇德里]";
+					mes "你時間太多了吧。為什麼不登出遊戲去和朋友玩一會兒呢？";
+					close;
+				case 2:
+					mes "[蘇德里]";
+					mes "哼。你和其他人類不一樣。不過，僅因為你懂得禮貌說話就信任你，可不是明智之舉。";
+					next;
+					mes "[蘇德里]";
+					mes "如果說我有什麼愛好，";
+					mes "那就是傳統的";
+					mes "徒手搏擊。";
+					next;
+					mes "[蘇德里]";
+					mes "言語可能具有欺騙性，";
+					mes "但如果你能在戰鬥中打敗我，";
+					mes "我就考慮跟你談談。";
+					mes "怎麼樣？";
+					next;
+					switch(select("...:好的，我接受你的挑戰。:不，我很害怕！")) {
+					case 1:
+						set god_mjo_2,3;
+						mes "[蘇德里]";
+						mes "你甚至";
+						mes "沒有回答我！";
+						mes "算了！隨便你！";
+						close;
+					case 2:
+						set god_mjo_2,1;
+						mes "[蘇德里]";
+						mes "啊，我已經開始喜歡你了，人類！現在去熱身一下吧，準備好了我們就開打。";
+						close;
+					case 3:
+						set god_mjo_2,1;
+						mes "[蘇德里]";
+						mes "咦...？";
+						mes "你怎麼會";
+						mes "這麼膽小？";
+						mes "你害怕這個";
+						mes "又老又小的矮人嗎？";
+						next;
+						mes "[蘇德里]";
+						mes "來吧，我甚至可以讓你先出手。準備好戰鬥就來找我吧！";
+						close;
+					}
+				}
+			}
+			else {
+				mes "[蘇德里]";
+				mes "Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 2) {
+			if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+				mes "[蘇德里]";
+				mes "[蘇德里]";
+				mes "趁我還沒把你打死之前滾出去！反正你在這裡能得到的只有一些草藥！";
+				close;
+			}
+			else if (god_mjo_3 == 2) {
+				mes "[蘇德里]";
+				mes "真是一場精彩的戰鬥！";
+				mes "哇哈哈哈哈哈哈哈哈！";
+				mes "我不後悔。";
+				mes "雖然我輸了，但";
+				mes "我已經拼盡全力了！";
+				close;
+			}
+			else if (god_mjo_1 == 0 || god_mjo_1 == 1 || god_mjo_2 == 0 || god_mjo_2 == 1 || god_mjo_4 != 0) {
+				mes "[蘇德里]";
+				mes "是什麼風把你吹來的？";
+				next;
+				switch(select("沒事。:打擾一下，先生。")) {
+				case 1:
+					mes "[蘇德里]";
+					mes "你時間";
+					mes "太多了吧。";
+					mes "為什麼不登出遊戲去和朋友玩呢？";
+					close;
+				case 2:
+					set god_mjo_3,3;
+					mes "[蘇德里]";
+					mes "我為什麼";
+					mes "要原諒你？";
+					mes "你想和";
+					mes "我打一架嗎，嗯？";
+					close;
+				}
+			}
+			else if (god_mjo_3 == 1) {
+				mes "[蘇德里]";
+				mes "太棒了，我們開打吧！";
+				next;
+				set .@n_vit,200;
+				set .@p_vit,100;
+				while(1) {
+					mes "蘇德里 : " + .@n_vit + " HP";
+					mes "" + strcharinfo(0) + " : " + .@p_vit + " HP";
+					mes "--------------------";
+					mes "" + strcharinfo(0) + "";
+					mes "發起了";
+					mes "攻擊！";
+					next;
+					switch(select("...?!:攻擊頭部！:攻擊胸部！:攻擊腿部！:休息一下。")) {
+					case 1:
+						set .@p_atk,0;
+						break;
+					case 2:
+						set .@p_atk,1;
+						break;
+					case 3:
+						set .@p_atk,2;
+						break;
+					case 4:
+						set .@p_atk,3;
+						break;
+					case 5:
+						set .@p_atk,4;
+						break;
+					}
+					set .@n_def,rand(1,3);
+					set .@damage,rand(15,25);
+					if (.@p_atk == 1) {
+						mes "" + strcharinfo(0) + "";
+						mes "攻擊了蘇德里的頭部！";
+					}
+					else if (.@p_atk == 2) {
+						mes "" + strcharinfo(0) + "";
+						mes "擊中了蘇德里的胸部！";
+					}
+					else if (.@p_atk == 3) {
+						mes "" + strcharinfo(0) + "";
+						mes "瞄準了蘇德里的腿部！";
+					}
+					else if (.@p_atk == 4) {
+						mes "" + strcharinfo(0) + "";
+						mes "要求休息！";
+					}
+					else {
+						mes "" + strcharinfo(0) + "的";
+						mes "弱點暴露了！";
+					}
+					if (.@p_atk == .@n_def) {
+						specialeffect EF_GUARD;
+						if (.@n_def == 1) {
+							mes "--------------------";
+							mes "蘇德里扭動他";
+							mes "嬌小卻敏捷的身軀，";
+							mes "輕鬆躲開了你的攻擊。";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 沒打中！";
+						}
+						else if (.@n_def == 2) {
+							mes "--------------------";
+							mes "蘇德里交叉他";
+							mes "粗壯的手臂";
+							mes "擋下了你的攻擊。";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + "的攻擊被擋下了！";
+						}
+						else if (.@n_def == 3) {
+							mes "--------------------";
+							mes "蘇德里一個優雅的";
+							mes "跳躍，";
+							mes "輕鬆躲開了你的攻擊。";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 沒打中！";
+						}
+					}
+					else if (.@p_atk == 4) {
+						specialeffect2 EF_HEAL;
+						set .@p_vit,.@p_vit + 10;
+						mes "--------------------";
+						mes "" + strcharinfo(0) + "";
+						mes "恢復了 10 HP！";
+					}
+					else if (.@p_atk == 1) {
+						specialeffect EF_HIT5;
+						set .@n_vit,.@n_vit - .@damage;
+						mes "--------------------";
+						mes "你成功地擊中";
+						mes "蘇德里的頭部！";
+						mes "--------------------";
+						mes "蘇德里損失了 " + .@damage + " HP！";
+					}
+					else if (.@p_atk == 2) {
+						specialeffect EF_HIT2;
+						set .@n_vit,.@n_vit - .@damage;
+						mes "--------------------";
+						mes "你成功地擊中";
+						mes "蘇德里的胸部！";
+						mes "--------------------";
+						mes "蘇德里";
+						mes "損失了 " + .@damage + " HP！";
+					}
+					else if (.@p_atk == 3) {
+						specialeffect EF_HIT4;
+						set .@n_vit,.@n_vit - .@damage;
+						mes "--------------------";
+						mes "你成功地擊中";
+						mes "蘇德里的腿部！";
+						mes "--------------------";
+						mes "蘇德里";
+						mes "損失了 " + .@damage + " HP！";
+					}
+					else if (.@p_atk == 0) {
+						specialeffect2 EF_HIT5;
+						set .@p_vit,.@p_vit - 10;
+						mes "--------------------";
+						mes "你被蘇德里的";
+						mes "反擊擊中了！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 10 HP！";
+						if (.@p_vit < 1) {
+							mes "被打敗了...";
+							next;
+							break;
+						}
+					}
+					else {
+						mes "--------------------";
+						mes "發生了一些事，";
+						mes "戰鬥中斷了！";
+						close;
+					}
+					if (.@n_vit < 1) {
+						mes "" + strcharinfo(0) + " 贏了！";
+						next;
+						break;
+					}
+					next;
+					mes "蘇德里 : " + .@n_vit + " HP";
+					mes "" + strcharinfo(0) + " : " + .@p_vit + " HP";
+					mes "--------------------";
+					mes "蘇德里發動攻擊...！";
+					next;
+					switch(select("...?!:閃避！:格擋！:跳躍！:反擊！")) {
+					case 1:
+						set .@p_def,0;
+						break;
+					case 2:
+						set .@p_def,1;
+						break;
+					case 3:
+						set .@p_def,2;
+						break;
+					case 4:
+						set .@p_def,3;
+						break;
+					case 5:
+						set .@p_def,4;
+						break;
+					}
+					set .@n_atk,rand(1,3);
+					set .@damage,rand(20,25);
+					if (.@n_atk == 1) {
+						mes "蘇德里瞄準了頭部！";
+					}
+					else if (.@n_atk == 2) {
+						mes "蘇德里瞄準了胸部！";
+					}
+					else {
+						mes "蘇德里瞄準了腿部！";
+					}
+					if (.@n_atk == .@p_def) {
+						specialeffect2 EF_GUARD;
+						if (.@p_def == 1) {
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 迅速閃躲，";
+							mes "蘇德里的手太短";
+							mes "碰不到你。";
+							mes "--------------------";
+							mes "蘇德里攻擊失敗。";
+						}
+						else if (.@p_def == 2) {
+							mes "--------------------";
+							mes "" + strcharinfo(0) + "";
+							mes "勉強擋下了";
+							mes "蘇德里的攻擊。";
+							mes "--------------------";
+							mes "蘇德里攻擊失敗。";
+						}
+						else if (.@p_def == 3) {
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 跳了起來，";
+							mes "輕鬆躲開了蘇德里的攻擊。";
+							mes "--------------------";
+							mes "蘇德里攻擊失敗。";
+						}
+					}
+					else if (.@p_def == 4) {
+						set .@count,rand(1,4);
+						mes "--------------------";
+						mes "" + strcharinfo(0) + "";
+						mes "發動反擊！";
+						if (.@count == 1) {
+							specialeffect2 EF_AUTOCOUNTER;
+							specialeffect EF_MAGNUMBREAK;
+							set .@n_vit,.@n_vit - 20;
+							mes "你成功地";
+							mes "反擊了！";
+							mes "--------------------";
+							mes "蘇德里損失了 20 HP！";
+							if (.@n_vit < 1) {
+								mes "" + strcharinfo(0) + " 贏了！";
+								next;
+								break;
+							}
+						}
+						else {
+							specialeffect2 EF_CRASHEARTH;
+							set .@p_vit,.@p_vit - 30;
+							mes "你的弱點";
+							mes "受到了";
+							mes "致命傷害！";
+							mes "--------------------";
+							mes "" + strcharinfo(0) + " 損失了 30 HP！";
+						}
+					}
+					else if (.@n_atk == 1) {
+						specialeffect2 EF_HIT5;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中 " + strcharinfo(0) + "的";
+						mes "頭部！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else if (.@n_atk == 2) {
+						specialeffect2 EF_HIT2;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中 " + strcharinfo(0) + "的";
+						mes "胸部！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else if (.@n_atk == 3) {
+						specialeffect2 EF_HIT4;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中 " + strcharinfo(0) + "的";
+						mes "腿部！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else if (.@n_atk == 0) {
+						specialeffect2 EF_HIT5;
+						set .@p_vit,.@p_vit - .@damage;
+						mes "--------------------";
+						mes "蘇德里成功地";
+						mes "擊中了 "+ strcharinfo(0) +"";
+						mes "趁著你";
+						mes "恍神的時候！";
+						mes "--------------------";
+						mes "" + strcharinfo(0) + " 損失了 " + .@damage + " HP！";
+					}
+					else {
+						mes "--------------------";
+						mes "發生了一些事，";
+						mes "戰鬥中斷了！";
+						close;
+					}
+					if (.@p_vit < 1) {
+						mes "蘇德里贏了！";
+						next;
+						break;
+					}
+					next;
+				}
+				if (.@p_vit < .@n_vit) {
+					mes "[蘇德里]";
+					mes "哇哈哈哈！";
+					mes "你還不夠強，打不贏我的！我想要能給我帶來挑戰的對手！";
+					next;
+					mes "[蘇德里]";
+					mes "出去鍛鍊一下，等你變強了再考慮回來吧！";
+					close;
+				}
+				else if (.@n_vit < .@p_vit) {
+					set god_mjo_3,2;
+					mes "[蘇德里]";
+					mes "你比我強。我從沒想過會遇到像你這麼強大的人類。";
+					next;
+					mes "[蘇德里]";
+					mes "我印象深刻！好吧，我會在朋友面前替你說好話。希望我的兄弟們能給你想要的幫助。";
+					next;
+					mes "[蘇德里]";
+					mes "那麼，";
+					mes "祝你";
+					mes "旅途平安！";
+					close;
+				}
+			}
+			else if (god_mjo_3 == 0) {
+				mes "[蘇德里]";
+				mes "是什麼風把你吹來的？";
+				next;
+				switch(select("沒事。:打擾一下，先生。")) {
+				case 1:
+					mes "[蘇德里]";
+					mes "你時間";
+					mes "太多了吧。";
+					mes "為什麼不登出遊戲去和朋友玩呢？";
+					close2;
+				case 2:
+					mes "[蘇德里]";
+					mes "哼。你和其他人類不一樣。不過，僅因為你懂得禮貌說話就信任你，可不是明智之舉。";
+					next;
+					mes "[蘇德里]";
+					mes "如果說我有什麼愛好，";
+					mes "那就是傳統的";
+					mes "徒手搏擊。";
+					next;
+					mes "[蘇德里]";
+					mes "言語可能具有欺騙性，";
+					mes "但如果你能在戰鬥中打敗我，";
+					mes "我就考慮跟你談談。";
+					mes "怎麼樣？";
+					next;
+					switch(select("...:好的，我接受你的挑戰。:不，我很害怕！")) {
+					case 1:
+						set god_mjo_3,3;
+						mes "[蘇德里]";
+						mes "你甚至";
+						mes "沒有回答我！";
+						mes "算了！隨便你！";
+						close;
+					case 2:
+						set god_mjo_3,1;
+						mes "[蘇德里]";
+						mes "啊，我已經開始喜歡你了，人類！現在去熱身一下吧，準備好了我們就開打。";
+						close;
+					case 3:
+						set god_mjo_3,1;
+						mes "[蘇德里]";
+						mes "咦...？";
+						mes "你怎麼會";
+						mes "這麼膽小？";
+						mes "你害怕這個";
+						mes "又老又小的矮人嗎？";
+						next;
+						mes "[蘇德里]";
+						mes "來吧，我甚至可以讓你先出手。準備好戰鬥就來找我吧！";
+						close;
+					}
+				}
+			}
+			else {
+				mes "[蘇德里]";
+				mes "Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 0) {
+			mes "[蘇德里]";
+			mes "在一對一的戰鬥中，你必須全力以赴向對手展現你的力量。";
+			next;
+			mes "[蘇德里]";
+			mes "人類，你有過和我一樣的感受嗎？無論輸贏，全力以赴就是最令人滿足的成就。";
+			close;
+		}
+		else {
+			mes "[蘇德里]";
+			mes "Zzzz Zzzz...";
+			close;
+		}
+	}
+}
+
+mjolnir_01,35,136,7	script	矮人鐵匠#west	826,{
+	if ($God3 < $@god_check1) {
+		mes "[維斯特里]";
+		mes "如果你想要什麼，你應該透過自己的努力去爭取。";
+		next;
+		mes "[維斯特里]";
+		mes "無論別人怎麼說，只要你有自信且意志堅定，你總會對結果感到滿意的。";
+		next;
+		mes "[維斯特里]";
+		mes "你覺得呢？";
+		mes "現在的年輕人啊...";
+		close;
+	}
+	else {
+		if ($God4 >= $@god_check2) {
+			mes "[維斯特里]";
+			mes "我今天";
+			mes "什麼都不想做。";
+			mes "什麼都不想...";
+			next;
+			mes "[維斯特里]";
+			mes "一定是有人鍛造出了什麼怪物級的神器，否則我不會覺得自己這麼一無是處！";
+			next;
+			mes "[維斯特里]";
+			mes "對，我想我需要休息！人類，難道你不覺得我需要休息嗎？";
+			close;
+		}
+		else if (god_mjo_0 == 11) {
+			mes "[維斯特里]";
+			mes "沒有什麼比在全心全意投入工作後，好好放鬆休息更棒的了。";
+			next;
+			mes "[維斯特里]";
+			mes "你覺得呢，";
+			mes "人類？這難道不是";
+			mes "生活中簡單的樂趣之一嗎？";
+			close;
+		}
+		else if (god_mjo_0 == 10) {
+			mes "[維斯特里]";
+			mes "如果你想要什麼，你應該透過自己的努力去爭取。";
+			next;
+			mes "[維斯特里]";
+			mes "無論別人怎麼說，只要你有自信且意志堅定，你總會對結果感到滿意的。";
+			next;
+			mes "[維斯特里]";
+			mes "你覺得呢？";
+			mes "現在的年輕人啊...";
+			close;
+		}
+		else if (god_mjo_0 == 1) {
+			if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+				mes "[維斯特里]";
+				mes "我真希望下次能遇到一個像樣的人類。到目前為止，我還沒見過一個有用的人類。";
+				close;
+			}
+			else if (god_mjo_3 == 2) {
+				mes "[維斯特里]";
+				mes "完美的準備並不總是會帶來成功。有時候你就是得豁出去放手一搏。";
+				next;
+				mes "[維斯特里]";
+				mes "我不知道你的";
+				mes "目標有多遠大，";
+				mes "但無論你打算";
+				mes "在生活中完成什麼，";
+				mes "都要全心全意地去投入。";
+				close;
+			}
+			else if (god_mjo_1 == 0 || god_mjo_1 == 1 || god_mjo_2 == 0 || god_mjo_2 == 1 || god_mjo_4 != 0) {
+				mes "[維斯特里]";
+				mes "你想要什麼？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[維斯特里]";
+					mes "如果你想要什麼，你應該透過自己的努力去爭取。";
+					next;
+					mes "[維斯特里]";
+					mes "無論別人怎麼說，只要你有自信且意志堅定，你總會對結果感到滿意的。";
+					close;
+				case 2:
+					set god_mjo_3,3;
+					mes "[維斯特里]";
+					mes "你沒有回答我的問題！現在，你大概找錯矮人了...";
+					next;
+					mes "[維斯特里]";
+					mes "滾出這裡，如果你想精煉裝備，就去找你們人類鐵匠！";
+					close;
+				}
+			}
+			else if (god_mjo_3 == 1) {
+				disable_items;
+				mes "[維斯特里]";
+				mes "太棒了...！";
+				mes "我該先精煉哪一個呢，嗯？我的心正滿懷期待地撲通撲通跳著...";
+				next;
+				setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+				for(set .@i,1; .@i <= 10; set .@i,.@i+1) {
+					if (getequipisequiped(.@indices[.@i]))
+						set .@menu$, .@menu$ + F_getpositionname(.@indices[.@i]) + "-[" + getequipname(.@indices[.@i]) + "]";
+					set .@menu$, .@menu$ + ":";
+				}
+				set .@part, .@indices[ select(.@menu$) ];
+
+				if (getequipisequiped(.@part) == 0)
+					close;
+
+				if (getequipisenableref(.@part) == 0) {
+					mes "[維斯特里]";
+					mes "什麼...？！";
+					mes "這根本不能精煉！";
+					mes "你到底想讓";
+					mes "我拿這個做什麼？";
+					close;
+				}
+				.@equip_id = getequipid(.@part);
+				.@itemtype = getiteminfo( .@equip_id, ITEMINFO_TYPE );
+				.@equip_refine = getequiprefinerycnt(.@part);
+				setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+				if (.@equip_refine >= 10) {
+					mes "[維斯特里]";
+					mes "噢，這太棒了！這件裝備已經被完美精煉了！但這不是我想要的。我根本沒辦法對它進行任何加工。";
+					close;
+				}
+				if (GetEquipPercentRefinery(.@part) == 100) {
+					mes "[維斯特里]";
+					mes "這東西精煉起來一點挑戰性都沒有。你可以找人類來做這種新手工作。先讓他們去精煉吧。";
+					next;
+					mes "[維斯特里]";
+					mes "拜託...";
+					mes "給我帶點";
+					mes "有風險的";
+					mes "東西來吧！";
+					close;
+				}
+				if( .@itemtype != IT_WEAPON ){
+					mes "[維斯特里]";
+					mes "防具？！";
+					mes "我不是告訴";
+					mes "過你，我只做";
+					mes "4級武器 的加工嗎？";
+					next;
+					mes "[維斯特里]";
+					mes "那種東西你去找人類";
+					mes "鐵匠做就行了！像我這樣的矮人需要更有挑戰性的工作！";
+					close;
+				}
+				if( getequipweaponlv( .@part ) != 4 ){
+					mes "[維斯特里]";
+					mes "嘿...";
+					mes "別指望我會加工低於 4級武器 的東西，這是在侮辱我。";
+					next;
+					mes "[維斯特里]";
+					mes "下次帶一把 4級武器 來給我加工，聽懂了嗎？";
+					close;
+				}
+
+				mes "[維斯特里]";
+				mes "好吧，讓我給你一個例行警告。如果在精煉過程中武器不小心被損毀了，你就再也見不到它了。";
+				next;
+				mes "[維斯特里]";
+				mes "這也意味著如果武器被損毀，插在武器上的任何 ^FF0000卡片^000000 也會跟著消失。";
+				next;
+				mes "[維斯特里]";
+				mes "如果你明白的話，";
+				mes "那我們就開始吧！";
+				next;
+				if(select("當然，我們開始吧！:不、不，我改變主意了！") == 2) {
+					mes "[維斯特里]";
+					mes "呸...！";
+					mes "你這種膽小鬼怎麼";
+					mes "在這個世界上";
+					mes "生存？！";
+					next;
+					mes "[維斯特里]";
+					mes "噢，算了。";
+					mes "我知道你只是比較小心。該死，我剛才太渴望開始";
+					mes "工作了！";
+					close;
+				}
+
+				if (countitem(984) > 0) {
+					delitem 984,1; //Oridecon
+				}
+				else {
+					mes "[維斯特里]";
+					mes "哼...";
+					mes "你忘了帶";
+					mes "一顆神之金屬。";
+					mes "快去拿一個來。";
+					close;
+				}
+				// anti-hack
+				if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
+					close;
+				if (getequippercentrefinery(.@part) > rand(100)) {
+					mes "^3355FF*鏗！鏘！*^000000";
+					successrefitem .@part;
+					next;
+					emotion ET_SMILE;
+					mes "[維斯特里]";
+					mes "哇哈哈哈?";
+					mes "寶刀未老啊！";
+					mes "難道你不為獲得";
+					mes "一把更強大的武器";
+					mes "而高興嗎？";
+					next;
+				}
+				else {
+					mes "[維斯特里]";
+					mes "^3355FF*鏗！鏘！*^000000";
+					failedrefitem .@part;
+					next;
+					emotion ET_HUK;
+					mes "[維斯特里]";
+					mes "哇啊啊啊！";
+					mes "天啊，不要！";
+					next;
+					mes "[維斯特里]";
+					mes "沒、沒關係！";
+					mes "有時候就是會";
+					mes "發生糟糕的事。就當作";
+					mes "我們今天運氣都";
+					mes "不好吧。";
+					mes "沒錯，不後悔！";
+					next;
+				}
+				set god_mjo_3,2;
+				mes "[維斯特里]";
+				mes "好吧，我的朋友，";
+				mes "如果你去拜訪我的兄弟們，請代我向他們問好。";
+				mes "保重。";
+				close;
+			}
+			else if (god_mjo_3 == 0) {
+				mes "[維斯特里]";
+				mes "你想要什麼？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[維斯特里]";
+					mes "如果你想要什麼，你應該透過自己的努力去爭取。";
+					next;
+					mes "[維斯特里]";
+					mes "無論別人怎麼說，只要你有自信且意志堅定，你總會對結果感到滿意的。";
+					close;
+				case 2:
+					mes "[維斯特里]";
+					mes "哼...";
+					mes "我不知道我能怎麼幫助像你這樣的冒險者。除了作為一個鐵匠之外...";
+					next;
+					mes "[維斯特里]";
+					mes "沒有什麼比精煉那些瀕臨損毀的高級武器更讓我享受的了。";
+					next;
+					mes "[維斯特里]";
+					mes "你不喜歡挑戰極限的想法嗎？對我來說，精煉裝備就像在攀登未被征服的高山！";
+					next;
+					mes "[維斯特里]";
+					mes "好吧。也許我註定要幫你一把，所以我就幫你精煉一把武器吧。你只需要把武器和材料帶過來就行了。";
+					next;
+					set god_mjo_3,1;
+					mes "[維斯特里]";
+					mes "條件是：你必須帶一把已經精煉到可能損毀的 4級武器。噢，還要帶一顆神之金屬來！";
+					close;
+				}
+			}
+			else {
+				mes "[維斯特里]";
+				mes "Zzzz Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 2) {
+			if (god_mjo_1 == 3 || god_mjo_2 == 3 || god_mjo_3 == 3 || god_mjo_4 == 3) {
+				mes "[維斯特里]";
+				mes "我真希望下次能遇到一個像樣的人類。到目前為止，我還沒見過一個有用的人類。";
+				close;
+			}
+			else if (god_mjo_2 == 2) {
+				mes "[維斯特里]";
+				mes "完美的準備並不總是會帶來成功。有時候你就是得豁出去放手一搏。";
+				next;
+				mes "[維斯特里]";
+				mes "我不知道你的";
+				mes "目標有多遠大，";
+				mes "但無論你打算";
+				mes "在生活中完成什麼，";
+				mes "都要全心全意地去投入。";
+				close;
+			}
+			else if (god_mjo_1 == 0 || god_mjo_1 == 1 || god_mjo_3 != 0 || god_mjo_4 != 0) {
+				mes "[維斯特里]";
+				mes "你想要什麼？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[維斯特里]";
+					mes "如果你想要什麼，你應該透過自己的努力去爭取。";
+					next;
+					mes "[維斯特里]";
+					mes "無論別人怎麼說，只要你有自信且意志堅定，你總會對結果感到滿意的。";
+					close;
+				
+				case 2:
+					set god_mjo_2,3;
+					mes "[維斯特里]";
+					mes "你沒有回答我的問題！現在，你大概找錯矮人了...";
+					next;
+					mes "[維斯特里]";
+					mes "滾出這裡，如果你想精煉裝備，就去找你們人類鐵匠！";
+					close;
+				}
+			}
+			else if (god_mjo_2 == 1) {
+				disable_items;
+				mes "[維斯特里]";
+				mes "太棒了...！";
+				mes "我該先精煉哪一個呢，嗯？我的心正滿懷期待地撲通撲通跳著...";
+				next;
+				setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+				for(set .@i,1; .@i <= 10; set .@i,.@i+1) {
+					if (getequipisequiped(.@indices[.@i]))
+						set .@menu$, .@menu$ + F_getpositionname(.@indices[.@i]) + "-[" + getequipname(.@indices[.@i]) + "]";
+					set .@menu$, .@menu$ + ":";
+				}
+				set .@part, .@indices[ select(.@menu$) ];
+
+				if (getequipisequiped(.@part) == 0)
+					close;
+
+				if (getequipisenableref(.@part) == 0) {
+					mes "[維斯特里]";
+					mes "什麼...？！";
+					mes "這根本不能精煉！";
+					mes "你到底想讓";
+					mes "我拿這個做什麼？";
+					close;
+				}
+				.@equip_id = getequipid(.@part);
+				.@itemtype = getiteminfo( .@equip_id, ITEMINFO_TYPE );
+				.@equip_refine = getequiprefinerycnt(.@part);
+				setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+				if (.@equip_refine >= 10) {
+					mes "[維斯特里]";
+					mes "噢，這太棒了！這件裝備已經被完美精煉了！但這不是我想要的。我根本沒辦法對它進行任何加工。";
+					close;
+				}
+				if (GetEquipPercentRefinery(.@part) == 100) {
+					mes "[維斯特里]";
+					mes "這東西精煉起來一點挑戰性都沒有。你可以找人類來做這種新手工作。先讓他們去精煉吧。";
+					next;
+					mes "[維斯特里]";
+					mes "拜託...";
+					mes "給我帶點";
+					mes "有風險的";
+					mes "東西來吧！";
+					close;
+				}
+				if( .@itemtype != IT_WEAPON ){
+					mes "[維斯特里]";
+					mes "防具？！";
+					mes "我不是告訴";
+					mes "過你，我只做";
+					mes "4級武器 的加工嗎？";
+					close;
+				}
+				if( getequipweaponlv( .@part ) != 4 ){
+					mes "[維斯特里]";
+					mes "嘿...";
+					mes "別指望我會加工低於 4級武器 的東西，這是在侮辱我。";
+					next;
+					mes "[維斯特里]";
+					mes "下次帶一把 4級武器 來給我加工，聽懂了嗎？";
+					close;
+				}
+				mes "[維斯特里]";
+				mes "好吧，讓我給你一個例行警告。如果在精煉過程中武器不小心被損毀了，你就再也見不到它了。";
+				next;
+				mes "[維斯特里]";
+				mes "這也意味著如果武器被損毀，插在武器上的任何 ^FF0000卡片^000000 也會跟著消失。";
+				next;
+				mes "[維斯特里]";
+				mes "如果你明白的話，";
+				mes "那我們就開始吧！";
+				next;
+				if(select("當然，我們開始吧！:...不，我退出。") == 2) {
+					mes "[維斯特里]";
+					mes "呸...！";
+					mes "你這種膽小鬼怎麼";
+					mes "在這個世界上";
+					mes "生存？！";
+					next;
+					mes "[維斯特里]";
+					mes "噢，算了。";
+					mes "我知道你只是比較小心。該死，我剛才太渴望開始";
+					mes "工作了！";
+					close;
+				}
+				if (countitem(984) > 0) {
+					delitem 984,1; //Oridecon
+				}
+				else {
+					mes "[維斯特里]";
+					mes "哼...";
+					mes "你忘了帶";
+					mes "一顆神之金屬。";
+					mes "快去拿一個來。";
+					close;
+				}
+				// anti-hack
+				if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
+					close;
+				if (getequippercentrefinery(.@part) > rand(100)) {
+					mes "^3355FF*鏗！鏘！*^000000";
+					successrefitem .@part;
+					next;
+					emotion ET_SMILE;
+					mes "[維斯特里]";
+					mes "哇哈哈哈?";
+					mes "寶刀未老啊！";
+					mes "難道你不為獲得";
+					mes "一把更強大的武器";
+					mes "而高興嗎？";
+					next;
+				}
+				else {
+					mes "[維斯特里]";
+					mes "^3355FF*鏗！鏘！*^000000";
+					failedrefitem .@part;
+					next;
+					emotion ET_HUK;
+					mes "[維斯特里]";
+					mes "哇啊啊啊！";
+					mes "天啊，不要！";
+					next;
+					mes "[維斯特里]";
+					mes "沒、沒關係！";
+					mes "有時候就是會";
+					mes "發生糟糕的事。就當作";
+					mes "我們今天運氣都";
+					mes "不好吧。";
+					mes "沒錯，不後悔！";
+					next;
+				}
+				set god_mjo_2,2;
+				mes "[維斯特里]";
+				mes "好吧，我的朋友，";
+				mes "如果你去拜訪我的兄弟們，請代我向他們問好。";
+				mes "保重。";
+				close;
+			}
+			else if (god_mjo_2 == 0) {
+				mes "[維斯特里]";
+				mes "你想要什麼？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[維斯特里]";
+					mes "如果你想要什麼，你應該透過自己的努力去爭取。";
+					next;
+					mes "[維斯特里]";
+					mes "無論別人怎麼說，只要你有自信且意志堅定，你總會對結果感到滿意的。";
+					close;
+				case 2:
+					mes "[維斯特里]";
+					mes "哼...";
+					mes "我不知道我能怎麼幫助像你這樣的冒險者。除了作為一個鐵匠之外...";
+					next;
+					mes "[維斯特里]";
+					mes "沒有什麼比精煉那些瀕臨損毀的高級武器更讓我享受的了。";
+					next;
+					mes "[維斯特里]";
+					mes "你不喜歡挑戰極限的想法嗎？對我來說，精煉裝備就像在攀登未被征服的高山！";
+					next;
+					mes "[維斯特里]";
+					mes "好吧。也許我註定要幫你一把，所以我就幫你精煉一把武器吧。你只需要把武器和材料帶過來就行了。";
+					next;
+					set god_mjo_2,1;
+					mes "[維斯特里]";
+					mes "條件是：你必須帶一把已經精煉到可能損毀的 4級武器。噢，還要帶一顆神之金屬來！";
+					close;
+				}
+			}
+			else {
+				mes "[維斯特里]";
+				mes "Zzzz Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 0) {
+			mes "[維斯特里]";
+			mes "能全心投入艱苦的工作總是一件樂事，尤其是鍛造。";
+			next;
+			mes "[維斯特里]";
+			mes "精煉總是令人愉快的！";
+			mes "失敗了我不後悔，成功了我總是很高興。我要每天精煉來充實我的人生?";
+			close;
+		}
+		else {
+			mes "[維斯特里]";
+			mes "Zzzz Zzzz Zzzz...";
+			close;
+		}
+	}
+}
+
+mjolnir_12,18,18,7	script	矮人鐵匠#north	826,{
+	if ($God3 < $@god_check1) {
+		mes "[諾德里]";
+		mes "什麼...？";
+		mes "我沒有任何的";
+		mes "鋁或神之金屬！";
+		next;
+		mes "[諾德里]";
+		mes "維斯特里把它們全拿走了。^333333*嘆氣*^000000 那可是我的寶物啊，你知道的...";
+		close;
+	}
+	else {
+		if ($God4 >= $@god_check2) {
+			mes "[諾德里]";
+			mes "發生了什麼事？";
+			mes "我感覺到風向變了，但我說不上來那是什麼樣的變化。";
+			next;
+			mes "[諾德里]";
+			mes "我應該進山洞去弄清楚嗎？哼。這太奇怪了。";
+			close;
+		}
+		else if (god_mjo_0 == 11) {
+			mes "[諾德里]";
+			mes "哇哈哈哈！";
+			mes "就連神也知道我們矮人是最有才華的工匠！也許現在看起來不是這樣，但總有一天我們會回歸的。";
+			close;
+		}
+		else if (god_mjo_0 == 10) {
+			mes "[諾德里]";
+			mes "什麼...？";
+			mes "我沒有任何的";
+			mes "鋁或神之金屬！";
+			next;
+			mes "[諾德里]";
+			mes "維斯特里把它們全拿走了。";
+			mes "你不明白嗎？";
+			close;
+		}
+		else if (god_mjo_0 == 1) {
+			if ((god_mjo_1 == 3) || (god_mjo_2 == 3) || (god_mjo_3 == 3) || (god_mjo_4 == 3)){
+				mes "[諾德里]";
+				mes "欸呵呵?";
+				mes "待在妙勒尼森林真好。被安靜、祥和的空氣包圍，而且什麼都不用擔心...";
+				close;
+			}
+			else if (god_mjo_4 == 2) {
+				mes "[諾德里]";
+				mes "你現在不是該上路了嗎？呃，不關我的事。";
+				next;
+				mes "[諾德里]";
+				mes "如果你有多餘的 Zeny，為什麼不買點旅行用的零食呢？也許一些美味的香蕉，或者甚至是南瓜...";
+				close;
+			}
+			else if ((god_mjo_1 == 0) || (god_mjo_1 == 1) || (god_mjo_2 == 0) || (god_mjo_2 == 1) || (god_mjo_3 == 0) || (god_mjo_3 == 1)){
+				mes "[諾德里]";
+				mes "你找我";
+				mes "有什麼事，";
+				mes "人類？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[諾德里]";
+					mes "哼。";
+					mes "如果真是這樣，";
+					mes "那就別煩我。";
+					close;
+				case 2:
+					set god_mjo_4,3;
+					mes "[諾德里]";
+					mes "哼。";
+					mes "那好吧。不過...";
+					mes "我很驚訝能看到";
+					mes "這麼有禮貌的人類。";
+					close;
+				}
+			}
+			else if (god_mjo_4 == 1) {
+				if (countitem(501) > 0) {
+					delitem 501,1;  //Red_Potion
+					mes "[諾德里]";
+					mes "啊，你照我的要求";
+					mes "帶來了一瓶";
+					mes "紅色藥水。作為回報，";
+					mes "我會告訴你一個古老的故事。";
+					mes "我相信你會喜歡的。";
+					next;
+					while(1) {
+						if (.@talk_to == 0) {
+							mes "[諾德里]";
+							mes "這是一個關於";
+							mes "索爾前往巨人國度烏特加德";
+							mes "旅行的傳說。";
+							next;
+							mes "[諾德里]";
+							mes "在那裡，他與他們的國王打賭，他將在";
+							mes "技巧與力量的考驗中挑戰他們國度的巨人。";
+							next;
+							mes "[諾德里]";
+							mes "第一項是吃東西比賽。索爾吃光了桌上所有的肉，但他的對手烏特加德·洛基，不僅吃了肉、骨頭，甚至連盤子都吃了。";
+							next;
+							mes "[諾德里]";
+							mes "事實上，索爾被騙了，打敗他的對手其實";
+							mes "並不是巨人。幻象被用來偽裝索爾的對手，但我忘了那是什麼。你知道嗎？";
+							next;
+							switch(select("貪婪:海洋:野火:野豬")) {
+							default:
+								set .@talk_not,1;
+								break;
+							case 3:
+								break;
+							}
+						}
+						else if (.@talk_to == 1) {
+							mes "[諾德里]";
+							mes "是的，只有野火才能毫不費力地藉由燃燒吞噬肉、骨頭和盤子。當然！";
+							mes "我想起來了！";
+							next;
+							mes "[諾德里]";
+							mes "下一場比賽是賽跑。在那場比賽中，索爾的僕人提亞爾菲與國王的僕人胡吉競爭。然而，無論他們比了多少次，每次都是胡吉獲勝。";
+							next;
+							mes "[諾德里]";
+							mes "再一次，幻象魔法被";
+							mes "用來偽裝參賽者。你知道提亞爾菲真正的賽跑對象是什麼嗎？";
+							next;
+							switch(select("語言:思想:烏龜:狼")) {
+							default:
+								set .@talk_not,1;
+								break;
+							case 2:
+								break;
+							}
+						}
+						else if (.@talk_to == 2) {
+							mes "[諾德里]";
+							mes "沒錯！提亞爾菲是在和「思想」賽跑！沒有什麼能比思想的速度更快，難怪提亞爾菲總是會輸。";
+							next;
+							mes "[諾德里]";
+							mes "在最後一場比賽中，索爾要和一位老婦人進行角力比賽。起初，索爾以為自己贏定了，但他發現自己竟然無法打敗這個老太婆。";
+							next;
+							mes "[諾德里]";
+							mes "索爾再次成為了";
+							mes "幻象魔法的受害者。他沒有意識到他實際上不是在和一位老婦人角力。你知道他的對手真正是什麼嗎？";
+							next;
+							switch(select("詛咒:大地:心臟:衰老")) {
+							default:
+								set .@talk_not,1;
+								break;
+							case 4:
+								break;
+							}
+						}
+						else if (.@talk_to == 3) {
+							mes "[諾德里]";
+							mes "是的，索爾是在與「衰老」角力！無論一個人有多強壯，都無法對抗老化。";
+							next;
+							mes "[諾德里]";
+							mes "在索爾輸掉每一場比賽後，";
+							mes "國王告訴了他比賽的真相。索爾變得勃然大怒，但為時已晚。國王和巨人們那時都已經消失了。";
+							next;
+							mes "[諾德里]";
+							mes "從這個故事中";
+							mes "可以學到兩個教訓。第一，不要相信你所看到的一切。第二，永遠不要對自己的力量過於自信。";
+							next;
+							mes "[諾德里]";
+							mes "總會有比你更強大的人或事物。重要的是始終盡力而為，並保持謙卑的態度。";
+							next;
+							mes "[諾德里]";
+							mes "盡可能過好你的人生。記住，你不可能擁有你想要的一切。痴迷和失去理智往往是並存的。";
+							next;
+							set god_mjo_4,2;
+							mes "[諾德里]";
+							mes "謝謝你聽完我長長的故事。如果你遇到了一個有著危險執念的人，請告訴他這個關於索爾和巨人國王幻象的故事。";
+							close;
+						}
+						if (.@talk_not == 1) {
+							mes "[諾德里]";
+							mes "咦...？";
+							mes "我想那不太對。讓我稍微想一下，也許我能記起來。希望遲早能想起來...";
+							next;
+							mes "[諾德里]";
+							mes "我們在享用另一瓶紅色藥水後再來談談這個好嗎？哈哈哈哈哈?";
+							close;
+						}
+						else {
+							set .@talk_to,.@talk_to + 1;
+						}
+					}
+				}
+				else {
+					mes "[諾德里]";
+					mes "喔...";
+					mes "我好渴啊！";
+					next;
+					mes "[諾德里]";
+					mes "嗯，我不是讓你帶一瓶紅色藥水來嗎？喉嚨這麼乾，我可沒辦法講任何故事啊?";
+					close;
+				}
+			}
+			else if (god_mjo_4 == 0) {
+				mes "[諾德里]";
+				mes "你找我";
+				mes "有什麼事，";
+				mes "人類？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[諾德里]";
+					mes "哼。";
+					mes "如果真是這樣，";
+					mes "那就別煩我。";
+					close;
+				case 2:
+					mes "[諾德里]";
+					mes "真奇怪。最近，太多人類對與我和我的兄弟們見面感興趣。不過，我也不能說他們的拜訪令人不快。";
+					next;
+					set god_mjo_4,1;
+					mes "[諾德里]";
+					mes "我有點口渴了。你能給我帶一瓶紅色藥水嗎？如果你幫我這個忙，我就告訴你一個重要的故事。呵呵呵?";
+					close;
+				}
+			}
+			else {
+				mes "[諾德里]";
+				mes "Zzzz Zzzz...";
+				close2;
+			}
+		}
+		else if (god_mjo_0 == 2) {
+			if ((god_mjo_1 == 3) || (god_mjo_2 == 3) || (god_mjo_3 == 3) || (god_mjo_4 == 3)){
+				mes "[諾德里]";
+				mes "欸呵呵?";
+				mes "待在妙勒尼森林真好。被安靜、祥和的空氣包圍，而且什麼都不用擔心...";
+				close;
+			}
+			else if (god_mjo_1 == 2) {
+				mes "[諾德里]";
+				mes "你現在不是該上路了嗎？呃，不關我的事。";
+				next;
+				mes "[諾德里]";
+				mes "如果你有多餘的 Zeny，為什麼不買點旅行用的零食呢？也許一些美味的香蕉，或者甚至是南瓜...";
+				close;
+			}
+			else if ((god_mjo_2 != 0) || (god_mjo_3 != 0) || (god_mjo_4 != 0)) {
+				mes "[諾德里]";
+				mes "你找我";
+				mes "有什麼事，";
+				mes "人類？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[諾德里]";
+					mes "哼。";
+					mes "如果真是這樣，";
+					mes "那就別煩我。";
+					close;
+				case 2:
+					set god_mjo_1,3;
+					mes "[諾德里]";
+					mes "哼。";
+					mes "那好吧。不過...";
+					mes "我很驚訝能看到";
+					mes "這麼有禮貌的人類。";
+					close;
+				}
+			}
+			else if (god_mjo_1 == 1) {
+				if (countitem(501) > 0) {
+
+					delitem 501,1;  //Red_Potion
+					mes "[諾德里]";
+					mes "啊，你帶來了";
+					mes "一瓶紅色藥水...？";
+					mes "作為回報，我將";
+					mes "告訴你一個古老的故事。";
+					mes "我相信你會喜歡的。";
+					next;
+					while(1) {
+						if (.@talk_to == 0) {
+							mes "[諾德里]";
+							mes "有一個關於名為阿爾維斯的矮人的故事，他蘊含的知識比圖書館還多，並且比戰士齊格飛還要勇敢。";
+							next;
+							mes "[諾德里]";
+							mes "不幸的是...";
+							mes "他太野心勃勃了。";
+							mes "他對索爾的大女兒，斯露德，一見鍾情。";
+							next;
+							mes "[諾德里]";
+							mes "他請求索爾允許他娶斯露德，但不出所料，索爾拒絕了。阿爾維斯本應該在那裡放棄，但他沒有。";
+							next;
+							mes "[諾德里]";
+							mes "於是索爾決定透過問他一些問題來考驗他的知識。第一個問題是，『用人類的話來說，腳下的土地叫什麼？』你知道答案嗎？";
+							next;
+							switch(select("伊美樂的身體:大地:小徑:宇宙")) {
+							default:
+								set .@talk_not,1;
+								break;
+							case 2:
+								break;
+							}
+						}
+						else if (.@talk_to == 1) {
+							mes "[諾德里]";
+							mes "是的，沒錯，『大地』。阿爾維斯也能夠正確回答索爾的問題。";
+							next;
+							mes "[諾德里]";
+							mes "索爾接著給了阿爾維斯另一個問題。巨人用什麼詞來稱呼覆蓋著大地的圓形外殼？";
+							next;
+							switch(select("伊美樂的頭:天空:雲朵工廠:高屋")) {
+							default:
+								set .@talk_not,1;
+								break;
+							case 4:
+								break;
+							}
+						}
+						else if (.@talk_to == 2) {
+							mes "[諾德里]";
+							mes "就是它，『高屋』。既然巨人那麼巨大，在他們看來可能就是那樣。";
+							next;
+							mes "[諾德里]";
+							mes "於是索爾又給了他另一個問題。神明用什麼詞來稱呼夜晚升上天空的球體？";
+							next;
+							switch(select("旋轉的輪子:月亮:虛假的太陽:敏捷的陌生人")) {
+							default:
+								set .@talk_not,1;
+								break;
+							case 3:
+								break;
+							}
+						}
+						else if (.@talk_to == 3) {
+							mes "[諾德里]";
+							mes "是的！神明將";
+							mes "月亮稱為『虛假的太陽』。";
+							mes "雖然阿爾維斯回答了索爾所有的問題，但他沒有注意到太陽正在升起。";
+							next;
+							mes "[諾德里]";
+							mes "是的...";
+							mes "索爾延長了他的考驗，以便阿爾維斯會在";
+							mes "太陽升起時變成石頭。";
+							next;
+							mes "[諾德里]";
+							mes "我們能從";
+							mes "這個故事中學到";
+							mes "兩件事。第一，不要覬覦某物到挑戰命運或神明的地步。";
+							next;
+							mes "[諾德里]";
+							mes "第二，不要對自己太過自傲。無論你有多少能力或天賦，你都不可能得到";
+							mes "你想要的一切。";
+							next;
+							mes "[諾德里]";
+							mes "最重要的是";
+							mes "過著美好且";
+							mes "道德的生活。實現你的願望固然很好，但要明白有些願望註定是無法實現的。";
+							next;
+							set god_mjo_1,2;
+							mes "[諾德里]";
+							mes "謝謝你聽完我長長的故事。如果你遇到任何被貪得無厭的慾望折磨的人，請告訴他這個關於索爾和阿爾維斯——一個勇敢卻又非常反叛的矮人——的故事。";
+							close;
+						}
+						if (.@talk_not == 1) {
+							mes "[諾德里]";
+							mes "咦...？";
+							mes "我想那不太對。讓我稍微想一下，也許我能記起來。希望遲早能想起來...";
+							next;
+							mes "[諾德里]";
+							mes "我們在享用另一瓶紅色藥水後再來談談這個好嗎？哈哈哈哈哈?";
+							close;
+						}
+						else {
+							set .@talk_to,.@talk_to + 1;
+						}
+					}
+				}
+				else {
+					mes "[諾德里]";
+					mes "喔...";
+					mes "我好渴啊！";
+					next;
+					mes "[諾德里]";
+					mes "嗯，我不是讓你帶一瓶紅色藥水來嗎？喉嚨這麼乾，我可沒辦法講任何故事啊?";
+					close;
+				}
+			}
+			else if (god_mjo_1 == 0) {
+				mes "[諾德里]";
+				mes "你找我";
+				mes "有什麼事，";
+				mes "人類？";
+				next;
+				switch(select("沒事。:打擾一下。")) {
+				case 1:
+					mes "[諾德里]";
+					mes "你真有趣，別煩我。";
+					close;
+				case 2:
+					mes "[諾德里]";
+					mes "真奇怪。最近，太多人類對與我和我的兄弟們見面感興趣。不過，我也不能說他們的拜訪令人不快。";
+					next;
+					set god_mjo_1,1;
+					mes "[諾德里]";
+					mes "我有點口渴了。你能給我帶一瓶紅色藥水嗎？如果你幫我這個忙，我就告訴你一個重要的故事。呵呵呵?";
+					close;
+				}
+			}
+			else {
+				mes "[諾德里]";
+				mes "Zzzz Zzzz Zzzz...";
+				close;
+			}
+		}
+		else if (god_mjo_0 == 0) {
+			mes "[諾德里]";
+			mes "我是諾德里，";
+			mes "矮人鐵匠。";
+			next;
+			mes "[諾德里]";
+			mes "我負責妙勒尼山脈的北部。如果你想通過，你必須先獲得我的批准！";
+			next;
+			mes "[諾德里]";
+			mes "呵呵呵...";
+			mes "冷靜點，這";
+			mes "只是一個玩笑。";
+			mes "哈哈哈哈哈！";
+			close;
+		}
+		else {
+			mes "[諾德里]";
+			mes "Zzzz Zzzz Zzzz...";
+			close;
+		}
+	}
+}

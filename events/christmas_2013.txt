@@ -1,0 +1,1713 @@
+//===== rAthena Script =======================================
+//= iRO/kRO 2013 Christmas Event
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Join the Singles Union Army to break up couples and hunt
+//= raccoons for rewards.
+//===== Additional Comments: =================================
+//= 1.0 First version. [Euphy]
+//============================================================
+
+// Main Quest :: 2013_xmas_en
+//============================================================
+xmas,10,1,5	script	2013questreset2#xmas	10086,{
+	if (callfunc("F_GM_NPC",1854,0) == 1) {
+		setarray .@quests[0], 15055,15056,15057,15059,15060,15061,15062,15063,15064;
+		for (set .@i,0; .@i<=getarraysize(.@quests); set .@i,.@i+1)
+			if (isbegin_quest(.@i)) erasequest .@i;
+	}
+	end;
+}
+
+xmas,150,134,3	script	聯盟指揮官 克里夫	10086,{
+	if (BaseLevel < 40) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "菜鳥閃邊去！！40級以下不能加入單身軍團！";
+		close;
+	}
+	if (checkweight(1201,1) == 0 || MaxWeight - Weight < 1) {
+		mes "^ff0000你超重了。請檢查你的物品欄後再來找我。^000000";
+		close;
+	}
+	set .@playtime, checkquest(15059,PLAYTIME);
+	if (.@playtime == 0 || .@playtime == 1) {
+		mes "- 你可以在24小時後再次進行此任務。";
+		close;
+	} else if (checkquest(15059,PLAYTIME) > 1) {
+		erasequest 15059;
+		set xmas2013_01,0;
+	}
+	set .@que_allmem, isbegin_quest(15060) + isbegin_quest(15061) + isbegin_quest(15062) + isbegin_quest(15063) + isbegin_quest(15064);
+	if (isbegin_quest(15057) == 1) {
+		if (countitem(7909) < 10 || countitem(7910) < 10 || countitem(6682) < 10) {
+			mes "[聯盟指揮官 克里夫]";
+			mes "我們需要更多材料來為單身軍團舉辦聖誕派對！";
+			next;
+			mes "[聯盟指揮官 克里夫]";
+			mes "從那些該死的狸貓身上帶回 ^ff000010個被偷的餅乾、10個被偷的糖果，以及10個裝滿商品的袋子^000000！";
+			close;
+		}
+		mes "[聯盟指揮官 克里夫]";
+		mes "你狠狠教訓了狸貓萬歲小隊嗎？喔！你把我們需要的東西都帶來了。有了這些，我們就能感受到一些聖誕節的氣氛了！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "我會收下你帶來的所有物品。為此，我將給你一份只有單身軍團才能獲得的專屬獎勵。你-必-須-一-個-人-打-開-它！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "把握這個節日！";
+		mes "單身軍團榮耀長存！嘻嘻嘻 哈哈哈哈！！";
+		delitem 7909, countitem(7909); //Stolen_Cookie
+		delitem 7910, countitem(7910); //Stolen_Candy
+		delitem 6682, countitem(6682); //Bag_Of_Selling_Goods
+		erasequest 15057;
+		setquest 15059;
+		getitem 22685,1; //Solo_Christmas_Gift
+		specialeffect2 EF_MAGICALATTHIT;
+		specialeffect2 EF_POTION2;
+		specialeffect2 EF_ANGEL2;
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "你總共有 " + xmas2013_01 + " 點破壞情侶積分。";
+		mes "拆散至少5對情侶後再來找我！";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "太棒了！你做到了！！越來越多人加入單身軍團了！！嘻嘻嘻 哈哈-哈！勝利是屬於我們的！！";
+		erasequest 15056;
+		setquest 15057;
+		getitem 22686,5; //Solo_Cookie
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "但是！！！當我們忙著拆散情侶時，那些該死的狸貓萬歲小屁孩偷走了我們大部分的物品。沒有這些，我們就無法感受到聖誕節的氣氛。";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "是時候懲罰牠們，並為單身軍團奪回物品了！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "^ff000010個被偷的餅乾、10個被偷的糖果和10個裝滿商品的袋子^000000 應該足夠辦派對了。去原野地圖和地下城尋找那些狸貓吧！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "如果你帶了更多也沒關係，我會全部收下！！";
+		close;
+	} else if (isbegin_quest(15055) == 0) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "嘿，你！！沒錯！就是你！你！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "我就直說了。";
+		mes "你一定是單身。我有這種感覺。對吧？！？？";
+		next;
+		if(select("- ...也許吧...？:什麼！我正在交往中！！") == 2) {
+			mes "[聯盟指揮官 克里夫]";
+			mes "什麼？...交往中？！！";
+			mes "...不是單身，而是情侶...";
+			mes "......";
+			mes "該死的你！嚐嚐單身軍團的憤怒吧！！！";
+			close2;
+			specialeffect2 EF_MAGICALATTHIT;
+			specialeffect2 EF_POTION2;
+			specialeffect2 EF_CRASHEARTH;
+			specialeffect2 EF_COIN;
+			end;
+		}
+		mes "[聯盟指揮官 克里夫]";
+		mes "嘻嘻嘻 哈哈-哈！";
+		mes "我就知道！我一眼就看出來了！";
+		mes "別小看我，我可是一輩子都單身！嘻嘻嘻 哈哈-哈！";
+		mes "我的名字是聯盟指揮官 克里夫！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "總之，今年十二月，那一天又要來了....";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "到處都是聖誕歌曲、明亮的彩燈、飄落的白雪，還有情侶們面帶微笑地看著彼此...情侶...情——侶——！！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "一開始這是慶祝我們主降生的日子！那為什麼...怎麼會...什麼時候變成了情侶的節日？？！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "我受不了了....";
+		mes "我絕對不原諒他們只為自己帶來幸福！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "情侶的聖誕節？";
+		mes "不可能！這個聖誕節將會是單身者的節日！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "然而，我需要成員來對抗他們。它的名字將會是，單身軍團！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "你覺得呢？你要加入我的單身軍團，讓聖誕節成為單身者的日子嗎？";
+		next;
+		select("算我一份！:我會幫忙的。:我也不能拒絕，對吧？");
+		mes "[聯盟指揮官 克里夫]";
+		mes "太好了！就是這樣！但我們需要更多成員來對抗情侶。";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "這是你的第一個任務！";
+		mes "去路提耶找人加入我們。5個單身者應該就夠了，現在出發吧~！";
+		mes "嘻嘻嘻 哈哈-哈！";
+		close2;
+		setquest 15055;
+		end;
+	} else if (isbegin_quest(15055) == 1 && .@que_allmem < 10) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "沒時間浪費了！";
+		mes "去路提耶找5個單身者加入我們！";
+		close;
+	} else if (isbegin_quest(15055) == 1 && .@que_allmem > 9) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "做得好！我已經見過他們了！他們非常有資格加入我們的事業，嘻嘻嘻 哈哈-哈！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "當你在招募更多單身軍團成員時，我製作了徽章..";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "這可能沒什麼用，但這種小信物可以讓我們的羈絆更加堅固強大！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "好了，收下這個！現在你是單身軍團引以為傲的成員了！！";
+		set xmas2013_01,0;
+		completequest 15055;
+		getitem 6821,1; //Solo_Troops_Badge
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "現在我們有足夠的成員了，是時候向情侶們展示我們的力量了！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "接下來是第二個任務！";
+		mes "去路提耶拆散情侶。不管你用什麼方法，只要讓他們分手就行了！！";
+		mes "嘻嘻嘻 哈哈-哈！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "對了，還有一件事...";
+		mes "當你干擾情侶時，如果他們分手了，你將獲得2分，如果只是簡單的爭吵則獲得1分。";
+		mes "但如果他們變得更加恩愛，你的分數將會扣1分。所以當你獲得5分並來這裡回報時，就代表任務完成了。";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "你肯定不會被扣分的，所以別擔心。";
+		setquest 15056;
+		close;
+	} else if (isbegin_quest(15055) == 2) {
+		mes "[聯盟指揮官 克里夫]";
+		mes "現在我們有足夠的成員了，是時候向情侶們展示我們的力量了！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "接下來是第二個任務！";
+		mes "去路提耶拆散情侶。不管你用什麼方法，只要讓他們分手就行了！！";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "對了，還有一件事...";
+		mes "當你干擾情侶時，如果他們分手了，你將獲得2分，如果只是簡單的爭吵則獲得1分。";
+		mes "但如果他們變得更加恩愛，你的分數將會扣1分。所以當你獲得5分並來這裡回報時，就代表任務完成了。";
+		next;
+		mes "[聯盟指揮官 克里夫]";
+		mes "你肯定不會被扣分的，所以別擔心。";
+		setquest 15056;
+		close;
+	}
+	end;
+}
+
+xmas,172,126,3	script	孤獨的夸米#xmas	10089,{
+	if (isbegin_quest(15055) == 0) {
+		mes "[夸米]";
+		mes "哈.....在聖誕節前分手....我孤單一人...是單身！...我是嗎？？！！";
+		close;
+	} else if (isbegin_quest(15055) == 1 && isbegin_quest(15060) == 0) {
+		mes "[夸米]";
+		mes "哈.....在聖誕節前分手....我孤單一人...是單身！...我是嗎？？！！";
+		next;
+		mes "[夸米]";
+		mes "你是誰！？";
+		mes "找我有什麼事？";
+		next;
+		select("- 單身軍團來找你了。 -");
+		mes "[夸米]";
+		mes "呃？單身軍團？那是什麼？";
+		next;
+		select("- 解釋關於軍團的事 -");
+		mes "[夸米]";
+		mes "...對。你說得對！";
+		next;
+		mes "[夸米]";
+		mes "既然我單身！我絕對不會讓情侶們享受這個聖誕節！！";
+		next;
+		mes "[夸米]";
+		mes "我要加入單身軍團！！";
+		next;
+		mes "- 夸米成為了單身軍團的一員。 -";
+		setquest 15060;
+		completequest 15060;
+		close;
+	} else {
+		mes "[單身軍團 夸米]";
+		mes "首先，我必須向我的前任復仇...不對嗎？";
+		close;
+	}
+}
+
+xmas,113,161,5	script	孤獨的威勒#xmas	10090,{
+	if (isbegin_quest(15055) == 0) {
+		mes "[威勒]";
+		mes "呼......一個人玩好無聊喔....";
+		close;
+	} else if (isbegin_quest(15055) == 1 && isbegin_quest(15061) == 0) {
+		mes "[威勒]";
+		mes "呼......一個人玩好無聊喔....";
+		next;
+		mes "[威勒]";
+		mes "沒有什麼令人興奮的事嗎？";
+		mes "...嘿，你要陪我玩嗎？？";
+		next;
+		select("- 單身軍團來找你了。 -");
+		mes "[威勒]";
+		mes "單身什麼？為什麼來找我？";
+		next;
+		select("- 解釋關於軍團的事 -");
+		mes "[威勒]";
+		mes "所以...";
+		mes "拆散情侶，並舉辦只有單身者的聖誕派對？";
+		next;
+		mes "[威勒]";
+		mes "那一定很好玩！我不是很懂，但我加入，算我一份！！";
+		next;
+		mes "- 威勒成為了單身軍團的一員。 -";
+		setquest 15061;
+		completequest 15061;
+		close;
+	} else {
+		mes "[單身軍團 威勒]";
+		mes "拆散情侶...這應該會很好玩！！";
+		close;
+	}
+}
+
+xmas,131,97,5	script	孤獨的琳卡#xmas	10091,{
+	if (isbegin_quest(15055) == 0) {
+		mes "[琳卡]";
+		mes "呃！可惡... 什麼朋友只會炫耀自己的男朋友，真噁心！她真的以為我交不到嗎？！？";
+		close;
+	} else if (isbegin_quest(15055) == 1 && isbegin_quest(15062) == 0) {
+		mes "[琳卡]";
+		mes "呃！可惡... 什麼朋友只會炫耀自己的男朋友，真噁心！她真的以為我交不到嗎？！？";
+		next;
+		mes "[琳卡]";
+		mes "- 啜泣 -";
+		next;
+		mes "[琳卡]";
+		mes "我不能... 事實上，沒有人... 我什麼人都沒有！！！！！！！！！！！";
+		next;
+		select("- 單身軍團來找你了。 -");
+		mes "[琳卡]";
+		mes "咿！哇！！";
+		mes "你嚇到我了。你在說什麼，那是什麼？！";
+		next;
+		select("- 解釋關於軍團的事 -");
+		mes "[琳卡]";
+		mes "呵呵...有這種東西？";
+		mes "拆散情侶...";
+		mes "好！讓我加入！";
+		next;
+		mes "[琳卡]";
+		mes "還有空位給其他成員嗎？";
+		mes "...很快就會有另一名成員加入了！";
+		mes "等著瞧吧~ 我的朋友！！ ...";
+		next;
+		mes "- 琳卡成為了單身軍團的一員。 -";
+		setquest 15062;
+		completequest 15062;
+		close;
+	} else {
+		mes "[單身軍團 琳卡]";
+		mes "等著瞧吧~ 我的朋友！！你... 很快就會加入了！！";
+		close;
+	}
+}
+
+xmas,121,127,5	script	孤獨的吉#xmas	10088,{
+	if (isbegin_quest(15055) == 0) {
+		mes "[吉]";
+		mes "單身是多麼美好啊...";
+		close;
+	} else if ((isbegin_quest(15055) == 1) && (isbegin_quest(15063) == 0)) {
+		mes "[吉]";
+		mes "單身是多麼美好啊...";
+		next;
+		mes "[吉]";
+		mes "沒有人會打擾你。沒有人需要照顧。不用再幫別人做額外的工作。有更多時間可以獨處。";
+		next;
+		mes "[吉]";
+		mes "為什麼人們要放棄這個優勢，想要成為情侶呢？？";
+		next;
+		select("- 單身軍團來找你了。 -");
+		mes "[吉]";
+		mes "是啊，我最近聽說過。我就知道你會來找我。";
+		next;
+		mes "[吉]";
+		mes "不用多說了。我會去宣揚單身的好處！";
+		next;
+		mes "- 吉成為了單身軍團的一員。 -";
+		setquest 15063;
+		completequest 15063;
+		close;
+	} else {
+		mes "[單身軍團 吉]";
+		mes "我會去宣揚單身的好處！";
+		close;
+	}
+}
+
+xmas,150,169,3	script	孤獨的馬蒂#xmas	10087,{
+	if (isbegin_quest(15055) == 0) {
+		mes "[馬蒂]";
+		mes "嗯... Zzz ... 嚼-嚼...";
+		close;
+	} else if (isbegin_quest(15055) == 1 && isbegin_quest(15064) == 0) {
+		mes "[馬蒂]";
+		mes "嗯... Zzz ... 嚼-嚼...";
+		next;
+		select("- 單身軍團來找你了。 -");
+		mes "[馬蒂]";
+		mes "嚼.... 嚼嚼... 呼... Zzz";
+		next;
+		select("- 解釋關於軍團的事 -");
+		mes "[馬蒂]";
+		mes "呼姆... 喵.... Zzz";
+		next;
+		mes "- ...你可以當作他同意加入了。 -";
+		next;
+		mes "- 馬蒂成為了單身軍團的一員。 -";
+		setquest 15064;
+		completequest 15064;
+		close;
+	} else {
+		mes "[單身軍團 馬蒂]";
+		mes "嚼.... 嚼嚼... 呼... Zzz";
+		close;
+	}
+}
+
+xmas,108,149,5	script	販賣機#xmas	562,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[販賣機]";
+		mes "叮叮 咚 叮！~";
+		emotion ET_THROB;
+		next;
+		mes "[吃錢的販賣機]";
+		mes "!~";
+		emotion ET_THROB, getnpcid(0, "吃錢的販賣機#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[販賣機]";
+		mes "叮叮叮 叮！~";
+		emotion ET_THROB;
+		next;
+		mes "[吃錢的販賣機]";
+		mes "鏘~~~~ 唰~~~~~~ 叮！~";
+		emotion ET_THROB, getnpcid(0, "吃錢的販賣機#xmas");
+		next;
+		mes "- 喔不，又是一對情侶！";
+		mes "- 即使它們只是機器...";
+		mes "- 我也無法忍受看到這個！";
+		next;
+		select("- 將機器開到最大功率。 -");
+		mes "[販賣機]";
+		mes "叮 叮 叮 咚 叮 叮 叮 咚 叮 叮 叮 咚 叮 叮 叮 咚";
+		next;
+		mes "[吃錢的販賣機]";
+		mes "喀rrrrrrrrrr 叮叮 咚 喀rrrrrr 叮叮 喀rrrrrrrrrrr 叮 喀rrrrrrrrr";
+		next;
+		set .@cu_bre, rand(1,10);
+		if (.@cu_bre < 3) {
+			mes "- 我...";
+			mes "- 我想我把它們兩個都弄壞了！";
+			mes "- 成功拆散了一對情侶！";
+			mes "- 幹得好，獲得2分！";
+			set xmas2013_01, xmas2013_01 + 2;
+		} else if (.@cu_bre > 7) {
+			mes "- 我讓機器運轉了一會兒";
+			mes "- 但是機器的聲音";
+			mes "- 似乎變得更大了。";
+			mes "- 拆散失敗，扣1分！";
+			if (xmas2013_01 > 0)
+				set xmas2013_01, xmas2013_01 - 1;
+		} else {
+			mes "- 機器運轉了一會兒後";
+			mes "- 我想我終於弄壞了其中一個！";
+			mes "- 幹得好，獲得1分！";
+			set xmas2013_01, xmas2013_01 + 1;
+		}
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		hideonnpc "販賣機#xmas";
+		hideonnpc "吃錢的販賣機#xmas";
+		initnpctimer;
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer100000:
+	hideoffnpc "販賣機#xmas";
+	hideoffnpc "吃錢的販賣機#xmas";
+	stopnpctimer;
+	end;
+}
+xmas,111,149,3	script	吃錢的販賣機#xmas	563,{ end; }
+
+xmas,181,150,5	script	害怕的男子#xmas	711,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[害怕的男子]";
+		mes "都是我的錯，對不起。請不要生氣。";
+		emotion ET_SORRY;
+		next;
+		mes "[生氣的女子]";
+		mes "妳說對不起？你知道你做了什麼嗎？你知道我為什麼生氣嗎？";
+		emotion ET_FRET, getnpcid(0, "生氣的女子#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[害怕的男子]";
+		mes "都是我的錯，對不起。請不要生氣。";
+		emotion ET_SORRY;
+		next;
+		mes "[生氣的女子]";
+		mes "妳說對不起？你知道你做了什麼嗎？你知道我為什麼生氣嗎？";
+		emotion ET_FRET, getnpcid(0, "生氣的女子#xmas");
+		next;
+		mes "[害怕的男子]";
+		mes "嗯，我只是覺得一切都是我的錯";
+		next;
+		mes "[生氣的女子]";
+		mes "你總是這樣！";
+		mes "你永遠不知道你該為什麼道歉！！";
+		next;
+		mes "[害怕的男子]";
+		mes "啊... 我該怎麼辦？";
+		mes "嘿，你覺得我該對我女朋友說些什麼？";
+		next;
+		select("- 告訴她「我們應該停止見面了」！");
+		mes "[害怕的男子]";
+		mes "也許我們.. 應該停止見面了？";
+		mes "喔不，我不小心說出來了！";
+		next;
+		set .@cu_bre, rand(1,10);
+		if (.@cu_bre < 3) {
+			mes "[生氣的女子]";
+			mes "什麼？你剛剛說什麼？我們應該停止見面？你怎麼能對我說這種話？！明明是你做錯了所有事！好啊，你知道嗎？我們分手吧！我受夠這一切了！";
+			set xmas2013_01, xmas2013_01 + 2;
+			hideonnpc "害怕的男子#xmas";
+			hideonnpc "生氣的女子#xmas";
+			initnpctimer;
+			next;
+			mes "[害怕的男子]";
+			mes "不，我不是這個意思... 好吧，夠了！我也受夠了，受夠妳一直在抱怨！我們今天就結束吧！！";
+			next;
+			mes "- 成功拆散了一對情侶！！";
+			mes "- 獲得2分！";
+		} else if (.@cu_bre > 7) {
+			mes "[生氣的女子]";
+			mes "什麼？...你剛剛說什麼？我們應該停止見面？";
+			if (xmas2013_01 > 0)
+				set xmas2013_01, xmas2013_01 - 1;
+			hideonnpc "害怕的男子#xmas";
+			hideonnpc "生氣的女子#xmas";
+			initnpctimer;
+			next;
+			mes "[生氣的女子]";
+			mes "我真不敢相信你能這麼性感、這麼強悍！我好像又重新愛上你了！";
+			next;
+			mes "[生氣的女子]";
+			mes "親愛的，你能用更粗獷的語氣再說一次嗎？";
+			next;
+			mes "[害怕的男子]";
+			mes "蛤？好喔... 我們... 我們就到此為止吧！！！";
+			next;
+			mes "[生氣的女子]";
+			mes "哈哈哈哈！你太棒了！太棒了！再說一次！快說！";
+			next;
+			mes "[害怕的男子]";
+			mes "我們分手吧！我要離開妳！！";
+			next;
+			mes "[生氣的女子]";
+			mes "哈哈哈哈哈哈哈！耶！你最棒了！";
+			next;
+			mes "- ...這些人不正常。";
+			mes "- 失敗，扣1分！";
+		} else {
+			set xmas2013_01, xmas2013_01 + 1;
+			hideonnpc "害怕的男子#xmas";
+			hideonnpc "生氣的女子#xmas";
+			initnpctimer;
+			mes "[生氣的女子]";
+			mes "什麼？...你剛剛說什麼？我們應該停止見面？";
+			next;
+			mes "[生氣的女子]";
+			mes "...我想我們現在都太生氣了。我們晚點再談吧...";
+			next;
+			mes "[害怕的男子]";
+			mes "嗯？... 啊，對，妳說得對... 再見，路上小心...";
+			next;
+			mes "- 破壞了他們的約會，獲得1分！";
+		}
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer100000:
+	hideoffnpc "害怕的男子#xmas";
+	hideoffnpc "生氣的女子#xmas";
+	stopnpctimer;
+	end;
+}
+xmas,183,150,3	script	生氣的女子#xmas	714,{ end;
+}
+
+xmas_in,32,99,5	script	單身軍團 夸米	10089,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[單身軍團 夸米]";
+		mes "琳卡。像妳這麼漂亮的女孩怎麼會加入這個單身軍團，這真是個巨大的謎團。";
+		emotion ET_THROB;
+		next;
+		mes "[單身軍團 琳卡]";
+		mes "你覺得我漂亮？呵呵... 像你這麼英俊的男人加入了單身軍團，對我來說也是個謎呢。";
+		emotion ET_THROB, getnpcid(0, "單身軍團 琳卡");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[單身軍團 夸米]";
+		mes "琳卡。像妳這麼漂亮的女孩怎麼會加入這個單身軍團，這真是個巨大的謎團。";
+		emotion ET_THROB;
+		next;
+		mes "[單身軍團 琳卡]";
+		mes "你覺得我漂亮？呵呵... 像你這麼英俊的男人加入了單身軍團，對我來說也是個謎呢。";
+		emotion ET_THROB, getnpcid(0, "單身軍團 琳卡");
+		next;
+		mes "[單身軍團 夸米]";
+		mes "嗯，我們只能一個人過聖誕節不是很可惜嗎？妳說呢，琳卡，妳和我...";
+		next;
+		select("- 成為情侶就是背叛者！背叛我們，你就死定了！！！");
+		set xmas2013_01, xmas2013_01 + 1;
+		hideonnpc "單身軍團 夸米";
+		hideonnpc "單身軍團 琳卡";
+		initnpctimer;
+		mes "[單身軍團 琳卡]";
+		mes "啊！！！！！是誰？！";
+		mes "這不就是把我們拉進單身軍團的那個人嗎？！";
+		next;
+		mes "[單身軍團 夸米]";
+		mes "你.. 偷聽？！";
+		mes "我只是想說我們應該為軍團找更多成員！哈哈哈哈哈！";
+		next;
+		mes "[單身軍團 夸米]";
+		mes "晚點見，琳卡。我要出去追捕更多情侶了。別告訴老大！";
+		next;
+		mes "[單身軍團 琳卡]";
+		mes "嗯，我想我也該走了。晚點見夸米，也跟你說聲再見~";
+		next;
+		mes "- 成功阻止了一對情侶的誕生！";
+		mes "- 幹得好，獲得1分！";
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer300000:
+	hideoffnpc "單身軍團 夸米";
+	hideoffnpc "單身軍團 琳卡";
+	stopnpctimer;
+	end;
+}
+xmas_in,34,99,3	script	單身軍團 琳卡	10091,{ end;
+}
+
+xmas,156,109,5	script	可憐的鍊金術師#xmas	749,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[可憐的鍊金術師]";
+		mes "喔，妳好。";
+		emotion ET_PROFUSELY_SWEAT;
+		next;
+		mes "[花店少女]";
+		mes "你好，鍊金術師先生。";
+		mes "你今天也要工作嗎？";
+		emotion ET_DELIGHT, getnpcid(0, "花店少女#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[可憐的鍊金術師]";
+		mes "喔，妳好。";
+		emotion ET_PROFUSELY_SWEAT;
+		next;
+		mes "[花店少女]";
+		mes "你好，鍊金術師先生。";
+		mes "你今天也要工作嗎？";
+		emotion ET_DELIGHT, getnpcid(0, "花店少女#xmas");
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "其實，我有件事想告訴妳。";
+		mes "這非常重要，請妳仔細聽。";
+		next;
+		mes "[花店少女]";
+		mes "喔，當然，請直說吧。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "從生物學的角度來看，大腦中的邊緣系統使我們能夠社交、與人交流、進行娛樂等。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "所以當你看到一個美麗的女人時，諸如她的外貌、氣味、聲音的語調等資訊都會進入邊緣區域。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "邊緣系統隨後會評估這些資訊，看看這位女士是否友善、具有攻擊性或充滿魅力等。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "當評估完成後，邊緣系統會立即開始分泌化學物質。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "因此，如果你被這位女士吸引，就會分泌一種叫做多巴胺的賀爾蒙，它會讓你感到些許快樂。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "當那個階段結束後，你的腎上腺素會飆升，然後你會變得更加直接和熱情。";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "我現在對妳就處於那個階段！換句話說，我非常...！！";
+		next;
+		select("- 非常餓，對吧？！");
+		mes "[花店少女]";
+		mes "蛤？是這樣嗎？";
+		mes "你現在肚子餓了嗎，鍊金術師先生？";
+		next;
+		mes "[可憐的鍊金術師]";
+		mes "啊.. 是的.. 我想我是...";
+		mes "...非常餓..";
+		next;
+		set .@cu_bre, rand(1,10);
+		if (.@cu_bre < 3) {
+			mes "[花店少女]";
+			mes "這附近有一家不錯的餐廳。你為什麼不去那裡吃頓飯呢？";
+			set xmas2013_01, xmas2013_01 + 2;
+			hideonnpc "可憐的鍊金術師#xmas";
+			hideonnpc "花店少女#xmas";
+			initnpctimer;
+			next;
+			mes "[可憐的鍊金術師]";
+			mes "...好的，謝謝妳。祝妳有美好的一天...";
+			next;
+			mes "- 成功阻止了一對情侶的誕生！";
+			mes "- 幹得好，獲得2分！";
+		} else if (.@cu_bre > 7) {
+			mes "[花店少女]";
+			mes "我明白了。我懂你的意思了。";
+			if (xmas2013_01 > 0)
+				set xmas2013_01, xmas2013_01 - 1;
+			hideonnpc "可憐的鍊金術師#xmas";
+			hideonnpc "花店少女#xmas";
+			initnpctimer;
+			next;
+			mes "[花店少女]";
+			mes "那我能為你煮頓好吃的飯嗎？";
+			next;
+			mes "[花店少女]";
+			mes "...在我的餘生裡，如果你願意的話...";
+			next;
+			mes "[可憐的鍊金術師]";
+			mes "好的...";
+			mes "......";
+			mes "等等，什麼？？？？？";
+			next;
+			mes "[可憐的鍊金術師]";
+			mes "......";
+			mes "...... 是的！我願意！！！！！！！！";
+			next;
+			mes "- 拆散情侶失敗";
+			mes "- 失敗，扣1分！";
+		} else {
+			set xmas2013_01, xmas2013_01 + 1;
+			hideonnpc "可憐的鍊金術師#xmas";
+			hideonnpc "花店少女#xmas";
+			initnpctimer;
+			mes "[花店少女]";
+			mes "店裡有些食物，請進來吧。";
+			next;
+			mes "[可憐的鍊金術師]";
+			mes "啊... 好的，謝謝妳。";
+			next;
+			mes "- 你確實在某種程度上打斷了這對情侶。給你1分！";
+		}
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer100000:
+	hideoffnpc "可憐的鍊金術師#xmas";
+	hideoffnpc "花店少女#xmas";
+	stopnpctimer;
+	end;
+}
+xmas,158,109,3	script	花店少女#xmas	91,{ end; }
+
+xmas,166,164,5	script	拉菲尼男孩#xmas	443,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[拉菲尼男孩]";
+		mes "這裡是路提耶村...";
+		emotion ET_STARE_ABOUT;
+		next;
+		mes "[拉菲尼女孩]";
+		mes "有好多美麗的白色雪花。";
+		mes "但是這裡太冷了...";
+		emotion ET_CRY, getnpcid(0, "拉菲尼女孩#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[拉菲尼男孩]";
+		mes "這裡是路提耶村...";
+		emotion ET_STARE_ABOUT;
+		next;
+		mes "[拉菲尼女孩]";
+		mes "有好多美麗的白色雪花。";
+		mes "但是這裡太冷了...";
+		emotion ET_CRY, getnpcid(0, "拉菲尼女孩#xmas");
+		next;
+		mes "[拉菲尼男孩]";
+		mes "但可是妳說這個聖誕節想看雪的。";
+		next;
+		mes "[拉菲尼女孩]";
+		mes "喔，但我不知道會這麼冷... 哎呀...";
+		next;
+		mes "[拉菲尼男孩]";
+		mes "嗯，好吧我知道了... 靠近我一點。";
+		next;
+		mes "[拉菲尼女孩]";
+		mes "什麼？我聽不到你說話。你剛說什麼？";
+		next;
+		mes "[拉菲尼男孩]";
+		mes "...靠近我一點。來我身邊。";
+		next;
+		mes "[拉菲尼女孩]";
+		mes "喔喔好...";
+		next;
+		mes "- 嗯...根本沒有空間";
+		mes "- 讓我來插手干擾...";
+		next;
+		hideonnpc "拉菲尼男孩#xmas";
+		hideonnpc "拉菲尼女孩#xmas";
+		initnpctimer;
+		set .@cu_bre, rand(1,10);
+		if (.@cu_bre < 6) {
+			set xmas2013_01, xmas2013_01 + 1;
+			mes "[拉菲尼女孩]";
+			mes "....但是還是太冷了！我不想再待在這裡了。";
+			next;
+			mes "[拉菲尼女孩]";
+			mes "我想回埃克拉珠！";
+			next;
+			mes "[拉菲尼男孩]";
+			mes "喔？嘿...我們好不容易才到這裡，但妳現在就要回去？";
+			next;
+			mes "[拉菲尼男孩]";
+			mes "嘿！我們一起走吧！！";
+			next;
+			mes "- 毫不費力，但一切都很順利。";
+			mes "- 獲得1分！";
+		} else {
+			if (xmas2013_01 > 0)
+				set xmas2013_01, xmas2013_01 - 1;
+			mes "[拉菲尼女孩]";
+			mes "喔！比剛才暖和多了... 嘿嘿";
+			next;
+			mes "[拉菲尼男孩]";
+			mes "別..別靠我太近！";
+			next;
+			mes "[拉菲尼女孩]";
+			mes "為什麼？誰在乎呢。我們去吃點好吃的吧。";
+			next;
+			mes "[拉菲尼男孩]";
+			mes "妳靠我太近了！我，我能感覺到妳的..嗯..嘿！";
+			next;
+			mes "- 哎呀，我什麼都沒做就被那對情侶閃瞎了。";
+			mes "- 失敗，獲得-1分！";
+		}
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer100000:
+	hideoffnpc "拉菲尼男孩#xmas";
+	hideoffnpc "拉菲尼女孩#xmas";
+	stopnpctimer;
+	end;
+}
+xmas,168,164,3	script	拉菲尼女孩#xmas	438,{ end; }
+
+xmas,147,123,5	script	天使波利#xmas	948,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[天使波利]";
+		mes "咕嚶~";
+		emotion ET_THROB;
+		next;
+		mes "[聖天使波利]";
+		mes "咕嚶 咕嚶~";
+		emotion ET_THROB, getnpcid(0, "Arc 天使波利#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[天使波利]";
+		mes "咕嚶~";
+		emotion ET_THROB;
+		next;
+		mes "[聖天使波利]";
+		mes "咕嚶 咕嚶~";
+		emotion ET_THROB, getnpcid(0, "Arc 天使波利#xmas");
+		next;
+		mes "- 但我無法打擾牠們。";
+		mes "- 甚至無法與牠們對話，";
+		mes "- 喔，好吧。";
+		next;
+		mes "- 直接狩獵牠們？";
+		mes "- ......不可能。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+}
+xmas,149,123,3	script	Arc 天使波利#xmas	949,{ end; }
+
+xmas,129,115,5	script	普雷內坦#xmas	783,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[普雷內坦]";
+		mes "溫巴~ 溫巴 溫巴！";
+		mes "溫巴 溫姆姆姆姆！";
+		next;
+		mes "[普雷內坦]";
+		mes "總算抓到你了，蛤？你一直背著我偷吃，甚至還讓我追著你跑？我要宰了你這傢伙！";
+		emotion ET_FRET;
+		next;
+		mes "[烏恩普科里奧坦]";
+		mes "喔喔...我老婆太暴力了。喔喔...好痛啊！";
+		emotion ET_CRY, getnpcid(0, "烏恩普科里奧坦#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[普雷內坦]";
+		mes "溫巴~ 溫巴 溫巴！";
+		mes "溫巴 溫姆姆姆姆！";
+		next;
+		mes "[普雷內坦]";
+		mes "總算抓到你了，蛤？你一直背著我偷吃，甚至還讓我追著你跑？我要宰了你這傢伙！";
+		emotion ET_FRET;
+		next;
+		mes "[烏恩普科里奧坦]";
+		mes "喔喔...我老婆太暴力了。喔喔...好痛啊！";
+		emotion ET_CRY, getnpcid(0, "烏恩普科里奧坦#xmas");
+		next;
+		mes "[烏恩普科里奧坦]";
+		mes "威娜坦、貝爾茲坦、查比馬坦";
+		mes "喔喔... 汶巴拉的女孩們來了...她們現在正在等我....啊！別碰我！";
+		next;
+		mes "[普雷內坦]";
+		mes "你真蠢！";
+		mes "那些女孩根本不想見你，她們會來這裡根本是個謊言！！";
+		next;
+		select("- 不。她們都在這裡！");
+		hideonnpc "普雷內坦#xmas";
+		hideonnpc "烏恩普科里奧坦#xmas";
+		initnpctimer;
+		set .@cu_bre, rand(1,10);
+		if (.@cu_bre < 6) {
+			set xmas2013_01, xmas2013_01 + 1;
+			mes "[烏恩普科里奧坦]";
+			mes "嗯...對我知道..那些女孩真的在這裡嗎？";
+			next;
+			mes "[烏恩普科里奧坦]";
+			mes "...喔我肚子痛... 我是不是吃壞肚子了... 親愛的，等我一下。我去個廁所馬上回來！妳就在這等一會兒！";
+			next;
+			mes "[普雷內坦]";
+			mes "嘿你這白痴！給我站住！站住！...站住！！！";
+			next;
+			mes "- 嗯，事情挺簡單的。獲得1分！";
+		} else {
+			set xmas2013_01, xmas2013_01 + 1;
+			mes "[普雷內坦]";
+			mes "是誰在那裡？你也想被宰了嗎？";
+			next;
+			mes "- 哎呀";
+			next;
+			mes "[普雷內坦]";
+			mes "你還是什麼都不懂。過來，我要帶你回汶巴拉！";
+			next;
+			mes "[烏恩普科里奧坦]";
+			mes "啊！....啊啊啊啊啊！！好痛！不！！！她們在等我！！！";
+			next;
+			mes "- 唉，他只是讓自己處境更艱難而已。獲得1分！";
+		}
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer100000:
+	hideoffnpc "普雷內坦#xmas";
+	hideoffnpc "烏恩普科里奧坦#xmas";
+	stopnpctimer;
+	end;
+}
+xmas,131,115,3	script	烏恩普科里奧坦#xmas	789,{ end; }
+
+xmas,138,174,5	script	黑暗之王#xmas	737,{
+	if (isbegin_quest(15056) == 0) {
+		mes "[黑暗之王]";
+		mes "哇哈哈哈哈，世界很快就會陷入黑暗，所有人都將跪倒在我面前！！";
+		emotion ET_SURPRISE;
+		next;
+		mes "[夢魔]";
+		mes "我的主人。所有世界都將遵從您的意志。";
+		emotion ET_THROB, getnpcid(0, "夢魔#xmas");
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 < 5) {
+		mes "[黑暗之王]";
+		mes "哇哈哈哈哈，世界很快就會陷入黑暗，所有人都將跪倒在我面前！！";
+		emotion ET_SURPRISE;
+		next;
+		mes "[夢魔]";
+		mes "我的主人。所有世界都將遵從您的意志。";
+		emotion ET_THROB, getnpcid(0, "夢魔#xmas");
+		next;
+		mes "[黑暗之王]";
+		mes "即使我下達了艱難的命令，妳依然對我忠心耿耿。妳值得一份獎賞。妳現在想要什麼？我絕對會為妳實現。我甚至可以賜予妳更強大的力量！";
+		next;
+		mes "[夢魔]";
+		mes "......";
+		mes "您真的能給我任何我想要的東西嗎...？";
+		next;
+		mes "[夢魔]";
+		mes "我真正需要的...";
+		mes "......";
+		mes "只有您，我的主人。";
+		next;
+		mes "[黑暗之王]";
+		mes "......";
+		mes "?!!!!!";
+		next;
+		mes "[夢魔]";
+		mes "我一直都愛著您...";
+		mes "已經很久很久了...";
+		next;
+		mes "[黑暗之王]";
+		mes "......";
+		next;
+		mes "[黑暗之王]";
+		mes "我也不是不知道這件事。";
+		next;
+		mes "[黑暗之王]";
+		mes "我也...";
+		next;
+		mes "[黑暗之王]";
+		mes "...但我們是惡魔。惡魔選擇了一條通往愛的道路？！太荒謬了，黑暗世界絕對不會原諒我們的！我們的餘生都將在躲藏中度過！";
+		next;
+		mes "[夢魔]";
+		mes "只要能和您在一起，這都不重要，我的主人...";
+		next;
+		select("- 很抱歉打擾你們... 但你們剛才不是在討論征服世界嗎？");
+		hideonnpc "黑暗之王#xmas";
+		hideonnpc "夢魔#xmas";
+		initnpctimer;
+		set .@cu_bre, rand(1,10);
+		if (.@cu_bre < 5) {
+			set xmas2013_01, xmas2013_01 + 2;
+			mes "[黑暗之王]";
+			mes "是..是的。沒錯，夢魔！我們已經有了這麼崇高的目標！";
+			next;
+			mes "[黑暗之王]";
+			mes "我很感激妳的心意，但要搞清楚妳的身份！乖乖做妳現在的下屬吧。";
+			next;
+			mes "[夢魔]";
+			mes "喔，是的...我的主人，請原諒我。我會盡我所能讓這個世界成為您的。";
+			next;
+			mes "[黑暗之王]";
+			mes "沒錯！沒有什麼比讓這個世界陷入黑暗更棒的了。所有人都將跪倒在我面前。哈哈哈哈哈哈哈哈哈！！！";
+			next;
+			mes "- 即使這個世界將會";
+			mes "- 很快被黑暗吞噬...";
+			mes "- 我在拆散情侶方面取得了巨大的成功！";
+			mes "- 獲得2分！";
+		} else {
+			if (xmas2013_01 > 0)
+				set xmas2013_01, xmas2013_01 - 1;
+			mes "[黑暗之王]";
+			mes "征服世界... 與我們現在的感受相比，根本毫無意義。";
+			mes "親愛的夢魔，如果和我在一起，妳真的能克服任何痛苦嗎？";
+			next;
+			mes "[夢魔]";
+			mes "...主人！";
+			next;
+			mes "[夢魔]";
+			mes "當然，我已經準備好了，並且會繼續前進... 即使我將身處任何痛苦之中，我也會永遠追隨您。";
+			next;
+			mes "[夢魔]";
+			mes "我將永遠屬於您！";
+			next;
+			mes "[黑暗之王]";
+			mes "我明白了...我現在能感受到妳的心了。好，我們一起走吧... 無論未來有多麼艱難！！";
+			next;
+			mes "- 我從黑暗中拯救了這個世界。";
+			mes "- 儘管誕生了一對情侶！";
+			mes "- 非常難過...";
+			mes "- 失敗，獲得-1分！";
+		}
+		mes "- 目前的破壞情侶積分為 " + xmas2013_01 + "。";
+		close;
+	} else if (isbegin_quest(15056) == 1 && xmas2013_01 > 4) {
+		mes "- 破壞情侶積分";
+		mes "- 現在已經超過5分了。";
+		mes "- 我該回去找聯盟指揮官 克里夫了。";
+		close;
+	}
+	end;
+OnTimer100000:
+	hideoffnpc "黑暗之王#xmas";
+	hideoffnpc "夢魔#xmas";
+	stopnpctimer;
+	end;
+}
+xmas,141,174,3	script	夢魔#xmas	1370,{ end; }
+
+// Monster Spawns :: EventMonster-131209_xmas
+//============================================================
+gld_dun01_2,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld_dun02_2,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld_dun03_2,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld_dun04_2,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld2_ald,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld2_gef,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld2_pay,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld2_prt,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_dun04,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun05,0,0	monster	偷禮物的狸貓	2380,5,5000
+mal_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+dic_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+dew_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+dew_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+dew_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+mal_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun05,0,0	monster	偷禮物的狸貓	2380,5,5000
+man_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+man_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+spl_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+spl_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+man_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+spl_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+nyd_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+bra_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+bra_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+bra_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+dic_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+dic_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+dic_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+dic_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+bif_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+bif_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+abbey01,0,0	monster	偷禮物的狸貓	2380,5,5000
+abbey02,0,0	monster	偷禮物的狸貓	2380,5,5000
+abbey03,0,0	monster	偷禮物的狸貓	2380,5,5000
+abyss_01,0,0	monster	偷禮物的狸貓	2380,5,5000
+abyss_02,0,0	monster	偷禮物的狸貓	2380,5,5000
+abyss_03,0,0	monster	偷禮物的狸貓	2380,5,5000
+alde_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+alde_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+alde_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+alde_dun04,0,0	monster	偷禮物的狸貓	2380,5,5000
+ama_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ama_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ama_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+ama_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+anthell01,0,0	monster	偷禮物的狸貓	2380,5,5000
+anthell02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ayo_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ayo_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ayo_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ayo_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+beach_dun,0,0	monster	偷禮物的狸貓	2380,5,5000
+beach_dun2,0,0	monster	偷禮物的狸貓	2380,5,5000
+beach_dun3,0,0	monster	偷禮物的狸貓	2380,5,5000
+c_tower1,0,0	monster	偷禮物的狸貓	2380,5,5000
+c_tower2,0,0	monster	偷禮物的狸貓	2380,5,5000
+c_tower3,0,0	monster	偷禮物的狸貓	2380,5,5000
+c_tower4,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+cmd_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+ein_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_dun00,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild00,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild10,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild11,0,0	monster	偷禮物的狸貓	2380,5,5000
+gef_fild13,0,0	monster	偷禮物的狸貓	2380,5,5000
+gefenia01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gefenia02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gefenia03,0,0	monster	偷禮物的狸貓	2380,5,5000
+gefenia04,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_cas01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_cas02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_church,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_chyard,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_in01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_knt01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_knt02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_prison,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_prison1,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_sew01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_sew02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_sew03,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_sew04,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_step,0,0	monster	偷禮物的狸貓	2380,5,5000
+glast_01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gon_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+gon_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+gon_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+gon_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+hu_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+hu_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+hu_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+hu_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+hu_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+ice_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ice_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ice_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+in_sphinx1,0,0	monster	偷禮物的狸貓	2380,5,5000
+in_sphinx2,0,0	monster	偷禮物的狸貓	2380,5,5000
+in_sphinx3,0,0	monster	偷禮物的狸貓	2380,5,5000
+in_sphinx4,0,0	monster	偷禮物的狸貓	2380,5,5000
+in_sphinx5,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun00,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+iz_dun04,0,0	monster	偷禮物的狸貓	2380,5,5000
+jupe_core,0,0	monster	偷禮物的狸貓	2380,5,5000
+juperos_01,0,0	monster	偷禮物的狸貓	2380,5,5000
+juperos_02,0,0	monster	偷禮物的狸貓	2380,5,5000
+kh_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+kh_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+lhz_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+lou_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+lou_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+lou_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+lou_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+mag_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+mag_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+man_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjo_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjo_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjo_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_01,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_02,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_03,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_04,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_05,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_06,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_07,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_08,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_09,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_10,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_11,0,0	monster	偷禮物的狸貓	2380,5,5000
+mjolnir_12,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild10,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild11,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild12,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild13,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild14,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild15,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild16,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild17,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_fild18,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_pryd01,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_pryd02,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_pryd03,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_pryd04,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_pryd05,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_pryd06,0,0	monster	偷禮物的狸貓	2380,5,5000
+nameless_n,0,0	monster	偷禮物的狸貓	2380,5,5000
+nif_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+nif_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+nyd_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+odin_tem01,0,0	monster	偷禮物的狸貓	2380,5,5000
+odin_tem02,0,0	monster	偷禮物的狸貓	2380,5,5000
+odin_tem03,0,0	monster	偷禮物的狸貓	2380,5,5000
+orcsdun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+orcsdun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_dun00,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_dun04,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+pay_fild10,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild00,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild10,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild11,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_maze01,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_maze02,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_maze03,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_sewb1,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_sewb2,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_sewb3,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_fild12,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_san01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_san02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_san03,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_san04,0,0	monster	偷禮物的狸貓	2380,5,5000
+ra_san05,0,0	monster	偷禮物的狸貓	2380,5,5000
+spl_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t01,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t02,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t03,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t04,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t05,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t06,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t07,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t08,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t09,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t10,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t11,0,0	monster	偷禮物的狸貓	2380,5,5000
+tha_t12,0,0	monster	偷禮物的狸貓	2380,5,5000
+thor_v01,0,0	monster	偷禮物的狸貓	2380,5,5000
+thor_v02,0,0	monster	偷禮物的狸貓	2380,5,5000
+thor_v03,0,0	monster	偷禮物的狸貓	2380,5,5000
+treasure01,0,0	monster	偷禮物的狸貓	2380,5,5000
+treasure02,0,0	monster	偷禮物的狸貓	2380,5,5000
+tur_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+tur_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+tur_dun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+tur_dun04,0,0	monster	偷禮物的狸貓	2380,5,5000
+um_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+um_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+um_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+um_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+ve_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ve_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ve_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+ve_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+ve_fild05,0,0	monster	偷禮物的狸貓	2380,5,5000
+ve_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+xmas_dun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+xmas_dun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+xmas_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild02,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild03,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild04,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild06,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild07,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild08,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild09,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild10,0,0	monster	偷禮物的狸貓	2380,5,5000
+yuno_fild12,0,0	monster	偷禮物的狸貓	2380,5,5000
+gld_dun01_2,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld_dun02_2,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld_dun03_2,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld_dun04_2,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld2_ald,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld2_gef,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld2_pay,0,0	monster	偷襪子的狸貓	2379,5,5000
+gld2_prt,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_dun04,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun05,0,0	monster	偷襪子的狸貓	2379,5,5000
+mal_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+dic_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+dew_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+dew_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+dew_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+mal_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun05,0,0	monster	偷襪子的狸貓	2379,5,5000
+man_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+man_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+spl_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+spl_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+man_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+spl_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+nyd_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+bra_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+bra_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+bra_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+dic_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+dic_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+dic_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+dic_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+bif_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+bif_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+abbey01,0,0	monster	偷襪子的狸貓	2379,5,5000
+abbey02,0,0	monster	偷襪子的狸貓	2379,5,5000
+abbey03,0,0	monster	偷襪子的狸貓	2379,5,5000
+abyss_01,0,0	monster	偷襪子的狸貓	2379,5,5000
+abyss_02,0,0	monster	偷襪子的狸貓	2379,5,5000
+abyss_03,0,0	monster	偷襪子的狸貓	2379,5,5000
+alde_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+alde_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+alde_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+alde_dun04,0,0	monster	偷襪子的狸貓	2379,5,5000
+ama_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ama_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ama_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+ama_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+anthell01,0,0	monster	偷襪子的狸貓	2379,5,5000
+anthell02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ayo_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ayo_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ayo_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ayo_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+beach_dun,0,0	monster	偷襪子的狸貓	2379,5,5000
+beach_dun2,0,0	monster	偷襪子的狸貓	2379,5,5000
+beach_dun3,0,0	monster	偷襪子的狸貓	2379,5,5000
+c_tower1,0,0	monster	偷襪子的狸貓	2379,5,5000
+c_tower2,0,0	monster	偷襪子的狸貓	2379,5,5000
+c_tower3,0,0	monster	偷襪子的狸貓	2379,5,5000
+c_tower4,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+cmd_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+ein_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_dun00,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild00,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild10,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild11,0,0	monster	偷襪子的狸貓	2379,5,5000
+gef_fild13,0,0	monster	偷襪子的狸貓	2379,5,5000
+gefenia01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gefenia02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gefenia03,0,0	monster	偷襪子的狸貓	2379,5,5000
+gefenia04,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_cas01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_cas02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_church,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_chyard,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_in01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_knt01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_knt02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_prison,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_prison1,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_sew01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_sew02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_sew03,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_sew04,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_step,0,0	monster	偷襪子的狸貓	2379,5,5000
+glast_01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gon_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+gon_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+gon_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+gon_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+hu_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+hu_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+hu_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+hu_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+hu_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+ice_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ice_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ice_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+in_sphinx1,0,0	monster	偷襪子的狸貓	2379,5,5000
+in_sphinx2,0,0	monster	偷襪子的狸貓	2379,5,5000
+in_sphinx3,0,0	monster	偷襪子的狸貓	2379,5,5000
+in_sphinx4,0,0	monster	偷襪子的狸貓	2379,5,5000
+in_sphinx5,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun00,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+iz_dun04,0,0	monster	偷襪子的狸貓	2379,5,5000
+jupe_core,0,0	monster	偷襪子的狸貓	2379,5,5000
+juperos_01,0,0	monster	偷襪子的狸貓	2379,5,5000
+juperos_02,0,0	monster	偷襪子的狸貓	2379,5,5000
+kh_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+kh_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+lhz_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+lou_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+lou_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+lou_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+lou_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+mag_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+mag_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+man_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjo_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjo_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjo_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_01,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_02,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_03,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_04,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_05,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_06,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_07,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_08,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_09,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_10,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_11,0,0	monster	偷襪子的狸貓	2379,5,5000
+mjolnir_12,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild10,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild11,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild12,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild13,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild14,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild15,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild16,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild17,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_fild18,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_pryd01,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_pryd02,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_pryd03,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_pryd04,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_pryd05,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_pryd06,0,0	monster	偷襪子的狸貓	2379,5,5000
+nameless_n,0,0	monster	偷襪子的狸貓	2379,5,5000
+nif_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+nif_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+nyd_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+odin_tem01,0,0	monster	偷襪子的狸貓	2379,5,5000
+odin_tem02,0,0	monster	偷襪子的狸貓	2379,5,5000
+odin_tem03,0,0	monster	偷襪子的狸貓	2379,5,5000
+orcsdun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+orcsdun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_dun00,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_dun04,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+pay_fild10,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild00,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild10,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild11,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_maze01,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_maze02,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_maze03,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_sewb1,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_sewb2,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_sewb3,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_fild12,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_san01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_san02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_san03,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_san04,0,0	monster	偷襪子的狸貓	2379,5,5000
+ra_san05,0,0	monster	偷襪子的狸貓	2379,5,5000
+spl_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t01,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t02,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t03,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t04,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t05,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t06,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t07,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t08,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t09,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t10,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t11,0,0	monster	偷襪子的狸貓	2379,5,5000
+tha_t12,0,0	monster	偷襪子的狸貓	2379,5,5000
+thor_v01,0,0	monster	偷襪子的狸貓	2379,5,5000
+thor_v02,0,0	monster	偷襪子的狸貓	2379,5,5000
+thor_v03,0,0	monster	偷襪子的狸貓	2379,5,5000
+treasure01,0,0	monster	偷襪子的狸貓	2379,5,5000
+treasure02,0,0	monster	偷襪子的狸貓	2379,5,5000
+tur_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+tur_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+tur_dun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+tur_dun04,0,0	monster	偷襪子的狸貓	2379,5,5000
+um_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+um_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+um_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+um_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+ve_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ve_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ve_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+ve_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+ve_fild05,0,0	monster	偷襪子的狸貓	2379,5,5000
+ve_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+xmas_dun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+xmas_dun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+xmas_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild02,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild03,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild04,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild06,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild07,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild08,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild09,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild10,0,0	monster	偷襪子的狸貓	2379,5,5000
+yuno_fild12,0,0	monster	偷襪子的狸貓	2379,5,5000
+ecl_fild01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ecl_fild01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ecl_tdun01,0,0	monster	偷禮物的狸貓	2380,5,5000
+ecl_tdun01,0,0	monster	偷襪子的狸貓	2379,5,5000
+ecl_tdun02,0,0	monster	偷禮物的狸貓	2380,5,5000
+ecl_tdun02,0,0	monster	偷襪子的狸貓	2379,5,5000
+ecl_tdun03,0,0	monster	偷禮物的狸貓	2380,5,5000
+ecl_tdun03,0,0	monster	偷襪子的狸貓	2379,5,5000
+//ecl_tdun04,0,0	monster	偷禮物的狸貓	2380,5,5000
+//ecl_tdun04,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_prydn1,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_prydn1,0,0	monster	偷襪子的狸貓	2379,5,5000
+moc_prydn2,0,0	monster	偷禮物的狸貓	2380,5,5000
+moc_prydn2,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild08a,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild08a,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild08b,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild08b,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild08c,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild08c,0,0	monster	偷襪子的狸貓	2379,5,5000
+prt_fild08d,0,0	monster	偷禮物的狸貓	2380,5,5000
+prt_fild08d,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_chyard_,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_chyard_,0,0	monster	偷襪子的狸貓	2379,5,5000
+gl_cas02_,0,0	monster	偷禮物的狸貓	2380,5,5000
+gl_cas02_,0,0	monster	偷襪子的狸貓	2379,5,5000

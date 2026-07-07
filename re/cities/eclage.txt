@@ -1,0 +1,106 @@
+//===== rAthena Script ======================================= 
+//= General Eclage NPC.
+//===== By: ================================================== 
+//= Dastgir
+//===== Current Version: ===================================== 
+//= 2.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Eclage Town NPC
+//===== Additional Comments: ================================= 
+//= 1.0 Generic NPC place holders. [Euphy]
+//= 2.0 Converted from the official Aegis script. [Dastgir]
+//============================================================ 
+
+ecl_in02,96,22,3	script	告示牌#prison_inn	545,{
+	mes "[北方] 監獄";
+	mes "[西方] 診所";
+	close;
+}
+
+ecl_in01,8,71,5	script	埃克拉珠守衛#pri_inn	447,{
+	mes "[埃克拉珠守衛]";
+	mes "這條路會帶你前往埃克拉珠的下層。你可以在那裡找到監獄和診所。";
+	close;
+}
+
+ecl_in02,164,56,3	script	接待員#Laphine	835,{
+	mes "[接待員]";
+	mes "歡迎來到埃克拉珠診所。";
+	next;
+	switch (select("儲存位置:休息:結束對話")) {
+	case 1:
+		mes "[接待員]";
+		mes "診所已經設定為你的儲存點。不過路上要小心喔?";
+		savepoint "ecl_in02",162,50,1,1;
+		close;
+	case 2:
+		mes "[接待員]";
+		mes "在我們的診所恢復你的身心吧。這裡充滿了埃克拉珠純淨的能量。";
+		mes "我們通常收費 1 個斯普蘭迪迪硬幣，但我們為旅行者提供特別優惠。總共是 5,000 Zeny。 ";
+		next;
+		switch (select("用斯普蘭迪迪硬幣支付:用 Zeny 支付:算了")) {
+		case 1:
+			if (!countitem(6081)) {
+				mes "[接待員]";
+				mes "看來你沒有足夠的硬幣。麻煩你再確認一下好嗎？";
+				close;
+			}
+			mes "[接待員]";
+			mes "就把這裡當自己家吧?";
+			close2;
+			delitem 6081,1; //6081
+			percentheal 100,100;
+			warp "ecl_in02",167,49;
+			end;
+		case 2:
+			if (Zeny < 5000) {
+				mes "[接待員]";
+				mes "看來你沒有足夠的財產。麻煩你再確認一下好嗎？";
+				close;
+			}
+			mes "[接待員]";
+			mes "就把這裡當自己家吧?";
+			close2;
+			Zeny = Zeny - 5000;
+			percentheal 100,100;
+			warp "ecl_in02",167,49;
+			end;
+		case 3:
+			close;
+		}
+	case 3:
+		close;
+	}
+}
+
+ecl_in02,135,45,5	script	受傷的拉菲尼	442,{
+	mes "[受傷的拉菲尼]";
+	mes "嗚嗚...";
+	mes "我...在...哪裡？";
+	next;
+	mes "[醫生]";
+	mes "你在診所。別擔心。";
+	mes "我們已經幫你止血，並施放了急救法術。";
+	mes "你流了很多血。真的是千鈞一髮，你知道嗎。";
+	next;
+	mes "[受傷的拉菲尼]";
+	mes "......";
+	mes "什麼，不，我...我感覺不到任何東西...發生了什麼事？";
+	next;
+	mes "[醫生]";
+	mes "嗯...那支箭把你的翅膀傷得很重...";
+	next;
+	mes "[受傷的拉菲尼]";
+	mes "...你這是什麼意思？";
+	next;
+	mes "[醫生]";
+	mes "嗯...我本來想等你康復後再告訴你，但你應該知道。你不能再裝飾雅伊（Yai）了。 ";
+	mes "換句話說，你的翅膀受傷了。那支箭射穿了翅膀最重要的部位。";
+	next;
+	mes "[受傷的拉菲尼]";
+	mes "什麼？不可能...拜託...醫生！！不要！！";
+	close;
+}
+ecl_in02,137,44,3	duplicate(受傷的拉菲尼)	拉菲尼醫生#doctor	441

@@ -1,0 +1,132 @@
+//===== rAthena Script ======================================= 
+//= Valhallen Items Quests NPC
+//===== By: ================================================== 
+//= Avaji
+//===== Current Version: ===================================== 
+//= 2.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= All-in-one: Mjolnir,Sleipnir,Brisingamen,Gleipnir,Megingjard
+//= Custom quest, ingredients based on official RO FAQ
+//===== Additional Comments: ================================= 
+//= 1.1 Optimized.
+[Euphy]
+//= 2.0 Adds SE and TE Godlikes. Fixed Mixing Itemlist.
+[Jey]
+//= Sources for the mixing lists 2016-08-15:
+//= http://irowiki.org/wiki/God_Items_Quest
+//= http://irowiki.org/wiki/God_Items_Quest_2
+//= http://irowiki.org/wiki/God_Items_Quest_3
+//============================================================ 
+
+prontera,147,171,5	script	蕾娜絲	811,{
+	mes "[蕾娜絲]";
+	mes "我來自瓦爾哈拉，特地來幫助你。";
+	mes "我可以為你鍊成許多瓦爾哈拉的神器，";
+	mes "儘管這需要消耗許多稀有的元素來製作。";
+	next;
+	switch(select("Mjolnir:Sleipnir:Brisingamen:Gleipnir:Megingjard:Asprika:Brynhild:Hervor:Jormungand:Muspellium:Essence Of Rune:Close")) {
+		case 1:
+			mes "[蕾娜絲]";
+			mes "^3355FF雷神之鎚 (Mjolnir)^000000 是索爾的強大戰鎚。";
+			setarray .@Items[0],1530,1522,2,984,20,985,5,969,40,7074,2,7075,4,7078,5,7091,5,7089,5;
+			break;
+		case 2:
+			mes "[蕾娜絲]";
+			mes "^3355FF斯雷普尼爾之靴 (Sleipnir)^000000 是以奧丁的戰馬所命名的神靴。";
+			setarray .@Items[0],2410,2406,2,969,20,985,10,7076,3,7079,5,7083,3,7086,4,7087,3;
+			break;
+		case 3:
+			mes "[蕾娜絲]";
+			mes "^3355FF布里希嘉曼 (Brisingamen)^000000 是美麗女神弗蕾亞的魔法項鍊。";
+			setarray .@Items[0],2630,2603,1,726,2,722,3,727,10,724,5,969,20,7073,4,7077,4,7088,3,7090,3,7092,3;
+			break;
+		case 4:
+			mes "[蕾娜絲]";
+			mes "^3355FF格萊普尼爾 (Gleipnir)^000000 是一條輕盈卻堅韌的繩索，為製作 ^3355FF梅金吉奧德 (Megingjard)^000000 的必需品。";
+			setarray .@Items[0],7058,7080,4,7081,5,7082,4,7084,3,7085,3;
+			break;
+		case 5:
+			mes "[蕾娜絲]";
+			mes "^3355FF梅金吉奧德 (Megingjard)^000000 是索爾的強大力量腰帶。";
+			setarray .@Items[0],2629,7058,1,2627,1,969,20,726,10,984,10;
+			break;
+		case 6:
+			mes "[蕾娜絲]";
+			mes "^3355FF阿斯普莉卡 (Asprika)^000000 是眾神之光。";
+			setarray .@Items[0],2541,7835,1,7836,1,7837,1,7838,1,2513,1,7063,100,7291,10,7293,10,985,20;
+			break;
+		case 7:
+			mes "[蕾娜絲]";
+			mes "^3355FF布倫希爾德 (Brynhild)^000000 是戰士的終極鎧甲。";
+			setarray .@Items[0],2383,7830,1,7831,1,7832,1,7833,1,7834,1,7510,100,2357,1,969,10,985,20;
+			break;
+		case 8:
+			mes "[蕾娜絲]";
+			mes "^3355FF赫爾沃爾 (Hervor)^000000 是以確保戰士取得勝利的女武神為名。";
+			setarray .@Items[0],2181,6595,2,6596,1,6594,4,6597,3,6602,1,6604,1,6605,1,2115,1;
+			break;
+		case 9:
+			mes "[蕾娜絲]";
+			mes "^3355FF耶夢加得 (Jormungand)^000000 以其能毒害敵人的可怕能力而聞名。";
+			setarray .@Items[0],2020,6603,4,6599,1,6598,1,6601,4,6600,1,6604,1,6605,1,1473,1;
+			break;
+		case 10:
+			mes "[蕾娜絲]";
+			mes "^3355FF穆斯貝爾星火 (Muspellium)^000000 是製作 ^3355FF耶夢加得^000000 和 ^3355FF赫爾沃爾^000000 的必需品。";
+			setarray .@Items[0],6605,984,50,985,50;
+			break;
+		case 11:
+			mes "[蕾娜絲]";
+			mes "^3355FF盧恩精華 (Essence Of Rune)^000000 是製作 ^3355FF耶夢加得^000000 和 ^3355FF赫爾沃爾^000000 的必需品。";
+			setarray .@Items[0],6604,12735,200,12736,100;
+			break;
+		default:
+			close;
+	}
+	
+	mes "^FF0000我所需要的物品如下：^000000";
+	set .@itemmissing,0;
+	for(set .@i,1; .@i<getarraysize(.@Items); set .@i,.@i+2) {
+		set .@amount,.@Items[.@i+1];
+		set .@id,.@Items[.@i];
+		mes " ~ "+.@amount+"x "+((countitem(.@id)<.@amount)?("^dd3355"):("^33dd55"))+getitemname(.@id)+((getitemslots(.@id)>0)?" ["+getitemslots(.@id)+"]":"")+"^000000";
+		if (countitem(.@id) < .@amount) 
+			set .@itemmissing,1;
+	}
+	if (.@itemmissing) {
+		next;
+		mes "[蕾娜絲]";
+		mes "去尋找所有這些物品吧。";
+		mes "我會在這裡等你並提供協助。";
+		close;
+	}
+	next;
+	mes "[蕾娜絲]";
+	mes "你渴望獲得 ^3355FF"+getitemname(.@Items[0])+"^000000 嗎？";
+	next;
+	if(select("No","Yes")==1) {
+		mes "[蕾娜絲]";
+		mes "如果你改變主意了，請隨時回來。";
+		close;
+	}
+	mes "[蕾娜絲]";
+	mes "這是你的 ^3355FF"+getitemname(.@Items[0])+"^000000。";
+	mes "願它能為你帶來幫助。";
+	//second check if the player tries to bypass the first
+	for(set .@i,1; .@i<getarraysize(.@Items); set .@i,.@i+2) {
+		set .@amount,.@Items[.@i+1];
+		set .@id,.@Items[.@i];
+		if (countitem(.@id) < .@amount) 
+			close;
+	}
+	// Delete the items _after_ the second check
+	for(set .@i,1; .@i<getarraysize(.@Items); set .@i,.@i+2) {
+		set .@amount,.@Items[.@i+1];
+		set .@id,.@Items[.@i];
+		delitem .@id, .@amount;
+	}
+	getitem .@Items[0],1;
+	close;
+}

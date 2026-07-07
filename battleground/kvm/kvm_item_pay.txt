@@ -1,0 +1,315 @@
+//===== rAthena Script =======================================
+//= BattleGround System - KvM Item Dealer
+//===== Description: =========================================
+//= [Official Conversion]
+//= Kreiger Von Midgard Battleground Point redemption NPC
+//= * NOTE * //= KvM Does NOT use items, but a character variable to
+//= keep track of points.
+//= This NPC when talked to will
+//= convert already-given tokens and convert them to points.
+//= under the player variable kvm_point.
+//===== Changelogs: ==========================================
+//= 1.0 First Version. [L0ne_W0lf]
+//============================================================
+
+bat_room,151,144,3	script	KVM 後勤官#a	734,{
+	if (countitem(6376)) {// KVM_Badge
+		set .@pointstoadd,countitem(6376);
+		delitem 6376,.@pointstoadd;
+		set kvm_point,kvm_point+.@pointstoadd;
+		mes "[後勤官]";
+		mes "我看到的是 "+getitemname(6376)+" 嗎？";
+		mes "我們已經不再接受這種貨幣了，";
+		mes "但我可以幫你兌換，";
+		mes "所以你有 "+.@pointstoadd+" 個 "+getitemname(6376)+"？";
+		mes "好了，都設定好了，你現在有 ^580080"+ kvm_point +"^000000 點 KVM積分。";
+		next;
+	}
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 你目前攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請稍後再試 -";
+		mes "- 等你減輕一些負重再來吧。 -";
+		close;
+	}
+	mes "[後勤官]";
+	mes "你好？";
+	mes "我負責發放";
+	mes "KVM積分的獎勵物品。任何";
+	mes "錯誤的物品選擇都無法";
+	mes "退換。請謹慎選擇。";
+	mes "請選擇下一步。";
+	next;
+	set .@name$,strcharinfo(0);
+	switch(select("閱讀KVM目錄。:購買KVM物品。:確認KVM積分。:KVM獎勵說明。:KVM積分說明。")) {
+	case 1:
+		mes "[後勤官]";
+		mes "這是KVM物品的目錄。";
+		mes "每把武器需要 2,000 點積分，";
+		mes "而每件防具需要 10 到 1,200 點";
+		mes "積分。所以，在選擇獎勵時";
+		mes "請特別小心。";
+		close2;
+		readbook 11017,1;
+		end;
+	case 2:
+		mes "[後勤官]";
+		mes "你想看哪些物品？關於";
+		mes "物品的詳細規格，";
+		mes "請參閱";
+		mes "^3131FF目錄^000000。";
+		next;
+		switch(select("武器:防具/裝飾品:量產型防具/裝飾品:普及型防具/裝飾品")) {
+		case 1:
+			mes "[後勤官]";
+			mes "你選擇了武器類別。";
+			mes "請選擇一個子類別。";
+			next;
+			switch(select("短劍/劍/長矛:杖/鈍器/斧/飛鏢:弓/拳刃/樂器/鞭子:書/拳套:左輪手槍/步槍/格林機槍/霰彈槍/榴彈槍")) {
+			case 1:
+				mes "[後勤官]";
+				mes "你選擇了短劍/劍/長矛類別。";
+				mes "請選擇一個子類別。";
+				next;
+				switch(select("短劍:單手劍:雙手劍:單手矛:雙手矛")) {
+				case 1: callsub PurchaseItem,13042,0,1; //Krieger_Dagger1 
+				case 2:
+					mes "[後勤官]";
+					mes "你選擇了「單手劍」類別。";
+					mes "有3把單手劍：戰神焰形劍、戰神細劍 和 戰神神聖復仇者。";
+					mes "如果你想知道它們的詳細資訊，請參閱KVM目錄。";
+					mes "請選擇其中一把。";
+					next;
+					switch(select("戰神焰形劍:戰神細劍:戰神神聖復仇者")) {
+					case 1: callsub PurchaseItem,13416,0,0; //Krieger_Onehand_Sword1
+					case 2: callsub PurchaseItem,13417,0,0; //Krieger_Onehand_Sword2
+					case 3: callsub PurchaseItem,13418,0,0;
+					//Krieger_Onehand_Sword3
+					}
+				case 3: callsub PurchaseItem,1187,0,1; //Krieger_Twohand_Sword1
+				case 4: callsub PurchaseItem,1426,0,1; //Krieger_Onehand_Spear1
+				case 5: callsub PurchaseItem,1486,0,1; //Krieger_Twohand_Spear1
+				}
+			case 2:
+				mes "[後勤官]";
+				mes "你選擇了「杖/鈍器/斧/飛鏢」類別。";
+				mes "請選擇一個子類別。";
+				next;
+				switch(select("杖:鈍器:單手斧:雙手斧:飛鏢")) {
+				case 1:
+					mes "[後勤官]";
+					mes "你選擇了「杖」類別。";
+					mes "有3把杖：雙手武器 戰神毀滅之杖、單手武器 戰神弧形魔杖 和 戰神治癒之杖。";
+					mes "如果你想知道它們的詳細資訊，請參閱KVM目錄。";
+					mes "請選擇其中一把。";
+					next;
+					switch(select("戰神毀滅之杖:戰神弧形魔杖:戰神治癒之杖")) {
+					case 1: callsub PurchaseItem,2002,0,0; //Krieger_Twohand_Staff1
+					case 2: callsub PurchaseItem,1640,0,0; //Krieger_Onehand_Staff1
+					case 3: callsub PurchaseItem,1641,0,0;
+					//Krieger_Onehand_Staff2
+					}
+				case 2: callsub PurchaseItem,1546,0,1; //Krieger_Onehand_Mace1
+				case 3: callsub PurchaseItem,1310,0,1; //Krieger_Onehand_Axe1
+				case 4: callsub PurchaseItem,1382,0,1; //Krieger_Twohand_Axe1
+				case 5: callsub PurchaseItem,13307,0,1; //Krieger_Huuma_Shuriken1
+				}
+			case 3:
+				mes "[後勤官]";
+				mes "你選擇了弓/拳刃/樂器/鞭子類別。";
+				mes "請選擇一個子類別。";
+				next;
+				switch(select("弓:拳刃:樂器:鞭子")) {
+				case 1: callsub PurchaseItem,1743,0,1;
+				//Krieger_Bow1
+				case 2:
+					mes "[後勤官]";
+					mes "你選擇了「拳刃」類別。";
+					mes "有2把拳刃：戰神刺殺拳刃 和 戰神拳刃。";
+					mes "如果你想知道它們的詳細資訊，請參閱KVM目錄。";
+					mes "請選擇其中一把。";
+					next;
+					switch(select("戰神刺殺拳刃:戰神拳刃")) {
+					case 1: callsub PurchaseItem,1281,0,0; //Krieger_Katar1
+					case 2: callsub PurchaseItem,1282,0,0; //Krieger_Katar2
+					}
+				case 3: callsub PurchaseItem,1927,0,1; //Krieger_Instrument1
+				case 4: callsub PurchaseItem,1981,0,1;
+				//Krieger_Whip1
+				}
+			case 4:
+				mes "[後勤官]";
+				mes "你選擇了書/拳套類別。";
+				mes "請選擇一個子類別。";
+				next;
+				switch(select("書:拳套")) {
+				case 1:
+					mes "[後勤官]";
+					mes "你選擇了「書」。";
+					mes "有2本書：戰神石板 和 戰神默示錄。";
+					mes "如果你想知道它們的詳細資訊，請參閱KVM目錄。";
+					mes "請選擇其中一把。";
+					next;
+					switch(select("戰神石板:戰神默示錄")) {
+					case 1: callsub PurchaseItem,1576,0,0; //Krieger_Book1
+					case 2: callsub PurchaseItem,1577,0,0; //Krieger_Book2
+					}
+				case 2:
+					mes "[後勤官]";
+					mes "你選擇了「拳套」類別。";
+					mes "有2把拳套：戰神之爪 和 戰神拳套。";
+					mes "如果你想知道它們的詳細資訊，請參閱KVM目錄。";
+					mes "請選擇其中一把。";
+					next;
+					switch(select("戰神之爪:戰神拳套")) {
+					case 1: callsub PurchaseItem,1826,0,0; //Krieger_Knuckle1
+					case 2: callsub PurchaseItem,1827,0,0; //Krieger_Knuckle2
+					}
+				}
+			case 5:
+				mes "[後勤官]";
+				mes "你選擇了「左輪手槍/步槍/格林機槍/霰彈槍/榴彈槍」類別。";
+				mes "請選擇一個子類別。";
+				next;
+				switch(select("左輪手槍:步槍:格林機槍:霰彈槍:榴彈槍")) {
+				case 1: callsub PurchaseItem,13110,0,1; //Krieger_Pistol1
+				case 2: callsub PurchaseItem,13176,0,1; //Krieger_Rifle1
+				case 3: callsub PurchaseItem,13177,0,1; //Krieger_Gatling1
+				case 4: callsub PurchaseItem,13178,0,1;
+				//Krieger_Shotgun1
+				case 5: callsub PurchaseItem,13179,0,1; //Krieger_Launcher1
+				}
+			}
+		case 2:
+			mes "[後勤官]";
+			mes "你選擇了「防具/裝飾品」類別。";
+			mes "請選擇一個子類別。";
+			next;
+			switch(select("盔甲:披風:鞋子:裝飾品")) {
+			case 1: callsub PurchaseItem,2394,1,2; //Krieger_Suit1
+			case 2: callsub PurchaseItem,2549,2,2; //Krieger_Muffler1
+			case 3: callsub PurchaseItem,2444,3,2; //Krieger_Shoes1
+			case 4: callsub PurchaseItem,2772,4,2; //Krieger_Ring1
+			}
+		case 3:
+			mes "[後勤官]";
+			mes "你選擇了「量產型防具/裝飾品」類別。";
+			mes "請選擇一個子類別。";
+			next;
+			switch(select("量產型盔甲:量產型鞋子:量產型裝飾品")) {
+			case 1: callsub PurchaseItem,2395,5,3; //Krieger_Suit2
+			case 2: callsub PurchaseItem,2445,6,3; //Krieger_Shoes2
+			case 3: callsub PurchaseItem,2773,7,3; //Krieger_Ring2
+			}
+		case 4:
+			mes "[後勤官]";
+			mes "你選擇了「普及型防具/裝飾品」類別。";
+			mes "請選擇一個子類別。";
+			next;
+			switch(select("普及型盔甲:普及型鞋子:普及型裝飾品")) {
+			case 1: callsub PurchaseItem,2396,8,4; //Krieger_Suit3
+			case 2: callsub PurchaseItem,2446,9,4; //Krieger_Shoes3
+			case 3: callsub PurchaseItem,2774,10,4; //Krieger_Ring3
+			}
+		}
+	case 3:
+		mes "[後勤官]";
+		mes ""+ .@name$ +"，你目前的積分為 ^580080"+ kvm_point +"^000000 點 KVM積分。";
+		close;
+	case 4:
+		mes "[後勤官]";
+		mes "KVM獎勵分為3大類：武器 / 防具 / 裝飾品。";
+		next;
+		mes "[後勤官]";
+		mes "每把武器獎勵需要 2,000 點KVM積分。";
+		mes "防具獎勵分為3種，分別需要 840 / 630 / 580 點KVM積分。";
+		mes "每個裝飾品獎勵需要 1,200 點KVM積分。";
+		next;
+		mes "[後勤官]";
+		mes "戰神武器皆為 4 級武器，可以進行精煉，並附帶特殊效果：虐殺、破壞與祝福。";
+		next;
+		mes "[後勤官]";
+		mes "當你同時裝備3件同系列的防具時，將會觸發特殊的套裝效果。";
+		mes "此外，當戰神裝飾品獎勵與勳章同時裝備時，也會帶來特殊的套裝獎勵。";
+		next;
+		mes "[後勤官]";
+		mes "最後，還有量產型防具與裝飾品獎勵。";
+		mes "等級高於 60 級的玩家可以裝備量產型防具，普及型防具也有裝備等級限制。";
+		close;
+	case 5:
+		mes "[後勤官]";
+		mes "在KVM（米德加爾特戰役）中獲勝、戰敗或平手時，都會獲得KVM積分。";
+		mes "你可以使用這些積分兌換特殊的獎勵。";
+		close;
+	}
+
+PurchaseItem:
+	// Pricing for Weapon, Suit1, Muffler1, Shoes1, Ring1m Suit2, Shoes2, Ring2, Suit3, Shoes3, Ring3
+	setarray .@prices[0],2000,840,630,580,1200,120,70,200,15,10,30;
+
+	.@item_id = getarg(0);
+	.@req_setting = getarg(1);
+	.@item_type = getarg(2);
+
+	mes "[後勤官]";
+
+	if (!.@item_type)
+		mes "你選擇了 ^ff0000"+ getitemname(.@item_id) +"^000000。";
+	else if (.@item_type == 1)
+		mes "只有一種 "+ callfunc("F_GetWeaponType",.@item_id) +"："+ getitemname(.@item_id) +"。";
+	else if (.@item_type == 2) {
+		mes "你選擇了「"+ callfunc("F_GetArmorType",.@item_id) +"」。";
+		mes "供 80 級以上玩家裝備的防具為：^ff0000"+ getitemname(.@item_id) +"^000000。";
+	}
+	else if (.@item_type == 3) {
+		mes "你選擇了「量產型 "+ callfunc("F_GetArmorType",.@item_id) +"」。";
+		mes "只有一種量產型 "+ callfunc("F_GetArmorType",.@item_id) +"：^ff0000"+ getitemname(.@item_id) +"^000000。";
+	}
+	else if (.@item_type == 4) {
+		mes "你選擇了「普及型 "+ callfunc("F_GetArmorType",.@item_id) +"」。";
+		mes "只有一種普及型 "+ callfunc("F_GetArmorType",.@item_id) +"：^ff0000"+ getitemname(.@item_id) +"^000000。";
+	}
+
+	if (!.@req_setting)
+		mes "這需要 ^0000ff2,000^000000 點KVM積分，而 "+ .@name$ +"，你目前的積分為：^580080"+ kvm_point +"^000000 點。";
+	else if (.@req_setting == 4)
+		mes "這需要 ^0000ff1,200^000000 點KVM積分，而 "+ .@name$ +"，你目前的積分為：^580080"+ kvm_point +"^000000 點。";
+	else
+		mes "這需要 ^0000ff"+ .@prices[.@req_setting] +"^000000 點KVM積分，而 "+ .@name$ +"，你目前的積分為：^580080"+ kvm_point +"^000000 點。";
+	mes "你確定要兌換這個物品嗎？";
+	next;
+	switch(select("不，我不想購買。:是的，我要購買。")) {
+	case 1:
+		mes "[後勤官]";
+		mes "你選擇了「我不想購買」。";
+		mes "兌換物品時請謹慎，因為無法退還。";
+		break;
+	case 2:
+		if (kvm_point >= .@prices[.@req_setting]) {
+			kvm_point = kvm_point -.@prices[.@req_setting];
+			getitem .@item_id,1;
+			mes "[後勤官]";
+			mes "你成功兌換了 "+ getitemname(.@item_id) +"。";
+			if (!.@req_setting)
+				mes "你的KVM積分扣除了 ^0000ff"+ .@req_setting +"^000000 點，你現在剩餘 ^580080"+kvm_point+"^000000 點 KVM積分。";
+			if (.@req_setting == 4)
+				mes "你的KVM積分扣除了 ^0000ff1,200^000000 點，你現在剩餘 ^580080"+kvm_point+"^000000 點 KVM積分。";
+			else
+				mes "你的KVM積分扣除了 ^0000ff"+ .@prices[.@req_setting] +"^000000 點，你現在剩餘 ^580080"+kvm_point+"^000000 點 KVM積分。";
+		}
+		else {
+			mes "[後勤官]";
+			if (!.@req_setting)
+				mes "你需要 ^0000ff2,000^000000 點KVM積分才能購買此物品。";
+			else if (.@req_setting == 4)
+				mes "你需要 ^0000ff1,200^000000 點KVM積分才能購買此物品。";
+			else
+				mes "你需要 ^0000ff"+ .@prices[.@req_setting] +"^000000 點KVM積分才能購買此物品。";
+			mes "然而，你目前的積分只有 ^580080"+ kvm_point +"^000000 點。";
+			mes "不足以購買此物品。";
+			mes "當你累積足夠的積分後，請再來找我吧。";
+		}
+	}
+	close;
+}

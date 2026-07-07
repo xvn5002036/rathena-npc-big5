@@ -1,0 +1,881 @@
+//===== rAthena Script =======================================
+//= Monster vs Monster
+//===== By: ==================================================
+//= acky
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Players train monsters and battle other players.
+//= Experience can be earned and monsters upgraded.
+//===== Additional Comments: =================================
+//= To add monsters, add lines after the commends labled:
+//= '// #. ---Change to Add Monsters--- //'
+//= There are 6 steps to add a monster at the moment.
+//= Added Duel Room
+//= ---------------------------------------------------------
+//= Script is messy! Be careful!
+//= 1.1.2 Changed all gmcommand to atcommand as Poki#3 suggested. [Vicious]
+//= 1.1.3 Removed Duplicate Names [Silent]
+//= 1.1.4 Fixed SummonPad syntax. [KarLaeda]
+//= 1.1.5 Some cleanup & optimization [KarLaeda]
+//= 1.2 Replaced effect numerics with constants. [Samuray22]
+//============================================================
+
+// Entrance //
+prontera,158,193,6	script	怪物競技場	702,{
+	mes "[怪物競技場]";
+	mes "你想進入怪物競技場嗎？";
+	mes "目前場內有 ^FF0000" + getmapusers("gon_test") + "^000000 名玩家";
+	mes "^FF0000注意：^000000 進入時將會解除大嘴鳥、獵鷹和手推車。";
+L_Menu:
+	next;
+	menu "進入",-,"使用說明",L_Info,"取消",L_Exit;
+
+	set @marena,1;
+	savepoint "gon_test",56,99;
+	set @battle,0;
+	warp "gon_test",57,99;
+	close;
+
+L_Exit:
+	mes "[怪物競技場]";
+	mes "隨時歡迎你再來。";
+	close;
+
+L_Info:
+	mes "[怪物競技場]";
+	mes "你必須先向怪物訓練師購買寵物才能開始戰鬥。";
+	next;
+	mes "[怪物競技場]";
+	mes "然後跟招待員對話，告訴他你想要參加比賽。";
+	next;
+	mes "[怪物競技場]";
+	mes "與裁判對話可以召喚你的怪獸。";
+	mes "當你的怪獸戰鬥完畢後，你必須再次與招待員對話並選擇觀戰。";
+	next;
+	mes "[怪物競技場]";
+	mes "與怪物訓練師對話，他會要求你治療你的寵物。";
+	next;
+	mes "[怪物競技場]";
+	mes "要進行治療，請連續點擊護士，直到提示你的寵物已完全康復。";
+	next;
+	mes "[怪物競技場]";
+	mes "你擊殺的怪獸越多，獲得的經驗值就越多，升級也會越快。";
+	next;
+	mes "[怪物競技場]";
+	mes "你的怪獸越強大，再次召喚所需的冷卻時間就越長。";
+
+	goto L_Menu;
+}
+
+// Monster Summon Function //
+function	script	monstersummon	{
+	// 1. ---Change to Add Monsters--- //
+	if (#monster == 10) summon strcharinfo(0) + " 的波利",1002, "OnPoringKilled";
+	if (#monster == 20) summon strcharinfo(0) + " 的綠棉蟲",1007, "OnFaberKilled";
+	if (#monster == 30) summon strcharinfo(0) + " 的瘋兔",1063, "OnLunaticKilled";
+	if (#monster == 31) summon strcharinfo(0) + " 的土波利",1113, "OnDropsKilled";
+	if (#monster == 32) summon strcharinfo(0) + " 的小雞",1049, "OnPickyKilled";
+	if (#monster == 40) summon strcharinfo(0) + " 的蒼蠅",1011, "OnChonChonKilled";
+	if (#monster == 41) summon strcharinfo(0) + " 的蛋殼小雞",1050, "OnSPickyKilled";
+	if (#monster == 42) summon strcharinfo(0) + " 的樹精",1010, "OnWillowKilled";
+	if (#monster == 50) summon strcharinfo(0) + " 的羅達蛙",1012, "OnRodaKilled";
+	if (#monster == 51) summon strcharinfo(0) + " 的大禿鷹",1009, "OnCondorKilled";
+	if (#monster == 60) summon strcharinfo(0) + " 的盜蟲卵",1051, "OnThiefKilled";
+	if (#monster == 70) summon strcharinfo(0) + " 的小野豬",1167, "OnSavageKilled";
+	if (#monster == 80) summon strcharinfo(0) + " 的吸血蝙蝠",1005, "OnFamiliarKilled";
+	if (#monster == 81) summon strcharinfo(0) + " 的蜂兵",1004, "OnHornetKilled";
+	if (#monster == 90) summon strcharinfo(0) + " 的小沙漠之狼",1107, "OnPuppyKilled";
+	if (#monster == 91) summon strcharinfo(0) + " 的蘑菇",1014, "OnSporeKilled";
+	if (#monster == 92) summon strcharinfo(0) + " 的蝗蟲",1052, "OnRockerKilled";
+	if (#monster == 100) summon strcharinfo(0) + " 的邪骨骷髏",1076, "OnSkeletonKilled";
+	if (#monster == 101) summon strcharinfo(0) + " 的浮游生物",1161, "OnPlanktonKilled";
+	if (#monster == 102) summon strcharinfo(0) + " 的安東尼",1247, "OnAntonioKilled";
+	if (#monster == 103) summon strcharinfo(0) + " 的雌盜蟲",1053, "OnThiefFemaleKilled";
+	close;
+}
+
+// Referee //
+-	script	monsterreferee	61,{
+	if (@fighting == 1) end;
+	if (@battle == 1) goto L_Start;
+	end;
+
+L_Start:
+	mes "[裁判]";
+	mes "你的怪獸是：";
+	// 2. ---Change to Add Monsters--- //
+	if (#monster == 10) mes "波利";
+	if (#monster == 20) mes "綠棉蟲";
+	if (#monster == 30) mes "瘋兔";
+	if (#monster == 31) mes "土波利";
+	if (#monster == 32) mes "小雞";
+	if (#monster == 40) mes "蒼蠅";
+	if (#monster == 41) mes "蛋殼小雞";
+	if (#monster == 42) mes "樹精";
+	if (#monster == 50) mes "羅達蛙";
+	if (#monster == 51) mes "大禿鷹";
+	if (#monster == 60) mes "盜蟲卵";
+	if (#monster == 70) mes "小野豬";
+	if (#monster == 80) mes "吸血蝙蝠";
+	if (#monster == 81) mes "蜂兵";
+	if (#monster == 90) mes "小沙漠之狼";
+	if (#monster == 91) mes "蘑菇";
+	if (#monster == 92) mes "蝗蟲";
+	if (#monster == 100) mes "邪骨骷髏";
+	if (#monster == 101) mes "浮游生物";
+	if (#monster == 102) mes "安東尼";
+	if (#monster == 103) mes "雌盜蟲";
+	mes "你想進行戰鬥嗎？";
+	next;
+	menu "戰鬥",-,"取消",L_Exit;
+
+	set @fighting,1;
+	set #heal,1;
+	set @special,rand (100);
+	// Chance of special summon
+	if (@special == 1) goto Special1;
+	if (@special == 2) goto Special2;
+	if (@special == 3) goto Special3;
+	if (@special == 4) goto Special4;
+	if (@special == 5) goto Special5;
+
+	callfunc "monstersummon";
+	close;
+
+	// Special Summons //
+Special1:
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	summon strcharinfo(0) + " 的突擊隊",1002, "OnPoringKilled";
+	close;
+Special2:
+	summon strcharinfo(0) + " 的波利之王",1090, "OnSpecialKilled";
+	close;
+
+Special3:
+	summon strcharinfo(0) + " 的狂暴瘋兔",1093, "OnSpecialKilled";
+	close;
+Special4:
+	summon strcharinfo(0) + " 的搖滾蝗蟲",1091, "OnSpecialKilled";
+	close;
+
+Special5:
+	summon strcharinfo(0) + " 的蛙王",1089, "OnSpecialKilled";
+	close;
+
+L_Exit:
+	mes "[裁判]";
+	mes "好的。";
+	close;
+}
+gon_test,56,91,6	duplicate(monsterreferee)	Referee#01	61
+
+
+// Usher //
+gon_test,58,94,6	script	招待員	86,{
+	set @marena,1;
+	mes "[招待員]";
+	mes "你想做什麼？";
+	next;
+	menu "^0000FF觀戰",L_Spec,"^FF0000比賽^000000",-,"返回城鎮",L_Exit,"取消",L_Cancel;
+	if (#monster == 0) goto L_NoMon;
+	if (#heal == 1) goto L_Heal;
+
+	if (#monster < 40) goto L_Low;
+	if (#monster > 30 && #monster < 80) goto L_Med;
+	if (#monster > 70) goto L_High;
+
+L_Low:
+	menu "等級 1-3",L_1to3,"^FF0000所有等級",L_High;
+	close;
+
+L_Med:
+	menu "等級 4-7",L_4to6,"^FF0000所有等級",L_High;
+	close;
+
+L_High:
+	close2;
+	savepoint "gon_test",56,99;
+	set @battle,1;
+	atcommand "@option 64 0 64";
+	warp "gon_test",72,87;
+	end;
+
+L_4to6:
+	close2;
+	savepoint "gon_test",56,99;
+	set @battle,1;
+	atcommand "@option 64 0 64";
+	warp "gon_test",57,86;
+	end;
+
+L_1to3:
+	close2;
+	savepoint "gon_test",56,99;
+	set @battle,1;
+	atcommand "@option 64 0 64";
+	warp "gon_test",43,87;
+	end;
+
+L_Exit:
+	close2;
+	savepoint "prontera",149,186;
+	set @battle,0;
+	atcommand "@option 0 0 0";
+	warp "prontera",149,186;
+	end;
+
+L_Spec:
+	close2;
+	savepoint "gon_test",56,99;
+	set @battle,0;
+	atcommand "@option 0 0 0";
+	warp "gon_test",57,99;
+	end;
+
+L_NoMon:
+	mes "[招待員]";
+	mes "你沒有怪獸，只能在旁觀戰。";
+	close;
+
+L_Heal:
+	mes "[招待員]";
+	mes "在再次戰鬥之前，你必須先治療你的怪獸。";
+	close;
+
+L_Cancel:
+	close;
+}
+
+// Monster Trainer //
+gon_test,52,103,6	script	怪物訓練師	87,{
+	mes "[怪物訓練師]";
+	if (#monster != 0) goto L_Mon;
+	mes "歡迎來到怪物競技場，你想開始訓練嗎？";
+	next;
+	menu "是的",-,"不用了",L_Exit;
+
+	mes "[怪物訓練師]";
+	mes "新手訓練師只能從波利開始。";
+	mes "每隻價格為 1000z，你想買一隻嗎？";
+	next;
+	menu "是的",-,"不用了",L_Exit;
+
+	if (Zeny < 1000) goto L_NoZeny;
+	set Zeny, Zeny-1000;
+	set #monster,10;
+	mes "[怪物訓練師]";
+	mes "恭喜！";
+	mes "當你的波利獲得足夠的經驗值時，跟我對話就可以進行升級。";
+	close;
+L_Mon:
+	mes "歡迎回來，" + strcharinfo(0) + "。";
+	mes "你的怪獸目前有 " + #monpoints + " 點經驗值。";
+	next;
+	if (@fighting == 1) goto L_Heal;
+	menu "升級怪獸",L_Upgrade,"販賣經驗值",L_Sell,"^FF0000放棄怪獸^000000",L_Abandon,"取消",L_Exit;
+
+L_Abandon:
+	mes "[怪物訓練師]";
+	mes "你確定要放棄你的怪獸嗎？";
+	next;
+	menu "是的",-,"不用了",L_Exit;
+	set #monster,0;
+	set #monpoints,0;
+	mes "[怪物訓練師]";
+	mes "已將怪獸放生到野外。";
+	close;
+
+L_Sell:
+	mes "[怪物訓練師]";
+	mes "你可以將怪獸的經驗值賣掉，每 1 點可換 100z。";
+	next;
+	menu "販賣",-,"取消",L_Exit;
+	mes "[怪物訓練師]";
+	mes "你目前擁有：^FF0000" + #monpoints + "^000000 點經驗值";
+	mes "你想賣掉多少點？";
+	next;
+	input .@sellexp;
+	if (.@sellexp > #monpoints) goto L_NoExp;
+	set #monpoints,#monpoints-.@sellexp;
+	set .@sellearn,100*.@sellexp; // Price of exp
+	set Zeny, Zeny+.@sellearn;
+	mes "[怪物訓練師]";
+	mes "你獲得了 ^0000FF" + .@sellearn + "^000000z。";
+	close;
+L_NoExp:
+	mes "[怪物訓練師]";
+	mes "你的經驗值不足。";
+	next;
+	goto L_Exit;
+
+	// Monster Upgrades //
+L_Upgrade:
+	mes "[怪物訓練師]";
+	// 3. ---Change to Add Monsters - May not be required--- //
+	if (#monster > 1 && #monster < 20) mes "你需要 10 點經驗值來升級怪獸。";
+	if (#monster > 19 && #monster < 30) mes "你需要 20 點經驗值來升級怪獸。";
+	if (#monster > 29 && #monster < 40) mes "你需要 40 點經驗值來升級怪獸。";
+	if (#monster > 39 && #monster < 50) mes "你需要 80 點經驗值來升級怪獸。";
+	if (#monster > 49 && #monster < 60) mes "你需要 160 點經驗值來升級怪獸。";
+	if (#monster > 59 && #monster < 70) mes "你需要 320 點經驗值來升級怪獸。";
+	if (#monster > 69 && #monster < 80) mes "你需要 640 點經驗值來升級怪獸。";
+	if (#monster > 79 && #monster < 90) mes "你需要 1280 點經驗值來升級怪獸。";
+	if (#monster > 89 && #monster < 100) mes "你需要 2560 點經驗值來升級怪獸。";
+	next;
+	menu "繼續",-,"取消",L_Exit;
+	mes "[怪物訓練師]";
+
+	// 4. ---Change to Add Monsters - May not be required--- //
+	if (#monster > 1 && #monster < 20 && #monpoints > 9) goto L_Up1;
+	if (#monster > 19 && #monster < 30 && #monpoints > 19) goto L_Up2;
+	if (#monster > 29 && #monster < 40 && #monpoints > 39) goto L_Up3;
+	if (#monster > 39 && #monster < 50 && #monpoints > 79) goto L_Up4;
+	if (#monster > 49 && #monster < 60 && #monpoints > 159) goto L_Up5;
+	if (#monster > 59 && #monster < 70 && #monpoints > 319) goto L_Up6;
+	if (#monster > 69 && #monster < 80 && #monpoints > 639) goto L_Up7;
+	if (#monster > 79 && #monster < 90 && #monpoints > 1279) goto L_Up8;
+	if (#monster > 89 && #monster < 100 && #monpoints > 2559) goto L_Up9;
+
+	mes "無法升級。";
+	close;
+// 5. ---Change to Add Monsters--- //
+L_Up1:
+	set #monster,20;
+	set #monpoints,#monpoints-10;
+	mes "已升級為綠棉蟲！";
+	close;
+L_Up2:
+	mes "你想升級成哪種怪獸？";
+	next;
+	menu "瘋兔",U_Lunatic,"土波利",U_Drops,"小雞",U_Picky;
+
+U_Drops:
+	set #monster,31;
+	set #monpoints,#monpoints-20;
+	mes "[怪物訓練師]";
+	mes "已升級為土波利！";
+	close;
+
+U_Picky:
+	set #monster,32;
+	set #monpoints,#monpoints-20;
+	mes "[怪物訓練師]";
+	mes "已升級為小雞！";
+	close;
+
+U_Lunatic:
+	set #monster,30;
+	set #monpoints,#monpoints-20;
+	mes "[怪物訓練師]";
+	mes "已升級為瘋兔！";
+	close;
+
+L_Up3:
+	mes "你想升級成哪種怪獸？";
+	next;
+	menu "蒼蠅",U_ChonChon,"蛋殼小雞",U_SPicky,"樹精",U_Willow;
+
+U_ChonChon:
+	set #monster,40;
+	set #monpoints,#monpoints-40;
+	mes "[怪物訓練師]";
+	mes "已升級為蒼蠅！";
+	close;
+
+U_SPicky:
+	set #monster,41;
+	set #monpoints,#monpoints-40;
+	mes "[怪物訓練師]";
+	mes "已升級為蛋殼小雞！";
+	close;
+
+U_Willow:
+	set #monster,42;
+	set #monpoints,#monpoints-40;
+	mes "[怪物訓練師]";
+	mes "已升級為樹精！";
+	close;
+
+L_Up4:
+	mes "你想升級成哪種怪獸？";
+	next;
+	menu "大禿鷹",U_Condor,"羅達蛙",U_Roda;
+
+U_Condor:
+	set #monster,51;
+	set #monpoints,#monpoints-80;
+	mes "[怪物訓練師]";
+	mes "已升級為大禿鷹！";
+	close;
+
+U_Roda:
+	set #monster,50;
+	set #monpoints,#monpoints-80;
+	mes "[怪物訓練師]";
+	mes "已升級為羅達蛙！";
+	close;
+
+L_Up5:
+	set #monster,60;
+	set #monpoints,#monpoints-160;
+	mes "已升級為盜蟲卵！";
+	close;
+
+L_Up6:
+	set #monster,70;
+	set #monpoints,#monpoints-320;
+	mes "已升級為小野豬！";
+	close;
+
+L_Up7:
+	mes "你想升級成哪種怪獸？";
+	next;
+	menu "吸血蝙蝠",U_Familiar,"蜂兵",U_Hornet;
+
+U_Hornet:
+	set #monster,81;
+	set #monpoints,#monpoints-640;
+	mes "[怪物訓練師]";
+	mes "已升級為蜂兵！";
+	close;
+
+U_Familiar:
+	set #monster,80;
+	set #monpoints,#monpoints-640;
+	mes "[怪物訓練師]";
+	mes "已升級為吸血蝙蝠！";
+	close;
+
+L_Up8:
+	mes "[怪物訓練師]";
+	mes "你想升級成哪種怪獸？";
+	next;
+	menu "小沙漠之狼",U_Puppy,"蘑菇",U_Spore,"蝗蟲",U_Rocker;
+
+U_Spore:
+	set #monster,91;
+	set #monpoints,#monpoints-1280;
+	mes "[怪物訓練師]";
+	mes "已升級為蘑菇！";
+	close;
+
+U_Rocker:
+	set #monster,92;
+	set #monpoints,#monpoints-1280;
+	mes "[怪物訓練師]";
+	mes "已升級為蝗蟲！";
+	close;
+
+U_Puppy:
+	set #monster,90;
+	set #monpoints,#monpoints-1280;
+	mes "[怪物訓練師]";
+	mes "已升級為小沙漠之狼！";
+	close;
+
+L_Up9:
+	mes "你想升級成哪種怪獸？";
+	next;
+	menu "邪骨骷髏",U_Skeleton,"安東尼",U_Antonio,"浮游生物",U_Plankton,"雌盜蟲",U_ThiefFemale;
+
+U_Plankton:
+	set #monster,101;
+	set #monpoints,#monpoints-2560;
+	mes "[怪物訓練師]";
+	mes "已升級為浮游生物！";
+	close;
+
+U_Antonio:
+	set #monster,102;
+	set #monpoints,#monpoints-2560;
+	mes "[怪物訓練師]";
+	mes "已升級為安東尼！";
+	close;
+
+U_ThiefFemale:
+	set #monster,103;
+	set #monpoints,#monpoints-2560;
+	mes "[怪物訓練師]";
+	mes "已升級為雌盜蟲！";
+	close;
+
+U_Skeleton:
+	set #monster,100;
+	set #monpoints,#monpoints-2560;
+	mes "[怪物訓練師]";
+	mes "已升級為邪骨骷髏！";
+	close;
+L_NoZeny:
+	mes "[怪物訓練師]";
+	mes "你的 Zeny 不足！";
+	close;
+
+L_Exit:
+	mes "[怪物訓練師]";
+	mes "再見。";
+	close;
+
+L_Heal:
+	mes "[怪物訓練師]";
+	mes "你的怪獸需要治療。";
+	mes "如果你點擊護士的速度越快，怪獸就會恢復得越快。";
+	set #heal,1;
+	close;
+}
+
+// Kill Trigger //
+// 6/Final. ---Change to Add Monsters--- //
+gon_test,56,91,6	script	OnPoringKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+1;
+	announce "你擊殺了一隻波利 - 獲得 1 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnFaberKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+2;
+	announce "你擊殺了一隻綠棉蟲 - 獲得 2 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnLunaticKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+4;
+	announce "你擊殺了一隻瘋兔 - 獲得 4 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnDropsKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+4;
+	announce "你擊殺了一隻土波利 - 獲得 4 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnPickyKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+4;
+	announce "你擊殺了一隻小雞 - 獲得 4 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnChonChonKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+8;
+	announce "你擊殺了一隻蒼蠅 - 獲得 8 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnSPickyKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+8;
+	announce "你擊殺了一隻蛋殼小雞 - 獲得 8 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnWillowKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+8;
+	announce "你擊殺了一隻樹精 - 獲得 8 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnRodaKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+16;
+	announce "你擊殺了一隻羅達蛙 - 獲得 16 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnCondorKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+16;
+	announce "你擊殺了一隻大禿鷹 - 獲得 16 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnThiefKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+32;
+	announce "你擊殺了一隻盜蟲卵 - 獲得 32 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnSavageKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+64;
+	announce "你擊殺了一隻小野豬 - 獲得 64 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnFamiliarKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+128;
+	announce "你擊殺了一隻吸血蝙蝠 - 獲得 128 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnHornetKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+128;
+	announce "你擊殺了一隻蜂兵 - 獲得 128 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnPuppyKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+256;
+	announce "你擊殺了一隻小沙漠之狼 - 獲得 256 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnRockerKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+256;
+	announce "你擊殺了一隻蝗蟲 - 獲得 256 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnSporeKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+256;
+	announce "你擊殺了一隻蘑菇 - 獲得 256 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnSkeletonKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+512;
+	announce "你擊殺了一隻邪骨骷髏 - 獲得 512 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnPlanktonKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+512;
+	announce "你擊殺了一隻浮游生物 - 獲得 512 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnAntonioKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+512;
+	announce "你擊殺了一隻安東尼 - 獲得 512 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnThiefFemaleKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+512;
+	announce "你擊殺了一隻雌盜蟲 - 獲得 512 點經驗值",19;
+	callfunc "duelkill";
+}
+
+gon_test,56,91,6	script	OnSpecialKilled	-1,{
+	if (@marena == 0) callfunc "illegalkill";
+	set #monpoints,#monpoints+512;
+	announce "你擊殺了一隻特殊怪獸 - 獲得 1024 點經驗值",19;
+	callfunc "duelkill";
+}
+
+function	script	duelkill	{
+	if (strcharinfo(0) != $@duelist1$ && strcharinfo(0) != $@duelist2$) end;
+	announce strcharinfo(0) + " 贏得了決鬥",1;
+	set @fighting,0;
+	set #heal,0;
+	set @healing,0;
+	end;
+}
+
+function	script	illegalkill	{
+	announce "偵測到 " + strcharinfo(0) + " 的非法擊殺",1;
+	percentheal -100,-100;
+	end;
+}
+
+// Healer //
+gon_test,55,103,6	script	護士	90,{
+	if (@battle == 1 || #heal == 0) goto L_NoHeal;
+	if (#heal == 1 && @healing < 100) goto L_Heal; //Total healing required
+	set @fighting,0;
+	set #heal,0;
+	set @healing,0;
+	specialeffect2 EF_VALLENTINE2;
+	announce "你的怪獸已完全康復。",19;
+	end;
+
+L_Heal:
+	set .@healrate,140 / #monster; //Rate of heal per click
+	set @healing,@healing + .@healrate;
+	end;
+L_NoHeal:
+	announce "你的怪獸目前不需要治療。",19;
+	end;
+}
+
+// Warps players //
+gon_test,57,86,5	script	召喚板 1::SummonPad	111,2,2,{
+	end;
+OnTouch:
+	set @marena,1;
+	warp "gon_test",57,99;
+}
+gon_test,43,87,5	duplicate(SummonPad)	召喚板 2	111,2,2
+gon_test,72,87,5	duplicate(SummonPad)	召喚板 3	111,2,2
+
+
+
+// Skill Disabler //
+gon_test	mapflag	noskill
+
+// Duel Arena //
+gon_test,58,103,5	script	決鬥大師#01	92,{
+	if ($@duelist1$ == "" || $@monster1 == 0) set $@duel,0;
+	set @marena,1;
+	if (#monster == 0) goto L_NoMon;
+	mes "[決鬥大師]";
+	if ($@duel == 1) goto L_Waiting;
+	if ($@duel == 2) goto L_Dueling;
+
+	mes "目前沒有玩家在進行決鬥。";
+	next;
+	menu "加入決鬥",-,"觀戰",L_Spec,"取消",L_Exit;
+// Player 1 Enters Duel Area //
+	if (#heal == 1) goto L_NeedHeal;
+	if ($@duel == 1) goto L_Duel2;
+	set $@duel,1;
+	if (#monster > 1 && #monster < 20) set $@monster1,1;
+	if (#monster > 19 && #monster < 30) set $@monster1,2;
+	if (#monster > 29 && #monster < 40) set $@monster1,3;
+	if (#monster > 39 && #monster < 50) set $@monster1,4;
+	if (#monster > 49 && #monster < 60) set $@monster1,5;
+	if (#monster > 59 && #monster < 70) set $@monster1,6;
+	if (#monster > 69 && #monster < 80) set $@monster1,7;
+	if (#monster > 79 && #monster < 90) set $@monster1,8;
+	if (#monster > 89 && #monster < 100) set $@monster1,9;
+	if (#monster > 99 && #monster < 110) set $@monster1,10;
+	set $@duelist1$,strcharinfo(0);
+	set @battle,1;
+	announce strcharinfo(0) + " [怪獸等級: " + $@monster1 + "] 正在等待決鬥",1;
+	atcommand "@option 64 0 64";
+	warp "gon_test",49,5;
+	close;
+
+L_Waiting:
+	mes "^0000FF " + $@duelist1$ + "^000000 [怪獸等級: ^FF0000" + $@monster1 + "^000000]";
+	mes "正在等待對手";
+	next;
+	menu "加入決鬥",-,"觀戰",L_Spec,"取消",L_Exit;
+
+	// Player 2 Enters Duel Area //
+	if (#heal == 1) goto L_NeedHeal;
+L_Duel2:
+	if ($@duel == 2) goto L_Spec;
+	set $@duel,2;
+	if (#monster > 1 && #monster < 20) set $@monster2,1;
+	if (#monster > 19 && #monster < 30) set $@monster2,2;
+	if (#monster > 29 && #monster < 40) set $@monster2,3;
+	if (#monster > 39 && #monster < 50) set $@monster2,4;
+	if (#monster > 49 && #monster < 60) set $@monster2,5;
+	if (#monster > 59 && #monster < 70) set $@monster2,6;
+	if (#monster > 69 && #monster < 80) set $@monster2,7;
+	if (#monster > 79 && #monster < 90) set $@monster2,8;
+	if (#monster > 89 && #monster < 100) set $@monster2,9;
+	if (#monster > 99 && #monster < 110) set $@monster2,10;
+	set $@duelist2$,strcharinfo(0);
+	set @battle,1;
+	announce strcharinfo(0) + " [怪獸等級: " + $@monster2 + "] 加入了決鬥",1;
+	atcommand "@option 64 0 64";
+	warp "gon_test",49,5;
+	close;
+
+L_Dueling:
+	mes "^0000FF" + $@duelist1$ + "^000000 [怪獸等級: ^0000FF" + $@monster1 + "^000000]";
+	mes "           VS.";
+	mes "^FF0000" + $@duelist2$ + "^000000 [怪獸等級: ^FF0000" + $@monster2 + "^000000]";
+	next;
+	menu "觀戰",L_Spec,"取消",L_Exit;
+
+L_Spec:
+	set @battle,0;
+	atcommand "@option 64 0 64";
+	warp "gon_test",49,5;
+	close;
+
+L_Exit:
+	mes "[決鬥大師]";
+	mes "再見。";
+	close;
+
+L_NoMon:
+	mes "[決鬥大師]";
+	mes "你沒有怪獸，無法參加。";
+	close;
+
+L_NeedHeal:
+	mes "[決鬥大師]";
+	mes "在加入決鬥前，你必須先治療你的怪獸。";
+	close;
+}
+
+// Duel Exit //
+gon_test,42,8,5	script	Duel Master#02	92,{
+	mes "[決鬥大師]";
+	mes "你想返回嗎？";
+	menu "是的",L_Leave,"不",-;
+	mes "好的。";
+	close;
+
+L_Leave:
+	if ($@duelist1$ == strcharinfo(0)) goto L_Leave1;
+	if ($@duelist2$ == strcharinfo(0)) goto L_Leave2;
+
+L_Leave3:
+	atcommand "@option 0 0 0";
+	set @battle,0;
+	warp "gon_test",57,99;
+	close;
+
+L_Leave1:
+	set $@duelist1$,"";
+	set $@monster1,0;
+	set $@duel,$@duel-1;
+	announce strcharinfo(0) + " 停止了決鬥",1;
+	goto L_Leave3;
+
+L_Leave2:
+	set $@duelist2$,"";
+	set $@monster2,0;
+	set $@duel,$@duel-1;
+	announce strcharinfo(0) + " 停止了決鬥",1;
+	goto L_Leave3;
+}
+
+gon_test,49,5,5	duplicate(SummonPad)	召喚板 4	111,2,2
+gon_test,55,8,6	duplicate(monsterreferee)	Referee#02	61

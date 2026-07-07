@@ -1,0 +1,920 @@
+//===== rAthena Script =======================================
+//= Twilight Garden
+//===== Description: =========================================
+//= [Walkthrough Conversion]
+//= Episode 17.2 Twilight Garden
+//= Episode 17.2 Hey Sweety
+//= Note:
+// - NPC_LOCKON_LASER skill is currently no implemented.
+//===== Changelog: ===========================================
+//= 1.0 Initial release [crazyarashi]
+//= 1.1 Optimizations and cleanup [Everade]
+//= 1.2 Cleanup [Capuche]
+//============================================================
+
+1@bamn,1,1,0	script	#twilight_garden_control	-1,{
+	end;
+OnInstanceInit:
+	'twilight_story = 0;
+	'sweety = 0;
+	'map_bamn$ = instance_mapname("1@bamn");
+	'map_bamq$ = instance_mapname("1@bamq");
+
+	// npcs from story
+	//----------------------------
+	// npcs on 1@bamn
+
+	// disablenpc instance_npcname("Repeater#wifi03");	// (not disabled)
+	// disablenpc instance_npcname("Repeater#wifi02");	// (not disabled)
+	// disablenpc instance_npcname("Repeater#wifi01");	// (not disabled)
+
+	//----------------------------
+	// Daily: Hey! Sweety
+	if (instance_live_info(ILI_NAME) == "Hey! Sweety")
+		disablenpc instance_npcname("#bamn_evt01");	// story starter npc
+	else
+		disablenpc instance_npcname("#sweety_evt01");	// daily starter npc
+	end;
+}
+
+// Story
+1@bamn,100,320,0	script	#bamn_evt01	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if (!is_party_leader())
+		end;
+	disablenpc();
+	enablenpc instance_npcname("艾絲特#est01");
+	end;
+}
+
+1@bamn,96,318,5	script(DISABLED)	艾絲特#est01	4_F_ESTLOVELOY,{
+	if (!is_party_leader())
+		end;
+	if ('twilight_story == 0) {
+		'twilight_story = 1;
+		npctalk "艾絲特：這裡又黑又安靜。如果你想執行計畫，現在正是最好的時機。對吧？";
+		sleep 2000;
+		npctalk "艾絲特：伊蓮娜說她晚點會跟我們會合，但她很有可能無法加入。";
+		sleep 2000;
+		npctalk "艾絲特：儘管如此，也沒什麼好擔心的。其他人已經準備好並在等候伏擊的信號了。";
+		sleep 2000;
+		npctalk "艾絲特：我們只需要像巡邏隊一樣四處走動，然後趁他們不備時發動攻擊。";
+		sleep 2000;
+		npctalk "艾絲特：沿著這條路前往宅邸的主建築。我會潛伏在你們後面。";
+		sleep 2000;
+		npctalk "艾絲特：不要東張西望，裝作沒有戒心的樣子，懂嗎？";
+		sleep 2000;
+		npctalk "艾絲特：好了，我們走吧。";
+		for ( .@i = 1; .@i < 6; ++.@i )
+			enablenpc instance_npcname("心靈獵手#md_hh0" + .@i);
+		end;
+	}
+	if ('twilight_story == 1)
+		end;
+	if ('twilight_story == 2) {
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "他們一定也等很久了。";
+		mes "我們動作安靜點吧。";
+		close3;
+	}
+	end;
+}
+
+1@bamn,119,299,3	script(DISABLED)	心靈獵手#md_hh01	G_EP17_2_HEART_HUNTER,3,3,{
+	end;
+OnTouch_:
+	if (!is_party_leader())
+		end;
+	if ('twilight_story == 1) {
+		'twilight_story = 2;
+		npctalk "乖乖投降，或者滾回你們來的地方。";
+		sleep 2000;
+		npctalk "不過，這並不代表我們會讓你們回去。";
+		sleep 1000;
+		for ( .@i = 1; .@i < 6; ++.@i )
+			disablenpc instance_npcname("心靈獵手#md_hh0" + .@i);
+		donpcevent instance_npcname("twilight_story_mob_1") + "::OnStart";
+	}
+	end;
+}
+
+1@bamn,119,305,3	duplicate(dummy_disabled_npc)	心靈獵手#md_hh02	G_EP17_2_HEART_HUNTER
+1@bamn,119,302,3	duplicate(dummy_disabled_npc)	心靈獵手#md_hh03	G_EP17_2_HEART_HUNTER
+1@bamn,119,296,3	duplicate(dummy_disabled_npc)	心靈獵手#md_hh04	G_EP17_2_HEART_HUNTER
+1@bamn,119,293,3	duplicate(dummy_disabled_npc)	心靈獵手#md_hh05	G_EP17_2_HEART_HUNTER
+
+
+1@bamn,1,1,0	script	twilight_story_mob_1	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("twilight_story_mob_1") + "::OnMobDead";
+	monster 'map_bamn$,119,308,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,128,308,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,121,300,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,118,293,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,124,294,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,130,308,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	end;
+OnMobDead:
+	.@event$ = instance_npcname("twilight_story_mob_1") + "::OnMobDead";
+	if (mobcount('map_bamn$, .@event$) < 1) {
+		disablenpc instance_npcname("艾絲特#est01");
+		enablenpc instance_npcname("艾絲特#est02");
+		if ('twilight_story == 2)
+			'twilight_story = 3;
+	}
+	end;
+}
+
+1@bamn,119,299,5	script(DISABLED)	艾絲特#est02	4_F_ESTLOVELOY,{
+	if (!is_party_leader())
+		end;
+	if ('twilight_story == 3) {
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "我不知道我們該設下陷阱，還是該給你們一次機會。";
+		mes "啟動我們從艾露米娜那裡拿到的追蹤器。";
+		next;
+		cutin "",255;
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 追蹤器：根據偉大的艾露米娜的直覺...嗶——嗶——嗶——";
+		sleep2 2000;
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 追蹤器：在那邊！！嗶！";
+		navigateto("1@bamn",206,273);
+		sleep2 2000;
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "這東西還真吵。";
+		mes "你們先出發好嗎？";
+		mes "我有點事得去一個地方。";
+		next;
+		mes "[艾絲特]";
+		mes "我很快就會跟你們會合。";
+		close2;
+		if ('twilight_story == 3) {
+			'twilight_story = 4;
+			donpcevent instance_npcname("twilight_story_mob_2") + "::OnStart";
+		}
+		cutin "",255;
+		disablenpc();
+		end;
+	}
+	end;
+}
+
+1@bamn,1,1,0	script	twilight_story_mob_2	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("twilight_story_mob_2") + "::OnMobDead";
+	monster 'map_bamn$,208,283,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,210,285,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,210,282,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,213,284,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,213,281,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	end;
+OnMobDead:
+	.@event$ = instance_npcname("twilight_story_mob_2") + "::OnMobDead";
+	if (mobcount('map_bamn$, .@event$) < 1) {
+		enablenpc instance_npcname("艾絲特#est03");
+		enablenpc instance_npcname("阿爾蒙德#amond01");
+		if ('twilight_story == 4)
+			'twilight_story = 5;
+	}
+	end;
+}
+
+1@bamn,202,274,5	script(DISABLED)	艾絲特#est03	4_F_ESTLOVELOY,{
+	if ('twilight_story == 5) {
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "我想如果能多放點誘餌或許會更好，所以我去請求自動人偶的協助了。";
+		mes "還有，阿爾蒙德說她得出去確認一些事情。";
+		next;
+		cutin "ep172_beta",0;
+		mes "[阿爾蒙德]";
+		mes "中繼器又壞了。所以我必須去修理它。";
+		mes "中繼器是入侵者最喜歡的目標，所以我們不能就這樣放著它壞掉，對吧？";
+		next;
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "因為這個原因，我想請你們護送阿爾蒙德去檢查中繼器。";
+		mes "我會在附近看看，尋找其他路線。";
+		next;
+		cutin "ep172_beta",0;
+		mes "[阿爾蒙德]";
+		mes "你們準備好我們就一起出發吧。";
+		close2;
+		cutin "",255;
+		if ('twilight_story == 5)
+			'twilight_story = 6;
+		end;
+	}
+	if ('twilight_story == 6) {
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "準備好要出發時，就去跟阿爾蒙德說一聲。";
+		close3;
+	}
+	end;
+}
+
+1@bamn,199,275,5	script(DISABLED)	阿爾蒙德#amond01	EP17_2_BETA_BASIC,{
+	if ('twilight_story < 6) {
+		cutin "ep172_beta",2;
+		mes "[阿爾蒙德]";
+		mes "今天大家本來都應該在宅邸裡的。";
+		mes "發生了重要的事情。這就是為什麼我會和艾絲特在這裡。";
+		close3;
+	}
+	if ('twilight_story == 6) {
+		'guide = getnpcid(0);
+		'twilight_story = 7;
+		npcspeed 200;
+		npctalk "那麼，我們走吧。";
+		unitwalk 'guide,199,248, instance_npcname("阿爾蒙德#amond01") + "::OnEvent00";
+		enablenpc instance_npcname("入侵者#sweety02");
+		end;
+	}
+	if ('twilight_story == 7)
+		end;
+	if ('twilight_story == 8) {
+		'twilight_story = 9;
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 追蹤器：嗶——嗶——！在那裡！！";
+		setpcblock PCBLOCK_NPC, true;
+		navigateto("1@bamn",242,206);
+		sleep2 2000;
+		npctalk "啊哈哈哈，真吵。";
+		sleep2 2000;
+		npctalk "我很好奇，我們該快點過去嗎？";
+		sleep2 2000;
+		npctalk "客人，有入侵者！";
+		donpcevent instance_npcname("twilight_story_mob_3") + "::OnStart";
+		setpcblock PCBLOCK_NPC, false;
+		sleep 200;
+		npcspeed 80;
+		unitwalk 'guide,245,229, instance_npcname("阿爾蒙德#amond01") + "::OnEvent02";
+		end;
+	}
+	if ('twilight_story == 10 || 'twilight_story == 11 || 'twilight_story == 12) {
+		npctalk "小心點！";
+		end;
+	}
+	if ('twilight_story == 13) {
+		'twilight_story = 14;
+		npcspeed 200;
+		setpcblock PCBLOCK_NPC, true;
+		npctalk "我們去檢查中繼器吧。";
+		sleep2 2000;
+		setpcblock PCBLOCK_NPC, false;
+		sleep2 1000;
+		unitwalk 'guide,244,208, instance_npcname("阿爾蒙德#amond01") + "::OnEvent04";
+		end;
+	}
+	if ('twilight_story == 14)
+		end;
+	if ('twilight_story == 15) {
+		'twilight_story = 16;
+		setpcblock PCBLOCK_NPC, true;
+		for ( .@i = 1; .@i < 5; ++.@i )
+			enablenpc instance_npcname("反叛軍#md_rb0" + .@i);
+		for ( .@i = 6; .@i < 9; ++.@i )
+			enablenpc instance_npcname("心靈獵手#md_hh0" + .@i);
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 追蹤器：喀喀喀喀喀！犯人就在附近！他們在我的雷達上！在那個方向！";
+		navigateto("1@bamn",332,143);
+		sleep2 2000;
+		setpcblock PCBLOCK_NPC, false;
+		sleep2 1000;
+		npcspeed 80;
+		npctalk "還有其他的入侵者！難怪我開始興奮起來了~！";
+		unitwalk 'guide,332,169;
+		end;
+	}
+	if ('twilight_story < 18)
+		end;
+	if ('twilight_story == 18) {
+		npcspeed 200;
+		'twilight_story = 19;
+		npctalk "你還好嗎，冒險者？那我們繼續走吧。";
+		unitwalk 'guide,332,143, instance_npcname("阿爾蒙德#amond01") + "::OnEvent11";
+		end;
+	}
+	if ('twilight_story == 19)
+		end;
+	if ('twilight_story == 20) {
+		npctalk "你不去跟艾絲特說話嗎？她好像等很久了。";
+		end;
+	}
+	end;
+
+OnEvent00:
+	npctalk "這邊。";
+	sleep 1000;
+	unitwalk 'guide,225,248, instance_npcname("阿爾蒙德#amond01") + "::OnFollow00";
+	end;
+OnFollow00:
+	unitwalk 'guide,245,248, instance_npcname("阿爾蒙德#amond01") + "::OnEvent01";
+	end;
+OnEvent01:
+	npctalk "我們去看看那個經常被駭入的中繼器吧。";
+	sleep 2000;
+	npctalk "咦？你現在帶著什麼？拿出來給我看看。";
+	'twilight_story = 8;
+	end;
+OnEvent02:
+	npctalk "冒險者，有入侵者！";
+	unitwalk 'guide,245,215, instance_npcname("阿爾蒙德#amond01") + "::OnEvent03";
+	end;
+OnEvent03:
+	'twilight_story = 10;
+	end;
+
+OnEvent04:
+	npctalk "...正在檢查信號。";
+	sleep 2000;
+	npctalk "...已確認駭客頻道。";
+	sleep 2000;
+	npctalk "...正在恢復...";
+	sleep 2000;
+	npctalk "...正在恢復...84%";
+	sleep 2000;
+	npctalk "...恢復完成。";
+	sleep 2000;
+	npctalk "我們去中繼器那裡吧？";
+	sleep 2000;
+	unitwalk 'guide,245,204, instance_npcname("阿爾蒙德#amond01") + "::OnEvent05";
+	end;
+OnEvent05:
+	npctalk "冒險者。你喜歡杏仁嗎？一位喜歡杏仁的客人給我取了這個名字。適合我嗎？";
+	sleep 3000;
+	unitwalk 'guide,265,204, instance_npcname("阿爾蒙德#amond01") + "::OnEvent06";
+	end;
+OnEvent06:
+	npctalk "剛才那個孩子，我以前見過。";
+	unitwalk 'guide,285,204, instance_npcname("阿爾蒙德#amond01") + "::OnEvent07";
+	end;
+OnEvent07:
+	npctalk "但他總是跑得很快，這是我第一次好好地看著他~";
+	unitwalk 'guide,300,204, instance_npcname("阿爾蒙德#amond01") + "::OnEvent08";
+	end;
+OnEvent08:
+	npctalk "這裡的火龍果很可愛呢~ 他們說杏仁很好吃？你以前吃過杏仁嗎？";
+	sleep 2000;
+	npctalk "這邊。";
+	unitwalk 'guide,300,190, instance_npcname("阿爾蒙德#amond01") + "::OnEvent09";
+	end;
+OnEvent09:
+	npctalk "我已經很久沒有這麼自在了~";
+	unitwalk 'guide,327,189, instance_npcname("阿爾蒙德#amond01") + "::OnEvent10";
+	end;
+OnEvent10:
+	npctalk "冒險者。那個吵鬧的東西又在閃了嗎？我們去檢查一下吧。";
+	'twilight_story = 15;
+	end;
+OnEvent11:
+	npctalk "...正在檢查信號。";
+	sleep 2000;
+	npctalk "...已確認駭客頻道。";
+	sleep 2000;
+	npctalk "...正在恢復...";
+	sleep 2000;
+	npctalk "...正在恢復...72%";
+	sleep 2000;
+	npctalk "...恢復完成。";
+	sleep 2000;
+	npctalk "我們去下一個中繼器吧~";
+	sleep 2000;
+	unitwalk 'guide,320,139, instance_npcname("阿爾蒙德#amond01") + "::OnFollow12";
+	end;
+OnFollow12:
+	unitwalk 'guide,300,139, instance_npcname("阿爾蒙德#amond01") + "::OnEvent12";
+	end;
+OnEvent12:
+	npctalk "是之前的那個孩子吧？他是入侵者。這很奇怪，有點像杏仁...";
+	unitwalk 'guide,285,139, instance_npcname("阿爾蒙德#amond01") + "::OnEvent13";
+	end;
+OnEvent13:
+	npctalk "我們要走快點嗎？那邊傳來聲音...";
+	unitwalk 'guide,285,118, instance_npcname("阿爾蒙德#amond01") + "::OnEvent14";
+	end;
+OnEvent14:
+	npctalk "比我想像的還要安靜。入侵者跑到哪裡去了？";
+	unitwalk 'guide,285,98, instance_npcname("阿爾蒙德#amond01") + "::OnEvent15";
+	end;
+OnEvent15:
+	npctalk "這邊。";
+	unitwalk 'guide,261,98, instance_npcname("阿爾蒙德#amond01") + "::OnEvent16";
+	end;
+OnEvent16:
+	npcspeed 80;
+	npctalk "是艾絲特！";
+	'twilight_story = 20;
+	unitwalk 'guide,261,87;
+	end;
+}
+
+1@bamn,1,1,0	script	twilight_story_mob_3	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("twilight_story_mob_3") + "::OnMobDead";
+	monster 'map_bamn$,246,208,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,248,208,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,246,206,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	monster 'map_bamn$,248,206,"心靈獵手","G_EP17_2_HEART_HUNTER",1, .@event$;
+	enablenpc instance_npcname("入侵者#sweety02");
+	end;
+OnMobDead:
+	.@event$ = instance_npcname("twilight_story_mob_3") + "::OnMobDead";
+	if (mobcount('map_bamn$, .@event$) < 1) {
+		if ('twilight_story == 10)
+			'twilight_story = 11;
+	}
+	end;
+}
+
+1@bamn,243,208,5	script	中繼器#wifi03	CLEAR_NPC,{
+	mes "無法得知中繼器的狀態。通訊晶片似乎已經正確安裝。";
+	close;
+}
+
+1@bamn,242,206,7	script(DISABLED)	入侵者#sweety02	4_EP17_SWEETY,{
+	if ('twilight_story < 11) {
+		npctalk "你們晚了一步！這群笨蛋！";
+		end;
+	}
+	if ('twilight_story == 11) {
+		'twilight_story = 12;
+		npctalk "哈！你們以為抓得到我嗎？";
+		sleep 2000;
+		npctalk "去受苦吧！";
+		sleep 500;
+		disablenpc();
+		donpcevent instance_npcname("twilight_story_mob_4") + "::OnStart";
+		end;
+	}
+	end;
+}
+
+1@bamn,1,1,0	script	twilight_story_mob_4	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("twilight_story_mob_4") + "::OnMobDead";
+	monster 'map_bamn$,248,206,"心靈獵手指揮官","G_BELLARE3",1, .@event$;
+	monster 'map_bamn$,248,208,"心靈獵手指揮官","G_BELLARE3",1, .@event$;
+	end;
+OnMobDead:
+	.@event$ = instance_npcname("twilight_story_mob_4") + "::OnMobDead";
+	if (mobcount('map_bamn$, .@event$) < 1) {
+		if ('twilight_story == 12)
+			'twilight_story = 13;
+	}
+	end;
+}
+
+
+1@bamn,331,161,3	script(DISABLED)	反叛軍#md_rb02	4_F_REBELLION,7,7,{
+	end;
+OnTouch:
+	if ('twilight_story == 16) {
+		'twilight_story = 17;
+		npctalk "我們會接管這裡，看著吧！";
+		sleep 1000;
+		specialeffect EF_DESPERADO, AREA, instance_npcname("心靈獵手#md_hh06");
+		sleep 1000;
+		npctalk "喀喀喀，我們用爆炸把它們打倒吧！", instance_npcname("反叛軍#md_rb04");
+		specialeffect EF_TRIPLEACTION, AREA, instance_npcname("心靈獵手#md_hh07");
+		sleep 1000;
+		specialeffect EF_DESPERADO, AREA, instance_npcname("心靈獵手#md_hh07");
+		sleep 2000;
+		npctalk "謝謝你們現身！你們這些混蛋！", instance_npcname("反叛軍#md_rb03");
+		sleep 2000;
+		specialeffect EF_DESPERADO, AREA, instance_npcname("心靈獵手#md_hh08");
+		sleep 2000;
+		npctalk "...", instance_npcname("心靈獵手#md_hh07");
+		sleep 2000;
+		npctalk "...（點頭）", instance_npcname("心靈獵手#md_hh06");
+		sleep 1000;
+		npctalk "...", instance_npcname("心靈獵手#md_hh08");
+		sleep 1000;
+		npctalk "你們在向對方發送什麼信號？";
+		sleep 1000;
+		specialeffect EF_DESPERADO, AREA, instance_npcname("心靈獵手#md_hh07");
+		for ( .@i = 1; .@i < 5; ++.@i )
+			specialeffect EF_SPREADATTACK, AREA, instance_npcname("反叛軍#md_rb0" + .@i);
+		sleep 1000;
+		for ( .@i = 6; .@i < 9; ++.@i )
+			disablenpc instance_npcname("心靈獵手#md_hh0" + .@i);
+		sleep 1000;
+		npctalk "什麼？他們逃跑了嗎？！追！";
+		sleep 2000;
+		for ( .@i = 1; .@i < 5; ++.@i )
+			disablenpc instance_npcname("反叛軍#md_rb0" + .@i);
+		enablenpc instance_npcname("入侵者#sweety03");
+		npctalk "什麼...？", instance_npcname("入侵者#sweety03");
+	}
+	end;
+}
+1@bamn,321,161,5	duplicate(dummy_disabled_npc)	反叛軍#md_rb01	4_M_REBELLION
+1@bamn,331,155,1	duplicate(dummy_disabled_npc)	反叛軍#md_rb03	4_M_REBELLION
+1@bamn,321,155,7	duplicate(dummy_disabled_npc)	反叛軍#md_rb04	4_F_REBELLION
+1@bamn,324,158,7	duplicate(dummy_disabled_npc)	心靈獵手#md_hh06	G_EP17_2_HEART_HUNTER
+1@bamn,326,159,3	duplicate(dummy_disabled_npc)	心靈獵手#md_hh07	G_EP17_2_HEART_HUNTER
+1@bamn,328,158,1	duplicate(dummy_disabled_npc)	心靈獵手#md_hh08	G_EP17_2_HEART_HUNTER
+
+
+1@bamn,333,141,7	script(DISABLED)	入侵者#sweety03	4_EP17_SWEETY,{
+	if ('twilight_story == 17) {
+		setpcblock PCBLOCK_NPC, true;
+		'twilight_story = 18;
+		npctalk "什麼，其他傢伙去哪了？";
+		sleep2 2000;
+		npctalk "是你們幹的嗎？";
+		sleep2 2000;
+		npctalk "你們滿厲害的嘛，不是嗎？";
+		sleep2 2000;
+		npctalk "中繼器：(... .. ..)", instance_npcname("中繼器#wifi02");
+		npctalk "喔，有訊息。在那裡待一會。是，你好。";
+		sleep2 2000;
+		npctalk "中繼器：(... ??... ??)", instance_npcname("中繼器#wifi02");
+		sleep2 2000;
+		npctalk "現在？再多點時間... 是，不... 啊...";
+		sleep2 2000;
+		npctalk "... ... 到目前為止... 沒有？！... 好...";
+		sleep2 2000;
+		emotion ET_THINK;
+		sleep2 2000;
+		npctalk "你們！就是因為你們我現在才沒有時間！下次見面我一定會殺了你們！";
+		sleep2 2000;
+		disablenpc();
+		enablenpc instance_npcname("艾絲特#est04");
+		for ( .@i = 5; .@i < 9; ++.@i )
+			enablenpc instance_npcname("反叛軍#md_rb0" + .@i);
+		for ( .@i = 0; .@i < 3; ++.@i )
+			enablenpc instance_npcname("心靈獵手#md_hh1" + .@i);
+		setpcblock PCBLOCK_NPC, false;
+	}
+	end;
+}
+1@bamn,334,143,5	duplicate(dummy_npc)	中繼器#wifi02	2_POSTBOX
+
+
+1@bamn,257,84,3	script(DISABLED)	艾絲特#est04	4_F_ESTLOVELOY,{
+	if ('twilight_story == 20) {
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "我已經聽過報告了。你們找到一個看起來像首領的傢伙？";
+		mes "我想其他的成員應該也有點本事。";
+		next;
+		mes "[艾絲特]";
+		mes "中繼器怎麼了？";
+		next;
+		cutin "ep172_beta",2;
+		mes "[阿爾蒙德]";
+		mes "我們正在前往另一個中繼器的路上。";
+		mes "但離這裡滿遠的。";
+		next;
+		cutin "ep162_est01",2;
+		mes "[艾絲特]";
+		mes "嗯... 我們這樣做如何？";
+		mes "你們追丟的那個傢伙是個紫髮男孩，對吧？";
+		mes "我們要把他引出來。";
+		next;
+		mes "[艾絲特]";
+		mes "我會去對付躲在庭園裡的其他傢伙。";
+		mes "啊。我也會護送阿爾蒙德。";
+		next;
+		mes "[艾絲特]";
+		mes "他可能往宅邸的西部去了，所以你們去那邊看看。";
+		mes "你們有艾露米娜的追蹤器。如果靠近他，它就會啟動。";
+		if ('twilight_story == 20) {
+			'twilight_story = 21;
+			enablenpc instance_npcname("#to_bamq");
+			enablenpc instance_npcname("入侵者#sweety");
+			enablenpc instance_npcname("#to_swty01");
+			enablenpc instance_npcname("#to_swty02");
+		}
+		close3;
+	}
+	if ('twilight_story == 21) {
+		mes "[艾絲特]";
+		mes "他可能往宅邸的西部去了，所以你們去那邊看看。";
+		mes "你們有艾露米娜的追蹤器，如果靠近他，它就會啟動。";
+		next;
+		mes "[艾絲特]";
+		mes "別擔心，從這裡開始我會照顧阿爾蒙德。";
+		close3;
+	}
+	end;
+}
+
+1@bamn,250,80,7	script(DISABLED)	反叛軍#md_rb05	4_M_REBELLION,{
+	npctalk "剩下的就交給我們吧。";
+	end;
+}
+
+// 1@bamn,254,80,7	script	Rebellion#md_rb06	4_F_REBELLION,7,7,{	// unknown effect
+1@bamn,254,80,7	script(DISABLED)	反叛軍#md_rb06	4_F_REBELLION,{
+	npctalk "呵呵呵... 終於到了復仇的時刻... 呵呵呵...";
+	end;
+}
+
+1@bamn,258,80,1	script(DISABLED)	反叛軍#md_rb07	4_M_REBELLION,{
+	npctalk "如果有敵人在引起騷動，我們應該用更多的人數攻擊他們。";
+	end;
+}
+
+1@bamn,202,84,3	script(DISABLED)	反叛軍#md_rb08	4_M_REBELLION2,{
+	npctalk "你們在找一個紫髮男孩，對吧？他往實驗室的方向去了。";
+	end;
+}
+
+
+1@bamn,67,173,0	script(DISABLED)	#to_swty01	HIDDEN_WARP_NPC,5,5,{
+	end;
+OnTouch:
+	if ('twilight_story == 21) {
+		unittalk getcharid(3), "" + strcharinfo(0) + " : 追蹤器：嗶——嗶——！在那邊！嗶嗶~！";
+		navigateto("1@bamn",33,224);
+	}
+	end;
+}
+
+1@bamn,121,204,0	duplicate(#to_swty01)	#to_swty02	HIDDEN_WARP_NPC,7,7
+
+1@bamn,67,195,3	script(DISABLED)	心靈獵手#md_hh10	G_BELLARE3,5,5,{
+	end;
+OnTouch:
+	monster 'map_bamn$,67,195,"心靈獵手指揮官","G_BELLARE3",1;
+	monster 'map_bamn$,65,199,"心靈獵手指揮官","G_BELLARE3",1;
+	monster 'map_bamn$,71,197,"心靈獵手指揮官","G_BELLARE3",1;
+	disablenpc();
+	end;
+}
+
+1@bamn,78,204,5	script(DISABLED)	心靈獵手#md_hh11	G_BELLARE3,5,5,{
+	end;
+OnTouch:
+	emotion ET_GO;
+	monster 'map_bamn$,78,204,"心靈獵手指揮官","G_BELLARE3",1;
+	monster 'map_bamn$,83,204,"心靈獵手指揮官","G_BELLARE3",1;
+	monster 'map_bamn$,76,200,"心靈獵手指揮官","G_BELLARE3",1;
+	disablenpc();
+	end;
+}
+
+1@bamn,61,214,7	script(DISABLED)	心靈獵手#md_hh12	G_BELLARE3,5,5,{
+	end;
+OnTouch:
+	emotion ET_GO;
+	monster 'map_bamn$,61,214,"心靈獵手指揮官","G_BELLARE3",1;
+	monster 'map_bamn$,58,212,"心靈獵手指揮官","G_BELLARE3",1;
+	monster 'map_bamn$,64,214,"心靈獵手指揮官","G_BELLARE3",1;
+	disablenpc();
+	end;
+}
+
+1@bamn,145,106,5	duplicate(dummy_npc)	中繼器#wifi01	CLEAR_NPC
+
+
+1@bamq,125,39,3	script(DISABLED)	入侵者#sweety	4_EP17_SWEETY,5,5,{
+	end;
+OnTouch:
+	if ('twilight_story == 21) {
+		setpcblock PCBLOCK_NPC, true;
+		'twilight_story = 22;
+		npctalk "你們太遲了。你們這些笨蛋！";
+		sleep2 2000;
+		npctalk "他們早就搭飛船逃走了！";
+		sleep2 2000;
+		npctalk "現在，我，斯威蒂要來解決剛進來的這些笨蛋！";
+		sleep2 2000;
+		setpcblock PCBLOCK_NPC, false;
+		disablenpc();
+		donpcevent instance_npcname("twilight_story_mob_5") + "::OnStart";
+		end;
+	}
+	end;
+}
+
+1@bamq,1,1,7	script	twilight_story_mob_5	-1,{
+	end;
+OnStart:
+	monster 'map_bamq$,125,39,"斯威蒂",20642,1, instance_npcname("twilight_story_mob_5") + "::OnMobDead";
+	setunitdata $@mobid[0],UMOB_HP,500000;
+	end;
+OnMobDead:
+	killmonster 'map_bamq$, instance_npcname("twilight_story_mob_5") + "::OnMobDead";
+	if ('twilight_story == 22)
+		'twilight_story = 23;
+	mapannounce 'map_bamq$, "艾絲特：你有聽到這邊傳來巨大的聲響嗎？", bc_map, 0xFF00;
+	enablenpc instance_npcname("損壞的斯威蒂#sweety04");
+	enablenpc instance_npcname("艾絲特#est05");
+	enablenpc instance_npcname("#tgd_bamq_exit");
+	end;
+}
+
+1@bamq,123,39,3	script(DISABLED)	損壞的斯威蒂#sweety04	4_EP17_SWEETY,{
+	specialeffect EF_NPC_STOP;
+	npctalk " ... 是 ... 斯 ... 走 ... 不 ... 二 ...";
+	mes "電流跳動，一動也不動，就像機器壞掉一樣。";
+	mes "看他移開視線的樣子，似乎並沒有完全壞掉。";
+	close;
+}
+
+1@bamq,108,41,5	script(DISABLED)	艾絲特#est05	4_F_ESTLOVELOY,{
+	cutin "ep162_est01",2;
+	mes "[艾絲特]";
+	mes "有點晚了，不過一切都結束了。";
+	mes "原來是你啊。那個在庭園裡拖拖拉拉的傢伙。";
+	next;
+	mes "[艾絲特]";
+	mes "這傢伙以為控制自動人偶就能幫他爭取時間嗎？";
+	next;
+	cutin "ep162_est02",2;
+	mes "[艾絲特]";
+	mes "說到底，他們也只是自動人偶而已，對吧？";
+	mes "我別無選擇，只好炸了宅邸裡的自動人偶...";
+	next;
+	cutin "ep162_est01",2;
+	mes "[艾絲特]";
+	mes "我們離開這裡吧。";
+	mes "我會在招待所等。";
+	close3;
+}
+
+// warps story
+1@bamn,33,224,0	script(DISABLED)	#to_bamq	WARPNPC,1,1,{
+	end;
+OnTouch_:
+	if ('twilight_story == 21)
+		warp 'map_bamq$,103,39;
+	end;
+}
+
+1@bamq,101,39,0	warp2(DISABLED)	#tgd_bamq_exit	1,1,ba_maison,33,220
+
+
+// Daily
+1@bamq,16,39,0	script	#sweety_evt01	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if (!is_party_leader())
+		end;
+	disablenpc();
+	enablenpc instance_npcname("阿爾蒙德#amond02");
+	enablenpc instance_npcname("斯威蒂#sweety_boss");
+	enablenpc instance_npcname("#to_bamq2");
+	enablenpc instance_npcname("#to_bamn");
+	monster 'map_bamn$,120,257,"--ja--",20681,1;	// G_EP17_2_HEART_HUNTER
+	monster 'map_bamn$,130,255,"--ja--",20681,1;
+	monster 'map_bamn$,130,244,"--ja--",20681,1;
+	monster 'map_bamn$,127,184,"--ja--",20681,1;
+	monster 'map_bamn$,188,240,"--ja--",20699,1;	// G_BELLARE3
+	monster 'map_bamn$,203,248,"--ja--",20699,1;
+	monster 'map_bamn$,203,252,"--ja--",20699,1;
+	monster 'map_bamn$,301,234,"--ja--",20681,1;
+	monster 'map_bamn$,302,239,"--ja--",20681,1;
+	monster 'map_bamn$,297,244,"--ja--",20681,1;
+	monster 'map_bamn$,197,52,"--ja--",20699,1;
+	monster 'map_bamn$,120,83,"--ja--",20681,1;
+	monster 'map_bamn$,117,84,"--ja--",20681,1;
+	monster 'map_bamn$,137,176,"--ja--",20681,1;
+	monster 'map_bamn$,143,181,"--ja--",20681,1;
+	monster 'map_bamn$,62,165,"--ja--",20699,1;
+	end;
+}
+
+1@bamq,32,49,3	script(DISABLED)	斯威蒂#sweety_boss	4_EP17_Sweety,{
+	if ('sweety == 0) {
+		cutin "ep172_Sweety01",2;
+		mes "[斯威蒂]";
+		mes "喂，你準備好了嗎？";
+		mes "隨時都可以攻過來。";
+		mes "我相信只要打敗你，我的心情一定會好很多。";
+		next;
+		if (select( "等一下。", "我們走吧！" ) == 1) {
+			mes "[斯威蒂]";
+			mes "什麼，你是來這裡探索庭園的嗎？";
+			mes "心靈獵手不知道我發生了什麼事，但是...";
+			next;
+			cutin "ep172_Sweety02",2;
+			mes "[斯威蒂]";
+			mes "什麼，為什麼？";
+			mes "我跟他們完全不一樣，我是個優秀的生物！";
+			mes "老師們也是這麼說的。";
+			mes "但是，那些傢伙只不過是一群失敗品而已。";
+			close3;
+
+		}
+		cutin "",255;
+		npctalk "這次我不會輸給你的！";
+		disablenpc();
+		donpcevent instance_npcname("twilight_daily") + "::OnStart";
+		'sweety = 1;
+		close;
+	}
+	specialeffect EF_NPC_STOP;
+	mes "他對任何事都沒有反應。";
+	mes "我想他被我的攻擊打暈了。";
+	npctalk "... ...";
+	close;
+}
+
+1@bamq,1,1,7	script	twilight_daily	-1,{
+	end;
+OnStart:
+	monster 'map_bamq$,32,49,"斯威蒂",20642,1, instance_npcname("twilight_daily") + "::OnMobDead";
+	end;
+OnMobDead:
+	killmonster 'map_bamq$, instance_npcname("twilight_daily") + "::OnMobDead";
+	mapannounce 'map_bamq$, "阿爾蒙德：斯威蒂~ 適可而止就好~", bc_map, 0xFF00;
+	enablenpc instance_npcname("斯威蒂#sweety_boss");
+	'sweety = 2;
+	end;
+}
+
+1@bamq,32,43,3	script(DISABLED)	昏迷的斯威蒂#sweety_bo	4_EP17_SWEETY,{
+	setpcblock PCBLOCK_NPC, true;
+	specialeffect EF_NPC_STOP;
+	sleep2 500;
+	setpcblock PCBLOCK_NPC, false;
+	npctalk " ... ... ";
+	mes "我因為受到驚嚇而昏過去了。";
+	mes "看來他已經昏過去了。";
+	close;
+}
+	
+1@bamq,37,59,3	script(DISABLED)	阿爾蒙德#amond02	EP17_2_BETA_BASIC,{
+	if ('sweety < 2) {
+		cutin "ep172_beta",2;
+		mes "[阿爾蒙德]";
+		mes "我無法理解。";
+		mes "為什麼斯威蒂喜歡把自己的身體逼到極限...";
+		next;
+		mes "[阿爾蒙德]";
+		mes "而我的工作就是修理他那殘破不堪的身體。";
+		mes "請好好對付他，讓他滿意為止。";
+		close3;
+	}
+	cutin "ep172_beta",2;
+	mes "[阿爾蒙德]";
+	mes "我會負責搬運斯威蒂。";
+	mes "你想現在結束嗎？";
+	next;
+	if (select( "我們結束吧。", "我先探索一下庭園。" ) == 2) {
+		mes "[阿爾蒙德]";
+		mes "外面還有一些入侵者。";
+		mes "你注意到了嗎？";
+		close3;
+	}
+	mes "[阿爾蒙德]";
+	mes "那麼，我們走吧？";
+	close2;
+	warp "ba_in01",18,255;
+	end;
+}
+
+
+// warps daily
+1@bamn,33,224,0	warp2(DISABLED)	#to_bamq2	1,1,1@bamq,13,39
+1@bamq,8,39,0	warp2(DISABLED)	#to_bamn	1,1,1@bamn,33,220
+
+
+// Daily quest
+1@bamn,150,47,3	script	#bam_body01	4_EP17_BROKENBETA,{
+	if (isbegin_quest(18024) == 1) {
+		if (checkweight(1000226,1) == 0) {	// (custom)
+			mes "^008800等一下！！";
+			mes "因為你攜帶的物品太多，無法再接收任何物品。請在減輕負重後再試一次。^000000";
+			close;
+		}
+		.@id = atoi(replacestr(strnpcinfo(2), "bam_body0", ""));
+
+		if ('broken_beta[.@id] == 0) {
+			mes "管理員貝塔的身體被隱藏在風景之下。";
+			next;
+			if (rand(1,10) < 5)
+				mes "核心插槽是空的。";
+			else {
+				mes "我已經找回核心了。";
+				getitem 1000226,1;
+			}
+			mes "我晚點會通知阿爾法，讓她來回收人偶的身體。";
+			'broken_beta[.@id] = 1;
+		}
+	}
+	mes "核心部分是空的。";
+	close;
+
+OnInstanceInit:
+	questinfo( QTYPE_CLICKME, QMARK_YELLOW, "isbegin_quest(18024) == 1" );
+	end;
+}
+1@bamn,221,193,3	duplicate(#bam_body01)	#bam_body02	4_EP17_BROKENBETA
+1@bamn,208,87,3	duplicate(#bam_body01)	#bam_body03	4_EP17_BROKENBETA
+1@bamn,314,146,3	duplicate(#bam_body01)	#bam_body04	4_EP17_BROKENBETA
+1@bamn,207,276,3	duplicate(#bam_body01)	#bam_body05	4_EP17_BROKENBETA
+1@bamn,70,256,3	duplicate(#bam_body01)	#bam_body06	4_EP17_BROKENBETA
+1@bamn,64,187,3	duplicate(#bam_body01)	#bam_body07	4_EP17_BROKENBETA
+1@bamn,275,313,3	duplicate(#bam_body01)	#bam_body08	4_EP17_BROKENBETA
+1@bamn,338,267,3	duplicate(#bam_body01)	#bam_body09	4_EP17_BROKENBETA

@@ -1,0 +1,144 @@
+//===== rAthena Script =======================================
+//= Hypnotist
+//===== By: ==================================================
+//= L0ne_W0lf
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Permenent first class, base level 40 and under skill resetter.
+//= First Class characters and expanded classes only.
+//= Baby Classes and First Class trans can't use this service.
+//===== Additional Comments: =================================
+//= 1.0 First version. [L0ne_W0lf]
+//============================================================
+
+prontera,146,232,4	script	催眠師#2	124,{
+	mes "[催眠師]";
+	mes "你好，冒險者。";
+	mes "我是催眠師學會的成員，";
+	mes "被派來普隆德拉這裡，";
+	mes "為特定的一轉職業提供";
+	mes "技能重置服務，而且價格非常優惠：免費！";
+	next;
+	mes "[催眠師]";
+	mes "雖然我目前提供無限次的";
+	mes "技能重置，但我有";
+	mes "兩個必須滿足的條件。";
+	mes "第一，你的等級必須";
+	mes "低於 ^FF0000Base Level 40^000000。";
+	next;
+	mes "[催眠師]";
+	mes "第二，你必須是";
+	mes "^FF0000劍士、服事、魔法師、";
+	mes "盜賊、弓箭手、商人、";
+	mes "跆拳道男孩、跆拳道女孩、神槍手和忍者^000000";
+	mes "等職業才能符合資格。";
+	mes "那麼，你有任何問題嗎？";
+	next;
+	switch(select("技能重置？:我想要技能重置:沒事")) {
+
+	case 1:
+		mes "[催眠師]";
+		mes "技能重置允許冒險者";
+		mes "重新分配他們的技能";
+		mes "點數，如果他們對目前的";
+		mes "技能不滿意的話。";
+		next;
+		mes "[催眠師]";
+		mes "在進行技能重置";
+		mes "之前，你必須";
+		mes "將身上所有攜帶物品";
+		mes "的重量降至 0。";
+		mes "你可以把多餘的物品";
+		mes "放進卡普拉倉庫。";
+		next;
+		mes "[催眠師]";
+		mes "啊，還有一件重要的事，";
+		mes "如果你有裝備手推車，";
+		mes "必須卸下你的 ^FF0000手推車^000000。";
+		mes "否則，催眠將無法";
+		mes "生效，甚至會產生反效果......";
+		close;
+
+	case 2:
+		mes "[催眠師]";
+		mes "你確定要";
+		mes "進行我的";
+		mes "^FF0000技能重置^000000 服務嗎？";
+		next;
+		if (select("是的:取消") == 1) {
+			if (BaseLevel > 40) {
+				mes "[催眠師]";
+				mes "很抱歉，但是";
+				mes "Base Level 高於 40";
+				mes "的角色不符合我所提供的";
+				mes "技能重置服務資格。";
+				close;
+			}
+			if ((Class > 0 && Class < 7 && Upper == 0) || (Class == Job_Gunslinger) || (Class == Job_Ninja) || (Class == Job_Taekwon)) {
+				if (checkcart()) {
+					mes "[催眠師]";
+					mes "噢！在進行";
+					mes "技能重置服務之前，";
+					mes "請先卸下你的手推車。";
+					mes "感謝你的配合?";
+					close;
+				}
+				if (Weight) {
+					mes "[催眠師]";
+					mes "如果你是來使用技能";
+					mes "重置服務的，請";
+					mes "記住，你無法重置技能，";
+					mes "直到你物品欄中";
+					mes "攜帶物品的 ^FF0000重量";
+					mes "降至 0^000000 為止。";
+					next;
+					mes "[催眠師]";
+					mes "你何不先把";
+					mes "東西放進卡普拉倉庫裡";
+					mes "呢？這樣一來，你就可以";
+					mes "安全地保管所有的物品。";
+					close;
+				}
+				mes "[催眠師]";
+				mes "感謝你使用";
+				mes "我的技能重新分配";
+				mes "服務。喔，祝你";
+				mes "在未來的旅途中";
+				mes "好運，冒險者。";
+				ResetSkill;
+				close;
+			}
+			mes "[催眠師]";
+			mes "很抱歉，但你的";
+			mes "職業不符合";
+			mes "我提供的技能重置服務";
+			mes "的資格。我只能";
+			mes "為以下職業提供";
+			mes "技能重置......";
+			next;
+			mes "[催眠師]";
+			mes "^FF0000劍士、服事、";
+			mes "魔法師、盜賊、弓箭手、";
+			mes "商人、跆拳道";
+			mes "男孩、跆拳道女孩、神槍手和忍者^000000。";
+			close;
+		}
+		mes "[催眠師]";
+		mes "謝謝你，祝你";
+		mes "冒險順利。";
+		mes "請一路平安?";
+		close;
+
+	case 3:
+		mes "[催眠師]";
+		mes "謝謝你，祝你";
+		mes "冒險順利。";
+		mes "請一路平安?";
+		close;
+	}
+
+}

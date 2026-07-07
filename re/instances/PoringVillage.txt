@@ -1,0 +1,694 @@
+//===== rAthena Script =======================================
+//= Poring Village
+//===== Description: =========================================
+//= [Walkthrough Conversion]
+//= Poring Village instance
+//===== Changelogs: ==========================================
+//= 1.0 First version.
+//============================================================
+
+// Enchant
+prt_fild05,174,238,7	script	蔬菜附魔師#0	4_F_02,2,2,{
+	mes "[蔬菜附魔師]";
+	mes "只要 50 個傑勒比結晶和 20,000 Zeny，就能為你的青蔥或胡蘿蔔附加特殊效果！";
+	next;
+	mes "[蔬菜附魔師]";
+	mes "附魔和重置都有 ^ff000030% 的失敗機率。^000000 為你的蔬菜和運氣投資吧！";
+	next;
+	switch( select( "附魔需要多少錢？", "波利村蔬菜附魔", "波利村蔬菜重置" ) ) {
+	case 1:
+		mes "[蔬菜附魔師]";
+		mes "聽說，從這裡再往西邊走一點，就能得到波利村的青蔥或胡蘿蔔。";
+		next;
+		mes "[蔬菜附魔師]";
+		mes "我能為新鮮的蔬菜進行附魔。";
+		next;
+		mes "[蔬菜附魔師]";
+		mes "附魔或重置需要 20,000 Zeny 和 50 個傑勒比結晶！聽起來還不錯吧？";
+		next;
+		mes "[蔬菜附魔師]";
+		mes "嗯... 如你所知，這畢竟是蔬菜。所以有時候可能會損壞。";
+		close;
+	case 2:
+		.@equip_id = getequipid(EQI_HEAD_LOW);
+
+		switch( .@equip_id ) {
+		case -1:
+			mes "[蔬菜附魔師]";
+			mes "請先裝備您想要附魔的裝備。";
+			close;
+		case 19238:	// PoringTownOnion
+		case 19239:	// PoringTownCarrot
+			break;
+		default:
+			mes "[蔬菜附魔師]";
+			mes "這不是蔬菜吧！？";
+			close;
+		}
+		if (getequipcardid(EQI_HEAD_LOW,3) > 0) {
+			mes "[蔬菜附魔師]";
+			mes "這個蔬菜已經無法再附魔了。";
+			close;
+		}
+		if (countitem(909) < 50 || Zeny < 20000) {
+			mes "[蔬菜附魔師]";
+			mes "這次附魔需要 50 個傑勒比結晶和 20,000 Zeny..... 但是... 你沒有足夠的材料。";
+			close;
+		}
+		delequip EQI_HEAD_LOW;
+		delitem 909,50;
+		// Jellopy
+		Zeny -= 20000;
+
+		if (rand(100) < 70) {
+			.@r = rand(5356);
+			if (.@r < 160) .@card = 4795;
+			// HP100
+			else if (.@r < 200) .@card = 4796;	// HP200
+			else if (.@r < 1000) .@card = 4928;
+			// SP10
+			else if (.@r < 1400) .@card = 4870;	// SP25
+			else if (.@r < 1480) .@card = 4800;
+			// SP50
+			else if (.@r < 1880) .@card = 4700;	// Strength1
+			else if (.@r < 2280) .@card = 4730;
+			// Agility1
+			else if (.@r < 3410) .@card = 4740;	// Vitality1
+			else if (.@r < 3810) .@card = 4710;
+			// Inteligence1
+			else if (.@r < 4210) .@card = 4720;	// Dexterity1
+			else if (.@r < 5340) .@card = 4750;
+			// Luck1
+			else if (.@r < 5348) .@card = 4992;	// HPdrain1
+			else if (.@r < 5356) .@card = 4993;
+			// SPdrain1
+
+			getitem2 .@equip_id,1,1,0,0,0,0,0,.@card;
+			mes "[蔬菜附魔師]";
+			mes "搭啦！附魔完成了！檢查一下你的蔬菜吧。";
+			specialeffect2 EF_REPAIRWEAPON;
+			close;
+		}
+		mes "[蔬菜附魔師]";
+		mes "那一定是爛掉的蔬菜。真可惜我無法承受這種程度的力量...";
+		specialeffect2 EF_LORD;
+		close;
+	case 3:
+		.@equip_id = getequipid(EQI_HEAD_LOW);
+
+		switch( .@equip_id ) {
+		case -1:
+			mes "[蔬菜附魔師]";
+			mes "請先裝備您想要附魔的裝備。";
+			close;
+		case 19238:	// PoringTownOnion
+		case 19239:	// PoringTownCarrot
+			break;
+		default:
+			mes "[蔬菜附魔師]";
+			mes "這不是蔬菜吧！？";
+			close;
+		}
+		if (getequipcardid(EQI_HEAD_LOW,3) == 0) {
+			mes "[蔬菜附魔師]";
+			mes "這是一個從未被強化的蔬菜...";
+			close;
+		}
+		if (countitem(909) < 50 || Zeny < 20000) {
+			mes "[蔬菜附魔師]";
+			mes "這次附魔需要 50 個傑勒比結晶和 20,000 Zeny..... 但是... 你沒有足夠的材料。";
+			close;
+		}
+		delequip EQI_HEAD_LOW;
+		delitem 909,50;
+		// Jellopy
+		Zeny -= 20000;
+
+		if (rand(100) < 70) {
+			getitem .@equip_id,1;
+			mes "[蔬菜附魔師]";
+			mes "道具已完成！確認看看吧。";
+			specialeffect2 EF_REPAIRWEAPON;
+			close;
+		}
+		mes "[蔬菜附魔師]";
+		mes "那一定是爛掉的蔬菜。真可惜我無法承受這種程度的力量...";
+		specialeffect2 EF_LORD;
+		close;
+	}
+	end;
+
+OnTouch:
+	npctalk "蔬菜附魔師：讓你的青蔥或胡蘿蔔變得更強吧！", "", bc_self;
+	end;
+}
+
+
+// Instance
+prt_fild05,145,235,5	script	艾蜜莉#0	4_GEFFEN_03,4,4,{
+	if (BaseLevel < 30) {
+		mes "[艾蜜莉]";
+		mes "哇?你看起來像個初學者。等你長大後，我真想和你一起冒險！";
+		close;
+	}
+	if (BaseLevel > 60) {
+		mes "[艾蜜莉]";
+		mes "喔，你現在比我還強了。你怎麼成長得這麼快？";
+		next;
+		mes "[艾蜜莉]";
+		mes "我應該去找個等級和我差不多的冒險者。很高興認識你。";
+		close;
+	}
+	if (isbegin_quest(12416) == 0) {
+		mes "[艾蜜莉]";
+		mes "我的名字是艾蜜莉。我一直在等待願意和我一起去冒險的人！";
+		next;
+		select("誰說我要和妳一起冒險了？");
+		mes "[艾蜜莉]";
+		mes "哎呀，來嘛。別這麼嚴肅。聽著，你可以聽完我的故事再做決定。當然，我會給你適當的報酬。";
+		next;
+		if (select( "適當的報酬？", "我沒興趣。" ) == 2) {
+			mes "[艾蜜莉]";
+			mes "真古板！在一起比較好玩啦！";
+			close;
+		}
+		mes "[艾蜜莉]";
+		mes "沒錯！適當的報酬。";
+		next;
+		mes "[艾蜜莉]";
+		mes "看來這個波利村可以被像我們這樣的初學者打敗。不過這只是我的猜測啦...";
+		next;
+		mes "[艾蜜莉]";
+		mes "嗯，其實我無法透過冒險者協會官方給你報酬。但我們可以在狩獵後平分收入。";
+		next;
+		select("不過五五分帳聽起來很公平。");
+		mes "[艾蜜莉]";
+		mes "不行。七三。當然是我七。";
+		next;
+		select("一定要五五，不然免談。");
+		mes "[艾蜜莉]";
+		mes "那六四怎麼樣！！";
+		next;
+		select("五五...");
+		mes "[艾蜜莉]";
+		mes "這真是快把我逼瘋了。好吧，五五。就這麼辦。";
+		setquest 12416;	// Contract with Emily
+		completequest 12416;
+		close;
+	}
+	switch( checkquest(12417,PLAYTIME) ) {
+	case -1:
+		break;
+	case 0:
+	case 1:
+		mes "^ff0000任何在副本內對怪物的處理（例如馴服怪物）將不被視為正常進度。請注意這一點。^000000";
+		next;
+		mes "^ff0000在初學者模式中，玩家會變身為怪物。請注意，進入和進行時現有的變身效果將會消失。^000000";
+		next;
+		mes "[艾蜜莉]";
+		mes "那麼，你準備好了嗎？";
+		next;
+		mes "[艾蜜莉]";
+		mes "你看起來非常疲憊。";
+		next;
+		mes "[艾蜜莉]";
+		mes "何不稍後再來呢？現在先休息一下吧。";
+		close;
+	case 2:
+		mes "^ff0000任何在副本內對怪物的處理（例如馴服怪物）將不被視為正常進度。請注意這一點。^000000";
+		next;
+		mes "^ff0000在初學者模式中，玩家會變身為怪物。請注意，進入和進行時現有的變身效果將會消失。^000000";
+		next;
+		mes "[艾蜜莉]";
+		mes "那麼，你準備好了嗎？";
+		next;
+		mes "^0000ff波利村任務的所有痕跡已清除。現在，再次與艾蜜莉對話以進入^000000";
+		erasequest 12417;
+		close;
+	}
+	mes "^ff0000任何在副本內對怪物的處理（例如馴服怪物）將不被視為正常進度。請注意這一點。^000000";
+	next;
+	mes "^ff0000在初學者模式中，玩家會變身為怪物。請注意，進入和進行時現有的變身效果將會消失。^000000";
+	next;
+	mes "[艾蜜莉]";
+	mes "那麼，你準備好了嗎？";
+	if (isbegin_quest(12418) == 0)
+		setquest 12418;	// First Visit to Poring Village
+	next;
+	if (getcharid(1) < 1) {
+		mes "[艾蜜莉]";
+		mes "嗯，你應該先組建一個隊伍來開始這場偉大的冒險。";
+		close;
+	}
+	.@md_name$ = "波利村";
+
+	if (is_party_leader())
+		.@menu$[0] = "建立入口";
+	if (instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$)
+		.@menu$[1] = "進入副本";
+	switch( select( .@menu$[0], .@menu$[1], "取消" ) ) {
+	case 1:
+		mes "[艾蜜莉]";
+		mes "我現在正在尋找入口，請在入口完全開啟後再和我說話。";
+		instance_create(.@md_name$);
+		close;
+	case 2:
+		switch( instance_enter(.@md_name$) ) {
+		case IE_OTHER:
+			mes "發生未知錯誤。";
+			close;
+		case IE_NOINSTANCE:
+			mes "^ff0000時間裂縫尚未建立。^000000";
+			close;
+		case IE_NOMEMBER:
+			end;
+		case IE_OK:
+			mapannounce "prt_fild05", "隊伍 " + getpartyname(getcharid(0)) + " 的成員 " + strcharinfo(0) + " 進入了 " + .@md_name$ + "。", bc_map,0xFF9900;
+			setquest 12417;	// Overcoming fatigue
+			// warp "1@begi",100,22;
+			end;
+		}
+		end;
+	case 3:
+		end;
+	}
+	end;
+OnTouch:
+	if (isbegin_quest(12416) == 0 && BaseLevel >= 30 && BaseLevel <= 60)
+		npctalk "艾蜜莉：嘿，你好！可以跟你說句話嗎？";
+	end;
+
+OnInit:
+	questinfo( QTYPE_JUMPING_PORING, QMARK_YELLOW , "isbegin_quest(12416) == 0 && BaseLevel >= 30 && BaseLevel <= 60" );
+	end;
+}
+
+1@begi,106,30,0	script	#start_wp1_0	HIDDEN_WARP_NPC,4,4,{
+	end;
+OnTouch:
+	disablenpc();
+	donpcevent instance_npcname("#start_wp1_1") + "::OnStart";
+	end;
+
+OnInstanceInit:
+	'map_begi$ = instance_mapname("1@begi");
+
+	setcell 'map_begi$,146,35,146,41,cell_walkable,0;
+	setcell 'map_begi$,154,100,154,107,cell_walkable,0;
+	setcell 'map_begi$,59,187,59,197,cell_walkable,0;
+
+	disablenpc instance_npcname("#start_wp1_2");
+	disablenpc instance_npcname("#gift");
+	end;
+}
+
+1@begi,106,30,5	script	#start_wp1_1	4_GEFFEN_03,{
+	mes "[艾蜜莉]";
+	mes "我們繼續前進吧。";
+	close;
+
+OnStart:
+	npctalk "艾蜜莉：所以.. 這裡就是波利村嗎？";
+	sleep 2000;
+	npctalk "艾蜜莉：好。我們走！";
+	sleep 2000;
+	disablenpc();
+	donpcevent instance_npcname("#start_wp1_2") + "::OnStart";
+	donpcevent instance_npcname("poring_village_1") + "::OnStart";
+	end;
+}
+
+1@begi,140,37,5	script	#start_wp1_2	4_GEFFEN_03,{
+	mes "[艾蜜莉]";
+	mes "我現在要慢慢開始了...";
+	close;
+
+OnStart:
+	enablenpc();
+	sleep 1000;
+	npctalk "艾蜜莉：嗯。看來他們設下了障礙，不想讓我們輕易通過。";
+	sleep 3000;
+	npctalk "艾蜜莉：我很確定波利在某個地方收集了很多寶物。";
+	sleep 4000;
+	mapannounce 'map_begi$, "???：我聽到人類的聲音了。大家，好好歡迎他們。", bc_map, 0xFFFF00;
+	sleep 4000;
+	npctalk "艾蜜莉：它在說什麼？";
+	sleep 3000;
+	npctalk "艾蜜莉：聽起來好像有人衝過來了... ";
+	sleep 2500;
+	mapannounce 'map_begi$, "???：別讓他們跑了！把他們身上值錢的東西都拿走！", bc_map, 0xFFFF00;
+	sleep 2500;
+	npctalk "艾蜜莉：嗯... 好吧。他們看起來不太友善。快，躲起來！";
+	sleep 4000;
+	// disablenpc();
+	hideonnpc();
+	// hideonnpc instead of disablenpc (official) to display text on rAthena
+	sleep 1000;
+	npctalk "艾蜜莉：哎呀。你躲不起來嗎？好吧..... 加油！";
+	// disablenpc instance_npcname("#poring_wl18");
+	hideonnpc instance_npcname("#poring_wl18");
+	specialeffect EF_LORD,AREA, instance_npcname("#poring_wl18");
+	sleep 500;
+	// disablenpc instance_npcname("#poring_wl19");
+	hideonnpc instance_npcname("#poring_wl19");
+	specialeffect EF_LORD,AREA, instance_npcname("#poring_wl19");
+	sleep 500;
+	disablenpc instance_npcname("#poring_wl15");
+	sleep 500;
+	disablenpc instance_npcname("#poring_wl16");
+	disablenpc instance_npcname("#poring_wl17");
+	disablenpc instance_npcname("#poring_wl20");
+	disablenpc instance_npcname("#poring_wl21");
+	setcell 'map_begi$,146,35,146,41,cell_walkable,1;
+	end;
+}
+
+// First wall
+1@begi,146,35,6	duplicate(dummy_npc)	#poring_wl15	4_ROPEPILE,1,0
+1@begi,146,36,6	duplicate(dummy_npc)	#poring_wl16	4_ROPEPILE,1,0
+1@begi,146,37,6	duplicate(dummy_npc)	#poring_wl17	4_ROPEPILE,1,0
+1@begi,146,38,6	duplicate(dummy_npc)	#poring_wl18	4_ROPEPILE,1,0
+1@begi,146,39,6	duplicate(dummy_npc)	#poring_wl19	4_ROPEPILE,1,0
+1@begi,146,40,6	duplicate(dummy_npc)	#poring_wl20	4_ROPEPILE,1,0
+1@begi,146,41,6	duplicate(dummy_npc)	#poring_wl21	4_ROPEPILE,1,0
+
+// Second wall
+1@begi,59,187,6	duplicate(dummy_npc)	#poring_wl9	4_ROPEPILE,1,0
+1@begi,59,188,6	duplicate(dummy_npc)	#poring_wl10	4_ROPEPILE,1,0
+1@begi,59,189,6	duplicate(dummy_npc)	#poring_wl11	4_ROPEPILE,1,0
+1@begi,59,190,6	duplicate(dummy_npc)	#poring_wl12	4_ROPEPILE,1,0
+1@begi,59,191,6	duplicate(dummy_npc)	#poring_wl13	4_ROPEPILE,1,0
+1@begi,59,192,6	duplicate(dummy_npc)	#poring_wl14	4_ROPEPILE,1,0
+
+// Others
+1@begi,154,100,6	duplicate(dummy_npc)	#poring_wl1	4_ROPEPILE,1,0
+1@begi,154,101,6	duplicate(dummy_npc)	#poring_wl2	4_ROPEPILE,1,0
+1@begi,154,102,6	duplicate(dummy_npc)	#poring_wl3	4_ROPEPILE,1,0
+1@begi,154,103,6	duplicate(dummy_npc)	#poring_wl4	4_ROPEPILE,1,0
+1@begi,154,104,6	duplicate(dummy_npc)	#poring_wl5	4_ROPEPILE,1,0
+1@begi,154,105,6	duplicate(dummy_npc)	#poring_wl6	4_ROPEPILE,1,0
+1@begi,154,106,6	duplicate(dummy_npc)	#poring_wl7	4_ROPEPILE,1,0
+1@begi,154,107,6	duplicate(dummy_npc)	#poring_wl8	4_ROPEPILE,1,0
+
+
+1@begi,1,1,5	script	poring_village_1	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("poring_village_1") + "::OnMobDead";
+	areamonster 'map_begi$, 153,32, 171,32, "--en--", "MD_DROPS",7, .@event$;
+	areamonster 'map_begi$, 48,54, 71,57, "--en--", "MD_DROPS",8, .@event$;
+	areamonster 'map_begi$, 170,38, 189,38, "--en--", "MD_POPORING",8, .@event$;
+	areamonster 'map_begi$, 24,72, 28,92, "--en--", "MD_POPORING",8, .@event$;
+	areamonster 'map_begi$, 188,42, 191,58, "--en--", "MD_MARIN",8, .@event$;
+	areamonster 'map_begi$, 158,67, 174,68, "--en--", "MD_MARIN",3, .@event$;
+	areamonster 'map_begi$, 117,68, 131,68, "--en--", "MD_MARIN",4, .@event$;
+	areamonster 'map_begi$, 79,113, 92,113, "--en--", "MD_MARIN",6, .@event$;
+
+	monster 'map_begi$,101,66, "--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,57,113, "--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,68,113, "--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,176,66, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,158,68, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,157,67, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,149,66, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,125,67, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,121,67, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,102,67, "--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,101,68, "--en--","MD_PORING",1, .@event$;
+	end;
+OnMobDead:
+	if (mobcount( 'map_begi$, instance_npcname("poring_village_1") + "::OnMobDead" ) > 3)
+		end;
+	killmonster 'map_begi$, instance_npcname("poring_village_1") + "::OnMobDead";
+	mapannounce 'map_begi$, "艾蜜莉：哇?你滿強的嘛！你把這些波利全打敗了！", bc_map, 0xFFFF00;
+	sleep 2000;
+	mapannounce 'map_begi$, "艾蜜莉：但這隻波利看起來有點特別。小心點！", bc_map, 0xFFFF00;
+	sleep 2000;
+	mapannounce 'map_begi$, "艾蜜莉：啊，如果你靠近那道藍色光柱，會有一股奇特的力量喔。", bc_map, 0xFFFF00;
+	sleep 2000;
+	monster 'map_begi$,132,103,"--en--","MD_GOLDRING",1, instance_npcname("poring_village_1") + "::OnBossDead";
+	end;
+OnBossDead:
+	if (mobcount( 'map_begi$, instance_npcname("poring_village_1") + "::OnBossDead" ) > 0)
+		end;
+	killmonster 'map_begi$, instance_npcname("poring_village_1") + "::OnBossDead";
+	donpcevent instance_npcname("poring_village_2") + "::OnStart";
+	sleep 6000;
+	// disablenpc instance_npcname("#poring_wl4");
+	hideonnpc instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl4");
+	// disablenpc instance_npcname("#poring_wl5");
+	hideonnpc instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl5");
+	disablenpc instance_npcname("#poring_wl1");
+	disablenpc instance_npcname("#poring_wl2");
+	disablenpc instance_npcname("#poring_wl3");
+	disablenpc instance_npcname("#poring_wl6");
+	disablenpc instance_npcname("#poring_wl7");
+	disablenpc instance_npcname("#poring_wl8");
+	setcell 'map_begi$,154,100,154,107,cell_walkable,1;
+	end;
+}
+
+1@begi,1,1,5	script	poring_village_2	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("poring_village_2") + "::OnMobDead";
+
+	monster 'map_begi$,191,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,191,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,191,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,192,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,194,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,194,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,195,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,195,97,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,199,108,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,201,107,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,203,108,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,206,107,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,213,108,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,214,109,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,109,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,109,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,115,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,112,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,113,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,117,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,214,111,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,215,108,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,215,107,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,216,107,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,197,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,197,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,192,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,190,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,188,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,188,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,184,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,182,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,157,144,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,154,143,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,154,144,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,152,143,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,142,144,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,130,144,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,129,144,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,127,144,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,120,144,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,117,144,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,116,144,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,114,143,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,103,144,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,102,144,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,102,144,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,93,143,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,88,144,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,88,144,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,84,144,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,84,144,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,83,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,76,143,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,75,144,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,73,144,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,73,143,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,72,144,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,69,143,"--en--","MD_POPORING",1, .@event$;
+	monster 'map_begi$,64,144,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,59,143,"--en--","MD_PORING",1, .@event$;
+	monster 'map_begi$,59,144,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,52,144,"--en--","MD_DROPS",1, .@event$;
+	monster 'map_begi$,51,143,"--en--","MD_PORING",1, .@event$;
+	end;
+OnMobDead:
+	if (mobcount( 'map_begi$, instance_npcname("poring_village_2") + "::OnMobDead" ) > 4)
+		end;
+	killmonster 'map_begi$, instance_npcname("poring_village_2") + "::OnMobDead";
+	mapannounce 'map_begi$, "艾蜜莉：嗯.. 這裡有另一隻首領... 看起來很強...", bc_map, 0xFFFF00;
+	sleep 2000;
+	mapannounce 'map_begi$, "艾蜜莉：我不擅長戰鬥.. 讓我先去找寶物。等會見?", bc_map, 0xFFFF00;
+	sleep 2000;
+	monster 'map_begi$,42,173,"--en--","MD_AMERING",1, instance_npcname("poring_village_2") + "::OnBossDead";
+	end;
+OnBossDead:
+	if (mobcount( 'map_begi$, instance_npcname("poring_village_2") + "::OnBossDead" ) > 0)
+		end;
+	killmonster 'map_begi$, instance_npcname("poring_village_2") + "::OnBossDead";
+	donpcevent instance_npcname("poring_village_3") + "::OnStart";
+	sleep 6000;
+	// disablenpc instance_npcname("#poring_wl10");
+	hideonnpc instance_npcname("#poring_wl10");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl10");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl10");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl10");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl10");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl10");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl10");
+	// disablenpc instance_npcname("#poring_wl13");
+	hideonnpc instance_npcname("#poring_wl13");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl13");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl13");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl13");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl13");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl13");
+	specialeffect EF_LORD, AREA, instance_npcname("#poring_wl13");
+	disablenpc instance_npcname("#poring_wl9");
+	disablenpc instance_npcname("#poring_wl11");
+	disablenpc instance_npcname("#poring_wl12");
+	disablenpc instance_npcname("#poring_wl14");
+	setcell 'map_begi$,59,187,59,197,cell_walkable,1;
+	end;
+}
+
+1@begi,1,1,5	script	poring_village_3	-1,{
+	end;
+OnStart:
+	.@event$ = instance_npcname("poring_village_3") + "::OnMobDead";
+
+	monster 'map_begi$,81,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,84,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,85,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,86,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,87,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,88,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,90,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,93,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,94,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,94,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,95,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,98,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,99,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,103,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,103,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,104,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,108,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,111,197,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,128,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,128,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,130,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,132,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,132,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,132,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,133,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,134,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,135,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,136,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,137,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,141,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,143,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,144,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,144,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,146,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,150,185,"--en--","MD_MARIN",1, .@event$;
+	monster 'map_begi$,150,185,"--en--","MD_MARIN",1, .@event$;
+	end;
+OnMobDead:
+	if (mobcount( 'map_begi$, instance_npcname("poring_village_3") + "::OnMobDead" ) > 4)
+		end;
+	killmonster 'map_begi$, instance_npcname("poring_village_3") + "::OnMobDead";
+	mapannounce 'map_begi$, "波利之王：不好意思... 但是... 請你們現在就回去好嗎？...", bc_map, 0xFFFF;
+	sleep 2000;
+	mapannounce 'map_begi$, "艾蜜莉：什麼？你是誰？", bc_map, 0xFFFF00;
+	sleep 2000;
+	mapannounce 'map_begi$, "波利之王：我是這個波利村的村長。抱歉這麼晚才自我介紹。", bc_map, 0xFFFF;
+	sleep 2000;
+	mapannounce 'map_begi$, "波利之王：也許我們的傳單上有些誤會。這個村莊很窮，沒有什麼值錢的東西。", bc_map, 0xFFFF;
+	sleep 2000;
+	mapannounce 'map_begi$, "艾蜜莉：這要等我多看看再決定....", bc_map, 0xFFFF00;
+	sleep 2000;
+	mapannounce 'map_begi$, "波利之王：呃.... 我不喜歡戰鬥，但別無選擇了。", bc_map, 0xFFFF;
+	sleep 2000;
+	monster 'map_begi$,182,194,"--en--","PORING",10;
+	for ( .@i = 0; .@i < 10; ++.@i ) {
+		setunitdata $@mobid[.@i], UMOB_MODE, (MD_CANMOVE | MD_LOOTER | MD_AGGRESSIVE | MD_CANATTACK);
+		setunitdata $@mobid[.@i], UMOB_SPEED, 200;
+	}
+	monster 'map_begi$,182,194,"--en--","MD_KING_PORING",1, instance_npcname("poring_village_3") + "::OnBossDead";
+	end;
+OnBossDead:
+	if (mobcount( 'map_begi$, instance_npcname("poring_village_3") + "::OnBossDead" ) > 0)
+		end;
+	killmonster 'map_begi$, instance_npcname("poring_village_3") + "::OnBossDead";
+	enablenpc instance_npcname("#gift");
+	end;
+}
+
+1@begi,117,108,5	script	藍色光柱#1	4_ENERGY_BLUE,4,4,{
+	end;
+OnTouch:
+	switch( rand(3) ) {
+	case 0:
+		unittalk getcharid(3), "" + strcharinfo(0) + "：喔喔喔喔喔！！！釋放心中的鸚鵡吧！！！！";
+		break;
+	case 1:
+		unittalk getcharid(3), "" + strcharinfo(0) + "：我覺得現在啄人也沒關係！！";
+		break;
+	case 2:
+		unittalk getcharid(3), "" + strcharinfo(0) + "：你被瘋狂的鸚鵡咬到了嗎？";
+		break;
+	}
+	transform 1629,60000;
+	specialeffect2 EF_ENHANCE;
+	sc_start SC_GLASTHEIM_STATE,30000,20;
+	end;
+}
+1@begi,37,165,5	duplicate(藍色光柱#1)	藍色光柱#2	4_ENERGY_BLUE,4,4
+1@begi,175,199,5	duplicate(藍色光柱#1)	藍色光柱#3	4_ENERGY_BLUE,4,4
+
+
+1@begi,199,186,5	script	#gift	4_GEFFEN_03,{
+	mes "[艾蜜莉]";
+	mes "你在這個副本裡找到的所有物品都可以自己留著。我已經拿了一些了。";
+	next;
+	if (isbegin_quest(12418) == 1) {
+		mes "[艾蜜莉]";
+		mes "啊，我找到了一些物品。讓我送你一個吧。就當作慶祝你第一次來！";
+		next;
+		if (rand(100) < 50)
+			getitem 19238,1;	// PoringTownOnion
+		else
+			getitem 19239,1;	// PoringTownCarrot
+		completequest 12418;
+	}
+	mes "[艾蜜莉]";
+	mes "我不需要這個初學者箱子。你可以拿走。現在，我們出去吧！";
+	close2;
+	getitem 23302,1;
+	// PoringsPreciousBox
+	warp "prt_fild05",149,238;
+	end;
+}

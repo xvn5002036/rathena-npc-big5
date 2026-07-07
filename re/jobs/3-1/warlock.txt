@@ -1,0 +1,1114 @@
+//===== rAthena Script ======================================= 
+//= Warlock Job Quest
+//===== By: ================================================== 
+//= Muad_Dib, Gepard & L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.5
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job change Quest from Wizard / High Wizard -> Warlock.
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [Masao]
+//= 1.1 Fixed some conversion mistakes, replaced numbers with
+//=     constants, added item names in comments.
+//= 1.2 Fixed the problem where NPC are not enabled and chamber
+//=     will never open for the second try or use.
+//= 1.2a Fixed a typo. [Euphy]
+//= 1.3 Updated script, optimized. [Euphy]
+//= 1.3a Added temporary coordinate fix #distorted_space_1-1. [Euphy]
+//= 1.3b Added official coordinates. [Euphy]
+//= 1.4 Added GM management function. [Euphy]
+//= 1.5 Added VIP features. [Euphy]
+//============================================================
+
+-	script	#distorted_space_	-1,{
+OnTouch_:
+	if (job_wl > 1) {
+		mes " - 這裡有奇怪的扭曲空間 - ";
+		if (strnpcinfo(0) == "#distorted_space_1" && (Class == Job_Warlock || Class == Job_Warlock_T || Class == Job_Baby_Warlock)) {
+			close2;
+			if (countitem(6153) > 0)
+				warp "spl_in02",79,102;
+			end;
+		}
+		next;
+		switch(select("伸出手。:不理會。")) {
+		case 1:
+			mes " - 當我伸出手臂時，耳邊響起一陣刺耳的聲音，一股涼意包圍著我 - ";
+			close2;
+			warp "spl_in02",79,102;
+			end;
+		case 2:
+			mes " - 你不理會這個扭曲空間。 - ";
+			close;
+		}
+	}
+	if (BaseLevel > 94 && (strnpcinfo(0) == "#distorted_space_2" || BaseJob == Job_Wizard)) {
+		mes " - 這裡有奇怪的扭曲空間 - ";
+		next;
+		switch(select("搜索該區域。:不理會。")) {
+		case 1:
+			mes " - 這裡似乎什麼都沒有。但我能明顯感覺到附近有什麼東西... - ";
+			next;
+			switch(select("伸出手臂。:不理會。")) {
+			case 1:
+				mes " - 當我伸出手臂時，耳邊響起一陣刺耳的聲音，一股涼意包圍著我 - ";
+				close2;
+				warp "spl_in02",79,102;
+				end;
+			case 2:
+				mes " - 你決定不理會它。 - ";
+				close;
+			}
+		case 2:
+			mes " - 你不理會它。 - ";
+			close;
+		}
+	}
+	end;
+}
+//morocc,103,144,0	duplicate(#distorted_space_)	#distorted_space_1	139,1,1
+morocc,95,132,0	duplicate(#distorted_space_)	#distorted_space_1	139,1,1
+splendide,141,284,0	duplicate(#distorted_space_)	#distorted_space_2	139,1,1
+
+function	script	F_Warlock	{
+	mes "[助手]";
+	mes "咦！！！人類！？！";
+	mes "你是怎麼進來的？";
+	mes "這裡只有透過特殊的傳送門才能連結！";
+	next;
+	mes "[助手]";
+	mes "我不知道你是怎麼...";
+	mes "但在我的大師發現你之前我們得離開...！";
+	next;
+	mes "[???]";
+	mes "外面是什麼聲音？";
+	mes "我警告過他們在我冥想時要保持安靜。";
+	next;
+	mes "[助手]";
+	mes "咦！？！";
+	mes "大師...";
+	mes "沒什麼事...";
+	next;
+	mes "[大師]";
+	mes "喔?我面前有一個人類。";
+	next;
+	mes "[助手]";
+	mes "喔，這個東西？";
+	mes "我正準備把他帶出去。";
+	next;
+	mes "[大師]";
+	mes "尤普！！！";
+	next;
+	mes "[尤普]";
+	mes "是...！！";
+	next;
+	mes "[大師]";
+	mes "你身後有個傳送陣... 這是幻覺嗎？";
+	next;
+	mes "[尤普]";
+	mes "對不起！！！";
+	mes "是我的錯...";
+	next;
+	mes "[大師]";
+	mes "笨蛋...";
+	mes "等你把這人類送走後我再收拾你。";
+	next;
+	mes "[大師]";
+	mes "MushSartas Ir Cyamar";
+	mes "UdenLo";
+	if (BaseJob == Job_Wizard) {
+		next;
+		mes " - 綠髮妖精念誦了一段咒語。 - ";
+		mes " - 我感覺到有些特別的東西包圍著我。 - ";
+		specialeffect2 EF_DISPELL;
+		next;
+		mes "[大師]";
+		mes "喔，這挺有趣的。";
+		mes "你這人類怎麼敢抵抗我？";
+		next;
+		if (BaseLevel > 98 && JobLevel > 49) {
+			select("我不確定。你是誰？");
+			mes "[大師]";
+			mes "我是^000077咒術士^000000的領袖。";
+			mes "'^000077席拉 伊格諾羅利亞^000000'";
+			mes "如果你是個巫師，最好記住我的名字。";
+			next;
+			select("什麼是^000077咒術士^000000？");
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "喔...你感興趣嗎？";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "^000077咒術士^000000是使用約頓海姆巨人魔法的人。";
+			mes "無法用其他詞語來定義。";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "只有強大的魔法才能解釋。";
+			next;
+			select("我能成為咒術士嗎？");
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "你？";
+			mes "你想成為咒術士？";
+			mes "哈哈哈";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "你真有趣。";
+			mes "人類要成為咒術士是很困難的。";
+			mes "這股強大的力量會侵蝕你脆弱的身體。";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "如果你敢於面對死亡，你可以試著成為其中一員。";
+			next;
+			switch(select("我需要做什麼？:取消。")) {
+			case 1:
+				if (VIP_SCRIPT) {
+					callfunc "VIP_Third_Class";
+					set job_wl,2;
+					setquest 11106;
+					next;
+				}
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "你是認真的嗎？";
+				mes "你渴望力量對吧，人類。";
+				next;
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "對力量的強烈渴望讓你的靈魂更加美麗。";
+				next;
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "但是，我需要確認你是否有資格。";
+				next;
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "尤普！";
+				next;
+				mes "[尤普]";
+				mes "是！！";
+				next;
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "把這個給這人類。";
+				next;
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "去跟那個髮型奇怪的傢伙談談。";
+				mes "他會告訴你該怎麼做。";
+				set job_wl,2;
+				setquest 11106;
+				close;
+			case 2:
+				mes "[大師 席拉 伊格諾羅利亞]";
+				mes "很好。";
+				mes "你是一個人類，這才適合你。";
+				set job_wl,1;
+				close2;
+				warp "splendide",200,100;
+				end;
+			}
+		}
+		mes "[大師]";
+		mes "你的等級還太低了，根本不用考慮這個。";
+	}
+	close2;
+	warp "splendide",200,100;
+	end;
+}
+
+spl_in02,77,107,5	script	助手#Warlock1	446,{
+	if (job_wl == 0) {
+		callfunc "F_Warlock";
+		end;
+	} else if (job_wl == 1) {
+		mes "[尤普]";
+		mes "你...我們見過面。";
+		mes "你能想像我被大師罵得多慘嗎？！";
+		mes "如果你找我有事，給我走開！";
+		next;
+		switch(select("離開。:留下。")) {
+		case 1:
+			mes "[尤普]";
+			mes "離我遠一點...！";
+			close2;
+			warp "splendide",200,100;
+			end;
+		case 2:
+			mes "[尤普]";
+			mes "什麼？！";
+			mes "隨便你怎麼做...";
+			mes "大師到時候會收拾你。";
+			close;
+		}
+	} else if (job_wl == 2 || job_wl == 3) {
+		mes "[尤普]";
+		if (job_wl == 2) {
+			mes "親愛的大師！我的馬尾看起來很好笑嗎？！";
+			mes "喔，但我花了很多時間弄的！";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "太吵了。";
+			mes "我需要冥想";
+			mes "照我說的做。";
+			next;
+			mes "[尤普]";
+			mes "嗯..";
+			mes "喔，對！";
+			next;
+			mes "[尤普]";
+			mes "嘿，人類！";
+			mes "你想成為";
+			mes "咒術士嗎？";
+			next;
+		}
+		if (SkillPoint != 0) {
+			mes "首先，在繼續之前用完你所有剩餘的職業技能點數。";
+			set job_wl,3;
+			close;
+		}
+		mes "這是大師的決定";
+		mes "所以讓我知道你的想法。";
+		next;
+		mes "[尤普]";
+		mes "我們需要測試你的身體是否能承受成為一名咒術士。";
+		mes "所以你需要收集材料來證明自己。";
+		next;
+		mes "[尤普]";
+		mes "請收集^000077發光結晶^000000和^000077巨大布拉迪恩碎片^000000。";
+		next;
+		callsub L_Quest,1;
+		close;
+	} else if (job_wl == 4) {
+		if (countitem(6152) == 0 || countitem(6151) == 0)
+			callsub L_Quest,0;
+		else {
+			mes "[尤普]";
+			mes "我不能在這裡執行任務。我需要去我的實驗室。";
+			mes "我的實驗室位於史波浪壯麗的西北部。";
+		}
+		close;
+	} else if (job_wl == 5) {
+		mes "[尤普]";
+		mes "這顆石頭做得很好。";
+		mes "請去找我的大師。";
+		close;
+	} else {
+		mes "[尤普]";
+		mes "魔法之房是由魔法材料創造的。";
+		next;
+		mes "[尤普]";
+		mes "這種合成石的形狀會根據原料和處理方式的不同而有所差異。";
+		next;
+		mes "[尤普]";
+		mes "但大多數石頭都非常相似！";
+		mes "我們很難區分它們。";
+		next;
+		mes "[尤普]";
+		mes "連我都不知道這一切是如何運作的。";
+		close;
+	}
+
+L_Quest:
+	mes "[尤普]";
+	mes "狩獵時你必須裝備這些魔法石戒指才能獲得這些物品。";
+	mes "你需要裝備這些戒指去狩獵那加和布拉迪恩巨崙。";
+	next;
+	if (getarg(0)) {
+		mes "[尤普]";
+		mes "向我們展示你有多強。還有別忘了裝備這個。";
+		set job_wl,4;
+		getitem 2796,1; //Magical_Stone
+		getitem 2797,1;
+		//Magical_Stone_
+		changequest 11106,11107;
+		next;
+	}
+	mes "[尤普]";
+	mes "帶著這些石頭，否則你將無法回來！";
+	mes "小心點！";
+	next;
+	mes "[尤普]";
+	mes "如果你和大師旁邊的人說話，他會讓你出去。";
+	next;
+	mes "[尤普]";
+	mes "我的實驗室位於史波浪壯麗的西北部。收集好後把它們帶來給我。";
+	return;
+}
+
+spl_in02,60,231,5	script	尤普#Warlock	446,{
+	mes "[尤普]";
+	if (job_wl < 4) {
+		mes "你是誰？";
+		mes "滾出去！";
+		close;
+	} else if (job_wl == 4) {
+		mes "你回來了？";
+		next;
+		switch(select("我帶了材料來。:我弄丟了魔法石。:沒事。")) {
+		case 1:
+			mes "[尤普]";
+			if (countitem(6152) == 0 || countitem(6151) == 0) {
+				mes "......";
+				mes "......在哪裡？";
+				mes "別煩我！";
+				next;
+				mes "[尤普]";
+				mes "我們需要測試你的身體是否能承受成為一名咒術士。";
+				mes "所以你需要收集材料來證明自己。";
+				next;
+				mes "[尤普]";
+				mes "請收集^000077發光結晶^000000和^000077巨大布拉迪恩碎片^000000。";
+				next;
+				mes "[尤普]";
+				mes "狩獵時你必須裝備這些魔法石戒指才能獲得這些物品。";
+				mes "你需要裝備這些戒指去狩獵那加和布拉迪恩巨崙。";
+				next;
+				mes "[尤普]";
+				mes "帶著這些石頭，否則你將無法回來！";
+				mes "小心點！";
+				close;
+			} else if (countitem(6152) && countitem(6151)) {
+				if (isequipped(2796) || isequipped(2797)) {
+					mes "把魔法石還給我。";
+					close;
+				}
+				if (countitem(2796) == 0 || countitem(2797) == 0) {
+					mes "看來你沒有帶？";
+					mes "你弄丟了？";
+					next;
+					mes "[尤普]";
+					mes "請找到那顆石頭然後回來找我。";
+					close;
+				}
+				mes "太好了！所有材料都準備齊全了！";
+				mes "當我專心處理這顆石頭時，你能先回去找我的大師嗎？";
+				mes "等完成後我會跟上。";
+				delitem 2796,countitem(2796); //Magical_Stone
+				delitem 2797,countitem(2797); //Magical_Stone_
+				delitem 6152,countitem(6152); //Glittering_Crystal
+				delitem 6151,countitem(6151); //Peice_Of_Great_Bradium
+				set job_wl,5;
+				changequest 11107,11108;
+				close;
+			}
+		case 2:
+			mes "[尤普]";
+			mes "什麼？！";
+			mes "我叫你仔細檢查確保你有裝備它！";
+			next;
+			mes "[尤普]";
+			mes "請檢查你是弄丟了，還是已經裝備在身上。";
+			next;
+			switch(select("我找到了。:沒有。")) {
+			case 1:
+				mes "[尤普]";
+				mes "別耍我！";
+				mes "你有沒有帶很難看出來嗎！";
+				close;
+			case 2:
+				if ((isequipped(2796) == 0 && countitem(2796) == 0) || (isequipped(2797) == 0 && countitem(2797) == 0)) {
+					if (countitem(732) > 0) {
+						switch(select("給予3克拉鑽石。:算了。")) {
+						case 1:
+							mes "[尤普]";
+							mes "我會原諒你的過失。";
+							mes "請小心保管。";
+							delitem 732,1;
+							//Crystal_Jewel__
+							if (isequipped(2796) == 0 && countitem(2796) == 0)
+								getitem 2796,1; //Magical_Stone
+							if (isequipped(2797) == 0 && countitem(2797) == 0)
+								getitem 2797,1; //Magical_Stone_
+							close;
+						case 2:
+							mes "[尤普]";
+							mes "拿出你的誠意來！";
+							close;
+						}
+					}
+					mes "[尤普]";
+					mes "你怎麼能這麼說？";
+					mes "^000077道歉就對了^000000！";
+					mes "我想如果你給我一顆3克拉鑽石，我可以再給你一些石頭...";
+					close;
+				}
+				mes "[尤普]";
+				if (isequipped(2796) || isequipped(2797)) {
+					mes "請檢查你的裝備欄...";
+					mes "你確定你沒有嗎？";
+					close;
+				}
+				mes "那你現在拿著的是什麼...？";
+				close;
+			}
+		case 3:
+			mes "[尤普]";
+			mes "什麼...？";
+			mes "別煩我，我很忙。";
+			close;
+		}
+	} else {
+		mes "我正在專心冥想。";
+		mes "這樣我才能創造魔法。";
+		next;
+		mes "[尤普]";
+		mes "而且...你似乎在這方面比普通魔法師更有天賦。";
+		mes "也許如果我成為鍊金術師，我會比現在更好，你不覺得嗎？";
+		next;
+		mes "[尤普]";
+		mes "我正在學習以提升自己。";
+		next;
+		mes "[尤普]";
+		mes "如果我在『時間與魔法之房』裡，我就能趕上你的力量！";
+		mes "哈哈哈哈...";
+		close;
+	}
+}
+
+spl_in02,84,103,3	script	助手#Warlock2	439,{
+	if (job_wl == 0) {
+		callfunc "F_Warlock";
+		end;
+	} else if (job_wl == 1) {
+		mes "[助手]";
+		mes "人類！你想要什麼？";
+		close;
+	} else if (job_wl < 6) {
+		mes "[助手]";
+		mes "你現在找的人不是我。";
+		close;
+	} else if (job_wl == 6) {
+		if (checkweight(1201,1) == 0 || MaxWeight - Weight < 3500) {
+			mes "你攜帶太多物品了。";
+			mes "你最好減輕重量。";
+			close;
+		}
+		mes "[尤普]";
+		mes "這項測驗並不難。";
+		mes "我們可以在魔法房間創造魔法石。";
+		next;
+		mes "[尤普]";
+		mes "小心測驗房間裡的怪物。";
+		mes "這是封印了咒術士魔法的彩虹紅寶石。";
+		mes "在測驗時使用這些。";
+		next;
+		mes "[尤普]";
+		mes "我會引導你進入魔法房間。";
+		set job_wl,7;
+		changequest 11109,11110;
+		getitem 12384,5; //Rainbow_Ruby_Water
+		getitem 12386,5; //Rainbow_Ruby_Wind
+		getitem 12387,5; //Rainbow_Ruby_Earth
+		getitem 12385,5; //Rainbow_Ruby_Fire
+		close2;
+		warp "job3_war01",23,20;
+		end;
+	} else if (job_wl == 7) {
+		if (checkweight(1201,1) == 0 || MaxWeight - Weight < 3500) {
+			mes "你攜帶太多物品了。";
+			mes "你最好減輕重量。";
+			close;
+		}
+		mes "[尤普]";
+		mes "你想再試一次嗎？";
+		mes "讓我給你更多紅寶石。";
+		next;
+		if (countitem(12384)) delitem 12384,countitem(12384); //Rainbow_Ruby_Water
+		if (countitem(12386)) delitem 12386,countitem(12386); //Rainbow_Ruby_Wind
+		if (countitem(12387)) delitem 12387,countitem(12387); //Rainbow_Ruby_Earth
+		if (countitem(12385)) delitem 12385,countitem(12385); //Rainbow_Ruby_Fire
+		getitem 12384,5; //Rainbow_Ruby_Water
+		getitem 12386,5; //Rainbow_Ruby_Wind
+		getitem 12387,5; //Rainbow_Ruby_Earth
+		getitem 12385,5; //Rainbow_Ruby_Fire
+		close2;
+		warp "job3_war01",23,20;
+		end;
+	} else if (job_wl == 8) {
+		mes "[尤普]";
+		mes "你已經成功將空虛之石結晶化了。";
+		mes "我很抱歉之前懷疑你。";
+		if (countitem(12384)) delitem 12384,countitem(12384); //Rainbow_Ruby_Water
+		if (countitem(12386)) delitem 12386,countitem(12386); //Rainbow_Ruby_Wind
+		if (countitem(12387)) delitem 12387,countitem(12387); //Rainbow_Ruby_Earth
+		if (countitem(12385)) delitem 12385,countitem(12385); //Rainbow_Ruby_Fire
+		next;
+		mes "[尤普]";
+		mes "所有測驗都結束了。現在去跟大師 席拉 伊格諾羅利亞談談。";
+		mes "我很高興你成功了。";
+		set job_wl,9;
+		changequest 11111,11112;
+		close;
+	} else if (job_wl == 9) {
+		mes "[尤普]";
+		mes "所有測驗都結束了。現在去跟大師 席拉 伊格諾羅利亞談談。";
+		mes "我很高興你成功了。";
+		close;
+	} else {
+		mes "[尤普]";
+		mes "我能感覺到你擁有強大的魔法。";
+		mes "我真羨慕你。";
+		next;
+		mes "[尤普]";
+		mes "它值得一些特別的對待。";
+		mes "不要濫用它。";
+		close;
+	}
+}
+
+spl_in02,78,110,5	script	助手#Warlock3	437,{
+	if (job_wl == 0) {
+		callfunc "F_Warlock";
+		end;
+	}
+	mes "[助手]";
+	mes "......";
+	switch(job_wl) {
+		case 1: mes "如果你沒有什麼要對我說的，可以請你離開嗎？"; break;
+		case 2: mes "我沒有馬尾..."; break;
+		default: mes "大師在冥想時請保持安靜。"; break;
+	}
+	next;
+	switch(select("離開。:留下。")) {
+	case 1:
+		mes "[助手]";
+		mes "那麼請小心。";
+		close2;
+		warp "splendide",200,100;
+		end;
+	case 2:
+		mes "[助手]";
+		mes "......";
+		close;
+	}
+}
+
+spl_in02,80,108,5	script	公會大師#Warlock	465,{
+	if (job_wl == 0) {
+		callfunc "F_Warlock";
+		end;
+	} else if (job_wl == 1) {
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "你有什麼要問我的嗎？";
+		next;
+		switch(select("我如何能成為一名咒術士？:取消。")) {
+		case 1:
+			if (VIP_SCRIPT) {
+				callfunc "VIP_Third_Class";
+				set job_wl,2;
+				setquest 11106;
+				next;
+			}
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "你是認真的嗎？";
+			mes "你渴望力量對吧，人類。";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "對力量的強烈渴望讓你的靈魂更加美麗。";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "但是，我需要確認你是否有資格。";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "尤普！";
+			next;
+			mes "[尤普]";
+			mes "是！！";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "把這個給這人類。";
+			next;
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "去跟那個髮型奇怪的傢伙談談。";
+			mes "他會告訴你該怎麼做。";
+			set job_wl,2;
+			setquest 11106;
+			close;
+		case 2:
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "很好。";
+			mes "你是一個人類，這才適合你。";
+			close2;
+			warp "splendide",200,100;
+			end;
+		}
+	} else if (job_wl == 2) {
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "我正在冥想，我說過去跟尤普談，好嗎。";
+		mes "尤普綁著好笑的馬尾。";
+		mes "別打擾我。";
+		close;
+	} else if (job_wl == 3 || job_wl == 4) {
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "......";
+		next;
+		mes "[助手]";
+		mes "大師正在冥想。";
+		mes "安靜點。";
+		close;
+	} else if (job_wl == 5) {
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "我聽尤普說可以創造出一顆非常有用的石頭。";
+		next;
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "它可以用來製作能施放強大魔法的魔法飾品。";
+		next;
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "尤普。";
+		next;
+		mes "[尤普]";
+		mes "是，大師！";
+		next;
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "請帶他去魔法房間。";
+		next;
+		mes "[尤普]";
+		mes "是，大師。";
+		mes "請跟我來。";
+		emotion ET_AHA, getnpcid(0, "助手#Warlock2");
+		set job_wl,6;
+		changequest 11108,11109;
+		close;
+	} else if (job_wl < 9) {
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "......";
+		next;
+		mes "[尤普]";
+		mes "我的大師正在冥想，請跟我來。";
+		close;
+	} else if (job_wl == 9) {
+		if (BaseLevel < 99 || BaseJob != Job_Wizard) {
+			mes "[大師 席拉 伊格諾羅利亞]";
+			mes "嗯...？";
+			mes "你是怎麼來到這裡的...";
+			close;
+		}
+		if (checkweight(1201,1) == 0 || MaxWeight - Weight < 3500) {
+			mes "你攜帶太多物品了。";
+			mes "你最好減輕重量。";
+			close;
+		}
+		mes "[大師 席拉 伊格諾羅利亞]";
+		if (SkillPoint != 0) {
+			mes "除非你喜歡現在的職業，否則你應該用完所有技能點數。";
+			close;
+		}
+		if (ismounting()) {
+			mes "你正騎乘著寵物，";
+			mes "所以你無法轉職。";
+			mes "請解除騎乘狀態後再試一次！";
+			close;
+		}
+		mes "美麗的光芒...";
+		mes "別讓我對你失望...";
+		next;
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "你已經成為咒術士的一員了。";
+		mes "感到驕傲吧。";
+		next;
+		if (SkillPoint != 0) {
+			mes "^0000ff你還有剩餘的技能點數，請使用所有技能點數後再試一次！^000000";
+			close;
+		}
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "這顆結晶化的魔法石會保護你的安全。";
+		if (Class == Job_High_Wizard) {
+			if (JobLevel > 69) set job_wl,13;
+			else if (JobLevel > 59) set job_wl,12;
+			else set job_wl,11;
+		}
+		else set job_wl,10;
+		jobchange roclass(eaclass()|EAJL_THIRD);
+		completequest 11112;
+		getitem 5753,1; //Magic_Stone_Hat
+		getitem 2795,1; //Green_Apple_Ring
+		close;
+	} else if (job_wl > 9) {
+		mes "[大師 席拉 伊格諾羅利亞]";
+		mes "你適應咒術士的力量了嗎？";
+		mes "如果你不小心，你將會被自己的力量所吞噬。";
+		close;
+	}
+}
+
+job3_war01,22,22,7	script	尤普#WRR	439,{
+	mes "[尤普]";
+	mes "如果你要求艾貝茵把你送到魔法房間，他會送你去的。";
+	mes "在隊伍中等待進入魔法之房。";
+	close;
+}
+
+job3_war01,29,25,0	script	艾貝茵#WRR	437,{
+	mes "[艾貝茵]";
+	mes "你想參加測驗嗎？";
+	mes "如果你在等候室等待，你就能進入魔法之房。";
+	next;
+	mes "[艾貝茵]";
+	mes "如果房間裡有其他人，你只需要等一會兒。";
+	next;
+	switch(select("前往等候室。:去外面。")) {
+	case 1:
+		mes "[艾貝茵]";
+		mes "那麼請自己進入房間。";
+		mes "確保你有足夠的藥水來在測驗中存活，因為魔法之房裡的怪物非常強大。";
+		close;
+	case 2:
+		mes "[艾貝茵]";
+		mes "......";
+		mes "那我把你送到外面。";
+		mes "再見...";
+		close2;
+		warp "spl_in02",79,102;
+		end;
+	}
+}
+
+job3_war01,29,25,5	script	魔法之房#1	437,{
+	end;
+OnInit:
+	//disablenpc  "魔法之房#1";
+	hideonnpc "魔法之房#1";
+	waitingroom "The chamber of magic",20,"魔法之房#1::OnStartArena",1;
+	enablewaitingroomevent;
+	end;
+OnStartArena:
+	warpwaitingpc "job3_war02",29,25;
+	donpcevent "魔法之房#2::OnEnable";
+	initnpctimer;
+	disablewaitingroomevent;
+	end;
+OnTimer10000:
+	if (getmapusers("job3_war02") == 0) {
+		donpcevent "魔法之房#2::OnReset";
+		donpcevent "魔法之房#2::OnDisable";
+		stopnpctimer "魔法之房#2";
+		donpcevent "魔法之房#3::OnReset";
+		donpcevent "魔法之房#3::OnDisable";
+		stopnpctimer "魔法之房#3";
+		donpcevent "魔法之房#4::OnReset";
+		donpcevent "魔法之房#4::OnDisable";
+		stopnpctimer "魔法之房#4";
+		donpcevent "空虛之石#Warlock::OnReset";
+		donpcevent "空虛之石#Warlock::OnDisable";
+		stopnpctimer "空虛之石#Warlock";
+		stopnpctimer;
+		enablewaitingroomevent;
+		end;
+	}
+	initnpctimer;
+	end;
+OnEnable:
+	enablewaitingroomevent;
+	end;
+OnDisable:
+	disablewaitingroomevent;
+	end;
+}
+
+-	script	魔法之房#2	-1,{
+OnInit:
+	disablenpc();
+	end;
+OnEnable:
+	enablenpc();
+	monster "job3_war02",23,32,"魔法怪物",2047,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",23,21,"魔法怪物",2048,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",34,32,"魔法怪物",2049,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",34,21,"魔法怪物",2050,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",23,32,"魔法怪物",2047,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",23,21,"魔法怪物",2048,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",34,32,"魔法怪物",2049,1,strnpcinfo(0)+"::OnMyMobDead";
+	monster "job3_war02",34,21,"魔法怪物",2050,1,strnpcinfo(0)+"::OnMyMobDead";
+	initnpctimer;
+	end;
+OnReset:
+	killmonster "job3_war02",strnpcinfo(0)+"::OnMyMobDead";
+	end;
+OnDisable:
+	disablenpc();
+	end;
+OnMyMobDead:
+	if (mobcount("job3_war02",strnpcinfo(0)+"::OnMyMobDead") < 1) {
+		stopnpctimer;
+		mapannounce "job3_war02","怪物入侵已被阻止。",bc_map;
+		set .@str$, "魔法之房#"+((strnpcinfo(0) == "魔法之房#2")?"3":"4");
+		donpcevent .@str$+"::OnEnable";
+	}
+	end;
+OnTimer3000:
+	if (strnpcinfo(0) != "魔法之房#2") end;
+	mapannounce "job3_war02","一個魔法力量碎片已在魔法之房產生。",bc_map;
+	end;
+OnTimer4000:
+	mapannounce "job3_war02","保護這個房間免受怪物攻擊 5 分鐘。",bc_map;
+	end;
+OnTimer5000:
+	mapannounce "job3_war02","消滅所有的怪物，房間就會穩定下來。",bc_map;
+	end;
+OnTimer63000:
+	mapannounce "job3_war02","距離房間穩定還有 4 分鐘...",bc_map;
+	end;
+OnTimer123000:
+	mapannounce "job3_war02","距離房間穩定還有 3 分鐘...",bc_map;
+	end;
+OnTimer183000:
+	mapannounce "job3_war02","距離房間穩定還有 2 分鐘...",bc_map;
+	end;
+OnTimer243000:
+	mapannounce "job3_war02","距離房間穩定還有 1 分鐘...",bc_map;
+	end;
+OnTimer273000:
+	mapannounce "job3_war02","距離房間穩定還有 30 秒...",bc_map;
+	end;
+OnTimer283000:
+	mapannounce "job3_war02","距離房間穩定還有 20 秒...",bc_map;
+	end;
+OnTimer293000:
+	mapannounce "job3_war02","距離房間穩定還有 10 秒...",bc_map;
+	end;
+OnTimer303000:
+	mapannounce "job3_war02","魔法穩定失敗。",bc_map;
+	donpcevent "魔法之房#2::OnReset";
+	donpcevent "魔法之房#3::OnReset";
+	donpcevent "魔法之房#4::OnReset";
+	end;
+OnTimer304000:
+	mapwarp "job3_war02","spl_in02",79,102;
+	end;
+OnTimer305000:
+	donpcevent "魔法之房#2::OnDisable";
+	donpcevent "魔法之房#3::OnDisable";
+	donpcevent "魔法之房#4::OnDisable";
+	donpcevent "魔法之房#1::OnEnable";
+	stopnpctimer;
+	end;
+}
+-	duplicate(魔法之房#2)	魔法之房#3	-1
+
+-	script	魔法之房#4	-1,{
+OnInit:
+	disablenpc "魔法之房#4";
+	end;
+OnEnable:
+	enablenpc "魔法之房#4";
+	monster "job3_war02",23,32,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",23,21,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",34,32,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",34,21,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",23,32,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",23,21,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",34,32,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	monster "job3_war02",34,21,"魔法怪物",1002,1,"魔法之房#4::OnMyMobDead";
+	initnpctimer;
+	end;
+OnReset:
+	killmonster "job3_war02","魔法之房#4::OnMyMobDead";
+	end;
+OnDisable:
+	disablenpc "魔法之房#4";
+	end;
+OnMyMobDead:
+	if (mobcount("job3_war02","魔法之房#4::OnMyMobDead") < 1) {
+		mapannounce "job3_war02","一旦穩定下來，碎片就會向中心聚集。",bc_map;
+		stopnpctimer;
+		donpcevent "空虛之石#Warlock::OnEnable";
+	}
+	end;
+OnTimer4000:
+	mapannounce "job3_war02","保護這個房間免受怪物攻擊 1 分鐘。",bc_map;
+	end;
+OnTimer5000:
+	mapannounce "job3_war02","消滅所有的怪物，房間就會穩定下來。",bc_map;
+	end;
+OnTimer33000:
+	mapannounce "job3_war02","距離房間穩定還有 30 秒...",bc_map;
+	end;
+OnTimer43000:
+	mapannounce "job3_war02","距離房間穩定還有 20 秒...",bc_map;
+	end;
+OnTimer53000:
+	mapannounce "job3_war02","距離房間穩定還有 10 秒...",bc_map;
+	end;
+OnTimer58000:
+	mapannounce "job3_war02","距離房間穩定還有 5 秒...",bc_map;
+	end;
+OnTimer63000:
+	mapannounce "job3_war02","魔法穩定失敗。碎片失去了力量。",bc_map;
+	donpcevent "魔法之房#2::OnReset";
+	donpcevent "魔法之房#3::OnReset";
+	donpcevent "魔法之房#4::OnReset";
+	end;
+OnTimer64000:
+	mapwarp "job3_war02","spl_in02",79,102;
+	end;
+OnTimer65000:
+	donpcevent "魔法之房#2::OnDisable";
+	donpcevent "魔法之房#3::OnDisable";
+	donpcevent "魔法之房#4::OnDisable";
+	donpcevent "魔法之房#1::OnEnable";
+	stopnpctimer;
+	end;
+}
+
+-	script	空虛之石#Warlock	-1,{
+OnInit:
+	disablenpc "空虛之石#Warlock";
+	end;
+OnEnable:
+	enablenpc "空虛之石#Warlock";
+	donpcevent "魔法之房#2::OnReset";
+	donpcevent "魔法之房#2::OnDisable";
+	donpcevent "魔法之房#3::OnReset";
+	donpcevent "魔法之房#3::OnDisable";
+	donpcevent "魔法之房#4::OnReset";
+	donpcevent "魔法之房#4::OnDisable";
+	monster "job3_war02",29,27,"空虛之石",2035,1,"空虛之石#Warlock::OnMyMobDead";
+	initnpctimer;
+	end;
+OnReset:
+	killmonster "job3_war02","空虛之石#Warlock::OnMyMobDead";
+	end;
+OnDisable:
+	disablenpc "空虛之石#Warlock";
+	end;
+OnMyMobDead:
+	if (mobcount("job3_war02","空虛之石#Warlock::OnMyMobDead") < 1) {
+		mapannounce "job3_war02","空虛之石已經與足夠的魔法力量結晶化了。",bc_map;
+		set job_wl,8;
+		changequest 11110,11111;
+		donpcevent "空虛之石#Warlock::OnReset";
+		donpcevent "空虛之石#Warlock::OnDisable";
+		stopnpctimer;
+		donpcevent "艾貝茵#E1::OnEnable";
+		donpcevent "艾貝茵#E2::OnEnable";
+	}
+	end;
+OnTimer1000:
+	mapannounce "job3_war02","空虛之石需要用魔法結晶化。",bc_map;
+	end;
+OnTimer2000:
+	mapannounce "job3_war02","空虛之石會吸收任何投擲向它的魔法。",bc_map;
+	end;
+OnTimer3000:
+	mapannounce "job3_war02","你有 10 分鐘的時間用你的魔法將空虛之石結晶化。",bc_map;
+	end;
+OnTimer303000:
+	mapannounce "job3_war02","距離結晶化石頭還有 5 分鐘...",bc_map;
+	end;
+OnTimer363000:
+	mapannounce "job3_war02","距離結晶化石頭還有 4 分鐘...",bc_map;
+	end;
+OnTimer423000:
+	mapannounce "job3_war02","距離結晶化石頭還有 3 分鐘...",bc_map;
+	end;
+OnTimer483000:
+	mapannounce "job3_war02","距離結晶化石頭還有 2 分鐘...",bc_map;
+	end;
+OnTimer543000:
+	mapannounce "job3_war02","距離結晶化石頭還有 1 分鐘...",bc_map;
+	end;
+OnTimer573000:
+	mapannounce "job3_war02","距離結晶化石頭還有 30 秒...",bc_map;
+	end;
+OnTimer583000:
+	mapannounce "job3_war02","距離結晶化石頭還有 20 秒...",bc_map;
+	end;
+OnTimer593000:
+	mapannounce "job3_war02","距離結晶化石頭還有 10 秒...",bc_map;
+	end;
+OnTimer603000:
+	mapannounce "job3_war02","空虛之石結晶化失敗。",bc_map;
+	donpcevent "空虛之石#Warlock::OnReset";
+	end;
+OnTimer605000:
+	mapwarp "job3_war02","spl_in02",79,102;
+	end;
+OnTimer607000:
+	donpcevent "空虛之石#Warlock::OnDisable";
+	stopnpctimer;
+	donpcevent "魔法之房#1::OnEnable";
+	end;
+}
+
+-	script	艾貝茵#E1	-1,{
+OnInit:
+	disablenpc "艾貝茵#E1";
+	end;
+OnEnable:
+	initnpctimer;
+	end;
+OnDisable:
+	disablenpc "艾貝茵#E1";
+	end;
+OnTimer2000:
+	mapannounce "job3_war01","恭喜！你成功創造了一顆魔法水晶。",bc_map;
+	end;
+OnTimer3000:
+	mapannounce "job3_war01","魔法之房開始充滿魔法力量。",bc_map;
+	end;
+OnTimer6000:
+	donpcevent "艾貝茵#E1::OnDisable";
+	stopnpctimer;
+	donpcevent "魔法之房#1::OnEnable";
+	end;
+}
+
+-	script	艾貝茵#E2	-1,{
+OnInit:
+	disablenpc "艾貝茵#E2";
+	end;
+OnEnable:
+	initnpctimer;
+	end;
+OnDisable:
+	disablenpc "艾貝茵#E2";
+	end;
+OnTimer3000:
+	mapannounce "job3_war02","恭喜！你成功創造了一顆魔法水晶。",bc_map;
+	end;
+OnTimer5000:
+	mapannounce "job3_war02","魔法之房開始充滿魔法力量。",bc_map;
+	mapwarp "job3_war02","spl_in02",79,102;
+	end;
+OnTimer6000:
+	donpcevent "艾貝茵#E2::OnDisable";
+	stopnpctimer;
+	end;
+}
+
+job3_war01,1,2,0	script	按鈕女孩#wl	66,{
+	callfunc "F_GM_NPC";
+	switch(select("開啟競技場:關閉競技場:開啟魔法之房:關閉魔法之房:開啟空虛之石:關閉空虛之石:取消")) {
+	case 1:
+		mes "開啟競技場。";
+		donpcevent "魔法之房#1::OnEnable";
+		close;
+	case 2:
+		mes "關閉競技場。";
+		donpcevent "魔法之房#1::OnDisable";
+		close;
+	case 3:
+		mes "開啟魔法之房。";
+		donpcevent "魔法之房#2::OnEnable";
+		close;
+	case 4:
+		mes "關閉魔法之房。";
+		donpcevent "魔法之房#2::OnReset";
+		donpcevent "魔法之房#2::OnDisable";
+		donpcevent "魔法之房#3::OnReset";
+		donpcevent "魔法之房#3::OnDisable";
+		donpcevent "魔法之房#4::OnReset";
+		donpcevent "魔法之房#4::OnDisable";
+		close;
+	case 5:
+		mes "開啟空虛之石。";
+		donpcevent "空虛之石#Warlock::OnEnable";
+		close;
+	case 6:
+		mes "關閉空虛之石。";
+		donpcevent "空虛之石#Warlock::OnReset";
+		donpcevent "空虛之石#Warlock::OnDisable";
+		close;
+	case 7:
+		close;
+	}
+}
+
+spl_fild02,0,0	monster	布拉迪恩巨崙	2049,20,5000
+spl_fild02,0,0	monster	那加	2047,20,5000

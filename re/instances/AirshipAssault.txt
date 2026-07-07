@@ -1,0 +1,1377 @@
+//===== rAthena Script =======================================
+//= Airship Assault Instance Script
+//===== Description ==========================================
+//= Heroes Trail Part-III 'Airship Assault' instance
+//===== Additional Comments: ================================= 
+//= [Official Conversion]
+//= 1.0 First Version [Ziu]
+//= 1.1 Fix Explosion Effect and add respawn attack visual mob [Ziu]
+//= 1.1a Change close;-> end;
+//= 2.0 English version [Secretdataz/Capuche]
+//= 2.1 Clean-up [Secretdataz]
+//= 2.2 Dialogues clean-ups [Aleos]
+//============================================================
+
+dali02,136,79,3	script	冒險家 里昂#air1	4_M_DST_GRAND,{
+	mes "[冒險家 里昂]";
+	mes "嗯...經過這幾天的觀察，這裡似乎是個印有飛空艇記憶的裝置。";
+	next;
+	mes "[冒險家 里昂]";
+	mes "...那不一樣。我沒有更多的情報了...";
+	close;
+}
+
+dali02,142,81,3	script	次元裝置#air1	PORTAL,{
+	if (checkquest(15050,PLAYTIME) == 2) {
+		erasequest 15050;// Memorial Dungeon: Airship Assault
+		erasequest 15051;
+	}
+	else if (checkquest(15051,PLAYTIME) == 2) {// Memorial Dungeon: Airship Assault
+		mes "^ff0000在最後一次進入的 23 小時內，無法再次進入此紀念迷宮。^000000";
+		close;
+	}
+	.@party_id = getcharid(1);
+	.@p_name$ = getpartyname(.@party_id);
+	.@md_name$ = "襲擊飛空艇";
+	if (BaseLevel < 125) {
+		mes "^ff0000等級 125 以下的玩家無法進入此迷宮。^000000";
+		close;
+	}
+	if (.@party_id < 1) {
+		mes "^ff0000為了進入，你必須建立或加入一個至少 1 人的隊伍。^000000";
+		close;
+	}
+	if (is_party_leader() == false) {
+		mes "^ff0000這個紀念迷宮僅限 1 人遊玩。只有隊長可以進入。^000000";
+		close;
+	}
+	.@s = select( "啟動裝置", "使用裝置", "取消" );
+	if (is_party_leader(.@party_id) == false) {
+		mes "^ff0000這個紀念迷宮僅限 1 人遊玩。只有隊長可以進入。^000000";
+		close;
+	}
+	switch(.@s) {
+	case 1:
+		if (instance_create(.@md_name$) < 0) {
+			mes "隊伍名稱: " + getpartyname( getcharid(1) );
+			mes "角色名稱: " + strcharinfo(0);
+			mes "^0000ff" + .@md_name$ + "^000000 - 建立失敗！";
+			close;
+		}
+		mes "^ff0000次元裝置啟動後^000000";
+		mes "^ff0000請再次點擊進入。^000000";
+		close;
+	case 2:
+		switch( instance_enter(.@md_name$) ) {
+		case IE_OK:
+			if (isbegin_quest(15050) == 0) {
+				setquest 15050;// Memorial Dungeon: Airship Assault
+				setquest 15051;// Memorial Dungeon: Airship Assault
+			}
+			mapannounce "dali02", "" + strcharinfo(0) + "，隊伍 " + getpartyname( getcharid(1) ) + " 的成員，已進入副本 " + .@md_name$ + "。", bc_map,"0x00ff99";
+			specialeffect2 EF_WARP;
+			// warp "1@air1",244,73;
+			end;
+		case IE_NOMEMBER:
+			mes "^ff0000為了進入，你必須建立或加入一個至少 1 人的隊伍。^000000";
+			close;
+		case IE_NOINSTANCE:
+			mes "^ff0000隊長尚未啟動裝置。^000000";
+			close;
+		case IE_OTHER:
+			mes "發生了未知的錯誤。";// Custom
+			close;
+		}
+	case 3:
+		end;
+	}
+}
+
+// Warps
+1@air1,253,54,0	warp	warp1#air1	2,2,1@air1,91,68
+1@air1,104,72,0	warp	warp2a#air1	2,2,1@air1,101,200
+1@air1,104,52,0	warp	warp2b#air1	2,2,1@air1,101,176
+1@air1,103,200,0	warp	warp3a#air1	2,2,1@air2,104,52
+1@air1,103,176,0	warp	warp3b#air1	2,2,1@air2,104,52
+1@air2,88,67,0	warp	warp4a#air2	2,2,1@air2,247,53
+1@air2,244,73,0	warp	warp5a#air2	2,2,dali02,137,82
+
+// Entrance
+1@air1,240,57,3	script	洛基#air1	4_M_ROKI2,{
+	if ('airship_status == 0) {
+		cutin "ep14_roki02",2;
+		mes "[洛基]";
+		mes "...真慶幸這裡沒有那些討厭的東西...";
+		close3;
+	}
+	cutin "ep14_roki02",2;
+	mes "[洛基]";
+		mes "...無論如何我都會守住這裡。你們快到飛空艇下層去...！！";
+	close3;
+}
+
+1@air1,235,57,5	script	芬里爾#air1	4_F_FENRIR,{
+	if ('airship_status == 0) {
+		cutin "fenrir_a",2;
+		mes "[芬里爾]";
+		mes "透過機械的力量在空中飛行...科技的發展真是不可思議。";
+		next;
+		mes "[芬里爾]";
+		mes "但我感覺到某種力量...我想這艘飛空艇無法單靠科技飛行。";
+		close3;
+	}
+	cutin "fenrir_b",2;
+	mes "[芬里爾]";
+	mes "我會在這裡對付他們。查爾斯，你和伊莉絲到飛空艇的下層去！";
+	close3;
+}
+
+1@air1,215,67,5	script	伊莉絲#air1	4_F_IRIS,{ end; }
+1@air1,214,66,5	duplicate(伊莉絲#air1)	查爾斯#air1	4_M_CHAOS
+
+1@air1,217,67,3	script	船長 裴陸克#air1	4_M_REINDEER,{
+	if ('airship_status == 0) {
+		cutin "h_iris02",2;
+		mes "[伊莉絲]";
+		mes "哇?太棒了！！風好涼爽啊?！！";
+		mes "萬歲?我們正在天空中飛翔！而且還是免費的！";
+		next;
+		mes "[伊莉絲]";
+		mes "這艘巨大的船不需要魔法就能飛行，難道不覺得神奇嗎？查爾斯？";
+		next;
+		cutin "h_chaos02",2;
+		mes "[查爾斯]";
+		mes "......";
+		next;
+		cutin "h_iris02",2;
+		mes "[伊莉絲]";
+		mes "...？？查爾斯？";
+		next;
+		cutin "h_chaos02",2;
+		mes "[查爾斯]";
+		mes ".....賢者卡德蒙..";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "你到底有沒有在聽我說話啊！！！！";
+		next;
+		cutin "h_chaos03",2;
+		mes "[查爾斯]";
+		mes "呃啊！啊啊?！！";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "哼！這就是你心不在焉的下場！";
+		next;
+		cutin "h_chaos03",2;
+		mes "[查爾斯]";
+		mes "啊...伊莉絲！！妳是想殺了我嗎?！！";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "哼！我才不管你是死是活呢...";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "喂！！不准在船上胡鬧！！";
+		mes "這就是年輕人類的毛病。一點規矩都沒有！再搗亂我就把你們全扔下去！！";
+		next;
+		cutin "h_iris02",2;
+		mes "[伊莉絲]";
+		mes "哎呀...順帶一提，船長，這艘大飛空艇是怎麼在天空飛行的？真是太神奇了！";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "咦？問得好。";
+		mes "如妳所見，我們加熱大型鍋爐把水煮沸，然後利用蒸汽的壓力來推動活塞，活塞轉動齒輪，進而帶動渦輪旋轉螺旋槳。";
+		next;
+		cutin "h_iris02",2;
+		mes "[伊莉絲]";
+		mes "呃...原來這艘大船是這樣浮起來的...但神秘感全沒了。我還以為會有什麼神秘的裝置...有點失望...";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "沒錯。這艘大船不可能只靠蒸汽飛在天上。所以它使用了一個稱為『盧恩引擎』的放大器。";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "盧恩引擎？那是什麼？";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "這是一個使用魔法石頭的裝置。";
+		mes "傳說中好像是破碎心靈掉落的碎片...真是荒謬的傳說，不過那不重要...";
+		next;
+		mes "[船長 裴陸克]";
+		mes "那塊石頭就是所謂的『伊美樂之淚』。如果與蒸汽機等火車頭引擎結合，石頭散發出的盧恩之力就能放大能量。";
+		next;
+		mes "[船長 裴陸克]";
+		mes "老實說，說這艘船是靠一塊拇指大小的石頭推動的也不為過。它擁有不可思議的力量。";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "那個小東西...！！！";
+		next;
+		cutin "ep14_roki02",2;
+		mes "[洛基]";
+		mes "......咦？";
+		mes "有東西朝這邊過來了...";
+		next;
+		cutin "",255;
+		mes "[守衛]";
+		mes "警戒！！警戒！！七點鐘方向有大型雙足飛龍部隊！！";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "什麼？！";
+		next;
+		cutin "",255;
+		mes "[守衛]";
+		mes "搗...搗蛋鬼！！搗蛋鬼從雙足飛龍上降落了！！";
+		for ( .@i = 1; .@i <= 8; .@i++ )
+			enablenpc instance_npcname("搗蛋鬼#" + .@i + "air1");
+		enablenpc instance_npcname("狂暴轉子#1air1");
+		enablenpc instance_npcname("狂暴轉子#2air1");
+		enablenpc instance_npcname("貝勒斯#1air1");
+		enablenpc instance_npcname("貝勒斯#2air1");
+		enablenpc instance_npcname("雙足飛龍#air1");
+		'airship_status = 1;
+		next;
+	}
+	if ('airship_status == 1) {
+		cutin "h_chaos01",2;
+		mes "[查爾斯]";
+		mes "嗯...現在是怎樣？";
+		next;
+		cutin "h_arcana02",2;
+		mes "[阿爾卡娜]";
+		mes "哈哈哈哈?讓你們久等了！！";
+		mes "美麗的魔女阿爾卡娜帶來的驚喜空降怪物秀！！";
+		next;
+		cutin "h_chaos03",2;
+		mes "[查爾斯]";
+		mes "什...什麼秀？";
+		next;
+		cutin "h_arcana02",2;
+		mes "[阿爾卡娜]";
+		mes "現在...我們開始吧！搗蛋鬼們?！！";
+		mes "派對時間到了?！！";
+		next;
+		cutin "",255;
+		mes "[守衛]";
+		mes "船..船長！事情嚴重了！";
+		mes "搗蛋鬼遍佈整艘船了！！";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "什麼？！這些是搗蛋鬼？！";
+		mes "你們這些混蛋！！現在給我下來！！";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "船長。不需要這麼激動。";
+		mes "搗蛋鬼只是喜歡擺弄機器的怪物而已。更確切地說...";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "妳根本不知道妳在說什麼！！";
+		mes "我們現在可是在 8000 英尺的高空！！即使是輕微的故障也可能導致致命的墜毀！";
+		next;
+		cutin "",255;
+		mes "[守衛]";
+		mes "啊！！一號後方引擎！！";
+		mes "...事情嚴重了！他們正朝著引擎室前進！我們必須保護盧恩引擎！！";
+		next;
+		cutin "fly_felrock2",2;
+		mes "[船長 裴陸克]";
+		mes "可惡...我把武器放在哪了...";
+		mes "喂，人類！！幫我擋住那些討厭鬼，我去船長室找我的武器！！";
+		next;
+		mes "[船長 裴陸克]";
+		mes "我們尤其要阻止他們靠近盧恩引擎！！如果引擎被摧毀，這艘船就再也飛不起來了！！";
+		next;
+		mes "[船長 裴陸克]";
+		mes "可惡...要是我的武器在就好了...";
+		next;
+		disablenpc instance_npcname("船長 裴陸克#air1");
+		cutin "h_chaos02",2;
+		mes "[查爾斯]";
+		mes "伊莉絲！！我們去下層的引擎室！洛基和芬里爾，守住這裡！";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "喔...好！沒問題...我們走！！";
+		close2;
+		cutin "",255;
+		if ('airship_status == 1)
+			donpcevent instance_npcname("#airshipputmob1") + "::OnStart";
+	}
+	end;
+}
+
+1@air1,236,57,3	duplicate(伊莉絲#air1)	搗蛋鬼#1air1	3176
+1@air1,239,57,5	duplicate(伊莉絲#air1)	搗蛋鬼#2air1	3176
+1@air1,230,50,5	duplicate(伊莉絲#air1)	搗蛋鬼#3air1	3176
+1@air1,226,62,3	duplicate(伊莉絲#air1)	搗蛋鬼#4air1	3176
+1@air1,241,48,3	duplicate(伊莉絲#air1)	搗蛋鬼#5air1	3176
+1@air1,225,40,7	duplicate(伊莉絲#air1)	搗蛋鬼#6air1	3176
+1@air1,236,48,7	duplicate(伊莉絲#air1)	搗蛋鬼#7air1	3176
+1@air1,224,66,5	duplicate(伊莉絲#air1)	搗蛋鬼#8air1	3176
+1@air1,213,75,5	duplicate(伊莉絲#air1)	雙足飛龍#air1	3180
+1@air1,218,78,3	duplicate(伊莉絲#air1)	貝勒斯#1air1	3178
+1@air1,208,78,5	duplicate(伊莉絲#air1)	貝勒斯#2air1	3179
+1@air1,200,78,5	duplicate(伊莉絲#air1)	狂暴轉子#1air1	3175
+1@air1,223,78,3	duplicate(伊莉絲#air1)	狂暴轉子#2air1	3175
+
+// Step 1
+1@air1,0,0,0	script	#airshipputmob1	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#airshipputmob1");
+	enablenpc instance_npcname("旅行的騎士#air1");
+	enablenpc instance_npcname("昏倒的醉漢#air1");
+	enablenpc instance_npcname("用餐的富豪#a");
+	enablenpc instance_npcname("搭便車的吟遊詩人#air1");
+	enablenpc instance_npcname("飛空艇餐廳經理#air1");
+	enablenpc instance_npcname("賭博鬼#air1");
+	'airship_status = 2;
+	initnpctimer;
+	end;
+OnTimer500:
+	disablenpc instance_npcname("伊莉絲#air1");
+	disablenpc instance_npcname("查爾斯#air1");
+	mapannounce 'map_air1$, "敵人突然出現，並企圖摧毀飛空艇。", bc_map,"0xFFFF00";
+	
+	enablenpc instance_npcname("warp1#air1");
+	.@label$ = instance_npcname("#airshipputmob1") + "::OnMyMobDead";
+	monster 'map_air1$,113,66, "凝視者",3177,1, .@label$;
+	monster 'map_air1$,113,58, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 94,76, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 96,46, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 67,69, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 67,54, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 67,30, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 46,57, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 44,64, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 35,45, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 25,65, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 25,63, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 25,61, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 36,79, "凝視者",3177,1, .@label$;
+	monster 'map_air1$, 63,91, "凝視者",3177,1, .@label$;
+	monster 'map_air1$,106,56, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$,115,68, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 95,64, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 96,56, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 82,77, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 63,30, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 44,61, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 42,53, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 33,54, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 18,65, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 18,61, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 18,56, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 32,71, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 69,90, "狂暴轉子",3175,1, .@label$;
+	monster 'map_air1$, 84,45, "狂暴轉子",3175,1, .@label$;
+	end;
+OnTimer1500:
+	mapannounce 'map_air1$, "前往飛空艇底層並擊敗敵人。", bc_map,"0xFFFF00";
+	end;
+OnTimer2500:
+	mapannounce 'map_air1$, "必須擊敗同一層的所有敵人才能繼續前進。", bc_map,"0xFFFF00";
+	stopnpctimer;
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_air1$, instance_npcname("#airshipputmob1") + "::OnMyMobDead" ) < 1) {
+		mapannounce 'map_air1$, "此樓層的所有敵人都已被擊敗。請前往下一層。", bc_map,"0xFFFF00";
+		disablenpc instance_npcname("#airshipputmob1");
+		donpcevent instance_npcname("#airshipputmob2") + "::OnStart";
+		'airship_status = 3;
+	}
+	end;
+}
+
+1@air1,120,62,3	script	旅行的騎士#air1	4_M_JOB_KNIGHT1,{
+	mes "[旅行的騎士]";
+	mes "這些是什麼東西？";
+	mes "我應該把它們全砍了嗎？...不，捲入這種事拿到的錢太少了...";
+	close2;
+	emotion ET_OHNO;
+	end;
+}
+
+1@air1,95,47,3	script	昏倒的醉漢#air1	4_M_LIEMAN,{
+	mes "[昏倒的醉漢]";
+	mes "呃...喝醉了...打嗝";
+	mes "....呼嚕...Zzz";
+	close2;
+	emotion ET_CONFUSE;
+	end;
+}
+
+1@air1,75,71,5	script	用餐的富豪#a	1_M_JOBTESTER,{
+	mes "[用餐的富豪]";
+	mes "什...這些怪物是什麼？！";
+	mes "竟敢打擾我寶貴的用餐時間！守衛！你在哪裡！";
+	close;
+}
+
+1@air1,61,88,5	script	搭便車的吟遊詩人#air1	1_M_BARD,{
+	mes "[搭便車的吟遊詩人]";
+	mes "哇...太華麗了?太奇妙了?";
+	mes "連爆炸的船都這麼不可思議?哇?";
+	close;
+}
+
+1@air1,46,61,5	script	飛空艇餐廳經理#air1	1_M_PUBMASTER,{
+	mes "[飛空艇餐廳經理]";
+	mes "他們看起來可能很嚇人，但這些怪物也是我餐廳的顧客。";
+	mes "怪物客人，您需要點什麼？";
+	next;
+	mes "[飛空艇餐廳經理]";
+	mes "啊...呃啊！救命啊！！";
+	close;
+}
+
+1@air1,28,67,5	script	賭博鬼#air1	4_M_YURI,{
+	mes "[賭博鬼]";
+	mes "喂！別碰我的牌！";
+	mes "把你的手和脖子砍下來！";
+	next;
+	mes "[賭博鬼]";
+	mes "咦..？！";
+	mes "我才剛找到手感，這些怪物就跑出來了？！是不是看我贏了點錢就想搶劫啊？蛤？！";
+	close;
+}
+
+// Step 2
+1@air1,0,0,0	script	#airshipputmob2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#airshipputmob2");
+	enablenpc instance_npcname("飛空艇船員#1air1");
+	enablenpc instance_npcname("飛空艇船員#2air1");
+	enablenpc instance_npcname("國王的護衛#1air1");
+	enablenpc instance_npcname("國王的護衛#2air1");
+	enablenpc instance_npcname("觀光客#1air1");
+	enablenpc instance_npcname("觀光客#2air1");
+	enablenpc instance_npcname("小國國王#1air1");
+	enablenpc instance_npcname("warp2a#air1");
+	enablenpc instance_npcname("warp2b#air1");
+	.@label$ = instance_npcname("#airshipputmob2") + "::OnMyMobDead";
+	monster 'map_air1$,111,190, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$,120,190, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 97,198, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 97,201, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 82,191, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 82,199, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 66,197, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 67,161, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 54,173, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 69,213, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 43,175, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 36,190, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 41,202, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 26,195, "搗蛋鬼",3176,1, .@label$;
+	monster 'map_air1$, 20,193, "搗蛋鬼",3176,1, .@label$;
+
+	monster 'map_air1$, 82,186, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 81,202, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 97,178, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 97,175, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 67,180, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 65,157, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 64,212, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 37,173, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 37,201, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 32,186, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 20,181, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 18,186, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$, 55,200, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$,115,184, "貝勒斯",3179,1, .@label$;
+	monster 'map_air1$,115,189, "貝勒斯",3179,1, .@label$;
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_air1$, instance_npcname("#airshipputmob2") + "::OnMyMobDead" ) < 1) {
+		mapannounce 'map_air1$, "此樓層的所有敵人都已被擊敗。前往引擎室入口。", bc_map,"0xFFFF00";
+		enablenpc instance_npcname("伊莉絲#2air1");
+		enablenpc instance_npcname("查爾斯#2air1");
+		enablenpc instance_npcname("搗蛋鬼#2aair1");
+		disablenpc instance_npcname("#airshipputmob2");
+		'airship_status = 4;
+	}
+	end;
+}
+
+1@air1,93,193,3	script	飛空艇船員#1air1	4_M_EIN_SOLDIER,{
+	mes "[飛空艇船員]";
+	mes "這裡是引擎室的入口。阻止他們進去！";
+	close;
+}
+
+1@air1,22,182,7	script	飛空艇船員#2air1	4_M_EIN_SOLDIER,{
+	mes "[飛空艇船員]";
+	mes "可惡...他們數量太多了！引擎室可能會被攻陷！！";
+	close;
+}
+
+1@air1,43,191,4	script	國王的護衛#1air1	8W_SOLDIER,{
+	mes "[國王的護衛]";
+	mes "無論發生什麼事，我們都絕不能吵醒熟睡的國王！";
+	close;
+}
+1@air1,39,191,4	duplicate(國王的護衛#1air1)	國王的護衛#2air1	8W_SOLDIER
+
+1@air1,58,197,3	script	觀光客#1air1	4_M_LIEMAN,{
+	mes "[" + strnpcinfo(1) + "]";
+	mes "....呼嚕...Zzz";
+	close;
+}
+1@air1,49,169,5	duplicate(觀光客#1air1)	觀光客#2air1	4_M_LIEMAN
+1@air1,42,205,3	duplicate(觀光客#1air1)	小國國王#1air1	4_M_TRISTAN
+
+1@air1,88,187,5	duplicate(伊莉絲#air1)	查爾斯#2air1	4_M_CHAOS
+1@air1,93,188,5	duplicate(伊莉絲#air1)	搗蛋鬼#2aair1	3176
+
+1@air1,88,189,5	script	伊莉絲#2air1	4_F_IRIS,{
+	if ('airship_status == 4) {
+		cutin "h_chaos02",2;
+		mes "[查爾斯]";
+		mes "可惡...他們已經逼近到這裡了！多虧有你們，盧恩引擎才得以保全。";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "啊...糟了！！有一隻搗蛋鬼正朝著引擎室跑去！！";
+		next;
+		cutin "h_chaos03",2;
+		mes "[查爾斯]";
+		mes ".....！！我們必須阻止他！！";
+		next;
+		cutin "",255;
+		mes "[搗蛋鬼]";
+		mes "吱吱..！！";
+		if ('airship_status == 4) {
+			hideonnpc instance_npcname("搗蛋鬼#2aair1");
+			donpcevent instance_npcname("#airshipputmob3") + "::OnStart";
+			donpcevent instance_npcname("firecontrol#air2") + "::OnStart";
+			'airship_status = 5;
+		}
+		next;
+	}
+	if ('airship_status == 5) {
+		specialeffect EF_SUI_EXPLOSION,AREA, instance_npcname("搗蛋鬼#2aair1");
+		mes "- 砰！砰砰！";
+		next;
+		cutin "h_iris01",2;
+		mes "[伊莉絲]";
+		mes "咿呀！！";
+		next;
+		cutin "",255;
+		mes "[船員]";
+		mes "呃啊！盧恩引擎！！引擎室爆炸了！！滅火小組！快滅火！！";
+		next;
+		cutin "h_chaos02",2;
+		mes "[查爾斯]";
+		mes "可惡！！這裡很危險！我們先離開這裡！伊莉絲，快點！！";
+		close2;
+		// 'airship_status = 6;// no consequence
+		cutin "",255;
+		disablenpc instance_npcname("伊莉絲#2air1");
+		disablenpc instance_npcname("查爾斯#2air1");
+		initnpctimer;
+	}
+	end;
+OnTimer1000:
+	mapannounce 'map_air1$, "一邊擊退敵人，一邊前往飛空艇的甲板。", bc_map,"0xFFFF00";
+	stopnpctimer;
+	end;
+}
+
+// Step 3
+1@air2,0,0,0	script	#airshipputmob3	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("#airshipputmob3");
+	enablenpc instance_npcname("warp3a#air1");
+	enablenpc instance_npcname("warp3b#air1");
+	enablenpc instance_npcname("昏倒的醉漢#air2");
+	enablenpc instance_npcname("用餐的富豪#b");
+	enablenpc instance_npcname("旅行的騎士#air2");
+	enablenpc instance_npcname("搭便車的吟遊詩人#air2");
+	enablenpc instance_npcname("賭博鬼#air2");
+	enablenpc instance_npcname("飛空艇餐廳經理#air2");
+
+	.@label$ = instance_npcname("#airshipputmob3") + "::OnMyMobDead";
+	monster 'map_air2$,115,68, "凝視者",3177,1, .@label$;
+	monster 'map_air2$,106,56, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 95,64, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 96,56, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 84,45, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 63,30, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 76,77, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 69,90, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 50,57, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 42,53, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 32,71, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 18,65, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 18,61, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 18,56, "凝視者",3177,1, .@label$;
+	monster 'map_air2$, 33,54, "凝視者",3177,1, .@label$;
+
+	monster 'map_air2$,113,66, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$,113,58, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 94,76, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 96,46, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 67,30, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 67,54, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 67,69, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 63,91, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 51,50, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 36,79, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 25,65, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 25,63, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 25,61, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 30,45, "貝勒斯",3178,1, .@label$;
+	monster 'map_air2$, 38,72, "貝勒斯",3178,1, .@label$;
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_air2$, instance_npcname("#airshipputmob3") + "::OnMyMobDead" ) < 1) {
+		mapannounce 'map_air2$, "此樓層的所有敵人都已被擊敗。前往甲板。", bc_map,"0xFFFF00";
+		enablenpc instance_npcname("warp4a#air2");
+		enablenpc instance_npcname("伊莉絲#air2");
+		enablenpc instance_npcname("芬里爾#air2");
+		enablenpc instance_npcname("雙足飛龍#air2");
+		enablenpc instance_npcname("雙足飛龍#2air2");
+		enablenpc instance_npcname("雙足飛龍#3air2");
+		enablenpc instance_npcname("貝勒斯#1air2");
+		enablenpc instance_npcname("貝勒斯#2air2");
+		enablenpc instance_npcname("狂暴轉子#1air2");
+		enablenpc instance_npcname("狂暴轉子#2air2");
+		donpcevent instance_npcname("firecontrol2#air2") + "::OnStart";
+		disablenpc instance_npcname("#airshipputmob3");
+		'airship_status = 6;
+	}
+	end;
+}
+
+1@air2,95,47,3	duplicate(昏倒的醉漢#air1)	昏倒的醉漢#air2	4_M_LIEMAN
+1@air2,75,71,5	duplicate(用餐的富豪#a)	用餐的富豪#b	1_M_JOBTESTER
+
+1@air2,120,62,3	script	旅行的騎士#air2	4_M_JOB_KNIGHT1,{
+	mes "[旅行的騎士]";
+	mes "啊.. 呃啊！！";
+	mes "要爆炸了！必須過去...我必須逃到另一邊那艘飛空艇上！！";
+	close;
+}
+
+1@air2,61,88,5	script	搭便車的吟遊詩人#air2	1_M_BARD,{
+	mes "[搭便車的吟遊詩人]";
+	mes "哇...太華麗了?太奇妙了?";
+	mes "連爆炸的船都這麼不可思議?哇?";
+	close;
+}
+
+1@air2,28,67,5	script	賭博鬼#air2	4_M_YURI,{
+	mes "[賭博鬼]";
+	mes "這是什麼？火？";
+	mes "啊啊啊啊啊?";
+	close;
+}
+
+1@air2,46,61,5	script	飛空艇餐廳經理#air2	1_M_PUBMASTER,{
+	mes "[飛空艇餐廳經理]";
+	mes "這艘船.. 要墜毀了嗎..";
+	mes "然而我會與這艘船共存亡。我與這艘船是一體的！";
+	next;
+	mes "[飛空艇餐廳經理]";
+	mes "啊...呃啊！救命啊！！";
+	close;
+}
+
+// Step 4
+1@air2,236,57,3	script	搗蛋鬼#1air2	3176,{
+	end;
+OnExplosion1:
+	specialeffect EF_SUI_EXPLOSION;
+	sleep 500;
+	specialeffect EF_SUI_EXPLOSION,AREA, instance_npcname("搗蛋鬼#2air2");
+	sleep 500;
+	specialeffect EF_SUI_EXPLOSION,AREA, instance_npcname("搗蛋鬼#3air2");
+	end;
+OnExplosion2:
+	specialeffect EF_SUI_EXPLOSION;
+	hideonnpc instance_npcname("搗蛋鬼#1air2");
+	sleep 500;
+	specialeffect EF_SUI_EXPLOSION,AREA, instance_npcname("搗蛋鬼#2air2");
+	hideonnpc instance_npcname("搗蛋鬼#2air2");
+	sleep 500;
+	specialeffect EF_SUI_EXPLOSION,AREA, instance_npcname("搗蛋鬼#3air2");
+	hideonnpc instance_npcname("搗蛋鬼#3air2");
+	end;
+}
+
+1@air2,239,57,5	duplicate(伊莉絲#air1)	搗蛋鬼#2air2	3176
+1@air2,230,50,5	duplicate(伊莉絲#air1)	搗蛋鬼#3air2	3176
+1@air2,226,62,3	duplicate(伊莉絲#air1)	搗蛋鬼#4air2	3176
+1@air2,241,48,3	duplicate(伊莉絲#air1)	搗蛋鬼#5air2	3176
+1@air2,225,40,7	duplicate(伊莉絲#air1)	搗蛋鬼#6air2	3176
+1@air2,236,48,7	duplicate(伊莉絲#air1)	搗蛋鬼#7air2	3176
+1@air2,224,66,5	duplicate(伊莉絲#air1)	搗蛋鬼#8air2	3176
+
+1@air2,229,56,5	duplicate(伊莉絲#air1)	洛基#air2	4_M_ROKI2
+1@air2,241,54,3	duplicate(伊莉絲#air1)	伊莉絲#air2	4_F_IRIS
+1@air2,213,75,5	duplicate(伊莉絲#air1)	雙足飛龍#air2	3180
+1@air2,235,59,3	duplicate(伊莉絲#air1)	雙足飛龍#2air2	3180
+1@air2,235,49,3	duplicate(伊莉絲#air1)	雙足飛龍#3air2	3180
+1@air2,218,78,3	duplicate(伊莉絲#air1)	貝勒斯#1air2	3178
+1@air2,208,78,5	duplicate(伊莉絲#air1)	貝勒斯#2air2	3179
+1@air2,200,78,5	duplicate(伊莉絲#air1)	狂暴轉子#1air2	3175
+1@air2,223,78,3	duplicate(伊莉絲#air1)	狂暴轉子#2air2	3175
+
+1@air2,229,54,5	script	芬里爾#air2	4_F_FENRIR,{
+	if ('airship_status != 6)
+		end;
+	cutin "fenrir_a",2;
+	mes "[芬里爾]";
+	mes "...這些混蛋源源不絕地湧過來。";
+	next;
+	cutin "h_guardian2",1;
+	mes "[?????]";
+	mes "果然不出所料。我們的直覺沒錯。跟隨著邪惡的波動來到這裡，總算是值得了。";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "...？？來者何人！！";
+	next;
+	cutin "h_guardian2",1;
+	mes "[?????]";
+	mes "讓我來介紹一下...";
+	next;
+	mes "[?????]";
+	mes "希瓦！巴薩拉！拉克絲蜜！";
+	mes "我們是無敵的遊俠部隊！";
+	next;
+	cutin "h_guardian1",1;
+	mes "[守護者女英雄]";
+	mes "守護者女英雄！！";
+	next;
+	cutin "h_chaos02",2;
+	mes "[查爾斯]";
+	mes "......";
+	next;
+	cutin "fenrir_a",2;
+	mes "[芬里爾]";
+	mes "......";
+	next;
+	cutin "h_guardian1",1;
+	mes "[希瓦]";
+	mes "嗯？這是什麼反應？大家的態度有點冷淡啊...是不是做得太過火了？";
+	next;
+	mes "[巴薩拉]";
+	mes "嗯，不，不。大家只是被我們華麗的登場給迷住了而已。";
+	next;
+	mes "[拉克絲蜜]";
+	mes "對啊，對啊。這樣的英雄登場排場是有些誇張了點！！";
+	next;
+	cutin "h_iris02",2;
+	mes "[伊莉絲]";
+	mes "噗....";
+	mes "噗哈哈哈哈哈哈哈哈哈";
+	next;
+	mes "[伊莉絲]";
+	mes "什麼？這些白痴是誰啊？！";
+	mes "看看她們穿的衣服！！";
+	mes "那是舞台裝嗎？她們是名人而不是英雄吧？";
+	next;
+	cutin "h_guardian3",1;
+	mes "[希瓦]";
+	mes "哼。妳根本不懂！";
+	mes "妳知道這些衣服有多貴嗎？這就是對最新流行遲鈍的人的毛病?";
+	next;
+	mes "[巴薩拉]";
+	mes "妳們幾個！現在不是聊天的時候！讓我們去根除邪惡的波動吧！！";
+	next;
+	mes "[希瓦]";
+	mes "收到，巴薩拉！讓我們用迅捷的攻擊來解決吧！！";
+	mes "風魔飛鏢之飛舞！！喝啊！";
+	next;
+	cutin "",255;
+	mes "- 砰！砰砰！";
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion1";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "這、這些傢伙是怎樣...徹頭徹尾的白痴...";
+	next;
+	cutin "h_arcana02",2;
+	mes "[阿爾卡娜]";
+	mes "哦？哎呀！";
+	mes "意想不到的盟友？";
+	mes "這或許會變成一場有趣的派對呢?";
+	next;
+	cutin "fenrir_a",2;
+	mes "[芬里爾]";
+	mes "等等！";
+	mes "這場派對最好現在就結束...這是什麼？是芙蕾雅派你們來的嗎？";
+	next;
+	cutin "h_arcana02",2;
+	mes "[阿爾卡娜]";
+	mes "喔。妳還真是不怕死。";
+	mes "區區低賤的人類，竟敢直呼芙蕾雅的名諱。";
+	next;
+	cutin "fenrir_a",2;
+	mes "[芬里爾]";
+	mes "果然不出所料。妳是芙蕾雅的走狗？";
+	next;
+	cutin "h_arcana01",2;
+	mes "[阿爾卡娜]";
+	mes "...小心點。如果妳繼續大放厥詞...";
+	mes "妳會受到神罰的！";
+	next;
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion1";
+	cutin "fenrir_b",2;
+	mes "[芬里爾]";
+	mes "...！！";
+	next;
+	cutin "h_arcana02",2;
+	mes "[阿爾卡娜]";
+	mes "好吧?我給妳們看點好東西。讓妳們冷靜一下的好東西。";
+	next;
+	cutin "fenrir_b",2;
+	mes "[芬里爾]";
+	mes "難道是...雙足飛龍的龍息？！！";
+	next;
+	cutin "h_arcana02",2;
+	mes "[阿爾卡娜]";
+	mes "賓.果. ?";
+	next;
+	cutin "",255;
+	mes "[雙足飛龍]";
+	mes "嗚嗚嗚..！！";
+	next;
+	cutin "fenrir_b",2;
+	mes "[芬里爾]";
+	mes "不...不要！！飛空艇！！";
+	next;
+	enablenpc instance_npcname("洛基#air2");
+	specialeffect EF_SUI_EXPLOSION,AREA, instance_npcname("洛基#air2");
+	cutin "",255;
+	mes "- 轟！！！";
+	next;
+	cutin "fenrir_a",2;
+	mes "[芬里爾]";
+	mes "...？！洛基！！";
+	next;
+	cutin "ep14_roki02",2;
+	mes "[洛基]";
+	mes "嗯...";
+	mes "我的新衣服被毀了...";
+	next;
+	cutin "h_arcana02",2;
+	mes "[阿爾卡娜]";
+	mes "哦..你居然把雙足飛龍的龍息反彈回去了...出乎意料的結果。但這一次你能撐得住嗎？";
+	next;
+	cutin "",255;
+	mes "[雙足飛龍]";
+	mes "嗚嗚嗚..！！";
+	next;
+	cutin "ep14_roki02",2;
+	mes "[洛基]";
+	mes "煩人的害蟲...";
+	mes "你！我對付一個，另一個交給你...";
+	close2;
+	cutin "",255;
+	if ('airship_status == 6)
+		donpcevent instance_npcname("calla#air2") + "::OnStart";
+	end;
+}
+
+1@air2,104,72,0	script	calla#air2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	'airship_status = 7;
+	disablenpc instance_npcname("芬里爾#air2");
+	disablenpc instance_npcname("洛基#air2");
+	disablenpc instance_npcname("伊莉絲#air2");
+	disablenpc instance_npcname("雙足飛龍#2air2");
+	disablenpc instance_npcname("雙足飛龍#3air2");
+	enablenpc instance_npcname("calla#air2");
+	monster 'map_air2$,235,49,"雙足飛龍",3180,1, instance_npcname("calla#air2") + "::OnMyMobDead";// E1_G_S_NYDHOG
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_air2$, instance_npcname("calla#air2") + "::OnMyMobDead" ) < 1) {
+		for ( .@i = 1; .@i <= 8; .@i++ )
+			enablenpc instance_npcname("搗蛋鬼#" + .@i + "air2");
+		enablenpc instance_npcname("伊莉絲#2air2");
+		enablenpc instance_npcname("船長 裴陸克#air2");
+		disablenpc instance_npcname("calla#air2");
+		'airship_status = 8;
+	}
+	end;
+}
+
+// Step 5
+1@air2,232,51,5	script	伊莉絲#2air2	4_F_IRIS,{
+	if ('airship_status != 8)
+		end;
+	mes "[搗蛋鬼]";
+	mes "吱吱... 咕啊?！！";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "呀！居然還有這麼多！！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "找到了！我的武器！嘿嘿嘿嘿";
+	next;
+	mes "[船長 裴陸克]";
+	mes "我會讓你們知道攻擊我的船會有什麼下場！";
+	next;
+	mes "[船長 裴陸克]";
+	mes "我將用我特製的出埃及小丑XIII末日步槍來終結這一切！";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "等..等一下...";
+	mes "你真的要開槍嗎？！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "當然！";
+	mes "嘿嘿嘿嘿嘿嘿嘿嘿！";
+	next;
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion2";
+	cutin "",255;
+	mes "- 砰！砰砰！砰！";
+	next;
+	mes "[搗蛋鬼]";
+	mes "嗚呃！！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "姆哈哈哈哈！";
+	mes "嚐嚐這個的滋味吧！！";
+	mes "姆哈哈哈哈";
+	next;
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion1";
+	cutin "",255;
+	mes "- 砰！砰砰！砰！";
+	next;
+	mes "[守衛]";
+	mes "呃啊...引..引擎！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "什麼？！那些混蛋居然把引擎破壞得更嚴重了？！！你們惹火我了！！";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "那是你弄壞的啦！！！";
+	next;
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion1";
+	cutin "",255;
+	mes "- 砰！砰砰！砰！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "混蛋！去死吧！去死！";
+	mes "姆哈哈哈哈！！";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "照這樣下去，船會因為那個馴鹿船長而墜毀的！！快阻止那個船長！！我好怕...";
+	next;
+	mes "[伊莉絲]";
+	mes "我們要怎麼阻止他？...或許把他打個半死他就能恢復理智了...就拜託你了！！";
+	close2;
+	cutin "",255;
+	if ('airship_status == 8)
+		donpcevent instance_npcname("callb#air2") + "::OnStart";
+	end;
+}
+
+1@air2,247,51,3	duplicate(伊莉絲#air1)	船長 裴陸克#air2	4_M_REINDEER
+
+1@air2,104,52,0	script	callb#air2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	'airship_status = 9;
+	for ( .@i = 1; .@i <= 8; .@i++ )
+		disablenpc instance_npcname("搗蛋鬼#" + .@i + "air2");
+	disablenpc instance_npcname("船長 裴陸克#air2");
+	disablenpc instance_npcname("伊莉絲#2air2");
+	enablenpc instance_npcname("callb#air2");
+	monster 'map_air2$,247,51,"失控的船長",3181,1, instance_npcname("callb#air2") + "::OnMyMobDead";// E1_FELOCK
+	end;
+OnMyMobDead:
+	if (mobcount( 'map_air2$, instance_npcname("callb#air2") + "::OnMyMobDead" ) < 1)
+		initnpctimer;
+	end;
+OnTimer6000:
+	enablenpc instance_npcname("查爾斯#air2");
+	enablenpc instance_npcname("船長 裴陸克#2air2");
+	disablenpc instance_npcname("callb#air2");
+	'airship_status = 10;
+	stopnpctimer;
+	end;
+}
+
+// Final
+1@air2,239,58,5	script	查爾斯#air2	4_M_CHAOS,{
+	if ('airship_status > 10) {
+		cutin "h_chaos02",2;
+		mes "[查爾斯]";
+		mes "你現在快離開這裡！！這艘船有危險了！！";
+		close3;
+	}
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "哎呀..我瘋狂地開槍。看來很多搗蛋鬼都不見了？嘿嘿嘿嘿";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "這艘船都是因為你才受損的！！";
+	next;
+	cutin "h_arcana02",2;
+	mes "[阿爾卡娜]";
+	mes "替我們做了我們的工作。嗯，我想這樣就夠了吧？";
+	next;
+	mes "[阿爾卡娜]";
+	mes "那麼也是我們開溜的時候了...";
+	next;
+	cutin "h_guardian1",1;
+	mes "[拉克絲蜜]";
+	mes "哦？...在那邊，巴薩拉。看來她們正在撤退。";
+	next;
+	mes "[巴薩拉]";
+	mes "當然！！她們已經見識到我們的實力了！！呵呵呵?";
+	next;
+	mes "[巴薩拉]";
+	mes "既然如此，吃我最後一發風魔飛鏢之飛舞！！";
+	next;
+	for ( .@i = 1; .@i < 4; .@i++ ) {
+		enablenpc instance_npcname("搗蛋鬼#" + .@i + "air2");
+		hideonnpc instance_npcname("搗蛋鬼#" + .@i + "air2");
+	}
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion1";
+	cutin "",255;
+	mes "- 砰砰！砰！";
+	next;
+	cutin "fenrir_b",2;
+	mes "[芬里爾]";
+	mes "呀！！看來我們要掉下去了！！";
+	mes "...太短了...構不到...";
+	next;
+	mes "[芬里爾]";
+	mes "...這就是終點了嗎？";
+	mes "...一個像以前一樣我無法觸及的地方...";
+	mes "查爾斯...";
+	next;
+	cutin "ep14_roki02",2;
+	mes "[洛基]";
+	mes "...抓緊";
+	next;
+	cutin "fenrir_b",2;
+	mes "[芬里爾]";
+	mes "洛...基？";
+	next;
+	cutin "ep14_roki02",2;
+	mes "[洛基]";
+	mes "妳在看什麼？來，上來...";
+	next;
+	cutin "",255;
+	mes "[守衛]";
+	mes "確認所有引擎皆已停止運轉！！";
+	mes "我們必須立刻逃生！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "可惡...";
+	mes "所有人登上救生艇！";
+	mes "乘客優先登上救生艇！已完成登船的救生艇立刻施放！";
+	next;
+	cutin "h_chaos02",2;
+	mes "[查爾斯]";
+	mes "等等！！還有人留在船上！！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "我們也無能為力了！";
+	mes "如果繼續拖延，剩下的人也會有危險！！這很遺憾，但我們已經盡力了！";
+	next;
+	cutin "h_chaos03",2;
+	mes "[查爾斯]";
+	mes "但是剩下的人也是寶貴的生命啊！你打算丟下他們不管嗎？！！蛤？！！";
+	next;
+	cutin "fly_felrock2",2;
+	mes "[船長 裴陸克]";
+	mes "是啊，你說得對...";
+	mes "既然如此，善後工作就交給你們了。我閃人啦！！";
+	disablenpc instance_npcname("船長 裴陸克#2air2");
+	next;
+	cutin "h_chaos03",2;
+	mes "[查爾斯]";
+	mes "喂！你要去哪裡！呃啊！！";
+	mes "我一定會抓住你。我會宰了你！！";
+	next;
+	cutin "h_guardian1",1;
+	mes "[巴薩拉]";
+	mes "現在不是我們對付這些微不足道的搗蛋鬼的時候。";
+	next;
+	mes "[巴薩拉]";
+	mes "我能感覺到更巨大的邪惡波動。";
+	mes "這些小嘍囉就交給他們吧。我們走！";
+	next;
+	mes "[拉克絲蜜＆希瓦]";
+	mes "收到！！遊俠飛行型態！！";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "蛤？喂！！";
+	mes "把船弄壞之後，妳們還想去哪裡？！";
+	next;
+	mes "[伊莉絲]";
+	mes "如果下次被我抓到，我一定會讓妳們死得很難看！！給我繃緊神經！！聽到了沒？！給我等著，妳們這群鄉巴佬！！";
+	next;
+	cutin "h_guardian3",1;
+	mes "[守護者女英雄]";
+	mes "...鄉巴佬？（暴怒）";
+	next;
+	mes "[守護者女英雄]";
+	mes "貶低並譴責正義之路的人...我們應該毫不留情地降下正義的制裁，對吧？";
+	next;
+	mes "[守護者女英雄]";
+	mes "去死吧惡徒！！風魔飛鏢之飛舞！！";
+	next;
+	donpcevent instance_npcname("搗蛋鬼#1air2") + "::OnExplosion1";
+	cutin "",255;
+	mes "- 砰！砰砰！砰！";
+	next;
+	cutin "h_iris01",2;
+	mes "[伊莉絲]";
+	mes "咿呀！！";
+	next;
+	cutin "h_guardian1",1;
+	mes "[守護者女英雄]";
+	mes "啊哈哈哈哈哈！！";
+	mes "活該?！！我們走！！";
+	next;
+	cutin "h_chaos03",2;
+	mes "[查爾斯]";
+	mes "伊莉絲！！過來這裡！！";
+	mes "我們趕快找到芬里爾和洛基離開這裡！！";
+	next;
+	cutin "h_chaos02",2;
+	mes "[查爾斯]";
+	mes "你現在快離開這裡！！這艘船有危險了！！";
+	close2;
+	if ('airship_status == 10){
+		'airship_status = 11;
+		enablenpc instance_npcname("warp5a#air2");
+		cutin "",255;
+		getexp 100000,65000;
+	}
+	end;
+}
+
+1@air2,243,58,3	duplicate(伊莉絲#air1)	船長 裴陸克#2air2	4_M_REINDEER
+
+// Explosions
+1@air2,113,52,0	duplicate(伊莉絲#air1)	fire1#air2	HIDDEN_WARP_NPC
+1@air2,115,68,0	duplicate(伊莉絲#air1)	fire2#air2	HIDDEN_WARP_NPC
+1@air2,96,58,0	duplicate(伊莉絲#air1)	fire3#air2	HIDDEN_WARP_NPC
+1@air2,90,75,0	duplicate(伊莉絲#air1)	fire4#air2	HIDDEN_WARP_NPC
+1@air2,92,51,0	duplicate(伊莉絲#air1)	fire5#air2	HIDDEN_WARP_NPC
+1@air2,77,42,0	duplicate(伊莉絲#air1)	fire6#air2	HIDDEN_WARP_NPC
+1@air2,69,77,0	duplicate(伊莉絲#air1)	fire7#air2	HIDDEN_WARP_NPC
+1@air2,50,49,0	duplicate(伊莉絲#air1)	fire8#air2	HIDDEN_WARP_NPC
+1@air2,44,61,0	duplicate(伊莉絲#air1)	fire9#air2	HIDDEN_WARP_NPC
+1@air2,31,53,0	duplicate(伊莉絲#air1)	fire10#air2	HIDDEN_WARP_NPC
+1@air2,24,74,0	duplicate(伊莉絲#air1)	fire11#air2	HIDDEN_WARP_NPC
+1@air2,43,45,0	duplicate(伊莉絲#air1)	fire12#air2	HIDDEN_WARP_NPC
+1@air2,73,65,0	duplicate(伊莉絲#air1)	fire13#air2	HIDDEN_WARP_NPC
+1@air2,53,72,0	duplicate(伊莉絲#air1)	fire14#air2	HIDDEN_WARP_NPC
+1@air2,82,62,0	duplicate(伊莉絲#air1)	fire15#air2	HIDDEN_WARP_NPC
+1@air2,234,70,0	duplicate(伊莉絲#air1)	fire21#air2	HIDDEN_WARP_NPC
+1@air2,247,64,0	duplicate(伊莉絲#air1)	fire22#air2	HIDDEN_WARP_NPC
+1@air2,230,33,0	duplicate(伊莉絲#air1)	fire23#air2	HIDDEN_WARP_NPC
+1@air2,277,39,0	duplicate(伊莉絲#air1)	fire25#air2	HIDDEN_WARP_NPC
+1@air2,223,50,0	duplicate(伊莉絲#air1)	fire26#air2	HIDDEN_WARP_NPC
+1@air2,238,70,0	duplicate(伊莉絲#air1)	fire29#air2	HIDDEN_WARP_NPC
+1@air2,238,32,0	duplicate(伊莉絲#air1)	fire30#air2	HIDDEN_WARP_NPC
+
+1@air2,0,0,0	script	firecontrol#air2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("firecontrol#air2");
+	for ( .@i = 1; .@i <= 15; .@i++ )
+		enablenpc instance_npcname("fire" + .@i + "#air2");
+	initnpctimer;
+	end;
+OnTimer1000:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire1#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire8#air2");
+	end;
+OnTimer1400:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire2#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire9#air2");
+	end;
+OnTimer1800:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire3#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire10#air2");
+	end;
+OnTimer2200:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire4#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire11#air2");
+	end;
+OnTimer2600:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire5#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire12#air2");
+	end;
+OnTimer3000:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire6#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire13#air2");
+	end;
+OnTimer3400:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire7#air2");
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire14#air2");
+	end;
+OnTimer3800:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire15#air2");
+	initnpctimer;
+	end;
+}
+
+1@air2,0,0,0	script	firecontrol2#air2	HIDDEN_WARP_NPC,{
+	end;
+OnStart:
+	enablenpc instance_npcname("firecontrol2#air2");
+	enablenpc instance_npcname("fire21#air2");
+	enablenpc instance_npcname("fire22#air2");
+	enablenpc instance_npcname("fire23#air2");
+	enablenpc instance_npcname("fire25#air2");
+	enablenpc instance_npcname("fire26#air2");
+	enablenpc instance_npcname("fire29#air2");
+	enablenpc instance_npcname("fire30#air2");
+	initnpctimer;
+	end;
+OnTimer1000:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire21#air2");
+	end;
+OnTimer1400:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire22#air2");
+	end;
+OnTimer1800:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire23#air2");
+	end;
+OnTimer2200:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire25#air2");
+	end;
+OnTimer2600:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire26#air2");
+	end;
+OnTimer3000:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire29#air2");
+	end;
+OnTimer3400:
+	specialeffect EF_BLASTMINEBOMB,AREA, instance_npcname("fire30#air2");
+	initnpctimer;
+	end;
+
+OnInstanceInit:
+	'airship_status = 0;
+
+	'map_air1$ = instance_mapname("1@air1");
+	'map_air2$ = instance_mapname("1@air2");
+
+	// Warps
+	disablenpc instance_npcname("warp1#air1");
+	disablenpc instance_npcname("warp2a#air1");
+	disablenpc instance_npcname("warp2b#air1");
+	disablenpc instance_npcname("warp3a#air1");
+	disablenpc instance_npcname("warp3b#air1");
+	disablenpc instance_npcname("warp4a#air2");
+	disablenpc instance_npcname("warp5a#air2");
+
+	// Entrance
+	disablenpc instance_npcname("貝勒斯#1air1");
+	disablenpc instance_npcname("貝勒斯#2air1");
+	disablenpc instance_npcname("狂暴轉子#1air1");
+	disablenpc instance_npcname("狂暴轉子#2air1");
+	disablenpc instance_npcname("雙足飛龍#air1");
+	for ( .@i = 1; .@i <= 8; .@i++ )
+		disablenpc instance_npcname("搗蛋鬼#" + .@i + "air1");
+
+	// Step 1
+	disablenpc instance_npcname("#airshipputmob1");
+	disablenpc instance_npcname("旅行的騎士#air1");
+	disablenpc instance_npcname("昏倒的醉漢#air1");
+	disablenpc instance_npcname("用餐的富豪#a");
+	disablenpc instance_npcname("搭便車的吟遊詩人#air1");
+	disablenpc instance_npcname("飛空艇餐廳經理#air1");
+	disablenpc instance_npcname("賭博鬼#air1");
+
+	// Step 2
+	disablenpc instance_npcname("#airshipputmob2");
+	disablenpc instance_npcname("伊莉絲#2air1");
+	disablenpc instance_npcname("查爾斯#2air1");
+	disablenpc instance_npcname("搗蛋鬼#2aair1");
+	disablenpc instance_npcname("飛空艇船員#1air1");
+	disablenpc instance_npcname("飛空艇船員#2air1");
+	disablenpc instance_npcname("國王的護衛#1air1");
+	disablenpc instance_npcname("國王的護衛#2air1");
+	disablenpc instance_npcname("觀光客#1air1");
+	disablenpc instance_npcname("觀光客#2air1");
+	disablenpc instance_npcname("小國國王#1air1");
+
+	// Step 3 - 1@air2
+	disablenpc instance_npcname("#airshipputmob3");
+	disablenpc instance_npcname("firecontrol#air2");
+	disablenpc instance_npcname("昏倒的醉漢#air2");
+	disablenpc instance_npcname("用餐的富豪#b");
+	disablenpc instance_npcname("旅行的騎士#air2");
+	disablenpc instance_npcname("搭便車的吟遊詩人#air2");
+	disablenpc instance_npcname("賭博鬼#air2");
+	disablenpc instance_npcname("飛空艇餐廳經理#air2");
+
+	// Step 4
+	disablenpc instance_npcname("calla#air2");
+	disablenpc instance_npcname("firecontrol2#air2");
+	disablenpc instance_npcname("芬里爾#air2");
+	disablenpc instance_npcname("洛基#air2");
+	disablenpc instance_npcname("伊莉絲#air2");
+	disablenpc instance_npcname("雙足飛龍#air2");
+	disablenpc instance_npcname("雙足飛龍#2air2");
+	disablenpc instance_npcname("雙足飛龍#3air2");
+	disablenpc instance_npcname("貝勒斯#1air2");
+	disablenpc instance_npcname("貝勒斯#2air2");
+	disablenpc instance_npcname("狂暴轉子#1air2");
+	disablenpc instance_npcname("狂暴轉子#2air2");
+	disablenpc instance_npcname("船長 裴陸克#air2");
+	for ( .@i = 1; .@i <= 3; .@i++ )
+		hideonnpc instance_npcname("搗蛋鬼#" + .@i + "air2");
+	for ( .@i = 4; .@i <= 8; .@i++ )
+		disablenpc instance_npcname("搗蛋鬼#" + .@i + "air2");
+
+	// Step 5
+	disablenpc instance_npcname("callb#air2");
+	disablenpc instance_npcname("伊莉絲#2air2");
+
+	// Final
+	disablenpc instance_npcname("查爾斯#air2");
+	disablenpc instance_npcname("船長 裴陸克#2air2");
+
+	// Blast
+	for ( .@i = 1; .@i <= 15; .@i++ )
+		disablenpc instance_npcname("fire" + .@i + "#air2");
+	disablenpc instance_npcname("fire21#air2");
+	disablenpc instance_npcname("fire22#air2");
+	disablenpc instance_npcname("fire23#air2");
+	disablenpc instance_npcname("fire25#air2");
+	disablenpc instance_npcname("fire26#air2");
+	disablenpc instance_npcname("fire29#air2");
+	disablenpc instance_npcname("fire30#air2");
+	end;
+}

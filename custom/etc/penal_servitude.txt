@@ -1,0 +1,185 @@
+//===== rAthena Script =======================================
+//= Penal Servitude 
+//===== By: ==================================================
+//= Lupus
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= A simple Penal Servitude Script.
+//= It could cheer up your prisoners a bit.
+//===== Additional Comments: =================================
+// This script uses CHEQUES of the 2nd KAFRA_BANK.TXT
+// var PRISON - it counts number of your imprisonments.
+// 1.1 English translation
+// 1.2 Stricted the conditions a bit
+//============================================================
+
+sec_pri,36,58,1	script	監獄長	105,{ 
+	mes "[薩德斯]";
+	emotion ET_QUESTION;
+	mes (Sex==SEX_MALE?"先生":"女士")+" 囚犯 #"+BaseLevel+JobLevel+"，";
+	mes "那邊在吵什麼？";
+	next;
+	menu "放我出去，我付錢！",-, "讓我勞動服務換取自由！",M_Q1, "沒事",M_NO_THANKS;
+M_PAY:
+	mes "[薩德斯]";
+	set .@MUSTPAY,(PRISON+1)*1000000;
+	if (.@MUSTPAY<1000000) set .@MUSTPAY,1000000;
+	if (.@MUSTPAY>100000000) set .@MUSTPAY,100000000;
+	if (PRISON==0) mes "我對你沒什麼印象。你是第一次進來嗎？";
+	if (PRISON>0) mes "又是你？看來有人從第一次進來後就完全沒學乖啊...";
+	mes "好吧，只要繳納 ^FF0000"+.@MUSTPAY+" Zeny^000000 的保釋金我們就放你走。";
+	next;
+	menu "我付現金！",M_PAYCASH,"你們收支票嗎？",M_PAYBANK,"我改變主意了。",-;
+	mes "[薩德斯]";
+	mes "你還有一些時間可以慢慢考慮...";
+	close;
+
+M_PAYCASH:
+	if (.@MUSTPAY>Zeny) goto L_NOCASH;
+	set Zeny,Zeny-.@MUSTPAY;
+	mes "[薩德斯]";
+	mes "好，在這裡和那裡簽字。";
+	goto L_RELEASE;
+
+L_NOCASH:
+	mes "[薩德斯]";
+	mes "這什麼？根本不夠！";
+	close;
+
+M_PAYBANK:
+	if (.@MUSTPAY>#kafrabank) goto L_NOBANK;
+	set #kafrabank,#kafrabank-.@MUSTPAY;
+	mes "[薩德斯]";
+	mes "好，簽下你的支票。然後在我的簿子上寫下你的名字。";
+	goto L_RELEASE;
+
+L_NOBANK:
+	mes "[薩德斯]";
+	if (#kafrabank==0) mes "你的檔案裡沒有任何關於銀行帳戶的資料。";
+	if (#kafrabank!=0) mes "哎呀，檔案裡有你的銀行帳戶資訊... 但只有 ^FF0000"+#kafrabank+" Zeny^000000... 根本不夠。";
+	mes "別再玩這種無聊的把戲了！";
+	close;
+
+L_RELEASE:
+	set PRISON,PRISON+1;
+	next;
+	mes "[薩德斯]";
+	mes "你現在自由了！";
+	next;
+	savepoint "izlude",105,112;
+	warp "izlude",105,112;
+	close;
+
+M_Q1:
+	mes "[薩德斯]";
+	mes "我們的毒菇庫存不足了。還記得你早上的稀飯嗎？要去我們贊助的蘑菇農場做點苦工嗎？";
+	next;
+	menu "好，我做！",-, "我愛死這座監獄了！",M_NO_THANKS;
+
+	mes "[薩德斯]";
+	if(checkcart() || checkfalcon() || checkriding()){
+		emotion ET_SCRATCH;
+		mes "抱歉，你必須先解除你的手推車、大嘴鳥或獵鷹！";
+		close;
+	}
+	mes "去跟我們的監工 奧利弗 談談吧。";
+	next;
+
+	nude;
+	set .@rw,rand(1,4);
+	if (.@rw==2) goto L_W2;
+	if (.@rw==3) goto L_W3;
+	if (.@rw==4) goto L_W4;
+
+L_W1:
+	savepoint "sec_in02",179,76;
+	warp "sec_in02",179,76;
+	close;
+
+L_W2:
+	savepoint "sec_in02",139,32;
+	warp "sec_in02",139,32;
+	close;
+
+L_W3:
+	savepoint "sec_in02",100,28;
+	warp "sec_in02",100,28;
+	close;
+
+L_W4:
+	savepoint "sec_in02",107,75;
+	warp "sec_in02",107,75;
+	close;
+
+M_NO_THANKS:
+	mes "[薩德斯]";
+	if (rand(2)) mes "今天是聖誕節嗎，蛤？";
+	mes "現在閉嘴，給我退下！";
+	if (rand(2)) emotion ET_HUK;
+	close;
+}
+
+sec_in02,137,57,1	script	奧利弗	708,{ 
+	mes "[奧利弗]";
+
+	delitem 4002,countitem(4002);//Items: Fabre_Card,
+	delitem 4009,countitem(4009);//Items: Chonchon_Card,
+	delitem 4022,countitem(4022);//Items: Spore_Card,
+	delitem 4048,countitem(4048);//Items: Poison_Spore_Card,
+	
+	if (PRISON_Q <= 0 ) goto L_GET_Q;
+	mes "我要你去收集 ^FF0000"+PRISON_Q+" 個橘色網狀蘑菇^000000。";
+	if ( countitem(1069)<PRISON_Q ) close;//Items: Orange_Net_Mushroom,
+	mes "好... 把所有的蘑菇都交給我...";
+	mes "讓我看看... "+countitem(1069)+" 個勉強能吃的...";
+	mes "還有 "+countitem(1070)+" 個沒用的劇毒蘑菇。";
+	next;
+	mes "[奧利弗]";
+	mes "謝謝。你自由了！";
+	set PRISON_Q,0;
+	delitem 1069,countitem(1069);//Items: Orange_Net_Mushroom,
+	delitem 1070,countitem(1070);//Items: Orange_Gooey_Mushroom_,
+	next;
+	savepoint "izlude",105,112;
+	warp "izlude",105,112;
+	close;
+
+L_GET_Q:
+	set PRISON,PRISON+1;
+	if (PRISON > 1) mes "嗯... 你已經來過這裡了... 很好很好...";
+	if ( countitem(1069) || countitem(1070) ) mes "把這些蘑菇丟掉！！它們有毒！";
+	delitem 1069,countitem(1069);//Items: Orange_Net_Mushroom,
+	delitem 1070,countitem(1070);//Items: Orange_Gooey_Mushroom_,
+
+	set PRISON_Q, PRISON*3 + BaseLevel/3;
+	set PRISON_Q, PRISON_Q * (readparam(bAspd)/55 + 1);
+	set PRISON_Q, PRISON_Q+rand(50,60);
+	mes "好，你必須給我帶來 ^FF0000"+PRISON_Q+"^000000 個可食用的 ^FF0000橘色網狀蘑菇^000000 毒... 蘑菇。";
+	if(readparam(bAspd)>=100) mes "你動作挺快的嘛！那你得多採一點蘑菇了。";
+	if (rand(10)<4) mes "你可以把那些劇毒的留著當早餐吃。";
+	close;
+}
+
+
+sec_in02	mapflag	nomemo
+sec_in02	mapflag	nosave	SavePoint
+sec_in02	mapflag	noteleport
+sec_in02	mapflag	nobranch
+sec_in02	mapflag	nowarp
+sec_in02	mapflag	nowarpto
+sec_in02	mapflag	noexp
+sec_in02	mapflag	noskill
+//sec_in02	mapflag	pvp
+//sec_in02	mapflag	pvp_noparty
+//sec_in02	mapflag	gvg
+sec_in02	mapflag	pvp_nightmaredrop	random,all,300
+sec_in02	mapflag	hidemobhpbar
+
+sec_in02,138,55,100,100	monster	毒菇	1182,30,10000,10000
+sec_in02,138,55,100,100	monster	綠棉蟲	1184,10,20000,20000
+sec_in02,138,55,100,100	monster	蒼蠅	1183,11,20000,20000
+sec_in02,138,55,100,100	monster	蘑菇	1014,12,20000,20000
+sec_in02,138,55,100,100	monster	毒蘑菇	1077,3,20000,20000

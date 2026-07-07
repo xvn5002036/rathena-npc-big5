@@ -1,0 +1,430 @@
+//===== rAthena Script ======================================= 
+//= Gunslinger Job Quest
+//===== By: ================================================== 
+//= erKURITA, RockmanEXE, Kisuka
+//===== Current Version: ===================================== 
+//= 2.2
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Gunslinger Job Change Quest
+//===== Additional Comments: ================================= 
+//= 1.0 Made the NPC [erKURITA]
+//= 1.5 Couple fixes to the npc, aswell as adding the missing
+//=     3 green herbs.
+//= 1.6 job number->const, commonized variable name,
+//=     optimized [Lupus]
+//= 1.7 Now uses only ONE variable GUNS_Q [Lupus]
+//= 1.7a Grammar fixes, few spelling fixes, etc [CBMaster]
+//= 1.7b Parenthesis fixes [KarLaeda]
+//= 1.8 Fixed the reward you can get [Playtester]
+//= 1.9 Removed some 'clever' script constructs [ultramage]
+//= 2.0 Updated to official version - Thanks to Omega for
+//=     his first try [SinSloth] 1.10b - removed .GATs [Lupus]
+//= 2.1 Wise Bull Horn now deletes all items.
+//=     Thanks to yyCC. [L0ne_W0lf]
+//= 2.1a Corrected a Typo error ";;". [Samuray22]
+//= 2.1b Corrected some typos errors. (bugreport:1549) [Samuray22]
+//= 2.1c Fixed some missing/messed up item checks. (bugreport:2693) [Kisuka]
+//= 2.2 Updated to match AEGIS script and Added Quest Log commands. [Kisuka]
+//============================================================ 
+
+que_ng,152,167,3	script	米勒大師	901,{
+	if (Upper == 2) {
+		mes "[米勒大師]";
+		mes "哎呀，你真是一個";
+		mes "可愛的小孩~";
+		mes "你的媽媽在哪裡？";
+		mes "這個地方很危險，所以";
+		mes "請趕快回家吧，好嗎？";
+		close;
+	}
+	if (Class == Job_Novice) {
+		if (!callfunc("F_CanChangeJob")) {
+			mes "[米勒大師]";
+			mes "有興趣成為";
+			mes "一名神槍手，是吧？你";
+			mes "很有潛力，但是你的";
+			mes "經驗還不夠。";
+			mes "再多去鍛鍊一下自己，";
+			mes "然後再回來，聽到了嗎？";
+			close;
+		}
+		if (GUNS_Q == 0) {
+			mes "[米勒大師]";
+			mes "我是米勒，一名全職的";
+			mes "神槍手教官，也是";
+			mes "席琳娜女士的全職護衛。";
+			mes "那麼，你需要";
+			mes "什麼？如果不重要，那我就沒時間理你了。";
+			next;
+			if(select("沒事。:我想成為神槍手。") == 1) {
+				mes "[米勒大師]";
+				mes "別浪費我的時間。";
+				mes "如果你真的想成為";
+				mes "一名神槍手，那就";
+				mes "回來找我談談。";
+				close;
+			}
+			mes "[米勒大師]";
+			mes "嗯。你還挺年輕的，但";
+			mes "你的眼神告訴我你";
+			mes "相當有野心。你需要通過我們的面試和訓練";
+			mes "課程才能成為神槍手。你想申請這份職業嗎？";
+			next;
+			if(select("給我一點時間考慮。:好啊！") == 1) {
+				mes "[米勒大師]";
+				mes "可以理解。";
+				mes "如果你決定了";
+				mes "你想成為";
+				mes "一名神槍手，那就";
+				mes "立刻讓我知道。";
+				mes "我會讓你開始的。";
+				close;
+			}
+			mes "[米勒大師]";
+			mes "很好，很好。那好吧，";
+			mes "我們開始吧。把";
+			mes "這封信帶給斐揚的";
+			mes "智牛角先生。他是一位薩滿，";
+			mes "他將會評判你是否";
+			mes "有資格成為一名神槍手。";
+			set GUNS_Q,1;
+			setquest 6020;
+			close;
+		}
+		else if (GUNS_Q == 1) {
+			mes "[米勒大師]";
+			mes "把那封我寫的";
+			mes "介紹信帶給";
+			mes "斐揚的智牛角先生。";
+			mes "他會測試";
+			mes "你，看看你是否真的是";
+			mes "當神槍手的料。";
+			close;
+		}
+		else if (GUNS_Q == 2) {
+			mes "[米勒大師]";
+			mes "嗯... 智牛角";
+			mes "要求你去收集";
+			mes "製作推薦函所需的物品嗎？";
+			mes "嗯。我想那也是";
+			mes "他資格測試的一部分。";
+			close;
+		}
+		else if (GUNS_Q == 3) {
+			mes "[米勒大師]";
+			mes "智牛角要求";
+			mes "你給他帶些";
+			mes "牛奶？他一定是真的很喜歡";
+			mes "你，才會已經在要求你";
+			mes "幫忙了。祝你好運，朋友。";
+			close;
+		}
+		else if (GUNS_Q == 4) {
+			mes "[米勒大師]";
+			mes "我期待很快能聽到";
+			mes "你的好消息。你知道的，";
+			mes "我毫不懷疑";
+			mes "你將會成為一名神槍手。";
+			close;
+		}
+		else if (GUNS_Q == 5) {
+			if (SkillPoint != 0) {
+				mes "[米勒大師]";
+				mes "嘿，你還有剩下的";
+				mes "技能點數。你最好";
+				mes "把它們都用完，再來";
+				mes "找我說話。";
+				close;
+			}
+			mes "[米勒大師]";
+			mes "噢，你帶來了";
+			mes "智牛角的推薦函？";
+			mes "他已經很久沒有";
+			mes "給過任何人了，所以";
+			mes "我真的很為你感到驕傲！";
+			next;
+			mes "[米勒大師]";
+			mes "如果智牛角同意了，";
+			mes "那我就沒有理由";
+			mes "拒絕你。好吧，我會";
+			mes "晉升你為一名神槍手。";
+			mes "但首先，讓我更詳細地";
+			mes "解釋一下我們的職業。";
+			next;
+			mes "[米勒大師]";
+			mes "作為一名神槍手，你必須";
+			mes "隨時隨地都把槍";
+			mes "帶在身邊。神槍手";
+			mes "公會會追蹤每一把槍";
+			mes "和子彈，所以你只能從";
+			mes "我們的公會成員那裡獲得它們。";
+			next;
+			mes "[米勒大師]";
+			mes "別擔心，神槍手";
+			mes "公會成員現在幾乎";
+			mes "隨處可見。總之，";
+			mes "這是我們公會會長席琳娜女士的命令。";
+			next;
+			mes "[米勒大師]";
+			mes "你總有一天會有機會";
+			mes "見到她的。";
+			mes "總之，現在我們必須";
+			mes "管制槍枝和子彈的銷售，以確保它們遠離邪惡";
+			mes "或不負責任的人。";
+			next;
+			mes "[米勒大師]";
+			mes "無論如何，能和";
+			mes "另一位神槍手交談對我來說";
+			mes "總是一件樂事，所以";
+			mes "我們保持聯繫吧。願";
+			mes "大地的力量在你";
+			mes "所有的冒險中保護你~";
+			callfunc "Job_Change",Job_Gunslinger;
+			set GUNS_Q,6;
+			completequest 6024;
+			if (checkre(0)) {
+				getitem 13180,1;		// Novice_Rifle
+				getitem 12149,2;		// Bullet_Case
+				getitem 12151,1;		// Bullet_Case_Silver
+			} else {
+				if (rand(2))
+					getitem 13100,1;	// Six_Shooter
+				else
+					getitem 13150,1;
+				// Branch
+			}
+			close;
+		}
+	} else {
+		if (Class == Job_Gunslinger) {
+			mes "[米勒大師]";
+			mes "噢！好久不見了，";
+			mes "朋友。你最近好嗎？";
+			mes "我希望你有好好地";
+			mes "保養你的槍。";
+			mes "好好照顧它，它就會照顧";
+			mes "你。記住這點。";
+			close;
+		} else {
+			mes "[米勒大師]";
+			mes "如果你對我沒有";
+			mes "任何事情的話，";
+			mes "那就請繼續你的旅程吧。";
+			close;
+		}
+	}
+}
+
+payon,184,65,3	script	智牛角	866,{
+	if (GUNS_Q == 1) {
+		mes "[智牛角]";
+		mes "你好，年輕的狼。";
+		mes "是什麼事情";
+		mes "把你帶到我面前？";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "米勒先生派我來";
+		mes "把這封信交給你。";
+		mes "其實，我有興趣";
+		mes "成為一名神槍手...";
+		next;
+		mes "[智牛角]";
+		mes "米勒，你說？";
+		mes "嗯，黑狐不會";
+		mes "為任何他不認為會成為";
+		mes "優秀神槍手的人";
+		mes "寫介紹信的。是的，我想";
+		mes "我知道他為什麼派你來找我了。";
+		next;
+		mes "[智牛角]";
+		mes "我可以從你的眼神中看出來：";
+		mes "你有一顆溫暖的心和";
+		mes "強烈的責任感。";
+		mes "你所需要的只是大地的";
+		mes "祝福，來保護你";
+		mes "作為一名神槍手。";
+		next;
+		mes "[智牛角]";
+		mes "我可以製作一份推薦函，";
+		mes "以證明你渴望";
+		mes "成為大地的戰士，";
+		mes "讓你出示給";
+		mes "神槍手教官們看。";
+		mes "我需要這些物品...";
+		next;
+		mes "[智牛角]";
+		mes "^3355FF1個 木塊^000000，";
+		mes "^3355FF3個 毛^000000，";
+		mes "^3355FF3個 加勒結晶^000000，";
+		mes "^3355FF10個 堅硬外殼^000000，";
+		mes "^3355FF3個 綠色藥草^000000，以及";
+		mes "^3355FF3個 漂亮的昆蟲外殼^000000。";
+		next;
+		mes "[智牛角]";
+		mes "在我完成";
+		mes "推薦函之後，你可以把它";
+		mes "帶給黑狐，他";
+		mes "會幫助你達成";
+		mes "成為一名神槍手";
+		mes "的目標。";
+		set GUNS_Q,2;
+		changequest 6020,6021;
+		close;
+	}
+	else if (GUNS_Q == 2) {
+		if (countitem(912) < 3 || countitem(914) < 3 || countitem(1019) < 1 || countitem(935) < 10 || countitem(511) < 3 || countitem(1013) < 3) {
+			mes "[智牛角]";
+			mes "我可以製作一份推薦函，";
+			mes "以證明你渴望";
+			mes "成為大地的戰士，";
+			mes "讓你出示給";
+			mes "神槍手教官們看。";
+			mes "我需要這些物品...";
+			next;
+			mes "[智牛角]";
+			mes "^3355FF1個 木塊^000000，";
+			mes "^3355FF3個 毛^000000，";
+			mes "^3355FF3個 加勒結晶^000000，";
+			mes "^3355FF10個 堅硬外殼^000000，";
+			mes "^3355FF3個 綠色藥草^000000，以及";
+			mes "^3355FF3個 漂亮的昆蟲外殼^000000。";
+			next;
+			mes "[智牛角]";
+			mes "在我完成";
+			mes "推薦函之後，你可以把它";
+			mes "帶給黑狐，他";
+			mes "會幫助你達成";
+			mes "成為一名神槍手";
+			mes "的目標。";
+			close;
+		}
+		delitem 912,3; // Zargon
+		delitem 914,3; // Fluff
+		delitem 1019,1; // Wooden_Block
+		delitem 935,10;
+		// Shell
+		delitem 511,3; // Green_Herb
+		delitem 1013,3; // Colorful_Shell
+		set GUNS_Q,3;
+		changequest 6021,6022;
+		mes "[智牛角]";
+		mes "啊，你帶著";
+		mes "我需要的所有東西回來了。";
+		mes "請給我一些時間";
+		mes "來製作推薦函。如果你";
+		mes "稍等一會兒再回來，";
+		mes "我就應該做好了。";
+		close;
+	}
+	else if (GUNS_Q == 3) {
+		mes "[智牛角]";
+		mes "噢，你來得";
+		mes "正是時候。我已經很久";
+		mes "沒有做過這種推薦函了，所以我可能有點";
+		mes "生疏了。不過，這真的讓我回想起了我年輕時的日子。";
+		next;
+		mes "[智牛角]";
+		mes "我擔任這個";
+		mes "挑選神槍手推薦函";
+		mes "合格接受者的職位";
+		mes "已經有幾十年";
+		mes "了。但在那之前，我和你一樣是個";
+		mes "年輕的冒險者。";
+		next;
+		mes "[智牛角]";
+		mes "感覺就像昨天一樣，當我";
+		mes "作為一名神槍手，一名大地的戰士，";
+		mes "拿著我自己的那份小推薦函時。";
+		mes "那就是我遇見席琳娜的父親的時候...";
+		mes "時間怎麼過得這麼快？";
+		next;
+		mes "[智牛角]";
+		mes "啊... 我真的很感激";
+		mes "席琳娜和黑狐在招募";
+		mes "年輕神槍手方面所提供的";
+		mes "所有幫助。我現在已經";
+		mes "很老了，沒辦法自己做所有的事情。*嘆氣...* 人生就是如此。";
+		next;
+		mes "[智牛角]";
+		mes "在你離開之前，可以";
+		mes "請你幫個小忙嗎？";
+		mes "我口渴了，想喝";
+		mes "一杯冰牛奶。可以請你";
+		mes "幫我帶一些來嗎？";
+		set GUNS_Q,4;
+		changequest 6022,6023;
+		close;
+	}
+	else if (GUNS_Q == 4) {
+		if (countitem(519) < 1) {
+			mes "[智牛角]";
+			mes "我是一個即將";
+			mes "與大地之母重聚的老人。";
+			mes "你可以幫這個老";
+			mes "神槍手一個忙，給我帶";
+			mes "一杯冰牛奶嗎，拜託了？";
+			close;
+		}
+		delitem 519,1; // Milk
+		set GUNS_Q,5;
+		changequest 6023,6024;
+		mes "[智牛角]";
+		mes "噢，謝謝你的";
+		mes "慷慨——我看到";
+		mes "你給我帶來了些";
+		mes "牛奶。啊啊啊，真好喝~";
+		next;
+		mes "[智牛角]";
+		mes "我欣賞你在把這個帶給我的";
+		mes "過程中所展現出來的";
+		mes "耐心、溫柔和善良。";
+		mes "是的，那些正是我們希望所有神槍手具備的特質。";
+		next;
+		mes "[智牛角]";
+		mes "現在，請帶著這份推薦函";
+		mes "去找米勒，黑狐，這代表著";
+		mes "我全心全意的認可。";
+		mes "我希望你能使用你的";
+		mes "槍來伸張正義，成為一名";
+		mes "高尚的大地戰士。";
+		next;
+		mes "[智牛角]";
+		mes "咿~呀~咿~轟";
+		mes "咿~呀~咿~轟";
+		mes "瑪~拉~妮~";
+		mes "依嗶~依嗶~耶~依喲卡耶~";
+		close;
+	}
+	else if (GUNS_Q == 5) {
+		mes "[智牛角]";
+		mes "請帶著這份推薦函";
+		mes "去找米勒，黑狐，這代表著";
+		mes "我全心全意的認可。";
+		mes "我希望你能使用你的";
+		mes "槍來伸張正義，成為一名";
+		mes "高尚的大地戰士。";
+		next;
+		mes "[智牛角]";
+		mes "咿~呀~咿~轟";
+		mes "咿~呀~咿~轟";
+		mes "瑪~拉~妮~";
+		mes "依嗶~依嗶~耶~依喲卡耶~";
+		close;
+	}
+	else if (GUNS_Q == 6) {
+		mes "[智牛角]";
+		mes "啊，好久不見了。";
+		mes "我希望你能成為";
+		mes "一頭聰明的野獸，並使用";
+		mes "你作為神槍手的力量來保護善良和正義。";
+		close;
+	}
+	else {
+		mes "[智牛角]";
+		mes "Zzzzzz~";
+		mes "^333333*呼*^000000";
+		close;
+	}
+}

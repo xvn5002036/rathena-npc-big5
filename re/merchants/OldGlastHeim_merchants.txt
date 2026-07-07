@@ -1,0 +1,590 @@
+//===== rAthena Script =======================================
+//= Enchants NPCs.
+//===== Description: =========================================
+//= Temporal Boots enchants NPCs.
+//===== Changelogs: ==========================================
+//= 1.0 First Version merged from idathena.
+//=     Credit exneval. [Capuche]
+//============================================================
+
+// Merchant
+//============================================================
+glast_01,210,273,5	script	福金的管家#pa0829	1_F_04,{
+	disable_items;
+	if (MaxWeight - Weight < 1000) {
+		mes "你的背包太重了。請減輕一些重量後再來。";
+		close;
+	}
+	mes "[福金的管家]";
+	mes "帶來時光結晶可以兌換各種時光戰靴。請選擇你想要的物品。";
+	next;
+	switch( select( "取消", "購買時光戰靴 (需要1個時光結晶)", "升級時光戰靴 (需要5個時光結晶)", "升級變異時光戰靴 (需要5個時光結晶)" ) ) {
+	case 1:
+		mes "[福金的管家]";
+		mes "隨時歡迎你再來。";
+		close;
+	case 2:
+		if (countitem(6607) > 0) {
+			mes "[福金的管家]";
+			mes "收下這雙時光戰靴吧。我們可以使用5個時光結晶來升級你的時光戰靴。";
+			delitem 6607,1;// Temporal_Crystal
+			getitem 2499,1;// Temporal_Boots
+			close;
+		}
+		mes "[福金的管家]";
+		mes "你需要更多的時光結晶。當你在古城漫步收集到更多時光結晶時再來找我吧。";
+		close;
+	case 3:
+		setarray .@equip_type[0],
+			22000,	// Temporal_STR_Boots
+			22001,	// Temporal_INT_Boots
+			22002,	// Temporal_AGI_Boots
+			22003,	// Temporal_VIT_Boots
+			22004,	// Temporal_DEX_Boots
+			22005;	// Temporal_LUK_Boots
+		break;
+	case 4:
+		setarray .@equip_type[0],
+			22107,	// Modified_STR_Boots
+			22108,	// Modified_INT_Boots
+			22109,	// Modified_AGI_Boots
+			22110,	// Modified_VIT_Boots
+			22111,	// Modified_DEX_Boots
+			22112; // Modified_LUK_Boots
+		break;
+	}
+	if (!getequipisequiped(EQI_SHOES)) {
+		mes "[福金的管家]";
+		mes "只有你身上裝備的物品才能進行升級。";
+		mes "穿上你想要升級的^0000FF時光戰靴^000000，然後再和我對話。";
+		close;
+	}
+	if (getequipid(EQI_SHOES) != 2499) {
+		mes "[福金的管家]";
+		mes "你沒有裝備時光戰靴。穿上它之後再來找我。";
+		close;
+	}
+	if (countitem(6607) < 5) {
+		mes "[福金的管家]";
+		mes "時光結晶不足。你需要5個時光結晶來升級你的物品。";
+		close;
+	}
+	mes "[福金的管家]";
+	mes "你可以用 ^0000FF1雙時光戰靴和5個時光結晶^000000 兌換下列其中一項物品。^FF0000兌換後，先前的精鍊值將不會保留。^000000";
+	next;
+	.@s = select( "取消", "力量戰靴", "智慧戰靴", "敏捷戰靴", "體力戰靴", "靈巧戰靴", "幸運戰靴" ) - 2;
+	if (.@s == -1) {
+		mes "[福金的管家]";
+		mes "隨時歡迎你再來。";
+		close;
+	}
+	setarray .@type$[0], "力量", "智慧", "敏捷", "體力", "靈巧", "幸運";
+	mes "[福金的管家]";
+	mes "你確定要購買時光^FF0000" + .@type$[.@s] + "^000000戰靴嗎？售出後概不退換。";
+	next;
+	if (select( "再想一下", "是的，我確定。" ) == 1) {
+		mes "[福金的管家]";
+		mes "好的，確定之後再來找我。";
+		close;
+	}
+	mes "[福金的管家]";
+	mes "戰靴已經按照你的要求升級了。";
+	if (getequipid(EQI_SHOES) == 2499) {
+		delequip EQI_SHOES;
+		delitem 6607,5;// Temporal_Crystal
+		getitem .@equip_type[.@s],1;
+	}
+	close;
+}
+
+// Enchant and Socket NPC
+//============================================================
+glast_01,212,273,4	script	福金的魔法師#pa0829	1_F_01,{
+	disable_items;
+	if (MaxWeight - Weight < 1000) {
+		mes "你的背包太重了。請減輕一些重量後再來。";
+		close;
+	}
+	mes "[福金的魔法師]";
+	mes "所以你是來為時光戰靴附魔的。請注意，有洞槽的戰靴無法進行附魔，且此升級僅限於你身上裝備的戰靴。";
+	next;
+	if (select( "附魔是如何運作的？", "為我的時光戰靴附加能力" ) == 1) {
+		mes "[福金的魔法師]";
+		mes "你可以在旅行中持續獲得^0000FF凝結的魔力^000000。";
+		next;
+		mes "[福金的魔法師]";
+		mes "我可以根據你擁有的數量為你的時光戰靴附魔。^0000FF不是普通的戰靴^000000。只適用於那6種進階版本的戰靴。";
+		next;
+		mes "[福金的魔法師]";
+		mes "但是，一旦你為物品打洞，就無法再對其進行附魔。請務必記住這一點。";
+		next;
+		mes "[福金的魔法師]";
+		mes "我不會隨機賦予能力。你可以選擇你想為物品附加哪種能力。";
+		next;
+		mes "[福金的魔法師]";
+		mes "當然，這僅限於第4個洞槽。一開始你只能獲得微小的能力，之後能力會逐漸變強。";
+		next;
+		mes "[福金的魔法師]";
+		mes "要達到最終的選項升級，將需要更多的凝結的魔力。別忘了這一點。";
+		next;
+		mes "[福金的魔法師]";
+		mes "一旦第4個洞槽完成最佳選項，你就可以在第3個洞槽獲得一個隨機的額外能力。當然.. 需要支付一定的代價~";
+		next;
+		mes "[福金的魔法師]";
+		mes "此外，即使附魔失敗你也不會失去物品，我們也保證會保留卡片和精鍊值。但我們無法重置附魔。";
+		next;
+		mes "[福金的魔法師]";
+		mes "呼...";
+		mes "總之，這就是基本的附魔資訊。現在你應該親自體驗看看。";
+		close;
+	}
+	if (!getequipisequiped(EQI_SHOES)) {
+		mes "[福金的魔法師]";
+		mes "你有裝備該物品嗎？";
+		close;
+	}
+	.@equip_id = getequipid(EQI_SHOES);
+	setarray .@enchant_1[0],4808,4832,4814,4741,4869,4752;// Fighting_Spirit4	Expert_Archer1	Spell2	Vitality2	DelayafterAttack1Lv	Luck3
+	setarray .@enchant_2[0],4820,4833,4813,4742,4872,4753;// Fighting_Spirit5	Expert_Archer2	Spell3	Vitality3	DelayafterAttack2Lv	Luck4
+	setarray .@enchant_3[0],4821,4834,4812,4861,4873,4754;// Fighting_Spirit6	Expert_Archer3	Spell4	MHP1		DelayafterAttack3Lv	Luck5
+	setarray .@enchant_4[0],4822,4835,4826,4862,4881,4755;// Fighting_Spirit7	Expert_Archer4	Spell5	MHP2		DelayafterAttack4Lv	Luck6
+	setarray .@enchant_cost[0],1,4,15,30,10;
+	switch(.@equip_id) {
+	case 22000:	// Temporal_STR_Boots
+	case 22001:	// Temporal_INT_Boots
+	case 22002:	// Temporal_AGI_Boots
+	case 22003:	// Temporal_VIT_Boots
+	case 22004:	// Temporal_DEX_Boots
+	case 22005:	// Temporal_LUK_Boots
+
+	case 22107:	// Modified_STR_Boots
+	case 22108:	// Modified_INT_Boots
+	case 22109:	// Modified_AGI_Boots
+	case 22110:	// Modified_VIT_Boots
+	case 22111:	// Modified_DEX_Boots
+	case 22112:	// Modified_LUK_Boots
+		.@equip_name$ = getequipname(EQI_SHOES);
+		setarray .@card[0],
+			getequipcardid(EQI_SHOES,0),
+			getequipcardid(EQI_SHOES,1),
+			getequipcardid(EQI_SHOES,2),
+			getequipcardid(EQI_SHOES,3);
+		copyarray .@equip_card[0], .@card[0], 4;	// for final check
+		.@equip_refine = getequiprefinerycnt(EQI_SHOES);
+
+		if (.@card[2] > 0) {
+			mes "[福金的魔法師]";
+			mes "這雙戰靴已經超過了附魔的限制。我們無法再對其進行附魔了。";
+			close;
+		}
+		if (.@card[3] == 0) {// 4th slot 1st try enchanting
+			.@cost = .@enchant_cost[0];
+			mes "[福金的魔法師]";
+			mes "想要為^0000FF" + .@equip_name$ + "^000000附魔嗎？";
+			mes "第一次附魔需要^0000FF" + .@cost + "^000000個凝結的魔力。";
+			next;
+			.@s = select( "退出", "鬥志", "名弓", "魔力", "體力", "攻擊速度", "幸運" ) - 2;
+			if (.@s == -1) {
+				mes "[福金的魔法師]";
+				mes "好的，準備好再來找我。";
+				close;
+			}
+			.@card[3] = .@enchant_1[.@s];
+			.@string$ = "第 ^6300001^000000 階段附魔。";
+		}
+		else {
+			for ( .@enchant_num = 1; .@enchant_num < 5; .@enchant_num++ ) {
+				for ( .@enchant_type = 0; .@enchant_type < 6 && .@card[3] != getd( ".@enchant_" + .@enchant_num + "[" + .@enchant_type + "]" ); .@enchant_type++ )
+					continue;
+				if (.@enchant_type < 6)
+					break;
+			}
+			if (.@enchant_num == 5) {
+				mes "[福金的魔法師]";
+				mes "發生了不好的事。";
+				close;
+			}
+			.@cost = .@enchant_cost[.@enchant_num];
+			mes "[福金的魔法師]";
+			if (.@enchant_num == 4) {
+				.@card[2] = callfunc("F_Rand",4875,4876,4877,4878,4879,4880);// Bear's_Power, Runaway_Magic, Speed_Of_Light, Muscle_Fool, Hawkeye, Lucky_Day
+				.@string$ = "^990000額外能力^000000升級。";
+				mes "第4個洞槽已經升級到最終選項。你想要為第3個洞槽附加隨機的額外能力嗎？你需要^0000ff" + .@cost + "^000000個凝結的魔力。";
+			}
+			else {
+				.@number = .@enchant_num + 1;
+				.@card[3] = getd( ".@enchant_" + (.@enchant_num+1) + "[" + .@enchant_type + "]" );
+				.@string$ = "第 ^630000" + .@number + "^000000 階段附魔。";
+				mes "將^0000FF" + .@equip_name$ + "^000000的第4個洞槽進行第^0000FF" + .@number + "^000000階段的能力附魔。需要^0000FF" + .@cost + "^000000個凝結的魔力。";
+			}
+			next;
+			if (select("退出","能力升級！") == 1) {
+				mes "[福金的魔法師]";
+				mes "好的，準備好再來找我。";
+				close;
+			}
+		}
+		if (countitem(6608) < .@cost) {
+			mes "[福金的魔法師]";
+			mes "嗯，你還缺少 " + (.@cost - countitem(6608)) + " 個凝結的魔力。去收集更多，然後我們再來談談後續的附魔吧。";
+			close;
+		}
+		specialeffect2 EF_REPAIRWEAPON;
+		delitem 6608,.@cost;// Coagulated_Spell
+
+		// anti-hack
+		if (callfunc("F_IsEquipIDHack", EQI_SHOES, .@equip_id) || callfunc("F_IsEquipCardHack", EQI_SHOES, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", EQI_SHOES, .@equip_refine))
+			close;
+		delequip EQI_SHOES;
+		mes "[福金的魔法師]";
+		mes "嘗試進行 " + .@string$;
+		getitem2 .@equip_id,1,1,.@equip_refine,0,0,0,.@card[2],.@card[3];
+		close;
+	default:
+		mes "[福金的魔法師]";
+		mes "這不是適合此附魔的物品。";
+		mes "記住，只有那6種時光戰靴才能進行附魔。";
+		close;
+	}
+}
+
+glast_01,210,270,0	script	福金的工匠#pa0829	4_F_JOB_BLACKSMITH,{
+	disable_items;
+	if (MaxWeight - Weight < 1000) {
+		mes "你的背包太重了。請減輕一些重量後再來。";
+		close;
+	}
+	mes "[福金的工匠]";
+	mes "那個魔法師總是說給時光戰靴附魔是最好的。但是，我的看法完全不同。";
+	next;
+	mes "[福金的工匠]";
+	mes "我認為在裝備上打洞才是最棒的。儘管這伴隨著一些失敗的風險。";
+	next;
+	mes "[福金的工匠]";
+	mes "給我^0000FF5個時光結晶^000000，我會嘗試為你的進階時光戰靴打洞。但是，有可能會^FF0000失敗並使物品損毀^000000。這樣可以嗎？";
+	next;
+	if (select( "取消", "承擔風險並嘗試打洞" ) == 1) {
+		mes "[福金的工匠]";
+		mes "好的，隨時歡迎你再來。";
+		close;
+	}
+	if (!getequipisequiped(EQI_SHOES)) {
+		mes "[福金的工匠]";
+		mes "你確定你有裝備該物品嗎？";
+		close;
+	}
+	.@equip_id = getequipid(EQI_SHOES);
+	switch(.@equip_id) {
+	case 22000:	callsub( S_Slot,22006 ); // Temporal_STR_Boots
+	case 22001:	callsub( S_Slot,22009 );	// Temporal_INT_Boots
+	case 22002:	callsub( S_Slot,22010 );	// Temporal_AGI_Boots
+	case 22003:	callsub( S_Slot,22007 );	// Temporal_VIT_Boots
+	case 22004:	callsub( S_Slot,22008 ); // Temporal_DEX_Boots
+	case 22005:	callsub( S_Slot,22011 );	// Temporal_LUK_Boots
+
+	case 22107:	callsub( S_Slot,22113 );	// Modified_STR_Boots
+	case 22108:	callsub( S_Slot,22114 );	// Modified_INT_Boots
+	case 22109:	callsub( S_Slot,22115 ); // Modified_AGI_Boots
+	case 22110:	callsub( S_Slot,22116 );	// Modified_VIT_Boots
+	case 22111:	callsub( S_Slot,22117 );	// Modified_DEX_Boots
+	case 22112:	callsub( S_Slot,22118 );	// Modified_LUK_Boots
+	default:
+		mes "[福金的工匠]";
+		mes "這不對！我們需要的是^0000FF進階的時光戰靴^000000！也就是^0000FF附有屬性能力且沒有洞槽^000000的物品！";
+		close;
+	}
+
+S_Slot:
+	.@equip_id = getequipid(EQI_SHOES);
+	mes "[福金的工匠]";
+	mes "而且^FF0000如果失敗，所有的附魔或精鍊值都將消失。^000000";
+	mes "仍然要冒這個險嗎？";
+	next;
+	if (select( "取消", "我沒問題！" ) == 1) {
+		mes "[福金的工匠]";
+		mes "好的，隨時歡迎你再來。";
+		close;
+	}
+	mes "[福金的工匠]";
+	mes "再提醒一次，^FF0000那個魔法師不會對任何有洞槽的物品進行附魔。^000000";
+	mes "仍然要繼續嗎？";
+	next;
+	if (select( "取消", "我明白。嘗試打洞吧。" ) == 1) {
+		mes "[福金的工匠]";
+		mes "好的，隨時歡迎你再來。";
+		close;
+	}
+	if (countitem(6607) < 5) {
+		mes "[福金的工匠]";
+		mes "你必須帶來^0000FF5個時光結晶^000000。你知道天下沒有白吃的午餐...";
+		close;
+	}
+	delitem 6607,5;// Temporal_Crystal
+	if (getequipid(EQI_SHOES) == .@equip_id) {
+		delequip EQI_SHOES;
+		if (rand(1,100) < 50) {
+			mes "[福金的工匠]";
+			mes "呃啊，我們失敗了。祝你下次好運。";
+			specialeffect2 EF_PHARMACY_FAIL;
+			close;
+		}
+		mes "[福金的工匠]";
+		mes "成功了！拿去吧。";
+		specialeffect2 EF_MAXPOWER;
+		getitem getarg(0),1;
+	}
+	close;
+}
+
+// Temporal shoes slotted - npc enchant
+glast_01,184,283,4	script	黑暗魔法大師#pa082	1_F_01,{
+	disable_items;
+	if ((MaxWeight - Weight) < 1000) {
+		mes "你的背包太重了。請減輕一些重量後再來。";
+		close;
+	}
+	if (checkweight(1201,1) == 0) {
+		mes "你身上似乎攜帶了太多物品。把一些物品放進倉庫後再來吧。";
+		close;
+	}
+	// requirements
+	.@coagulated_id = 6608;// Coagulated_Spell
+	.@polluted_id = 6755;// Polluted_Spell
+	.@cost_zeny = 100000;
+
+	mes "[黑暗魔法大師]";
+	mes "我只處理有洞槽的時光戰靴。";
+	next;
+	if (select( "附魔是如何運作的？", "為我的時光戰靴附加能力" ) == 1) {
+		mes "[黑暗魔法大師]";
+		mes "你應該去問福金的魔法大師那些基本的事情。我想進行關於附魔工作更深入的對話。";
+		next;
+		mes "[黑暗魔法大師]";
+		mes "我需要4樣東西。^0000ff" + callfunc("F_InsertComma",.@cost_zeny) + " Zeny、" + getitemname(.@polluted_id) + "、" + getitemname(.@coagulated_id) + "，以及時光戰靴(有洞)系列^000000。如果你沒有這些，我無法幫助你。";
+		next;
+		mes "[黑暗魔法大師]";
+		mes "這是我的小嗜好.. 使用受汙染的魔力和凝結的魔力為有洞槽的時光戰靴附魔。";
+		next;
+		mes "[黑暗魔法大師]";
+		mes "當然，當你想一而再再而三地進行附魔時，你必須承擔更大的損毀風險。";
+		next;
+		mes "[黑暗魔法大師]";
+		mes "附魔順序與福金的魔法大師的附魔相同。請參考他的說明。";
+		close;
+	}
+	.@equip_id = getequipid(EQI_SHOES);
+
+	switch(.@equip_id) {
+	case 22006:	// Temporal_Str_Boots_
+	case 22007:	// Temporal_Vit_Boots_
+	case 22008:	// Temporal_Dex_Boots_
+	case 22009:	// Temporal_Int_Boots_
+	case 22010:	// Temporal_Agi_Boots_
+	case 22011:	// Temporal_Luk_Boots_
+	case 22113:	// Modified_Str_Boots_
+	case 22114:	// Modified_Int_Boots_
+	case 22115:	// Modified_Agi_Boots_
+	case 22116:	// Modified_Vit_Boots_
+	case 22117:	// Modified_Dex_Boots_
+	case 22118:	// Modified_Luk_Boots_
+		break;
+	case -1:
+		mes "[黑暗魔法大師]";
+		mes "你有裝備該物品嗎？";
+		close;
+	default:
+		mes "[黑暗魔法大師]";
+		mes "這不是適合此附魔的物品。記住，只有那6種有洞槽的時光戰靴才能進行隱藏附魔..";
+		close;
+	}
+	// enchants ID
+	setarray .@enchant_1[0],4808,4832,4814,4741,4869,4752;// Fighting_Spirit4	Expert_Archer1	Spell2	Vitality2	DelayafterAttack1Lv	Luck3
+	setarray .@enchant_2[0],4820,4833,4813,4742,4872,4753;// Fighting_Spirit5	Expert_Archer2	Spell3	Vitality3	DelayafterAttack2Lv	Luck4
+	setarray .@enchant_3[0],4821,4834,4812,4861,4873,4754;// Fighting_Spirit6	Expert_Archer3	Spell4	MHP1		DelayafterAttack3Lv	Luck5
+	setarray .@enchant_4[0],4822,4835,4826,4862,4881,4755;// Fighting_Spirit7	Expert_Archer4	Spell5	MHP2		DelayafterAttack4Lv	Luck6
+
+	// requirements amount
+	setarray .@en_amount_coag[0],3,10,20,40,50;
+	setarray .@en_amount_polluted[0],1,2,4,7,10; // (custom) chances of success (official value unknown)
+	setarray .@chances[0],100,70,70,70,70;
+
+	// data of item equipped
+	.@equip_name$ = getequipname(EQI_SHOES);
+	setarray .@card[0],
+		getequipcardid(EQI_SHOES,0),
+		getequipcardid(EQI_SHOES,1),
+		getequipcardid(EQI_SHOES,2),
+		getequipcardid(EQI_SHOES,3);
+	copyarray .@equip_card[0], .@card[0], 4;
+	.@equip_refine = getequiprefinerycnt(EQI_SHOES);
+
+	if (.@card[2] > 0) {
+		mes "[黑暗魔法大師]";
+		mes "這雙戰靴已經超過了附魔的限制。我們無法再對其進行附魔了。";
+		close;
+	}
+	if (.@card[3] == 0) {// 4th slot 1st try enchanting
+		.@amount_coag = .@en_amount_coag[0];
+		.@amount_poll = .@en_amount_polluted[0];
+
+		mes "[黑暗魔法大師]";
+		mes "想要為^0000ff" + .@equip_name$ + " (有洞)^000000附魔嗎？第一次附魔，你需要^0000ff" + .@amount_poll + "個" + getitemname(.@polluted_id) + "、" + .@amount_coag + "個" + getitemname(.@coagulated_id) + "，以及" + callfunc("F_InsertComma",.@cost_zeny) + " Zeny^000000。";
+		mes "這有一定的失敗風險..";
+		next;
+		.@s = select( "退出", "鬥志", "名弓", "魔力", "體力", "攻擊速度", "幸運" ) - 2;
+		if (.@s == -1) {
+			mes "[黑暗魔法大師]";
+			mes "好的，準備好再來找我。";
+			close;
+		}
+		.@card[3] = .@enchant_1[.@s];
+		.@string$ = "第 ^6300001^000000 階段附魔。";
+		.@num = 0;
+	}
+	else {
+		for ( .@num = 1; .@num < 5; .@num++ ) {
+			for ( .@type = 0; .@type < 6 && .@card[3] != getd( ".@enchant_" + .@num + "[" + .@type + "]" ); .@type++ )
+				continue;
+			if (.@type < 6)
+				break;
+		}
+		if (.@num == 5) {
+			mes "[黑暗魔法大師]";
+			mes "發生了不好的事。";
+			close;
+		}
+		.@amount_coag = .@en_amount_coag[.@num];
+		.@amount_poll = .@en_amount_polluted[.@num];
+
+		mes "[黑暗魔法大師]";
+		if (.@num == 4) {
+			.@card[2] = callfunc("F_Rand",4875,4876,4877,4878,4879,4880);// Bear's_Power, Runaway_Magic, Speed_Of_Light, Muscle_Fool, Hawkeye, Lucky_Day
+			.@string$ = "^990000額外能力^000000升級。";
+			mes "你想要為第3個洞槽附加隨機的額外能力嗎？你需要^0000ff" + .@amount_poll + "個" + getitemname(.@polluted_id) + "、" + .@amount_coag + "個" + getitemname(.@coagulated_id) + "，以及" + callfunc("F_InsertComma",.@cost_zeny) + " Zeny^000000。但這有很高的失敗風險..";
+		}
+		else {
+			.@level = .@num + 1;
+			.@card[3] = getd( ".@enchant_" + (.@num+1) + "[" + .@type + "]" );
+			.@string$ = "第 ^990000" + .@level + "^000000 階段附魔。";
+			mes "將^0000ff" + .@equip_name$ + " (有洞)^000000的第4個洞槽進行第^0000ff" + .@level + "^000000階段的能力附魔。需要^0000ff" + .@amount_poll + "個" + getitemname(.@polluted_id) + "、" + .@amount_coag + "個" + getitemname(.@coagulated_id) + "，以及" + callfunc("F_InsertComma",.@cost_zeny) + " Zeny^000000。這有一定的失敗風險..";
+		}
+		next;
+		if (select( "退出", "能力升級！" ) == 1) {
+			mes "[黑暗魔法大師]";
+			mes "好的，準備好再來找我。";
+			close;
+		}
+	}
+	if (countitem(.@coagulated_id) < .@amount_coag) {
+		mes "[黑暗魔法大師]";
+		mes "嗯，你還缺少 " + (.@amount_coag - countitem(.@coagulated_id)) + " 個" + getitemname(.@coagulated_id) + "。去收集更多，然後我們再來談談後續的附魔吧。";
+		close;
+	}
+	if (countitem(.@polluted_id) < .@amount_poll) {
+		mes "[黑暗魔法大師]";
+		mes "嗯，你還缺少 " + (.@amount_poll - countitem(.@polluted_id)) + " 個" + getitemname(.@polluted_id) + "。去收集更多，然後我們再來談談後續的附魔吧。";
+		close;
+	}
+	if (Zeny < .@cost_zeny) {
+		mes "[黑暗魔法大師]";
+		mes "你必須帶來^0000ff" + callfunc("F_InsertComma",.@cost_zeny) + " Zeny^000000。你知道天下沒有白吃的午餐...";
+		close;
+	}
+	delitem .@coagulated_id, .@amount_coag;
+	delitem .@polluted_id, .@amount_poll;
+	Zeny -= .@cost_zeny; // anti-hack
+	if (callfunc("F_IsEquipIDHack", EQI_SHOES, .@equip_id) || callfunc("F_IsEquipCardHack", EQI_SHOES, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", EQI_SHOES, .@equip_refine))
+		close;
+
+	delequip EQI_SHOES;
+	if (.@chances[.@num] < rand(1,100)) {
+		specialeffect2 EF_LORD;
+		mes "[黑暗魔法大師]";
+		mes "呃啊，我們失敗了。祝你下次好運。";
+		close;
+	}
+	specialeffect2 EF_REPAIRWEAPON;
+	mes "[福金的魔法師]";
+	mes "嘗試進行 " + .@string$;
+	getitem2 .@equip_id,1,1,.@equip_refine,0,0,0,.@card[2],.@card[3];
+	close;
+}
+
+// Items exchange for card
+glast_01,216,292,5	script	肖像畫收集家#0002	4_M_OILMAN,{
+	disable_items;
+	if ((MaxWeight - Weight) < 1000) {
+		mes "你的背包太重了。請減輕一些重量後再來。";
+		close;
+	}
+	if (checkweight(1201,1) == 0) {
+		mes "你身上似乎攜帶了太多物品。把一些物品放進倉庫後再來吧。";
+		close;
+	}
+	.@coagulated_id = 6608;		// Coagulated_Spell
+	.@polluted_id = 6755;		// Polluted_Spell
+	.@white_card = 4608;		// White_Knightage_Card
+	.@khalitzburg_card = 4609;	// Khaliz_Knightage_Card
+
+	mes "[肖像畫收集家]";
+	mes "我收集肖像畫已經有一年了。現在是向人們展示我的收藏的時候了。";
+	next;
+	mes "[肖像畫收集家]";
+	mes "嘿，你有很多 " + getitemname(.@polluted_id) + " 或 " + getitemname(.@coagulated_id) + " 嗎？如果有的話，要不要和我交換一幅精美的肖像畫？";
+	next;
+	switch( select( "取消", "兌換 " + getitemname(.@white_card), "兌換 " + getitemname(.@khalitzburg_card) ) ) {
+	case 1:
+		mes "[肖像畫收集家]";
+		mes "好吧。準備好再來找我。";
+		close;
+	case 2:
+		.@reward_id = .@white_card;
+		.@amount_coag = 3000;
+		.@amount_polluted = 70;
+		break;
+	case 3:
+		.@reward_id = .@khalitzburg_card;
+		.@amount_coag = 5000;
+		.@amount_polluted = 100;
+		break;
+	}
+	mes "[肖像畫收集家]";
+	mes "你想用什麼來兌換 " + getitemname(.@reward_id) + "？";
+	next;
+	if (countitem(.@coagulated_id) < .@amount_coag)
+		.@color$[0] = "^666666";
+	if (countitem(.@polluted_id) < .@amount_polluted)
+		.@color$[1] = "^666666";
+	switch( select( "取消", sprintf("%s%s %s^000000", .@color$[0], callfunc("F_InsertComma",.@amount_coag), getitemname(.@coagulated_id)), sprintf("%s%s %s^000000", .@color$[1], callfunc("F_InsertComma",.@amount_polluted), getitemname(.@polluted_id)) ) ) {
+	case 1:
+		mes "[肖像畫收集家]";
+		mes "好吧。準備好再來找我。";
+		close;
+	case 2:
+		.@id = .@coagulated_id;
+		.@amount = .@amount_coag;
+		break;
+	case 3:
+		.@id = .@polluted_id;
+		.@amount = .@amount_polluted;
+		break;
+	}
+	if (countitem(.@id) < .@amount) {
+		mes "[肖像畫收集家]";
+		mes "嗯，你現在的魔力不足。去收集更多吧。";
+		close;
+	}
+	mes "[肖像畫收集家]";
+	mes "你確定你不會後悔嗎？";
+	next;
+	if (select( "取消", "確定" ) == 1) {
+		mes "[肖像畫收集家]";
+		mes "好吧。準備好再來找我。";
+		close;
+	}
+	mes "[肖像畫收集家]";
+	mes "酷，我們成交吧。";
+	delitem .@id, .@amount;
+	getitem .@reward_id,1;
+	close;
+}

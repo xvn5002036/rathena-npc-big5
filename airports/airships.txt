@@ -1,0 +1,1459 @@
+//===== rAthena Script ======================================= 
+//= The Airship System Script
+//===== By: ================================================== 
+//= rAthena Dev Team
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= The Airship System used in the official servers.
+//===== Additional Comments: ================================= 
+//= 1.0 First version.
+//============================================================ 
+
+//============================================================ 
+//= Domestic Airship Route (國內線飛空艇)
+//= ... -> Juno -> Einbroch -> Lighthalzen -> Einbroch
+//= -> Juno -> Hugel -> ...
+//============================================================ 
+
+airplane,243,73,0	script	#AirshipWarp-1	45,1,1,{
+	end;
+OnInit:
+OnHide:
+	specialeffect EF_BASH;
+	disablenpc();
+	end;
+
+OnUnhide:
+	enablenpc();
+	specialeffect EF_SUMMONSLAVE;
+	end;
+
+OnTouch_:
+	switch ($@airplanelocation) {
+	case 0: warp "yuno",92,260; end;
+	case 1: warp "einbroch",92,278; end;
+	case 2: warp "lighthalzen",302,75; end;
+	case 3: warp "hugel",181,146; end;
+	}
+}
+
+airplane,243,29,0	duplicate(#AirshipWarp-1)	#AirshipWarp-2	45,1,1
+
+airplane,1,1,0	script	國內線飛艇	-1,{
+	end;
+OnInit:
+	initnpctimer;
+	end;
+OnTimer20000:
+	mapannounce "airplane","我們正前往艾因布羅克。",bc_map,"0x00ff00";
+	end;
+OnTimer50000:
+	mapannounce "airplane","我們即將抵達艾因布羅克。",bc_map,"0x00ff00";
+	end;
+OnTimer60000:
+	set $@airplanelocation,1;
+	donpcevent "#AirshipWarp-1::OnUnhide";
+	donpcevent "#AirshipWarp-2::OnUnhide";
+	mapannounce "airplane","歡迎來到艾因布羅克。祝您旅途平安。",bc_map,"0x00ff00";
+	end;
+OnTimer70000:
+	mapannounce "airplane","目前我們停靠在艾因布羅克。飛空艇即將起飛。",bc_map,"0x00ff00";
+	end;
+OnTimer80000:
+	donpcevent "#AirshipWarp-1::OnHide";
+	donpcevent "#AirshipWarp-2::OnHide";
+	mapannounce "airplane","飛空艇現在起飛。我們的下一個目的地是里希塔樂鎮。",bc_map,"0x70dbdb";
+	end;
+OnTimer100000:
+	mapannounce "airplane","我們正前往里希塔樂鎮。",bc_map,"0x70dbdb";
+	end;
+OnTimer130000:
+	mapannounce "airplane","我們即將抵達里希塔樂鎮。",bc_map,"0x70dbdb";
+	end;
+OnTimer140000:
+	set $@airplanelocation,2;
+	donpcevent "#AirshipWarp-1::OnUnhide";
+	donpcevent "#AirshipWarp-2::OnUnhide";
+	mapannounce "airplane","歡迎來到里希塔樂鎮。祝您旅途平安。",bc_map,"0x70dbdb";
+	end;
+OnTimer150000:
+	mapannounce "airplane","目前我們停靠在里希塔樂鎮。飛空艇即將起飛。",bc_map,"0x70dbdb";
+	end;
+OnTimer160000:
+	donpcevent "#AirshipWarp-1::OnHide";
+	donpcevent "#AirshipWarp-2::OnHide";
+	mapannounce "airplane","飛空艇即將離開地面。我們的下一個目的地是艾因布羅克。",bc_map,"0x00ff00";
+	end;
+OnTimer180000:
+	mapannounce "airplane","我們正前往艾因布羅克。",bc_map,"0x00ff00";
+	end;
+OnTimer210000:
+	mapannounce "airplane","我們即將抵達艾因布羅克。",bc_map,"0x00FF00";
+	end;
+OnTimer220000:
+	set $@airplanelocation,1;
+	donpcevent "#AirshipWarp-1::OnUnhide";
+	donpcevent "#AirshipWarp-2::OnUnhide";
+	mapannounce "airplane","歡迎來到艾因布羅克。祝您旅途平安。",bc_map,"0x00ff00";
+	end;
+OnTimer230000:
+	mapannounce "airplane","目前我們停靠在艾因布羅克。飛空艇即將起飛。",bc_map,"0x00ff00";
+	end;
+OnTimer240000:
+	donpcevent "#AirshipWarp-1::OnHide";
+	donpcevent "#AirshipWarp-2::OnHide";
+	mapannounce "airplane","飛空艇現在起飛。我們的下一個目的地是尤諾。",bc_map,"0xff8200";
+	end;
+OnTimer260000:
+	mapannounce "airplane","我們正前往尤諾。",bc_map,"0xff8200";
+	end;
+OnTimer290000:
+	mapannounce "airplane","我們即將抵達尤諾。",bc_map,"0xff8200";
+	end;
+OnTimer300000:
+	set $@airplanelocation,0;
+	donpcevent "#AirshipWarp-1::OnUnhide";
+	donpcevent "#AirshipWarp-2::OnUnhide";
+	mapannounce "airplane","歡迎來到尤諾。祝您旅途平安。",bc_map,"0xff8200";
+	end;
+OnTimer310000:
+	mapannounce "airplane","目前我們停靠在尤諾。飛空艇即將起飛。",bc_map,"0xff8200";
+	end;
+OnTimer320000:
+	donpcevent "#AirshipWarp-1::OnHide";
+	donpcevent "#AirshipWarp-2::OnHide";
+	mapannounce "airplane","飛空艇即將離開地面。我們的下一個目的地是毀葛。",bc_map,"0xca4bf3";
+	end;
+OnTimer340000:
+	mapannounce "airplane","我們正前往毀葛。",bc_map,"0xca4bf3";
+	end;
+OnTimer370000:
+	mapannounce "airplane","我們即將抵達毀葛。",bc_map,"0xca4bf3";
+	end;
+OnTimer380000:
+	set $@airplanelocation,3;
+	donpcevent "#AirshipWarp-1::OnUnhide";
+	donpcevent "#AirshipWarp-2::OnUnhide";
+	mapannounce "airplane","歡迎來到毀葛。祝您旅途平安。",bc_map,"0xca4bf3";
+	end;
+OnTimer390000:
+	mapannounce "airplane","目前我們停靠在毀葛。飛空艇即將起飛。",bc_map,"0xca4bf3";
+	end;
+OnTimer400000:
+	donpcevent "#AirshipWarp-1::OnHide";
+	donpcevent "#AirshipWarp-2::OnHide";
+	mapannounce "airplane","飛空艇即將離開地面。我們的下一個目的地是尤諾。",bc_map,"0xff8200";
+	end;
+OnTimer420000:
+	mapannounce "airplane","我們正前往尤諾。",bc_map,"0xff8200";
+	end;
+OnTimer450000:
+	mapannounce "airplane","我們即將抵達尤諾。",bc_map,"0xff8200";
+	end;
+OnTimer460000:
+	set $@airplanelocation,0;
+	donpcevent "#AirshipWarp-1::OnUnhide";
+	donpcevent "#AirshipWarp-2::OnUnhide";
+	mapannounce "airplane","歡迎來到尤諾。祝您旅途平安。",bc_map,"0xff8200";
+	end;
+OnTimer470000:
+	mapannounce "airplane","目前我們停靠在尤諾。飛空艇即將起飛。",bc_map,"0xff8200";
+	end;
+OnTimer480000:
+	donpcevent "#AirshipWarp-1::OnHide";
+	donpcevent "#AirshipWarp-2::OnHide";
+	mapannounce "airplane","飛空艇即將離開地面。我們的下一個目的地是艾因布羅克。",bc_map,"0x00ff00";
+	stopnpctimer;
+	initnpctimer;
+}
+
+airplane,240,64,5	script	出口#airplane1a::ExitAirplane	857,{
+	end;
+}
+airplane,247,64,5	duplicate(ExitAirplane)	出口#airplane1b	857
+airplane,240,40,1	duplicate(ExitAirplane)	出口#airplane2a	857
+airplane,247,40,1	duplicate(ExitAirplane)	出口#airplane2b	857
+
+airplane,100,69,3	script	飛艇機組人員#ein-1	852,{
+	mes "[飛空艇船員]";
+	mes "如果我們已經抵達了";
+	mes "您的目的地，並且";
+	mes "您想要離開飛空艇，請使用";
+	mes "前方的樓梯。感謝";
+	mes "您的搭乘。";
+	close;
+}
+
+airplane,64,94,1	script	烏姆巴拉小孩#ein_p	787,{
+	emotion ET_PROFUSELY_SWEAT;
+	mes "[小孩]";
+	if (event_umbala >= 3) {
+		mes "哇，媽媽！";
+		mes "看、看這個！";
+		mes "我們在飛！我、我們...";
+		mes "我們居然在天空裡！";
+	}
+	else {
+		mes "Makumalagu!";
+		mes "Saampa joojimbo";
+		mes "kaku na jedi Solo.";
+		mes "Bwahahahahahahaah!";
+	}
+	close;
+}
+
+airplane,66,93,3	script	烏姆巴拉女士#ein_p	783,{
+	emotion ET_THINK;
+	mes "[女士]";
+	if (event_umbala >= 3) {
+		mes "噓...";
+		mes "親愛的，乖一點?";
+		mes "在這種公共場合";
+		mes "別表現得那麼興奮！";
+	}
+	else {
+		mes "Chooktu!";
+		mes "Sacraup matii!";
+		mes "Shaka gurftalfi";
+		mes "huntiki manjoo!";
+	}
+	close;
+}
+
+airplane,71,91,7	script	烏姆巴拉男士#ein_p	789,{
+	if (event_umbala >= 3) {
+		mes "[查姆林]";
+		mes "嘿，你好啊?";
+		mes "看你臉上的表情，";
+		mes "我知道你聽得懂我";
+		mes "說話。 ^333333*呼...！*^000000";
+		next;
+		emotion ET_HNG;
+		mes "[查姆林]";
+		mes "我一直在協助";
+		mes "飛空艇企業，讓";
+		mes "飛空艇船員在烏漫巴拉";
+		mes "接受高空彈跳訓練，以克服";
+		mes "他們可能有的懼高症。很酷吧？";
+		next;
+		mes "[查姆林]";
+		mes "但是...";
+		mes "他們之中有些人無法";
+		mes "克服對高度的恐懼。";
+		mes "有幾個人甚至，嗯，";
+		mes "最後去了 ^333333尼芙菲姆^000000。";
+	}
+	else {
+		mes "[查姆林]";
+		mes "Bajoo ga";
+		mes "nukta Airship.";
+		next;
+		mes "[查姆林]";
+		mes "...";
+		mes "......";
+		next;
+		emotion ET_HNG;
+		mes "[查姆林]";
+		mes "Shabala moow bajama";
+		mes "Airship kulaha googoona ";
+		mes "salu. Dama, kookoo na nu";
+		mes "yukuta. Um, fashuku na ret!";
+	}
+	close;
+}
+
+airplane,250,58,2	script	飛艇工作人員#airplane	67,{
+	// Hugel quest addition
+	if (hg_ma1 == 3) {
+		mes "[飛空艇服務員]";
+		mes "歡迎來到";
+		mes "飛空艇。";
+		mes "有什麼我可以為您服務的嗎？";
+		next;
+		select("請問有位名叫蒂埃里的乘客嗎？");
+		mes "[飛空艇服務員]";
+		mes "很抱歉，但我不認為我們有這位名字的乘客。";
+		close;
+	}
+	// Hugel quest end
+	mes "[飛空艇服務員]";
+	mes "歡迎來到";
+	mes "飛空艇。";
+	mes "有什麼我可以為您服務的嗎？";
+	next;
+	switch (select("使用飛空艇:船長室:設施:取消")) {
+	case 1:
+		mes "[飛空艇服務員]";
+		mes "當您聽到廣播";
+		mes "宣布我們已經抵達";
+		mes "您的目的地時，";
+		mes "請使用位於飛空艇";
+		mes "北端或南端的出口離開。";
+		next;
+		mes "[飛空艇服務員]";
+		mes "如果您不小心錯過了";
+		mes "您的停靠站，請不用擔心。";
+		mes "飛空艇是持續";
+		mes "在航線上運行的，您還有";
+		mes "下一次機會抵達";
+		mes "您預定的目的地。";
+		close;
+	case 2:
+		mes "[飛空艇服務員]";
+		mes "船長室";
+		mes "位於飛空艇的";
+		mes "最前方。在那裡，您";
+		mes "可以見到飛空艇的船長";
+		mes "以及飛行員。";
+		close;
+	case 3:
+		mes "[飛空艇服務員]";
+		mes "飛空艇提供";
+		mes "各種小遊戲來";
+		mes "娛樂我們所有的乘客。";
+		mes "我們邀請您在飛空艇的";
+		mes "小遊戲中試試您的運氣和技巧?";
+		close;
+	case 4:
+		mes "[飛空艇服務員]";
+		mes "那麼，希望您";
+		mes "享受搭乘我們飛空艇";
+		mes "的飛行時光。感謝您，";
+		mes "祝您有美好的一天。";
+		close;
+	}
+}
+
+airplane,80,71,2	script	澤塔#01airplane	834,{
+	mes "[澤塔]";
+	mes "喔，你好，冒險者。";
+	mes "我目前正在進行一趟";
+	mes "神聖的旅程，為了";
+	mes "米德加爾特大陸祈禱著。";
+	close;
+}
+
+airplane,65,63,4	script	梅琳#01airplane	714,{
+	mes "[梅琳]";
+	mes "嗯，這艘飛空艇是";
+	mes "去露緹耶的，對吧？我";
+	mes "等了好久，";
+	mes "但都沒聽到任何";
+	mes "關於露緹耶的廣播。";
+	close;
+}
+
+airplane,72,34,6	script	阿諾斯#01airplane	702,{
+	mes "[阿諾斯]";
+	mes "喔哇?";
+	mes "從這裡看下去，天空";
+	mes "感覺好不一樣，好漂亮！";
+	close;
+}
+
+airplane,221,158,2	script	飛行員#airplane	852,{
+	// Hugel quest addition
+	if (hg_ma1 == 3) {
+		mes "[飛行員]";
+		mes "真希望能去喝杯冰涼新鮮的啤酒。";
+		mes "喝酒是我人生的目標！喝酒給我力量！";
+		mes "沒有酒我就什麼都不是！";
+		next;
+		mes "[飛行員]";
+		mes "但是！酒後駕駛是不好的。";
+		mes "但是！這只會讓我越來越想喝！";
+		emotion ET_CRY;
+		next;
+		select("你認識一個叫蒂埃里的乘客嗎？");
+		mes "[飛行員]";
+		mes "這套制服確實";
+		mes "很帥氣，但要在";
+		mes "飛空艇上穿實在太厚了。";
+		next;
+		mes "[飛行員]";
+		mes "...";
+		mes "......";
+		mes "從來沒有人會";
+		mes "進來這個房間。";
+		mes "而且船長『是』隻馴鹿。我大可脫到只剩四角褲。";
+		next;
+		emotion ET_HUK;
+		mes "[飛行員]";
+		mes "哇！？是誰！";
+		next;
+		mes "- ...他完全沒在聽你說話。 -";
+		close;
+	}
+	// Hugel quest end
+	switch (rand(1,4)) {
+	case 1:
+		mes "[飛行員]";
+		mes "我已經好?久";
+		mes "沒享用冰涼的酒精飲料了。";
+		mes "但這份工作需要我保持";
+		mes "最清醒的頭腦！";
+		next;
+		mes "[飛行員]";
+		mes "喝酒要負責任！";
+		mes "不過，我都不記得";
+		mes "上次真正的休假或休息日";
+		mes "是什麼時候了。沒錯，一些";
+		mes "酒、一些洋芋片、看看電視，";
+		mes "好好的休息放鬆一下才是正道。";
+		emotion ET_CRY;
+		close;
+	case 2:
+		mes "[飛行員]";
+		mes "老兄，今天的";
+		mes "天氣真不錯。";
+		mes "明亮開闊的天空帶來";
+		mes "良好的能見度，";
+		mes "能確保安全、無憂的飛行。";
+		close;
+	case 3:
+		mes "[飛行員]";
+		mes "你知道的，我們的船長是個";
+		mes "值得尊敬的人。他和";
+		mes "他兄弟在航空界其實";
+		mes "相當出名。";
+		mes "誰知道馴鹿能成為";
+		mes "這麼好的船長呢？";
+		next;
+		mes "[飛行員]";
+		mes "這是我們之間";
+		mes "的秘密，我得告訴";
+		mes "你，那個聖誕老人肯定早就";
+		mes "發現了這點，才會找馴鹿";
+		mes "和精靈來幫他工作。";
+		mes "那傢伙肯定是個天才！";
+		close;
+	default:
+		mes "[飛行員]";
+		mes "你知道的，這整個";
+		mes "在空中飛行的事，";
+		mes "還是很新鮮的玩意兒，對吧？";
+		mes "對啊，他們匆匆忙忙地";
+		mes "就啟動了這個飛空艇營運。";
+		next;
+		emotion ET_HUK;
+		mes "[飛行員]";
+		mes "不過，他們還是很";
+		mes "認真，非常有遠見的。";
+		mes "我是說，在飛空艇還在";
+		mes "發明階段時，他們就讓我們";
+		mes "開始接受訓練了。";
+		mes "這不是很瘋狂嗎？！";
+		close;
+	}
+}
+
+airplane,50,66,5	script	蘋果商家#airplane	86,{
+	mes "[弗魯茨]";
+	mes "歡迎來到弗魯茨的";
+	mes "商店，您可以在這裡";
+	mes "購買蘋果，或者把";
+	mes "它們榨成蘋果汁。";
+	next;
+	switch (select("買蘋果。:製作蘋果汁。:你為什麼在這裡？:取消。")) {
+	case 1:
+		mes "[弗魯茨]";
+		mes "請輸入您想購買的";
+		mes "蘋果數量。每顆";
+		mes "蘋果是 15 zeny，";
+		mes "一次最多可以購買";
+		mes "500 顆。請輸入";
+		mes " '0' 來取消您的購買。";
+		next;
+		while (1) {
+			input .@input;
+			set .@pay, .@input * 15;
+			if (.@input == 0) {
+				mes "[弗魯茨]";
+				mes "感謝您光臨";
+				mes "我的商店。再見！";
+				mes "當您想吃蘋果";
+				mes "當點心時，";
+				mes "隨時歡迎再來?";
+				close;
+			}
+			else if (.@input < 1 || .@input > 500) {
+				mes "[弗魯茨]";
+				mes "您輸入的數字";
+				mes "高於最大值 500。";
+				mes "請重新輸入您想購買的";
+				mes "蘋果數量。";
+				next;
+			}
+			else {
+				mes "[弗魯茨]";
+				mes "總共 ^FF0000" + .@input + "^000000 顆蘋果";
+				mes "將花費您 ^FF0000" + .@pay + "^000000 zeny。";
+				mes "您想要繼續嗎？";
+				next;
+				if (select("是:否") == 2) {
+					mes "[弗魯茨]";
+					mes "感謝您光臨";
+					mes "我的商店。再見！";
+					mes "當您想吃蘋果";
+					mes "當點心時，";
+					mes "隨時歡迎再來?";
+					close;
+				}
+				break;
+			}
+		}
+		if (Zeny < .@pay) {
+			mes "[弗魯茨]";
+			mes "很抱歉，但您沒有";
+			mes "足夠的錢來購買";
+			mes "這麼多蘋果。";
+			mes "請檢查您的 zeny 或";
+			mes "購買少一點的蘋果。";
+			close;
+		}
+		else if (checkweight(512,.@input) == 0) {
+			mes "[弗魯茨]";
+			mes "嗯，我不認為";
+			mes "您的物品欄有足夠的";
+			mes "空間來攜帶這麼";
+			mes "多蘋果。您何不先清出一些物品欄空間呢？";
+			close;
+		}
+		else {
+			set Zeny, Zeny - .@pay;
+			getitem 512,.@input; //Apple
+			mes "[弗魯茨]";
+			mes "感謝光臨";
+			mes "我的商店。希望您喜歡";
+			mes "這些蘋果的美味?！";
+			close;
+		}
+	case 2:
+		mes "[弗魯茨]";
+		mes "好的，我需要";
+		mes "^FF00003 顆蘋果 和 1 個空瓶^000000";
+		mes "來為您製作 1 杯蘋果汁。";
+		mes "您想要繼續嗎？";
+		next;
+		switch (select("是:否")) {
+		case 1:
+			if (countitem(512) < 3 || countitem(713) < 1) {
+				mes "[弗魯茨]";
+				mes "很抱歉，但您沒有";
+				mes "足夠的材料來";
+				mes "製作一瓶蘋果汁。";
+				mes "記住，我需要 3 顆蘋果";
+				mes "和 1 個空瓶才能製作。";
+				close;
+			}
+			else {
+				mes "[弗魯茨]";
+				mes "謝謝您，";
+				mes "請稍等片刻。";
+				next;
+				mes "^3355FF*榨汁聲*";
+				mes "*榨汁聲*";
+				mes "*鏘...！*^000000";
+				next;
+				delitem 512,3; //Apple
+				delitem 713,1; //Empty_Bottle
+				getitem 531,1; //Apple_Juice
+				mes "[弗魯茨]";
+				mes "給您?";
+				mes "希望您喜歡！";
+				mes "冒險者，當您";
+				mes "需要蘋果或蘋果汁時，";
+				mes "隨時歡迎過來?";
+				close;
+			}
+		case 2:
+			mes "[弗魯茨]";
+			mes "感謝您光臨";
+			mes "我的商店。再見！";
+			mes "當您想吃蘋果";
+			mes "當點心時，";
+			mes "隨時歡迎再來?";
+			close;
+		}
+	case 3:
+		mes "[弗魯茨]";
+		mes "我以前是個四處流浪的";
+		mes "浪人，直到有一天，";
+		mes "我在睡午覺時，有東西";
+		mes "砸到了我的頭，把我從";
+		mes "安穩的睡夢中敲醒。";
+		next;
+		mes "[弗魯茨]";
+		mes "原來我當時";
+		mes "睡在一棵蘋果樹下，";
+		mes "而一顆蘋果掉下來";
+		mes "砸中了我的頭。";
+		mes "我當時快餓死了，";
+		mes "正準備吃掉那顆蘋果...";
+		next;
+		mes "[弗魯茨]";
+		mes "但突然間，凱恩，我";
+		mes "在礦坑時期認識的老朋友，";
+		mes "叫我來飛空艇上";
+		mes "幫他的忙。所以我來了，";
+		mes "就在那裡，我看到一些";
+		mes "人在玩骰子遊戲。";
+		next;
+		mes "[弗魯茨]";
+		mes "我當時很無聊又好奇，";
+		mes "最後竟然在骰子遊戲中";
+		mes "拿那唯一的一顆蘋果去當賭注。";
+		mes "但不知為何，";
+		mes "我的運氣出奇的好。";
+		mes "一顆蘋果變成了兩顆...";
+		next;
+		mes "[弗魯茨]";
+		mes "兩顆變成四顆，";
+		mes "不知不覺中，我已經";
+		mes "壟斷了蘋果市場！";
+		mes "我贏了太多蘋果，所以";
+		mes "乾脆就在飛空艇上";
+		mes "做起了自己的生意。很神奇吧？";
+		next;
+		mes "[弗魯茨]";
+		mes "所以蘋果對您";
+		mes "有好處的。它們對我來說";
+		mes "絕對是非常好的。";
+		mes "哈哈哈哈?！";
+		close;
+	case 4:
+		mes "[弗魯茨]";
+		mes "感謝您";
+		mes "使用我的商店。";
+		mes "再見?";
+		close;
+	}
+}
+
+//============================================================ 
+//= International Airship Route (國際線飛空艇)
+//= ... -> Izlude -> Juno -> Rachel -> ...
+//============================================================ 
+
+airplane_01,243,73,0	script	#AirshipWarp-3	45,1,1,{
+	end;
+OnTouch_:
+	switch ($@airplanelocation2) {
+	case 0: warp "ra_fild12",292,204; end;
+	case 1: 
+		if(checkre(0))
+			warp "izlude",200,73;
+		else
+			warp "izlude",200,56;
+		end;
+	case 2: warp "yuno",12,261; end;
+	}
+
+OnInit:
+OnHide:
+	specialeffect EF_BASH;
+	disablenpc();
+	end;
+	
+OnUnhide:
+	enablenpc();
+	specialeffect EF_SUMMONSLAVE;
+	end;
+}
+
+airplane_01,243,29,0	duplicate(#AirshipWarp-3)	#AirshipWarp-4	45,1,1
+
+airplane_01,1,1,0	script	國際線飛艇	-1,{
+	end;
+OnInit:
+OnEnable:
+	initnpctimer;
+	end;
+OnTimer25000:
+	mapannounce "airplane_01","我們正前往伊斯魯得島。",bc_map,"0x00ff00";
+	end;
+OnTimer50000:
+	mapannounce "airplane_01","我們即將抵達伊斯魯得島。",bc_map,"0x00ff00";
+	end;
+OnTimer60000:
+	set $@airplanelocation2,1;
+	donpcevent "#AirshipWarp-3::OnUnhide";
+	donpcevent "#AirshipWarp-4::OnUnhide";
+	mapannounce "airplane_01","歡迎來到伊斯魯得島。祝您旅途平安。",bc_map,"0x00ff00";
+	end;
+OnTimer70000:
+	mapannounce "airplane_01","目前我們停靠在伊斯魯得島。飛空艇即將起飛。",bc_map,"0x00ff00";
+	end;
+OnTimer80000:
+	donpcevent "#AirshipWarp-3::OnHide";
+	donpcevent "#AirshipWarp-4::OnHide";
+	mapannounce "airplane_01","飛空艇現在起飛。我們的下一個目的地是尤諾。",bc_map,"0x70dbdb";
+	end;
+OnTimer105000:
+	mapannounce "airplane_01","我們正前往尤諾。",bc_map,"0x70dbdb";
+	end;
+OnTimer130000:
+	mapannounce "airplane_01","我們即將抵達尤諾。",bc_map,"0x70dbdb";
+	end;
+OnTimer140000:
+	set $@airplanelocation2,2;
+	donpcevent "#AirshipWarp-3::OnUnhide";
+	donpcevent "#AirshipWarp-4::OnUnhide";
+	mapannounce "airplane_01","歡迎來到尤諾。祝您旅途平安。",bc_map,"0x70dbdb";
+	end;
+OnTimer150000:
+	mapannounce "airplane_01","目前我們停靠在尤諾。飛空艇即將起飛。",bc_map,"0x70dbdb";
+	end;
+OnTimer160000:
+	donpcevent "#AirshipWarp-3::OnHide";
+	donpcevent "#AirshipWarp-4::OnHide";
+	mapannounce "airplane_01","飛空艇即將離開地面。我們的下一個目的地是拉赫。",bc_map,"0xFF8200";
+	end;
+OnTimer185000:
+	mapannounce "airplane_01","我們正前往拉赫。",bc_map,"0xFF8200";
+	end;
+OnTimer210000:
+	mapannounce "airplane_01","我們即將抵達拉赫。",bc_map,"0xFF8200";
+	end;
+OnTimer220000:
+	set $@airplanelocation2,0;
+	donpcevent "#AirshipWarp-3::OnUnhide";
+	donpcevent "#AirshipWarp-4::OnUnhide";
+	mapannounce "airplane_01","歡迎來到拉赫。祝您旅途平安。",bc_map,"0xFF8200";
+	end;
+OnTimer230000:
+	mapannounce "airplane_01","目前我們停靠在拉赫。飛空艇即將起飛。",bc_map,"0xFF8200";
+	end;
+OnTimer240000:
+	donpcevent "#AirshipWarp-3::OnHide";
+	donpcevent "#AirshipWarp-4::OnHide";
+	mapannounce "airplane_01","飛空艇現在起飛。我們的下一個目的地是伊斯魯得島。",bc_map,"0x00ff00";
+	stopnpctimer;
+	set .moninv, .moninv + 1;
+	if (.moninv == 7) {
+		if (rand(1,3) == 3) {
+			donpcevent "飛空艇#airplane02::OnEnable";
+			end;
+		}
+		set .moninv, 0;
+	}
+	initnpctimer;
+	end;
+}
+
+airplane_01,240,64,5	script	出口#airplane_011a::ExitAirplane01	857,{
+	end;
+}
+airplane_01,247,64,5	duplicate(ExitAirplane01)	出口#airplane_011b	857
+airplane_01,240,40,1	duplicate(ExitAirplane01)	出口#airplane_012a	857
+airplane_01,247,40,1	duplicate(ExitAirplane01)	出口#airplane_012b	857
+
+airplane_01,250,58,2	script	飛艇工作人員#airplane01	67,{
+	mes "[飛空艇服務員]";
+	mes "歡迎來到";
+	mes "飛空艇。";
+	mes "有什麼我可以為您服務的嗎？";
+	next;
+	switch (select("使用飛空艇:船長室:設施:取消")) {
+	case 1:
+		mes "[飛空艇服務員]";
+		mes "當您聽到廣播";
+		mes "宣布我們已經抵達";
+		mes "您的目的地時，";
+		mes "請使用位於飛空艇";
+		mes "北端或南端的出口離開。";
+		next;
+		mes "[飛空艇服務員]";
+		mes "如果您不小心錯過了";
+		mes "您的停靠站，請不用擔心。";
+		mes "飛空艇是持續";
+		mes "在航線上運行的，您還有";
+		mes "下一次機會抵達";
+		mes "您預定的目的地。";
+		close;
+	case 2:
+		mes "[飛空艇服務員]";
+		mes "船長室";
+		mes "位於飛空艇的";
+		mes "最前方。在那裡，您";
+		mes "可以見到飛空艇的船長";
+		mes "以及飛行員。";
+		close;
+	case 3:
+		mes "[飛空艇服務員]";
+		mes "飛空艇提供";
+		mes "各種小遊戲來";
+		mes "娛樂我們所有的乘客。";
+		mes "我們邀請您在飛空艇的";
+		mes "小遊戲中試試您的運氣和技巧?";
+		close;
+	case 4:
+		mes "[飛空艇服務員]";
+		mes "那麼，希望您";
+		mes "享受搭乘我們飛空艇";
+		mes "的飛行時光。感謝您，";
+		mes "祝您有美好的一天。";
+		close;
+	}
+}
+
+airplane_01,50,66,5	script	蘋果商家#air01	86,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 目前您身上攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請在減輕一些重量後 -";
+		mes "- 再試一次。 -";
+		close;
+	}
+	mes "[梅爾茲]";
+	mes "歡迎來到梅爾茲的";
+	mes "商店，您可以在這裡";
+	mes "購買蘋果，或者把";
+	mes "它們榨成蘋果汁。";
+	next;
+	switch (select("買蘋果。:製作蘋果汁。:取消。")) {
+	case 1:
+		mes "[梅爾茲]";
+		mes "請輸入您想購買的";
+		mes "蘋果數量。每顆";
+		mes "蘋果是 15 zeny，";
+		mes "一次最多可以購買";
+		mes "500 顆。請輸入";
+		mes "'0' 來取消您的購買。";
+		next;
+		while (1) {
+			input .@input;
+			set .@pay, .@input * 15;
+			if (.@input == 0) {
+				mes "[梅爾茲]";
+				mes "感謝您光臨";
+				mes "我的商店。再見！";
+				mes "當您想吃蘋果";
+				mes "當點心時，";
+				mes "隨時歡迎再來?";
+				close;
+			}
+			else if (.@input < 1 || .@input > 500) {
+				mes "[梅爾茲]";
+				mes "您輸入的數字";
+				mes "高於最大值 500。";
+				mes "請重新輸入您想購買的";
+				mes "蘋果數量。";
+				next;
+			}
+			else {
+				mes "[梅爾茲]";
+				mes "總共 ^FF0000" + .@input + "^000000 顆蘋果";
+				mes "將花費您 ^FF0000" + .@pay + "^000000 zeny。";
+				mes "您想要繼續嗎？";
+				next;
+				if (select("是:否") == 2) {
+					mes "[梅爾茲]";
+					mes "感謝您光臨";
+					mes "我的商店。再見！";
+					mes "當您想吃蘋果";
+					mes "當點心時，";
+					mes "隨時歡迎再來?";
+					close;
+				}
+				break;
+			}
+		}
+		if (Zeny < .@pay) {
+			mes "[梅爾茲]";
+			mes "很抱歉，您身上的錢";
+			mes "不夠。";
+			mes "請檢查您的資金或";
+			mes "購買少一點的蘋果。";
+			close;
+		}
+		else if (checkweight(512,.@input) == 0) {
+			mes "[梅爾茲]";
+			mes "嗯，我不認為您的";
+			mes "物品欄有足夠的空間";
+			mes "來攜帶這麼多蘋果。";
+			mes "您或許該清出一些";
+			mes "物品欄空間。";
+			close;
+		}
+		else {
+			set Zeny, Zeny - .@pay;
+			getitem 512,.@input; //Apple
+			mes "[梅爾茲]";
+			mes "感謝光臨";
+			mes "我的商店。希望您喜歡";
+			mes "這些蘋果的美味?！";
+			close;
+		}
+	case 2:
+		mes "[梅爾茲]";
+		mes "好的，我需要";
+		mes "^FF00003 顆蘋果 和 1 個空瓶^000000";
+		mes "來為您製作 1 杯蘋果汁。";
+		mes "您想要繼續嗎？";
+		next;
+		switch (select("是:否")) {
+		case 1:
+			if (countitem(512) < 3 || countitem(713) < 1) {
+				mes "[梅爾茲]";
+				mes "很抱歉，但您沒有";
+				mes "足夠的材料來";
+				mes "製作一瓶蘋果汁。";
+				mes "記住，我需要 3 顆蘋果";
+				mes "和 1 個空瓶才能製作。";
+				close;
+			}
+			else {
+				mes "[梅爾茲]";
+				mes "謝謝您，請稍等。";
+				next;
+				mes "^3355FF*榨汁聲* *榨汁聲*";
+				mes "*榨汁聲* *榨汁聲*";
+				mes "*鏘...！*^000000";
+				next;
+				delitem 512,3; //Apple
+				delitem 713,1; //Empty_Bottle
+				getitem 531,1; //Apple_Juice
+				mes "[梅爾茲]";
+				mes "給您?";
+				mes "歡迎下次光臨。";
+				close;
+			}
+		case 2:
+			mes "[梅爾茲]";
+			mes "感謝您光臨";
+			mes "我的商店。再見！";
+			mes "當您想吃蘋果";
+			mes "當點心時，";
+			mes "隨時歡迎再來?";
+			close;
+		}
+	case 3:
+		mes "[梅爾茲]";
+		mes "感謝您光臨";
+		mes "我的商店。再見！";
+		mes "當您想吃蘋果";
+		mes "當點心時，";
+		mes "隨時歡迎再來?";
+		close;
+	}
+}
+
+airplane_01,221,158,2	script	飛行員#airplane_01	852,{
+	switch (rand(1,4)) {
+	case 1:
+		mes "[飛行員]";
+		mes "東經，131度。";
+		mes "北緯，37度。";
+		mes "我們正在航線上，船長。";
+		close;
+	case 2:
+		mes "[飛行員]";
+		mes "看起來是個";
+		mes "陰天。當天空不晴朗時，";
+		mes "導航總是特別困難。";
+		mes "看來我們";
+		mes "需要增強雷達訊號了。";
+		close;
+	case 3:
+		mes "[飛行員]";
+		mes "船長是個好人，";
+		mes "我想不出有誰比他";
+		mes "更適合指揮這艘船了。";
+		mes "不過，他非常嚴格，";
+		mes "簡直是個奴隸驅使者。";
+		next;
+		mes "[^ff0000塔洛克^000000]";
+		mes "^ff0000嘿...！^000000";
+		mes "^ff0000少閒聊^000000";
+		mes "^ff0000專心開船！^000000";
+		next;
+		mes "[飛行員]";
+		mes "馬、馬上好，長官！";
+		mes "(懂我意思了吧？)";
+		close;
+	default:
+		mes "[飛行員]";
+		mes "這套制服確實";
+		mes "很帥氣，但要在";
+		mes "飛空艇上穿實在太厚了。";
+		next;
+		mes "[飛行員]";
+		mes "...";
+		mes "......";
+		mes "從來沒有人會";
+		mes "進來這個房間。";
+		mes "而且船長『是』隻馴鹿。";
+		mes "我大可脫到只剩四角褲。";
+		next;
+		emotion ET_HUK;
+		mes "[飛行員]";
+		mes "喔...！你好啊！";
+		mes "你、你、你享受這趟飛行嗎？！";
+		close;
+	}
+}
+
+airplane_01,83,61,2	script	黛安#01airplane_01	72,2,2,{
+	mes "[黛安]";
+	mes "太奇怪了！";
+	mes "我去拜訪";
+	mes "飛空艇船長，結果";
+	mes "只看到一隻";
+	mes "奇怪的馴鹿。喔！";
+	mes "你覺得...";
+	close;
+OnTouch_:
+	emotion ET_CRY;
+	end;
+}
+
+airplane_01,69,63,2	script	門德爾#01airplane_01	55,{
+	mes "[門德爾]";
+	mes "不出我所料，";
+	mes "飛機餐頂多只有";
+	mes "三星級的水準。";
+	mes "*哼* 我真該把我的";
+	mes "主廚帶來，這樣我";
+	mes "才能享用一頓真正的晚餐。";
+	close;
+}
+
+airplane_01,71,31,2	script	劍士 清水#air_01	106,{
+	mes "[劍士 清水]";
+	mes "終於，經過五年的";
+	mes "等待...";
+	mes "我可以復仇了！";
+	next;
+	mes "[劍士 清水]";
+	mes "我只是...";
+	mes "必須確保我不會再";
+	mes "錯過站。但很快，";
+	mes "非常快，";
+	mes "復仇將屬於我！";
+	close;
+}
+
+//============================================================ 
+//= Typing Challenge
+//============================================================ 
+airplane_01,32,61,4	script	尼爾斯#ein	49,1,1,{
+	mes "[尼爾斯]";
+	mes "歡迎來到";
+	mes "^ff0000RO打字挑戰^000000。";
+	mes "你想玩個";
+	mes "快速的打字遊戲嗎？";
+	next;
+	switch (select("玩 ^ff0000RO打字挑戰^000000:資訊:查看最高紀錄:取消")) {
+	case 1:
+		mes "[尼爾斯]";
+		mes "好的，我們有";
+		mes "一位新的挑戰者！";
+		mes "請盡可能快速地";
+		mes "輸入以下文字，";
+		mes "而且不能有任何錯誤！";
+		mes "我們開始吧?！";
+		setarray .@line1_1$[0],	"^3cbcbccallipygian salacius lascivious^000000",
+					"^3cbcbcBy the power of^000000",
+					"^0000ffthkelfkskeldmsiejdlslehfndkelsheidl^000000",
+					"^3cbcbcburrdingdingdingdilidingdingdingphoohudaamb^000000",
+					"^3cbcbcCoboman no chikara-yumei na^000000",
+					"^3cbcbcI'm the king of All Weirdos! Now^000000",
+					"^3cbcbcYou give me no choice. I guess it's^000000";
+		setarray .@line1_2$[0],	"^3cbcbclicentious prurient concupiscent^000000",
+					"^3cbcbcp-po-poi-po-poi-poin-poing^000000",
+					"^3cbcbcskemd^000000",
+					"^3cbcbcandoorabambarambambambambamburanbamding^000000",
+					"^3cbcbcchikara-daiookii na chikara da ze!^000000",
+					"^3cbcbcyou know of my true power. Obey~!^000000",
+					"^3cbcbctime for me to reveal my secret...^000000";
+		setarray .@line1_3$[0],	"",
+					"^3cbcbcGOD-POING. I NEVER LOSE!^000000",
+					"",
+					"",
+					"^3cbcbcCOBO ON^000000",
+					"",
+					"";
+		setarray .@word1$[0],	"callipygian salacius lascivious licentious prurient concupiscent",
+					"By the power of p-po-poi-po-poi-poin-poing GOD-POING. I NEVER LOSE!",
+					"thkelfkskeldmsiejdlslehfndkelsheidlskemd",
+					"burrdingdingdingdilidingdingdingphoohudaambandoorabambarambambambambamburanbamding",
+					"Coboman no chikara-yumei na chikara-daiookii na chikara da ze! COBO ON",
+					"I'm the king of All Weirdos! Now you know of my true power. Obey~!",
+					"You give me no choice. I guess it's time for me to reveal my secret...";
+		setarray .@line2_1$[0],	"^3cbcbcuNflAPPaBLe LoVaBLe SeCreTs AnD^000000",
+					"^ff1493LiGhTsPeEd RiGhT SPEed LeFT TURn^000000",
+					"^ff1493hfjdkeldjsieldjshfjdjeiskdlefvbd^000000",
+					"^ff1493burapaphuralanderamduanbatuhiwooi^000000",
+					"^ff1493belief love luck grimace sweat rush^000000",
+					"^800080opeN, Open!op3n.openOpen0p3nOpEn0pen^000000",
+					"^3cbcbcfReeDoM ecstAcy JoUrnaliSm ArMplt^000000";
+		setarray .@line2_2$[0],	"^3cbcbcboWLIiNg aGaINST tHe KarMA of YoUtH^000000",
+					"^ff1493RiGhT BuRn OrIGInAL GaNgSteR SmACk^000000",
+					"",
+					"^ff1493kabamturubamdingding^000000",
+					"^ff1493folktale rodimus optimus bumblebee^000000",
+					"^800080`open'0Pen open? open!111OPENSESAME^000000",
+					"^3cbcbcDisCoverY hEaDaChE MoonbeAmS jUsTiCE^000000";
+		setarray .@word2$[0],	"uNflAPPaBLe LoVaBLe SeCreTs AnD boWLIiNg aGaINST tHe KarMA of YoUtH",
+					"LiGhTsPeEd RiGhT SPEed LeFT TURn RiGhT BuRn OrIGInAL GaNgSteR SmACk",
+					"hfjdkeldjsieldjshfjdjeiskdlefvbd",
+					"burapaphuralanderamduanbatuhiwooikabamturubamdingding",
+					"belief love luck grimace sweat rush folktale rodimus optimus bumblebee",
+					"opeN, Open!op3n.openOpen0p3nOpEn0pen`open'0Pen open? open!111OPENSESAME",
+					"fReeDoM ecstAcy JoUrnaliSm ArMplt DisCoverY hEaDaChE MoonbeAmS jUsTiCE";
+		setarray .@letters[0],	1300,
+					1250,
+					1180,
+					1380,
+					1740,
+					1440,
+					1450;
+		set .@wordtest, rand(7);
+		next;
+		mes "[尼爾斯]";
+		mes .@line1_1$[.@wordtest];
+		mes .@line1_2$[.@wordtest];
+		mes .@line1_3$[.@wordtest];
+		set .@start_time, gettimetick(1);
+		next;
+		input .@save1$;
+		set .@end_time, gettimetick(1);
+		set .@total_time, .@end_time - .@start_time;
+		mes "[尼爾斯]";
+		mes .@line2_1$[.@wordtest];
+		mes .@line2_2$[.@wordtest];
+		set .@start_time, gettimetick(1);
+		next;
+		input .@save2$;
+		set .@end_time, gettimetick(1);
+		set .@total_time, .@total_time + (.@start_time - .@end_time);
+		set .@tasoo, (.@letters[.@wordtest] / ( .@total_time > 0 ?  .@total_time : 1)) * 6;
+		if ((.@save1$ == .@word1$[.@wordtest]) && (.@save2$ == .@word2$[.@wordtest])) {
+			mes "[尼爾斯]";
+			mes "你的紀錄是 ^ff0000" + .@total_time + " 秒^000000 且";
+			mes "總字數是 " + .@tasoo + "。";
+			next;
+			if (.@tasoo >= 1300) {
+				mes "[尼爾斯]";
+				mes "嗯，這個紀錄根本";
+				mes "不是人類能達到的，除非你";
+				mes "複製貼上整個句子。";
+				mes "下次請公平進行遊戲。";
+				close;
+			}
+			if (.@tasoo >= $050320_ein_typing) {
+				mes "[尼爾斯]";
+				mes "之前的最高紀錄是";
+				mes "由 ^0000ff" + $050320_minus1_typing$ + "^000000 創下的，";
+				mes "總字數為 ^0000ff" + $050320_ein_typing + "^000000 個字。";
+				mes "然而，^ff0000" + strcharinfo(0) + "^000000，";
+				mes "你這次創下了新的最高紀錄。";
+				mes "恭喜你！";
+				set $050320_minus1_typing$, strcharinfo(0);
+				set $050320_ein_typing, .@tasoo;
+				close;
+			}
+			else {
+				mes "[尼爾斯]";
+				mes "^0000ff" + $050320_minus1_typing$ + "^000000";
+				mes "是目前的";
+				mes "紀錄保持人，";
+				mes "總字數為 ^0000ff" + $050320_ein_typing + "^000000";
+				mes "個字。下次試著";
+				mes "打破那個紀錄吧?";
+				close;
+			}
+		}
+		else {
+			mes "[尼爾斯]";
+			mes "噢喔...";
+			mes "很抱歉，但";
+			mes "你輸入的文字有誤...";
+			close;
+		}
+	case 2:
+		mes "[尼爾斯]";
+		mes "^ff0000RO打字挑戰^000000";
+		mes "是一個讓你盡可能快速輸入";
+		mes "給定文字的遊戲。最高分玩家";
+		mes "的名字將會被永久記錄下來。";
+		mes "如果你想要名聲，這就是你的機會！";
+		next;
+		mes "[尼爾斯]";
+		mes "我只想提醒你，";
+		mes "你必須把看到的所有文字，";
+		mes "全部打在給你的單一輸入框裡。";
+		mes "所以請不要按 Enter 鍵換行，";
+		mes "只要點擊『確認(OK)』就好。";
+		close;
+	case 3:
+		mes "[尼爾斯]";
+		mes "^0000ff" + $050320_minus1_typing$ + "^000000";
+		mes "是目前的";
+		mes "紀錄保持人，";
+		mes "總字數為 ^0000ff" + $050320_ein_typing + "^000000";
+		mes "個字。下次試著";
+		mes "打破那個紀錄吧?";
+		close;
+	case 4:
+		mes "[尼爾斯]";
+		mes "隨時歡迎來挑戰";
+		mes "^ff0000RO打字挑戰^000000。";
+		mes "我會一直在這裡?";
+		close;
+	}
+}
+
+//============================================================ 
+//= Apple Gambling
+//============================================================ 
+airplane_01,33,68,4	script	克拉麗絲	74,{
+	mes "[克拉莉絲]";
+	mes "嗨，我是克拉莉絲?";
+	mes "想不想在友誼的";
+	mes "骰子遊戲中";
+	mes "賭幾顆蘋果啊？";
+	next;
+	callfunc "蘋果賭博","克拉麗絲";
+	end;
+}
+
+function	script	蘋果賭博	{
+	.@npc_name$ = getarg(0);
+	switch (select("玩骰子遊戲:了解骰子遊戲規則:取消")) {
+	case 3:
+		mes "["+ .@npc_name$ +"]";
+		mes "只要你想玩骰子，";
+		mes "我隨時奉陪。";
+		mes "如果你突然";
+		mes "賭癮發作，儘管來找我，好嗎？";
+		close;
+	case 2:
+		mes "["+ .@npc_name$ +"]";
+		mes "骰子遊戲的規則";
+		mes "非常簡單。首先，你";
+		mes "要拿蘋果當作賭注。";
+		mes "你一次最多可以賭 50";
+		mes "顆蘋果。為了保持合法，";
+		mes "我只收蘋果。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "不過嘿，如果你錢";
+		mes "多得沒處花，";
+		mes "可以去弗魯茨那裡，";
+		mes "想買多少蘋果都行，玩家?";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "現在，遊戲由我";
+		mes "先擲兩顆六面骰子開始。";
+		mes "輪到你的時候，你也將";
+		mes "擲兩顆六面骰子。之後，";
+		mes "我們雙方都可以選擇";
+		mes "是否要擲第三顆骰子。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "這裡是最重要的部分。";
+		mes "如果你的總數大於 12，";
+		mes "你就爆點了，這意味著";
+		mes "你輸了。否則，";
+		mes "總數較高的人";
+		mes "就是贏家。懂了嗎？";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "現在，你將會是第一個";
+		mes "決定是否要";
+		mes "擲第三顆骰子的人。然後，";
+		mes "根據你的結果，我會";
+		mes "擲我的第三顆骰子... 或者不擲。";
+		next;
+		mes "["+ .@npc_name$ +"]";
+		mes "當你贏了，你將會";
+		mes "得到你下注數量";
+		mes "兩倍的蘋果。";
+		mes "但如果我們剛好平手，你";
+		mes "可以拿回你下注的蘋果。";
+		mes "很公平，對吧？";
+		close;
+	case 1:
+		break;
+	}
+	mes "["+ .@npc_name$ +"]";
+	mes "喔，所以你要和";
+	mes "我玩？太棒了！你想";
+	mes "賭多少顆蘋果？";
+	mes "記住，你最多只能";
+	mes "下注 50 顆蘋果。如果你想";
+	mes "取消，請輸入 '0'。";
+	next;
+	while(1) {
+		input .@amount;
+		if (.@amount == 0) {
+			mes "["+ .@npc_name$ +"]";
+			mes "改變心意了？";
+			mes "我能理解。那麼，";
+			mes "希望我們有機會能玩一場。";
+			close;
+		}
+		else if (.@amount < 1 || .@amount > 50) {
+			mes "["+ .@npc_name$ +"]";
+			mes "你不能下注超過";
+			mes "50 顆蘋果。記住，我們";
+			mes "必須保持賭注在";
+			mes "合理的範圍。請輸入";
+			mes "一個不高於 50 的數字。";
+			next;
+			continue;
+		}
+		mes "["+ .@npc_name$ +"]";
+		mes "所以你要";
+		mes "下注 ^FF0000"+.@amount+"^000000 顆蘋果。";
+		mes "對嗎？";
+		next;
+		if (select("是:否") == 2) {
+			mes "["+ .@npc_name$ +"]";
+			mes "嗯，弄錯了？";
+			mes "好的，請輸入你想";
+			mes "在這次賭局中";
+			mes "下注的蘋果數量。";
+			next;
+			continue;
+		}
+		if (countitem(512) <.@amount) {
+			mes "很抱歉，但你";
+			mes "似乎沒有足夠的";
+			mes "蘋果來下這場賭注...";
+			mes "你知道的，沒有籌碼";
+			mes "就不能玩。";
+			next;
+			continue;
+		}
+		delitem 512,.@amount;
+		mes "["+ .@npc_name$ +"]";
+		mes "很好！";
+		mes "現在我們可以開始";
+		mes "這場遊戲了！我先擲?";
+		break;
+	}
+	mes "^3355FF*骰子滾動聲*^000000";
+	next;
+	set .@giveapple, .@amount*2;
+	set .@table1, rand(1,6);
+	set .@table2, rand(1,6);
+	set .@tablesub, .@table1 + .@table2;
+	set .@tabletotal, .@tablesub;
+	mes "["+ .@npc_name$ +"]";
+	mes "我擲出了 ^0000FF" + .@table1 + "^000000 和 ^0000FF" + .@table2 + "^000000。";
+	mes "總共是 ^0000FF" + .@tablesub + "^000000。";
+	mes "^FF0000" + strcharinfo(0) + "^000000，現在輪到你了。";
+	next;
+	select("擲骰子。");
+	mes "^3355FF*骰子滾動聲*^000000";
+	set .@player1, rand(1,6);
+	set .@player2, rand(1,6);
+	set .@playersub, .@player1 + .@player2;
+	if (.@playersub > 9 && .@amount > 39) {
+		set .@player1, rand(1,6);
+		set .@player2, rand(1,6);
+		set .@playersub, .@player1 + .@player2;
+	}
+	set .@playertotal, .@playersub;
+	next;
+	mes "["+ .@npc_name$ +"]";
+	mes "^FF0000" + strcharinfo(0) + "^000000，你擲出了 ^FF0000" + .@player1 + "^000000 和 ^FF0000" + .@player2 + "^000000。總數是 ^FF0000" + .@playersub + "^000000。";
+	next;
+	mes "["+ .@npc_name$ +"]";
+	if(.@playersub == .@tablesub) {
+		mes "目前我的總數是 ^0000FF" + .@tablesub + "^000000，而 ^FF0000" + strcharinfo(0) + "^000000，你的總數是 ^FF0000" + .@playersub + "^000000。我們現在平手。你想要再擲一次骰子嗎？";
+	} else if (.@playersub > .@tablesub) {
+		mes "目前我的總數是 ^0000FF" + .@tablesub + "^000000，而 ^FF0000" + strcharinfo(0) + "^000000，你的總數是 ^FF0000" + .@playersub + "^000000。^FF0000" + strcharinfo(0) + "^000000，你目前在這場遊戲中領先。你想要再擲一次骰子嗎？";
+	} else if(.@tablesub > .@playersub) {
+		mes "目前我的總數是 ^0000FF" + .@tablesub + "^000000，而 ^FF0000" + strcharinfo(0) + "^000000，你的總數是 ^FF0000" + .@playersub + "^000000。我目前領先。你想要再擲一次骰子嗎？";
+	}
+	next;
+	switch (select("擲骰子。:取消。")) {
+	case 1:
+		mes "^3355FF*骰子滾動聲*^000000";
+		set .@player3, rand(1,6);
+		set .@playertotal, .@playertotal + .@player3;
+		next;
+		mes "["+ .@npc_name$ +"]";
+		if (.@playertotal > 12) {
+			mes "^FF0000" + strcharinfo(0) + "^000000，你擲出了 ^FF0000" + .@player3 + "^000000，現在總數是 ^FF0000" + .@playertotal + "^000000。你輸了這場遊戲。很抱歉，請再試一次。";
+			close;
+		}
+		else if (.@playertotal < .@tablesub) {
+			mes "^FF0000" + strcharinfo(0) + "^000000，你擲出了 ^FF0000" + .@player3 + "^000000，現在總數是 ^FF0000" + .@playertotal + "^000000。即使你再擲了一次骰子，你的總數還是比我小。你輸了這場遊戲。很抱歉，請再試一次。";
+			close;
+		}
+		else if (.@playertotal == .@tablesub) {
+			if (.@tablesub > 8) {
+				mes "^FF0000" + strcharinfo(0) + "^000000，你擲出了 ^FF0000" + .@player3 + "^000000，現在總數是 ^FF0000" + .@playertotal + "^000000。我不想冒任何風險，讓我們以平手結束這場遊戲吧。下次有機會再玩?";
+				close2;
+				getitem 512,.@amount; //Apple
+				end;
+			}
+			mes "好吧。";
+			mes "換我再擲一次骰子。";
+		}
+		else {
+			mes "^FF0000" + strcharinfo(0) + "^000000，你擲出了 ^FF0000" + .@player3 + "^000000，現在總數是 ^FF0000" + .@playertotal + "^000000。現在輪到我了。";
+		}
+		break;
+	case 2:
+		mes "["+ .@npc_name$ +"]";
+		if (.@playersub > .@tablesub) {
+			mes "我懂了，你不想冒輸掉遊戲的風險。好的，換我再擲一次骰子。";
+		}
+		else if (.@playersub == .@tablesub) {
+			if (.@tablesub > 8) {
+				mes "我懂了，你不想冒輸掉這場遊戲的風險。我也不想，讓我們以平手結束這場遊戲吧。下次有機會再玩?";
+				close2;
+				getitem 512,.@amount; //Apple
+				end;
+			}
+			mes "好吧。";
+			mes "換我再擲一次骰子。";
+		}
+		else {
+			mes "試試看也沒有壞處。";
+			mes "嗯，這次是我贏了。";
+			mes "很抱歉，我們下次";
+			mes "有機會再玩吧。";
+			close;
+		}
+		break;
+	}
+	next;
+	mes "^3355FF*骰子滾動聲*^000000";
+	set .@table3, rand(1,6);
+	set .@tabletotal, .@tabletotal + .@table3;
+	next;
+	mes "["+ .@npc_name$ +"]";
+	if (.@tabletotal > 12) {
+		mes "我擲出了 ^0000FF" + .@table3 + "^000000，現在總數是 ^0000FF" + .@tabletotal + "^000000。因為我的總數超過 12，所以我輸了這場遊戲。讓我把蘋果給你吧。恭喜你，這是一場很棒的遊戲。";
+		close2;
+		getitem 512,.@giveapple; //Apple
+		end;
+	}
+	else if (.@playertotal > .@tabletotal) {
+		mes "我擲出了 ^0000FF" + .@table3 + "^000000，現在總數是 ^0000FF" + .@tabletotal + "^000000。憑著總數 ^FF0000" + .@playertotal + "^000000 你贏了這場遊戲，^FF0000" + strcharinfo(0) + "^000000。讓我把蘋果給你吧。這是一場很棒的遊戲，希望我們下次能再玩。";
+		close2;
+		getitem 512,.@giveapple; //Apple
+		end;
+	}
+	else if (.@playertotal == .@tabletotal) {
+		mes "我擲出了 ^0000FF" + .@table3 + "^000000，現在總數是 ^0000FF" + .@tabletotal + "^000000。憑著總數 ^FF0000" + .@playertotal + "^000000 這場遊戲平手了，^FF0000" + strcharinfo(0) + "^000000。讓我把你的蘋果還給你。這是一場很棒的遊戲，希望我們下次能再玩。";
+		close2;
+		getitem 512,.@amount; //Apple
+		end;
+	}
+	else if (.@playertotal < .@tabletotal) {
+		mes "我擲出了 ^0000FF" + .@table3 + "^000000，現在總數是 ^0000FF" + .@tabletotal + "^000000。憑著總數 ^FF0000" + .@playertotal + "^000000 你輸了這場遊戲，^FF0000" + strcharinfo(0) + "^000000。很抱歉，請再試一次。";
+		close;
+	}
+}

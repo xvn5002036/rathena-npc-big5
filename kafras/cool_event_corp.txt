@@ -1,0 +1,203 @@
+//===== rAthena Script ======================================= 
+//= Cool Event Corp. Staff
+//===== By: ================================================== 
+//= Gepard
+//===== Current Version: ===================================== 
+//= 1.6
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Cool Event Corp. Staff (Save, Storage & Pushcart Service)
+//= in Arunafeltz Region.
+//===== Additional Comments: ================================= 
+//= 1.0 First version, iRO Sakray X.4 [Gepard]
+//= 1.1 Optimized, fixed a conditional bug [Lupus]
+//= 1.1a Redo back. It wasn't a bug [Lupus]
+//= 1.2 Added Rachel Cool Event Corp. Staff [Playtester]
+//= 1.3 Added cutins, closed Kafra Password exploit
+//=     until we got a client/packet based password support [Lupus]
+//= 1.4 Added Veins Cool Event Corp. Staff. [L0ne_W0lf]
+//= 1.5 Cool Event Corp staff is now more iRO like. [L0ne_W0lf]
+//= 1.6 Wrote a basic function and added VIP features. [Euphy]
+//============================================================ 
+
+//callfunc "F_CoolEventCorp","<menu>","<location>","<save map>",<x>,<y>,"<warp map>";
+function	script	F_CoolEventCorp	{
+	cutin "zonda_01",2;
+	mes "[準它公司員工]";
+	mes "歡迎來到準它公司。";
+	mes "我們的員工一直致力於";
+	mes "提供超越您期待的";
+	mes "高品質服務。那麼今天";
+	mes "我有什麼能為您效勞的嗎？";
+	next;
+	switch(select(getarg(0))) {
+	case 1:
+		mes "[準它公司員工]";
+		mes "您的重生點";
+		mes "已經儲存在";
+		mes getarg(1)+"。";
+		mes "感謝您使用";
+		mes "準它公司的服務?";
+		savepoint getarg(2),getarg(3),getarg(4),1,1;
+		close2;
+		break;
+	case 2:
+		mes "[準它公司員工]";
+		if(!callfunc("F_CanOpenStorage")){
+			mes "很抱歉，但是您";
+			mes "需要初心者的";
+			mes "基本技能等級 6 才能";
+			mes "使用倉庫服務。";
+			close2;
+			break;
+		}
+		if(Zeny < 40){
+			mes "很抱歉，但是您沒有";
+			mes "足夠的 Zeny 來使用";
+			mes "倉庫服務。我們的";
+			mes "倉庫使用費是 40 Zeny。";
+			close2;
+			break;
+		}
+		set Zeny, Zeny - 40;
+		mes "讓我馬上為您開啟";
+		mes "您的個人倉庫。";
+		mes "感謝您支持準它";
+		mes "公司並使用我們的";
+		mes "服務。祝您有美好的一天?";
+		callfunc("F_CheckKafCode");	//check your storage password, if set
+		close2;
+		openstorage;
+		break;
+	case 3:
+		mes "請選擇";
+		mes "您的目的地。";
+		next;
+		if (VIP_SCRIPT && !vip_status(VIP_STATUS_ACTIVE))
+			set .@cost,4400;
+		else
+			set .@cost,2200;
+		.@destination$ = getarg(5);
+		if (select(.@destination$ +" -> "+ .@cost +" z:取消") == 1) {
+			if ((countitem(7060) != 0) || (Zeny >= .@cost)) {
+				if (countitem(7060) != 0) {
+					delitem 7060,1; //Warp_Free_Ticket
+				}
+				else {
+					set Zeny,Zeny-.@cost;
+				}
+				if (.@destination$ == "菲音斯") warp "veins",205,101;
+				else if (.@destination$ == "拉赫") warp "rachel",115,125;
+				cutin "",255;
+				end;
+			}
+			else {
+				mes "[準它公司員工]";
+				mes "很抱歉，但是您沒有";
+				mes "足夠的 zeny 使用傳送";
+				mes "服務。傳送";
+				mes "到 "+ .@destination$ +" 的費用是 "+.@cost+" zeny。";
+			}
+		}
+		close2;
+		break;
+	case 4:
+		mes "[準它公司員工]";
+		if(BaseClass != Job_Merchant){
+			mes "很抱歉，但是";
+			mes "租用手推車服務";
+			if (checkre(0))
+				mes "只提供給商人系職業。";
+			else {
+				mes "只提供給商人、";
+				mes "鐵匠、神工匠、";
+				mes "鍊金術師和創造者。";
+			}
+			close2;
+			break;
+		}
+		if(getskilllv("MC_PUSHCART") == 0){
+			mes "您必須在學會手推車使用技能後";
+			mes "才能租用手推車。";
+			close2;
+			break;
+		}
+		if(checkcart() == 1){
+			mes "您已經裝備了";
+			mes "一台手推車。";
+			mes "很遺憾，我們不能";
+			mes "同時租借超過一台";
+			mes "給同一個顧客。";
+			close2;
+			break;
+		}
+		if(countitem(7061)){
+			delitem 7061,1; //Cart_Free_Ticket
+			setcart;
+			close2;
+			break;
+		}
+		mes "租用手推車的";
+		mes "費用是 800 Zeny。您";
+		mes "想要租用一台手推車嗎？";
+		next;
+		if(select("租用手推車:取消") == 1){
+			if(Zeny < 800){
+				mes "[準它公司員工]";
+				mes "很抱歉，但是您";
+				mes "沒有足夠的";
+				mes "Zeny 來支付 800 Zeny";
+				mes "的手推車租用費。";
+			} else {
+				set Zeny, Zeny - 800;
+				setcart;
+			}
+		}
+		close2;
+		break;
+	case 5:
+		callfunc("F_SetKafCode","[準它公司員工]","準它公司");
+		//the function closes msg and removes cutins
+	case 6:
+	default:
+		mes "[準它公司員工]";
+		mes "準它公司一直";
+		mes "致力於為我們的顧客";
+		mes "提供最好的服務。";
+		mes "請提供您的意見";
+		mes "與真實的反饋，幫助我們";
+		mes "成為最棒的。謝謝您。";
+		close2;
+	}
+	cutin "", 255;
+	end;
+}
+
+lighthalzen,94,248,3	script	準它公司員工::CoolEventCorpStaffLighthalzen	4_M_ZONDAMAN,{
+	callfunc "F_CoolEventCorp",
+		"儲存位置:使用倉庫::租用手推車:倉庫密碼服務:取消",
+		"里希塔樂鎮","lighthalzen",95,240;
+	end;
+}
+
+hugel,88,168,4	script	準它公司員工::CoolEventCorpStaffHugel	4_M_ZONDAMAN,{
+	callfunc "F_CoolEventCorp",
+		"儲存位置:使用倉庫::租用手推車:倉庫密碼服務:取消",
+		"毀葛","hugel",96,155;
+	end;
+}
+
+rachel,109,138,5	script	準它公司員工::CoolEventCorpStaffRachel	4_M_ZONDAMAN,{
+	callfunc "F_CoolEventCorp",
+		"儲存位置:使用倉庫:傳送服務:租用手推車:倉庫密碼服務:取消",
+		"拉赫","rachel",113,137,"菲音斯";
+	end;
+}
+
+veins,208,128,5	script	準它公司員工::CoolEventCorpStaffVeins	4_M_ZONDAMAN,{
+	callfunc "F_CoolEventCorp",
+		"儲存位置:使用倉庫:傳送服務:租用手推車:倉庫密碼服務:取消",
+		"菲音斯","veins",204,103,"拉赫";
+	end;
+}

@@ -1,0 +1,67 @@
+//===== rAthena Script ======================================= 
+//= Stone Changer
+//===== By: ================================================== 
+//= Euphy
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Organizes ores in a player's inventory.
+//===== Additional Comments: ================================= 
+//= 1.0 First version.
+//= 1.1 Clean-up. [Capuche]
+//============================================================ 
+
+// Main NPC :: stonechange
+//============================================================
+geffen_in,99,174,5	script	礦石測試員 索蒂#sorty	8_F_GIRL,{
+	mes "[礦石測試員 索蒂]";
+	mes "你的物品欄裡有^3131FF佔據很多空間的同一種礦石^000000嗎？";
+	mes "我可以立刻辨識並幫你把礦石整理好?！";
+	next;
+	switch(select("整理我的礦石。:取消。")) {
+	case 1:
+		mes "[礦石測試員 索蒂]";
+		mes "目前我只能辨識並整理^FF0000鋼鐵^000000、^FF0000鐵^000000、^FF0000鐵礦石^000000和^FF0000鋁原石^000000。";
+		mes "請注意，^3131FF其他物品是無法整理的^000000！";
+		next;
+		mes "[礦石測試員 索蒂]";
+		mes "那麼，你需要我幫你整理礦石嗎？";
+		next;
+		.@i = select("麻煩整理鋼鐵。:麻煩整理鐵。:麻煩整理鐵礦石。:麻煩整理鋁原石。:不用了，謝謝。");
+		if (.@i == 5) {
+			mes "[礦石測試員 索蒂]";
+			mes "哼，我最討厭不愛整潔的人了！";
+			close;
+		}
+		setarray .@ores[0],999,998,1002,756;
+		.@item = .@ores[.@i-1];
+		if (countitem(.@item) == 0) {
+			mes "[礦石測試員 索蒂]";
+			mes "你沒有任何"+getitemname(.@item)+"...";
+			close;
+		}
+		// while(1) {
+			// if (countitem(.@item)) {
+				// set .@count, countitem(.@item);
+				// set .@total, .@total + .@count;
+				// delitem .@item, .@count;
+			// } else {
+				// getitem .@item, .@total;
+				// break;
+			// }
+		// }
+		.@count = countitem(.@item);
+		delitem .@item, .@count;
+		getitem .@item, .@count;
+		mes "[礦石測試員 索蒂]";
+		mes "完成了。看起來整齊多了！你不覺得嗎？";
+		close;
+	case 2:
+		mes "[礦石測試員 索蒂]";
+		mes "看來你的包包很乾淨呢？呵呵！你說不定是個整理大師喔！";
+		close;
+	}
+}

@@ -1,0 +1,1302 @@
+//===== rAthena Script ======================================= 
+//= Rogue Skills Quests
+//===== By: ================================================== 
+//= Lupus, Reddozen
+//===== Current Version: ===================================== 
+//= 1.8
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Quests for skills: CLose Confine
+//===== Additional Comments: ================================= 
+//= 1.4 Rescripted to Aegis 10.3 stadards. [L0ne_W0lf]
+//= 1.5 Fixed bad NPC header data to comply with rev. 11603. [L0ne_W0lf]
+//= 1.6 Bug fixes as pointed out by Brainstorm in bugreport:351 [L0ne_W0lf]
+//= 1.6a Fixed(?) antoher problem (NPCs not disabling) hopefully. [L0ne_W0lf]
+//= 1.6b Corrected a Typo error with "rouge". (bugreport:909) [Samuray22]
+//= 1.7 Replaced effect numerics with constants. [L0ne_W0lf]
+//= 1.8 Some cleaning. [Euphy]
+//============================================================
+
+in_rogue,359,177,0	script	#killershow01	-1,{
+OnInit:
+	disablenpc "#killershow01";
+	end;
+
+OnEnable:
+	enablenpc "#killershow01";
+	initnpctimer;
+	end;
+
+OnDisable:
+	stopnpctimer;
+	disablenpc "#killershow01";
+	end;
+
+OnTimer1000:
+	enablenpc "殺手#Rogueguild";
+	end;
+
+OnTimer120000:
+	disablenpc "殺手#Rogueguild";
+	end;
+
+OnTimer150000:
+	disablenpc "殺手#Rogueguild";
+	disablenpc "#killershow01";
+	end;
+}
+
+in_rogue,357,174,2	script	殺手#Rogueguild	705,1,1,{
+OnInit:
+	disablenpc "殺手#Rogueguild";
+	end;
+
+OnTouch_:
+	if (ROG_SK == 10) {
+		specialeffect2 EF_CHANGECOLD;
+		specialeffect EF_CHANGEWIND;
+		specialeffect2 EF_LIGHTSPHERE;
+		set ROG_SK,11;
+		mes "[殺手]";
+		mes "你……你對我";
+		mes "做了什麼？！";
+		mes "我……我動不了了！";
+		next;
+		mes "[海加拉 葛瑞格]";
+		mes "哦？我沒想到";
+		mes "你這麼快就能施展";
+		mes "『挾持』！";
+		mes "太驚人了，真是太驚人了！";
+		mes "現在，這正是你";
+		mes "精通這項技能的好機會……";
+		next;
+		mes "[海加拉 葛瑞格]";
+		mes "現在注意了。";
+		mes "我要你利用這個殺手來練習";
+		mes "預測對手的";
+		mes "移動意圖。";
+		mes "你應該能從他的氣息看穿他打算往哪個方向移動。";
+		next;
+		mes "[海加拉 葛瑞格]";
+		mes "如果他打算向左移動，";
+		mes "他的氣息會是白色的。如果他";
+		mes "向右移動，氣息會是";
+		mes "黃色的。如果他打算";
+		mes "後退，氣息會是淡紅色的。";
+		next;
+		setarray .@Effects[1],EF_CHANGECOLD,EF_CHANGEWIND,EF_CHANGEEARTH;
+		for(set .@lim_1,0; .@lim_1<10; set .@lim_1,.@lim_1+1) {
+			set .@move_1,rand(1,3);
+			specialeffect .@Effects[.@move_1];
+			if (select("從左邊阻擋他:從右邊阻擋他:阻擋他後退") == .@move_1) {
+				mes "^3355FF殺手依然";
+				mes "無法動彈，而且看起來";
+				mes "非常困惑！現在，";
+				mes "你完美地運用了『挾持』";
+				mes "技能！^000000";
+				specialeffect EF_POTION1;
+				specialeffect2 EF_POTION7;
+			}
+			else {
+				mes "^3355FF等等——！";
+				mes "不知為何，";
+				mes "你感覺殺手目前";
+				mes "並不是朝著那個方向移動。";
+				mes "你自然而然地修正了動作。^000000";
+			}
+			next;
+		}
+		mes "^3355FF你成功地";
+		mes "取回了由傳奇人物";
+		mes "崔達培所撰寫的";
+		mes "無價技能書。^000000";
+		close2;
+		disablenpc "殺手#Rogueguild";
+		donpcevent "#killershow01::OnDisable";
+		end;
+	}
+	else if (ROG_SK == 11) {
+		mes "[殺手]";
+		mes "呃啊啊啊……";
+		mes "還……還是……";
+		mes "動……動不了！";
+		close2;
+		disablenpc "殺手#Rogueguild";
+		donpcevent "#killershow01::OnDisable";
+		end;
+	}
+	end;
+}
+
+in_rogue,355,179,0	script	海加拉 葛瑞格#rogueguild	46,{
+	if (BaseJob == Job_Rogue) {
+		if (ROG_SK == 12 && Upper == 1) {
+			mes "[海加拉 葛瑞格]";
+			mes "嗯？啊，轉生造成的";
+			mes "失憶症，";
+			mes "是吧？那麼我會再";
+			mes "教你一次『挾持』。";
+			specialeffect2 EF_LIGHTSPHERE;
+			skill "RG_CLOSECONFINE",1,SKILL_PERM;
+			set ROG_SK,13;
+			close;
+		}
+		else if (ROG_SK == 13 && Upper == 1) {
+			mes "[海加拉 葛瑞格]";
+			mes "一名神行太保，嗯？";
+			mes "確保你";
+			mes "將能力用在";
+			mes "那些值得被追獵的";
+			mes "邪惡敵人身上。祝你";
+			mes "好運，冒險者。";
+			close;
+		}
+		else {
+			if (ROG_SK < 1) {
+				mes "[海加拉 葛瑞格]";
+				mes "你……你是怎麼找到這個";
+				mes "地方的？我還以為這個避難室";
+				mes "應該是無法被入侵的，";
+				mes "即便是流氓也一樣！";
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "這可不妙！";
+				mes "他們找到我也";
+				mes "只是時間早晚的問題……";
+				close;
+			}
+			else if (ROG_SK == 1) {
+				mes "[海加拉 葛瑞格]";
+				mes "你……你是誰，";
+				mes "你是怎麼進來";
+				mes "這裡的？報上名來！";
+				next;
+				if (select("我對你沒有惡意！:把我們想要的東西交出來！") == 1) {
+					mes "[海加拉 葛瑞格]";
+					mes "沒有……？";
+					mes "那麼……那麼";
+					mes "你為什麼來這裡？";
+					mes "你能找到我";
+					mes "絕非偶然。";
+					next;
+					if (select("我是來幫你的。:喔，其實我不是在找你。") == 1) {
+						mes "[海加拉 葛瑞格]";
+						mes "嗯……好吧，我想";
+						if (Upper == 1)
+							mes "我可以信任神行太保的同伴";
+						else
+							mes "我可以信任流氓的同伴";
+						mes "來分享我的困境。盜亦有道";
+						mes "之類的。";
+						mes "好吧。你聽過";
+						mes "崔達培的傳說嗎？";
+						next;
+						if (select("沒有:有") == 1) {
+							mes "[海加拉 葛瑞格]";
+							mes "100 年前，崔達培";
+							mes "是第一個突破自身";
+							mes "極限轉生的人。他也是";
+							mes "選擇了不同道路的人，而不是遵循他原本的職業體系。";
+							next;
+							mes "[海加拉 葛瑞格]";
+							mes "他原本是一名武僧，";
+							mes "但在轉生後，他";
+							mes "不知為何成為了一名神行太保。";
+							mes "他保留了對武僧『真劍百破道』";
+							mes "技能的知識，並將其改良以供流氓使用。";
+							next;
+							mes "[海加拉 葛瑞格]";
+							mes "崔達培將這個新的流氓技能";
+							mes "的基礎記錄在一本書中，而我";
+							mes "很幸運地獲得了它。";
+							mes "但就在我拿到它的那一刻起，";
+							mes "恐嚇和勒索就開始了……";
+							next;
+							mes "[海加拉 葛瑞格]";
+							mes "有些不擇手段的";
+							mes "集團會用盡一切方法";
+							mes "從我手中奪走這本書。";
+							mes "我可以理解，因為我和我的兒子們";
+							mes "已經從達培的著作中學到了新技能。";
+							next;
+							mes "[海加拉 葛瑞格]";
+							mes "然而，我的時間";
+							mes "已經不多了，那些人";
+							mes "遲早會找到我的。";
+							mes "你願意幫助我，";
+							mes "拯救我和我的兒子們嗎？";
+							next;
+							if (select("當然！:抱歉，我很忙。") == 1) {
+								mes "[海加拉 葛瑞格]";
+								mes "哦，太感謝你了！";
+								mes "聽著，我不能冒著被";
+								mes "發現的風險，所以能不能請你把";
+								mes "這封信交給我的小兒子，";
+								mes "^FF0000路易斯 葛瑞格^000000？快去，";
+								mes "時間不多了！";
+								set ROG_SK,2;
+								close;
+							}
+							mes "[海加拉 葛瑞格]";
+							mes "我……我明白了。";
+							mes "但請你了解，";
+							mes "如果不是你，我還能";
+							mes "信任誰來幫我呢？";
+							close;
+						}
+						mes "[海加拉 葛瑞格]";
+						mes "那麼你就會知道我現在";
+						mes "所擁有的這本由他所寫的技能書";
+						mes "有多麼珍貴了。";
+						mes "然而，我被那些會不擇手段";
+						mes "奪取它的傢伙給盯上了。";
+						mes "請問你願意幫助我嗎？";
+						next;
+						if (select("當然！:抱歉，我很忙。") == 1) {
+							mes "[海加拉 葛瑞格]";
+							mes "哦，太感謝你了！";
+							mes "聽著，我不能冒著被";
+							mes "發現的風險，所以能不能請你把";
+							mes "這封信交給我的小兒子，";
+							mes "^FF0000路易斯 葛瑞格^000000？快去，";
+							mes "時間不多了！";
+							set ROG_SK,2;
+							close;
+						}
+						mes "[海加拉 葛瑞格]";
+						mes "我……我明白了。";
+						mes "但請你了解，";
+						mes "如果不是你，我還能";
+						mes "信任誰來幫我呢？";
+						close;
+					}
+					mes "[海加拉 葛瑞格]";
+					mes "嗯……？";
+					mes "這聽起來不太可能，但";
+					mes "我想我最好還是姑且";
+					mes "相信你吧。";
+					mes "那麼，我希望你";
+					mes "能自己找到離開這裡的路。";
+					close;
+				}
+				mes "[海加拉 葛瑞格]";
+				mes "我明白了。那就這樣吧。";
+				mes "我會讓你見識見識";
+				mes "你如此渴望的技能……";
+				mes "^FF0000挾持^000000！";
+				specialeffect EF_CHANGECOLD;
+				specialeffect2 EF_CHANGEWIND;
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "哼。現在你";
+				mes "無能為力了，這讓";
+				mes "我可以這麼做：^FF0000背刺^000000！";
+				specialeffect2 EF_COMBOATTACK5;
+				percentheal -95,0;
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "現在滾出這裡。";
+				mes "別再讓我看到你那";
+				mes "貪婪的嘴臉。";
+				mes "並慶幸";
+				mes "我沒有殺了你吧！";
+				set ROG_SK,1;
+				close;
+			}
+			else if (ROG_SK == 2) {
+				mes "[海加拉 葛瑞格]";
+				mes "我們的時間不多了……";
+				mes "請盡快把這封信交給";
+				mes "我的小兒子，";
+				mes "^FF0000路易斯^000000！";
+				mes "你可以在流氓公會裡";
+				mes "^FF0000小忽克連^000000 的附近找到他。";
+				close;
+			}
+			else if (ROG_SK == 3) {
+				mes "[海加拉 葛瑞格]";
+				mes "路易斯派你去找";
+				mes "^FF0000索爾^000000 嗎？他在流氓";
+				mes "公會的 ^FF0000小赫爾曼索^000000 附近，";
+				mes "對吧？我很抱歉你必須";
+				mes "逐一拜訪我的兒子們……";
+				mes "我知道這很沒有效率。";
+				close;
+			}
+			else if (ROG_SK == 4) {
+				mes "[海加拉 葛瑞格]";
+				mes "啊，在找 ^FF0000傑伊^000000，是嗎？";
+				mes "他在流氓公會裡的";
+				mes "^FF0000小安東尼奧^000000 附近。或者";
+				mes "至少，他通常都在那裡。";
+				close;
+			}
+			else if (ROG_SK == 5) {
+				mes "[海加拉 葛瑞格]";
+				mes "哦，你回來了！";
+				mes "而且你帶來了";
+				mes "傑伊的信。";
+				mes "很好，很好，讓我";
+				mes "看看他寫了什麼……";
+				set ROG_SK,6;
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "啊，好消息！他已經";
+				mes "聯絡了流氓公會，";
+				mes "要求提供額外保護";
+				mes "並提醒他們的守衛。我現在";
+				mes "總算可以稍微放鬆一點了。沒人敢惹流氓。";
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "非常感謝你的";
+				mes "幫忙。如果不是你，我可能";
+				mes "得永遠躲起來。";
+				mes "作為回報，請讓我";
+				mes "給你一個學習";
+				mes "崔達培秘密技能的機會。";
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "請去跟 ^FF0000索爾^000000 說，";
+				mes "告訴他我已經";
+				mes "允許你學習";
+				mes "我教給所有兒子的這項技能。";
+				mes "他會照辦的，我敢肯定。";
+				close;
+			}
+			else if (ROG_SK == 6) {
+				mes "[海加拉 葛瑞格]";
+				mes "請要求索爾教你";
+				mes "崔達培的秘密流氓技能。";
+				mes "請諒解我無法在這個";
+				mes "凌亂的避難室裡，";
+				mes "利用這裡的設備教你。";
+				close;
+			}
+			else if (ROG_SK == 7) {
+				mes "[海加拉 葛瑞格]";
+				mes "嗯……？你不是";
+				mes "應該正在進行學習";
+				mes "那項技能的訓練嗎？請去跟";
+				mes "索爾談談，完成你的訓練吧。";
+				close;
+			}
+			else if (ROG_SK == 8) {
+				mes "[海加拉 葛瑞格]";
+				mes "你完成訓練了？";
+				mes "啊，那真是太";
+				mes "出色了。不過，你";
+				mes "應該先去跟索爾談談……";
+				close;
+			}
+			else if (ROG_SK == 9) {
+				mes "[海加拉 葛瑞格]";
+				mes "哦，你回來了！";
+				mes "我聽說你已經完成了";
+				mes "訓練，並且準備好";
+				mes "了解『挾持』技能的";
+				mes "實際應用了。";
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "哇！搞什——？！";
+				mes "住手！拜……拜託，阻止";
+				mes "那個人！我們不能讓";
+				mes "他偷走那本書！";
+				specialeffect EF_COMBOATTACK5;
+				donpcevent "殺手#Rogueguild::OnEnable";
+				set ROG_SK,10;
+				close;
+			}
+			else if (ROG_SK == 10) {
+				mes "[海加拉 葛瑞格]";
+				mes "那個人剛剛偷走了";
+				mes "『挾持』的技能書！";
+				mes "拜託！別讓他跑了！";
+				mes "那本書是無價之寶！";
+				donpcevent "#killershow01::OnEnable";
+				close;
+			}
+			else if (ROG_SK == 11) {
+				donpcevent "殺手#Rogueguild::OnDisable";
+				donpcevent "#killershow01::OnDisable";
+				mes "^3355FF你將崔達培";
+				mes "撰寫的技能書交還給了";
+				mes "海加拉。^000000";
+				next;
+				mes "[海加拉 葛瑞格]";
+				mes "非常感謝你的";
+				mes "協助。現在，如果你想了解";
+				mes "關於『挾持』的詳細";
+				mes "資訊，如果你願意，我可以";
+				mes "告訴你更多關於這個技能的事。";
+				next;
+				if (select("好的，麻煩了。:不用了，謝謝。") == 1) {
+					mes "[海加拉 葛瑞格]";
+					mes "你一定知道，";
+					mes "『挾持』能讓非常靠近你的";
+					mes "敵人無法動彈。然而，";
+					mes "在對玩家或怪物使用時，";
+					mes "還有一些細微的差別。";
+					next;
+					mes "[海加拉 葛瑞格]";
+					mes "『挾持』和武僧的技能";
+					mes "『真劍百破道』很類似，但它只會";
+					mes "限制敵人的移動，不會";
+					mes "限制其攻擊能力。";
+					next;
+					mes "[海加拉 葛瑞格]";
+					mes "除了在『挾持』期間內";
+					mes "我們只能使用一次『背刺』之外，";
+					mes "我們可以在『挾持』";
+					mes "狀態下使用任何技能。";
+					next;
+					mes "[海加拉 葛瑞格]";
+					mes "受到『挾持』影響的敵人";
+					mes "可以使用蒼蠅翅膀、蝴蝶";
+					mes "翅膀，或是『瞬間移動』或";
+					mes "『偽裝』技能來逃脫。然而，";
+					mes "在城戰期間只有『偽裝』是有效的。";
+					next;
+					mes "[海加拉 葛瑞格]";
+					mes "因此，在公會攻城戰期間，";
+					mes "如果目標沒有使用";
+					mes "『偽裝』技能逃脫，『挾持』";
+					mes "可以是非常有用的技能。";
+					next;
+					mes "[海加拉 葛瑞格]";
+					mes "除了首領級的怪物";
+					mes "之外，『挾持』";
+					mes "會讓怪物無法移動";
+					mes "10 秒鐘，這為流氓在組隊";
+					mes "狩獵時提供了新的可能性。";
+					next;
+					mes "[海加拉 葛瑞格]";
+					mes "好了，這就是我能告訴你";
+					mes "所有關於『挾持』的事了。";
+					mes "我希望你能透過練習";
+					mes "更加了解這項技能，";
+					mes "並成為像崔達培一樣偉大的傳奇人物。";
+					set ROG_SK,12;
+					skill "RG_CLOSECONFINE",1,SKILL_PERM;
+					specialeffect2 EF_LIGHTSPHERE;
+					close;
+				}
+				mes "[海加拉 葛瑞格]";
+				mes "好吧……";
+				mes "我希望你能";
+				mes "透過勤奮的練習";
+				mes "更加了解『挾持』。";
+				mes "祝你好運，並";
+				mes "再次感謝你的幫忙。";
+				set ROG_SK,12;
+				skill "RG_CLOSECONFINE",1,SKILL_PERM;
+				specialeffect2 EF_LIGHTSPHERE;
+				close;
+			}
+			mes "[海加拉 葛瑞格]";
+			mes "謝謝你幫我保護這本";
+			mes "無價的技能書。我希望";
+			mes "下次我們見面時，我們";
+			mes "會是戰場上的同伴……";
+			close;
+		}
+	}
+	else {
+		mes "[海加拉 葛瑞格]";
+		mes "你……你是怎麼找到這個";
+		mes "地方的？我還以為這個避難室";
+		mes "應該是無法被入侵的，";
+		mes "即便是流氓也一樣！";
+		next;
+		mes "[海加拉 葛瑞格]";
+		mes "這可不妙！";
+		mes "他們找到我也";
+		mes "只是時間早晚的問題……";
+		next;
+		mes "[海加拉 葛瑞格]";
+		mes "拜託……";
+		mes "幫我找一個我能信任的";
+		mes "神行太保或流氓，";
+		mes "並派他來幫我！我剩下的";
+		mes "時間不多了……";
+		close;
+	}
+}
+
+in_rogue,152,29,0	script	路易斯 葛瑞格#rogueguild	84,{
+	if (BaseJob == Job_Rogue || Class == Job_Thief_High) {
+		if (ROG_SK < 1) {
+			mes "[路易斯 葛瑞格]";
+			mes "我父親剛剛……";
+			mes "他剛剛消失了！";
+			mes "他原本正在教我和";
+			mes "我哥哥們一項新技能，";
+			mes "但最近他不知為何開始變得疑神疑鬼……";
+			next;
+			mes "[路易斯 葛瑞格]";
+			mes "也許他躲起來了？";
+			mes "我知道流氓公會裡有個隱藏的避難室，";
+			mes "但連我都不知道在哪裡。";
+			mes "希望一切都沒事……";
+			set ROG_SK,1;
+			close;
+		}
+		else if (ROG_SK == 1) {
+			mes "[路易斯 葛瑞格]";
+			mes "父親的確警告過，";
+			mes "如果別人知道我們正在學習";
+			mes "新技能，可能會來找我們麻煩。";
+			mes "也許他躲進了流氓公會的避難室裡……";
+			close;
+		}
+		else if (ROG_SK == 2) {
+			mes "[路易斯 葛瑞格]";
+			mes "這是什麼……？";
+			mes "我父親的信？哦，他一定";
+			mes "平安無事！快，讓";
+			mes "我馬上讀一讀！";
+			set ROG_SK,3;
+			next;
+			mes "[路易斯 葛瑞格]";
+			mes "喔不，他現在也許安全，";
+			mes "但父親正在被一些危險人物追殺？";
+			mes "我哥哥索爾會想知道";
+			mes "這件事的。讓我趕快寫";
+			mes "封信給他……";
+			next;
+			mes "[路易斯 葛瑞格]";
+			mes "我知道我沒有立場";
+			mes "要求任何幫忙，";
+			mes "但我想我父親一定很信任你。";
+			mes "拜託，你能幫我把這封信";
+			mes "交給我哥哥索爾嗎？";
+			next;
+			mes "[路易斯 葛瑞格]";
+			mes "你可以在流氓公會裡，";
+			mes "小赫爾曼索的旁邊找到索爾。";
+			mes "如果你能幫助我們家，";
+			mes "我會非常感激的。";
+			close;
+		}
+		else if (ROG_SK == 3) {
+			mes "[路易斯 葛瑞格]";
+			mes "我哥哥 ^FF0000索爾^000000";
+			mes "必須立刻知道這件事！";
+			mes "請幫我把這封信交給他。";
+			mes "他應該在流氓公會裡的";
+			mes "^FF0000小赫爾曼索^000000 附近。";
+			close;
+		}
+		else if (ROG_SK == 4) {
+			mes "[路易斯 葛瑞格]";
+			mes "你在找我哥哥";
+			mes "傑伊嗎？他通常";
+			mes "都跟小安東尼奧待在";
+			mes "流氓公會這裡。";
+			close;
+		}
+		else if (ROG_SK == 5) {
+			mes "[路易斯 葛瑞格]";
+			mes "如果你需要跟";
+			mes "我父親談談，他大概";
+			mes "還在流氓公會裡的隱藏避難室。";
+			mes "我還是不知道那個地方";
+			mes "到底在哪裡……";
+			close;
+		}
+		else if (ROG_SK == 6) {
+			mes "[路易斯 葛瑞格]";
+			mes "你想學習";
+			mes "秘密流氓技能？哦，";
+			mes "你可能得去跟 ^FF0000索爾^000000 談談。";
+			mes "我……我很不擅長";
+			mes "跟人解釋事情。真的很不擅長。";
+			close;
+		}
+		else if (ROG_SK == 7) {
+			mes "[路易斯 葛瑞格]";
+			mes "嗯？你正在學習";
+			mes "秘密流氓技能，對吧？";
+			mes "哦，那你現在還不應該";
+			mes "出現在這裡。請回去";
+			mes "再找 ^FF0000索爾^000000 談談，好嗎？";
+			close;
+		}
+		else if (ROG_SK == 8) {
+			mes "[路易斯 葛瑞格]";
+			mes "哦，哦！";
+			mes "你完成";
+			mes "訓練了？啊，";
+			mes "那你得再去";
+			mes "找索爾談談！";
+			close;
+		}
+		else if (ROG_SK == 9) {
+			mes "[路易斯 葛瑞格]";
+			mes "你想了解更多";
+			mes "關於『挾持』的事？";
+			mes "呃，那你最好去跟";
+			mes "我父親談談。你知道的，我也";
+			mes "才剛學會那個技能而已。";
+			close;
+		}
+		else if (ROG_SK == 11) {
+			mes "[路易斯 葛瑞格]";
+			mes "我剛聽我哥哥們說";
+			mes "崔達培發明了";
+			mes "『挾持』來殘酷地痛打他的敵人，";
+			mes "並阻止他們逃跑。";
+			mes "這是真的嗎？";
+			close;
+		}
+		mes "[路易斯 葛瑞格]";
+		mes "哇，你真厲害！我希望";
+		mes "我也能像你一樣強大。";
+		mes "我討厭當個小孩！";
+		close;
+	}
+	mes "[路易斯 葛瑞格]";
+	mes "為什麼我要成為流氓？";
+	mes "我想我就是喜歡";
+	mes "偷偷摸摸的感覺。而且，";
+	mes "要當個道德高尚又守法的人";
+	mes "實在太難了，你知道嗎？";
+	close;
+}
+
+in_rogue,268,125,2	script	索爾 葛瑞格#rogueguild	86,{
+	if (BaseJob == Job_Rogue || Class == Job_Thief_High) {
+		if (ROG_SK < 1) {
+			mes "[索爾 葛瑞格]";
+			mes "父親去哪了？";
+			mes "我希望那些奇怪的人";
+			mes "沒有抓到他。運氣好的話，";
+			mes "他藏在避難室裡，但還是……";
+			set ROG_SK,1;
+			close;
+		}
+		else if (ROG_SK == 1) {
+			mes "[索爾 葛瑞格]";
+			mes "嗯……我父親可能";
+			mes "藏在避難室裡。";
+			mes "我從來沒找到過，";
+			mes "但瑪姬說入口巧妙地";
+			mes "藏在她的左邊。嗯……";
+			close;
+		}
+		else if (ROG_SK == 2) {
+			mes "[索爾 葛瑞格]";
+			mes "你在找我弟弟，";
+			mes "^FF0000路易斯^000000 嗎？";
+			mes "哦，他總是待在流氓公會裡";
+			mes "^FF0000小忽克連^000000 的附近。";
+			mes "你找他有什麼事？";
+			close;
+		}
+		else if (ROG_SK == 3) {
+			mes "[索爾 葛瑞格]";
+			mes "你拿給我的是什麼？";
+			mes "路易斯的信？";
+			mes "讓我看看……";
+			set ROG_SK,4;
+			next;
+			mes "[索爾 葛瑞格]";
+			mes "天啊，父親遇上";
+			mes "大麻煩了！我最好";
+			mes "馬上告訴我哥哥傑伊！";
+			mes "快，去公會裡找 ^FF0000傑伊^000000，";
+			mes "他就在 ^FF0000小安東尼奧^000000 旁邊！";
+			mes "拜……拜託快點！";
+			close;
+		}
+		else if (ROG_SK == 4) {
+			mes "[索爾 葛瑞格]";
+			mes "你可以在流氓公會裡";
+			mes "找到和小安東尼奧待在一起的傑伊。";
+			mes "請盡快把我寫的信交給他！";
+			close;
+		}
+		else if (ROG_SK == 5) {
+			mes "[索爾 葛瑞格]";
+			mes "希望父親沒有";
+			mes "離開流氓公會的避難室。";
+			mes "那可能是他唯一安全的地方……";
+			close;
+		}
+		else if (ROG_SK == 6) {
+			mes "[索爾 葛瑞格]";
+			mes "什麼？父親";
+			mes "要我教你秘密的流氓技能？";
+			mes "好吧，我會用父親訓練我的方式來訓練你。";
+			mes "你想先聽聽說明嗎？";
+			next;
+			mes "[索爾 葛瑞格]";
+			mes "如果你不想聽說明，";
+			mes "我就直接送你";
+			mes "去訓練場，讓你能學習";
+			mes "^FF0000挾持^000000。";
+			next;
+			if (select("聽取說明:前往訓練場") == 1) {
+				mes "[索爾 葛瑞格]";
+				mes "好吧，學習 ^FF0000挾持^000000";
+				mes "的第一步就是掌握如何阻擋";
+				mes "敵人的移動。我會送你";
+				mes "到一個特殊的訓練場讓你練習。";
+				next;
+				mes "[索爾 葛瑞格]";
+				mes "在那裡，你會遇到我們的";
+				mes "訓練夥伴。盡量靠近她，";
+				mes "並確保你預測並阻擋了她";
+				mes "向左、向右或向後的移動。準備好，我現在就送你過去……";
+				close2;
+				warp "in_rogue",89,114;
+				end;
+			}
+			warp "in_rogue",89,114;
+			end;
+		}
+		else if (ROG_SK == 7) {
+			mes "[索爾 葛瑞格]";
+			mes "好吧，我要來打破第四面牆，";
+			mes "假設你在遊戲中斷線了。";
+			mes "你想回到訓練場學習";
+			mes "^FF0000挾持^000000 嗎？";
+			next;
+			if (select("好的，麻煩了。:不用了，謝謝。") == 1) {
+				mes "[索爾 葛瑞格]";
+				mes "好吧，學習 ^FF0000挾持^000000";
+				mes "的第一步就是掌握如何阻擋";
+				mes "敵人的移動。我會送你";
+				mes "到一個特殊的訓練場讓你練習。";
+				next;
+				mes "[索爾 葛瑞格]";
+				mes "在那裡，你會遇到我們的";
+				mes "訓練夥伴。盡量靠近她，";
+				mes "並確保你預測並阻擋了她";
+				mes "向左、向右或向後的移動。準備好，我現在就送你過去……";
+				set ROG_SK,6;
+				close2;
+				warp "in_rogue",89,114;
+				end;
+			}
+			mes "[索爾 葛瑞格]";
+			mes "好吧，好吧。";
+			mes "當你覺得準備好";
+			mes "繼續訓練時，";
+			mes "再讓我知道。";
+			close;
+
+		}
+		else if (ROG_SK == 8) {
+			mes "[索爾 葛瑞格]";
+			mes "啊，我聽琪安娜說";
+			mes "你已經完成了訓練。";
+			mes "恭喜你！";
+			mes "現在，請去找我父親，讓";
+			mes "他詳細地為你說明『挾持』技能。";
+			set ROG_SK,9;
+			close;
+		}
+		else if (ROG_SK == 9) {
+			mes "[索爾 葛瑞格]";
+			mes "請跟我父親談談，";
+			mes "讓他向你解釋『挾持』";
+			mes "技能的細微差別。";
+			mes "他應該還在流氓公會的避難室裡。";
+			close;
+		}
+		else if (ROG_SK == 11) {
+			mes "[索爾 葛瑞格]";
+			mes "你知道嗎，崔達培";
+			mes "會對對手說：『我是崔達培。";
+			mes "而你是……？』";
+			mes "然後在他們回答之前，";
+			mes "就把他們揍成肉泥。";
+			next;
+			mes "[索爾 葛瑞格]";
+			mes "他真的是";
+			mes "流氓之間的一位";
+			mes "傳奇英雄……！";
+			close;
+		}
+		mes "[索爾 葛瑞格]";
+		mes "嗯……？";
+		mes "看來你甚至";
+		mes "比我還強。大概";
+		mes "沒什麼人敢惹你吧……";
+		close;
+	}
+	mes "[索爾 葛瑞格]";
+	mes "嗯，搶這個，搶那個。";
+	mes "*嘆氣* 這是我最可恥的缺點：";
+	mes "我花 Zeny 的速度幾乎和";
+	mes "我偷來的速度一樣快。這太不負責任了……";
+	close;
+}
+
+in_rogue,181,114,3	script	傑伊 葛瑞格#rogueguild	85,{
+	if (BaseJob == Job_Rogue || Class == Job_Thief_High) {
+		if (ROG_SK < 1) {
+			mes "[傑伊 葛瑞格]";
+			mes "我父親一定躲在";
+			mes "流氓公會的避難室裡。";
+			mes "奇怪的是，我和哥哥們";
+			mes "總是找不到那裡，也無法";
+			mes "確認他是否安全……";
+			set ROG_SK,1;
+			next;
+			mes "[傑伊 葛瑞格]";
+			mes "最近，他一直被一些";
+			mes "奇怪的男人追殺，他們";
+			mes "還威脅我們的家人。";
+			mes "嗯，他確實剛教了我們";
+			mes "一項新技能，所以他可以";
+			mes "用那個來保護自己……";
+			close;
+		}
+		else if (ROG_SK == 1) {
+			mes "[傑伊 葛瑞格]";
+			mes "我猜我父親";
+			mes "把自己藏在流氓";
+			mes "公會的避難室裡了。我們";
+			mes "總是找不到，但據說";
+			mes "入口就藏在瑪姬";
+			mes "附近的某個地方。";
+			close;
+		}
+		else if (ROG_SK == 2) {
+			mes "[傑伊 葛瑞格]";
+			mes "你在找";
+			mes "路易斯，我的弟弟嗎？";
+			mes "他就在流氓公會裡，";
+			mes "所以應該不難";
+			mes "找到他。他大概就站在小忽克連的附近。";
+			close;
+		}
+		else if (ROG_SK == 3) {
+			mes "[傑伊 葛瑞格]";
+			mes "索爾？他應該在";
+			mes "流氓公會的某個地方。";
+			mes "你試過在小赫爾曼索附近找找看嗎？";
+			close;
+		}
+		else if (ROG_SK == 4) {
+			mes "[傑伊 葛瑞格]";
+			mes "給我的信……？";
+			mes "啊，是索爾寫的，";
+			mes "看來我最好";
+			mes "馬上讀一讀。嗯……";
+			set ROG_SK,5;
+			next;
+			mes "[傑伊 葛瑞格]";
+			mes "我明白了……我必須";
+			mes "馬上向流氓公會報告這件事，";
+			mes "並回信給";
+			mes "我父親。嗯，讓我";
+			mes "現在就寫封信給他。";
+			mes "請給我一點時間……";
+			next;
+			mes "[傑伊 葛瑞格]";
+			mes "好了，寫完了。請";
+			mes "盡你最快的速度把";
+			mes "這個交給我父親。";
+			mes "我知道這要求有點過分，但";
+			mes "我自己也找不到";
+			mes "隱藏避難室的路……";
+			close;
+		}
+		else if (ROG_SK == 5) {
+			mes "[傑伊 葛瑞格]";
+			mes "請盡快把我的回信";
+			mes "交給我父親。";
+			mes "他還藏在流氓公會的";
+			mes "避難室裡。當然，前提是我們的敵人";
+			mes "還沒找到他。";
+			close;
+		}
+		else if (ROG_SK == 6) {
+			mes "[傑伊 葛瑞格]";
+			mes "你需要進行";
+			mes "『挾持』技能的訓練嗎？";
+			mes "我想索爾是唯一";
+			mes "可以進入";
+			mes "訓練場的人，所以";
+			mes "先去跟他說吧。";
+			close;
+		}
+		else if (ROG_SK == 7) {
+			mes "[傑伊 葛瑞格]";
+			mes "你需要進行";
+			mes "『挾持』技能的訓練嗎？";
+			mes "我想索爾是唯一";
+			mes "可以進入";
+			mes "訓練場的人，所以";
+			mes "先去跟他說吧。";
+			close;
+		}
+		else if (ROG_SK == 8) {
+			mes "[傑伊 葛瑞格]";
+			mes "啊，你完成了";
+			mes "『挾持』的訓練了，";
+			mes "是嗎？太好了，現在去";
+			mes "告訴我哥哥索爾吧。";
+			close;
+		}
+		else if (ROG_SK == 9) {
+			mes "[傑伊 葛瑞格]";
+			mes "嗯。你也許該";
+			mes "去跟我父親談談，了解";
+			mes "更多關於『挾持』技能的";
+			mes "細節。你在流氓公會的";
+			mes "避難室裡見過他了嗎？";
+			close;
+		}
+		else if (ROG_SK == 12) {
+			mes "[傑伊 葛瑞格]";
+			mes "崔達培";
+			mes "看起來確實是個固執的";
+			mes "暴徒。但他一定";
+			mes "很聰明，才能發明出他自己的一些技能。";
+			close;
+		}
+		mes "[傑伊 葛瑞格]";
+		mes "我有種感覺，";
+		mes "如果你還不是，那你";
+		mes "將來一定會成為周遭最頂尖的";
+		mes "流氓之一。";
+		close;
+	}
+	mes "[傑伊 葛瑞格]";
+	mes "自從我學會了";
+	mes "『抄襲』之後，我就變得";
+	mes "很喜歡跟人動手，甚至有點";
+	mes "被虐傾向。我的意思是，如果他們";
+	mes "用技能打你，你就可以用那個技能打回去！";
+	close;
+}
+
+prt_are01,150,150,0	script	#1strecog	-1,10,10,{
+OnTouch_:
+	donpcevent "#1st5min::OnEnable";
+	donpcevent "#1stmove::OnEnable";
+	disablenpc "#1strecog";
+	end;
+}
+
+prt_are01,135,135,0	script	#1st5min	-1,{
+OnInit:
+	disablenpc "#1st5min";
+	end;
+
+OnEnable:
+	enablenpc "#1st5min";
+	initnpctimer;
+	end;
+
+OnDisable:
+	stopnpctimer;
+	disablenpc "#1st5min";
+	end;
+OnTimer1000:
+	mapannounce "prt_are01","歡迎來到挾持訓練場。5分鐘後您將被自動傳送出去。",bc_map,"0x00ff00";
+	end;
+OnTimer290000:
+	mapannounce "prt_are01","您將在20秒後被傳送出去。",bc_map,"0x00ff00";
+	end;
+
+OnTimer310000:
+	mapannounce "prt_are01","您將在5秒後被傳送出去。",bc_map,"0x00ff00";
+	end;
+OnTimer315000:
+	mapannounce "prt_are01","您現在正被傳送出去。",bc_map,"0x00ff00";
+	disablenpc "琪安娜#1st";
+	disablenpc "琪安娜#2nd";
+	disablenpc "琪安娜#3rd";
+	disablenpc "琪安娜#4th";
+	disablenpc "琪安娜#5th";
+	disablenpc "琪安娜#6th";
+	disablenpc "琪安娜#7th";
+	disablenpc "琪安娜#8th";
+	donpcevent "#1stmove::OnDisable";
+	enablenpc "#1strecog";
+	donpcevent "等候室#rogue10::OnEnable";
+	stopnpctimer;
+	mapwarp "prt_are01","in_rogue",264,124;
+	end;
+}
+
+prt_are01,135,135,0	script	#1stmove	-1,{
+OnInit:
+	disablenpc "#1stmove";
+	end;
+
+OnEnable:
+	enablenpc "#1stmove";
+	initnpctimer;
+	end;
+
+OnTimer3000:
+	mapannounce "prt_are01","琪安娜將在1秒後出現。請盡可能靠近她。",bc_map,"0x00ff00";
+	end;
+OnTimer5000:
+	switch(rand(1,8)) {
+	case 1:
+		enablenpc "琪安娜#1st";
+		break;
+	case  2:
+		enablenpc "琪安娜#2nd";
+		break;
+	case  3:
+		enablenpc "琪安娜#3rd";
+		break;
+	case  4:
+		enablenpc "琪安娜#4th";
+		break;
+	case  5:
+		enablenpc "琪安娜#5th";
+		break;
+	case  6:
+		enablenpc "琪安娜#6th";
+		break;
+	case  7:
+		enablenpc "琪安娜#7th";
+		break;
+	case 8:
+		enablenpc "琪安娜#8th";
+	}
+	end;
+OnTimer8000:
+	disablenpc "琪安娜#1st";
+	disablenpc "琪安娜#2nd";
+	disablenpc "琪安娜#3rd";
+	disablenpc "琪安娜#4th";
+	disablenpc "琪安娜#5th";
+	disablenpc "琪安娜#6th";
+	disablenpc "琪安娜#7th";
+	disablenpc "琪安娜#8th";
+	end;
+
+OnTimer9000:
+	stopnpctimer;
+	donpcevent "#1stmove::OnEnable";
+	mapwarp "prt_are01","prt_are01",150,150;
+	end;
+
+OnDisable:
+	stopnpctimer;
+	disablenpc "#1stmove";
+	end;
+}
+
+prt_are01,149,162,0	script	琪安娜#1st	700,1,1,{
+	end;
+OnTouch_:
+	callfunc "F_Kienna",strnpcinfo(2);
+	end;
+}
+prt_are01,136,150,0	duplicate(琪安娜#1st)	琪安娜#2nd	700,1,1
+prt_are01,150,138,0	duplicate(琪安娜#1st)	琪安娜#3rd	700,1,1
+prt_are01,163,147,0	duplicate(琪安娜#1st)	琪安娜#4th	700,1,1
+prt_are01,134,140,0	duplicate(琪安娜#1st)	琪安娜#5th	700,1,1
+prt_are01,161,140,0	duplicate(琪安娜#1st)	琪安娜#6th	700,1,1
+prt_are01,161,160,0	duplicate(琪安娜#1st)	琪安娜#7th	700,1,1
+prt_are01,138,159,0	duplicate(琪安娜#1st)	琪安娜#8th	700,1,1
+
+function	script	F_Kienna	{
+	if (ROG_SK == 6) {
+		donpcevent "#1stmove::OnDisable";
+		mes "[琪安娜]";
+		mes "好了，在這個";
+		mes "練習中，你需要";
+		mes "預測我打算往哪邊移動";
+		mes "並阻止我，基本上就是";
+		mes "讓我無法動彈。準備好囉?";
+		set ROG_SK,7;
+		next;
+		for(set .@lim_1,0; .@lim_1<10; set .@lim_1,.@lim_1+1) {
+			set .@move_1,rand(1,3);
+			if (select("從左邊阻擋她:從右邊阻擋她:阻擋她後退") == .@move_1) {
+				mes "[琪安娜]";
+				mes "咦……？";
+				mes "你擋住我了！";
+				mes "做得非常好?";
+				specialeffect EF_POTION1;
+				specialeffect2 EF_POTION7;
+				set .@suc_1,.@suc_1 + 1;
+			}
+			else {
+				mes "[琪安娜]";
+				mes "抱歉，但我並不是";
+				mes "往那個方向移動的。";
+				mes "你的阻擋嘗試失敗了……";
+			}
+			next;
+		}
+		mes "[琪安娜]";
+		mes "好了，我們完成了。";
+		mes "你獲得的";
+		switch(.@suc_1) { 
+		case 10:
+			mes "訓練成績是『^0000FFS^000000』。";
+			mes "這是一個滿分的成績！";
+			break;
+		case 9:
+			mes "訓練成績是『^0000FFA^000000』。";
+			mes "你真的很擅長這個！";
+			break;
+		case 8:
+			mes "訓練成績是『^0000FFB +^000000』。";
+			mes "非常值得讚賞！";
+			break;
+		case 7:
+			mes "訓練成績是『^0000FFB^000000』。";
+			mes "表現得很不錯喔?";
+			break;
+		case 6:
+			mes "訓練成績是『^0000FFC +^000000』。";
+			mes "還算可以，但你";
+			mes "只是勉強及格而已！";
+			break;
+		case 5:
+			mes "訓練成績是『^FF0000C^000000』。";
+			break;
+		case 4:
+			mes "訓練成績是『^FF0000D+^000000』。";
+			break;
+		case 3:
+			mes "訓練成績是『^FF0000D^000000』。";
+			break;
+		case 2:
+			mes "訓練成績是『^FF0000F^000000』。";
+			break;
+		case 1:
+			mes "訓練成績是『^FF0000F -^000000』。";
+			break;
+		case 0:
+			mes "訓練成績是……";
+			mes "其實我算不出來。";
+			mes "到底發生什麼事了？！";
+		}
+		next;
+		if (.@suc_1 > 5) {
+			mes "[琪安娜]";
+			mes "我很高興地宣布";
+			mes "你已經完成了你的";
+			mes "訓練！現在讓我";
+			mes "把你送回索爾 葛瑞格那裡，";
+			mes "這樣你就能完成學習";
+			mes "^FF0000挾持^000000了。";
+			set ROG_SK,8;
+			disablenpc "琪安娜#"+getarg(0);
+			donpcevent "#1st5min::OnDisable";
+			enablenpc "#1strecog";
+			close2;
+			donpcevent "等候室#rogue10::OnEnable";
+			warp "in_rogue",264,124;
+			end;
+		}
+		else {
+			mes "[琪安娜]";
+			mes "嗯。以這個成績，";
+			mes "我想你還沒完全";
+			mes "準備好完成『挾持』的學習。";
+			mes "你想再試一次";
+			mes "這個訓練練習嗎？";
+			next;
+			if (select("好的！:不用了，謝謝。") == 1) {
+				disablenpc "琪安娜#"+getarg(0);
+				donpcevent "#1stmove::OnEnable";
+				set ROG_SK,6;
+				warp "prt_are01",150,150;
+				end;
+			}
+			disablenpc "琪安娜#"+getarg(0);
+			donpcevent "#1st5min::OnDisable";
+			enablenpc "#1strecog";
+			set ROG_SK,6;
+			donpcevent "等候室#rogue10::OnEnable";
+			warp "in_rogue",264,124;
+			end;
+		}
+	}
+	else if (ROG_SK == 7) {
+		mes "[琪安娜]";
+		mes "你一定是在練習中途";
+		mes "取消了你的訓練。我很抱歉，";
+		mes "但你必須從頭";
+		mes "重新開始";
+		mes "這個訓練。";
+		set ROG_SK,6;
+		close2;
+		disablenpc "琪安娜#"+getarg(0);
+		donpcevent "#1stmove::OnEnable";
+		warp "prt_are01",150,150;
+		end;
+	}
+	else if (ROG_SK == 8) {
+		mes "[琪安娜]";
+		mes "你已經完成";
+		mes "『挾持』技能的";
+		mes "訓練練習了。";
+		mes "你不再需要";
+		mes "我的協助了。";
+		close2;
+		donpcevent "等候室#rogue10::OnEnable";
+		warp "in_rogue",264,124;
+		end;
+	}
+	else {
+		mes "[琪安娜]";
+		mes "很抱歉，我不認為";
+		mes "你應該待在這裡。";
+		mes "如果你迷路了，讓我把你送回";
+		mes "流氓公會吧……";
+		close2;
+		donpcevent "等候室#rogue10::OnEnable";
+		warp "in_rogue",264,124;
+		end;
+}
+
+OnInit:
+	disablenpc "琪安娜#1st";
+	disablenpc "琪安娜#2nd";
+	disablenpc "琪安娜#3rd";
+	disablenpc "琪安娜#4th";
+	disablenpc "琪安娜#5th";
+	disablenpc "琪安娜#6th";
+	disablenpc "琪安娜#7th";
+	disablenpc "琪安娜#8th";
+	end;
+}
+
+in_rogue,88,119,3	script	等候室#rogue10	828,{
+OnEnable:
+	enablenpc "等候室#rogue10";
+	enablewaitingroomevent "等候室#rogue10";
+	end;
+
+OnInit:
+	waitingroom "訓練場",10,"等候室#rogue10::OnStartArena",1;
+	enablewaitingroomevent "等候室#rogue10";
+	end;
+
+OnStartArena:
+	warpwaitingpc "prt_are01",150,150;
+	disablewaitingroomevent "等候室#rogue10";
+	end;
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= 1.0 for fully working skills only [Lupus]
+//= 1.1 Added more new skill quests for more classes [Lupus]
+//= Somehow eA engine doesn't let you keep learn't skill V_V'
+//= 1.2 Added to correct locations, correct NPC's, fixed
+//= some of the items required and made them into real
+//= quests. [Reddozen] 
+//= 1.3 Fixed bugs and minor typos. Optimized [Lupus]
+//= 1.3a fixed an item ID typo, thx 2Spiritual Kid
+//= 1.3b Splitted into different files [DracoRPG]
+//============================================================

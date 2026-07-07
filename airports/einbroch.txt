@@ -1,0 +1,109 @@
+//===== rAthena Script ======================================= 
+//= Einbroch 機場服務員
+//===== By: ================================================== 
+//= L0ne_W0lf, Muad_Dib
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Einbroch 機場服務員
+//===== Additional Comments: ================================= 
+//= 1.0 First version.
+//============================================================ 
+
+airport,143,43,5	script	機場服務員#airport1a::airport1	90,{
+	mes "[機場服務員]";
+	mes "歡迎來到";
+	mes "艾因布羅克機場，";
+	mes "我們提供直達";
+	mes "尤諾、里希塔樂鎮以及毀葛";
+	mes "的航班。";
+	next;
+	if (select("搭乘飛空艇:取消") == 1) {
+		mes "[機場服務員]";
+		mes "飛空艇的搭乘費用";
+		mes "是 1,200 zeny，但如果您";
+		mes "有免費飛空艇搭乘券，";
+		mes "就可以免費搭乘。您";
+		mes "要搭乘飛空艇嗎？";
+		next;
+		if (select("是:否") == 1) {
+			if (countitem(7311) > 0) {
+				delitem 7311,1; //Free_Flying_Ship_Ticket
+				warp "airport",148,51;
+				end;
+			}
+			if (Zeny >= 1200) {
+				set Zeny, Zeny - 1200;
+				warp "airport",148,51;
+				end;
+			}
+			mes "[機場服務員]";
+			mes "很抱歉，您沒有";
+			mes "免費飛空艇搭乘券，";
+			mes "且身上沒有足夠的";
+			mes "zeny 來搭乘飛空艇。";
+			mes "請記住，搭乘費用是 1,200 zeny。";
+			close;
+		}
+	}
+	mes "[機場服務員]";
+	mes "謝謝您，";
+	mes "祝您有美好的一天。";
+	close;
+}
+
+airport,158,43,5	duplicate(airport1)	機場服務員#airport1b	90
+airport,126,43,5	duplicate(airport1)	機場服務員#airport1c	90
+
+airport,143,49,3	script	入境服務員#airport2a::airport2	90,{
+	mes "[入境服務員]";
+	mes "歡迎來到艾因布羅克機場。";
+	mes "如果您是剛下飛機的旅客，";
+	mes "請讓我引導您前往";
+	mes "主航廈。否則，請搭乘飛空艇前往";
+	mes "尤諾、里希塔樂鎮及毀葛。";
+	next;
+	if (select("前往主航廈。:取消。") == 1) {
+		mes "[入境服務員]";
+		mes "一旦您進入主航廈，若要再次搭乘";
+		mes "飛空艇就必須重新支付費用。";
+		mes "只有當艾因布羅克";
+		mes "是您的目的地時，您才應該離開。";
+		mes "要前往主航廈嗎？";
+		next;
+		if (select("是:否") == 1) {
+			warp "airport",142,40;
+			end;
+		}
+	}
+	mes "[入境服務員]";
+	mes "好的，感謝您";
+	mes "的惠顧，";
+	mes "希望您有一趟";
+	mes "愉快的飛行?";
+	close;
+}
+
+airport,126,51,3	duplicate(airport2)	入境服務員#airport2b	90
+airport,158,50,3	duplicate(airport2)	入境服務員#airport2c	90
+
+einbroch,94,267,3	script	飛艇服務員#ein01	91,{
+	mes "[飛艇服務員]";
+	mes "歡迎來到";
+	mes "艾因布羅克機場。";
+	mes "請使用這扇門";
+	mes "搭乘會停靠在秀發茲發德共和國的";
+	mes "尤諾、里希塔樂鎮及毀葛";
+	mes "的飛空艇。";
+	next;
+	mes "[飛艇服務員]";
+	mes "另外，如果您的目的地";
+	mes "是艾因布羅克，";
+	mes "請下樓並";
+	mes "請入境服務員帶領您";
+	mes "前往主航廈。謝謝";
+	mes "您，祝您旅途愉快。";
+	close;
+}

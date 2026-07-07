@@ -1,0 +1,356 @@
+//===== rAthena Script =======================================
+//= BattleGround System - Tierra Gorge Entrance NPCs
+//===== Description: =========================================
+//= [Official Conversion]
+//= Tierra Gorge Battleground Entrance NPCs
+//===== Additional Comments: =================================
+//= 1.0 First Version. [L0ne_W0lf]
+//= 1.1 Fixed silly copy paste errors. (bugreport:4401)
+//= 1.2 Added battle_config checks to allow this script to use the new queue interface or the previous method. [Aleos]
+//============================================================
+
+// First 吉歐軍官s - Guillaume
+//============================================================
+bat_room,124,178,5	script	提耶拉峽谷 軍官#01a	418,{
+	if (getbattleflag("feature.bgqueue"))
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 你目前攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請稍後再試 -";
+		mes "- 等你減輕一些負重再來吧。 -";
+		close;
+	}
+	mes "[吉歐軍官]";
+	mes "讓那些發臭的克羅伊軍見識一下我們吉歐軍的實力！";
+	next;
+	switch(select("我想加入你們的軍隊！:結束對話。")) {
+	case 1:
+		if ((BaseJob == Job_Novice) || (BaseJob == Job_Super_Novice)) {
+			mes "[吉歐軍官]";
+			mes "我很高興你想加入我們對抗克羅伊軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+		}
+		else {
+			if (BaseLevel < 80) {
+				mes "[吉歐軍官]";
+				mes "我很高興你想加入我們對抗克羅伊軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+			}
+			else {
+				set .@chk_urtime,checkquest(2069,PLAYTIME);
+				if ((.@chk_urtime == 0)|| (.@chk_urtime == 1)) {
+					mes "[吉歐軍官]";
+					mes "你看起來剛從戰場上回來。";
+					mes "現在回去還太早了。去休息一下，把敵人交給我們吧！";
+				}
+				else {
+					if (.@chk_urtime == 2)
+						erasequest 2069;
+					set .@mapcount,getmapusers("bat_a01");
+					if (.@mapcount > 0) {
+						mes "[吉歐軍官]";
+						mes "我收到報告，已經有一支精銳部隊被派往戰場與克羅伊軍交戰了。";
+						mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+					}
+					else {
+						if ($@TierraBG1) {
+							mes "[吉歐軍官]";
+							mes "一支精銳部隊已經在待命，準備派往戰場了。";
+							mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+						}
+						else {
+							mes "[吉歐軍官]";
+							mes "看來你已經完全準備好戰鬥了！";
+							mes "去讓克羅伊軍明白什麼是真正的恐懼吧！";
+							mes "今天，我們勝利的歡呼聲將響徹整個戰場！";
+							close2;
+							warp "bat_room",57,223;
+							end;
+						}
+					}
+				}
+			}
+		}
+		break;
+	case 2:
+		mes "[吉歐軍官]";
+		mes "今天，我們必將獲勝！";
+		break;
+	}
+	close;
+}
+
+bat_room,140,178,5	script	吉歐軍官#02a	418,{
+	if (getbattleflag("feature.bgqueue"))
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 你目前攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請稍後再試 -";
+		mes "- 等你減輕一些負重再來吧。 -";
+		close;
+	}
+	mes "[吉歐軍官]";
+	mes "讓那些發臭的克羅伊軍見識一下我們吉歐軍的實力！";
+	next;
+	switch(select("我想加入你們的軍隊！:結束對話。")) {
+	case 1:
+		if ((BaseJob == Job_Novice) || (BaseJob == Job_Super_Novice)) {
+			mes "[吉歐軍官]";
+			mes "我很高興你想加入我們對抗克羅伊軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+		}
+		else {
+			if (BaseLevel < 80) {
+				mes "[吉歐軍官]";
+				mes "我很高興你想加入我們對抗克羅伊軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+			}
+			else {
+				set .@chk_urtime,checkquest(2069,PLAYTIME);
+				if (.@chk_urtime == 1) {
+					mes "[吉歐軍官]";
+					mes "你看起來剛從戰場上回來。";
+					mes "現在回去還太早了。去休息一下，把敵人交給我們吧！";
+				}
+				else {
+					if (.@chk_urtime == 2)
+						erasequest 2069;
+					set .@mapcount,getmapusers("bat_a02");
+					if (.@mapcount > 0) {
+						mes "[吉歐軍官]";
+						mes "我收到報告，已經有一支精銳部隊被派往戰場與克羅伊軍交戰了。";
+						mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+					}
+					else {
+						if ($@TierraBG2) {
+							mes "[吉歐軍官]";
+							mes "一支精銳部隊已經在待命，準備派往戰場了。";
+							mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+						}
+						else {
+							mes "[吉歐軍官]";
+							mes "看來你已經完全準備好戰鬥了！";
+							mes "去讓克羅伊軍明白什麼是真正的恐懼吧！";
+							mes "今天，我們勝利的歡呼聲將響徹整個戰場！";
+							close2;
+							warp "bat_room",114,223;
+							end;
+						}
+					}
+				}
+			}
+		}
+		break;
+	case 2:
+		mes "[吉歐軍官]";
+		mes "今天，我們必將獲勝！";
+		break;
+	}
+	close;
+}
+
+bat_room,127,178,5	script	吉歐騎士#1	417,{
+	mes "[吉歐騎士]";
+	mes "提耶拉峽谷由兩側陡峭的山壁組成，在 11 點鐘與 7 點鐘方向分別有吉歐軍和克羅伊軍的補給倉庫。";
+	next;
+	mes "[吉歐騎士]";
+	mes "戰鬥將從你們軍隊的船上開始，目標是推進並比敵人更快摧毀他們的補給倉庫。";
+	next;
+	mes "[吉歐騎士]";
+	mes "戰場上的醫護兵每 25 秒會復活一次士兵，讓他們能重新加入戰鬥。";
+	mes "佔領戰場中央中立旗幟的軍隊將獲得額外的復活點獎勵，這意味著他們的士兵復活次數將多於另一方，從而取得優勢。";
+	next;
+	mes "[吉歐騎士]";
+	mes "這兩個補給倉庫透過短而狹窄的路徑相連，但大門被路障封鎖了。";
+	mes "盡可能快速地思考和行動。你們軍隊的勝利仰賴你的貢獻。";
+	next;
+	mes "[吉歐騎士]";
+	if (getbattleflag("feature.bgqueue"))
+		mes "如果你準備好了，請點擊介面上的 ^0000FF戰場按鈕^000000 開始。";
+	else {
+		mes "請記住：當你加入戰鬥時，你將會獲得一個標記，這代表你在一段時間內無法再次參加同類型的戰鬥。";
+		mes "你可以按下 Alt+U 鍵來查看持續時間。";
+	}
+	next;
+	mes "[吉歐騎士]";
+	if (getbattleflag("feature.bgqueue"))
+		mes "請注意，一旦你取消報名，^0000FF在 1 分鐘內將無法再次報名^000000！";
+	else
+		mes "你準備好戰鬥了嗎？那就向我旁邊的招募官報名吧！";
+	close;
+}
+
+bat_room,143,178,5	duplicate(吉歐騎士#1)	吉歐騎士#2	417
+
+bat_room,127,121,1	script	克羅伊騎士#1	413,{
+	mes "[克羅伊騎士]";
+	mes "提耶拉峽谷由兩側陡峭的山壁組成，在 11 點鐘與 7 點鐘方向分別有吉歐軍和克羅伊軍的補給倉庫。";
+	next;
+	mes "[克羅伊騎士]";
+	mes "戰鬥將從你們軍隊的船上開始，目標是推進並比敵人更快摧毀他們的補給倉庫。";
+	next;
+	mes "[克羅伊騎士]";
+	mes "戰場上的醫護兵每 25 秒會復活一次士兵，讓他們能重新加入戰鬥。";
+	mes "佔領戰場中央中立旗幟的軍隊將獲得額外的復活點獎勵，這意味著他們的士兵復活次數將多於另一方，從而取得優勢。";
+	next;
+	mes "[克羅伊騎士]";
+	mes "這兩個補給倉庫透過短而狹窄的路徑相連，但大門被路障封鎖了。";
+	mes "盡可能快速地思考和行動。你們軍隊的勝利仰賴你的貢獻。";
+	next;
+	mes "[克羅伊騎士]";
+	if (getbattleflag("feature.bgqueue"))
+		mes "如果你準備好了，請點擊介面上的 ^0000FF戰場按鈕^000000 開始。";
+	else {
+		mes "請記住：當你加入戰鬥時，你將會獲得一個標記，這代表你在一段時間內無法再次參加同類型的戰鬥。";
+		mes "你可以按下 Alt+U 鍵來查看持續時間。";
+	}
+	next;
+	mes "[克羅伊騎士]";
+	if (getbattleflag("feature.bgqueue"))
+		mes "請注意，一旦你取消報名，^0000FF在 1 分鐘內將無法再次報名^000000！";
+	else
+		mes "你準備好戰鬥了嗎？那就向我旁邊的招募官報名吧！";
+	close;
+}
+
+bat_room,143,121,1	duplicate(克羅伊騎士#1)	克羅伊騎士#2	413
+
+// Second 吉歐軍官s - Croix
+//============================================================
+bat_room,125,121,1	script	吉歐軍官#01b	414,{
+	if (getbattleflag("feature.bgqueue"))
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 你目前攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請稍後再試 -";
+		mes "- 等你減輕一些負重再來吧。 -";
+		close;
+	}
+	mes "[克羅伊軍官]";
+	mes "讓那些發臭的吉歐軍見識一下我們克羅伊軍的實力！";
+	next;
+	switch(select("我想加入你們的軍隊！:結束對話。")) {
+	case 1:
+		if ((BaseJob == Job_Novice) || (BaseJob == Job_Super_Novice)) {
+			mes "[克羅伊軍官]";
+			mes "我很高興你想加入我們對抗吉歐軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+		}
+		else {
+			if (BaseLevel < 80) {
+				mes "[克羅伊軍官]";
+				mes "我很高興你想加入我們對抗吉歐軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+			}
+			else {
+				set .@chk_urtime,checkquest(2069,PLAYTIME);
+				if ((.@chk_urtime == 0)|| (.@chk_urtime == 1)) {
+					mes "[克羅伊軍官]";
+					mes "你看起來剛從戰場上回來。";
+					mes "現在回去還太早了。去休息一下，把敵人交給我們吧！";
+				}
+				else {
+					if (.@chk_urtime == 2)
+						erasequest 2069;
+					set .@mapcount,getmapusers("bat_a02");
+					if (.@mapcount > 0) {
+						mes "[克羅伊軍官]";
+						mes "我收到報告，已經有一支精銳部隊被派往戰場與吉歐軍交戰了。";
+						mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+					}
+					else {
+						if ($@TierraBG1) {
+							mes "[克羅伊軍官]";
+							mes "一支精銳部隊已經在待命，準備派往戰場了。";
+							mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+						}
+						else {
+							mes "[克羅伊軍官]";
+							mes "看來你已經完全準備好戰鬥了！";
+							mes "去讓吉歐軍明白什麼是真正的恐懼吧！";
+							mes "今天，我們勝利的歡呼聲將響徹整個戰場！";
+							close2;
+							warp "bat_room",57,207;
+							end;
+						}
+					}
+				}
+			}
+		}
+		break;
+	case 2:
+		mes "[克羅伊軍官]";
+		mes "今天，我們必將獲勝！";
+		break;
+	}
+	close;
+}
+
+bat_room,140,121,1	script	吉歐軍官#02b	414,{
+	if (getbattleflag("feature.bgqueue"))
+		end;
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！！ -";
+		mes "- 你目前攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請稍後再試 -";
+		mes "- 等你減輕一些負重再來吧。 -";
+		close;
+	}
+	mes "[克羅伊軍官]";
+	mes "讓那些發臭的吉歐軍見識一下我們克羅伊軍的實力！";
+	next;
+	switch(select("我想加入你們的軍隊！:結束對話。")) {
+	case 1:
+		if ((BaseJob == Job_Novice) || (BaseJob == Job_Super_Novice)) {
+			mes "[克羅伊軍官]";
+			mes "我很高興你想加入我們對抗吉歐軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+		}
+		else {
+			if (BaseLevel < 80) {
+				mes "[克羅伊軍官]";
+				mes "我很高興你想加入我們對抗吉歐軍，但很抱歉：我不能把你這樣的菜鳥送到殘酷的戰場上去送死。";
+			}
+			else {
+				set .@chk_urtime,checkquest(2069,PLAYTIME);
+				if (.@chk_urtime == 1) {
+					mes "[克羅伊軍官]";
+					mes "你看起來剛從戰場上回來。";
+					mes "現在回去還太早了。去休息一下，把敵人交給我們吧！";
+				}
+				else {
+					if (.@chk_urtime == 2)
+						erasequest 2069;
+					set .@mapcount,getmapusers("bat_a02");
+					if (.@mapcount > 0) {
+						mes "[克羅伊軍官]";
+						mes "我收到報告，已經有一支精銳部隊被派往戰場與吉歐軍交戰了。";
+						mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+					}
+					else {
+						if ($@TierraBG2) {
+							mes "[克羅伊軍官]";
+							mes "一支精銳部隊已經在待命，準備派往戰場了。";
+							mes "你為什麼不先等一會兒呢？我建議你趁這段時間磨礪武器並準備好補給品。";
+						}
+						else {
+							mes "[克羅伊軍官]";
+							mes "看來你已經完全準備好戰鬥了！";
+							mes "去讓吉歐軍明白什麼是真正的恐懼吧！";
+							mes "今天，我們勝利的歡呼聲將響徹整個戰場！";
+							close2;
+							warp "bat_room",114,207;
+							end;
+						}
+					}
+				}
+			}
+		}
+		break;
+	case 2:
+		mes "[克羅伊軍官]";
+		mes "今天，我們必將獲勝！";
+		break;
+	}
+	close;
+}

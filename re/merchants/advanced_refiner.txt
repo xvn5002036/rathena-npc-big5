@@ -1,0 +1,222 @@
+//===== rAthena Script =======================================
+//= Advanced Refiner
+//===== Description: =========================================
+//= [Official Conversion]
+//= Refiner that uses Enriched ores to increase upgrade success.
+//===== Changelog: ===========================================
+//= 1.0 Added Malangdo Refiner "Holink". [Euphy]
+//= 1.1 Removed re-roll behavior. [Secret]
+//= 1.2 Added db-based material ID [Secret]
+//============================================================
+
+// Main NPC :: mal_jerun
+//============================================================
+malangdo,221,174,6	script	忽林克#mal_cash	559,{
+	disable_items;
+	mes "[忽林克]";
+	mes "喵~ 我是鐵匠忽林克~";
+	mes "精鍊大師，忽林克~";
+	mes "我是曾向夢羅克的鐵匠學習過的一隻特別的貓，忽林克~";
+	mes "我的女兒為我感到驕傲，忽林克~";
+	mes "忽林克~ 今天要精鍊什麼呢？";
+	next;
+	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+	for (set .@i,1; .@i<=10; set .@i,.@i+1)
+		set .@menu$, .@menu$ + ( getequipisequiped(.@indices[.@i]) ? getequipname(.@indices[.@i]) : F_getpositionname(.@indices[.@i]) +"-[空]" ) +":";
+	set .@part, .@indices[ select(.@menu$) ];
+
+	if (!getequipisequiped(.@part)) {
+		mes "[忽林克]";
+		switch(.@part) {
+		case EQI_HEAD_TOP:
+			mes "我的師父阿拉岡說過喵~";
+			mes "愚蠢是無藥可醫的...";
+			break;
+		case EQI_ARMOR:
+			mes "這裡沒什麼好看的，喵！！";
+			break;
+		case EQI_HAND_L:
+			mes "喵？你想讓我用這隻左手做什麼...？";
+			break;
+		case EQI_HAND_R:
+			mes "喵？你想讓我用這隻右手做什麼...？";
+			break;
+		case EQI_GARMENT:
+			mes "喵？你什麼都沒穿啊。";
+			break;
+		case EQI_SHOES:
+			mes "鏘?！不要搞亂我敏感的嗅覺啦，喵~。";
+			break;
+		case EQI_ACC_L:
+		case EQI_ACC_R:
+			mes "喵？裝飾品在哪裡？";
+			break;
+		case EQI_HEAD_MID:
+		case EQI_HEAD_LOW:
+			mes "喵？你在說頭部的其他部位嗎，喵？~";
+			break;
+		}
+		close;
+	}
+	if (!getequipisenableref(.@part)) {
+		mes "[忽林克]";
+		mes "這種東西連阿拉岡師父都無法精鍊，喵。";
+		close;
+	}
+	if (getequiprefinerycnt(.@part) >= 10) {
+		mes "[忽林克]";
+		mes "喵~ 完美的精鍊。這是阿拉岡師父做的嗎，喵？~";
+		close;
+	}
+	mes "[忽林克]";
+	.@refineitemid = getequipid(.@part);
+	// save id of the item
+	.@itemtype = getiteminfo( .@refineitemid, ITEMINFO_TYPE );
+	.@refinerycnt = getequiprefinerycnt(.@part);
+	//save refinery count
+	setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+// Holink has different hardcoded prices
+//	.@price = getequiprefinecost(.@part, REFINE_COST_NORMAL, REFINE_ZENY_COST);
+	.@material = getequiprefinecost(.@part, REFINE_COST_NORMAL, REFINE_MATERIAL_ID);
+
+	if( .@itemtype == IT_ARMOR ){
+		.@equip_lv = getequiparmorlv( .@part );
+		.@type$ = "防具";
+		mes "你選擇了防具，喵~";
+
+		switch(.@equip_lv) {
+			case 1:
+				.@price = 15000;
+				break;
+			default:
+				// TODO:
+				close;
+		}
+	}else if( .@itemtype == IT_WEAPON ){
+		.@equip_lv = getequipweaponlv( .@part );
+		.@type$ = "武器";
+		switch( .@equip_lv ){
+			case 1: // Level 1 Weapon
+				.@price = 500;
+				mes "1級武器...？";
+				break;
+			case 2: // Level 2 Weapon
+				.@price = 2000;
+				mes "喵，2級武器...？";
+				break;
+			case 3: // Level 3 Weapon
+				.@price = 20000;
+				mes "喵喵~~ 3級武器~~";
+				break;
+			case 4: // Level 4 Weapon
+				.@price = 50000;
+				mes "喵-喵！... 4級武器...！";
+				mes "我在跟隨阿拉岡師父學習時";
+				mes "也只見過兩次... 喵-喵！！";
+				break;
+			default:
+				// TODO:
+				close;
+		}
+	}else{
+		// TODO:
+		close;
+	}
+
+	mes "精鍊需要 ^ff9999"+getitemname(.@material)+"^000000 和 ^ff9999"+.@price+"^000000 Zeny，喵~";
+	mes "要繼續嗎，喵？~";
+	next;
+	if(select("是的！！:不了！！") == 2) {
+		mes "[忽林克]";
+		mes "喀啊！！";
+		mes "你不相信精鍊大師忽林克嗎，喵？~";
+		close;
+	}
+	if (getequippercentrefinery(.@part, true) < 100) {
+		mes "[忽林克]";
+		mes "喵！！";
+		if (.@type$ == "防具")
+			mes "這個防具已經精鍊過很多次了，喵。";
+		else {
+			mes "危險。危險~";
+			mes "這把武器已經精鍊過很多次了，喵~";
+			next;
+			mes "[忽林克]";
+		}
+		mes "如果繼續嘗試精鍊，";
+		mes "它可能會損壞，喵。";
+		next;
+		mes "[忽林克]";
+		mes "一旦這個"+.@type$+"損壞了，你將";
+		mes "永遠無法再使用它了，喵。更不用說... 所有目前的";
+		mes "^ff0000卡片和附魔都肯定會消失^000000。";
+		mes "你還要嘗試嗎，喵~？";
+		next;
+		if(select("是的，我要！！:還是算了！！") == 2) {
+			mes "[忽林克]";
+			mes "喵！明智的選擇，喵。";
+			mes "但是！！";
+			mes "我不喜歡看到你懷疑精鍊大師忽林克，喵~";
+			close;
+		}
+	}
+	if (countitem(.@material) == 0 || Zeny < .@price) {
+		mes "[忽林克]";
+		mes "你沒有足夠的材料。";
+		mes "你需要 ^ff9999"+getitemname(.@material)+"^000000 和 ^ff9999"+.@price+"^000000 Zeny，喵~";
+		mes "快去準備吧，喵~";
+		close;
+	}
+	delitem .@material,1;
+	set Zeny, Zeny-.@price;
+	// anti-hack
+	if (callfunc("F_IsEquipIDHack", .@part, .@refineitemid) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) ||
+		callfunc("F_IsEquipRefineHack", .@part, .@refinerycnt)) {
+		mes "[忽林克]";
+		emotion ET_FRET;
+		mes "等一下...";
+		mes "你以為我傻嗎？！";
+		mes "你趁我不注意的時候把裝備掉包了！給我滾出去！";
+		close;
+	}
+
+	if (getequippercentrefinery(.@part, true) > rand(100)) {
+		successrefitem .@part;
+		mes "[忽林克]";
+		mes "喵~ 喵~ 喵！精鍊真好玩~";
+		next;
+		emotion ET_CHUP;
+		mes "[忽林克]";
+		mes "完美！！完美，喵！！";
+		mes "我是精鍊巫師阿拉岡的弟子~";
+		mes "忽林克！！";
+		mes "又是成功精鍊的一天，喵！！";
+		close;
+	}
+	failedrefitem .@part;
+	mes "[忽林克]";
+	mes "喵~ 喵~ 喀啊！！";
+	next;
+	switch(rand(1,5)) {
+		case 1: emotion ET_CRY; break;
+		case 2: emotion ET_PROFUSELY_SWEAT; break;
+		case 3: emotion ET_KEK; break;
+		case 4: emotion ET_SCRATCH;
+		break;
+		case 5: emotion ET_BIGTHROB; break;
+	}
+	mes "[忽林克]";
+	mes "喵！！啊啊啊啊~~！！！！";
+	mes "喀啊！！我失敗了，喵！！";
+	next;
+	mes "[忽林克]";
+	mes "......";
+	mes "......";
+	mes "全部~ 一切都~ 碎掉了，喵...";
+	next;
+	mes "[忽林克]";
+	mes "喵.... 阿拉岡師父曾說過，";
+	mes "要從失敗中學習...";
+	mes "人類，這一次的失敗將成為你未來成功的開端。";
+	close;
+}

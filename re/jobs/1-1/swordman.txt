@@ -1,0 +1,126 @@
+//===== rAthena Script ======================================= 
+//= Renewal Swordman Job Quest
+//===== By: ================================================== 
+//= Kisuka
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Job Change to Swordman Class
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. [Kisuka]
+//= 1.1 Added support for Baby classes. [Euphy]
+//============================================================ 
+izlude_in,74,172,4	script	劍士#swd	119,{
+	if (Upper == 1) {
+		if (Class == Job_Novice_High && (ADVJOB == Job_Lord_Knight || ADVJOB == Job_Paladin)) {
+			mes "[劍士]";
+			mes "這...";
+			mes "不可能...";
+			mes "你已經重生了，對吧？";
+			next;
+			mes "[劍士]";
+			mes "看來你再次踏上了劍士的道路！一旦你習慣了揮舞劍，就再也回不去了！！";
+			next;
+			if (!callfunc("F_CanChangeJob")) {
+				mes "[劍士]";
+				mes "嗯？啊，在準備好成為劍士之前，你必須先精通基本技能。";
+				next;
+				mes "[劍士]";
+				mes "當你完成學習初心者基本技能後，再來找我。";
+				close;
+			}
+			mes "[劍士]";
+			mes "太棒了！讓我立刻為你轉職成劍士！";
+			next;
+			skill "NV_TRICKDEAD",0,SKILL_PERM;
+			jobchange Job_Swordman_High;
+			skill "SM_MOVINGRECOVERY",1,SKILL_PERM;
+			skill "SM_FATALBLOW",1,SKILL_PERM;
+			skill "SM_AUTOBERSERK",1,SKILL_PERM;
+			mes "[劍士]";
+			mes "嗯... 你看起來像是一位經驗豐富的劍士。不過，我確信你必須繼續訓練以提升技能並增強力量！";
+			close;
+		}else{
+			mes "[劍士]";
+			mes "嗯...？";
+			mes "你是一位重生的";
+			mes "戰士，不是嗎？";
+			next;
+			mes "[劍士]";
+			mes "嗯...";
+			mes "看來成為";
+			mes "一名劍士並不是你";
+			mes "命運的一部分。我很抱歉，";
+			mes "但看來我";
+			mes "無能為力。";
+			close;
+		}
+	}
+	mes "[劍士公會關係者]";
+	mes "這裡是劍士公會。";
+	mes "你為什麼來這裡？";
+	next;
+	switch(select("請告訴我關於劍士的事。:我想成為劍士。:沒事。")) {
+	case 1:
+		mes "[劍士公會關係者]";
+		mes "所以你想多了解強大的劍士？好的！";
+		next;
+		mes "[劍士公會關係者]";
+		mes "劍士最顯著的特點是能夠在近戰中展現他們真正的實力。";
+		mes "有三個原因！";
+		next;
+		mes "[劍士公會關係者]";
+		mes "第一，劍士的 HP 比其他職業高。";
+		mes "第二，除了弓和杖之外，劍士可以使用所有其他武器，因此他們能發揮最佳的戰鬥能力。";
+		mes "第三，劍士的大部分技能都能提供強大的物理攻擊。";
+		next;
+		mes "[劍士公會關係者]";
+		mes "雖然我只做了簡單的說明，但我相信你已經了解成為一名劍士的核心意義。";
+		mes "在我看來，劍士是史上最棒的職業！";
+		close;
+	case 2:
+		mes "[劍士公會關係者]";
+		if(BaseJob != Job_Novice) {
+			if(BaseJob == Job_Swordman) {
+				mes "你已經是一名優秀的劍士了，不是嗎？";
+				mes "只要致力於成為一名偉大的劍士就好了。";
+			}else{
+				mes "你已經有了其他的職業，不是嗎？";
+				mes "你這個玩笑開得太過火了。";
+			}
+			close;
+		}else{
+			if (!callfunc("F_CanChangeJob")) {
+				mes "很抱歉告訴你，但要成為劍士，你的職業等級必須至少達到 ^4A4AFF職業等級 10^000000。";
+				mes "並且 ^4A4AFF基本技能等級 9^000000。";
+				next;
+				mes "[劍士公會關係者]";
+				mes "想在沒有達到最低要求的情況下成為劍士嗎？";
+				mes "你以為當劍士那麼容易嗎？";
+				close;
+			}
+			mes "嗯，你的職業等級和基本技能等級都符合要求。";
+			mes "很好。你想立刻成為劍士嗎？";
+			next;
+			if(select("是的，我想。:我再考慮一下。") == 2) {
+				mes "[劍士公會關係者]";
+				mes "嗯。選擇職業需要謹慎的決定。";
+				mes "但我感到很遺憾... 你在克服了所有困難之後卻還要再考慮一下....";
+				close;
+			}
+			mes "[劍士公會關係者]";
+			mes "恭喜！從現在開始，你將過著劍士的生活！";
+			mes "我們現在就開始吧！";
+			next;
+			mes "[劍士公會關係者]";
+			mes "再次恭喜你成為劍士，希望你能參與許多活動，為我們公會的復興盡一份心力。";
+			callfunc "Job_Change",Job_Swordman;
+			getitem 13415,1; // N_Falchion
+			close;
+		}
+	case 3:
+		close;
+	}
+}

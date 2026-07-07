@@ -1,0 +1,899 @@
+//===== rAthena Script ======================================= 
+//= Orc's Memory
+//===== By: ================================================== 
+//= L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.7
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Relive the memory of an orc.
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [L0ne_W0lf]
+//= 1.1 First round of bugfixes. (bugreport:3928) [L0ne_W0lf]
+//=     Fixed some npcs calling wrong events.
+//=     Fixed Depraved Orc Spirit spawn point
+//=     Fixed an NPC that was never being enabled.
+//= 1.1a Second round from bugreport. (bugreport:3928) [L0ne_W0lf]
+//=     Fixed first warp never enabling, issue not seen
+//=     because of a local source mod.
+//=     Corrected the IDs for the Vengeful Orc Spirit and
+//=     Shaman Cargalache, copy/paste fail.
+//=     Changed spawn point for dungeon according to spawn
+//=     point on iRO.
+//= 1.2 More bugfixes, mostly typos. :O (bugreport:3944) [L0ne_W0lf]
+//=     Fixed some varaibles (types/values) as well.
+//= 1.3 Disabled an exploit related to the orc hero spawn. [L0ne_W0lf]
+//=     Corrected the variable type for party leader name.
+//= 1.4 Fixed donpcevent calling non-existant npc. (bugreport:4039) [L0ne_W0lf]
+//= 1.5 Fixed a checkquest condition never setting quest. [L0ne_W0lf]
+//= 1.6 Added 'instance_check_party' command to the script for proper checking if
+//=     the invoking party meets the requirements to join the Memorial Dungeon.
+//= 1.7 Instance system rewrite. [Euphy]
+//============================================================ 
+
+// Entrance
+//============================================================
+gef_fild10,242,202,0	script	次元峽谷的碎片	406,{
+
+	set .@party_id,getcharid(1);
+	set .@md_name$,"獸人的記憶";
+	if (!instance_check_party(.@party_id,2,30,80)) {
+		mes "只有等級在 ^ff000030 ~ 80^000000 之間的玩家才能進入這個副本。";
+		close;
+	}
+
+	set .@orctime,checkquest(12059,PLAYTIME);
+	if (.@orctime == -1) {
+		if (is_party_leader() == true) {
+			mes "隊伍狀態已確認。你想預約進入「"+.@md_name$+"」嗎？";
+			next;
+			switch(select("預約「"+.@md_name$+"」:進入副本:取消")) {
+			case 1:
+				if (instance_create(.@md_name$) < 0) {
+					mes "隊伍名稱: "+ getpartyname(.@party_id);
+					mes "隊長: "+strcharinfo(0);
+					mes "^0000ff"+.@md_name$+" ^000000 - 預約失敗。";
+					close;
+				}
+				mes "^0000ff"+.@md_name$+"^000000- 正在嘗試預約進入";
+				mes "預約成功後，若要進入「"+.@md_name$+"」，請從選單中選擇「進入副本」。";
+				close;
+			case 2:
+				callsub L_Enter,0;
+			case 3:
+				close;
+			}
+		}
+		if(select(.@md_name$ + " 進入紀念副本:取消") == 2)
+			end;
+		callsub L_Enter,1;
+	} else if (.@orctime == 0 || .@orctime == 1) {
+		mes "如果副本已經建立，你就可以進入了。";
+		next;
+		if(select("進入副本「"+.@md_name$+"」:取消") == 2)
+			close;
+		callsub L_Enter,0;
+	} else if (.@orctime == 2) {
+		mes "^0000ff所有與獸人的記憶副本相關的紀錄和影響已刪除。你現在可以重新建立或進入副本了。^000000";
+		erasequest 12059;
+		close;
+	}
+	mes "為了建立副本，你必須是隊長，並且隊伍中至少有2名成員。";
+	close;
+L_Enter:
+	switch(instance_enter("Orc's Memory")) {
+	case IE_OTHER:
+		mes "發生了未知的錯誤。";
+		close;
+	case IE_NOINSTANCE:
+		mes "紀念副本「獸人的記憶」不存在。";
+		mes "紀念副本已被隊長銷毀，或是時間已到。請在2小時後再試一次。";
+		close;
+	case IE_NOMEMBER:
+		mes "只有隊伍成員才能進入紀念副本。";
+		close;
+	case IE_OK:
+		mapannounce "gef_fild10", getpartyname( getcharid(1) ) +" 隊伍的成員 "+strcharinfo(0)+" 已經進入了獸人的記憶。",bc_map,"0x00ff99";
+		if (checkquest(12059) == -1) setquest 12059;
+		//warp "1@orcs",179,15;
+		if (getarg(0) == 0) close;
+		else end;
+	}
+
+}
+
+gef_fild10,238,202,6	script	瘋狂科學家#orc	865,{
+	if (BaseLevel < 50) {
+		mes "瘋狂科學家似乎沒有注意到你，只是不斷地喃喃自語...";
+		close;
+	}
+	if (mad == 0) {
+		mes "[瘋狂科學家]";
+		mes "哈哈，沒有獸人敢靠近我！";
+		mes "次元峽谷的力量是無敵的！！";
+		next;
+		switch(select("獸人不攻擊你？:你想得美！")) {
+		case 1:
+			mes "[瘋狂科學家]";
+			mes "是啊，是啊... 我知道這很難讓人相信。我不怪你。";
+			mes "我以前在研究夢羅克附近發現的次元峽谷。";
+			mes "根據我的研究，那裡發現的礦石內部蘊藏著巨大的力量！";
+			next;
+			break;
+		case 2:
+			mes "[瘋狂科學家]";
+			mes "你這個人很多疑呢，對吧？";
+			next;
+			break;
+		}
+		select("哦？像是什麼，穿越到異空間嗎？");
+		mes "[瘋狂科學家]";
+		mes "非常聰明！我其實剛剛才做到！看到那邊的雕像了嗎？那可不是普通的巨石！";
+		next;
+		mes "[瘋狂科學家]";
+		mes "我是結合了我們的科技，以及我從峽谷發現的無限能量創造出它的！想試試看嗎？";
+		next;
+		select("...嗯，那聽起來不太合法吧？");
+		mes "[瘋狂科學家]";
+		mes "嘿，這麼有趣的事情什麼時候必須合法了！？如何！你可以跟獸人說話！來吧！";
+		next;
+		mes "[瘋狂科學家]";
+		mes "他們看到你很可能會給你一堆指示，你就隨機應變吧！他們總是說著同樣的話，我都能背下來了！";
+		next;
+		switch(select("好吧... 我該怎麼做？:嗯，還是算了。")) {
+		case 1:
+			mes "[瘋狂科學家]";
+			mes "非常好！只要坐在這座雕像的手上！進去後試著表現得自然一點！";
+			set mad,1;
+			close;
+		case 2:
+			mes "[瘋狂科學家]";
+			mes "哦好吧，隨你便！";
+			close;
+		}
+	} else if (mad == 1) {
+		mes "[瘋狂科學家]";
+		mes "嗯？如果你想體驗穿越次元，就把手放在那座莫內姆雕像上！";
+		close;
+	} else {
+		set mad,1;
+		end;
+	}
+}
+
+// Orc's Memory Floor 1
+//============================================================
+1@orcs,180,30,0	script	#Resurrect Monsters1	844,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("#Resurrect Monsters1");
+	end;
+
+OnDisable:
+	stopnpctimer;
+	killmonster instance_mapname("1@orcs"),instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("#Resurrect Monsters1");
+	monster instance_mapname("1@orcs"),0,0,"獸人戰士",1023,30,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .@map$, instance_mapname("1@orcs");
+	set .@mob_dead_num, 30 - mobcount(.@map$,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead");
+	if (.@mob_dead_num > 0) {
+		set .@mob_ran,rand(1,30);
+		if (.@mob_ran > 29) {
+			monster .@map$,0,0,"獸人戰士",1023,.@mob_dead_num,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+		}
+		else if ((.@mob_ran > 28) && (.@mob_ran < 30)) {
+			monster .@map$,0,0,"獸人猛將",1213,.@mob_dead_num,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+			if (rand(1,10) == 9) {
+				mapannounce .@map$, "獸人猛將: 我們需要更多防禦！叫更多人過來！",bc_map,"0xff4444";
+			}
+		}
+		else if ((.@mob_ran > 26) && (.@mob_ran < 29)) {
+			areamonster .@map$,41,91,51,81,"獸人猛將",1213,.@mob_dead_num,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+			if (rand(1,10) == 9) {
+				mapannounce .@map$, "獸人猛將在哪裡！？讓他們去阻止敵人！",bc_map,"0xff4444";
+			}
+		}
+		else {
+			areamonster .@map$,17,187,27,177,"獸人猛將",1213,.@mob_dead_num,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+			if (rand(1,5) == 3) {
+				mapannounce .@map$, "警告: 軍隊開始在 4 號區域集結了。",bc_map,"0x77ff77";
+			}
+			if (rand(1,100) == 50) {
+				initnpctimer;
+			}
+		}
+	}
+	end;
+
+OnTimer10:
+	mapannounce instance_mapname("1@orcs"), "守衛隊長大喊: 看來這會比預期的要花更長的時間。召喚鐘乳巨石怪！",bc_map,"0xff4444";
+	end;
+
+OnTimer4010:
+	set .@map$, instance_mapname("1@orcs");
+	mapannounce .@map$, "鐘乳巨石怪正從深層地底鑽出來。",bc_map,"0x77ff77";
+	areamonster .@map$,17,187,27,177,"鐘乳巨石怪",1278,20,instance_npcname("#Resurrect Monsters1")+"::OnMyMobDead";
+	stopnpctimer;
+	end;
+}
+
+1@orcs,180,30,0	script	#Resurrect Monsters2	844,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("#Resurrect Monsters2");
+	end;
+
+OnDisable:
+	killmonster instance_mapname("1@orcs"),instance_npcname("#Resurrect Monsters2")+"::OnMyMobDead";
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("#Resurrect Monsters2");
+	monster instance_mapname("1@orcs"),0,0,"受訓的狼",1106,15,instance_npcname("#Resurrect Monsters2")+"::OnMyMobDead";
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@orcs");
+	set .@mob_dead_num, 15 - mobcount(.@map$,instance_npcname("#Resurrect Monsters2")+"::OnMyMobDead");
+	if (rand(1,30) > 15) {
+		if (.@mob_dead_num > 0) {
+			monster .@map$,0,0,"受訓的狼",1106,.@mob_dead_num,instance_npcname("#Resurrect Monsters2")+"::OnMyMobDead";
+		}
+	}
+	else {
+		if (.@mob_dead_num > 0) {
+			areamonster .@map$,17,187,27,177,"受訓的狼",1106,.@mob_dead_num,instance_npcname("#Resurrect Monsters2")+"::OnMyMobDead";
+		}
+	}
+	end;
+}
+
+1@orcs,180,30,0	script	#Resurrect Monsters3	844,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("#Resurrect Monsters3");
+	end;
+
+OnDisable:
+	killmonster instance_mapname("1@orcs"),instance_npcname("#Resurrect Monsters3")+"::OnMyMobDead";
+	end;
+OnEnable:
+	enablenpc instance_npcname("#Resurrect Monsters3");
+	monster instance_mapname("1@orcs"),0,0,"獸人弓箭手",1189,15,instance_npcname("#Resurrect Monsters3")+"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .@map$, instance_mapname("1@orcs");
+	set .@mob_dead_num, 15 - mobcount(.@map$,instance_npcname("#Resurrect Monsters3")+"::OnMyMobDead");
+	set .@mob_ran,rand(1,30);
+	if (.@mob_ran > 29) {
+		if (.@mob_dead_num > 0) {
+			monster .@map$,0,0,"獸人弓箭手",1189,.@mob_dead_num,instance_npcname("#Resurrect Monsters3")+"::OnMyMobDead";
+		}
+	}
+	else if ((.@mob_ran > 26) && (.@mob_ran < 30)) {
+		if (.@mob_dead_num > 0) {
+			areamonster .@map$,43,155,47,159,"獸人弓箭手",1189,.@mob_dead_num,instance_npcname("#Resurrect Monsters3")+"::OnMyMobDead";
+			if (rand(1,3) == 3) {
+				mapannounce .@map$, "獸人猛將: 從後面攻擊他們！切斷他們的支援！",bc_map,"0xff4444";
+			}
+		}
+	}
+	else {
+		if (.@mob_dead_num > 0) {
+			areamonster .@map$,17,187,27,177,"獸人弓箭手",1189,.@mob_dead_num,instance_npcname("#Resurrect Monsters3")+"::OnMyMobDead";
+		}
+	}
+	end;
+}
+
+1@orcs,180,30,0	script	#Resurrect Monsters4	844,{
+	end;
+
+OnInstanceInit:
+	enablenpc instance_npcname("#Resurrect Monsters4");
+	areamonster instance_mapname("1@orcs"),98,35,178,115,"瘧蚊",1627,10,instance_npcname("#Resurrect Monsters4")+"::OnMyMobDead";
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@orcs");
+	set .@mob_dead_num, 10 - mobcount(.@map$,instance_npcname("#Resurrect Monsters4")+"::OnMyMobDead");
+	if (.@mob_dead_num > 0) {
+		monster .@map$,0,0,"瘧蚊",1627,.@mob_dead_num,instance_npcname("#Resurrect Monsters4")+"::OnMyMobDead";
+	}
+	end;
+
+OnDisable:
+	killmonster instance_mapname("1@orcs"),instance_npcname("#Resurrect Monsters4")+"::OnMyMobDead";
+	end;
+}
+
+1@orcs,180,29,4	script	克魯格#1-1	433,{
+	donpcevent instance_npcname("克魯格#1-2")+"::OnEnable";
+	end;
+}
+
+1@orcs,180,29,4	script	克魯格#1-2	433,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("克魯格#1-2");
+	end;
+
+OnEnable:
+	disablenpc instance_npcname("克魯格#1-1");
+	enablenpc instance_npcname("克魯格#1-2");
+	initnpctimer;
+	end;
+OnTimer10:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 該死... 你們怎麼這麼久！！我可沒那麼多時間！！",bc_map,"0xffff00";
+	end;
+OnTimer5710:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 我的計畫是讓同伴們打開大門，但我被獸人薩滿發現了，現在全毀了。",bc_map,"0xffff00";
+	end;
+
+OnTimer14610:
+	mapannounce instance_mapname("1@orcs"), "守衛隊長大喊: 我聞到老鼠的味道.. 派些巡邏隊去入口！！",bc_map,"0xff4444";
+	end;
+
+OnTimer20210:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 可惡.. 他們隨時都會到。好。現在聽我說。",bc_map,"0xffff00";
+	end;
+OnTimer24910:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 獸人薩滿將地下1樓分成4個區域封印了起來。每個區域都有一隻被施法的獸人，牠擁有解開下一個區域封印的力量。",bc_map,"0xffff00";
+	end;
+
+OnTimer34310:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 找出那些被施法的獸人並除掉牠們，才能前往下一個區域。",bc_map,"0xffff00";
+	end;
+OnTimer39710:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 盡量避免與被施法的獸人以外的其他獸人交戰。每次你們殺死一隻普通獸人，獸人猛將就會聚集在通往2樓的最後一條通道上。",bc_map,"0xffff00";
+	end;
+
+OnTimer49210:
+	mapannounce instance_mapname("1@orcs"), "克魯格: 最糟的情況下，通往2樓的路可能會被完全堵死。為了你們自己好，請盡可能隱蔽行動。",bc_map,"0xffff00";
+	end;
+
+OnTimer56310:
+	mapannounce instance_mapname("1@orcs"), "任務: 潛入並消滅「被施法的獸人」。避免與其他獸人交戰是進入地下2樓的最好方法。",bc_map,"0x44ffff";
+	donpcevent instance_npcname("#Resurrect Monsters1")+"::OnEnable";
+	donpcevent instance_npcname("#Resurrect Monsters2")+"::OnEnable";
+	donpcevent instance_npcname("#Resurrect Monsters3")+"::OnEnable";
+	disablenpc instance_npcname("克魯格#1-2");
+	end;
+
+OnTimer60000:
+	areamonster instance_mapname("1@orcs"),137,83,143,89,"被施法的獸人",1023,1,instance_npcname("B1 區域魔物")+"::OnMyMobDead";
+	stopnpctimer;
+	end;
+}
+
+1@orcs,168,125,0	script	B1 區域 1	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("B1 區域 1");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("B1 區域 1");
+	areamonster instance_mapname("1@orcs"),103,105,109,111,"被施法的獸人",1023,1,instance_npcname("B1 區域魔物")+"::OnMyMobDead1";
+	end;
+
+OnTouch_:
+	warp instance_mapname("1@orcs"),168,130;
+	end;
+OnContinue:
+	donpcevent instance_npcname("B1 區域 2")+"::OnEnable";
+	initnpctimer;
+	end;
+
+OnTimer10300:
+	mapannounce instance_mapname("1@orcs"), "克魯格的低語: 這裡的獸人曾經是我的同伴。自從獸人薩滿開始用她的魔法控制他們之後，他們就失去了意志。",bc_map,"0xff4499";
+	end;
+
+OnTimer18700:
+	mapannounce instance_mapname("1@orcs"), "克魯格的低語: 如果我們想拯救剩下的部落，除了打倒獸人薩滿之外別無他法。",bc_map,"0xff4499";
+	stopnpctimer;
+	end;
+}
+
+1@orcs,89,94,0	script	B1 區域 2	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("B1 區域 2");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("B1 區域 2");
+	areamonster instance_mapname("1@orcs"),32,40,38,46,"被施法的獸人",1023,1,instance_npcname("B1 區域魔物")+"::OnMyMobDead2";
+	end;
+OnTouch_:
+	warp instance_mapname("1@orcs"),85,85;
+	end;
+
+OnContinue:
+	donpcevent instance_npcname("B1 區域 3")+"::OnEnable";
+	initnpctimer;
+	end;
+
+OnTimer30300:
+	mapannounce instance_mapname("1@orcs"), "克魯格的低語: 我看到了我們部落的屍體。看來獸人薩滿把那些獸人用在了她的儀式上。",bc_map,"0xff4499";
+	end;
+
+OnTimer37600:
+	mapannounce instance_mapname("1@orcs"), "克魯格的低語: ... 這一切都跟我有關。我必須為這個邪惡負責。",bc_map,"0xff4499";
+	stopnpctimer;
+	end;
+}
+
+1@orcs,38,105,0	script	B1 區域 3	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("B1 區域 3");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("B1 區域 3");
+	areamonster instance_mapname("1@orcs"),19,177,25,183,"被施法的獸人",1023,1,instance_npcname("B1 區域魔物")+"::OnMyMobDead3";
+	end;
+
+OnTouch_:
+	warp instance_mapname("1@orcs"),38,110;
+	end;
+
+OnContinue:
+	donpcevent instance_npcname("B1 區域 4")+"::OnEnable";
+	initnpctimer;
+	end;
+
+OnTimer30300:
+	mapannounce instance_mapname("1@orcs"), "拜託，撐下去！",bc_map,"0xff4499";
+	end;
+OnTimer32700:
+	mapannounce instance_mapname("1@orcs"), "穿過這裡到達地下2樓後，我們就能休息一下了。",bc_map,"0xff4499";
+	stopnpctimer;
+	end;
+}
+
+1@orcs,21,189,0	script	B1 區域 4	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("B1 區域 4");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("B1 區域 4");
+	donpcevent instance_npcname("#Resurrect Monsters1")+"::OnDisable";
+	donpcevent instance_npcname("#Resurrect Monsters2")+"::OnDisable";
+	donpcevent instance_npcname("#Resurrect Monsters3")+"::OnDisable";
+	donpcevent instance_npcname("#Resurrect Monsters4")+"::OnDisable";
+	end;
+
+OnTouch_:
+	warp instance_mapname("2@orcs"),32,171;
+	end;
+}
+
+1@orcs,1,1,0	script	B1 區域魔物	-1,{
+	end;
+
+OnMyMobDead:
+	donpcevent instance_npcname("B1 區域 1")+"::OnEnable";
+	end;
+
+OnMyMobDead1:
+	donpcevent instance_npcname("B1 區域 1")+"::OnContinue";
+	end;
+OnMyMobDead2:
+	donpcevent instance_npcname("B1 區域 2")+"::OnContinue";
+	end;
+
+OnMyMobDead3:
+	donpcevent instance_npcname("B1 區域 3")+"::OnContinue";
+	end;
+}
+
+// Orc's Memory Floor 2
+//============================================================
+2@orcs,36,171,0	script	#2Resurrect Monsters1	844,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("#2Resurrect Monsters1");
+	end;
+OnEnable:
+	enablenpc instance_npcname("#2Resurrect Monsters1");
+	monster instance_mapname("2@orcs"),0,0,"怨靈獸人",1152,30,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+	end;
+
+OnDisable:
+	stopnpctimer;
+	killmonster instance_mapname("2@orcs"),instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .@map$, instance_mapname("2@orcs");
+	set .@mob_dead_num, 30 - mobcount(.@map$,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead");
+	if (.@mob_dead_num > 0) {
+		set .@mob_ran,rand(1,30);
+		if (.@mob_ran > 29) {
+			monster .@map$,0,0,"怨靈獸人",1152,.@mob_dead_num,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+		}
+		else if ((.@mob_ran > 28) && (.@mob_ran < 30)) {
+			monster .@map$,0,0,"獸人猛將",1213,.@mob_dead_num,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+		}
+		else if ((.@mob_ran > 26) && (.@mob_ran < 29)) {
+			areamonster .@map$,157,112,167,122,"獸人猛將",1213,.@mob_dead_num,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+			if (rand(1,10) == 9) {
+				mapannounce .@map$, "警告: 獸人猛將正在 3 號區域附近集結。",bc_map,"0xff4444";
+			}
+		}
+		else {
+			areamonster .@map$,173,13,183,23,"獸人猛將",1213,.@mob_dead_num,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+			if (rand(1,5) == 3) {
+				mapannounce .@map$, "警告: 部隊開始在薩滿祭壇集結了。",bc_map,"0x77ff77";
+			}
+			if (rand(1,70) == 50) {
+				initnpctimer;
+			}
+		}
+	}
+	end;
+
+OnTimer10:
+	mapannounce instance_mapname("2@orcs"), "不知哪來的聲音: 愚蠢... 你真的以為祭壇會就這樣倒下嗎？",bc_map,"0xff4444";
+	end;
+
+OnTimer4010:
+	set .@map$, instance_mapname("2@orcs");
+	mapannounce .@map$, "[ 死靈怨漢被未知的力量召喚了出來 ]",bc_map,"0x77ff77";
+	areamonster .@map$,167,25,177,35,"死靈怨漢",1475,30,instance_npcname("#2Resurrect Monsters1")+"::OnMyMobDead";
+	stopnpctimer;
+	end;
+}
+
+2@orcs,36,171,0	script	#2Resurrect Monsters3	844,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("#2Resurrect Monsters3");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("#2Resurrect Monsters3");
+	monster instance_mapname("2@orcs"),0,0,"獸人腐屍",1153,15,instance_npcname("#2Resurrect Monsters3")+"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .@map$, instance_mapname("2@orcs");
+	set .@mob_dead_num, 15 - mobcount(.@map$,instance_npcname("#2Resurrect Monsters3")+"::OnMyMobDead");
+	set .@mob_ran,rand(1,30);
+	if (.@mob_ran > 29) {
+		if (.@mob_dead_num > 0) {
+			monster .@map$,0,0,"獸人弓箭手",1189,.@mob_dead_num,instance_npcname("#2Resurrect Monsters3")+"::OnMyMobDead";
+		}
+	}
+	else if ((.@mob_ran > 6) && (.@mob_ran < 30)) {
+		if (.@mob_dead_num > 0) {
+			areamonster .@map$,168,10,184,26,"獸人弓箭手",1189,.@mob_dead_num,instance_npcname("#2Resurrect Monsters3")+"::OnMyMobDead";
+			if (rand(1,15) == 3) {
+				mapannounce .@map$, "警告: 獸人弓箭手部隊正在祭壇附近集結。",bc_map,"0xff4444";
+			}
+		}
+	}
+	else {
+		if (.@mob_dead_num > 0) {
+			areamonster .@map$,168,21,184,21,"獸人弓箭手",1189,.@mob_dead_num,instance_npcname("#2Resurrect Monsters3")+"::OnMyMobDead";
+		}
+	}
+	end;
+
+OnDisable:
+	killmonster instance_mapname("2@orcs"),instance_npcname("#2Resurrect Monsters3")+"::OnMyMobDead";
+	end;
+}
+
+2@orcs,180,30,0	script	#2Resurrect Monsters4	844,{
+	end;
+
+OnInstanceInit:
+	enablenpc instance_npcname("#2Resurrect Monsters4");
+	monster instance_mapname("2@orcs"),0,0,"瘧蚊",1627,10,instance_npcname("#2Resurrect Monsters4")+"::OnMyMobDead";
+	end;
+
+OnMyMobDead:
+	set .@map$, instance_mapname("2@orcs");
+	set .@mob_dead_num, 10 - mobcount(.@map$,instance_npcname("#2Resurrect Monsters4")+"::OnMyMobDead");
+	if (.@mob_dead_num > 0) {
+		monster .@map$,0,0,"瘧蚊",1627,1,instance_npcname("#2Resurrect Monsters4")+"::OnMyMobDead";
+	}
+	end;
+}
+
+2@orcs,35,169,4	script	克魯格#2-1	433,{
+	donpcevent instance_npcname("克魯格#2-2")+"::OnEnable";
+	end;
+}
+
+2@orcs,35,169,4	script	克魯格#2-2	433,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("克魯格#2-2");
+	end;
+
+OnEnable:
+	disablenpc instance_npcname("克魯格#2-1");
+	enablenpc instance_npcname("克魯格#2-2");
+	initnpctimer;
+	end;
+OnTimer10:
+	mapannounce instance_mapname("2@orcs"), "克魯格的低語: 我會告訴你們怎麼去薩滿的祭壇。",bc_map,"0xffff00";
+	end;
+OnTimer3510:
+	mapannounce instance_mapname("2@orcs"), "克魯格的低語: 看到那些照亮道路的火盆了嗎？強化它們的火焰來解開下一個區域的封印。",bc_map,"0xffff00";
+	end;
+
+OnTimer10710:
+	mapannounce instance_mapname("2@orcs"), "克魯格的低語: 當然那些魔物不會讓你們輕易碰到火盆。",bc_map,"0xffff00";
+	end;
+OnTimer16310:
+	mapannounce instance_mapname("2@orcs"), "克魯格的低語: 但還是盡量保持低調，這樣薩滿就不會派她的軍隊防守祭壇了。",bc_map,"0xffff00";
+	end;
+
+OnTimer21910:
+	mapannounce instance_mapname("2@orcs"), "克魯格的低語: 只有隊長能強化火焰，所以保護好你們的隊長。",bc_map,"0xffff00";
+	end;
+OnTimer23910:
+	mapannounce instance_mapname("2@orcs"), "任務: 點燃火盆解開區域封印。它們只能按特定順序點燃，所以要小心。",bc_map,"0x4444ff";
+	donpcevent instance_npcname("#2Resurrect Monsters1")+"::OnEnable";
+	donpcevent instance_npcname("#2Resurrect Monsters3")+"::OnEnable";
+	donpcevent instance_npcname("火把#1-1")+"::OnEnable";
+	disablenpc instance_npcname("克魯格#2-2");
+	end;
+}
+
+2@orcs,26,164,0	script	火把#1-1	844,{
+	if (is_party_leader() == false) end;
+	progressbar "ffff00",5;
+	setarray .@id[0], atoi(charat(strnpcinfo(2),0)), atoi(charat(strnpcinfo(2),2));
+	if (.@id[1] == 4)
+		donpcevent instance_npcname("#Warp2-"+.@id[0])+"::OnEnable";
+	else
+		donpcevent instance_npcname("火把#"+.@id[0]+"-"+(.@id[1]+1))+"::OnEnable";
+	initnpctimer;
+	disablenpc();
+	end;
+OnInstanceInit:
+	if (strnpcinfo(0) != "火把#2-1" && strnpcinfo(0) != "火把#3-1")
+		disablenpc();
+	end;
+
+OnEnable:
+	enablenpc();
+	end;
+
+OnTimer100:
+	specialeffect EF_FIREPILLAR;
+	end;
+
+OnTimer2000:
+	specialeffect EF_FIREPILLARBOMB;
+	stopnpctimer;
+	end;
+}
+2@orcs,55,155,0	duplicate(火把#1-1)	火把#1-2	844
+2@orcs,108,146,0	duplicate(火把#1-1)	火把#1-3	844
+2@orcs,98,171,0	duplicate(火把#1-1)	火把#1-4	844
+
+2@orcs,48,100,0	script	#Warp2-1	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("#Warp2-1");
+	end;
+
+OnEnable:
+	set .@map$, instance_mapname("2@orcs");
+	monster .@map$,109,156,"守衛隊長",1981,1,instance_npcname("#Mobs Control")+"::OnMyMobDead1";
+	mapannounce .@map$, "守衛隊長: 喔！！看來我有伴了。有本事就打敗我吧！！",bc_map,"0xff8888";
+	end;
+
+OnContinue:
+	enablenpc instance_npcname("#Warp2-1");
+	initnpctimer;
+	end;
+
+OnTimer10000:
+	areamonster instance_mapname("2@orcs"),28,158,40,170,"守衛隊長",1981,1,instance_npcname("#Mobs Control")+"::OnMyMobDead1";
+	stopnpctimer;
+	end;
+
+OnTouch_:
+	warp instance_mapname("2@orcs"),47,93;
+	end;
+}
+
+2@orcs,35,92,0	duplicate(火把#1-1)	火把#2-1	844
+2@orcs,32,70,0	duplicate(火把#1-1)	火把#2-2	844
+2@orcs,70,31,0	duplicate(火把#1-1)	火把#2-3	844
+2@orcs,84,51,0	duplicate(火把#1-1)	火把#2-4	844
+
+2@orcs,101,55,0	script	#Warp2-2	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("#Warp2-2");
+	end;
+
+OnEnable:
+	set .@map$, instance_mapname("2@orcs");
+	monster .@map$,67,64,"獸人狙擊手",1982,1,instance_npcname("#Mobs Control")+"::OnMyMobDead2";
+	mapannounce .@map$, "獸人狙擊手: 哈！能走到這裡還算滿了不起的，但你們這愚蠢的小旅行就到此為止了...",bc_map,"0xff8888";
+	end;
+
+OnContinue:
+	enablenpc instance_npcname("#Warp2-2");
+	initnpctimer;
+	end;
+
+OnTimer10000:
+	areamonster instance_mapname("2@orcs"),40,91,52,103,"獸人狙擊手",1982,1,instance_npcname("#Mobs Control")+"::OnMyMobDead2";
+	stopnpctimer;
+	end;
+
+OnTouch_:
+	warp instance_mapname("2@orcs"),107,55;
+	end;
+}
+
+2@orcs,142,145,0	duplicate(火把#1-1)	火把#3-1	844
+2@orcs,162,134,0	duplicate(火把#1-1)	火把#3-2	844
+2@orcs,144,117,0	duplicate(火把#1-1)	火把#3-3	844
+2@orcs,136,98,0	duplicate(火把#1-1)	火把#3-4	844
+
+2@orcs,167,104,0	script	#Warp2-3	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("#Warp2-3");
+	end;
+
+OnEnable:
+	set .@map$, instance_mapname("2@orcs");
+	monster .@map$,152,147,"墮落的獸人怨靈",1983,1,instance_npcname("#Mobs Control")+"::OnMyMobDead3";
+	mapannounce .@map$, "墮落的獸人怨靈: 我聞到肉味了！好餓！想嚐嚐人肉的滋味！！",bc_map,"0xff8888";
+	end;
+OnContinue:
+	areamonster instance_mapname("2@orcs"),117,61,129,73,"墮落的獸人怨靈",1983,1;
+	donpcevent instance_npcname("#Boss Control")+"::OnEnable";
+	enablenpc instance_npcname("#Warp2-3");
+	initnpctimer;
+	end;
+OnTimer10:
+	mapannounce instance_mapname("2@orcs"), "薩滿 喀爾加拉契: 哈哈哈！！所以，你們總算到了。你們派來的刺客簡直糟透了。那隻愚蠢的獸人已經在我的腳下變成一具冰冷的屍體了。",bc_map,"0xffff00";
+	end;
+
+OnTimer6810:
+	mapannounce instance_mapname("2@orcs"), "薩滿 喀爾加拉契: 我忠實的奴隸，去解決那些入侵者！",bc_map,"0xffff00";
+	end;
+OnTimer10310:
+	mapannounce instance_mapname("2@orcs"), "墮落的獸人英雄: 遵命，我的主人。",bc_map,"0xff7777";
+	end;
+OnTimer13110:
+	mapannounce instance_mapname("2@orcs"), "警告: 你們已經被薩滿喀爾加拉契發現了。克魯格暗殺薩滿的計畫失敗了。你們必須打敗喀爾加拉契並尋找克魯格的蹤跡。",bc_map,"0x8888ff";
+	stopnpctimer;
+	end;
+
+OnTouch_:
+	warp instance_mapname("2@orcs"),167,95;
+	end;
+}
+
+2@orcs,36,171,0	script	#Boss Control	844,{
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname("#Boss Control");
+	end;
+
+OnEnable:
+	set .@map$, instance_mapname("2@orcs");
+	monster .@map$,185,8,"薩滿 喀爾加拉契",1984,1,instance_npcname("#Boss Control")+"::OnMyMobDead";
+	monster .@map$,179,15,"墮落的獸人英雄",1087,1;
+	enablenpc instance_npcname("#Boss Control");
+	end;
+
+OnMyMobDead:
+	donpcevent instance_npcname("克魯格#")+"::OnEnable";
+	set .@map$, instance_mapname("2@orcs");
+	set .@mob_ran,rand(1,5);
+	if (.@mob_ran == 1) {
+		mapannounce .@map$, "薩滿 喀爾加拉契: 怎麼... 怎麼會這樣... 怎麼會被像你們這樣的...！！",bc_map,"0xffff00";
+	}
+	else if (.@mob_ran == 2) {
+		mapannounce .@map$, "薩滿 喀爾加拉契: 我怎麼會被區區人類給打敗！",bc_map,"0xffff00";
+	}
+	else if (.@mob_ran == 3) {
+		mapannounce .@map$, "薩滿 喀爾加拉契: 這... 這不可能是結局...",bc_map,"0xffff00";
+	}
+	else if (.@mob_ran == 4) {
+		mapannounce .@map$, "薩滿 喀爾加拉契: 我... 還不能... 死...！",bc_map,"0xffff00";
+	}
+	else {
+		mapannounce .@map$, "薩滿 喀爾加拉契: 被這些蠢貨打敗... 這不可能...！",bc_map,"0xffff00";
+	}
+	donpcevent instance_npcname("#2Resurrect Monsters1")+"::OnDisable";
+	donpcevent instance_npcname("#2Resurrect Monsters3")+"::OnDisable";
+	donpcevent instance_npcname("#Warp Outside Orc Dun")+"::OnEnable";
+	end;
+}
+
+2@orcs,182,8,0	script	#Warp Outside Orc Dun	45,3,3,{
+OnInstanceInit:
+	disablenpc instance_npcname("#Warp Outside Orc Dun");
+	end;
+
+OnEnable:
+	enablenpc instance_npcname("#Warp Outside Orc Dun");
+	end;
+
+OnTouch_:
+	warp "gef_fild10",240,197;
+	end;
+}
+
+2@orcs,172,13,0	script	克魯格#	434,{
+	if (yong_odun < 2) {
+		mes "[克魯格]";
+		mes "*咳嗽*";
+		mes ""+strcharinfo(0)+"，是你啊...";
+		next;
+		mes "["+strcharinfo(0)+"] ";
+		mes "別動！你受傷了！";
+		next;
+		mes "[克魯格]";
+		mes "沒... 沒事.. 我快不行了...";
+		mes "....";
+		mes "薩滿呢？那個薩滿怎麼樣了？";
+		next;
+		mes "["+strcharinfo(0)+"] ";
+		mes "薩滿已經死了。那個薩滿到底是誰？";
+		next;
+		mes "聽到薩滿的死訊，克魯格似乎鬆了一口氣，但你注意到他臉上苦澀的表情。";
+		next;
+		mes "[克魯格]";
+		mes "我.. 我就是下不了手殺我自己的女兒...";
+		mes "謝謝你，我相信她終於從那掐住她靈魂的惡夢中解脫了。";
+		next;
+		mes "克魯格還想說些什麼，但話還沒說完就嚥下了最後一口氣...";
+		set yong_odun,2;
+		close;
+	}
+	else {
+		mes "你可以看到克魯格的屍體，安詳地躺在地上。";
+		close;
+	}
+
+OnInstanceInit:
+	disablenpc instance_npcname("克魯格#");
+	end;
+OnEnable:
+	enablenpc instance_npcname("克魯格#");
+	end;
+}
+
+2@orcs,36,171,0	script	#Mobs Control	844,{
+	end;
+
+OnMyMobDead1:
+	donpcevent instance_npcname("#Warp2-1")+"::OnContinue";
+	end;
+
+OnMyMobDead2:
+	donpcevent instance_npcname("#Warp2-2")+"::OnContinue";
+	end;
+
+OnMyMobDead3:
+	donpcevent instance_npcname("#Warp2-3")+"::OnContinue";
+	end;
+}

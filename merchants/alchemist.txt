@@ -1,0 +1,168 @@
+//===== rAthena Script ======================================= 
+//= Alchemist Shop
+//===== By: ================================================== 
+//= rAthena Dev Team
+//===== Current Version: ===================================== 
+//= 1.8
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Merchants for Alchemist Materials and Manuals.
+//===== Additional Comments: ================================= 
+//= 1.1 fixed Medicine Bowl issue, thanx 2 MasterOfMuppets
+//= 1.2 Reddozen's fixes of typos.
+//=     added optional Elemental Potion Guide. [Lupus]
+//= 1.3 Deleted Elemental Potions Guide due to original quest [Lupus]
+//= 1.4 Alchemists can now purchase 2000 Medicine Bowls at once. [SinSloth]
+//= 1.5 Updated to Aegis 10.3 Standards. [L0ne_W0lf]
+//= 1.6 Corrected canceling purchase. [L0ne_W0lf]
+//= 1.7 Updated to match AEGIS script. [Masao]
+//= 1.8 Moved Craft Book Merchant to Renewal path. [Euphy]
+//============================================================ 
+
+alde_alche,24,188,3	script	公會商人	740,{
+	if (checkweight(1201,1) == 0) {
+		mes "- 等一下！ -";
+		mes "- 你目前攜帶了 -";
+		mes "- 太多的物品。 -";
+		mes "- 請把一些物品存入卡普拉服務人員的倉庫後 -";
+		mes "- 再回來找我。 -";
+		close;
+	}
+	mes "[傑佛·艾爾·夏普]";
+	mes "歡迎來到";
+	mes "煉金術師公會。";
+	mes "今天有什麼我可以幫忙的嗎？";
+	next;
+	switch(select("購買材料。:購買製作指南。:離開。")) {
+	case 1:
+		mes "[傑佛·艾爾·夏普]";
+		mes "你想要什麼？";
+		next;
+		if (select("藥缽 - 8 Zeny:取消。") == 1) {
+			mes "[傑佛·艾爾·夏普]";
+			mes "你想要幾個？";
+			mes "如果你想取消，請輸入 '0'。";
+			next;
+			while(1) {
+				input .@input,0,2001;
+				if (.@input == 0) {
+					mes "[傑佛·艾爾·夏普]";
+					mes "交易已取消。";
+					mes "歡迎下次再來。";
+					close;
+				}
+				else if (.@input < 1 || .@input > 2000) {
+					mes "[傑佛·艾爾·夏普]";
+					mes "數量必須";
+					mes "少於 2000 個。";
+					next;
+				}
+				else {
+					break;
+				}
+			}
+			set .@sell,.@input * 8;
+			set .@item_weight,.@input * 10;
+			if (Zeny < .@sell) {
+				mes "[傑佛·艾爾·夏普]";
+				mes "你的 Zeny";
+				mes "不夠。";
+				mes "請先確認一下";
+				mes "你身上有多少 Zeny。";
+				close;
+			}
+			if ((MaxWeight - Weight) < .@item_weight) {
+				mes "[傑佛·艾爾·夏普]";
+				mes "看起來你似乎";
+				mes "無法攜帶這麼多東西。";
+				mes "請確認一下";
+				mes "你物品欄的空間。";
+				close;
+			}
+			set Zeny, Zeny-.@sell;
+			getitem 7134,.@input; //Medicine_Bowl
+			mes "[傑佛·艾爾·夏普]";
+			mes "謝謝你。";
+			mes "歡迎下次光臨。";
+			close;
+		}
+		mes "[傑佛·艾爾·夏普]";
+		mes "那麼，";
+		mes "當你需要購買";
+		mes "煉金術相關材料時";
+		mes "再來找我吧，好嗎？";
+		close;
+	case 2:
+		mes "[傑佛·艾爾·夏普]";
+		mes "你需要什麼？";
+		mes "指南通常是 100,000 zeny。但有幾本特別的指南會更貴。";
+		next;
+		switch(select("藥水製作指南:酒精製作指南:火煙瓶製作指南:鹽酸瓶製作指南:噬人植物瓶製作指南:機雷瓶製作指南:護貝藥製作指南:纖細藥水製作指南:取消交易。")) {
+		case 1:
+			callsub S_SellManual,7144,100000; //Normal_Potion_Book
+			break;
+		case 2:
+			callsub S_SellManual,7127,100000; //Alcol_Create_Book
+			break;
+		case 3:
+			callsub S_SellManual,7128,100000; //FireBottle_Create_Book
+			break;
+		case 4:
+			callsub S_SellManual,7129,100000; //Acid_Create_Book
+			break;
+		case 5:
+			callsub S_SellManual,7130,100000; //Plant_Create_Book
+			break;
+		case 6:
+			callsub S_SellManual,7131,100000; //Mine_Create_Book
+			break;
+		case 7:
+			callsub S_SellManual,7132,100000; //Coating_Create_Book
+			break;
+		case 8:
+			callsub S_SellManual,7133,240000; //Slim_Potion_Create_Book
+			break;
+		case 9:
+			mes "[傑佛·艾爾·夏普]";
+			mes "那麼...";
+			mes "如果你需要購買";
+			mes "製作指南時";
+			mes "再回來找我吧。";
+			close;
+		}
+	case 3:
+		mes "[傑佛·艾爾·夏普]";
+		mes "那麼，";
+		mes "祝你有個美好的一天。";
+		close;
+	}
+
+S_SellManual:
+	.@item_id = getarg(0);
+	.@zeny_req = getarg(1);
+	if (Zeny < .@zeny_req) {
+		mes "[傑佛·艾爾·夏普]";
+		mes "你的 Zeny";
+		mes "不夠。";
+		mes "請先確認一下";
+		mes "你身上有多少 Zeny。";
+		close;
+	}
+	mes "[傑佛·艾爾·夏普]";
+	mes getitemname(.@item_id) +"？";
+	mes "那將需要 "+ .@zeny_req +" zeny。";
+	next;
+	if (select("購買。:離開。") == 1) {
+		Zeny = Zeny - .@zeny_req;
+		getitem .@item_id,1;
+		mes "[傑佛·艾爾·夏普]";
+		mes "感謝";
+		mes "你的惠顧。";
+		close;
+	}
+	mes "[傑佛·艾爾·夏普]";
+	mes "歡迎";
+	mes "下次再來。";
+	close;
+}

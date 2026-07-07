@@ -1,0 +1,459 @@
+//===== rAthena Script ======================================= 
+//= Buwaya Cave
+//===== By: ================================================== 
+//= Euphy
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Defeat Buwaya in his cave.
+//= Part of the "Secret in the Woods" quest.
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [Euphy]
+//============================================================ 
+
+// Instance Creation :: buwaya_dun
+//============================================================
+ma_fild02,312,317,5	script	守衛#buwaya_cave	570,{
+	if (BaseLevel < 130) {
+		mes "[守衛]";
+		mes "等級未滿 ^ff0000130 級^000000 的人";
+		mes "無法進入此地。";
+		mes "這個地方很危險。請回去吧。";
+		close;
+	}
+
+	set .@party_id,getcharid(1);
+	set .@md_name$,"布瓦亞洞穴";
+
+	if (!.@party_id) {
+		mes "[守衛]";
+		mes "布瓦亞非常危險。";
+		mes "請在與其他人組成隊伍後";
+		mes "再來吧。";
+		close;
+	}
+	if (is_party_leader() == true) {
+		mes "[守衛]";
+		mes "這個地方很危險。請回去吧。";
+		mes "如果你在這裡沒有任何事情，請回去吧。";
+		next;
+		while(1) {
+			switch(select("為什麼這麼危險？:我是來討伐布瓦亞的。:結束對話。")) {
+			case 1:
+				mes "[守衛]";
+				mes "最近，發生了一起";
+				mes "村民失蹤的案件。";
+				mes "在調查了痕跡之後，";
+				mes "我們發現巨大的怪物布瓦亞";
+				mes "就是罪魁禍首。";
+				next;
+				mes "[守衛]";
+				mes "我們已經派遣士兵和傭兵去";
+				mes "討伐布瓦亞，但從未";
+				mes "完全成功過。";
+				next;
+				mes "[守衛]";
+				mes "時至今日，布瓦亞仍然在綁架";
+				mes "村民。";
+				mes "請召集一些人來除掉布瓦亞。";
+				next;
+				break;
+			case 2:
+				set .@playtime, checkquest(4229,PLAYTIME);
+				if (.@playtime == -1) {
+					// fall through
+				} else if (.@playtime == 0 || .@playtime == 1) {
+					mes "[守衛]";
+					mes "布瓦亞還躲藏著。";
+					mes "即使你現在進去，布瓦亞也不會出來。";
+					mes "請稍後再來。";
+					close;
+				} else {
+					erasequest 4229; // fall through
+				}
+				if (instance_create(.@md_name$) < 0) {
+					mes "[守衛]";
+					mes "隊伍名稱是... "+getpartyname(.@party_id)+"。";
+					mes "隊長是... "+strcharinfo(0);
+					mes "^0000ff"+.@md_name$+"^000000 現在無法開啟。";
+					mes "請稍後再試。";
+					close;
+				}
+				mes "[守衛]";
+				mes "我將為你們開啟通往 ^0000ff"+.@md_name$+"^000000 的通道。";
+				mes "祝你們好運。";
+				close;
+			case 3:
+				mes "[守衛]";
+				mes "這個地方很危險。你不能進入。";
+				close;
+			}
+		}
+	} else {
+		mes "[守衛]";
+		mes "讓我跟隊長說話。";
+		mes "請叫隊長過來。";
+		close;
+	}
+}
+
+ma_fild02,315,323,0	script	洞穴入口#buwaya	45,2,2,{
+	end;
+OnTouch:
+	if (BaseLevel < 130) {
+		mes "[守衛]";
+		mes "等級未滿 ^ff0000130 級^000000 的人";
+		mes "無法進入此地。";
+		mes "這個地方很危險。請回去吧。";
+		close;
+	}
+	set .@playtime, checkquest(4229,PLAYTIME);
+	if (.@playtime == -1) {
+		// fall through
+	} else if (.@playtime == 0 || .@playtime == 1) {
+		mes "[守衛]";
+		mes "布瓦亞還躲藏著。";
+		mes "即使你現在進去，布瓦亞也不會出來。";
+		mes "請稍後再來。";
+		close;
+	} else {
+		erasequest 4229; // fall through
+	}
+	switch(select("進入。:回頭。")) {
+	case 1:
+		switch(instance_enter("Buwaya Cave")) {
+		case IE_OTHER:
+			mes "[守衛]";
+			mes "噢，現在不是個好時機。";
+			mes "請稍後再試。";
+			close;
+		case IE_NOINSTANCE:
+		case IE_NOMEMBER:
+			mes "[守衛]";
+			mes "這個地方很危險。請不要進入。";
+			close;
+		case IE_OK:
+			mapannounce "ma_fild02",getpartyname(getcharid(1))+" 隊伍的 "+strcharinfo(0)+" 已經開始在布瓦亞洞穴討伐布瓦亞了。",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+			setquest 4229; //warp "1@ma_c",35,57;
+			end;
+		default:
+			mes "- 由於不明力量的影響而無法進入。 -";
+			close;
+		}
+	case 2:
+		mes "[守衛]";
+		mes "你必須珍惜你的生命。";
+		mes "行動前最好三思而後行。";
+		close;
+	}
+}
+
+// Instance Scripts :: buwaya_in
+//============================================================
+1@ma_c,33,112,0	script	#damage	139,7,7,{
+	end;
+OnInstanceInit:
+	initnpctimer;
+	disablenpc instance_npcname("#damage");
+	end;
+OnTimer1000:
+	enablenpc instance_npcname("#damage");
+	specialeffect EF_POISONHIT;
+	end;
+OnTimer2000:
+	stopnpctimer;
+	initnpctimer;
+	disablenpc instance_npcname("#damage");
+	end;
+OnTouch:
+	percentheal -10,-10;
+	sc_start SC_BLEEDING,60000,0;
+	sc_start SC_POISON,60000,0;
+	end;
+}
+
+1@ma_c,29,110,5	script	被綁架的居民#1	575,{
+	mes "[被綁架的居民]";
+	mes "布瓦亞到處亂跑，";
+	mes "又有人被抓進來了。";
+	mes "我們這輩子都要被困在這裡了。";
+	next;
+	switch(select("讓我出去！！:難...難道逃不掉嗎？")) {
+	case 1:
+		mes "[被綁架的居民]";
+		mes "我們沒有足夠的力量消滅牠，但布瓦亞有一個弱點。";
+		mes "看看那邊的牆壁。";
+		mes "如果你敲擊那裡，布瓦亞會感到疼痛並把你吐出去。";
+		donpcevent instance_npcname("#box_mob_call")+"::OnEnable";
+		close2;
+		disablenpc instance_npcname("被綁架的居民#1");
+		end;
+	case 2:
+		mes "[被綁架的居民]";
+		mes "這裡有些不對勁...";
+		mes "你以前經歷過這種事嗎？";
+		close;
+	}
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("被綁架的居民#1");
+	end;
+OnEnable:
+	enablenpc instance_npcname("被綁架的居民#1");
+	donpcevent instance_npcname("#box_mob_call")+"::OnDisable";
+	end;
+}
+
+1@ma_c,36,110,5	script	被綁架的居民#2	574,{
+	mes "[被綁架的居民]";
+	mes "啊哈！我希望我能再多一點力量...";
+	mes "我知道牠的弱點...";
+	next;
+	switch(select("告訴我。:你真的知道嗎？")) {
+	case 1:
+		mes "[被綁架的居民]";
+		mes "你確定你能做到嗎...？";
+		mes "好吧，仔細聽著，";
+		mes "牠的弱點是...";
+		next;
+		mes "[被綁架的居民]";
+		mes "...在我們後面的牆上。";
+		sc_start SC_ATKPOTION,60000,45;
+		sc_start SC_MATKPOTION,60000,45;
+		disablenpc instance_npcname("被綁架的居民#2");
+		close;
+	case 2:
+		mes "[被綁架的居民]";
+		mes "什麼？！";
+		mes "你是在無視我嗎？";
+		mes "就因為我被抓到這裡？";
+		close;
+	}
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("被綁架的居民#2");
+	end;
+OnEnable:
+	enablenpc instance_npcname("被綁架的居民#2");
+	end;
+}
+
+1@ma_c,3,3,0	script	#box_mob_call	139,1,1,{
+	end;
+OnInstanceInit:
+	setcell instance_mapname("1@ma_c"),30,118,35,118,cell_shootable,1; //custom
+	disablenpc instance_npcname("#box_mob_call");
+	end;
+OnEnable:
+	enablenpc instance_npcname("#box_mob_call");
+	set .@label$, instance_npcname("#box_mob_call")+"::OnMyMobDead";
+	set .@map$, instance_mapname("1@ma_c");
+	monster .@map$,30,118,"布瓦亞的弱點",2333,1,.@label$;
+	monster .@map$,35,118,"布瓦亞的弱點",2333,1,.@label$;
+	end;
+OnDisable:
+	killmonster instance_mapname("1@ma_c"),instance_npcname("#box_mob_call")+"::OnMyMobDead";
+	disablenpc instance_npcname("#box_mob_call");
+	end;
+OnMyMobDead:
+	if (mobcount(instance_mapname("1@ma_c"),instance_npcname("#box_mob_call")+"::OnMyMobDead") < 1)
+		donpcevent instance_npcname("#box_out")+"::OnEnable";
+	end;
+}
+
+1@ma_c,33,118,0	script	#box_out	45,2,2,{
+OnInstanceInit:
+OnDisable:
+	disablenpc instance_npcname("#box_out");
+	end;
+OnEnable:
+	enablenpc instance_npcname("#box_out");
+	end;
+OnTouch:
+	set .@x, rand(1,20) + 97;
+	set .@y, rand(1,20) + 74;
+	warp instance_mapname("1@ma_c"),.@x,.@y;
+	end;
+}
+
+1@ma_c,97,74,0	script	#box_call	139,50,50,{
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname("#box_call");
+	initnpctimer;
+	end;
+OnTimer30000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：我要把你們放進我的寶箱裡！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	// Should execute OnTimer33000, but client doesn't render the effect fast enough.
+	for(set .@i,1; .@i<=9; set .@i,.@i+1)
+		donpcevent instance_npcname("#yunobi"+.@i)+"::OnEnable";
+	end;
+OnTimer33000:
+	donpcevent instance_npcname("#box_out")+"::OnDisable";
+	donpcevent instance_npcname("#box_mob_call")+"::OnDisable";
+	donpcevent instance_npcname("被綁架的居民#1")+"::OnEnable";
+	donpcevent instance_npcname("被綁架的居民#2")+"::OnEnable";
+	end;
+OnTimer34000:
+	enablenpc instance_npcname("#box_call");
+	end;
+OnTimer35000:
+	stopnpctimer;
+	initnpctimer;
+	disablenpc instance_npcname("#box_call");
+	end;
+OnTouch_:
+	specialeffect2 EF_GUIDEDATTACK;
+	warp instance_mapname("1@ma_c"),33,112;
+	end;
+OnDisable:
+	stopnpctimer;
+	disablenpc instance_npcname("#box_call");
+	end;
+}
+
+1@ma_c,97,74,0	script	#yunobi1	139,{
+	end;
+OnInstanceInit:
+	hideonnpc instance_npcname(strnpcinfo(0));
+	end;
+OnEnable:
+	specialeffect EF_MAPPILLAR2;
+	end;
+}
+1@ma_c,97,94,0	duplicate(#yunobi1)	#yunobi2	139
+1@ma_c,117,94,0	duplicate(#yunobi1)	#yunobi3	139
+1@ma_c,117,74,0	duplicate(#yunobi1)	#yunobi4	139
+1@ma_c,117,54,0	duplicate(#yunobi1)	#yunobi5	139
+1@ma_c,97,54,0	duplicate(#yunobi1)	#yunobi6	139
+1@ma_c,77,54,0	duplicate(#yunobi1)	#yunobi7	139
+1@ma_c,77,74,0	duplicate(#yunobi1)	#yunobi8	139
+1@ma_c,77,94,0	duplicate(#yunobi1)	#yunobi9	139
+
+1@ma_c,1,1,0	script	#bunshin	139,{
+	end;
+OnInstanceInit:
+	initnpctimer;
+	end;
+OnTimer58000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：我受夠了，讓我們決一死戰吧！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	end;
+OnTimer61000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：這就是！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	end;
+OnTimer62000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：這就是...我的！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	end;
+OnTimer63000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：這就是...我的...致命！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	end;
+OnTimer64000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：這就是...我的...致命...一擊！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	end;
+OnTimer65000:
+	set .@label$, instance_npcname("#bunshin")+"::OnMyMobDead";
+	set .@map$, instance_mapname("1@ma_c");
+	areamonster .@map$,112,89,122,99,"布瓦亞",2332,1,.@label$;
+	areamonster .@map$,112,49,122,59,"布瓦亞",2332,1,.@label$;
+	areamonster .@map$,72,49,82,59,"布瓦亞",2332,1,.@label$;
+	areamonster .@map$,72,89,82,99,"布瓦亞",2332,1,.@label$;
+	end;
+OnTimer66000:
+	mapannounce instance_mapname("1@ma_c"),"布瓦亞：你們害怕了嗎？",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	end;
+OnTimer105000:
+	killmonster instance_mapname("1@ma_c"),instance_npcname("#bunshin")+"::OnMyMobDead";
+	stopnpctimer;
+	initnpctimer;
+	end;
+OnMyMobDead:
+	if (mobcount(instance_mapname("1@ma_c"),instance_npcname("#bunshin")+"::OnMyMobDead") < 1) {
+		stopnpctimer;
+		initnpctimer;
+	}
+	end;
+OnDisable:
+	stopnpctimer;
+	killmonster instance_mapname("1@ma_c"),instance_npcname("#bunshin")+"::OnMyMobDead";
+	disablenpc instance_npcname("#bunshin");
+	end;
+}
+
+1@ma_c,2,2,0	script	#buwaya_con	139,{
+	end;
+OnInstanceInit:
+	areamonster instance_mapname("1@ma_c"),90,67,104,81,"布瓦亞",2319,1,instance_npcname("#buwaya_con")+"::OnMyMobDead";
+	end;
+OnMyMobDead:
+	set .@map$, instance_mapname("1@ma_c");
+	if (mobcount(.@map$,instance_npcname("#buwaya_con")+"::OnMyMobDead") < 1) {
+		donpcevent instance_npcname("#box_call")+"::OnDisable";
+		donpcevent instance_npcname("#bunshin")+"::OnDisable";
+		donpcevent instance_npcname("#exit_mob")+"::OnDisable";
+		donpcevent instance_npcname("#cave_out")+"::OnEnable";
+		mapannounce .@map$,"守衛：你們做得太棒了。請趕快從進來的原路逃跑吧！",bc_map,"0x00ff99"; //FW_NORMAL 12 0 0
+	}
+	end;
+}
+
+1@ma_c,3,3,0	script	#exit_mob	139,{
+	end;
+OnInstanceInit:
+	initnpctimer;
+	end;
+OnTimer60000:
+	set .@label$, instance_npcname("#exit_mob")+"::OnMyMobDead";
+	set .@map$, instance_mapname("1@ma_c");
+	if (mobcount(.@map$,.@label$) < 30) set .@amount,10;
+	else set .@amount,1;
+	areamonster .@map$,43,58,47,60,"水草",2331,.@amount,.@label$;
+	areamonster .@map$,43,58,47,60,"蛋",2329,.@amount,.@label$;
+	stopnpctimer;
+	initnpctimer;
+	end;
+OnDisable:
+	stopnpctimer;
+	killmonster instance_mapname("1@ma_c"),instance_npcname("#exit_mob")+"::OnMyMobDead";
+	disablenpc instance_npcname("#exit_mob");
+	end;
+OnMyMobDead:
+	end;
+}
+
+1@ma_c,28,57,0	script	#cave_out	45,2,2,{
+OnInstanceInit:
+	disablenpc instance_npcname("#cave_out");
+	end;
+OnEnable:
+	enablenpc instance_npcname("#cave_out");
+	end;
+OnTouch:
+	mes "想要出去嗎？";
+	next;
+	if(select("是的！:不，我要留下來。") == 1)
+		warp "ma_fild02",315,315;
+	close;
+}
+
+1@ma_c,1,1,0	script	#buwaya_spawn_mobs	-1,{
+OnInstanceInit:
+	set .@map$, instance_mapname("1@ma_c");
+	areamonster .@map$,73,81,93,101,"海草",2331,18;
+	areamonster .@map$,110,97,116,103,"海草",2331,8;
+	areamonster .@map$,59,63,63,67,"海草",2331,8;
+	areamonster .@map$,73,55,77,59,"海草",2331,4;
+	areamonster .@map$,103,69,107,73,"海草",2331,4;
+	areamonster .@map$,108,45,122,63,"海草",2331,15;
+	areamonster .@map$,73,81,93,101,"布瓦亞的蛋",2329,10;
+	areamonster .@map$,110,97,116,103,"布瓦亞的蛋",2329,8;
+	areamonster .@map$,59,63,63,67,"布瓦亞的蛋",2329,4;
+	areamonster .@map$,73,55,77,59,"布瓦亞的蛋",2329,3;
+	areamonster .@map$,103,69,107,73,"布瓦亞的蛋",2329,3;
+	areamonster .@map$,108,45,122,63,"布瓦亞的蛋",2329,15;
+	monster .@map$,0,0,"海草",2331,5;
+	monster .@map$,0,0,"布瓦亞的奴隸",2330,5;
+	end;
+}

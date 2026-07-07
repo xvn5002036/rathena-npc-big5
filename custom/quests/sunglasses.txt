@@ -1,0 +1,112 @@
+//===== rAthena Script =======================================
+//= Slotted Sunglasses Quest
+//===== By: ==================================================
+//= amichan
+//===== Current Version: =====================================
+//= 1.8
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Quest to get Slotted Sunglasses.
+//= Will reset after quest completion.
+//===== Additional Comments: =================================
+//= 1.0 by Aegis 1.1 by aichan 1.2 by x[tsk] 1.3 by Darkchild
+//= 1.5 Fixed Exploit [Lupus]
+//= 1.6 Fixed Exploit [KarLaeda]
+//= 1.7 Relocated 'Maseph' to moc_fild07.
+//  [Kisuka]
+//= 1.8 Cleaning. [Euphy]
+//============================================================
+
+alberta,88,193,5	script	太陽眼鏡商人	73,{
+	mes "[太陽眼鏡商人]";
+	if(SG_QUEST1 == 1) {
+		mes "我沒有什麼能再告訴你的了。";
+		next;
+		mes "[太陽眼鏡商人]";
+		mes "去找瑪瑟夫（Maseph）。她就在夢羅克北邊的某處。";
+		close;
+	}
+	mes "你好。有什麼我可以幫你的嗎？";
+	next;
+	if(select("我聽說你可以製作 ^0000FF太陽眼鏡[1]^000000。:沒事，抱歉打擾了。")==2) {
+		mes "[太陽眼鏡商人]";
+		mes "等你準備好再來找我吧。";
+		close; }
+	mes "[太陽眼鏡商人]";
+	mes "我不會做，但我可以告訴你去哪裡找會做的人。只要一點點小費...";
+	next;
+	if(select("多少錢？:想得美，我自己會去找她！")==2) {
+		mes "[太陽眼鏡商人]";
+		mes "隨你便，除非製作人知道你要去，否則她是不會幫你做 ^0000FF太陽眼鏡[1]^000000 的。";
+		mes "只有我能事先通知她你要過去。";
+		next;
+		mes "[太陽眼鏡商人]";
+		mes "等你放棄了再來找我吧。哈哈哈...";
+		close; }
+	mes "[太陽眼鏡商人]";
+	mes "為了讓我告訴你關於 ^0000FF太陽眼鏡[1]^000000 的情報，你需要給我：";
+	mes " - ^0000881個 1克拉鑽石^000000";
+	mes " - ^00008850個 羽毛^000000";
+	mes " - ^000088100000z^000000";
+	next;
+	if(select("好吧，給你。:這太貴了吧！")==2) {
+		mes "[太陽眼鏡商人]";
+		mes "隨你便。";
+		close; }
+	mes "[太陽眼鏡商人]";
+	if (countitem(730) < 1 || countitem(949) < 50 || Zeny < 100000) {
+		mes "你少了一些東西。等你收集齊所有的材料後再來吧。";
+		close; }
+	delitem 730,1;
+	delitem 949,50;
+	set Zeny, Zeny-100000;
+	set SG_QUEST1,1;
+	mes "[太陽眼鏡商人]";
+	mes "太好了。現在，仔細聽好。";
+	next;
+	mes "[太陽眼鏡商人]";
+	mes "在夢羅克北邊的某處，尋找一位名叫瑪瑟夫（Maseph）的人。";
+	mes "我會傳個訊息給她，讓她知道你要過去。";
+	close;
+}
+
+moc_fild07,334,186,5	script	瑪瑟夫	702,{
+	mes "[瑪瑟夫]";
+	if(SG_QUEST1 != 1) {
+		mes "天氣真好，不是嗎？";
+		close; }
+	mes "你好啊。";
+	mes "你是為了 ^000088太陽眼鏡[1]^000000 來的，對吧？";
+	next;
+	if(select("是的:不是，抱歉打擾了。")==2) {
+		mes "[瑪瑟夫]";
+		mes "那你可以走了。";
+		close; }
+	mes "[瑪瑟夫]";
+	mes "製作這個，我需要一副 ^000088太陽眼鏡^000000 以及 400000z。";
+	next;
+	if(select("給你。:不了，謝謝。")==2) {
+		mes "[瑪瑟夫]";
+		mes "如你所願。";
+		close; }
+	mes "[瑪瑟夫]";
+	if (countitem(2201) < 1) {
+		mes "我需要一副 ^000088太陽眼鏡^000000。等你有了再來找我吧。";
+		close;
+	}
+	if (Zeny < 400000) {
+		mes "你沒有足夠的 Zeny。等你湊齊了再來找我吧。";
+		close;
+	}
+	delitem 2201,1;
+	set Zeny, Zeny-400000;
+	mes "謝謝你。我馬上開始製作...";
+	next;
+	mes "[瑪瑟夫]";
+	mes "給你，我的朋友。";
+	mes "好好享受你的 ^000088太陽眼鏡[1]^000000 吧。";
+	getitem 2202,1;
+	set SG_QUEST1,0;
+	close;
+}

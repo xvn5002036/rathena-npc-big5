@@ -1,0 +1,86 @@
+//===== rAthena Script =======================================
+//= Treasure Hunter Quests
+//===== By: ==================================================
+//= Fredzilla
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Start for Treasure hunter quests
+//===== Additional Comments: =================================
+//= Event_THQS - Used to check if you have already registered
+//= #Treasure_Token - used to keep track of tokens
+//============================================================
+
+yuno_in01,124,164,6	script	公會會長	108,{
+	mes "[基根]";
+	mes "什麼風把你吹來了？有什麼事嗎？"; // [cite: 129]
+	next;
+	menu "I want to be a Treasure Hunter",-,"Take a New Quest.",N_NQuest,"Take me to the Official Shop.",N_OShop,"Never mind.",N_NVM; // [cite: 130]
+	if(Event_THQS==1) goto N_AlreadyReg;
+	mes "[基根]"; // [cite: 131]
+	mes "嗯，"+strcharinfo(0)+"，如果你想成為一名尋寶獵人，你必須先這麼做。"; // [cite: 131]
+	mes " "; // [cite: 132]
+	mes "^FF00001.^000000 必須支付 ^FF000025,000z^000000 作為基本訓練費用及會員證明。"; // [cite: 132]
+	mes " "; // [cite: 133]
+	mes "嗯... 好吧，你需要做的就只有這些。哈哈哈。"; // [cite: 133]
+	next;
+	menu "Pay ^FF000025,000z^000000.",-,"Thats way to high!!",N_HighPrice; // [cite: 134]
+	if (Zeny < 25000) goto N_NoZeny; // [cite: 134]
+	set Zeny,Zeny-25000;
+	//getitem 7950, 1;
+	//getitem 7951, 1;
+	set Event_THQS,1;
+	mes "[基根]";
+	mes "恭喜你！"; // [cite: 134]
+	emotion ET_CONGRATULATION; // [cite: 135]
+	next;
+	mes "[基根]";
+	mes "歡迎來到尋寶獵人公會。"; // [cite: 136]
+	mes "你現在可以隨心所欲地接取尋寶任務了。"; // [cite: 136]
+	close;
+N_NoZeny:
+	mes "[基根]";
+	mes "嗯... 看來你沒有 ^FF000025,000z^000000，"+strcharinfo(0)+"。請湊齊了再來。"; // [cite: 137]
+	close;
+N_HighPrice:
+	mes "[基根]";
+	mes "好吧，如果你連區區的 ^FF000025,000z^000000 都付不起，那你還不該成為尋寶獵人。"; // [cite: 138]
+	close;
+N_AlreadyReg:
+	mes "[基根]";
+	mes "哈哈哈...你已經是會員了。"; // [cite: 139]
+	close;
+N_NQuest:
+	if (Event_THQS!=1) goto A_NeedReg;
+	mes "[基根]";
+	mes "那麼，"+strcharinfo(0)+"，如果你想接取任務，去跟那邊另一個房間裡的尋寶獵人同伴談談吧。"; // [cite: 140]
+	close; // [cite: 141]
+A_NeedReg:
+	mes "[基根]";
+	mes "抱歉，如果你想接取任務，必須先成為尋寶獵人公會的會員。"; // [cite: 142]
+	mes " "; // [cite: 142]
+	mes "另外，既然你現在是會員了，歡迎隨時使用我們的商店。它們都在這一層樓。"; // [cite: 142]
+	mes " "; // [cite: 143]
+	mes "我們還有另一個會員專屬商店，在那裡我們使用被稱為尋寶獵人代幣的小金屬鑽石來交換稀有物品。"; // [cite: 143]
+	mes " "; // [cite: 144]
+	mes "你甚至可以進入我們專屬的個人地牢。"; // [cite: 144]
+	close;
+N_OShop:
+	if (Event_THQS!=1) goto N_NeedMem; // [cite: 145]
+	mes "[基根]"; // [cite: 145]
+	mes "沒問題，"+strcharinfo(0)+"，我馬上帶你去我們的商店！"; // [cite: 145]
+	next;
+	warp "prt_in",166,171;
+	close;
+	end; // [cite: 146]
+N_NeedMem: // [cite: 146]
+	mes "[基根]"; // [cite: 146]
+	mes "抱歉，只有會員才能參觀我們的私人商店。"; // [cite: 146]
+	close;
+N_NVM:
+	mes "[基根]";
+	mes "好吧，等你有空閒時間再來吧。"; // [cite: 147]
+	close;
+}

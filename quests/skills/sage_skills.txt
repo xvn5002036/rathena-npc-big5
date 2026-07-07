@@ -1,0 +1,499 @@
+//===== rAthena Script ======================================= 
+//= Sage Skills Quests
+//===== By: ================================================== 
+//= Lupus, Reddozen
+//===== Current Version: ===================================== 
+//= 1.5
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Quests for skills: Create Converter, Elemental Change
+//===== Additional Comments: ================================= 
+//= 1.4 Rescripted to Aegis 10.3 standards. [5511]
+//= 1.5 Optimized. [Euphy]
+//============================================================
+
+yuno_in03,176,24,3	script	米修納	755,{
+	if(BaseJob != Job_Sage) {
+		mes "[米修納]";
+		mes "日安，我是米修納，是";
+		mes "史威茲別爾魔法學院裡";
+		mes "的其中一位講師。";
+		mes "請問，你是一名賢者";
+		mes "或智者嗎？喔……你不是嗎？";
+		next;
+		mes "[米修納]";
+		mes "喔，那真是太可惜了。";
+		mes "我很抱歉。但如果你";
+		mes "剛好認識，或在旅途中遇到";
+		mes "任何賢者或智者，如果他們沒聽說過我所提供的課程，";
+		mes "請引薦他們來找我。";
+		next;
+		mes "[米修納]";
+		mes "很抱歉打擾";
+		mes "你了，謝謝你的";
+		mes "時間。祝你";
+		mes "有美好的一天，冒險者。";
+		close;
+	}
+	if(SAG_SK == 100) {
+		set .@Element, getskilllv("SA_ELEMENTFIRE") + getskilllv("SA_ELEMENTGROUND") + getskilllv("SA_ELEMENTWIND") + getskilllv("SA_ELEMENTWATER");
+		set .@Convert, getskilllv("SA_CREATECON");
+		if(.@Element && .@Convert) {
+			mes "[米修納]";
+			mes "如果你有任何賢者或";
+			mes "智者朋友，還沒有";
+			mes "從巴爾蒙特大人的卷軸中學到技能，";
+			mes "那麼";
+			mes "請將他們推薦給我。";
+			next;
+			mes "[米修納]";
+			mes "我相信你";
+			mes "會發現這些";
+			mes "元素基礎技能";
+			mes "在戰鬥中非常有用。";
+			mes "長遠來看，知識真的就等同於";
+			mes "力量……";
+			close;
+		}
+		mes "[米修納]";
+		mes "啊，你一定是";
+		mes "不知怎麼地忘記了我教你的東西。";
+		mes "也許";
+		mes "你弄丟了我給你的那份";
+		mes "技能卷軸的副本？沒";
+		mes "關係，我會幫你回想起來的。";
+		next;
+		if(.@Element == 0) {
+			mes "[米修納]";
+			mes "你將有機會";
+			mes "選擇你想要哪種 ^FF0000屬性";
+			mes "變換^000000 技能，即便是你以前沒學過的也行，";
+			mes "只要你滿足";
+			mes "該技能的要求即可。";
+			next;
+			mes "[米修納]";
+			mes "請記住，一旦";
+			mes "你學會了你的屬性";
+			mes "變換技能，你就無法";
+			mes "再更改了。現在，你";
+			mes "想學習哪一個技能？";
+			next;
+			setarray .@ReqSkill[0],280,283,282,281;
+			setarray .@ReqSkill$[0],"火屬性附加","地屬性附加","風屬性附加","水屬性附加";
+			setarray .@Skill[0],1018,1017,1019,1008;
+			setarray .@Skill$[0],"火","地","風","水";
+			while(1) {
+				set .@i, select("火屬性變換:地屬性變換:風屬性變換:水屬性變換")-1;
+				if(getskilllv(.@ReqSkill[.@i]) == 0) {
+					mes "[米修納]";
+					mes "很抱歉，但是你還沒";
+					mes "學會 ^FF0000"+.@ReqSkill$[.@i]+"^000000，這項";
+					mes "學習 ^FF0000"+.@Skill$[.@i]+"屬性";
+					mes "變換^000000 所需的技能。你需要學會";
+					mes .@ReqSkill$[.@i]+" 或者選擇其他";
+					mes "屬性變換技能。";
+					next;
+				}
+				else {
+					mes "[米修納]";
+					mes "很好，我將會";
+					mes "教你 ^FF0000"+.@Skill$[.@i];
+					mes "屬性變換^000000 技能";
+					mes "以及 ^FF0000製作元素";
+					mes "卷軸^000000 技能。請保持";
+					mes "安靜，我現在要詠唱咒語了。";
+					next;
+					mes "[米修納]";
+					mes "%$#@!#$% 喝??";
+					specialeffect2 EF_RUWACH;
+					next;
+					mes "[米修納]";
+					mes "喝！";
+					specialeffect2 EF_BRANDISHSPEAR;
+					next;
+					mes "^3355FF你已經成功地";
+					mes "學會了 "+.@Skill$[.@i]+"屬性";
+					mes "變換技能以及製作元素";
+					mes "卷軸技能。^000000";
+					skill .@Skill[.@i],1,SKILL_PERM;
+					if(.@Convert == 0)
+						skill "SA_CREATECON",1,SKILL_PERM;
+					next;
+					break;
+				}
+			}
+		}
+		else if(.@Convert == 0) {
+			mes "[米修納]";
+			mes "好吧，我要";
+			mes "施放一個法術，";
+			mes "這能幫助你回想起";
+			mes "你忘記的技能。";
+			mes "別動，並盡量保持";
+			mes "靜止不動……";
+			next;
+			mes "[米修納]";
+			mes "%$#@!#$% 喝??";
+			specialeffect2 EF_RUWACH;
+			next;
+			mes "[米修納]";
+			mes "喝！";
+			specialeffect2 EF_BRANDISHSPEAR;
+			next;
+			mes "^3355FF你成功地回想起了";
+			mes "製作元素卷軸";
+			mes "技能，並可以";
+			mes "再次使用它了。^000000";
+			skill "SA_CREATECON",1,SKILL_PERM;
+			next;
+		}
+		mes "[米修納]";
+		mes "啊，你學習這些";
+		mes "技能的速度跟我預期的一樣快。";
+		mes "非常好，";
+		mes "我希望你能熟練地將這些";
+		mes "天賦用在正確的目的上。";
+		mes "再見了，"+strcharinfo(0)+"。";
+		close;
+	}
+	else if(SAG_SK == 0) {
+		mes "[米修納]";
+		mes "日安，我是米修納，是";
+		mes "史威茲別爾魔法學院裡";
+		mes "的其中一位講師。";
+		mes "請問有什麼我可以效勞的嗎？";
+		next;
+		select("我來尋求新的知識。");
+		mes "[米修納]";
+		mes "啊，你一定就是 "+strcharinfo(0)+" 了。";
+		mes "我一直很期待與你";
+		mes "見面。在追求崇高";
+		mes "知識的過程中，我能建議你";
+		mes "閱讀最近剛修復的";
+		mes "巴爾蒙特大人的卷軸嗎？";
+		next;
+		mes "[米修納]";
+		mes "巴爾蒙特大人的卷軸裡包含了";
+		mes "關於四大元素的知識，";
+		mes "也就是火、水、地和風。這些";
+		mes "卷軸裡的知識可以應用在";
+		mes "兩種新的賢者技能上。";
+		next;
+		mes "[米修納]";
+		mes "第一種叫做 ^FF0000屬性";
+		mes "變換^000000，它能讓你";
+		mes "根據你所學會的特定";
+		mes "屬性變換技能，將怪物的";
+		mes "屬性轉變為該特定元素。";
+		next;
+		mes "[米修納]";
+		mes "第二種叫做";
+		mes "製作元素卷軸，";
+		mes "它能讓你製作出";
+		mes "使用屬性變換技能時所需要的卷軸物品。";
+		next;
+		mes "[米修納]";
+		mes "雖然這";
+		mes "兩項技能的知識已經";
+		mes "失傳多年，但我們終於";
+		mes "成功找回了大部分";
+		mes "的內容。那麼，你覺得你";
+		mes "準備好學習這些技能了嗎？";
+		next;
+		if(select("或許晚點吧。:是的，我準備好了。") == 1) {
+			mes "[米修納]";
+			mes "啊，你現在一定";
+			mes "很忙吧。沒問題，只要在";
+			mes "你覺得準備好的時候";
+			mes "再回來學習就好。那麼，";
+			mes "再見，祝你有美好的一天?";
+			close;
+		}
+		mes "[米修納]";
+		mes "非常好。首先，你";
+		mes "必須學會製作";
+		mes "元素卷軸的技能，這對";
+		mes "學習屬性變換技能";
+		mes "是不可或缺的。";
+		next;
+		mes "[米修納]";
+		mes "請帶齊所需的";
+		mes "材料，這樣我們才能";
+		mes "製作一個基本的元素";
+		mes "卷軸，以便讓你";
+		mes "學習這項技能。讓我想想，";
+		mes "你需要帶來……";
+		next;
+		mes "[米修納]";
+		mes "^ff00007個 角^000000，";
+		mes "^ff000012個 彩色蟲殼^000000，";
+		mes "^ff000010個 蝸牛殼^000000，";
+		mes "^ff00004個 空白卷軸^000000 以及";
+		mes "^ff000010個 蠍子尾巴^000000。";
+		next;
+		mes "[米修納]";
+		mes "好了，我會在";
+		mes "這裡等候你的";
+		mes "歸來。記住，我們";
+		mes "需要這些物品來製作";
+		mes "卷軸，這樣你才能透過我的示範來學習這項技能……";
+		set SAG_SK,1;
+		close;
+	}
+	else if(SAG_SK == 1) {
+		if (countitem(904) < 10 || countitem(947) < 7 || countitem(1013) < 12 || countitem(946) < 10 || countitem(7433) < 4) {
+			mes "[米修納]";
+			mes "嗯，你還沒";
+			mes "收集齊製作元素卷軸";
+			mes "所需的全部";
+			mes "材料。讓我再提醒你一次";
+			mes "需要帶些什麼，免得你";
+			mes "下次又忘記了……";
+			next;
+			mes "[米修納]";
+			mes "^ff00007個 角^000000，";
+			mes "^ff000012個 彩色蟲殼^000000，";
+			mes "^ff000010個 蝸牛殼^000000，";
+			mes "^ff00004個 空白卷軸^000000 以及";
+			mes "^ff000010個 蠍子尾巴^000000。";
+			next;
+			mes "[米修納]";
+			mes "別忘了我們需要";
+			mes "所有這些物品來製作";
+			mes "卷軸，這樣你才能";
+			mes "透過觀看我的示範";
+			mes "來學習";
+			mes "製作元素卷軸的技能。";
+			close;
+		}
+		else {
+			mes "[米修納]";
+			mes "太棒了，你把東西都帶來了。";
+			mes "現在，讓我解釋一下這項技能。";
+			mes "你身為賢者所學的技能，";
+			mes "決定了你能製作出哪種類型的元素卷軸。";
+			next;
+			mes "[米修納]";
+			mes "^FF0000火屬性附加^000000 技能讓你";
+			mes "能夠製作火屬性的元素";
+			mes "卷軸。^FF0000地屬性附加^000000";
+			mes "技能能讓製作";
+			mes "地屬性的元素卷軸。";
+			next;
+			mes "[米修納]";
+			mes "^FF0000風屬性附加^000000 能讓";
+			mes "製作風屬性的元素";
+			mes "卷軸，而 ^FF0000水屬性附加^000000";
+			mes "能讓製作水屬性的";
+			mes "元素卷軸。這";
+			mes "很容易理解，對吧？";
+			next;
+			mes "[米修納]";
+			mes "現在，你製作元素卷軸的";
+			mes "成功率取決於";
+			mes "火屬性附加、地屬性附加、風屬性附加，";
+			mes "或水屬性附加技能的等級，以及";
+			mes "你自身的能力。";
+			next;
+			mes "[米修納]";
+			mes "現在，請拿著這份";
+			mes "巴爾蒙特的卷軸副本，";
+			mes "當你嘗試使用";
+			mes "製作元素卷軸技能";
+			mes "來製作";
+			mes "元素卷軸時，可以將其作為參考。";
+			next;
+			mes "^3355FF你已經透過複習";
+			mes "你的巴爾蒙特卷軸副本";
+			mes "學會了製作";
+			mes "元素卷軸的技能。^000000";
+			specialeffect2 EF_ABSORBSPIRITS;
+			delitem 904,10; // Scorpion_Tail
+			delitem 947,7; // Horn
+			delitem 1013,12; // Rainbow_Shell
+			delitem 946,10;
+			// Snail's_Shell
+			delitem 7433,4; // Blank_Scroll
+			set SAG_SK,2;
+			skill "SA_CREATECON",1,SKILL_PERM;
+			next;
+			mes "[米修納]";
+			mes "哇，"+strcharinfo(0)+"！";
+			mes "你學習這項技能的速度";
+			mes "真的很快！難怪";
+			mes "大家都說你是這附近";
+			mes "最優秀的賢者之一！";
+			next;
+			mes "[米修納]";
+			mes "現在你已經準備好";
+			mes "學習另一項技能，";
+			mes "也就是屬性變換了。好的，";
+			mes "為了這堂課，我需要準備一些東西，";
+			mes "所以我們晚點再見面";
+			mes "並討論這個，好嗎？";
+			close;
+		}
+	}
+	else if(SAG_SK == 2) {
+		if(getskilllv("SA_CREATECON") == 0) {
+			skill "SA_CREATECON",1,SKILL_PERM;
+			mes "- 當我跟米修納說話時，我回想起了 ^ff0000製作元素卷軸技能^000000！ -";
+			next;
+		}
+		mes "[米修納]";
+		mes "你將有機會";
+		mes "選擇你想要哪種 ^FF0000屬性";
+		mes "變換^000000 技能，即便是你以前沒學過的也行，";
+		mes "只要你滿足";
+		mes "該技能的要求即可。";
+		next;
+		mes "[米修納]";
+		mes "請記住，一旦";
+		mes "你學會了你的屬性";
+		mes "變換技能，你就無法";
+		mes "再更改了。現在，你";
+		mes "想學習哪一個技能？";
+		next;
+		setarray .@ReqSkill[0],280,283,282,281;
+		setarray .@ReqSkill$[0],"火屬性附加","地屬性附加","風屬性附加","水屬性附加";
+		setarray .@ReqItem$[0],"火靈礦石","地靈礦石","風靈礦石","水靈礦石";
+		setarray .@Skill$[0],"火","地","風","水";
+		while(1) {
+			set .@i, select("火屬性變換:地屬性變換:風屬性變換:水屬性變換")-1;
+			if(getskilllv(.@ReqSkill[.@i]) == 0) {
+				mes "[米修納]";
+				mes "很抱歉，但是你還沒";
+				mes "學會 ^FF0000"+.@ReqSkill$[.@i]+"^000000，這項";
+				mes "學習 "+.@Skill$[.@i]+"屬性變換技能所需要的技能。請學會";
+				mes .@ReqSkill$[.@i]+" 或者選擇另一個屬性變換技能讓我教你。";
+				next;
+			}
+			else {
+				mes "[米修納]";
+				mes "那非常好。請";
+				mes "帶來以下的物品，";
+				mes "這樣你才能學習";
+				mes .@Skill$[.@i]+"屬性變換技能。";
+				next;
+				mes "[米修納]";
+				mes "^FF000020顆 "+.@ReqItem$[.@i]+"^000000，";
+				mes "^FF00001個 斐揚水溶液^000000 以及";
+				mes "^FF00001個 夢羅克水溶液^000000。請";
+				mes "在準備好所有材料後";
+				mes "再來找我。";
+				set SAG_SK, 10 * (.@i+1); //10,20,30,40
+				close;
+			}
+		}
+	}
+	else if(SAG_SK == 10 || SAG_SK == 20 || SAG_SK == 30 || SAG_SK == 40) {
+		if(getskilllv("SA_CREATECON") == 0) {
+			skill "SA_CREATECON",1,SKILL_PERM;
+			mes "- 當我跟米修納說話時，我回想起了 ^ff0000製作元素卷軸技能^000000！ -";
+			next;
+		}
+		set .@i, (SAG_SK/10) - 1;
+		setarray .@ReqItem[0],990,993,992,991;
+		setarray .@ReqItem$[0],"火靈礦石","地靈礦石","風靈礦石","水靈礦石";
+		setarray .@Skill[0],1018,1017,1019,1008;
+		setarray .@Skill$[0],"火","地","風","水";
+		if (countitem(.@ReqItem[.@i]) < 20 || countitem(1089) < 1 || countitem(1088) < 1) {
+			mes "[米修納]";
+			mes "你在收集所有";
+			mes "所需的物品上";
+			mes "遇到困難了嗎？以防萬一，讓我";
+			mes "提醒你學習 "+.@Skill$[.@i];
+			mes "屬性變換技能";
+			mes "需要帶些什麼。";
+			next;
+			mes "[米修納]";
+			mes "^ff000020顆 "+.@ReqItem$[.@i]+"^000000，";
+			mes "^ff00001個 斐揚水溶液^000000 以及";
+			mes "^ff00001個 夢羅克水溶液^000000。請";
+			mes "別忘了，並在";
+			mes "下次見到我之前";
+			mes "把材料準備好，知道嗎？";
+			close;
+		}
+		mes "[米修納]";
+		mes "啊，你回來了。我現在";
+		mes "終於可以教你關於";
+		mes .@Skill$[.@i]+"屬性變換的技能了。";
+		mes "這項技能有機會";
+		mes "將目標怪物的屬性";
+		mes "永久改變為"+.@Skill$[.@i]+"屬性。";
+		next;
+		mes "[米修納]";
+		mes "記住，你必須";
+		mes "使用元素卷軸才能";
+		mes "施展這項技能，而且它和製作元素";
+		mes "卷軸的技能一樣，";
+		mes "都有成功率的設定。所以要注意這一點。";
+		next;
+		mes "[米修納]";
+		mes "現在，"+strcharinfo(0)+"，";
+		mes "我要施展一個法術，";
+		mes "這將幫助你記住";
+		mes .@Skill$[.@i]+"屬性變換";
+		mes "技能。盡量保持靜止……";
+		next;
+		mes "^3355FF米修納開始詠唱";
+		mes "一段奇怪的咒語，同時";
+		mes "一道柔和的藍光包圍了";
+		mes "他的身體，並慢慢變得";
+		mes "越來越明亮、強烈。^000000";
+		specialeffect2 EF_RUWACH;
+		next;
+		mes "[米修納]";
+		mes "@#$%^~ 喝！";
+		specialeffect2 EF_BRANDISHSPEAR;
+		delitem .@ReqItem[.@i],20;
+		delitem 1089,1; // Payon Potion
+		delitem 1088,1; // Morocc Potion
+		set SAG_SK,100;
+		skill .@Skill[.@i],1,0;
+		next;
+		mes "[米修納]";
+		mes ""+strcharinfo(0)+"……";
+		mes "我很高興地說，你已經";
+		mes "成功記住了";
+		mes .@Skill$[.@i]+"屬性變換技能。";
+		mes "我希望它在戰鬥中";
+		mes "能對你有所幫助。先再見啦?";
+		close;
+	}
+	else {
+		mes "[米修納]";
+		mes "如果你有任何賢者或";
+		mes "智者朋友，還沒有";
+		mes "從巴爾蒙特大人的卷軸中學到技能，";
+		mes "那麼";
+		mes "請將他們推薦給我。";
+		next;
+		mes "[米修納]";
+		mes "我相信你";
+		mes "會發現這些";
+		mes "元素基礎技能";
+		mes "在戰鬥中非常有用。";
+		mes "長遠來看，知識真的就等同於";
+		mes "力量……";
+		close;
+	}
+}
+
+//============================================================ 
+// Old changelog
+//===== Additional Comments: ================================= 
+//= 1.0 for fully working skills only [Lupus]
+//= 1.1 Added more new skill quests for more classes [Lupus]
+//= Somehow eA engine doesn't let you keep learn't skill V_V'
+//= 1.2 Added to correct locations, correct NPC's, fixed
+//= some of the items required and made them into real
+//= quests. [Reddozen] 
+//= 1.3 Fixed bugs and minor typos. Optimized [Lupus]
+//= 1.3a fixed an item ID typo, thx 2Spiritual Kid
+//= 1.3b Splitted into different files [DracoRPG]
+//= 1.3c Fixed some typos [IVBela]
+//============================================================

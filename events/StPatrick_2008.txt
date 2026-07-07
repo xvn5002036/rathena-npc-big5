@@ -1,0 +1,717 @@
+//===== rAthena Script =======================================
+//= St. Patrick's Day (2008)
+//===== By: ==================================================
+//= Kisuka
+//===== Current Version: =====================================
+//= 1.5
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= iRO St. Patrick's Day. (2008)
+//= Find O'Riley's treasure for him, then hunt down coinds from
+//= the snakes to get Green Ale in return for them.
+//=
+//= Mobs 1841 through 1844 have been modified for this event
+//= you must use the mob edits provided for this quest.
+//= Enable in mob_db2.txt
+//=
+//= The item 12715 Black_Treasure_Chest contains a script 
+//= that relies explicitly on this script being loaded.
+//= Remove the "end" from the item script to enable.
+//= In addition to that, you must enable the item_avail
+//= entries if you are using a kRO client, as the items
+//= were removed from the client between testing and this
+//= updated.
+//===== Additional Comments: =================================
+//= 1.0 First version. [Kisuka]
+//= 1.1 Fixed checkitems for ale, fixed ale prize(gives the correct one now). [Kisuka]
+//= 1.2 Optimized. Uses only one variable now. [L0ne_W0lf]
+//=     Corrected EXP rewards, and some typos.
+//= 1.3 Corrected random in item function. [L0ne_W0lf]
+//= 1.4 Replaced effect numerics with constants. [Samuray22]
+//= 1.5 Revamped the script. [Kisuka]
+//============================================================
+
+prt_fild05,170,286,4	script	¸G§¯ ¼ÚµÜÂ§#8pday	954,{
+	if (StPatrick2008 < 1) {
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¶â...";
+		mes "¤µ¤Ñ¯u¬O­Ó¦n¤é¤l¡C";
+		mes "¦pªG§A¦³ªÅªº¸Ü¡C";
+		mes "¹L¨Ó§Ú³o¨à¡A¹L¨Ó¡A§Ú§i¶D§A¤@¥ó¨Æ¡C";
+		next;
+		select("»¡§a¡C");
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "³o¨Ç¦~¨Ó§Ú¨ì³B¹C¾ú¡A¨C¦¸¨º¨Ç³D³£·|°½¨«§ÚªºÄ_ÂÃ¡C";
+		next;
+		select("³á¡H");
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "³o¤ù¤g¦a¤Wªº¦n¤ß¤HÁ`¬O«ÜºB´n¦a¤@¦¸¤S¤@¦¸À°§Ú§ä¦^Ä_ÂÃ¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§Ú¤w¸g¾Ç¨ì¤F±Ð°V¡A¥Ã»·¤£·|§Ñ°O¨º¨Ç¨¸´cªº³D¬O«ç»ò´Û­t§Úªº¡C";
+		next;
+		select("§A°µ¤F¤°»ò¡H");
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§Ú«Ø¤F¤@­Ó¦w¥þªº¦a¤è¨ÓÁôÂÃ§ÚªºÄ_ÂÃ¡C";
+		mes "ÂÃ¦b¤@­Ó¯µ±Kªº¦a¤è¡AÄ_ÂÃ´N·|«Ü¦w¥þ¡Aª½¨ì§Ú¹j¦~¦A¦¸¦^¨ì³o­Ó¥@¬É¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¤µ¦~¡A§Ú¦A¦¸½ñ¤W®Èµ{¨Ó¬Ý¬Ý¥~­±ªº¥@¬É¡C";
+		mes "§Ú¨Ó¨ì§ÚÂÃª÷¤lªº¦a¤è¡Aµo²{¥¦«Ü¦w¥þ¡A¨S¦³³Q°Ê¹L¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§Ú¤ß·Q¡A§Ú¯uÁo©ú¡A¯à§âÄ_ÂÃÂÃ°_¨Ó¤£Åý³Dµo²{¡C";
+		mes "³á¡A¦ý§ÚÁÙ¬O­Ó¶Ì¥Ê¡C";
+		next;
+		select("µo¥Í¤F¤°»ò¨Æ¡H");
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§ÚªºÂÃ¨­³B¤Ó¥©§®¤F¡C";
+		mes "§Ú©Ô¡B§Ú©Þ¡B§Ú±À¡A¦ýÂÃÄ_³B´N¬O¯¾­·¤£°Ê¡C";
+		mes "©Ò¥H¤µ¦~¡A§Ú¦A¦¸¥¢¥h¤FÄ_ÂÃ¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¦]¬°³o³õ²V¶Ã¡A§Ú¬Æ¦ÜÁÙ¨S¶}©lÆC³y§ÚµÛ¦Wªººñ³Á°s¡C";
+		mes "§Ú°Ý§A¡A§AÄ@·NÀ°§Ú®³¦^Ä_ÂÃ¶Ü¡H";
+		next;
+		if (select("¦n°Ú¡A§Ú¥i¥HÀ°§A¡C:§Ú¤Ó¦£¤F¡C") == 2) {
+			mes "[¸G§¯ ¼ÚµÜÂ§]";
+			mes "­ü¡A§Ú¤F¸Ñ¡C";
+			mes "ÁÂÁÂ§AÅ¥§Úªº¬G¨Æ¡C";
+			close;
+		}
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "­n§ä¨ì§ÚªºÄ_ÂÃ¬O¯uªº¡C";
+		mes "§Ú§â´M§äÄ_ÂÃªº¯µ±K§i¶D§A¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "©Ò¥H¡A¥J²ÓÅ¥¦n¡A¤£­n¿òº|¥ô¦ó²Ó¸`¡C";
+		mes "«e©¹Å]ªk®vªº«°¥«¡C";
+		mes "¨«¹L¾ô¡A¶V¹L¤ô­±";
+		mes "ª¦¤W¤s¡Aª½¨ì©¹¥_¦A¤]µLªk«e¶i¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¸g¹LÄa¦bªÅ¤¤ªº¥Û¶¥¡C";
+		mes "ÂÃ¦b¤s¸y¸Ì¡A§ÚªºÄ_ÂÃ´N¦b¨º¸Ì¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§A¥²¶·§ä¨ì¤èªk§â¥¦¥´¶}¡C";
+		mes "§AªÖ©w»Ý­n¤@³õ¥¨¤jªºÃz¬µ¤~¯àÄÀ©ñ¨º¨ÇÄ_ÂÃ¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§A¤]³\¥i¥H¸Õ¸Õ¤@¨ÇÃ@¬¶¡C";
+		mes "·íµM¡A§A·|»Ý­n¤j¶qªºÃ@¬¶¡A¦Ü¤Ö»Ý­n ^FF0000200­Ó Ã@¬¶^000000";
+		set StPatrick2008,1;
+		close;
+	}
+	else if (StPatrick2008 == 1) {
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¤µ¤Ñ¯u¬O­Ó¦n¤é¤l¡C";
+		mes "§A§ä¨ì§ÚªºÄ_ÂÃ¤F¶Ü¡H";
+		mes "§ÚªºÂÃÄ_³B¥i¯à«ÜÃø¯}¸Ñ¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§A¤]³\¥i¥H¸Õ¸Õ¤@¨ÇÃ@¬¶¡C";
+		mes "·íµM¡A§A·|»Ý­n¤j¶qªºÃ@¬¶¡A¦Ü¤Ö»Ý­n ^FF0000200­Ó Ã@¬¶^000000";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¦pªG§AµLªk®³¨ì¡A§Úµ´¹ï¥i¥H²z¸Ñ¡C";
+		close;
+	}
+	else if (StPatrick2008 == 2) {
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "³á¡AÅwªï¦^¨Ó¡I";
+		mes "ÁÂÁÂ§AÂkÁÙ§ÚªºÄ_ÂÃ¡I";
+		mes "§Úªº·P¿E¤§±¡µL¥H¨¥ªí¡I";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§Ú¤Ó°ª¿³¤F¡A";
+		mes "§Ú°¨¤W´N¶}©lÆC°s";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¬Ý¨Ó¤µ¦~¨º¨Ç³D¤S¦^¨Ó¤F¡A¤S·Q¨Ó°½§ÚªºÄ_ÂÃ¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "³o¨Ç³D±aµÛ§Ú±Ú¤Hªºµw¹ô¡A¥²¶·¨ü¨ìÃg»@¡C";
+		mes "¦ý§A¤w¸g¸g¾ú¤F¤@¬qº©ªøªº®Èµ{¡A¹ï¦¹§Ú«D±`·P¿E¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "·í§Aµy§@¥ð®§«á¡A¦A¨Ó§ä§Ú¡A§Ú­Ì¦A½Í½Í";
+		close2;
+		set StPatrick2008,3;
+    		getexp 200000,70000;
+		delitem 7721,1;
+		end;
+	}
+	else if (StPatrick2008 == 3) {
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "°Ú¡A¥ð®§±o¦n¶Ü¡H";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "ÁÂÁÂ§A¦A¦¸¨ì¨Ó¡C";
+		mes "³o¨Ç³D±aµÛ§Ú±Ú¤Hªºµw¹ô¡A¥²¶·¨ü¨ìÃg»@¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¦pªG§A¯à§â¨º¨Ç¨¸´cªº³D©ÒÄâ±aªº¤£¸q¤§°]±a¨Óµ¹§Ú¡A§Ú·|«ÜºB´n¦aµ¹§A¤@¨Ç§ÚµÛ¦WªºÆC°s";
+		next;
+		mes "¦pªG§A§ä¨ì§Ú±Ú¤HªºÄ_ÂÃ¡A½Ð§â¨º¨Çµw¹ô±aµ¹§Ú¡A¥H§K¸¨¤J³Dªº¤â¤¤¡C";
+		set StPatrick2008,4;
+		close;
+	}
+	else if (StPatrick2008 == 4) {
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "¨º¨Ç³D±aµÛ¤Ó¦h§Ú±Ú¤Hªºµw¹ô¤F¡A§Ú·|µo°e´X«~²æªºÆC°s§@¬°§ä¦^¥¦­Ìªº¼úÀy¡C";
+		next;
+		mes "[¸G§¯ ¼ÚµÜÂ§]";
+		mes "§Ú·|¥Î¤@Åø³Á°s¨Ó¼úÀy§A¡A¥u­n§A±a¨Ó ^0000FF1­Ó ª÷¹ô^000000¡B^0000FF5­Ó »È¹ô^000000¡A©Î ^0000FF10­Ó »É¹ô^000000¡C";
+		mes "¹ï©ó¨º¨Ç¤£¸q¤§°]ªºµw¹ô¨Ó»¡¡A³o¬O­Ó¤½¥­ªº¼ú½à¡C";
+		mes "¨º»ò¡A§A±a¨Ó¤F­þºØµw¹ô¡H";
+		next;
+		switch(select("»É¹ô:»È¹ô:ª÷¹ô:Â÷¶}¡C")) {
+		case 1:
+			mes "[¸G§¯ ¼ÚµÜÂ§]";
+			mes "ÁÂÁÂ¡C³o¬O§Aªº³Á°s?";
+			if (countitem(7915) >= 10) {
+				getitem 12135,1; 
+				delitem 7915,10;
+			}
+			close;
+		case 2:
+			mes "[¸G§¯ ¼ÚµÜÂ§]";
+			mes "ÁÂÁÂ¡C³o¬O§Aªº³Á°s?";
+			if (countitem(7916) >= 5) {
+				getitem 12135,1; 
+				delitem 7916,5;
+			}
+			close;
+		case 3:
+			mes "[¸G§¯ ¼ÚµÜÂ§]";
+			mes "ÁÂÁÂ¡C³o¬O§Aªº³Á°s?";
+			if (countitem(7720) >= 1) {
+				getitem 12135,1; 
+				delitem 7720,1;
+			}
+			close;
+		case 4:
+			mes "[¸G§¯ ¼ÚµÜÂ§]";
+			mes "§Ú·|¥Î¤@Åø³Á°s¨Ó¼úÀy§A¡A¥u­n§A±a¨Ó ^0000FF1­Ó ª÷¹ô^000000¡B^0000FF5­Ó »È¹ô^000000¡A©Î ^0000FF10­Ó »É¹ô^000000¡C";
+			close;
+		}
+	}
+}
+
+mjolnir_01,272,363,4	script	©¥¥Û#08StPattysDay	-1,1,1,{
+	end;
+
+OnTouch:
+	if (StPatrick2008 < 1) {
+		mes "- §Aµo²{¤F¤@°ï³Qªd¤gÂÐ»\ªº©¥¥Û¡C -";
+		close;
+	}
+	if (StPatrick2008 == 1) {
+		mes "- §Aµo²{¤F¤@°ï³Qªd¤gÂÐ»\ªº©¥¥Û¡C -";
+		next;
+		if (countitem(12018) < 200) {
+			mes "©¥¥Û¯¾­·¤£°Ê¡C";
+			mes "¤]³\¼ÚµÜÂ§ª¾¹D²¾°Ê³o¨Ç©¥¥Ûªº¤èªk¡C";
+			close;
+		}
+		else {
+			if (select("¨Ï¥ÎÃ@¬¶¡C:©¿²¤") == 2) {
+				close;
+			}
+			mes "§A¦b©¥¥Û°ï¤U®I¤F 200­Ó Ã@¬¶¡C";
+			mes "§AÂI¿U¤F¤Þ«H¡C";
+			next;
+			mes "*ÅF¡I*";
+			specialeffect2 EF_LORD;
+			next;
+			mes "·í¹Ð¤g©M·ÏÃú®ø´²«á¡A";
+			mes "§A¦b©¥¥Û©Mªd¤g¤§¶¡µo²{¤F¤@­Ó²°¤l¡C";
+			mes "³o­Ó²°¤l¸Ì¤@©w¸ËµÛ¼ÚµÜÂ§ªº¶Q­«ª««~¡C";
+			mes "§Ú­Ì§â²°¤l±aµ¹¼ÚµÜÂ§§a¡C";
+			close2;
+			set StPatrick2008,2;
+			delitem 12018,200;
+			getitem 7721,1;
+		}
+	}
+	end;
+}
+
+function	script	F_08stpattyseventbox	{
+	switch(rand(1,6)) {
+	case 1:
+		getitem 7915,1;
+		end;
+	case 2:
+		getitem 7915,1;
+		getitem 7916,1;
+		getitem 7720,1;
+		end;
+	case 3:
+		getitem 7720,1;
+		end;
+	case 4:
+		getitem 7915,1;
+		getitem 7916,1;
+		end;
+	case 5:
+		getitem 7916,2;
+		end;
+	case 6:
+		getitem 7915,2;
+		end;
+	}
+}
+
+
+// Snake Spawns.
+ein_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild10,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild00,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild10,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild11,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild12,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild13,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gef_fild14,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+glast_01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+lhz_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+lhz_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+lhz_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_10,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_11,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+mjolnir_12,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild10,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild11,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild12,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild13,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild14,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild16,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild17,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+moc_fild18,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild10,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+pay_fild11,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild00,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild10,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+prt_fild11,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+xmas_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+cmd_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild06,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild08,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild09,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild11,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+yuno_fild12,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ama_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+gon_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+um_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+um_fild02,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+um_fild03,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+um_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+nif_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+nif_fild02,0,0,0,0 	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+lou_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+hu_fild01,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+hu_fild04,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+hu_fild05,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+hu_fild07,0,0	monster	³D¤ý¤ö¤ú	1841,3,0,0,0
+ein_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild10,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild00,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild10,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild11,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild12,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild13,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gef_fild14,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+glast_01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+lhz_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+lhz_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+lhz_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_10,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_11,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+mjolnir_12,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild10,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild11,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild12,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild13,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild14,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild16,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild17,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+moc_fild18,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild10,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+pay_fild11,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild00,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild10,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+prt_fild11,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+xmas_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+cmd_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild06,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild08,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild09,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild11,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+yuno_fild12,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ama_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+gon_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+um_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+um_fild02,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+um_fild03,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+um_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+nif_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+nif_fild02,0,0,0,0 	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+lou_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+hu_fild01,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+hu_fild04,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+hu_fild05,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+hu_fild07,0,0	monster	³D¤ý¤ö¤ú	1842,3,0,0,0
+ein_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild10,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild00,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild10,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild11,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild12,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild13,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gef_fild14,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+glast_01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+lhz_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+lhz_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+lhz_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_10,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_11,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+mjolnir_12,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild10,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild11,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild12,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild13,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild14,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild16,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild17,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+moc_fild18,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild10,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+pay_fild11,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild00,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild10,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+prt_fild11,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+xmas_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+cmd_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild06,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild08,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild09,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild11,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+yuno_fild12,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ama_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+gon_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+um_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+um_fild02,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+um_fild03,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+um_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+nif_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+nif_fild02,0,0,0,0 	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+lou_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+hu_fild01,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+hu_fild04,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+hu_fild05,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+hu_fild07,0,0	monster	³D¤ý¤ö¤ú	1843,2,0,0,0
+ein_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ein_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ein_fild06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ein_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ein_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ein_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ein_fild10,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild00,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild10,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild13,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gef_fild14,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+glast_01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+lhz_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+lhz_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+lhz_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_10,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+mjolnir_11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild10,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild13,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild14,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild16,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild17,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+moc_fild18,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild10,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+pay_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild00,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild10,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+prt_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+xmas_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+cmd_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild06,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild08,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild09,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+yuno_fild11,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+ama_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+gon_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+um_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+um_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+um_fild03,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+um_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+nif_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+nif_fild01,0,0,0,0 	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+lou_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+hu_fild01,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+hu_fild04,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+hu_fild05,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0
+hu_fild07,0,0	monster	³D¤ý¤ö¤ú	1844,1,0,0,0

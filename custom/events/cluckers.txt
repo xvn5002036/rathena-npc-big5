@@ -1,0 +1,117 @@
+//===== rAthena Script =======================================
+//= Cluck! Cluck! Boom!
+//===== By: ==================================================
+//= Keale
+//===== Current Version: =====================================
+//= 1.2a
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Click the chicken and try retrieve the item at a low 
+//= chance.
+//= If you fail he will nuke, freeze, stone, 
+//= stun, or make you fall asleep.
+//= The prize is configurable and triggered by the NPC.
+//===== Additional Comments: =================================
+//= 1.0 First release.
+//= 1.1 Using 'switch rand' instead.
+//= 1.2 Cleaned and standardized. [Euphy]
+//= 1.2a Switched 'atcommand' to 'unitskilluseid'.
+//= 1.3 Switched 'unitskilluseid' to 'unitkill'.
+//============================================================
+
+prontera,156,219,4	script	咕咕雞	800,{
+
+	set .@GMAccess,80;	// GM level required to access NPC
+
+	if (.startcluck) {
+		specialeffect2 EF_HIT3;
+		switch(rand(15)) {
+			case 0: npctalk "咕咕雞 : 咕咕咕咕咕！！！"; unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1; emotion ET_HUK; break;
+			case 1: npctalk "咕咕雞 : 咕咕咕！~"; break;
+			case 2: unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1; break;
+			case 3: sc_start SC_Freeze,10000,0; break;
+			case 4: npctalk "咕咕雞 : 咕咕咕咕咕咕咕！！！"; unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1; emotion ET_HUK; break;
+			case 5: sc_start SC_Sleep,10000,0; break;
+			case 6: sc_start SC_Stone,10000,0; emotion ET_KIK; break;
+			case 7: npctalk "咕咕雞 : 咕咕咕咕咕！！！"; unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1; emotion ET_HUK; break;
+			case 8: npctalk "咕咕雞 : 咕咕！咕咕咕！！"; unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1; emotion ET_HUK; break;
+			case 9: sc_start SC_Stun,10000,0; break;
+			case 10: sc_start SC_Sleep,10000,0; emotion ET_KIK; break;
+			case 11: npctalk "咕咕雞 : 咕咕！咕咕！"; break;
+			case 12: sc_start SC_Stun,10000,0; break;
+			case 13: unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1; break;
+			default:
+				if (rand(50) < 4) {
+					npctalk "咕咕雞 : 汪！...........";
+					specialeffect2 EF_SPHERE;
+					announce "[咕咕！咕咕！蹦！] " + strcharinfo(0) + " 成功擠出了獎品！做得好！",0;
+					getitem $cluck_item_id,$cluck_item_amount;
+					set .startcluck,0;
+				} else {
+					npctalk "咕咕雞 : 咕咕！咕咕咕！！";
+					unitkill getcharid(3); skilleffect "NPC_SELFDESTRUCTION",1;
+				}
+				break;
+		}
+		end;
+	}
+	mes "[咕咕雞]";
+	if (getgmlevel() >= .@GMAccess) {
+		mes "咕咕咕！咕咕咕？ ^FF0000~嗨 GM " + strcharinfo(0) + "，今天想來玩嗎？~^000000";
+		mes "咕咕咕... 咕咕！ ^FF0000~儘管吩咐我吧！~^000000";
+		next;
+		while(1) switch(select("開始活動:確認獎品:設定獎品:今天先不要")) {
+			case 1:
+				mes "[咕咕雞]";
+				mes "咕咕！ ^FF0000~沒問題！~^000000";
+				emotion ET_OK;
+				close2;
+				announce "[咕咕！咕咕！蹦！] 即將在普隆德拉開始！",bc_blue;
+				initnpctimer;
+				end;
+			case 2:
+				mes "[咕咕雞]";
+				mes "咕，咕咕咕... 咕！ ^FF0000~目前的獎品是^000000 ^008000"+ $cluck_item_amount +" 個 "+ getitemname($cluck_item_id) +".^000000";
+				next;
+				break;
+			case 3:
+				mes "[咕咕雞]";
+				mes "咕咕？咕咕？？ ^FF0000~獲勝的獎品應該是什麼？請輸入物品 ID。~^000000";
+				input $cluck_item_id;
+				next;
+				mes "[咕咕雞]";
+				mes "咕？咕咕咕？ ^FF0000~這個物品我應該給出幾個？~^000000";
+				input $cluck_item_amount;
+				next;
+				mes "[咕咕雞]";
+				mes "咕咕..？咕。 ^FF0000~所以，獎品是^000000 ^008000"+ $cluck_item_amount +" 個 "+ getitemname($cluck_item_id) +"^000000？ ^FF0000太棒了。~^000000";
+				emotion ET_OK;
+				next;
+				break;
+			case 4:
+				mes "[咕咕雞]";
+				mes "咕咕咕咕...";
+				close;
+		}
+	}
+	mes "咕咕！咕咕咕？";
+	mes "咕....";
+	close;
+OnTimer10000:
+	announce "如果你想和這隻瘋狂的雞玩，請趕快到噴水池後面！",bc_blue;
+	end;
+OnTimer20000:
+	announce "咕咕雞吃掉了我的一樣物品！我太害怕了不敢拿回來！",bc_blue;
+	end;
+OnTimer30000:
+	announce "點擊這隻瘋狂的雞並試著把物品擠出來，如果幸運的話你就贏了！準備好了嗎？",bc_blue;
+	end;
+OnTimer40000:
+	announce "上吧！點擊雞來獲取獎品！",bc_blue;
+	stopnpctimer;
+	if (!$cluck_item_id) set $cluck_item_id,512;
+	if (!$cluck_item_amount) set $cluck_item_amount,1;
+	set .startcluck,1;
+	end;
+}
